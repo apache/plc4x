@@ -39,15 +39,11 @@ public class CALDataReset extends CALData implements Message {
 
   // Accessors for discriminator values.
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataReset(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
-      CALData additionalData,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
-    this.requestContext = requestContext;
+      CALData additionalData) {
+    super(requestContext, commandTypeContainer, additionalData);
   }
 
   @Override
@@ -81,22 +77,19 @@ public class CALDataReset extends CALData implements Message {
 
     readBuffer.closeContext("CALDataReset");
     // Create the instance
-    return new CALDataResetBuilderImpl(requestContext);
+    return new CALDataResetBuilderImpl();
   }
 
   public static class CALDataResetBuilderImpl implements CALData.CALDataBuilder {
-    private final RequestContext requestContext;
 
-    public CALDataResetBuilderImpl(RequestContext requestContext) {
-      this.requestContext = requestContext;
-    }
+    public CALDataResetBuilderImpl() {}
 
     public CALDataReset build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataReset cALDataReset =
-          new CALDataReset(commandTypeContainer, additionalData, requestContext);
+          new CALDataReset(requestContext, commandTypeContainer, additionalData);
       return cALDataReset;
     }
   }

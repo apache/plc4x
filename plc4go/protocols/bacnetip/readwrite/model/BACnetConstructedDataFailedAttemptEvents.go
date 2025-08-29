@@ -59,9 +59,9 @@ var _ BACnetConstructedDataFailedAttemptEvents = (*_BACnetConstructedDataFailedA
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFailedAttemptEvents)(nil)
 
 // NewBACnetConstructedDataFailedAttemptEvents factory function for _BACnetConstructedDataFailedAttemptEvents
-func NewBACnetConstructedDataFailedAttemptEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttemptEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttemptEvents {
+func NewBACnetConstructedDataFailedAttemptEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttemptEvents []BACnetAccessEventTagged) *_BACnetConstructedDataFailedAttemptEvents {
 	_result := &_BACnetConstructedDataFailedAttemptEvents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FailedAttemptEvents:           failedAttemptEvents,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

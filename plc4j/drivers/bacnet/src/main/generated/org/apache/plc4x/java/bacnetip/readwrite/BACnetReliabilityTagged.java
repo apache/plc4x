@@ -42,22 +42,12 @@ public class BACnetReliabilityTagged implements Message {
   protected final BACnetReliability value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetReliabilityTagged(
-      BACnetTagHeader header,
-      BACnetReliability value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetReliability value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetReliabilityTagged implements Message {
     readBuffer.closeContext("BACnetReliabilityTagged");
     // Create the instance
     BACnetReliabilityTagged _bACnetReliabilityTagged;
-    _bACnetReliabilityTagged =
-        new BACnetReliabilityTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetReliabilityTagged = new BACnetReliabilityTagged(header, value, proprietaryValue);
     return _bACnetReliabilityTagged;
   }
 

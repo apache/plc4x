@@ -42,22 +42,12 @@ public class BACnetNetworkTypeTagged implements Message {
   protected final BACnetNetworkType value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetNetworkTypeTagged(
-      BACnetTagHeader header,
-      BACnetNetworkType value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetNetworkType value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetNetworkTypeTagged implements Message {
     readBuffer.closeContext("BACnetNetworkTypeTagged");
     // Create the instance
     BACnetNetworkTypeTagged _bACnetNetworkTypeTagged;
-    _bACnetNetworkTypeTagged =
-        new BACnetNetworkTypeTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetNetworkTypeTagged = new BACnetNetworkTypeTagged(header, value, proprietaryValue);
     return _bACnetNetworkTypeTagged;
   }
 

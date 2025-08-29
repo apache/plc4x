@@ -49,21 +49,13 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetPrescale prescale;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPrescale(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetPrescale prescale,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetPrescale prescale) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.prescale = prescale;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetPrescale getPrescale() {
@@ -128,33 +120,21 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataPrescale");
     // Create the instance
-    return new BACnetConstructedDataPrescaleBuilderImpl(prescale, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPrescaleBuilderImpl(prescale);
   }
 
   public static class BACnetConstructedDataPrescaleBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetPrescale prescale;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPrescaleBuilderImpl(
-        BACnetPrescale prescale,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataPrescaleBuilderImpl(BACnetPrescale prescale) {
       this.prescale = prescale;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPrescale build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPrescale bACnetConstructedDataPrescale =
-          new BACnetConstructedDataPrescale(
-              openingTag, peekedTagHeader, closingTag, prescale, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataPrescale(openingTag, peekedTagHeader, closingTag, prescale);
       return bACnetConstructedDataPrescale;
     }
   }

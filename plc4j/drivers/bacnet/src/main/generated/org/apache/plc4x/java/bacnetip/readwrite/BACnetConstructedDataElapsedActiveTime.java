@@ -50,21 +50,13 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger elapsedActiveTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataElapsedActiveTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger elapsedActiveTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger elapsedActiveTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.elapsedActiveTime = elapsedActiveTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getElapsedActiveTime() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataElapsedActiveTime");
     // Create the instance
-    return new BACnetConstructedDataElapsedActiveTimeBuilderImpl(
-        elapsedActiveTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataElapsedActiveTimeBuilderImpl(elapsedActiveTime);
   }
 
   public static class BACnetConstructedDataElapsedActiveTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger elapsedActiveTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataElapsedActiveTimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger elapsedActiveTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger elapsedActiveTime) {
       this.elapsedActiveTime = elapsedActiveTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataElapsedActiveTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataElapsedActiveTime bACnetConstructedDataElapsedActiveTime =
           new BACnetConstructedDataElapsedActiveTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              elapsedActiveTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, elapsedActiveTime);
       return bACnetConstructedDataElapsedActiveTime;
     }
   }

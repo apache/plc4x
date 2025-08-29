@@ -49,21 +49,13 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagBoolean ipDhcpEnable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPDHCPEnable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean ipDhcpEnable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean ipDhcpEnable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ipDhcpEnable = ipDhcpEnable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getIpDhcpEnable() {
@@ -132,34 +124,22 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataIPDHCPEnable");
     // Create the instance
-    return new BACnetConstructedDataIPDHCPEnableBuilderImpl(
-        ipDhcpEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPDHCPEnableBuilderImpl(ipDhcpEnable);
   }
 
   public static class BACnetConstructedDataIPDHCPEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean ipDhcpEnable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPDHCPEnableBuilderImpl(
-        BACnetApplicationTagBoolean ipDhcpEnable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataIPDHCPEnableBuilderImpl(BACnetApplicationTagBoolean ipDhcpEnable) {
       this.ipDhcpEnable = ipDhcpEnable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPDHCPEnable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPDHCPEnable bACnetConstructedDataIPDHCPEnable =
           new BACnetConstructedDataIPDHCPEnable(
-              openingTag, peekedTagHeader, closingTag, ipDhcpEnable, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ipDhcpEnable);
       return bACnetConstructedDataIPDHCPEnable;
     }
   }

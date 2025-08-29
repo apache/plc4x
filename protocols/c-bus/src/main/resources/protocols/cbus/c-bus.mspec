@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type CBusConstants
+[constants
     [const    uint 16     cbusTcpDefaultPort 10001]
 ]
 
@@ -25,6 +25,35 @@
     // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
     [simple   bit       sendIdentifyRequestBefore   ]
 ]
+// TODO: idee
+//[context
+//    Access via "context.sendIdentifyRequestBefore"
+//    // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
+//    [simple   bit       sendIdentifyRequestBefore   ]
+//]
+
+// TODO: we need global options that can be set
+//[global
+//    Access via "global.srchk"
+//// Defines that SAL messages can occur at any time
+//[simple bit connect]
+//// Disable echo of characters. When used with connect SAL have a long option. Select long from of most CAL replies
+//[simple bit smart  ]
+//// only works with smart. Select long form of CAL messages
+//[simple bit idmon  ]
+//// useful with smart. Select long form, extended format for all monitored and initiated status requests
+//[simple bit exstat ]
+//// monitors all traffic for status requests. Status requests will be returned as CAL. Replies are modified by exstat. Usually used in conjunction with connect.
+//[simple bit monitor]
+//// Same as connect. In addition it will return remote network SAL
+//[simple bit monall ]
+//// Serial interface will emit a power up notification
+//[simple bit pun    ]
+//// causes parameter change notifications to be emitted.
+//[simple bit pcn    ]
+//// enabled the checksum checks
+//[simple bit srchk ]
+//]
 
 [type CBusOptions
     // Defines that SAL messages can occur at any time
@@ -90,7 +119,8 @@
             [optional Alpha         alpha                                   ]
         ]
         ['REQUEST_COMMAND' *Command
-            [const    byte  initiator 0x5C                                  ] // 0x5C == "\"
+            [state                 cBusOptions                              ]
+            [const    byte         initiator   0x5C                         ] // 0x5C == "\"
             [manual   CBusCommand
                               cbusCommand
                         'STATIC_CALL("readCBusCommand", readBuffer, cBusOptions, cBusOptions.srchk)'
@@ -551,6 +581,7 @@
 ]
 
 [type CALData(RequestContext requestContext)
+    [state                           requestContext                                         ]
     //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
     [validation 'STATIC_CALL("knowsCALCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
     [simple  CALCommandTypeContainer commandTypeContainer                                   ]
@@ -1020,7 +1051,8 @@
 ]
 
 [type CustomManufacturer(uint 8 numBytes) // Note 7
-    [simple vstring '8 * numBytes' customString        ]
+    [state                         numBytes     ]
+    [simple vstring '8 * numBytes' customString ]
 ]
 
 [type SerialNumber // Note 8
@@ -1031,7 +1063,8 @@
 ]
 
 [type CustomTypes(uint 8 numBytes) // Note 9
-    [simple vstring '8 * numBytes' customString        ]
+    [state                         numBytes     ]
+    [simple vstring '8 * numBytes' customString ]
 ]
 
 [enum uint 8 Attribute(uint 8 bytesReturned)
@@ -1466,6 +1499,7 @@
             [simple ParameterChange parameterChange                         ]
         ]
         [*      *EncodedReply
+            [state            cBusOptions                                   ]
             [manual   EncodedReply
                               encodedReply
                                     'STATIC_CALL("readEncodedReply", readBuffer, cBusOptions, requestContext, cBusOptions.srchk)'
@@ -1485,7 +1519,8 @@
 ]
 
 [type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
-    [peek    byte peekedByte                                                        ]
+    [state                  requestContext                     ]
+    [peek    byte           peekedByte                         ]
     // TODO: if we reliable can detect this with the mask we don't need the request context anymore
     [virtual bit  isMonitoredSAL            '((peekedByte & 0x3F) == 0x05 || peekedByte == 0x00 || (peekedByte & 0xF8) == 0x00) && !requestContext.sendIdentifyRequestBefore'] // First check if it is in long mode, second for short mode, third for bridged short mode
     [typeSwitch isMonitoredSAL

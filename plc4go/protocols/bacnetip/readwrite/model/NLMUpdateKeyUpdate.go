@@ -89,12 +89,12 @@ var _ NLMUpdateKeyUpdate = (*_NLMUpdateKeyUpdate)(nil)
 var _ NLMRequirements = (*_NLMUpdateKeyUpdate)(nil)
 
 // NewNLMUpdateKeyUpdate factory function for _NLMUpdateKeyUpdate
-func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyRevision *byte, set1ActivationTime *uint32, set1ExpirationTime *uint32, set1KeyCount *uint8, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2KeyRevision *byte, set2ActivationTime *uint32, set2ExpirationTime *uint32, set2KeyCount *uint8, set2Keys []NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyUpdate {
+func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyRevision *byte, set1ActivationTime *uint32, set1ExpirationTime *uint32, set1KeyCount *uint8, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2KeyRevision *byte, set2ActivationTime *uint32, set2ExpirationTime *uint32, set2KeyCount *uint8, set2Keys []NLMUpdateKeyUpdateKeyEntry) *_NLMUpdateKeyUpdate {
 	if controlFlags == nil {
 		panic("controlFlags of type NLMUpdateKeyUpdateControlFlags for NLMUpdateKeyUpdate must not be nil")
 	}
 	_result := &_NLMUpdateKeyUpdate{
-		NLMContract:        NewNLM(apduLength),
+		NLMContract:        NewNLM(),
 		ControlFlags:       controlFlags,
 		Set1KeyRevision:    set1KeyRevision,
 		Set1ActivationTime: set1ActivationTime,

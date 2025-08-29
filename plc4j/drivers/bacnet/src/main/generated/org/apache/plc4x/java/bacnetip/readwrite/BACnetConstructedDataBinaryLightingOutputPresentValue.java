@@ -50,21 +50,13 @@ public class BACnetConstructedDataBinaryLightingOutputPresentValue extends BACne
   // Properties.
   protected final BACnetBinaryLightingPVTagged presentValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBinaryLightingOutputPresentValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetBinaryLightingPVTagged presentValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetBinaryLightingPVTagged presentValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.presentValue = presentValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetBinaryLightingPVTagged getPresentValue() {
@@ -135,40 +127,24 @@ public class BACnetConstructedDataBinaryLightingOutputPresentValue extends BACne
 
     readBuffer.closeContext("BACnetConstructedDataBinaryLightingOutputPresentValue");
     // Create the instance
-    return new BACnetConstructedDataBinaryLightingOutputPresentValueBuilderImpl(
-        presentValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBinaryLightingOutputPresentValueBuilderImpl(presentValue);
   }
 
   public static class BACnetConstructedDataBinaryLightingOutputPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryLightingPVTagged presentValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBinaryLightingOutputPresentValueBuilderImpl(
-        BACnetBinaryLightingPVTagged presentValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetBinaryLightingPVTagged presentValue) {
       this.presentValue = presentValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBinaryLightingOutputPresentValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBinaryLightingOutputPresentValue
           bACnetConstructedDataBinaryLightingOutputPresentValue =
               new BACnetConstructedDataBinaryLightingOutputPresentValue(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  presentValue,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, presentValue);
       return bACnetConstructedDataBinaryLightingOutputPresentValue;
     }
   }

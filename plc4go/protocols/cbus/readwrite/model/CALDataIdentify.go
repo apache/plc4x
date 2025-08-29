@@ -59,9 +59,9 @@ var _ CALDataIdentify = (*_CALDataIdentify)(nil)
 var _ CALDataRequirements = (*_CALDataIdentify)(nil)
 
 // NewCALDataIdentify factory function for _CALDataIdentify
-func NewCALDataIdentify(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, requestContext RequestContext) *_CALDataIdentify {
+func NewCALDataIdentify(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute) *_CALDataIdentify {
 	_result := &_CALDataIdentify{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(requestContext, commandTypeContainer, additionalData),
 		Attribute:       attribute,
 	}
 	_result.CALDataContract.(*_CALData)._SubType = _result

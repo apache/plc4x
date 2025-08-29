@@ -53,16 +53,13 @@ type BACnetServiceAckRequestKey interface {
 type _BACnetServiceAckRequestKey struct {
 	BACnetServiceAckContract
 	BytesOfRemovedService []byte
-
-	// Arguments.
-	ServiceAckPayloadLength uint32
 }
 
 var _ BACnetServiceAckRequestKey = (*_BACnetServiceAckRequestKey)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckRequestKey)(nil)
 
 // NewBACnetServiceAckRequestKey factory function for _BACnetServiceAckRequestKey
-func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckRequestKey {
+func NewBACnetServiceAckRequestKey(serviceAckLength uint32, bytesOfRemovedService []byte) *_BACnetServiceAckRequestKey {
 	_result := &_BACnetServiceAckRequestKey{
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		BytesOfRemovedService:    bytesOfRemovedService,
@@ -83,8 +80,6 @@ type BACnetServiceAckRequestKeyBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckRequestKeyBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetServiceAckRequestKeyBuilder
-	// WithArgServiceAckPayloadLength sets a parser argument
-	WithArgServiceAckPayloadLength(uint32) BACnetServiceAckRequestKeyBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckRequestKey or returns an error if something is wrong
@@ -119,11 +114,6 @@ func (b *_BACnetServiceAckRequestKeyBuilder) WithMandatoryFields(bytesOfRemovedS
 
 func (b *_BACnetServiceAckRequestKeyBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetServiceAckRequestKeyBuilder {
 	b.BytesOfRemovedService = bytesOfRemovedService
-	return b
-}
-
-func (b *_BACnetServiceAckRequestKeyBuilder) WithArgServiceAckPayloadLength(serviceAckPayloadLength uint32) BACnetServiceAckRequestKeyBuilder {
-	b.ServiceAckPayloadLength = serviceAckPayloadLength
 	return b
 }
 
@@ -290,16 +280,6 @@ func (m *_BACnetServiceAckRequestKey) SerializeWithWriteBuffer(ctx context.Conte
 	return m.BACnetServiceAckContract.(*_BACnetServiceAck).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetServiceAckRequestKey) GetServiceAckPayloadLength() uint32 {
-	return m.ServiceAckPayloadLength
-}
-
-//
-////
-
 func (m *_BACnetServiceAckRequestKey) IsBACnetServiceAckRequestKey() {}
 
 func (m *_BACnetServiceAckRequestKey) DeepCopy() any {
@@ -313,7 +293,6 @@ func (m *_BACnetServiceAckRequestKey) deepCopy() *_BACnetServiceAckRequestKey {
 	_BACnetServiceAckRequestKeyCopy := &_BACnetServiceAckRequestKey{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
-		m.ServiceAckPayloadLength,
 	}
 	_BACnetServiceAckRequestKeyCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckRequestKeyCopy

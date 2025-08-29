@@ -62,9 +62,9 @@ var _ NLMEstablishConnectionToNetwork = (*_NLMEstablishConnectionToNetwork)(nil)
 var _ NLMRequirements = (*_NLMEstablishConnectionToNetwork)(nil)
 
 // NewNLMEstablishConnectionToNetwork factory function for _NLMEstablishConnectionToNetwork
-func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, apduLength uint16) *_NLMEstablishConnectionToNetwork {
+func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8) *_NLMEstablishConnectionToNetwork {
 	_result := &_NLMEstablishConnectionToNetwork{
-		NLMContract:               NewNLM(apduLength),
+		NLMContract:               NewNLM(),
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
 	}

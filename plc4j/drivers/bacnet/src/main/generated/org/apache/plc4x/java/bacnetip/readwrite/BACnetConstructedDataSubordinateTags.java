@@ -51,23 +51,15 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetNameValueCollection> subordinateList;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSubordinateTags(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetNameValueCollection> subordinateList,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetNameValueCollection> subordinateList) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.subordinateList = subordinateList;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (subordinateList)
     writeComplexTypeArrayField("subordinateList", subordinateList, writeBuffer);
@@ -171,42 +159,26 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
     readBuffer.closeContext("BACnetConstructedDataSubordinateTags");
     // Create the instance
     return new BACnetConstructedDataSubordinateTagsBuilderImpl(
-        numberOfDataElements, subordinateList, tagNumber, arrayIndexArgument);
+        numberOfDataElements, subordinateList);
   }
 
   public static class BACnetConstructedDataSubordinateTagsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetNameValueCollection> subordinateList;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSubordinateTagsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetNameValueCollection> subordinateList,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetNameValueCollection> subordinateList) {
       this.numberOfDataElements = numberOfDataElements;
       this.subordinateList = subordinateList;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSubordinateTags build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSubordinateTags bACnetConstructedDataSubordinateTags =
           new BACnetConstructedDataSubordinateTags(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              subordinateList,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, subordinateList);
       return bACnetConstructedDataSubordinateTags;
     }
   }

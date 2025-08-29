@@ -703,7 +703,7 @@ func ModbusPDUParseWithBufferProducer[T ModbusPDU](response bool) func(ctx conte
 }
 
 func ModbusPDUParseWithBuffer[T ModbusPDU](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := (&_ModbusPDU{}).parse(ctx, readBuffer, response)
+	v, err := (new(_ModbusPDU)).parse(ctx, readBuffer, response)
 	if err != nil {
 		var zero T
 		return zero, err

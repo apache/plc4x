@@ -50,21 +50,13 @@ public class BACnetConstructedDataIPv6DHCPLeaseTime extends BACnetConstructedDat
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPv6DHCPLeaseTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ipv6DhcpLeaseTime = ipv6DhcpLeaseTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getIpv6DhcpLeaseTime() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataIPv6DHCPLeaseTime extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataIPv6DHCPLeaseTime");
     // Create the instance
-    return new BACnetConstructedDataIPv6DHCPLeaseTimeBuilderImpl(
-        ipv6DhcpLeaseTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPv6DHCPLeaseTimeBuilderImpl(ipv6DhcpLeaseTime);
   }
 
   public static class BACnetConstructedDataIPv6DHCPLeaseTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPv6DHCPLeaseTimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime) {
       this.ipv6DhcpLeaseTime = ipv6DhcpLeaseTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPv6DHCPLeaseTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPv6DHCPLeaseTime bACnetConstructedDataIPv6DHCPLeaseTime =
           new BACnetConstructedDataIPv6DHCPLeaseTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              ipv6DhcpLeaseTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ipv6DhcpLeaseTime);
       return bACnetConstructedDataIPv6DHCPLeaseTime;
     }
   }

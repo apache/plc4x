@@ -241,7 +241,7 @@ func DataSegmentTypeParseWithBufferProducer[T DataSegmentType]() func(ctx contex
 }
 
 func DataSegmentTypeParseWithBuffer[T DataSegmentType](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_DataSegmentType{}).parse(ctx, readBuffer)
+	v, err := (new(_DataSegmentType)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

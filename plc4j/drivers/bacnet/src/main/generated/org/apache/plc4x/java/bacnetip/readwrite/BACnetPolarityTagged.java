@@ -41,17 +41,10 @@ public class BACnetPolarityTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetPolarity value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetPolarityTagged(
-      BACnetTagHeader header, BACnetPolarity value, Short tagNumber, TagClass tagClass) {
+  public BACnetPolarityTagged(BACnetTagHeader header, BACnetPolarity value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,7 +126,7 @@ public class BACnetPolarityTagged implements Message {
     readBuffer.closeContext("BACnetPolarityTagged");
     // Create the instance
     BACnetPolarityTagged _bACnetPolarityTagged;
-    _bACnetPolarityTagged = new BACnetPolarityTagged(header, value, tagNumber, tagClass);
+    _bACnetPolarityTagged = new BACnetPolarityTagged(header, value);
     return _bACnetPolarityTagged;
   }
 

@@ -49,21 +49,13 @@ public class BACnetConstructedDataCount extends BACnetConstructedData implements
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger count;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCount(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger count,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger count) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.count = count;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getCount() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataCount extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataCount");
     // Create the instance
-    return new BACnetConstructedDataCountBuilderImpl(count, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCountBuilderImpl(count);
   }
 
   public static class BACnetConstructedDataCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger count;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCountBuilderImpl(
-        BACnetApplicationTagUnsignedInteger count,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataCountBuilderImpl(BACnetApplicationTagUnsignedInteger count) {
       this.count = count;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCount build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCount bACnetConstructedDataCount =
-          new BACnetConstructedDataCount(
-              openingTag, peekedTagHeader, closingTag, count, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataCount(openingTag, peekedTagHeader, closingTag, count);
       return bACnetConstructedDataCount;
     }
   }

@@ -271,13 +271,10 @@ func (m *Connection) sendGroupAddressReadRequest(ctx context.Context, groupAddre
 				driverModel.NewApduDataContainer(
 					false,
 					0,
-					driverModel.NewApduDataGroupValueRead(0),
-					0,
+					driverModel.NewApduDataGroupValueRead(),
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataGroupValueResponse, 1)
@@ -362,12 +359,9 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 					false,
 					0,
 					driverModel.NewApduControlConnect(),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduControlConnect, 1)
@@ -459,12 +453,9 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 					false,
 					0,
 					driverModel.NewApduControlDisconnect(),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduControlDisconnect, 1)
@@ -564,15 +555,11 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 					true,
 					counter,
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, buildingKey, 0),
-						0,
+						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, buildingKey),
 					),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataExtAuthorizeResponse, 1)
@@ -682,13 +669,10 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 				driverModel.NewApduDataContainer(
 					true,
 					counter,
-					driverModel.NewApduDataDeviceDescriptorRead(0, 0),
-					0,
+					driverModel.NewApduDataDeviceDescriptorRead(0),
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataDeviceDescriptorResponse, 1)
@@ -789,15 +773,11 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 					true,
 					counter,
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex, 0),
-						0,
+						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex),
 					),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataExtPropertyValueResponse, 1)
@@ -906,15 +886,11 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 					true,
 					counter,
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1, 0),
-						0,
+						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1),
 					),
-					0,
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataExtPropertyDescriptionResponse, 1)
@@ -1022,13 +998,10 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 				driverModel.NewApduDataContainer(
 					true,
 					counter,
-					driverModel.NewApduDataMemoryRead(numBytes, address, 0),
-					0,
+					driverModel.NewApduDataMemoryRead(numBytes, address),
 				),
 			),
-			0,
 		),
-		0,
 	)
 
 	result := make(chan driverModel.ApduDataMemoryResponse, 1)
@@ -1126,11 +1099,9 @@ func (m *Connection) sendDeviceAck(ctx context.Context, targetAddress driverMode
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
-				driverModel.NewApduControlContainer(true, counter, driverModel.NewApduControlAck(), 0),
+				driverModel.NewApduControlContainer(true, counter, driverModel.NewApduControlAck()),
 			),
-			0,
 		),
-		0,
 	)
 
 	if err := m.messageCodec.SendRequest(ctx, ack,

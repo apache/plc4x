@@ -50,21 +50,13 @@ public class BACnetConstructedDataMaskedAlarmValues extends BACnetConstructedDat
   // Properties.
   protected final List<BACnetDoorAlarmStateTagged> maskedAlarmValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMaskedAlarmValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetDoorAlarmStateTagged> maskedAlarmValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDoorAlarmStateTagged> maskedAlarmValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.maskedAlarmValues = maskedAlarmValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetDoorAlarmStateTagged> getMaskedAlarmValues() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataMaskedAlarmValues extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataMaskedAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataMaskedAlarmValuesBuilderImpl(
-        maskedAlarmValues, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMaskedAlarmValuesBuilderImpl(maskedAlarmValues);
   }
 
   public static class BACnetConstructedDataMaskedAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDoorAlarmStateTagged> maskedAlarmValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMaskedAlarmValuesBuilderImpl(
-        List<BACnetDoorAlarmStateTagged> maskedAlarmValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDoorAlarmStateTagged> maskedAlarmValues) {
       this.maskedAlarmValues = maskedAlarmValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMaskedAlarmValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMaskedAlarmValues bACnetConstructedDataMaskedAlarmValues =
           new BACnetConstructedDataMaskedAlarmValues(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              maskedAlarmValues,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, maskedAlarmValues);
       return bACnetConstructedDataMaskedAlarmValues;
     }
   }

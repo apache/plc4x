@@ -41,17 +41,10 @@ public class BACnetActionTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetAction value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetActionTagged(
-      BACnetTagHeader header, BACnetAction value, Short tagNumber, TagClass tagClass) {
+  public BACnetActionTagged(BACnetTagHeader header, BACnetAction value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,7 +126,7 @@ public class BACnetActionTagged implements Message {
     readBuffer.closeContext("BACnetActionTagged");
     // Create the instance
     BACnetActionTagged _bACnetActionTagged;
-    _bACnetActionTagged = new BACnetActionTagged(header, value, tagNumber, tagClass);
+    _bACnetActionTagged = new BACnetActionTagged(header, value);
     return _bACnetActionTagged;
   }
 

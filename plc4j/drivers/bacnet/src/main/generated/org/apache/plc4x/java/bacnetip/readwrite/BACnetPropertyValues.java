@@ -42,22 +42,14 @@ public class BACnetPropertyValues implements Message {
   protected final List<BACnetPropertyValue> data;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPropertyValues(
       BACnetOpeningTag innerOpeningTag,
       List<BACnetPropertyValue> data,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
+      BACnetClosingTag innerClosingTag) {
     super();
     this.innerOpeningTag = innerOpeningTag;
     this.data = data;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -151,9 +143,7 @@ public class BACnetPropertyValues implements Message {
     readBuffer.closeContext("BACnetPropertyValues");
     // Create the instance
     BACnetPropertyValues _bACnetPropertyValues;
-    _bACnetPropertyValues =
-        new BACnetPropertyValues(
-            innerOpeningTag, data, innerClosingTag, tagNumber, objectTypeArgument);
+    _bACnetPropertyValues = new BACnetPropertyValues(innerOpeningTag, data, innerClosingTag);
     return _bACnetPropertyValues;
   }
 

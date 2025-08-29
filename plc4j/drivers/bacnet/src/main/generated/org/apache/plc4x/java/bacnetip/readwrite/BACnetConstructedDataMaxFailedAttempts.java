@@ -50,21 +50,13 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger maxFailedAttempts;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMaxFailedAttempts(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger maxFailedAttempts,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger maxFailedAttempts) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.maxFailedAttempts = maxFailedAttempts;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getMaxFailedAttempts() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataMaxFailedAttempts");
     // Create the instance
-    return new BACnetConstructedDataMaxFailedAttemptsBuilderImpl(
-        maxFailedAttempts, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMaxFailedAttemptsBuilderImpl(maxFailedAttempts);
   }
 
   public static class BACnetConstructedDataMaxFailedAttemptsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxFailedAttempts;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMaxFailedAttemptsBuilderImpl(
-        BACnetApplicationTagUnsignedInteger maxFailedAttempts,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger maxFailedAttempts) {
       this.maxFailedAttempts = maxFailedAttempts;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMaxFailedAttempts build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMaxFailedAttempts bACnetConstructedDataMaxFailedAttempts =
           new BACnetConstructedDataMaxFailedAttempts(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              maxFailedAttempts,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, maxFailedAttempts);
       return bACnetConstructedDataMaxFailedAttempts;
     }
   }

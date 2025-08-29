@@ -42,25 +42,14 @@ public class BACnetReadAccessPropertyReadResult implements Message {
   protected final BACnetConstructedData propertyValue;
   protected final ErrorEnclosed propertyAccessError;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-  protected final BACnetPropertyIdentifier propertyIdentifierArgument;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetReadAccessPropertyReadResult(
       BACnetTagHeader peekedTagHeader,
       BACnetConstructedData propertyValue,
-      ErrorEnclosed propertyAccessError,
-      BACnetObjectType objectTypeArgument,
-      BACnetPropertyIdentifier propertyIdentifierArgument,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+      ErrorEnclosed propertyAccessError) {
     super();
     this.peekedTagHeader = peekedTagHeader;
     this.propertyValue = propertyValue;
     this.propertyAccessError = propertyAccessError;
-    this.objectTypeArgument = objectTypeArgument;
-    this.propertyIdentifierArgument = propertyIdentifierArgument;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetTagHeader getPeekedTagHeader() {
@@ -89,15 +78,10 @@ public class BACnetReadAccessPropertyReadResult implements Message {
     writeBuffer.writeVirtual("peekedTagNumber", peekedTagNumber);
 
     // Optional Field (propertyValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "propertyValue", propertyValue, writeComplex(writeBuffer), (getPeekedTagNumber()) == (4));
+    writeOptionalField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     // Optional Field (propertyAccessError) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "propertyAccessError",
-        propertyAccessError,
-        writeComplex(writeBuffer),
-        (getPeekedTagNumber()) == (5));
+    writeOptionalField("propertyAccessError", propertyAccessError, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetReadAccessPropertyReadResult");
   }
@@ -183,13 +167,7 @@ public class BACnetReadAccessPropertyReadResult implements Message {
     // Create the instance
     BACnetReadAccessPropertyReadResult _bACnetReadAccessPropertyReadResult;
     _bACnetReadAccessPropertyReadResult =
-        new BACnetReadAccessPropertyReadResult(
-            peekedTagHeader,
-            propertyValue,
-            propertyAccessError,
-            objectTypeArgument,
-            propertyIdentifierArgument,
-            arrayIndexArgument);
+        new BACnetReadAccessPropertyReadResult(peekedTagHeader, propertyValue, propertyAccessError);
     return _bACnetReadAccessPropertyReadResult;
   }
 

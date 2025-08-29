@@ -44,21 +44,17 @@ public class CALDataWrite extends CALData implements Message {
   protected final byte code;
   protected final ParameterValue parameterValue;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataWrite(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
       CALData additionalData,
       Parameter paramNo,
       byte code,
-      ParameterValue parameterValue,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
+      ParameterValue parameterValue) {
+    super(requestContext, commandTypeContainer, additionalData);
     this.paramNo = paramNo;
     this.code = code;
     this.parameterValue = parameterValue;
-    this.requestContext = requestContext;
   }
 
   public Parameter getParamNo() {
@@ -148,33 +144,27 @@ public class CALDataWrite extends CALData implements Message {
 
     readBuffer.closeContext("CALDataWrite");
     // Create the instance
-    return new CALDataWriteBuilderImpl(paramNo, code, parameterValue, requestContext);
+    return new CALDataWriteBuilderImpl(paramNo, code, parameterValue);
   }
 
   public static class CALDataWriteBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final byte code;
     private final ParameterValue parameterValue;
-    private final RequestContext requestContext;
 
-    public CALDataWriteBuilderImpl(
-        Parameter paramNo,
-        byte code,
-        ParameterValue parameterValue,
-        RequestContext requestContext) {
+    public CALDataWriteBuilderImpl(Parameter paramNo, byte code, ParameterValue parameterValue) {
       this.paramNo = paramNo;
       this.code = code;
       this.parameterValue = parameterValue;
-      this.requestContext = requestContext;
     }
 
     public CALDataWrite build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataWrite cALDataWrite =
           new CALDataWrite(
-              commandTypeContainer, additionalData, paramNo, code, parameterValue, requestContext);
+              requestContext, commandTypeContainer, additionalData, paramNo, code, parameterValue);
       return cALDataWrite;
     }
   }

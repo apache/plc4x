@@ -64,9 +64,9 @@ var _ BACnetConstructedDataKeySets = (*_BACnetConstructedDataKeySets)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataKeySets)(nil)
 
 // NewBACnetConstructedDataKeySets factory function for _BACnetConstructedDataKeySets
-func NewBACnetConstructedDataKeySets(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, keySets []BACnetSecurityKeySet, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataKeySets {
+func NewBACnetConstructedDataKeySets(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, keySets []BACnetSecurityKeySet) *_BACnetConstructedDataKeySets {
 	_result := &_BACnetConstructedDataKeySets{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		KeySets:                       keySets,
 	}

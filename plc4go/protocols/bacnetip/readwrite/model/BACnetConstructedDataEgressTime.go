@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEgressTime = (*_BACnetConstructedDataEgressTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEgressTime)(nil)
 
 // NewBACnetConstructedDataEgressTime factory function for _BACnetConstructedDataEgressTime
-func NewBACnetConstructedDataEgressTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressTime {
+func NewBACnetConstructedDataEgressTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataEgressTime {
 	if egressTime == nil {
 		panic("egressTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataEgressTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataEgressTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EgressTime:                    egressTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

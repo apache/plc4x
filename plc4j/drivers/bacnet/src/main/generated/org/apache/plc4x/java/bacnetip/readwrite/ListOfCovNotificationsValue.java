@@ -43,21 +43,16 @@ public class ListOfCovNotificationsValue implements Message {
   protected final BACnetConstructedData propertyValue;
   protected final BACnetContextTagTime timeOfChange;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public ListOfCovNotificationsValue(
       BACnetPropertyIdentifierTagged propertyIdentifier,
       BACnetContextTagUnsignedInteger arrayIndex,
       BACnetConstructedData propertyValue,
-      BACnetContextTagTime timeOfChange,
-      BACnetObjectType objectTypeArgument) {
+      BACnetContextTagTime timeOfChange) {
     super();
     this.propertyIdentifier = propertyIdentifier;
     this.arrayIndex = arrayIndex;
     this.propertyValue = propertyValue;
     this.timeOfChange = timeOfChange;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetPropertyIdentifierTagged getPropertyIdentifier() {
@@ -182,7 +177,7 @@ public class ListOfCovNotificationsValue implements Message {
     ListOfCovNotificationsValue _listOfCovNotificationsValue;
     _listOfCovNotificationsValue =
         new ListOfCovNotificationsValue(
-            propertyIdentifier, arrayIndex, propertyValue, timeOfChange, objectTypeArgument);
+            propertyIdentifier, arrayIndex, propertyValue, timeOfChange);
     return _listOfCovNotificationsValue;
   }
 

@@ -50,21 +50,13 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagReal fullDutyBaseLine;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFullDutyBaseline(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal fullDutyBaseLine,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal fullDutyBaseLine) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.fullDutyBaseLine = fullDutyBaseLine;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getFullDutyBaseLine() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataFullDutyBaseline");
     // Create the instance
-    return new BACnetConstructedDataFullDutyBaselineBuilderImpl(
-        fullDutyBaseLine, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFullDutyBaselineBuilderImpl(fullDutyBaseLine);
   }
 
   public static class BACnetConstructedDataFullDutyBaselineBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal fullDutyBaseLine;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataFullDutyBaselineBuilderImpl(
-        BACnetApplicationTagReal fullDutyBaseLine,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagReal fullDutyBaseLine) {
       this.fullDutyBaseLine = fullDutyBaseLine;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFullDutyBaseline build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFullDutyBaseline bACnetConstructedDataFullDutyBaseline =
           new BACnetConstructedDataFullDutyBaseline(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              fullDutyBaseLine,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, fullDutyBaseLine);
       return bACnetConstructedDataFullDutyBaseline;
     }
   }

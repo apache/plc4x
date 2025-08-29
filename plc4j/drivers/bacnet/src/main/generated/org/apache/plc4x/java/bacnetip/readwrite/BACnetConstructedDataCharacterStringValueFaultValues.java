@@ -52,23 +52,15 @@ public class BACnetConstructedDataCharacterStringValueFaultValues extends BACnet
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetOptionalCharacterString> faultValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCharacterStringValueFaultValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetOptionalCharacterString> faultValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetOptionalCharacterString> faultValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.faultValues = faultValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataCharacterStringValueFaultValues extends BACnet
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (faultValues)
     writeComplexTypeArrayField("faultValues", faultValues, writeBuffer);
@@ -171,43 +159,27 @@ public class BACnetConstructedDataCharacterStringValueFaultValues extends BACnet
     readBuffer.closeContext("BACnetConstructedDataCharacterStringValueFaultValues");
     // Create the instance
     return new BACnetConstructedDataCharacterStringValueFaultValuesBuilderImpl(
-        numberOfDataElements, faultValues, tagNumber, arrayIndexArgument);
+        numberOfDataElements, faultValues);
   }
 
   public static class BACnetConstructedDataCharacterStringValueFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetOptionalCharacterString> faultValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCharacterStringValueFaultValuesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetOptionalCharacterString> faultValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetOptionalCharacterString> faultValues) {
       this.numberOfDataElements = numberOfDataElements;
       this.faultValues = faultValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCharacterStringValueFaultValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCharacterStringValueFaultValues
           bACnetConstructedDataCharacterStringValueFaultValues =
               new BACnetConstructedDataCharacterStringValueFaultValues(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  numberOfDataElements,
-                  faultValues,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, numberOfDataElements, faultValues);
       return bACnetConstructedDataCharacterStringValueFaultValues;
     }
   }

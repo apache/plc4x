@@ -54,9 +54,6 @@ public class APDUConfirmedRequest extends APDU implements Message {
   protected final BACnetConfirmedServiceRequest serviceRequest;
   protected final BACnetConfirmedServiceChoice segmentServiceChoice;
   protected final byte[] segment;
-
-  // Arguments.
-  protected final Integer apduLength;
   // Reserved Fields
   private Byte reservedField0;
 
@@ -71,9 +68,8 @@ public class APDUConfirmedRequest extends APDU implements Message {
       Short proposedWindowSize,
       BACnetConfirmedServiceRequest serviceRequest,
       BACnetConfirmedServiceChoice segmentServiceChoice,
-      byte[] segment,
-      Integer apduLength) {
-    super(apduLength);
+      byte[] segment) {
+    super();
     this.segmentedMessage = segmentedMessage;
     this.moreFollows = moreFollows;
     this.segmentedResponseAccepted = segmentedResponseAccepted;
@@ -85,7 +81,6 @@ public class APDUConfirmedRequest extends APDU implements Message {
     this.serviceRequest = serviceRequest;
     this.segmentServiceChoice = segmentServiceChoice;
     this.segment = segment;
-    this.apduLength = apduLength;
   }
 
   public boolean getSegmentedMessage() {
@@ -189,26 +184,18 @@ public class APDUConfirmedRequest extends APDU implements Message {
     writeSimpleField("invokeId", invokeId, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (sequenceNumber) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "sequenceNumber",
-        sequenceNumber,
-        writeUnsignedShort(writeBuffer, 8),
-        getSegmentedMessage());
+    writeOptionalField("sequenceNumber", sequenceNumber, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
     writeOptionalField(
-        "proposedWindowSize",
-        proposedWindowSize,
-        writeUnsignedShort(writeBuffer, 8),
-        getSegmentedMessage());
+        "proposedWindowSize", proposedWindowSize, writeUnsignedShort(writeBuffer, 8));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     int apduHeaderReduction = getApduHeaderReduction();
     writeBuffer.writeVirtual("apduHeaderReduction", apduHeaderReduction);
 
     // Optional Field (serviceRequest) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "serviceRequest", serviceRequest, writeComplex(writeBuffer), !(getSegmentedMessage()));
+    writeOptionalField("serviceRequest", serviceRequest, writeComplex(writeBuffer));
 
     // Optional Field (segmentServiceChoice) (Can be skipped, if the value is null)
     writeOptionalEnumField(
@@ -381,7 +368,6 @@ public class APDUConfirmedRequest extends APDU implements Message {
         serviceRequest,
         segmentServiceChoice,
         segment,
-        apduLength,
         reservedField0);
   }
 
@@ -397,7 +383,6 @@ public class APDUConfirmedRequest extends APDU implements Message {
     private final BACnetConfirmedServiceRequest serviceRequest;
     private final BACnetConfirmedServiceChoice segmentServiceChoice;
     private final byte[] segment;
-    private final Integer apduLength;
     private final Byte reservedField0;
 
     public APDUConfirmedRequestBuilderImpl(
@@ -412,7 +397,6 @@ public class APDUConfirmedRequest extends APDU implements Message {
         BACnetConfirmedServiceRequest serviceRequest,
         BACnetConfirmedServiceChoice segmentServiceChoice,
         byte[] segment,
-        Integer apduLength,
         Byte reservedField0) {
       this.segmentedMessage = segmentedMessage;
       this.moreFollows = moreFollows;
@@ -425,12 +409,10 @@ public class APDUConfirmedRequest extends APDU implements Message {
       this.serviceRequest = serviceRequest;
       this.segmentServiceChoice = segmentServiceChoice;
       this.segment = segment;
-      this.apduLength = apduLength;
       this.reservedField0 = reservedField0;
     }
 
-    public APDUConfirmedRequest build(Integer apduLength) {
-
+    public APDUConfirmedRequest build() {
       APDUConfirmedRequest aPDUConfirmedRequest =
           new APDUConfirmedRequest(
               segmentedMessage,
@@ -443,8 +425,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
               proposedWindowSize,
               serviceRequest,
               segmentServiceChoice,
-              segment,
-              apduLength);
+              segment);
       aPDUConfirmedRequest.reservedField0 = reservedField0;
       return aPDUConfirmedRequest;
     }

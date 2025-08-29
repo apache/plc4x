@@ -54,20 +54,16 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged inte
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged)(nil)
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
-func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
+func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged must not be nil")
 	}
-	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuild
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
 	// Build builds the BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, error) {
-	v, err := (&_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) IsBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged() {
 }
 
@@ -344,8 +314,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedCopy
 }

@@ -48,9 +48,6 @@ public class APDUSegmentAck extends APDU implements Message {
   protected final short originalInvokeId;
   protected final short sequenceNumber;
   protected final short actualWindowSize;
-
-  // Arguments.
-  protected final Integer apduLength;
   // Reserved Fields
   private Byte reservedField0;
 
@@ -59,15 +56,13 @@ public class APDUSegmentAck extends APDU implements Message {
       boolean server,
       short originalInvokeId,
       short sequenceNumber,
-      short actualWindowSize,
-      Integer apduLength) {
-    super(apduLength);
+      short actualWindowSize) {
+    super();
     this.negativeAck = negativeAck;
     this.server = server;
     this.originalInvokeId = originalInvokeId;
     this.sequenceNumber = sequenceNumber;
     this.actualWindowSize = actualWindowSize;
-    this.apduLength = apduLength;
   }
 
   public boolean getNegativeAck() {
@@ -174,13 +169,7 @@ public class APDUSegmentAck extends APDU implements Message {
     readBuffer.closeContext("APDUSegmentAck");
     // Create the instance
     return new APDUSegmentAckBuilderImpl(
-        negativeAck,
-        server,
-        originalInvokeId,
-        sequenceNumber,
-        actualWindowSize,
-        apduLength,
-        reservedField0);
+        negativeAck, server, originalInvokeId, sequenceNumber, actualWindowSize, reservedField0);
   }
 
   public static class APDUSegmentAckBuilderImpl implements APDU.APDUBuilder {
@@ -189,7 +178,6 @@ public class APDUSegmentAck extends APDU implements Message {
     private final short originalInvokeId;
     private final short sequenceNumber;
     private final short actualWindowSize;
-    private final Integer apduLength;
     private final Byte reservedField0;
 
     public APDUSegmentAckBuilderImpl(
@@ -198,22 +186,19 @@ public class APDUSegmentAck extends APDU implements Message {
         short originalInvokeId,
         short sequenceNumber,
         short actualWindowSize,
-        Integer apduLength,
         Byte reservedField0) {
       this.negativeAck = negativeAck;
       this.server = server;
       this.originalInvokeId = originalInvokeId;
       this.sequenceNumber = sequenceNumber;
       this.actualWindowSize = actualWindowSize;
-      this.apduLength = apduLength;
       this.reservedField0 = reservedField0;
     }
 
-    public APDUSegmentAck build(Integer apduLength) {
-
+    public APDUSegmentAck build() {
       APDUSegmentAck aPDUSegmentAck =
           new APDUSegmentAck(
-              negativeAck, server, originalInvokeId, sequenceNumber, actualWindowSize, apduLength);
+              negativeAck, server, originalInvokeId, sequenceNumber, actualWindowSize);
       aPDUSegmentAck.reservedField0 = reservedField0;
       return aPDUSegmentAck;
     }

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLoopAction = (*_BACnetConstructedDataLoopAction)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoopAction)(nil)
 
 // NewBACnetConstructedDataLoopAction factory function for _BACnetConstructedDataLoopAction
-func NewBACnetConstructedDataLoopAction(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, action BACnetActionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopAction {
+func NewBACnetConstructedDataLoopAction(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, action BACnetActionTagged) *_BACnetConstructedDataLoopAction {
 	if action == nil {
 		panic("action of type BACnetActionTagged for BACnetConstructedDataLoopAction must not be nil")
 	}
 	_result := &_BACnetConstructedDataLoopAction{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Action:                        action,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -49,21 +49,13 @@ public class BACnetConstructedDataMusterPoint extends BACnetConstructedData impl
   // Properties.
   protected final BACnetApplicationTagBoolean musterPoint;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMusterPoint(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean musterPoint,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean musterPoint) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.musterPoint = musterPoint;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getMusterPoint() {
@@ -132,34 +124,22 @@ public class BACnetConstructedDataMusterPoint extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataMusterPoint");
     // Create the instance
-    return new BACnetConstructedDataMusterPointBuilderImpl(
-        musterPoint, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMusterPointBuilderImpl(musterPoint);
   }
 
   public static class BACnetConstructedDataMusterPointBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean musterPoint;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMusterPointBuilderImpl(
-        BACnetApplicationTagBoolean musterPoint,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataMusterPointBuilderImpl(BACnetApplicationTagBoolean musterPoint) {
       this.musterPoint = musterPoint;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMusterPoint build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMusterPoint bACnetConstructedDataMusterPoint =
           new BACnetConstructedDataMusterPoint(
-              openingTag, peekedTagHeader, closingTag, musterPoint, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, musterPoint);
       return bACnetConstructedDataMusterPoint;
     }
   }

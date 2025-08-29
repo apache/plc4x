@@ -46,17 +46,11 @@ public class NLMInitializeRoutingTableAck extends NLM implements Message {
   protected final short numberOfPorts;
   protected final List<NLMInitializeRoutingTablePortMapping> portMappings;
 
-  // Arguments.
-  protected final Integer apduLength;
-
   public NLMInitializeRoutingTableAck(
-      short numberOfPorts,
-      List<NLMInitializeRoutingTablePortMapping> portMappings,
-      Integer apduLength) {
-    super(apduLength);
+      short numberOfPorts, List<NLMInitializeRoutingTablePortMapping> portMappings) {
+    super();
     this.numberOfPorts = numberOfPorts;
     this.portMappings = portMappings;
-    this.apduLength = apduLength;
   }
 
   public short getNumberOfPorts() {
@@ -125,27 +119,22 @@ public class NLMInitializeRoutingTableAck extends NLM implements Message {
 
     readBuffer.closeContext("NLMInitializeRoutingTableAck");
     // Create the instance
-    return new NLMInitializeRoutingTableAckBuilderImpl(numberOfPorts, portMappings, apduLength);
+    return new NLMInitializeRoutingTableAckBuilderImpl(numberOfPorts, portMappings);
   }
 
   public static class NLMInitializeRoutingTableAckBuilderImpl implements NLM.NLMBuilder {
     private final short numberOfPorts;
     private final List<NLMInitializeRoutingTablePortMapping> portMappings;
-    private final Integer apduLength;
 
     public NLMInitializeRoutingTableAckBuilderImpl(
-        short numberOfPorts,
-        List<NLMInitializeRoutingTablePortMapping> portMappings,
-        Integer apduLength) {
+        short numberOfPorts, List<NLMInitializeRoutingTablePortMapping> portMappings) {
       this.numberOfPorts = numberOfPorts;
       this.portMappings = portMappings;
-      this.apduLength = apduLength;
     }
 
-    public NLMInitializeRoutingTableAck build(Integer apduLength) {
-
+    public NLMInitializeRoutingTableAck build() {
       NLMInitializeRoutingTableAck nLMInitializeRoutingTableAck =
-          new NLMInitializeRoutingTableAck(numberOfPorts, portMappings, apduLength);
+          new NLMInitializeRoutingTableAck(numberOfPorts, portMappings);
       return nLMInitializeRoutingTableAck;
     }
   }

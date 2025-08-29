@@ -59,9 +59,9 @@ var _ BACnetConstructedDataBBMDBroadcastDistributionTable = (*_BACnetConstructed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDBroadcastDistributionTable)(nil)
 
 // NewBACnetConstructedDataBBMDBroadcastDistributionTable factory function for _BACnetConstructedDataBBMDBroadcastDistributionTable
-func NewBACnetConstructedDataBBMDBroadcastDistributionTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdBroadcastDistributionTable []BACnetBDTEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDBroadcastDistributionTable {
+func NewBACnetConstructedDataBBMDBroadcastDistributionTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdBroadcastDistributionTable []BACnetBDTEntry) *_BACnetConstructedDataBBMDBroadcastDistributionTable {
 	_result := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

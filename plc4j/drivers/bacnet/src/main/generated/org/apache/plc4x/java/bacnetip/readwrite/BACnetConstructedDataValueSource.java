@@ -49,21 +49,13 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
   // Properties.
   protected final BACnetValueSource valueSource;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataValueSource(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetValueSource valueSource,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetValueSource valueSource) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.valueSource = valueSource;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetValueSource getValueSource() {
@@ -130,34 +122,22 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataValueSource");
     // Create the instance
-    return new BACnetConstructedDataValueSourceBuilderImpl(
-        valueSource, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataValueSourceBuilderImpl(valueSource);
   }
 
   public static class BACnetConstructedDataValueSourceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetValueSource valueSource;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValueSourceBuilderImpl(
-        BACnetValueSource valueSource,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataValueSourceBuilderImpl(BACnetValueSource valueSource) {
       this.valueSource = valueSource;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataValueSource build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataValueSource bACnetConstructedDataValueSource =
           new BACnetConstructedDataValueSource(
-              openingTag, peekedTagHeader, closingTag, valueSource, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, valueSource);
       return bACnetConstructedDataValueSource;
     }
   }

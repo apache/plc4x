@@ -59,9 +59,9 @@ var _ BACnetConstructedDataAcceptedModes = (*_BACnetConstructedDataAcceptedModes
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAcceptedModes)(nil)
 
 // NewBACnetConstructedDataAcceptedModes factory function for _BACnetConstructedDataAcceptedModes
-func NewBACnetConstructedDataAcceptedModes(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, acceptedModes []BACnetLifeSafetyModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAcceptedModes {
+func NewBACnetConstructedDataAcceptedModes(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, acceptedModes []BACnetLifeSafetyModeTagged) *_BACnetConstructedDataAcceptedModes {
 	_result := &_BACnetConstructedDataAcceptedModes{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AcceptedModes:                 acceptedModes,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

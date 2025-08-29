@@ -48,19 +48,15 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
   protected final BACnetContextTagUnsignedInteger serviceNumber;
   protected final BACnetConstructedData serviceParameters;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestConfirmedPrivateTransfer(
+      long serviceRequestLength,
       BACnetVendorIdTagged vendorId,
       BACnetContextTagUnsignedInteger serviceNumber,
-      BACnetConstructedData serviceParameters,
-      Long serviceRequestLength) {
+      BACnetConstructedData serviceParameters) {
     super(serviceRequestLength);
     this.vendorId = vendorId;
     this.serviceNumber = serviceNumber;
     this.serviceParameters = serviceParameters;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetVendorIdTagged getVendorId() {
@@ -164,7 +160,7 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer");
     // Create the instance
     return new BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilderImpl(
-        vendorId, serviceNumber, serviceParameters, serviceRequestLength);
+        vendorId, serviceNumber, serviceParameters);
   }
 
   public static class BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilderImpl
@@ -172,25 +168,21 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
     private final BACnetVendorIdTagged vendorId;
     private final BACnetContextTagUnsignedInteger serviceNumber;
     private final BACnetConstructedData serviceParameters;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilderImpl(
         BACnetVendorIdTagged vendorId,
         BACnetContextTagUnsignedInteger serviceNumber,
-        BACnetConstructedData serviceParameters,
-        Long serviceRequestLength) {
+        BACnetConstructedData serviceParameters) {
       this.vendorId = vendorId;
       this.serviceNumber = serviceNumber;
       this.serviceParameters = serviceParameters;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestConfirmedPrivateTransfer build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestConfirmedPrivateTransfer build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestConfirmedPrivateTransfer
           bACnetConfirmedServiceRequestConfirmedPrivateTransfer =
               new BACnetConfirmedServiceRequestConfirmedPrivateTransfer(
-                  vendorId, serviceNumber, serviceParameters, serviceRequestLength);
+                  serviceRequestLength, vendorId, serviceNumber, serviceParameters);
       return bACnetConfirmedServiceRequestConfirmedPrivateTransfer;
     }
   }

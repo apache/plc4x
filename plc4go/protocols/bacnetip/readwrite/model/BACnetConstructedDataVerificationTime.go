@@ -61,12 +61,12 @@ var _ BACnetConstructedDataVerificationTime = (*_BACnetConstructedDataVerificati
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVerificationTime)(nil)
 
 // NewBACnetConstructedDataVerificationTime factory function for _BACnetConstructedDataVerificationTime
-func NewBACnetConstructedDataVerificationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, verificationTime BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVerificationTime {
+func NewBACnetConstructedDataVerificationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, verificationTime BACnetApplicationTagSignedInteger) *_BACnetConstructedDataVerificationTime {
 	if verificationTime == nil {
 		panic("verificationTime of type BACnetApplicationTagSignedInteger for BACnetConstructedDataVerificationTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataVerificationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		VerificationTime:              verificationTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

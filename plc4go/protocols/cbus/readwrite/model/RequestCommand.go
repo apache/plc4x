@@ -44,6 +44,8 @@ type RequestCommand interface {
 	utils.Serializable
 	utils.Copyable
 	Request
+	// GetCBusOptions returns CBusOptions (property field)
+	GetCBusOptions() CBusOptions
 	// GetCbusCommand returns CbusCommand (property field)
 	GetCbusCommand() CBusCommand
 	// GetChksum returns Chksum (property field)
@@ -63,6 +65,7 @@ type RequestCommand interface {
 // _RequestCommand is the data-structure of this message
 type _RequestCommand struct {
 	RequestContract
+	CBusOptions CBusOptions
 	CbusCommand CBusCommand
 	Chksum      Checksum
 	Alpha       Alpha
@@ -72,9 +75,10 @@ var _ RequestCommand = (*_RequestCommand)(nil)
 var _ RequestRequirements = (*_RequestCommand)(nil)
 
 // NewRequestCommand factory function for _RequestCommand
-func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cbusCommand CBusCommand, chksum Checksum, alpha Alpha, cBusOptions CBusOptions) *_RequestCommand {
+func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, cbusCommand CBusCommand, chksum Checksum, alpha Alpha) *_RequestCommand {
 	_result := &_RequestCommand{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination),
+		CBusOptions:     cBusOptions,
 		CbusCommand:     cbusCommand,
 		Chksum:          chksum,
 		Alpha:           alpha,
@@ -92,7 +96,11 @@ func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMod
 type RequestCommandBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder
+	WithMandatoryFields(cBusOptions CBusOptions, cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder
+	// WithCBusOptions adds CBusOptions (property field)
+	WithCBusOptions(CBusOptions) RequestCommandBuilder
+	// WithCBusOptionsBuilder adds CBusOptions (property field) which is build by the builder
+	WithCBusOptionsBuilder(func(CBusOptionsBuilder) CBusOptionsBuilder) RequestCommandBuilder
 	// WithCbusCommand adds CbusCommand (property field)
 	WithCbusCommand(CBusCommand) RequestCommandBuilder
 	// WithCbusCommandBuilder adds CbusCommand (property field) which is build by the builder
@@ -133,8 +141,23 @@ func (b *_RequestCommandBuilder) setParent(contract RequestContract) {
 	contract.(*_Request)._SubType = b._RequestCommand
 }
 
-func (b *_RequestCommandBuilder) WithMandatoryFields(cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder {
-	return b.WithCbusCommand(cbusCommand).WithChksum(chksum)
+func (b *_RequestCommandBuilder) WithMandatoryFields(cBusOptions CBusOptions, cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder {
+	return b.WithCBusOptions(cBusOptions).WithCbusCommand(cbusCommand).WithChksum(chksum)
+}
+
+func (b *_RequestCommandBuilder) WithCBusOptions(cBusOptions CBusOptions) RequestCommandBuilder {
+	b.CBusOptions = cBusOptions
+	return b
+}
+
+func (b *_RequestCommandBuilder) WithCBusOptionsBuilder(builderSupplier func(CBusOptionsBuilder) CBusOptionsBuilder) RequestCommandBuilder {
+	builder := builderSupplier(b.CBusOptions.CreateCBusOptionsBuilder())
+	var err error
+	b.CBusOptions, err = builder.Build()
+	if err != nil {
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CBusOptionsBuilder failed"))
+	}
+	return b
 }
 
 func (b *_RequestCommandBuilder) WithCbusCommand(cbusCommand CBusCommand) RequestCommandBuilder {
@@ -183,6 +206,9 @@ func (b *_RequestCommandBuilder) WithOptionalAlphaBuilder(builderSupplier func(A
 }
 
 func (b *_RequestCommandBuilder) Build() (RequestCommand, error) {
+	if b.CBusOptions == nil {
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'cBusOptions' not set"))
+	}
 	if b.CbusCommand == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'cbusCommand' not set"))
 	}
@@ -253,6 +279,10 @@ func (m *_RequestCommand) GetParent() RequestContract {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_RequestCommand) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
 
 func (m *_RequestCommand) GetCbusCommand() CBusCommand {
 	return m.CbusCommand
@@ -362,6 +392,7 @@ func (m *_RequestCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.CBusOptions = cBusOptions
 
 	initiator, err := ReadConstField[byte](ctx, "initiator", ReadByte(readBuffer, 8), RequestCommand_INITIATOR)
 	if err != nil {
@@ -478,6 +509,7 @@ func (m *_RequestCommand) deepCopy() *_RequestCommand {
 	}
 	_RequestCommandCopy := &_RequestCommand{
 		m.RequestContract.(*_Request).deepCopy(),
+		utils.DeepCopy[CBusOptions](m.CBusOptions),
 		utils.DeepCopy[CBusCommand](m.CbusCommand),
 		utils.DeepCopy[Checksum](m.Chksum),
 		utils.DeepCopy[Alpha](m.Alpha),

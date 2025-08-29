@@ -59,20 +59,16 @@ type _BACnetAccessAuthenticationFactorDisableTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetAccessAuthenticationFactorDisable
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetAccessAuthenticationFactorDisableTagged = (*_BACnetAccessAuthenticationFactorDisableTagged)(nil)
 
 // NewBACnetAccessAuthenticationFactorDisableTagged factory function for _BACnetAccessAuthenticationFactorDisableTagged
-func NewBACnetAccessAuthenticationFactorDisableTagged(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessAuthenticationFactorDisableTagged {
+func NewBACnetAccessAuthenticationFactorDisableTagged(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32) *_BACnetAccessAuthenticationFactorDisableTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetAccessAuthenticationFactorDisableTagged must not be nil")
 	}
-	return &_BACnetAccessAuthenticationFactorDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetAccessAuthenticationFactorDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetAccessAuthenticationFactorDisableTaggedBuilder interface {
 	WithValue(BACnetAccessAuthenticationFactorDisable) BACnetAccessAuthenticationFactorDisableTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAccessAuthenticationFactorDisableTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetAccessAuthenticationFactorDisableTaggedBuilder
 	// Build builds the BACnetAccessAuthenticationFactorDisableTagged or returns an error if something is wrong
 	Build() (BACnetAccessAuthenticationFactorDisableTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithValue(value 
 
 func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetAccessAuthenticationFactorDisableTaggedParseWithBufferProducer(tagNum
 }
 
 func BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessAuthenticationFactorDisableTagged, error) {
-	v, err := (&_BACnetAccessAuthenticationFactorDisableTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetAccessAuthenticationFactorDisableTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) SerializeWithWriteBuffe
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) IsBACnetAccessAuthenticationFactorDisableTagged() {
 }
 
@@ -405,8 +375,6 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) deepCopy() *_BACnetAcce
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetAccessAuthenticationFactorDisableTaggedCopy
 }

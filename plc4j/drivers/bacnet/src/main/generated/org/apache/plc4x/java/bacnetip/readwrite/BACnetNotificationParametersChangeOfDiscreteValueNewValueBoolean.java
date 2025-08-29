@@ -43,18 +43,13 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
   // Properties.
   protected final BACnetApplicationTagBoolean booleanValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean booleanValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetApplicationTagBoolean booleanValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.booleanValue = booleanValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetApplicationTagBoolean getBooleanValue() {
@@ -108,30 +103,25 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean");
     // Create the instance
     return new BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl(
-        booleanValue, tagNumber);
+        booleanValue);
   }
 
   public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
-    private final Short tagNumber;
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl(
-        BACnetApplicationTagBoolean booleanValue, Short tagNumber) {
+        BACnetApplicationTagBoolean booleanValue) {
       this.booleanValue = booleanValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
           bACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean =
               new BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean(
-                  openingTag, peekedTagHeader, closingTag, booleanValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, booleanValue);
       return bACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean;
     }
   }

@@ -59,9 +59,9 @@ var _ BACnetConstructedDataCredentials = (*_BACnetConstructedDataCredentials)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentials)(nil)
 
 // NewBACnetConstructedDataCredentials factory function for _BACnetConstructedDataCredentials
-func NewBACnetConstructedDataCredentials(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentials []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentials {
+func NewBACnetConstructedDataCredentials(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentials []BACnetDeviceObjectReference) *_BACnetConstructedDataCredentials {
 	_result := &_BACnetConstructedDataCredentials{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Credentials:                   credentials,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -62,9 +62,9 @@ var _ IdentifyReplyCommandDelays = (*_IdentifyReplyCommandDelays)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandDelays)(nil)
 
 // NewIdentifyReplyCommandDelays factory function for _IdentifyReplyCommandDelays
-func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte, numBytes uint8) *_IdentifyReplyCommandDelays {
+func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte) *_IdentifyReplyCommandDelays {
 	_result := &_IdentifyReplyCommandDelays{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		TerminalLevels:               terminalLevels,
 		ReStrikeDelay:                reStrikeDelay,
 	}

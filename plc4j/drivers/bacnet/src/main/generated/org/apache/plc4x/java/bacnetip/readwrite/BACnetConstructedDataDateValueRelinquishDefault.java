@@ -50,21 +50,13 @@ public class BACnetConstructedDataDateValueRelinquishDefault extends BACnetConst
   // Properties.
   protected final BACnetApplicationTagDate relinquishDefault;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDateValueRelinquishDefault(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagDate relinquishDefault,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagDate relinquishDefault) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.relinquishDefault = relinquishDefault;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagDate getRelinquishDefault() {
@@ -133,40 +125,24 @@ public class BACnetConstructedDataDateValueRelinquishDefault extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataDateValueRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataDateValueRelinquishDefaultBuilderImpl(
-        relinquishDefault, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDateValueRelinquishDefaultBuilderImpl(relinquishDefault);
   }
 
   public static class BACnetConstructedDataDateValueRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDate relinquishDefault;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDateValueRelinquishDefaultBuilderImpl(
-        BACnetApplicationTagDate relinquishDefault,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagDate relinquishDefault) {
       this.relinquishDefault = relinquishDefault;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDateValueRelinquishDefault build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDateValueRelinquishDefault
           bACnetConstructedDataDateValueRelinquishDefault =
               new BACnetConstructedDataDateValueRelinquishDefault(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  relinquishDefault,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, relinquishDefault);
       return bACnetConstructedDataDateValueRelinquishDefault;
     }
   }

@@ -62,9 +62,9 @@ var _ CipConnectedRequest = (*_CipConnectedRequest)(nil)
 var _ CipServiceRequirements = (*_CipConnectedRequest)(nil)
 
 // NewCipConnectedRequest factory function for _CipConnectedRequest
-func NewCipConnectedRequest(pathSegments []byte, serviceLen uint16) *_CipConnectedRequest {
+func NewCipConnectedRequest(pathSegments []byte) *_CipConnectedRequest {
 	_result := &_CipConnectedRequest{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		PathSegments:       pathSegments,
 	}
 	_result.CipServiceContract.(*_CipService)._SubType = _result

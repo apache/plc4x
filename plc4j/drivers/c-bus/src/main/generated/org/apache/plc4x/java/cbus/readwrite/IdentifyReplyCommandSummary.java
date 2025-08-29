@@ -47,16 +47,11 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
   protected final byte unitServiceType;
   protected final String version;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandSummary(
-      String partName, byte unitServiceType, String version, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandSummary(String partName, byte unitServiceType, String version) {
+    super();
     this.partName = partName;
     this.unitServiceType = unitServiceType;
     this.version = version;
-    this.numBytes = numBytes;
   }
 
   public String getPartName() {
@@ -127,7 +122,7 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
 
     readBuffer.closeContext("IdentifyReplyCommandSummary");
     // Create the instance
-    return new IdentifyReplyCommandSummaryBuilderImpl(partName, unitServiceType, version, numBytes);
+    return new IdentifyReplyCommandSummaryBuilderImpl(partName, unitServiceType, version);
   }
 
   public static class IdentifyReplyCommandSummaryBuilderImpl
@@ -135,20 +130,17 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
     private final String partName;
     private final byte unitServiceType;
     private final String version;
-    private final Byte numBytes;
 
     public IdentifyReplyCommandSummaryBuilderImpl(
-        String partName, byte unitServiceType, String version, Byte numBytes) {
+        String partName, byte unitServiceType, String version) {
       this.partName = partName;
       this.unitServiceType = unitServiceType;
       this.version = version;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandSummary build(Byte numBytes) {
-
+    public IdentifyReplyCommandSummary build() {
       IdentifyReplyCommandSummary identifyReplyCommandSummary =
-          new IdentifyReplyCommandSummary(partName, unitServiceType, version, numBytes);
+          new IdentifyReplyCommandSummary(partName, unitServiceType, version);
       return identifyReplyCommandSummary;
     }
   }

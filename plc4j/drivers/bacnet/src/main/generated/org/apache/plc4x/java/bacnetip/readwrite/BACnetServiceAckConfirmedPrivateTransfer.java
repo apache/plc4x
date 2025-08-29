@@ -47,19 +47,15 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
   protected final BACnetContextTagUnsignedInteger serviceNumber;
   protected final BACnetConstructedData resultBlock;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckConfirmedPrivateTransfer(
+      long serviceAckLength,
       BACnetVendorIdTagged vendorId,
       BACnetContextTagUnsignedInteger serviceNumber,
-      BACnetConstructedData resultBlock,
-      Long serviceAckLength) {
+      BACnetConstructedData resultBlock) {
     super(serviceAckLength);
     this.vendorId = vendorId;
     this.serviceNumber = serviceNumber;
     this.resultBlock = resultBlock;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetVendorIdTagged getVendorId() {
@@ -162,7 +158,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     readBuffer.closeContext("BACnetServiceAckConfirmedPrivateTransfer");
     // Create the instance
     return new BACnetServiceAckConfirmedPrivateTransferBuilderImpl(
-        vendorId, serviceNumber, resultBlock, serviceAckLength);
+        vendorId, serviceNumber, resultBlock);
   }
 
   public static class BACnetServiceAckConfirmedPrivateTransferBuilderImpl
@@ -170,24 +166,20 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     private final BACnetVendorIdTagged vendorId;
     private final BACnetContextTagUnsignedInteger serviceNumber;
     private final BACnetConstructedData resultBlock;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckConfirmedPrivateTransferBuilderImpl(
         BACnetVendorIdTagged vendorId,
         BACnetContextTagUnsignedInteger serviceNumber,
-        BACnetConstructedData resultBlock,
-        Long serviceAckLength) {
+        BACnetConstructedData resultBlock) {
       this.vendorId = vendorId;
       this.serviceNumber = serviceNumber;
       this.resultBlock = resultBlock;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckConfirmedPrivateTransfer build(Long serviceAckLength) {
-
+    public BACnetServiceAckConfirmedPrivateTransfer build(long serviceAckLength) {
       BACnetServiceAckConfirmedPrivateTransfer bACnetServiceAckConfirmedPrivateTransfer =
           new BACnetServiceAckConfirmedPrivateTransfer(
-              vendorId, serviceNumber, resultBlock, serviceAckLength);
+              serviceAckLength, vendorId, serviceNumber, resultBlock);
       return bACnetServiceAckConfirmedPrivateTransfer;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataAbsenteeLimit extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger absenteeLimit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAbsenteeLimit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger absenteeLimit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger absenteeLimit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.absenteeLimit = absenteeLimit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getAbsenteeLimit() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataAbsenteeLimit extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataAbsenteeLimit");
     // Create the instance
-    return new BACnetConstructedDataAbsenteeLimitBuilderImpl(
-        absenteeLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAbsenteeLimitBuilderImpl(absenteeLimit);
   }
 
   public static class BACnetConstructedDataAbsenteeLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger absenteeLimit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAbsenteeLimitBuilderImpl(
-        BACnetApplicationTagUnsignedInteger absenteeLimit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger absenteeLimit) {
       this.absenteeLimit = absenteeLimit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAbsenteeLimit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAbsenteeLimit bACnetConstructedDataAbsenteeLimit =
           new BACnetConstructedDataAbsenteeLimit(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              absenteeLimit,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, absenteeLimit);
       return bACnetConstructedDataAbsenteeLimit;
     }
   }

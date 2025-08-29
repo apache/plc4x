@@ -50,21 +50,13 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
   // Properties.
   protected final BACnetApplicationTagBoolean autoAddressingEnable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPv6AutoAddressingEnable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean autoAddressingEnable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean autoAddressingEnable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.autoAddressingEnable = autoAddressingEnable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getAutoAddressingEnable() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataIPv6AutoAddressingEnable");
     // Create the instance
-    return new BACnetConstructedDataIPv6AutoAddressingEnableBuilderImpl(
-        autoAddressingEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPv6AutoAddressingEnableBuilderImpl(autoAddressingEnable);
   }
 
   public static class BACnetConstructedDataIPv6AutoAddressingEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean autoAddressingEnable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPv6AutoAddressingEnableBuilderImpl(
-        BACnetApplicationTagBoolean autoAddressingEnable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean autoAddressingEnable) {
       this.autoAddressingEnable = autoAddressingEnable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPv6AutoAddressingEnable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPv6AutoAddressingEnable bACnetConstructedDataIPv6AutoAddressingEnable =
           new BACnetConstructedDataIPv6AutoAddressingEnable(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              autoAddressingEnable,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, autoAddressingEnable);
       return bACnetConstructedDataIPv6AutoAddressingEnable;
     }
   }

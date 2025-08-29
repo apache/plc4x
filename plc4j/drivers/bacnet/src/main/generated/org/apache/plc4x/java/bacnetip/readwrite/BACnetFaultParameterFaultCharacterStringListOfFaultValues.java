@@ -42,19 +42,14 @@ public class BACnetFaultParameterFaultCharacterStringListOfFaultValues implement
   protected final List<BACnetApplicationTagCharacterString> listOfFaultValues;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetFaultParameterFaultCharacterStringListOfFaultValues(
       BACnetOpeningTag openingTag,
       List<BACnetApplicationTagCharacterString> listOfFaultValues,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfFaultValues = listOfFaultValues;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -150,7 +145,7 @@ public class BACnetFaultParameterFaultCharacterStringListOfFaultValues implement
         _bACnetFaultParameterFaultCharacterStringListOfFaultValues;
     _bACnetFaultParameterFaultCharacterStringListOfFaultValues =
         new BACnetFaultParameterFaultCharacterStringListOfFaultValues(
-            openingTag, listOfFaultValues, closingTag, tagNumber);
+            openingTag, listOfFaultValues, closingTag);
     return _bACnetFaultParameterFaultCharacterStringListOfFaultValues;
   }
 

@@ -57,22 +57,19 @@ type _BACnetNameValueCollection struct {
 	OpeningTag BACnetOpeningTag
 	Members    []BACnetNameValue
 	ClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetNameValueCollection = (*_BACnetNameValueCollection)(nil)
 
 // NewBACnetNameValueCollection factory function for _BACnetNameValueCollection
-func NewBACnetNameValueCollection(openingTag BACnetOpeningTag, members []BACnetNameValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNameValueCollection {
+func NewBACnetNameValueCollection(openingTag BACnetOpeningTag, members []BACnetNameValue, closingTag BACnetClosingTag) *_BACnetNameValueCollection {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetNameValueCollection must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetNameValueCollection must not be nil")
 	}
-	return &_BACnetNameValueCollection{OpeningTag: openingTag, Members: members, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetNameValueCollection{OpeningTag: openingTag, Members: members, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetNameValueCollectionBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetNameValueCollectionBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNameValueCollectionBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetNameValueCollectionBuilder
 	// Build builds the BACnetNameValueCollection or returns an error if something is wrong
 	Build() (BACnetNameValueCollection, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetNameValueCollectionBuilder) WithClosingTagBuilder(builderSupplie
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetNameValueCollectionBuilder) WithArgTagNumber(tagNumber uint8) BACnetNameValueCollectionBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func BACnetNameValueCollectionParseWithBufferProducer(tagNumber uint8) func(ctx 
 }
 
 func BACnetNameValueCollectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNameValueCollection, error) {
-	v, err := (&_BACnetNameValueCollection{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetNameValueCollection)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetNameValueCollection) SerializeWithWriteBuffer(ctx context.Contex
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetNameValueCollection) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetNameValueCollection) IsBACnetNameValueCollection() {}
 
 func (m *_BACnetNameValueCollection) DeepCopy() any {
@@ -373,7 +353,6 @@ func (m *_BACnetNameValueCollection) deepCopy() *_BACnetNameValueCollection {
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetNameValue, BACnetNameValue](m.Members),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetNameValueCollectionCopy
 }

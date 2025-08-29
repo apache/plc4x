@@ -61,12 +61,12 @@ var _ BACnetConstructedDataProtocolLevel = (*_BACnetConstructedDataProtocolLevel
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolLevel)(nil)
 
 // NewBACnetConstructedDataProtocolLevel factory function for _BACnetConstructedDataProtocolLevel
-func NewBACnetConstructedDataProtocolLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolLevel BACnetProtocolLevelTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolLevel {
+func NewBACnetConstructedDataProtocolLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolLevel BACnetProtocolLevelTagged) *_BACnetConstructedDataProtocolLevel {
 	if protocolLevel == nil {
 		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetConstructedDataProtocolLevel must not be nil")
 	}
 	_result := &_BACnetConstructedDataProtocolLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProtocolLevel:                 protocolLevel,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

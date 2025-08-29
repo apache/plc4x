@@ -42,16 +42,11 @@ public class ErrorEnclosed implements Message {
   protected final Error error;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
-  public ErrorEnclosed(
-      BACnetOpeningTag openingTag, Error error, BACnetClosingTag closingTag, Short tagNumber) {
+  public ErrorEnclosed(BACnetOpeningTag openingTag, Error error, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.error = error;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -130,7 +125,7 @@ public class ErrorEnclosed implements Message {
     readBuffer.closeContext("ErrorEnclosed");
     // Create the instance
     ErrorEnclosed _errorEnclosed;
-    _errorEnclosed = new ErrorEnclosed(openingTag, error, closingTag, tagNumber);
+    _errorEnclosed = new ErrorEnclosed(openingTag, error, closingTag);
     return _errorEnclosed;
   }
 

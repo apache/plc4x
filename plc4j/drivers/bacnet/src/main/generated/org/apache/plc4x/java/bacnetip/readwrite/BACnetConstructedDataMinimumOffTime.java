@@ -49,21 +49,13 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger minimumOffTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMinimumOffTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger minimumOffTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger minimumOffTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.minimumOffTime = minimumOffTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getMinimumOffTime() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataMinimumOffTime");
     // Create the instance
-    return new BACnetConstructedDataMinimumOffTimeBuilderImpl(
-        minimumOffTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMinimumOffTimeBuilderImpl(minimumOffTime);
   }
 
   public static class BACnetConstructedDataMinimumOffTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger minimumOffTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMinimumOffTimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger minimumOffTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger minimumOffTime) {
       this.minimumOffTime = minimumOffTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMinimumOffTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMinimumOffTime bACnetConstructedDataMinimumOffTime =
           new BACnetConstructedDataMinimumOffTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              minimumOffTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, minimumOffTime);
       return bACnetConstructedDataMinimumOffTime;
     }
   }

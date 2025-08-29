@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueBitString extends BACnetTimerStateChange
   // Properties.
   protected final BACnetApplicationTagBitString bitStringValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueBitString(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagBitString bitStringValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagBitString bitStringValue) {
+    super(peekedTagHeader);
     this.bitStringValue = bitStringValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagBitString getBitStringValue() {
@@ -104,25 +98,21 @@ public class BACnetTimerStateChangeValueBitString extends BACnetTimerStateChange
 
     readBuffer.closeContext("BACnetTimerStateChangeValueBitString");
     // Create the instance
-    return new BACnetTimerStateChangeValueBitStringBuilderImpl(bitStringValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueBitStringBuilderImpl(bitStringValue);
   }
 
   public static class BACnetTimerStateChangeValueBitStringBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagBitString bitStringValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetTimerStateChangeValueBitStringBuilderImpl(
-        BACnetApplicationTagBitString bitStringValue, BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagBitString bitStringValue) {
       this.bitStringValue = bitStringValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueBitString build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueBitString build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueBitString bACnetTimerStateChangeValueBitString =
-          new BACnetTimerStateChangeValueBitString(
-              peekedTagHeader, bitStringValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueBitString(peekedTagHeader, bitStringValue);
       return bACnetTimerStateChangeValueBitString;
     }
   }

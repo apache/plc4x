@@ -38,18 +38,20 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BACnetAbortReasonTagged implements Message {
 
   // Properties.
+  protected final long actualLength;
   protected final BACnetAbortReason value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Long actualLength;
-
   public BACnetAbortReasonTagged(
-      BACnetAbortReason value, long proprietaryValue, Long actualLength) {
+      long actualLength, BACnetAbortReason value, long proprietaryValue) {
     super();
+    this.actualLength = actualLength;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.actualLength = actualLength;
+  }
+
+  public long getActualLength() {
+    return actualLength;
   }
 
   public BACnetAbortReason getValue() {
@@ -146,7 +148,7 @@ public class BACnetAbortReasonTagged implements Message {
     readBuffer.closeContext("BACnetAbortReasonTagged");
     // Create the instance
     BACnetAbortReasonTagged _bACnetAbortReasonTagged;
-    _bACnetAbortReasonTagged = new BACnetAbortReasonTagged(value, proprietaryValue, actualLength);
+    _bACnetAbortReasonTagged = new BACnetAbortReasonTagged(actualLength, value, proprietaryValue);
     return _bACnetAbortReasonTagged;
   }
 
@@ -159,14 +161,15 @@ public class BACnetAbortReasonTagged implements Message {
       return false;
     }
     BACnetAbortReasonTagged that = (BACnetAbortReasonTagged) o;
-    return (getValue() == that.getValue())
+    return (getActualLength() == that.getActualLength())
+        && (getValue() == that.getValue())
         && (getProprietaryValue() == that.getProprietaryValue())
         && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getValue(), getProprietaryValue());
+    return Objects.hash(getActualLength(), getValue(), getProprietaryValue());
   }
 
   @Override

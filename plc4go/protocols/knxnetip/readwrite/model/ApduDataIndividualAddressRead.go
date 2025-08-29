@@ -54,9 +54,9 @@ var _ ApduDataIndividualAddressRead = (*_ApduDataIndividualAddressRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataIndividualAddressRead)(nil)
 
 // NewApduDataIndividualAddressRead factory function for _ApduDataIndividualAddressRead
-func NewApduDataIndividualAddressRead(dataLength uint8) *_ApduDataIndividualAddressRead {
+func NewApduDataIndividualAddressRead() *_ApduDataIndividualAddressRead {
 	_result := &_ApduDataIndividualAddressRead{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result

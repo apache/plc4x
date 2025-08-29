@@ -54,9 +54,9 @@ var _ ApduDataMemoryWrite = (*_ApduDataMemoryWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryWrite)(nil)
 
 // NewApduDataMemoryWrite factory function for _ApduDataMemoryWrite
-func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
+func NewApduDataMemoryWrite() *_ApduDataMemoryWrite {
 	_result := &_ApduDataMemoryWrite{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result

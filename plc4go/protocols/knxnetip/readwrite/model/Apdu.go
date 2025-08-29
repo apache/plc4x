@@ -54,8 +54,6 @@ type ApduContract interface {
 	GetNumbered() bool
 	// GetCounter returns Counter (property field)
 	GetCounter() uint8
-	// GetDataLength() returns a parser argument
-	GetDataLength() uint8
 	// IsApdu is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApdu()
 	// CreateBuilder creates a ApduBuilder
@@ -78,16 +76,13 @@ type _Apdu struct {
 	}
 	Numbered bool
 	Counter  uint8
-
-	// Arguments.
-	DataLength uint8
 }
 
 var _ ApduContract = (*_Apdu)(nil)
 
 // NewApdu factory function for _Apdu
-func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
-	return &_Apdu{Numbered: numbered, Counter: counter, DataLength: dataLength}
+func NewApdu(numbered bool, counter uint8) *_Apdu {
+	return &_Apdu{Numbered: numbered, Counter: counter}
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,8 +99,6 @@ type ApduBuilder interface {
 	WithNumbered(bool) ApduBuilder
 	// WithCounter adds Counter (property field)
 	WithCounter(uint8) ApduBuilder
-	// WithArgDataLength sets a parser argument
-	WithArgDataLength(uint8) ApduBuilder
 	// AsApduControlContainer converts this build to a subType of Apdu. It is always possible to return to current builder using Done()
 	AsApduControlContainer() ApduControlContainerBuilder
 	// AsApduDataContainer converts this build to a subType of Apdu. It is always possible to return to current builder using Done()
@@ -152,11 +145,6 @@ func (b *_ApduBuilder) WithNumbered(numbered bool) ApduBuilder {
 
 func (b *_ApduBuilder) WithCounter(counter uint8) ApduBuilder {
 	b.Counter = counter
-	return b
-}
-
-func (b *_ApduBuilder) WithArgDataLength(dataLength uint8) ApduBuilder {
-	b.DataLength = dataLength
 	return b
 }
 
@@ -309,7 +297,7 @@ func ApduParseWithBufferProducer[T Apdu](dataLength uint8) func(ctx context.Cont
 }
 
 func ApduParseWithBuffer[T Apdu](ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (T, error) {
-	v, err := (&_Apdu{DataLength: dataLength}).parse(ctx, readBuffer, dataLength)
+	v, err := (new(_Apdu)).parse(ctx, readBuffer, dataLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -405,16 +393,6 @@ func (pm *_Apdu) serializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_Apdu) GetDataLength() uint8 {
-	return m.DataLength
-}
-
-//
-////
-
 func (m *_Apdu) IsApdu() {}
 
 func (m *_Apdu) DeepCopy() any {
@@ -429,7 +407,6 @@ func (m *_Apdu) deepCopy() *_Apdu {
 		nil, // will be set by child
 		m.Numbered,
 		m.Counter,
-		m.DataLength,
 	}
 	return _ApduCopy
 }

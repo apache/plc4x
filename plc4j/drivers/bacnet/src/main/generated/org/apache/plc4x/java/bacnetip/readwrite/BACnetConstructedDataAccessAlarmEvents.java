@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
   // Properties.
   protected final List<BACnetAccessEventTagged> accessAlarmEvents;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessAlarmEvents(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetAccessEventTagged> accessAlarmEvents,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetAccessEventTagged> accessAlarmEvents) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.accessAlarmEvents = accessAlarmEvents;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetAccessEventTagged> getAccessAlarmEvents() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataAccessAlarmEvents");
     // Create the instance
-    return new BACnetConstructedDataAccessAlarmEventsBuilderImpl(
-        accessAlarmEvents, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessAlarmEventsBuilderImpl(accessAlarmEvents);
   }
 
   public static class BACnetConstructedDataAccessAlarmEventsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessEventTagged> accessAlarmEvents;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccessAlarmEventsBuilderImpl(
-        List<BACnetAccessEventTagged> accessAlarmEvents,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetAccessEventTagged> accessAlarmEvents) {
       this.accessAlarmEvents = accessAlarmEvents;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccessAlarmEvents build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessAlarmEvents bACnetConstructedDataAccessAlarmEvents =
           new BACnetConstructedDataAccessAlarmEvents(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              accessAlarmEvents,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, accessAlarmEvents);
       return bACnetConstructedDataAccessAlarmEvents;
     }
   }

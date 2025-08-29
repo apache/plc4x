@@ -46,15 +46,10 @@ public class NLMEstablishConnectionToNetwork extends NLM implements Message {
   protected final int destinationNetworkAddress;
   protected final short terminationTime;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMEstablishConnectionToNetwork(
-      int destinationNetworkAddress, short terminationTime, Integer apduLength) {
-    super(apduLength);
+  public NLMEstablishConnectionToNetwork(int destinationNetworkAddress, short terminationTime) {
+    super();
     this.destinationNetworkAddress = destinationNetworkAddress;
     this.terminationTime = terminationTime;
-    this.apduLength = apduLength;
   }
 
   public int getDestinationNetworkAddress() {
@@ -115,26 +110,22 @@ public class NLMEstablishConnectionToNetwork extends NLM implements Message {
     readBuffer.closeContext("NLMEstablishConnectionToNetwork");
     // Create the instance
     return new NLMEstablishConnectionToNetworkBuilderImpl(
-        destinationNetworkAddress, terminationTime, apduLength);
+        destinationNetworkAddress, terminationTime);
   }
 
   public static class NLMEstablishConnectionToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final int destinationNetworkAddress;
     private final short terminationTime;
-    private final Integer apduLength;
 
     public NLMEstablishConnectionToNetworkBuilderImpl(
-        int destinationNetworkAddress, short terminationTime, Integer apduLength) {
+        int destinationNetworkAddress, short terminationTime) {
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.terminationTime = terminationTime;
-      this.apduLength = apduLength;
     }
 
-    public NLMEstablishConnectionToNetwork build(Integer apduLength) {
-
+    public NLMEstablishConnectionToNetwork build() {
       NLMEstablishConnectionToNetwork nLMEstablishConnectionToNetwork =
-          new NLMEstablishConnectionToNetwork(
-              destinationNetworkAddress, terminationTime, apduLength);
+          new NLMEstablishConnectionToNetwork(destinationNetworkAddress, terminationTime);
       return nLMEstablishConnectionToNetwork;
     }
   }

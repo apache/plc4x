@@ -64,9 +64,9 @@ var _ FirmataCommandSetDigitalPinValue = (*_FirmataCommandSetDigitalPinValue)(ni
 var _ FirmataCommandRequirements = (*_FirmataCommandSetDigitalPinValue)(nil)
 
 // NewFirmataCommandSetDigitalPinValue factory function for _FirmataCommandSetDigitalPinValue
-func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_FirmataCommandSetDigitalPinValue {
+func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool) *_FirmataCommandSetDigitalPinValue {
 	_result := &_FirmataCommandSetDigitalPinValue{
-		FirmataCommandContract: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(),
 		Pin:                    pin,
 		On:                     on,
 	}

@@ -50,21 +50,13 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagSignedInteger verificationTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataVerificationTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagSignedInteger verificationTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagSignedInteger verificationTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.verificationTime = verificationTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagSignedInteger getVerificationTime() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataVerificationTime");
     // Create the instance
-    return new BACnetConstructedDataVerificationTimeBuilderImpl(
-        verificationTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataVerificationTimeBuilderImpl(verificationTime);
   }
 
   public static class BACnetConstructedDataVerificationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger verificationTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataVerificationTimeBuilderImpl(
-        BACnetApplicationTagSignedInteger verificationTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagSignedInteger verificationTime) {
       this.verificationTime = verificationTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataVerificationTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataVerificationTime bACnetConstructedDataVerificationTime =
           new BACnetConstructedDataVerificationTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              verificationTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, verificationTime);
       return bACnetConstructedDataVerificationTime;
     }
   }

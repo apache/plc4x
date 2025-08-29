@@ -49,21 +49,13 @@ public class BACnetConstructedDataUserType extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetAccessUserTypeTagged userType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataUserType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAccessUserTypeTagged userType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAccessUserTypeTagged userType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.userType = userType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAccessUserTypeTagged getUserType() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataUserType extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataUserType");
     // Create the instance
-    return new BACnetConstructedDataUserTypeBuilderImpl(userType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUserTypeBuilderImpl(userType);
   }
 
   public static class BACnetConstructedDataUserTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessUserTypeTagged userType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUserTypeBuilderImpl(
-        BACnetAccessUserTypeTagged userType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataUserTypeBuilderImpl(BACnetAccessUserTypeTagged userType) {
       this.userType = userType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataUserType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataUserType bACnetConstructedDataUserType =
-          new BACnetConstructedDataUserType(
-              openingTag, peekedTagHeader, closingTag, userType, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataUserType(openingTag, peekedTagHeader, closingTag, userType);
       return bACnetConstructedDataUserType;
     }
   }

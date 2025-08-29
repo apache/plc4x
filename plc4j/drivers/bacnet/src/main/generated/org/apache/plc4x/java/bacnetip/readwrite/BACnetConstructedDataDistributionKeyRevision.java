@@ -50,21 +50,13 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger distributionKeyRevision;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDistributionKeyRevision(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger distributionKeyRevision,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger distributionKeyRevision) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.distributionKeyRevision = distributionKeyRevision;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getDistributionKeyRevision() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataDistributionKeyRevision");
     // Create the instance
-    return new BACnetConstructedDataDistributionKeyRevisionBuilderImpl(
-        distributionKeyRevision, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDistributionKeyRevisionBuilderImpl(distributionKeyRevision);
   }
 
   public static class BACnetConstructedDataDistributionKeyRevisionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger distributionKeyRevision;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDistributionKeyRevisionBuilderImpl(
-        BACnetApplicationTagUnsignedInteger distributionKeyRevision,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger distributionKeyRevision) {
       this.distributionKeyRevision = distributionKeyRevision;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDistributionKeyRevision build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDistributionKeyRevision bACnetConstructedDataDistributionKeyRevision =
           new BACnetConstructedDataDistributionKeyRevision(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              distributionKeyRevision,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, distributionKeyRevision);
       return bACnetConstructedDataDistributionKeyRevision;
     }
   }

@@ -67,9 +67,9 @@ var _ CipConnectedResponse = (*_CipConnectedResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectedResponse)(nil)
 
 // NewCipConnectedResponse factory function for _CipConnectedResponse
-func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected, serviceLen uint16) *_CipConnectedResponse {
+func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected) *_CipConnectedResponse {
 	_result := &_CipConnectedResponse{
-		CipServiceContract:    NewCipService(serviceLen),
+		CipServiceContract:    NewCipService(),
 		Status:                status,
 		AdditionalStatusWords: additionalStatusWords,
 		Data:                  data,

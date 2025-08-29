@@ -59,12 +59,12 @@ var _ MonitoredSALReply = (*_MonitoredSALReply)(nil)
 var _ EncodedReplyRequirements = (*_MonitoredSALReply)(nil)
 
 // NewMonitoredSALReply factory function for _MonitoredSALReply
-func NewMonitoredSALReply(peekedByte byte, monitoredSAL MonitoredSAL, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
+func NewMonitoredSALReply(requestContext RequestContext, peekedByte byte, monitoredSAL MonitoredSAL) *_MonitoredSALReply {
 	if monitoredSAL == nil {
 		panic("monitoredSAL of type MonitoredSAL for MonitoredSALReply must not be nil")
 	}
 	_result := &_MonitoredSALReply{
-		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+		EncodedReplyContract: NewEncodedReply(requestContext, peekedByte),
 		MonitoredSAL:         monitoredSAL,
 	}
 	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result

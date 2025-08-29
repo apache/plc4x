@@ -68,9 +68,9 @@ var _ NLMSecurityResponse = (*_NLMSecurityResponse)(nil)
 var _ NLMRequirements = (*_NLMSecurityResponse)(nil)
 
 // NewNLMSecurityResponse factory function for _NLMSecurityResponse
-func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte, apduLength uint16) *_NLMSecurityResponse {
+func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte) *_NLMSecurityResponse {
 	_result := &_NLMSecurityResponse{
-		NLMContract:        NewNLM(apduLength),
+		NLMContract:        NewNLM(),
 		ResponseCode:       responseCode,
 		OriginalMessageId:  originalMessageId,
 		OriginalTimestamp:  originalTimestamp,

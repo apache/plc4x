@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOperationExpected = (*_BACnetConstructedDataOperation
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOperationExpected)(nil)
 
 // NewBACnetConstructedDataOperationExpected factory function for _BACnetConstructedDataOperationExpected
-func NewBACnetConstructedDataOperationExpected(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lifeSafetyOperations BACnetLifeSafetyOperationTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationExpected {
+func NewBACnetConstructedDataOperationExpected(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lifeSafetyOperations BACnetLifeSafetyOperationTagged) *_BACnetConstructedDataOperationExpected {
 	if lifeSafetyOperations == nil {
 		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetConstructedDataOperationExpected must not be nil")
 	}
 	_result := &_BACnetConstructedDataOperationExpected{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LifeSafetyOperations:          lifeSafetyOperations,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

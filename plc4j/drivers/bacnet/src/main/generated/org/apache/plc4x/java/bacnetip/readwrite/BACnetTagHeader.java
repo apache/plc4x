@@ -138,8 +138,7 @@ public class BACnetTagHeader implements Message {
     writeSimpleField("lengthValueType", lengthValueType, writeUnsignedByte(writeBuffer, 3));
 
     // Optional Field (extTagNumber) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "extTagNumber", extTagNumber, writeUnsignedShort(writeBuffer, 8), (getTagNumber()) == (15));
+    writeOptionalField("extTagNumber", extTagNumber, writeUnsignedShort(writeBuffer, 8));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short actualTagNumber = getActualTagNumber();
@@ -158,27 +157,13 @@ public class BACnetTagHeader implements Message {
     writeBuffer.writeVirtual("isPrimitiveAndNotBoolean", isPrimitiveAndNotBoolean);
 
     // Optional Field (extLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "extLength",
-        extLength,
-        writeUnsignedShort(writeBuffer, 8),
-        (getIsPrimitiveAndNotBoolean()) && ((getLengthValueType()) == (5)));
+    writeOptionalField("extLength", extLength, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (extExtLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "extExtLength",
-        extExtLength,
-        writeUnsignedInt(writeBuffer, 16),
-        ((getIsPrimitiveAndNotBoolean()) && ((getLengthValueType()) == (5)))
-            && ((getExtLength()) == (254)));
+    writeOptionalField("extExtLength", extExtLength, writeUnsignedInt(writeBuffer, 16));
 
     // Optional Field (extExtExtLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "extExtExtLength",
-        extExtExtLength,
-        writeUnsignedLong(writeBuffer, 32),
-        ((getIsPrimitiveAndNotBoolean()) && ((getLengthValueType()) == (5)))
-            && ((getExtLength()) == (255)));
+    writeOptionalField("extExtExtLength", extExtExtLength, writeUnsignedLong(writeBuffer, 32));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     long actualLength = getActualLength();

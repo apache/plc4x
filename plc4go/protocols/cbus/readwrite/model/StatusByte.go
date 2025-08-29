@@ -240,7 +240,7 @@ func StatusByteParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func StatusByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusByte, error) {
-	v, err := (&_StatusByte{}).parse(ctx, readBuffer)
+	v, err := (new(_StatusByte)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

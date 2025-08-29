@@ -62,7 +62,7 @@ var _ BACnetServiceAckAtomicReadFile = (*_BACnetServiceAckAtomicReadFile)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicReadFile)(nil)
 
 // NewBACnetServiceAckAtomicReadFile factory function for _BACnetServiceAckAtomicReadFile
-func NewBACnetServiceAckAtomicReadFile(endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord, serviceAckLength uint32) *_BACnetServiceAckAtomicReadFile {
+func NewBACnetServiceAckAtomicReadFile(serviceAckLength uint32, endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord) *_BACnetServiceAckAtomicReadFile {
 	if endOfFile == nil {
 		panic("endOfFile of type BACnetApplicationTagBoolean for BACnetServiceAckAtomicReadFile must not be nil")
 	}

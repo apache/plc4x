@@ -49,21 +49,16 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
   protected final BACnetGroupChannelValueList changeList;
   protected final BACnetContextTagUnsignedInteger inhibitDelay;
 
-  // Arguments.
-  protected final Integer serviceRequestLength;
-
   public BACnetUnconfirmedServiceRequestWriteGroup(
       BACnetContextTagUnsignedInteger groupNumber,
       BACnetContextTagUnsignedInteger writePriority,
       BACnetGroupChannelValueList changeList,
-      BACnetContextTagUnsignedInteger inhibitDelay,
-      Integer serviceRequestLength) {
-    super(serviceRequestLength);
+      BACnetContextTagUnsignedInteger inhibitDelay) {
+    super();
     this.groupNumber = groupNumber;
     this.writePriority = writePriority;
     this.changeList = changeList;
     this.inhibitDelay = inhibitDelay;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getGroupNumber() {
@@ -185,7 +180,7 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestWriteGroup");
     // Create the instance
     return new BACnetUnconfirmedServiceRequestWriteGroupBuilderImpl(
-        groupNumber, writePriority, changeList, inhibitDelay, serviceRequestLength);
+        groupNumber, writePriority, changeList, inhibitDelay);
   }
 
   public static class BACnetUnconfirmedServiceRequestWriteGroupBuilderImpl
@@ -194,26 +189,22 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     private final BACnetContextTagUnsignedInteger writePriority;
     private final BACnetGroupChannelValueList changeList;
     private final BACnetContextTagUnsignedInteger inhibitDelay;
-    private final Integer serviceRequestLength;
 
     public BACnetUnconfirmedServiceRequestWriteGroupBuilderImpl(
         BACnetContextTagUnsignedInteger groupNumber,
         BACnetContextTagUnsignedInteger writePriority,
         BACnetGroupChannelValueList changeList,
-        BACnetContextTagUnsignedInteger inhibitDelay,
-        Integer serviceRequestLength) {
+        BACnetContextTagUnsignedInteger inhibitDelay) {
       this.groupNumber = groupNumber;
       this.writePriority = writePriority;
       this.changeList = changeList;
       this.inhibitDelay = inhibitDelay;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetUnconfirmedServiceRequestWriteGroup build(Integer serviceRequestLength) {
-
+    public BACnetUnconfirmedServiceRequestWriteGroup build() {
       BACnetUnconfirmedServiceRequestWriteGroup bACnetUnconfirmedServiceRequestWriteGroup =
           new BACnetUnconfirmedServiceRequestWriteGroup(
-              groupNumber, writePriority, changeList, inhibitDelay, serviceRequestLength);
+              groupNumber, writePriority, changeList, inhibitDelay);
       return bACnetUnconfirmedServiceRequestWriteGroup;
     }
   }

@@ -47,19 +47,9 @@ public class BACnetConstructedDataAlertEnrollmentAll extends BACnetConstructedDa
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAlertEnrollmentAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataAlertEnrollmentAll extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataAlertEnrollmentAll");
     // Create the instance
-    return new BACnetConstructedDataAlertEnrollmentAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAlertEnrollmentAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataAlertEnrollmentAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAlertEnrollmentAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataAlertEnrollmentAllBuilderImpl() {}
 
     public BACnetConstructedDataAlertEnrollmentAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAlertEnrollmentAll bACnetConstructedDataAlertEnrollmentAll =
-          new BACnetConstructedDataAlertEnrollmentAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataAlertEnrollmentAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataAlertEnrollmentAll;
     }
   }

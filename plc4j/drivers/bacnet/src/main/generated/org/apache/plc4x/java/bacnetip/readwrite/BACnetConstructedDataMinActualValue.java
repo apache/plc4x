@@ -49,21 +49,13 @@ public class BACnetConstructedDataMinActualValue extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagReal minActualValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMinActualValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal minActualValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal minActualValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.minActualValue = minActualValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getMinActualValue() {
@@ -132,39 +124,22 @@ public class BACnetConstructedDataMinActualValue extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataMinActualValue");
     // Create the instance
-    return new BACnetConstructedDataMinActualValueBuilderImpl(
-        minActualValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMinActualValueBuilderImpl(minActualValue);
   }
 
   public static class BACnetConstructedDataMinActualValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal minActualValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMinActualValueBuilderImpl(
-        BACnetApplicationTagReal minActualValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataMinActualValueBuilderImpl(BACnetApplicationTagReal minActualValue) {
       this.minActualValue = minActualValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMinActualValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMinActualValue bACnetConstructedDataMinActualValue =
           new BACnetConstructedDataMinActualValue(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              minActualValue,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, minActualValue);
       return bACnetConstructedDataMinActualValue;
     }
   }

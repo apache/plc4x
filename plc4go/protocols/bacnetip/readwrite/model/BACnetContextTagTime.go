@@ -59,12 +59,12 @@ var _ BACnetContextTagTime = (*_BACnetContextTagTime)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagTime)(nil)
 
 // NewBACnetContextTagTime factory function for _BACnetContextTagTime
-func NewBACnetContextTagTime(header BACnetTagHeader, payload BACnetTagPayloadTime, tagNumberArgument uint8) *_BACnetContextTagTime {
+func NewBACnetContextTagTime(header BACnetTagHeader, payload BACnetTagPayloadTime) *_BACnetContextTagTime {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadTime for BACnetContextTagTime must not be nil")
 	}
 	_result := &_BACnetContextTagTime{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result

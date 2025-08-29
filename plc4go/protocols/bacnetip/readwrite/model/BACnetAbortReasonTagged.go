@@ -39,6 +39,8 @@ type BACnetAbortReasonTagged interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
+	// GetActualLength returns ActualLength (property field)
+	GetActualLength() uint32
 	// GetValue returns Value (property field)
 	GetValue() BACnetAbortReason
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -53,18 +55,16 @@ type BACnetAbortReasonTagged interface {
 
 // _BACnetAbortReasonTagged is the data-structure of this message
 type _BACnetAbortReasonTagged struct {
+	ActualLength     uint32
 	Value            BACnetAbortReason
 	ProprietaryValue uint32
-
-	// Arguments.
-	ActualLength uint32
 }
 
 var _ BACnetAbortReasonTagged = (*_BACnetAbortReasonTagged)(nil)
 
 // NewBACnetAbortReasonTagged factory function for _BACnetAbortReasonTagged
-func NewBACnetAbortReasonTagged(value BACnetAbortReason, proprietaryValue uint32, actualLength uint32) *_BACnetAbortReasonTagged {
-	return &_BACnetAbortReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
+func NewBACnetAbortReasonTagged(actualLength uint32, value BACnetAbortReason, proprietaryValue uint32) *_BACnetAbortReasonTagged {
+	return &_BACnetAbortReasonTagged{ActualLength: actualLength, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -76,13 +76,13 @@ func NewBACnetAbortReasonTagged(value BACnetAbortReason, proprietaryValue uint32
 type BACnetAbortReasonTaggedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(value BACnetAbortReason, proprietaryValue uint32) BACnetAbortReasonTaggedBuilder
+	WithMandatoryFields(actualLength uint32, value BACnetAbortReason, proprietaryValue uint32) BACnetAbortReasonTaggedBuilder
+	// WithActualLength adds ActualLength (property field)
+	WithActualLength(uint32) BACnetAbortReasonTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetAbortReason) BACnetAbortReasonTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAbortReasonTaggedBuilder
-	// WithArgActualLength sets a parser argument
-	WithArgActualLength(uint32) BACnetAbortReasonTaggedBuilder
 	// Build builds the BACnetAbortReasonTagged or returns an error if something is wrong
 	Build() (BACnetAbortReasonTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,8 +102,13 @@ type _BACnetAbortReasonTaggedBuilder struct {
 
 var _ (BACnetAbortReasonTaggedBuilder) = (*_BACnetAbortReasonTaggedBuilder)(nil)
 
-func (b *_BACnetAbortReasonTaggedBuilder) WithMandatoryFields(value BACnetAbortReason, proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
-	return b.WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetAbortReasonTaggedBuilder) WithMandatoryFields(actualLength uint32, value BACnetAbortReason, proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
+	return b.WithActualLength(actualLength).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetAbortReasonTaggedBuilder) WithActualLength(actualLength uint32) BACnetAbortReasonTaggedBuilder {
+	b.ActualLength = actualLength
+	return b
 }
 
 func (b *_BACnetAbortReasonTaggedBuilder) WithValue(value BACnetAbortReason) BACnetAbortReasonTaggedBuilder {
@@ -113,11 +118,6 @@ func (b *_BACnetAbortReasonTaggedBuilder) WithValue(value BACnetAbortReason) BAC
 
 func (b *_BACnetAbortReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetAbortReasonTaggedBuilder) WithArgActualLength(actualLength uint32) BACnetAbortReasonTaggedBuilder {
-	b.ActualLength = actualLength
 	return b
 }
 
@@ -161,6 +161,10 @@ func (b *_BACnetAbortReasonTagged) CreateBACnetAbortReasonTaggedBuilder() BACnet
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_BACnetAbortReasonTagged) GetActualLength() uint32 {
+	return m.ActualLength
+}
 
 func (m *_BACnetAbortReasonTagged) GetValue() BACnetAbortReason {
 	return m.Value
@@ -234,7 +238,7 @@ func BACnetAbortReasonTaggedParseWithBufferProducer(actualLength uint32) func(ct
 }
 
 func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetAbortReasonTagged, error) {
-	v, err := (&_BACnetAbortReasonTagged{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	v, err := (new(_BACnetAbortReasonTagged)).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}
@@ -249,6 +253,7 @@ func (m *_BACnetAbortReasonTagged) parse(ctx context.Context, readBuffer utils.R
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.ActualLength = actualLength
 
 	value, err := ReadManualField[BACnetAbortReason](ctx, "value", readBuffer, EnsureType[BACnetAbortReason](ReadEnumGeneric(ctx, readBuffer, actualLength, BACnetAbortReason_VENDOR_PROPRIETARY_VALUE)))
 	if err != nil {
@@ -314,16 +319,6 @@ func (m *_BACnetAbortReasonTagged) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAbortReasonTagged) GetActualLength() uint32 {
-	return m.ActualLength
-}
-
-//
-////
-
 func (m *_BACnetAbortReasonTagged) IsBACnetAbortReasonTagged() {}
 
 func (m *_BACnetAbortReasonTagged) DeepCopy() any {
@@ -335,9 +330,9 @@ func (m *_BACnetAbortReasonTagged) deepCopy() *_BACnetAbortReasonTagged {
 		return nil
 	}
 	_BACnetAbortReasonTaggedCopy := &_BACnetAbortReasonTagged{
+		m.ActualLength,
 		m.Value,
 		m.ProprietaryValue,
-		m.ActualLength,
 	}
 	return _BACnetAbortReasonTaggedCopy
 }

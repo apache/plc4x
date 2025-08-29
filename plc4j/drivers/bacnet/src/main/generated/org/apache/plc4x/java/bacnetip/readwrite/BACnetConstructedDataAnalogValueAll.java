@@ -46,19 +46,9 @@ public class BACnetConstructedDataAnalogValueAll extends BACnetConstructedData i
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAnalogValueAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -103,29 +93,18 @@ public class BACnetConstructedDataAnalogValueAll extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataAnalogValueAll");
     // Create the instance
-    return new BACnetConstructedDataAnalogValueAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAnalogValueAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataAnalogValueAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAnalogValueAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataAnalogValueAllBuilderImpl() {}
 
     public BACnetConstructedDataAnalogValueAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAnalogValueAll bACnetConstructedDataAnalogValueAll =
-          new BACnetConstructedDataAnalogValueAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataAnalogValueAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataAnalogValueAll;
     }
   }

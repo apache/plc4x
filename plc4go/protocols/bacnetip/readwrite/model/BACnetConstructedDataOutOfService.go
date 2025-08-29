@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOutOfService = (*_BACnetConstructedDataOutOfService)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOutOfService)(nil)
 
 // NewBACnetConstructedDataOutOfService factory function for _BACnetConstructedDataOutOfService
-func NewBACnetConstructedDataOutOfService(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, outOfService BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutOfService {
+func NewBACnetConstructedDataOutOfService(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, outOfService BACnetApplicationTagBoolean) *_BACnetConstructedDataOutOfService {
 	if outOfService == nil {
 		panic("outOfService of type BACnetApplicationTagBoolean for BACnetConstructedDataOutOfService must not be nil")
 	}
 	_result := &_BACnetConstructedDataOutOfService{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		OutOfService:                  outOfService,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

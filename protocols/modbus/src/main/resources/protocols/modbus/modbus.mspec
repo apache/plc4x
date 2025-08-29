@@ -21,7 +21,7 @@
 
 // Remark: The different fields are encoded in Big-endian.
 
-[type ModbusConstants
+[constants
     [const          uint 16     modbusTcpDefaultPort 502]
 ]
 

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimerRunning = (*_BACnetConstructedDataTimerRunning)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerRunning)(nil)
 
 // NewBACnetConstructedDataTimerRunning factory function for _BACnetConstructedDataTimerRunning
-func NewBACnetConstructedDataTimerRunning(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timerRunning BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerRunning {
+func NewBACnetConstructedDataTimerRunning(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timerRunning BACnetApplicationTagBoolean) *_BACnetConstructedDataTimerRunning {
 	if timerRunning == nil {
 		panic("timerRunning of type BACnetApplicationTagBoolean for BACnetConstructedDataTimerRunning must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimerRunning{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimerRunning:                  timerRunning,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -54,9 +54,9 @@ var _ LRawReq = (*_LRawReq)(nil)
 var _ CEMIRequirements = (*_LRawReq)(nil)
 
 // NewLRawReq factory function for _LRawReq
-func NewLRawReq(size uint16) *_LRawReq {
+func NewLRawReq() *_LRawReq {
 	_result := &_LRawReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result

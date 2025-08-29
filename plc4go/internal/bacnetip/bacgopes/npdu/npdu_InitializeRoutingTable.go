@@ -70,7 +70,7 @@ func (i *InitializeRoutingTable) GetIrtTable() []*RoutingTableEntry {
 	return i.irtTable
 }
 
-func (i *InitializeRoutingTable) produceNLMInitializeRoutingTablePortMapping() (numberOfPorts uint8, mappings []model.NLMInitializeRoutingTablePortMapping, _ uint16) {
+func (i *InitializeRoutingTable) produceNLMInitializeRoutingTablePortMapping() (numberOfPorts uint8, mappings []model.NLMInitializeRoutingTablePortMapping) {
 	numberOfPorts = uint8(len(i.irtTable))
 	mappings = make([]model.NLMInitializeRoutingTablePortMapping, numberOfPorts)
 	for i, entry := range i.irtTable {

@@ -49,21 +49,13 @@ public class BACnetConstructedDataProfileName extends BACnetConstructedData impl
   // Properties.
   protected final BACnetApplicationTagCharacterString profileName;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProfileName(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString profileName,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString profileName) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.profileName = profileName;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getProfileName() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataProfileName extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataProfileName");
     // Create the instance
-    return new BACnetConstructedDataProfileNameBuilderImpl(
-        profileName, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProfileNameBuilderImpl(profileName);
   }
 
   public static class BACnetConstructedDataProfileNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString profileName;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataProfileNameBuilderImpl(
-        BACnetApplicationTagCharacterString profileName,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString profileName) {
       this.profileName = profileName;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProfileName build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProfileName bACnetConstructedDataProfileName =
           new BACnetConstructedDataProfileName(
-              openingTag, peekedTagHeader, closingTag, profileName, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, profileName);
       return bACnetConstructedDataProfileName;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
   // Properties.
   protected final BACnetDoorStatusTagged doorStatus;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDoorStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDoorStatusTagged doorStatus,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDoorStatusTagged doorStatus) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.doorStatus = doorStatus;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDoorStatusTagged getDoorStatus() {
@@ -134,34 +126,21 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataDoorStatus");
     // Create the instance
-    return new BACnetConstructedDataDoorStatusBuilderImpl(
-        doorStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoorStatusBuilderImpl(doorStatus);
   }
 
   public static class BACnetConstructedDataDoorStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDoorStatusTagged doorStatus;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoorStatusBuilderImpl(
-        BACnetDoorStatusTagged doorStatus,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataDoorStatusBuilderImpl(BACnetDoorStatusTagged doorStatus) {
       this.doorStatus = doorStatus;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDoorStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDoorStatus bACnetConstructedDataDoorStatus =
-          new BACnetConstructedDataDoorStatus(
-              openingTag, peekedTagHeader, closingTag, doorStatus, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataDoorStatus(openingTag, peekedTagHeader, closingTag, doorStatus);
       return bACnetConstructedDataDoorStatus;
     }
   }

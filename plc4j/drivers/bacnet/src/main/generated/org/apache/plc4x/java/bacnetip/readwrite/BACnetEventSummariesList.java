@@ -42,19 +42,14 @@ public class BACnetEventSummariesList implements Message {
   protected final List<BACnetEventSummary> listOfEventSummaries;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventSummariesList(
       BACnetOpeningTag openingTag,
       List<BACnetEventSummary> listOfEventSummaries,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfEventSummaries = listOfEventSummaries;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -144,7 +139,7 @@ public class BACnetEventSummariesList implements Message {
     // Create the instance
     BACnetEventSummariesList _bACnetEventSummariesList;
     _bACnetEventSummariesList =
-        new BACnetEventSummariesList(openingTag, listOfEventSummaries, closingTag, tagNumber);
+        new BACnetEventSummariesList(openingTag, listOfEventSummaries, closingTag);
     return _bACnetEventSummariesList;
   }
 

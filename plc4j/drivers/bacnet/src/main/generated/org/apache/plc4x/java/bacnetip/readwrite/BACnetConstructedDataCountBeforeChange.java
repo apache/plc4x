@@ -50,21 +50,13 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger countBeforeChange;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCountBeforeChange(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger countBeforeChange,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger countBeforeChange) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.countBeforeChange = countBeforeChange;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getCountBeforeChange() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataCountBeforeChange");
     // Create the instance
-    return new BACnetConstructedDataCountBeforeChangeBuilderImpl(
-        countBeforeChange, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCountBeforeChangeBuilderImpl(countBeforeChange);
   }
 
   public static class BACnetConstructedDataCountBeforeChangeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger countBeforeChange;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCountBeforeChangeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger countBeforeChange,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger countBeforeChange) {
       this.countBeforeChange = countBeforeChange;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCountBeforeChange build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCountBeforeChange bACnetConstructedDataCountBeforeChange =
           new BACnetConstructedDataCountBeforeChange(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              countBeforeChange,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, countBeforeChange);
       return bACnetConstructedDataCountBeforeChange;
     }
   }

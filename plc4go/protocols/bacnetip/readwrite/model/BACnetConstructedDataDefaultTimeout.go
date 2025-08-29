@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDefaultTimeout = (*_BACnetConstructedDataDefaultTimeo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultTimeout)(nil)
 
 // NewBACnetConstructedDataDefaultTimeout factory function for _BACnetConstructedDataDefaultTimeout
-func NewBACnetConstructedDataDefaultTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultTimeout {
+func NewBACnetConstructedDataDefaultTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataDefaultTimeout {
 	if defaultTimeout == nil {
 		panic("defaultTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataDefaultTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DefaultTimeout:                defaultTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

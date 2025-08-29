@@ -50,21 +50,13 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
   // Properties.
   protected final List<BACnetEventLogRecord> floorText;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEventLogLogBuffer(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetEventLogRecord> floorText,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetEventLogRecord> floorText) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.floorText = floorText;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetEventLogRecord> getFloorText() {
@@ -127,34 +119,22 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataEventLogLogBuffer");
     // Create the instance
-    return new BACnetConstructedDataEventLogLogBufferBuilderImpl(
-        floorText, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEventLogLogBufferBuilderImpl(floorText);
   }
 
   public static class BACnetConstructedDataEventLogLogBufferBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetEventLogRecord> floorText;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventLogLogBufferBuilderImpl(
-        List<BACnetEventLogRecord> floorText,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataEventLogLogBufferBuilderImpl(List<BACnetEventLogRecord> floorText) {
       this.floorText = floorText;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEventLogLogBuffer build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEventLogLogBuffer bACnetConstructedDataEventLogLogBuffer =
           new BACnetConstructedDataEventLogLogBuffer(
-              openingTag, peekedTagHeader, closingTag, floorText, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, floorText);
       return bACnetConstructedDataEventLogLogBuffer;
     }
   }

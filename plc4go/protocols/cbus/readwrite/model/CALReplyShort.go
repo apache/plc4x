@@ -54,9 +54,9 @@ var _ CALReplyShort = (*_CALReplyShort)(nil)
 var _ CALReplyRequirements = (*_CALReplyShort)(nil)
 
 // NewCALReplyShort factory function for _CALReplyShort
-func NewCALReplyShort(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyShort {
+func NewCALReplyShort(calType byte, calData CALData) *_CALReplyShort {
 	_result := &_CALReplyShort{
-		CALReplyContract: NewCALReply(calType, calData, cBusOptions, requestContext),
+		CALReplyContract: NewCALReply(calType, calData),
 	}
 	_result.CALReplyContract.(*_CALReply)._SubType = _result
 	return _result

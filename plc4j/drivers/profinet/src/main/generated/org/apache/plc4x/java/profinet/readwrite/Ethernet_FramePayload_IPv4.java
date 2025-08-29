@@ -60,7 +60,6 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
   protected final int sourcePort;
   protected final int destinationPort;
   protected final DceRpc_Packet payload;
-
   // Reserved Fields
   private Boolean reservedField0;
 

@@ -182,7 +182,7 @@ func OpcuaConstantsParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func OpcuaConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaConstants, error) {
-	v, err := (&_OpcuaConstants{}).parse(ctx, readBuffer)
+	v, err := (new(_OpcuaConstants)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

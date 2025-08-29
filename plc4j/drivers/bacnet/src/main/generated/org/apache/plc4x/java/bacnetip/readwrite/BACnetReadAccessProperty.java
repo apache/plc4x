@@ -42,19 +42,14 @@ public class BACnetReadAccessProperty implements Message {
   protected final BACnetContextTagUnsignedInteger arrayIndex;
   protected final BACnetReadAccessPropertyReadResult readResult;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetReadAccessProperty(
       BACnetPropertyIdentifierTagged propertyIdentifier,
       BACnetContextTagUnsignedInteger arrayIndex,
-      BACnetReadAccessPropertyReadResult readResult,
-      BACnetObjectType objectTypeArgument) {
+      BACnetReadAccessPropertyReadResult readResult) {
     super();
     this.propertyIdentifier = propertyIdentifier;
     this.arrayIndex = arrayIndex;
     this.readResult = readResult;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetPropertyIdentifierTagged getPropertyIdentifier() {
@@ -157,8 +152,7 @@ public class BACnetReadAccessProperty implements Message {
     // Create the instance
     BACnetReadAccessProperty _bACnetReadAccessProperty;
     _bACnetReadAccessProperty =
-        new BACnetReadAccessProperty(
-            propertyIdentifier, arrayIndex, readResult, objectTypeArgument);
+        new BACnetReadAccessProperty(propertyIdentifier, arrayIndex, readResult);
     return _bACnetReadAccessProperty;
   }
 

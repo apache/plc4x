@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueConstructedValue extends BACnetTimerStat
   // Properties.
   protected final BACnetConstructedData constructedValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueConstructedValue(
-      BACnetTagHeader peekedTagHeader,
-      BACnetConstructedData constructedValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetConstructedData constructedValue) {
+    super(peekedTagHeader);
     this.constructedValue = constructedValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetConstructedData getConstructedValue() {
@@ -111,26 +105,21 @@ public class BACnetTimerStateChangeValueConstructedValue extends BACnetTimerStat
 
     readBuffer.closeContext("BACnetTimerStateChangeValueConstructedValue");
     // Create the instance
-    return new BACnetTimerStateChangeValueConstructedValueBuilderImpl(
-        constructedValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueConstructedValueBuilderImpl(constructedValue);
   }
 
   public static class BACnetTimerStateChangeValueConstructedValueBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetConstructedData constructedValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetTimerStateChangeValueConstructedValueBuilderImpl(
-        BACnetConstructedData constructedValue, BACnetObjectType objectTypeArgument) {
+        BACnetConstructedData constructedValue) {
       this.constructedValue = constructedValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueConstructedValue build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueConstructedValue build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueConstructedValue bACnetTimerStateChangeValueConstructedValue =
-          new BACnetTimerStateChangeValueConstructedValue(
-              peekedTagHeader, constructedValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueConstructedValue(peekedTagHeader, constructedValue);
       return bACnetTimerStateChangeValueConstructedValue;
     }
   }

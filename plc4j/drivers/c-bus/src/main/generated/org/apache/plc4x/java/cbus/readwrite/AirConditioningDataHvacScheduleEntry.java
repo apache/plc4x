@@ -128,12 +128,10 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
     writeSimpleField("startTime", startTime, writeComplex(writeBuffer));
 
     // Optional Field (level) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "level", level, writeComplex(writeBuffer), getHvacModeAndFlags().getIsLevelTemperature());
+    writeOptionalField("level", level, writeComplex(writeBuffer));
 
     // Optional Field (rawLevel) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "rawLevel", rawLevel, writeComplex(writeBuffer), getHvacModeAndFlags().getIsLevelRaw());
+    writeOptionalField("rawLevel", rawLevel, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AirConditioningDataHvacScheduleEntry");
   }

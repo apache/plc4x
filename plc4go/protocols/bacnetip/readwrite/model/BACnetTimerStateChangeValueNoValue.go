@@ -59,12 +59,12 @@ var _ BACnetTimerStateChangeValueNoValue = (*_BACnetTimerStateChangeValueNoValue
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueNoValue)(nil)
 
 // NewBACnetTimerStateChangeValueNoValue factory function for _BACnetTimerStateChangeValueNoValue
-func NewBACnetTimerStateChangeValueNoValue(peekedTagHeader BACnetTagHeader, noValue BACnetContextTagNull, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueNoValue {
+func NewBACnetTimerStateChangeValueNoValue(peekedTagHeader BACnetTagHeader, noValue BACnetContextTagNull) *_BACnetTimerStateChangeValueNoValue {
 	if noValue == nil {
 		panic("noValue of type BACnetContextTagNull for BACnetTimerStateChangeValueNoValue must not be nil")
 	}
 	_result := &_BACnetTimerStateChangeValueNoValue{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader),
 		NoValue:                             noValue,
 	}
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result

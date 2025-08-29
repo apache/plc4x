@@ -64,9 +64,9 @@ var _ BACnetConstructedDataAuthenticationPolicyList = (*_BACnetConstructedDataAu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthenticationPolicyList)(nil)
 
 // NewBACnetConstructedDataAuthenticationPolicyList factory function for _BACnetConstructedDataAuthenticationPolicyList
-func NewBACnetConstructedDataAuthenticationPolicyList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, authenticationPolicyList []BACnetAuthenticationPolicy, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationPolicyList {
+func NewBACnetConstructedDataAuthenticationPolicyList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, authenticationPolicyList []BACnetAuthenticationPolicy) *_BACnetConstructedDataAuthenticationPolicyList {
 	_result := &_BACnetConstructedDataAuthenticationPolicyList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		AuthenticationPolicyList:      authenticationPolicyList,
 	}

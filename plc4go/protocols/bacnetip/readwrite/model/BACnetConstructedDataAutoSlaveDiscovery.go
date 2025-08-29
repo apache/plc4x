@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAutoSlaveDiscovery = (*_BACnetConstructedDataAutoSlav
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAutoSlaveDiscovery)(nil)
 
 // NewBACnetConstructedDataAutoSlaveDiscovery factory function for _BACnetConstructedDataAutoSlaveDiscovery
-func NewBACnetConstructedDataAutoSlaveDiscovery(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoSlaveDiscovery BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAutoSlaveDiscovery {
+func NewBACnetConstructedDataAutoSlaveDiscovery(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoSlaveDiscovery BACnetApplicationTagBoolean) *_BACnetConstructedDataAutoSlaveDiscovery {
 	if autoSlaveDiscovery == nil {
 		panic("autoSlaveDiscovery of type BACnetApplicationTagBoolean for BACnetConstructedDataAutoSlaveDiscovery must not be nil")
 	}
 	_result := &_BACnetConstructedDataAutoSlaveDiscovery{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AutoSlaveDiscovery:            autoSlaveDiscovery,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

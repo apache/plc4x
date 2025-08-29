@@ -502,7 +502,7 @@ func AirConditioningDataParseWithBufferProducer[T AirConditioningData]() func(ct
 }
 
 func AirConditioningDataParseWithBuffer[T AirConditioningData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_AirConditioningData{}).parse(ctx, readBuffer)
+	v, err := (new(_AirConditioningData)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

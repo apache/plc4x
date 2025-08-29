@@ -64,9 +64,9 @@ var _ BACnetConstructedDataStructuredObjectList = (*_BACnetConstructedDataStruct
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStructuredObjectList)(nil)
 
 // NewBACnetConstructedDataStructuredObjectList factory function for _BACnetConstructedDataStructuredObjectList
-func NewBACnetConstructedDataStructuredObjectList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, structuredObjectList []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStructuredObjectList {
+func NewBACnetConstructedDataStructuredObjectList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, structuredObjectList []BACnetApplicationTagObjectIdentifier) *_BACnetConstructedDataStructuredObjectList {
 	_result := &_BACnetConstructedDataStructuredObjectList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		StructuredObjectList:          structuredObjectList,
 	}

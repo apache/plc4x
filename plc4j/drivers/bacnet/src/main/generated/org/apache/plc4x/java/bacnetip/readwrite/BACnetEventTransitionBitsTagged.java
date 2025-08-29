@@ -41,20 +41,11 @@ public class BACnetEventTransitionBitsTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetTagPayloadBitString payload;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetEventTransitionBitsTagged(
-      BACnetTagHeader header,
-      BACnetTagPayloadBitString payload,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetTagPayloadBitString payload) {
     super();
     this.header = header;
     this.payload = payload;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -178,8 +169,7 @@ public class BACnetEventTransitionBitsTagged implements Message {
     readBuffer.closeContext("BACnetEventTransitionBitsTagged");
     // Create the instance
     BACnetEventTransitionBitsTagged _bACnetEventTransitionBitsTagged;
-    _bACnetEventTransitionBitsTagged =
-        new BACnetEventTransitionBitsTagged(header, payload, tagNumber, tagClass);
+    _bACnetEventTransitionBitsTagged = new BACnetEventTransitionBitsTagged(header, payload);
     return _bACnetEventTransitionBitsTagged;
   }
 

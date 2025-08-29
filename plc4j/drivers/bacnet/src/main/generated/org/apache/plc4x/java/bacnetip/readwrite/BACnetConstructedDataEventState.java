@@ -49,21 +49,13 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
   // Properties.
   protected final BACnetEventStateTagged eventState;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEventState(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetEventStateTagged eventState,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetEventStateTagged eventState) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.eventState = eventState;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetEventStateTagged getEventState() {
@@ -134,34 +126,21 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataEventState");
     // Create the instance
-    return new BACnetConstructedDataEventStateBuilderImpl(
-        eventState, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEventStateBuilderImpl(eventState);
   }
 
   public static class BACnetConstructedDataEventStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventStateTagged eventState;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventStateBuilderImpl(
-        BACnetEventStateTagged eventState,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataEventStateBuilderImpl(BACnetEventStateTagged eventState) {
       this.eventState = eventState;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEventState build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEventState bACnetConstructedDataEventState =
-          new BACnetConstructedDataEventState(
-              openingTag, peekedTagHeader, closingTag, eventState, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataEventState(openingTag, peekedTagHeader, closingTag, eventState);
       return bACnetConstructedDataEventState;
     }
   }

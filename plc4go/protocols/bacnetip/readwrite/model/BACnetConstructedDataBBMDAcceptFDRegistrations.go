@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBBMDAcceptFDRegistrations = (*_BACnetConstructedDataB
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDAcceptFDRegistrations)(nil)
 
 // NewBACnetConstructedDataBBMDAcceptFDRegistrations factory function for _BACnetConstructedDataBBMDAcceptFDRegistrations
-func NewBACnetConstructedDataBBMDAcceptFDRegistrations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdAcceptFDRegistrations BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
+func NewBACnetConstructedDataBBMDAcceptFDRegistrations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdAcceptFDRegistrations BACnetApplicationTagBoolean) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
 	if bbmdAcceptFDRegistrations == nil {
 		panic("bbmdAcceptFDRegistrations of type BACnetApplicationTagBoolean for BACnetConstructedDataBBMDAcceptFDRegistrations must not be nil")
 	}
 	_result := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BbmdAcceptFDRegistrations:     bbmdAcceptFDRegistrations,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

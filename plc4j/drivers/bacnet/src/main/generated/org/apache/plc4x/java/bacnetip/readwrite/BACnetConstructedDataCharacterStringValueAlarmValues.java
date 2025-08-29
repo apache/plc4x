@@ -52,23 +52,15 @@ public class BACnetConstructedDataCharacterStringValueAlarmValues extends BACnet
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetOptionalCharacterString> alarmValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCharacterStringValueAlarmValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetOptionalCharacterString> alarmValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetOptionalCharacterString> alarmValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.alarmValues = alarmValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataCharacterStringValueAlarmValues extends BACnet
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (alarmValues)
     writeComplexTypeArrayField("alarmValues", alarmValues, writeBuffer);
@@ -171,43 +159,27 @@ public class BACnetConstructedDataCharacterStringValueAlarmValues extends BACnet
     readBuffer.closeContext("BACnetConstructedDataCharacterStringValueAlarmValues");
     // Create the instance
     return new BACnetConstructedDataCharacterStringValueAlarmValuesBuilderImpl(
-        numberOfDataElements, alarmValues, tagNumber, arrayIndexArgument);
+        numberOfDataElements, alarmValues);
   }
 
   public static class BACnetConstructedDataCharacterStringValueAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetOptionalCharacterString> alarmValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCharacterStringValueAlarmValuesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetOptionalCharacterString> alarmValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetOptionalCharacterString> alarmValues) {
       this.numberOfDataElements = numberOfDataElements;
       this.alarmValues = alarmValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCharacterStringValueAlarmValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCharacterStringValueAlarmValues
           bACnetConstructedDataCharacterStringValueAlarmValues =
               new BACnetConstructedDataCharacterStringValueAlarmValues(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  numberOfDataElements,
-                  alarmValues,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, numberOfDataElements, alarmValues);
       return bACnetConstructedDataCharacterStringValueAlarmValues;
     }
   }

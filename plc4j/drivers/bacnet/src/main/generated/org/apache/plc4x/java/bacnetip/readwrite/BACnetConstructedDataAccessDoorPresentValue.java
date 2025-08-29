@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccessDoorPresentValue extends BACnetConstruct
   // Properties.
   protected final BACnetDoorValueTagged presentValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessDoorPresentValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDoorValueTagged presentValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDoorValueTagged presentValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.presentValue = presentValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDoorValueTagged getPresentValue() {
@@ -135,34 +127,23 @@ public class BACnetConstructedDataAccessDoorPresentValue extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataAccessDoorPresentValue");
     // Create the instance
-    return new BACnetConstructedDataAccessDoorPresentValueBuilderImpl(
-        presentValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessDoorPresentValueBuilderImpl(presentValue);
   }
 
   public static class BACnetConstructedDataAccessDoorPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDoorValueTagged presentValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccessDoorPresentValueBuilderImpl(
-        BACnetDoorValueTagged presentValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDoorValueTagged presentValue) {
       this.presentValue = presentValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccessDoorPresentValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessDoorPresentValue bACnetConstructedDataAccessDoorPresentValue =
           new BACnetConstructedDataAccessDoorPresentValue(
-              openingTag, peekedTagHeader, closingTag, presentValue, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, presentValue);
       return bACnetConstructedDataAccessDoorPresentValue;
     }
   }

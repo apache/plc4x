@@ -50,21 +50,13 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
   // Properties.
   protected final List<BACnetRecipient> restartNotificationRecipients;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataRestartNotificationRecipients(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetRecipient> restartNotificationRecipients,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetRecipient> restartNotificationRecipients) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.restartNotificationRecipients = restartNotificationRecipients;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetRecipient> getRestartNotificationRecipients() {
@@ -129,39 +121,24 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
     readBuffer.closeContext("BACnetConstructedDataRestartNotificationRecipients");
     // Create the instance
     return new BACnetConstructedDataRestartNotificationRecipientsBuilderImpl(
-        restartNotificationRecipients, tagNumber, arrayIndexArgument);
+        restartNotificationRecipients);
   }
 
   public static class BACnetConstructedDataRestartNotificationRecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRecipient> restartNotificationRecipients;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataRestartNotificationRecipientsBuilderImpl(
-        List<BACnetRecipient> restartNotificationRecipients,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetRecipient> restartNotificationRecipients) {
       this.restartNotificationRecipients = restartNotificationRecipients;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataRestartNotificationRecipients build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataRestartNotificationRecipients
           bACnetConstructedDataRestartNotificationRecipients =
               new BACnetConstructedDataRestartNotificationRecipients(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  restartNotificationRecipients,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, restartNotificationRecipients);
       return bACnetConstructedDataRestartNotificationRecipients;
     }
   }

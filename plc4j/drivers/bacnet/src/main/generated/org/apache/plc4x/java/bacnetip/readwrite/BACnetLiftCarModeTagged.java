@@ -42,22 +42,12 @@ public class BACnetLiftCarModeTagged implements Message {
   protected final BACnetLiftCarMode value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetLiftCarModeTagged(
-      BACnetTagHeader header,
-      BACnetLiftCarMode value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetLiftCarMode value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetLiftCarModeTagged implements Message {
     readBuffer.closeContext("BACnetLiftCarModeTagged");
     // Create the instance
     BACnetLiftCarModeTagged _bACnetLiftCarModeTagged;
-    _bACnetLiftCarModeTagged =
-        new BACnetLiftCarModeTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetLiftCarModeTagged = new BACnetLiftCarModeTagged(header, value, proprietaryValue);
     return _bACnetLiftCarModeTagged;
   }
 

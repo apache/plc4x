@@ -603,7 +603,7 @@ func AdsSymbolTableEntryParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {
-	v, err := (&_AdsSymbolTableEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_AdsSymbolTableEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

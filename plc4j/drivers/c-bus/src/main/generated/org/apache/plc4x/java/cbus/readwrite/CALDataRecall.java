@@ -43,19 +43,15 @@ public class CALDataRecall extends CALData implements Message {
   protected final Parameter paramNo;
   protected final short count;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataRecall(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
       CALData additionalData,
       Parameter paramNo,
-      short count,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
+      short count) {
+    super(requestContext, commandTypeContainer, additionalData);
     this.paramNo = paramNo;
     this.count = count;
-    this.requestContext = requestContext;
   }
 
   public Parameter getParamNo() {
@@ -121,26 +117,24 @@ public class CALDataRecall extends CALData implements Message {
 
     readBuffer.closeContext("CALDataRecall");
     // Create the instance
-    return new CALDataRecallBuilderImpl(paramNo, count, requestContext);
+    return new CALDataRecallBuilderImpl(paramNo, count);
   }
 
   public static class CALDataRecallBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final short count;
-    private final RequestContext requestContext;
 
-    public CALDataRecallBuilderImpl(Parameter paramNo, short count, RequestContext requestContext) {
+    public CALDataRecallBuilderImpl(Parameter paramNo, short count) {
       this.paramNo = paramNo;
       this.count = count;
-      this.requestContext = requestContext;
     }
 
     public CALDataRecall build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataRecall cALDataRecall =
-          new CALDataRecall(commandTypeContainer, additionalData, paramNo, count, requestContext);
+          new CALDataRecall(requestContext, commandTypeContainer, additionalData, paramNo, count);
       return cALDataRecall;
     }
   }

@@ -48,19 +48,14 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
   protected final BACnetApplicationTagObjectIdentifier objectIdentifier;
   protected final BACnetApplicationTagCharacterString objectName;
 
-  // Arguments.
-  protected final Integer serviceRequestLength;
-
   public BACnetUnconfirmedServiceRequestIHave(
       BACnetApplicationTagObjectIdentifier deviceIdentifier,
       BACnetApplicationTagObjectIdentifier objectIdentifier,
-      BACnetApplicationTagCharacterString objectName,
-      Integer serviceRequestLength) {
-    super(serviceRequestLength);
+      BACnetApplicationTagCharacterString objectName) {
+    super();
     this.deviceIdentifier = deviceIdentifier;
     this.objectIdentifier = objectIdentifier;
     this.objectName = objectName;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetApplicationTagObjectIdentifier getDeviceIdentifier() {
@@ -154,7 +149,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestIHave");
     // Create the instance
     return new BACnetUnconfirmedServiceRequestIHaveBuilderImpl(
-        deviceIdentifier, objectIdentifier, objectName, serviceRequestLength);
+        deviceIdentifier, objectIdentifier, objectName);
   }
 
   public static class BACnetUnconfirmedServiceRequestIHaveBuilderImpl
@@ -162,24 +157,19 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     private final BACnetApplicationTagObjectIdentifier deviceIdentifier;
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final BACnetApplicationTagCharacterString objectName;
-    private final Integer serviceRequestLength;
 
     public BACnetUnconfirmedServiceRequestIHaveBuilderImpl(
         BACnetApplicationTagObjectIdentifier deviceIdentifier,
         BACnetApplicationTagObjectIdentifier objectIdentifier,
-        BACnetApplicationTagCharacterString objectName,
-        Integer serviceRequestLength) {
+        BACnetApplicationTagCharacterString objectName) {
       this.deviceIdentifier = deviceIdentifier;
       this.objectIdentifier = objectIdentifier;
       this.objectName = objectName;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetUnconfirmedServiceRequestIHave build(Integer serviceRequestLength) {
-
+    public BACnetUnconfirmedServiceRequestIHave build() {
       BACnetUnconfirmedServiceRequestIHave bACnetUnconfirmedServiceRequestIHave =
-          new BACnetUnconfirmedServiceRequestIHave(
-              deviceIdentifier, objectIdentifier, objectName, serviceRequestLength);
+          new BACnetUnconfirmedServiceRequestIHave(deviceIdentifier, objectIdentifier, objectName);
       return bACnetUnconfirmedServiceRequestIHave;
     }
   }

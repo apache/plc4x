@@ -64,9 +64,9 @@ var _ BACnetConstructedDataShedLevelDescriptions = (*_BACnetConstructedDataShedL
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataShedLevelDescriptions)(nil)
 
 // NewBACnetConstructedDataShedLevelDescriptions factory function for _BACnetConstructedDataShedLevelDescriptions
-func NewBACnetConstructedDataShedLevelDescriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, shedLevelDescriptions []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedLevelDescriptions {
+func NewBACnetConstructedDataShedLevelDescriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, shedLevelDescriptions []BACnetApplicationTagCharacterString) *_BACnetConstructedDataShedLevelDescriptions {
 	_result := &_BACnetConstructedDataShedLevelDescriptions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		ShedLevelDescriptions:         shedLevelDescriptions,
 	}

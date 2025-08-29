@@ -59,9 +59,9 @@ var _ BACnetConstructedDataEscalatorFaultSignals = (*_BACnetConstructedDataEscal
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEscalatorFaultSignals)(nil)
 
 // NewBACnetConstructedDataEscalatorFaultSignals factory function for _BACnetConstructedDataEscalatorFaultSignals
-func NewBACnetConstructedDataEscalatorFaultSignals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultSignals []BACnetEscalatorFaultTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorFaultSignals {
+func NewBACnetConstructedDataEscalatorFaultSignals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultSignals []BACnetEscalatorFaultTagged) *_BACnetConstructedDataEscalatorFaultSignals {
 	_result := &_BACnetConstructedDataEscalatorFaultSignals{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FaultSignals:                  faultSignals,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

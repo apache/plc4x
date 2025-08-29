@@ -42,12 +42,8 @@ public class BACnetContextTagNull extends BACnetContextTag implements Message {
     return BACnetDataType.NULL;
   }
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
-  public BACnetContextTagNull(BACnetTagHeader header, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
-    this.tagNumberArgument = tagNumberArgument;
+  public BACnetContextTagNull(BACnetTagHeader header) {
+    super(header);
   }
 
   @Override
@@ -90,20 +86,16 @@ public class BACnetContextTagNull extends BACnetContextTag implements Message {
 
     readBuffer.closeContext("BACnetContextTagNull");
     // Create the instance
-    return new BACnetContextTagNullBuilderImpl(tagNumberArgument);
+    return new BACnetContextTagNullBuilderImpl();
   }
 
   public static class BACnetContextTagNullBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagNullBuilderImpl(Short tagNumberArgument) {
-      this.tagNumberArgument = tagNumberArgument;
-    }
+    public BACnetContextTagNullBuilderImpl() {}
 
-    public BACnetContextTagNull build(BACnetTagHeader header, Short tagNumberArgument) {
-      BACnetContextTagNull bACnetContextTagNull =
-          new BACnetContextTagNull(header, tagNumberArgument);
+    public BACnetContextTagNull build(BACnetTagHeader header) {
+      BACnetContextTagNull bACnetContextTagNull = new BACnetContextTagNull(header);
       return bACnetContextTagNull;
     }
   }

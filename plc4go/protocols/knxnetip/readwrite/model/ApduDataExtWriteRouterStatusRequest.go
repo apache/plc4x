@@ -54,9 +54,9 @@ var _ ApduDataExtWriteRouterStatusRequest = (*_ApduDataExtWriteRouterStatusReque
 var _ ApduDataExtRequirements = (*_ApduDataExtWriteRouterStatusRequest)(nil)
 
 // NewApduDataExtWriteRouterStatusRequest factory function for _ApduDataExtWriteRouterStatusRequest
-func NewApduDataExtWriteRouterStatusRequest(length uint8) *_ApduDataExtWriteRouterStatusRequest {
+func NewApduDataExtWriteRouterStatusRequest() *_ApduDataExtWriteRouterStatusRequest {
 	_result := &_ApduDataExtWriteRouterStatusRequest{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

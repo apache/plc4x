@@ -45,9 +45,6 @@ public class RequestReset extends Request implements Message {
   protected final RequestType tildePeek2;
   protected final RequestType thirdTilde;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public RequestReset(
       RequestType peekedByte,
       RequestType startingCR,
@@ -57,14 +54,12 @@ public class RequestReset extends Request implements Message {
       RequestType tildePeek,
       RequestType secondTilde,
       RequestType tildePeek2,
-      RequestType thirdTilde,
-      CBusOptions cBusOptions) {
-    super(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions);
+      RequestType thirdTilde) {
+    super(peekedByte, startingCR, resetMode, secondPeek, termination);
     this.tildePeek = tildePeek;
     this.secondTilde = secondTilde;
     this.tildePeek2 = tildePeek2;
     this.thirdTilde = thirdTilde;
-    this.cBusOptions = cBusOptions;
   }
 
   public RequestType getTildePeek() {
@@ -160,7 +155,7 @@ public class RequestReset extends Request implements Message {
 
     readBuffer.closeContext("RequestReset");
     // Create the instance
-    return new RequestResetBuilderImpl(tildePeek, secondTilde, tildePeek2, thirdTilde, cBusOptions);
+    return new RequestResetBuilderImpl(tildePeek, secondTilde, tildePeek2, thirdTilde);
   }
 
   public static class RequestResetBuilderImpl implements Request.RequestBuilder {
@@ -168,19 +163,16 @@ public class RequestReset extends Request implements Message {
     private final RequestType secondTilde;
     private final RequestType tildePeek2;
     private final RequestType thirdTilde;
-    private final CBusOptions cBusOptions;
 
     public RequestResetBuilderImpl(
         RequestType tildePeek,
         RequestType secondTilde,
         RequestType tildePeek2,
-        RequestType thirdTilde,
-        CBusOptions cBusOptions) {
+        RequestType thirdTilde) {
       this.tildePeek = tildePeek;
       this.secondTilde = secondTilde;
       this.tildePeek2 = tildePeek2;
       this.thirdTilde = thirdTilde;
-      this.cBusOptions = cBusOptions;
     }
 
     public RequestReset build(
@@ -188,8 +180,7 @@ public class RequestReset extends Request implements Message {
         RequestType startingCR,
         RequestType resetMode,
         RequestType secondPeek,
-        RequestTermination termination,
-        CBusOptions cBusOptions) {
+        RequestTermination termination) {
       RequestReset requestReset =
           new RequestReset(
               peekedByte,
@@ -200,8 +191,7 @@ public class RequestReset extends Request implements Message {
               tildePeek,
               secondTilde,
               tildePeek2,
-              thirdTilde,
-              cBusOptions);
+              thirdTilde);
       return requestReset;
     }
   }

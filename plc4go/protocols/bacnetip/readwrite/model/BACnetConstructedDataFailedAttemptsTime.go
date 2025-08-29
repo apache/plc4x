@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFailedAttemptsTime = (*_BACnetConstructedDataFailedAt
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFailedAttemptsTime)(nil)
 
 // NewBACnetConstructedDataFailedAttemptsTime factory function for _BACnetConstructedDataFailedAttemptsTime
-func NewBACnetConstructedDataFailedAttemptsTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttemptsTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttemptsTime {
+func NewBACnetConstructedDataFailedAttemptsTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttemptsTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataFailedAttemptsTime {
 	if failedAttemptsTime == nil {
 		panic("failedAttemptsTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFailedAttemptsTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataFailedAttemptsTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FailedAttemptsTime:            failedAttemptsTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

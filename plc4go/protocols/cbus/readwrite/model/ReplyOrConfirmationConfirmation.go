@@ -62,12 +62,12 @@ var _ ReplyOrConfirmationConfirmation = (*_ReplyOrConfirmationConfirmation)(nil)
 var _ ReplyOrConfirmationRequirements = (*_ReplyOrConfirmationConfirmation)(nil)
 
 // NewReplyOrConfirmationConfirmation factory function for _ReplyOrConfirmationConfirmation
-func NewReplyOrConfirmationConfirmation(peekedByte byte, confirmation Confirmation, embeddedReply ReplyOrConfirmation, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationConfirmation {
+func NewReplyOrConfirmationConfirmation(peekedByte byte, confirmation Confirmation, embeddedReply ReplyOrConfirmation) *_ReplyOrConfirmationConfirmation {
 	if confirmation == nil {
 		panic("confirmation of type Confirmation for ReplyOrConfirmationConfirmation must not be nil")
 	}
 	_result := &_ReplyOrConfirmationConfirmation{
-		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte),
 		Confirmation:                confirmation,
 		EmbeddedReply:               embeddedReply,
 	}

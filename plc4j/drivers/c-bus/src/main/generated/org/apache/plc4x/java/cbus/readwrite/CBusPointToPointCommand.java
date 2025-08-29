@@ -43,15 +43,10 @@ public abstract class CBusPointToPointCommand implements Message {
   protected final int bridgeAddressCountPeek;
   protected final CALData calData;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
-  public CBusPointToPointCommand(
-      int bridgeAddressCountPeek, CALData calData, CBusOptions cBusOptions) {
+  public CBusPointToPointCommand(int bridgeAddressCountPeek, CALData calData) {
     super();
     this.bridgeAddressCountPeek = bridgeAddressCountPeek;
     this.calData = calData;
-    this.cBusOptions = cBusOptions;
   }
 
   public int getBridgeAddressCountPeek() {
@@ -149,13 +144,12 @@ public abstract class CBusPointToPointCommand implements Message {
     readBuffer.closeContext("CBusPointToPointCommand");
     // Create the instance
     CBusPointToPointCommand _cBusPointToPointCommand =
-        builder.build(bridgeAddressCountPeek, calData, cBusOptions);
+        builder.build(bridgeAddressCountPeek, calData);
     return _cBusPointToPointCommand;
   }
 
   public interface CBusPointToPointCommandBuilder {
-    CBusPointToPointCommand build(
-        int bridgeAddressCountPeek, CALData calData, CBusOptions cBusOptions);
+    CBusPointToPointCommand build(int bridgeAddressCountPeek, CALData calData);
   }
 
   @Override

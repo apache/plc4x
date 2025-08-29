@@ -49,21 +49,13 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
   // Properties.
   protected final BACnetNotifyTypeTagged notifyType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNotifyType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetNotifyTypeTagged notifyType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetNotifyTypeTagged notifyType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.notifyType = notifyType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetNotifyTypeTagged getNotifyType() {
@@ -134,34 +126,21 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataNotifyType");
     // Create the instance
-    return new BACnetConstructedDataNotifyTypeBuilderImpl(
-        notifyType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNotifyTypeBuilderImpl(notifyType);
   }
 
   public static class BACnetConstructedDataNotifyTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetNotifyTypeTagged notifyType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNotifyTypeBuilderImpl(
-        BACnetNotifyTypeTagged notifyType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataNotifyTypeBuilderImpl(BACnetNotifyTypeTagged notifyType) {
       this.notifyType = notifyType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNotifyType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNotifyType bACnetConstructedDataNotifyType =
-          new BACnetConstructedDataNotifyType(
-              openingTag, peekedTagHeader, closingTag, notifyType, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataNotifyType(openingTag, peekedTagHeader, closingTag, notifyType);
       return bACnetConstructedDataNotifyType;
     }
   }

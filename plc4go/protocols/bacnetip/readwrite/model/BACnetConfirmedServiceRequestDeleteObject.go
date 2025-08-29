@@ -59,7 +59,7 @@ var _ BACnetConfirmedServiceRequestDeleteObject = (*_BACnetConfirmedServiceReque
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestDeleteObject)(nil)
 
 // NewBACnetConfirmedServiceRequestDeleteObject factory function for _BACnetConfirmedServiceRequestDeleteObject
-func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeleteObject {
+func NewBACnetConfirmedServiceRequestDeleteObject(serviceRequestLength uint32, objectIdentifier BACnetApplicationTagObjectIdentifier) *_BACnetConfirmedServiceRequestDeleteObject {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestDeleteObject must not be nil")
 	}

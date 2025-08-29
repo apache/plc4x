@@ -54,9 +54,9 @@ var _ TDataIndividualReq = (*_TDataIndividualReq)(nil)
 var _ CEMIRequirements = (*_TDataIndividualReq)(nil)
 
 // NewTDataIndividualReq factory function for _TDataIndividualReq
-func NewTDataIndividualReq(size uint16) *_TDataIndividualReq {
+func NewTDataIndividualReq() *_TDataIndividualReq {
 	_result := &_TDataIndividualReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result

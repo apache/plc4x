@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDateTimePatternValueRelinquishDefault = (*_BACnetCons
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDateTimePatternValueRelinquishDefault)(nil)
 
 // NewBACnetConstructedDataDateTimePatternValueRelinquishDefault factory function for _BACnetConstructedDataDateTimePatternValueRelinquishDefault
-func NewBACnetConstructedDataDateTimePatternValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimePatternValueRelinquishDefault {
+func NewBACnetConstructedDataDateTimePatternValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetDateTime) *_BACnetConstructedDataDateTimePatternValueRelinquishDefault {
 	if relinquishDefault == nil {
 		panic("relinquishDefault of type BACnetDateTime for BACnetConstructedDataDateTimePatternValueRelinquishDefault must not be nil")
 	}
 	_result := &_BACnetConstructedDataDateTimePatternValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		RelinquishDefault:             relinquishDefault,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

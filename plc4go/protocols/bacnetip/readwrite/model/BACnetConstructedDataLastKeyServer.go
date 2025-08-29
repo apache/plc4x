@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastKeyServer = (*_BACnetConstructedDataLastKeyServer
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastKeyServer)(nil)
 
 // NewBACnetConstructedDataLastKeyServer factory function for _BACnetConstructedDataLastKeyServer
-func NewBACnetConstructedDataLastKeyServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastKeyServer BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastKeyServer {
+func NewBACnetConstructedDataLastKeyServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastKeyServer BACnetAddressBinding) *_BACnetConstructedDataLastKeyServer {
 	if lastKeyServer == nil {
 		panic("lastKeyServer of type BACnetAddressBinding for BACnetConstructedDataLastKeyServer must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastKeyServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastKeyServer:                 lastKeyServer,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

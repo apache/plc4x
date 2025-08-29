@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimeSynchronizationInterval = (*_BACnetConstructedDat
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeSynchronizationInterval)(nil)
 
 // NewBACnetConstructedDataTimeSynchronizationInterval factory function for _BACnetConstructedDataTimeSynchronizationInterval
-func NewBACnetConstructedDataTimeSynchronizationInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronization BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationInterval {
+func NewBACnetConstructedDataTimeSynchronizationInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronization BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationInterval {
 	if timeSynchronization == nil {
 		panic("timeSynchronization of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeSynchronizationInterval must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimeSynchronizationInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimeSynchronization:           timeSynchronization,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

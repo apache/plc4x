@@ -50,21 +50,13 @@ public class BACnetConstructedDataBACnetIPv6MulticastAddress extends BACnetConst
   // Properties.
   protected final BACnetApplicationTagOctetString ipv6MulticastAddress;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBACnetIPv6MulticastAddress(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagOctetString ipv6MulticastAddress,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagOctetString ipv6MulticastAddress) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ipv6MulticastAddress = ipv6MulticastAddress;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagOctetString getIpv6MulticastAddress() {
@@ -135,40 +127,24 @@ public class BACnetConstructedDataBACnetIPv6MulticastAddress extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPv6MulticastAddress");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPv6MulticastAddressBuilderImpl(
-        ipv6MulticastAddress, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBACnetIPv6MulticastAddressBuilderImpl(ipv6MulticastAddress);
   }
 
   public static class BACnetConstructedDataBACnetIPv6MulticastAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipv6MulticastAddress;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBACnetIPv6MulticastAddressBuilderImpl(
-        BACnetApplicationTagOctetString ipv6MulticastAddress,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagOctetString ipv6MulticastAddress) {
       this.ipv6MulticastAddress = ipv6MulticastAddress;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBACnetIPv6MulticastAddress build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBACnetIPv6MulticastAddress
           bACnetConstructedDataBACnetIPv6MulticastAddress =
               new BACnetConstructedDataBACnetIPv6MulticastAddress(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  ipv6MulticastAddress,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, ipv6MulticastAddress);
       return bACnetConstructedDataBACnetIPv6MulticastAddress;
     }
   }

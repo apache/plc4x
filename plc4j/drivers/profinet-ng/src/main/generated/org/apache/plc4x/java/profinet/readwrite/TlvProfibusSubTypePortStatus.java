@@ -47,7 +47,6 @@ public class TlvProfibusSubTypePortStatus extends TlvOrgSpecificProfibusUnit imp
   protected final boolean preample;
   protected final boolean fragmentation;
   protected final byte rtClass3PortStatus;
-
   // Reserved Fields
   private Byte reservedField0;
   private Short reservedField1;

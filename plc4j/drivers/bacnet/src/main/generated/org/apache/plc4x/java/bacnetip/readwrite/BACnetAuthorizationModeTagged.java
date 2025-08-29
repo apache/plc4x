@@ -42,22 +42,12 @@ public class BACnetAuthorizationModeTagged implements Message {
   protected final BACnetAuthorizationMode value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetAuthorizationModeTagged(
-      BACnetTagHeader header,
-      BACnetAuthorizationMode value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetAuthorizationMode value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -181,7 +171,7 @@ public class BACnetAuthorizationModeTagged implements Message {
     // Create the instance
     BACnetAuthorizationModeTagged _bACnetAuthorizationModeTagged;
     _bACnetAuthorizationModeTagged =
-        new BACnetAuthorizationModeTagged(header, value, proprietaryValue, tagNumber, tagClass);
+        new BACnetAuthorizationModeTagged(header, value, proprietaryValue);
     return _bACnetAuthorizationModeTagged;
   }
 

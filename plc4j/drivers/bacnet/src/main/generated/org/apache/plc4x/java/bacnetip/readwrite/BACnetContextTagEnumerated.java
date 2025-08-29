@@ -45,14 +45,9 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
   // Properties.
   protected final BACnetTagPayloadEnumerated payload;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
-  public BACnetContextTagEnumerated(
-      BACnetTagHeader header, BACnetTagPayloadEnumerated payload, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+  public BACnetContextTagEnumerated(BACnetTagHeader header, BACnetTagPayloadEnumerated payload) {
+    super(header);
     this.payload = payload;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagPayloadEnumerated getPayload() {
@@ -121,23 +116,20 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
 
     readBuffer.closeContext("BACnetContextTagEnumerated");
     // Create the instance
-    return new BACnetContextTagEnumeratedBuilderImpl(payload, tagNumberArgument);
+    return new BACnetContextTagEnumeratedBuilderImpl(payload);
   }
 
   public static class BACnetContextTagEnumeratedBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadEnumerated payload;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagEnumeratedBuilderImpl(
-        BACnetTagPayloadEnumerated payload, Short tagNumberArgument) {
+    public BACnetContextTagEnumeratedBuilderImpl(BACnetTagPayloadEnumerated payload) {
       this.payload = payload;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagEnumerated build(BACnetTagHeader header, Short tagNumberArgument) {
+    public BACnetContextTagEnumerated build(BACnetTagHeader header) {
       BACnetContextTagEnumerated bACnetContextTagEnumerated =
-          new BACnetContextTagEnumerated(header, payload, tagNumberArgument);
+          new BACnetContextTagEnumerated(header, payload);
       return bACnetContextTagEnumerated;
     }
   }

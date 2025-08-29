@@ -54,20 +54,16 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged int
 type _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged)(nil)
 
 // NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
-func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged {
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged must not be nil")
 	}
-	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuil
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder
 	// Build builds the BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagge
 
 func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedPars
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, error) {
-	v, err := (&_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagge
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) IsBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged() {
 }
 
@@ -344,8 +314,6 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagge
 	_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedCopy
 }

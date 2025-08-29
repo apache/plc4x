@@ -54,9 +54,9 @@ var _ ApduDataExtNetworkParameterResponse = (*_ApduDataExtNetworkParameterRespon
 var _ ApduDataExtRequirements = (*_ApduDataExtNetworkParameterResponse)(nil)
 
 // NewApduDataExtNetworkParameterResponse factory function for _ApduDataExtNetworkParameterResponse
-func NewApduDataExtNetworkParameterResponse(length uint8) *_ApduDataExtNetworkParameterResponse {
+func NewApduDataExtNetworkParameterResponse() *_ApduDataExtNetworkParameterResponse {
 	_result := &_ApduDataExtNetworkParameterResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

@@ -44,19 +44,12 @@ public abstract class BACnetFaultParameterFaultOutOfRangeMaxNormalValue implemen
   protected final BACnetTagHeader peekedTagHeader;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetFaultParameterFaultOutOfRangeMaxNormalValue(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.peekedTagHeader = peekedTagHeader;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -188,16 +181,13 @@ public abstract class BACnetFaultParameterFaultOutOfRangeMaxNormalValue implemen
     // Create the instance
     BACnetFaultParameterFaultOutOfRangeMaxNormalValue
         _bACnetFaultParameterFaultOutOfRangeMaxNormalValue =
-            builder.build(openingTag, peekedTagHeader, closingTag, tagNumber);
+            builder.build(openingTag, peekedTagHeader, closingTag);
     return _bACnetFaultParameterFaultOutOfRangeMaxNormalValue;
   }
 
   public interface BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
     BACnetFaultParameterFaultOutOfRangeMaxNormalValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber);
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag);
   }
 
   @Override

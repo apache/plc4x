@@ -67,12 +67,12 @@ var _ APDUAbort = (*_APDUAbort)(nil)
 var _ APDURequirements = (*_APDUAbort)(nil)
 
 // NewAPDUAbort factory function for _APDUAbort
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged, apduLength uint16) *_APDUAbort {
+func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged) *_APDUAbort {
 	if abortReason == nil {
 		panic("abortReason of type BACnetAbortReasonTagged for APDUAbort must not be nil")
 	}
 	_result := &_APDUAbort{
-		APDUContract:     NewAPDU(apduLength),
+		APDUContract:     NewAPDU(),
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,

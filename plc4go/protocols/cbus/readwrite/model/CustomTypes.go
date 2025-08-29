@@ -40,6 +40,8 @@ type CustomTypes interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
+	// GetNumBytes returns NumBytes (property field)
+	GetNumBytes() uint8
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string
 	// IsCustomTypes is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,17 +52,15 @@ type CustomTypes interface {
 
 // _CustomTypes is the data-structure of this message
 type _CustomTypes struct {
+	NumBytes     uint8
 	CustomString string
-
-	// Arguments.
-	NumBytes uint8
 }
 
 var _ CustomTypes = (*_CustomTypes)(nil)
 
 // NewCustomTypes factory function for _CustomTypes
-func NewCustomTypes(customString string, numBytes uint8) *_CustomTypes {
-	return &_CustomTypes{CustomString: customString, NumBytes: numBytes}
+func NewCustomTypes(numBytes uint8, customString string) *_CustomTypes {
+	return &_CustomTypes{NumBytes: numBytes, CustomString: customString}
 }
 
 ///////////////////////////////////////////////////////////
@@ -72,11 +72,11 @@ func NewCustomTypes(customString string, numBytes uint8) *_CustomTypes {
 type CustomTypesBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(customString string) CustomTypesBuilder
+	WithMandatoryFields(numBytes uint8, customString string) CustomTypesBuilder
+	// WithNumBytes adds NumBytes (property field)
+	WithNumBytes(uint8) CustomTypesBuilder
 	// WithCustomString adds CustomString (property field)
 	WithCustomString(string) CustomTypesBuilder
-	// WithArgNumBytes sets a parser argument
-	WithArgNumBytes(uint8) CustomTypesBuilder
 	// Build builds the CustomTypes or returns an error if something is wrong
 	Build() (CustomTypes, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,17 +96,17 @@ type _CustomTypesBuilder struct {
 
 var _ (CustomTypesBuilder) = (*_CustomTypesBuilder)(nil)
 
-func (b *_CustomTypesBuilder) WithMandatoryFields(customString string) CustomTypesBuilder {
-	return b.WithCustomString(customString)
+func (b *_CustomTypesBuilder) WithMandatoryFields(numBytes uint8, customString string) CustomTypesBuilder {
+	return b.WithNumBytes(numBytes).WithCustomString(customString)
+}
+
+func (b *_CustomTypesBuilder) WithNumBytes(numBytes uint8) CustomTypesBuilder {
+	b.NumBytes = numBytes
+	return b
 }
 
 func (b *_CustomTypesBuilder) WithCustomString(customString string) CustomTypesBuilder {
 	b.CustomString = customString
-	return b
-}
-
-func (b *_CustomTypesBuilder) WithArgNumBytes(numBytes uint8) CustomTypesBuilder {
-	b.NumBytes = numBytes
 	return b
 }
 
@@ -150,6 +150,10 @@ func (b *_CustomTypes) CreateCustomTypesBuilder() CustomTypesBuilder {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_CustomTypes) GetNumBytes() uint8 {
+	return m.NumBytes
+}
 
 func (m *_CustomTypes) GetCustomString() string {
 	return m.CustomString
@@ -199,7 +203,7 @@ func CustomTypesParseWithBufferProducer(numBytes uint8) func(ctx context.Context
 }
 
 func CustomTypesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes, error) {
-	v, err := (&_CustomTypes{NumBytes: numBytes}).parse(ctx, readBuffer, numBytes)
+	v, err := (new(_CustomTypes)).parse(ctx, readBuffer, numBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -214,6 +218,7 @@ func (m *_CustomTypes) parse(ctx context.Context, readBuffer utils.ReadBuffer, n
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.NumBytes = numBytes
 
 	customString, err := ReadSimpleField(ctx, "customString", ReadString(readBuffer, uint32(int32(int32(8))*int32(numBytes))))
 	if err != nil {
@@ -255,16 +260,6 @@ func (m *_CustomTypes) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_CustomTypes) GetNumBytes() uint8 {
-	return m.NumBytes
-}
-
-//
-////
-
 func (m *_CustomTypes) IsCustomTypes() {}
 
 func (m *_CustomTypes) DeepCopy() any {
@@ -276,8 +271,8 @@ func (m *_CustomTypes) deepCopy() *_CustomTypes {
 		return nil
 	}
 	_CustomTypesCopy := &_CustomTypes{
-		m.CustomString,
 		m.NumBytes,
+		m.CustomString,
 	}
 	return _CustomTypesCopy
 }

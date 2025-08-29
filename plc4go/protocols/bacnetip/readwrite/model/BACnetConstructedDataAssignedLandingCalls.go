@@ -64,9 +64,9 @@ var _ BACnetConstructedDataAssignedLandingCalls = (*_BACnetConstructedDataAssign
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAssignedLandingCalls)(nil)
 
 // NewBACnetConstructedDataAssignedLandingCalls factory function for _BACnetConstructedDataAssignedLandingCalls
-func NewBACnetConstructedDataAssignedLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedLandingCalls []BACnetAssignedLandingCalls, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAssignedLandingCalls {
+func NewBACnetConstructedDataAssignedLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedLandingCalls []BACnetAssignedLandingCalls) *_BACnetConstructedDataAssignedLandingCalls {
 	_result := &_BACnetConstructedDataAssignedLandingCalls{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		AssignedLandingCalls:          assignedLandingCalls,
 	}

@@ -49,21 +49,13 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagTime localTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLocalTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagTime localTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagTime localTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.localTime = localTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagTime getLocalTime() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLocalTime");
     // Create the instance
-    return new BACnetConstructedDataLocalTimeBuilderImpl(localTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLocalTimeBuilderImpl(localTime);
   }
 
   public static class BACnetConstructedDataLocalTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagTime localTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLocalTimeBuilderImpl(
-        BACnetApplicationTagTime localTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLocalTimeBuilderImpl(BACnetApplicationTagTime localTime) {
       this.localTime = localTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLocalTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLocalTime bACnetConstructedDataLocalTime =
-          new BACnetConstructedDataLocalTime(
-              openingTag, peekedTagHeader, closingTag, localTime, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLocalTime(openingTag, peekedTagHeader, closingTag, localTime);
       return bACnetConstructedDataLocalTime;
     }
   }

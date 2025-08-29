@@ -46,19 +46,9 @@ public class BACnetConstructedDataAccessPointAll extends BACnetConstructedData i
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessPointAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -103,29 +93,18 @@ public class BACnetConstructedDataAccessPointAll extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataAccessPointAll");
     // Create the instance
-    return new BACnetConstructedDataAccessPointAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessPointAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataAccessPointAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessPointAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataAccessPointAllBuilderImpl() {}
 
     public BACnetConstructedDataAccessPointAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessPointAll bACnetConstructedDataAccessPointAll =
-          new BACnetConstructedDataAccessPointAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataAccessPointAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataAccessPointAll;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataSecuredStatus extends BACnetConstructedData im
   // Properties.
   protected final BACnetDoorSecuredStatusTagged securedStatus;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSecuredStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDoorSecuredStatusTagged securedStatus,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDoorSecuredStatusTagged securedStatus) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.securedStatus = securedStatus;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDoorSecuredStatusTagged getSecuredStatus() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataSecuredStatus extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataSecuredStatus");
     // Create the instance
-    return new BACnetConstructedDataSecuredStatusBuilderImpl(
-        securedStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSecuredStatusBuilderImpl(securedStatus);
   }
 
   public static class BACnetConstructedDataSecuredStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDoorSecuredStatusTagged securedStatus;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSecuredStatusBuilderImpl(
-        BACnetDoorSecuredStatusTagged securedStatus,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDoorSecuredStatusTagged securedStatus) {
       this.securedStatus = securedStatus;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSecuredStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSecuredStatus bACnetConstructedDataSecuredStatus =
           new BACnetConstructedDataSecuredStatus(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              securedStatus,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, securedStatus);
       return bACnetConstructedDataSecuredStatus;
     }
   }

@@ -51,23 +51,15 @@ public class BACnetConstructedDataGroupMembers extends BACnetConstructedData imp
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetApplicationTagObjectIdentifier> groupMembers;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataGroupMembers(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetApplicationTagObjectIdentifier> groupMembers,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagObjectIdentifier> groupMembers) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.groupMembers = groupMembers;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataGroupMembers extends BACnetConstructedData imp
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (groupMembers)
     writeComplexTypeArrayField("groupMembers", groupMembers, writeBuffer);
@@ -173,43 +161,26 @@ public class BACnetConstructedDataGroupMembers extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataGroupMembers");
     // Create the instance
-    return new BACnetConstructedDataGroupMembersBuilderImpl(
-        numberOfDataElements, groupMembers, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataGroupMembersBuilderImpl(numberOfDataElements, groupMembers);
   }
 
   public static class BACnetConstructedDataGroupMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> groupMembers;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataGroupMembersBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetApplicationTagObjectIdentifier> groupMembers,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagObjectIdentifier> groupMembers) {
       this.numberOfDataElements = numberOfDataElements;
       this.groupMembers = groupMembers;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataGroupMembers build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataGroupMembers bACnetConstructedDataGroupMembers =
           new BACnetConstructedDataGroupMembers(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              groupMembers,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, groupMembers);
       return bACnetConstructedDataGroupMembers;
     }
   }

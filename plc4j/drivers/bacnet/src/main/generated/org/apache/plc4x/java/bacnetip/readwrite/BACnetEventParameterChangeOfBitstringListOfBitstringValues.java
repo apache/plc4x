@@ -42,19 +42,14 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
   protected final List<BACnetApplicationTagBitString> listOfBitstringValues;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterChangeOfBitstringListOfBitstringValues(
       BACnetOpeningTag openingTag,
       List<BACnetApplicationTagBitString> listOfBitstringValues,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfBitstringValues = listOfBitstringValues;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -148,7 +143,7 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
         _bACnetEventParameterChangeOfBitstringListOfBitstringValues;
     _bACnetEventParameterChangeOfBitstringListOfBitstringValues =
         new BACnetEventParameterChangeOfBitstringListOfBitstringValues(
-            openingTag, listOfBitstringValues, closingTag, tagNumber);
+            openingTag, listOfBitstringValues, closingTag);
     return _bACnetEventParameterChangeOfBitstringListOfBitstringValues;
   }
 

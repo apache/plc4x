@@ -59,20 +59,16 @@ type _BACnetEscalatorFaultTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetEscalatorFault
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetEscalatorFaultTagged = (*_BACnetEscalatorFaultTagged)(nil)
 
 // NewBACnetEscalatorFaultTagged factory function for _BACnetEscalatorFaultTagged
-func NewBACnetEscalatorFaultTagged(header BACnetTagHeader, value BACnetEscalatorFault, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorFaultTagged {
+func NewBACnetEscalatorFaultTagged(header BACnetTagHeader, value BACnetEscalatorFault, proprietaryValue uint32) *_BACnetEscalatorFaultTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetEscalatorFaultTagged must not be nil")
 	}
-	return &_BACnetEscalatorFaultTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetEscalatorFaultTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetEscalatorFaultTaggedBuilder interface {
 	WithValue(BACnetEscalatorFault) BACnetEscalatorFaultTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetEscalatorFaultTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEscalatorFaultTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetEscalatorFaultTaggedBuilder
 	// Build builds the BACnetEscalatorFaultTagged or returns an error if something is wrong
 	Build() (BACnetEscalatorFaultTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetEscalatorFaultTaggedBuilder) WithValue(value BACnetEscalatorFaul
 
 func (b *_BACnetEscalatorFaultTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetEscalatorFaultTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetEscalatorFaultTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetEscalatorFaultTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetEscalatorFaultTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetEscalatorFaultTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetEscalatorFaultTaggedParseWithBufferProducer(tagNumber uint8, tagClass
 }
 
 func BACnetEscalatorFaultTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorFaultTagged, error) {
-	v, err := (&_BACnetEscalatorFaultTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetEscalatorFaultTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetEscalatorFaultTagged) SerializeWithWriteBuffer(ctx context.Conte
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEscalatorFaultTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetEscalatorFaultTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetEscalatorFaultTagged) IsBACnetEscalatorFaultTagged() {}
 
 func (m *_BACnetEscalatorFaultTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetEscalatorFaultTagged) deepCopy() *_BACnetEscalatorFaultTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetEscalatorFaultTaggedCopy
 }

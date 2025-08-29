@@ -32,7 +32,7 @@ import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.util.concurrent.FastThreadLocal;
 import org.apache.plc4x.java.bacnetip.BacNetIpDriver;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
-import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
+import org.apache.plc4x.java.bacnetip.readwrite.Constants;
 import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.simulator.PlcSimulatorConfig;
@@ -109,7 +109,7 @@ public class BacnetServerModule implements ServerModule {
                     }
                 });
 
-            int port = BacnetConstants.BACNETUDPDEFAULTPORT;
+            int port = Constants.BACNETUDPDEFAULTPORT;
             if (config.getCBusPort() != null) {
                 port = Integer.parseInt(config.getCBusPort());
             }

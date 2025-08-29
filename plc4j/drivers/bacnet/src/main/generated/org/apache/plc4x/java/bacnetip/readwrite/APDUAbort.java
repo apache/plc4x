@@ -46,22 +46,14 @@ public class APDUAbort extends APDU implements Message {
   protected final boolean server;
   protected final short originalInvokeId;
   protected final BACnetAbortReasonTagged abortReason;
-
-  // Arguments.
-  protected final Integer apduLength;
   // Reserved Fields
   private Byte reservedField0;
 
-  public APDUAbort(
-      boolean server,
-      short originalInvokeId,
-      BACnetAbortReasonTagged abortReason,
-      Integer apduLength) {
-    super(apduLength);
+  public APDUAbort(boolean server, short originalInvokeId, BACnetAbortReasonTagged abortReason) {
+    super();
     this.server = server;
     this.originalInvokeId = originalInvokeId;
     this.abortReason = abortReason;
-    this.apduLength = apduLength;
   }
 
   public boolean getServer() {
@@ -147,33 +139,28 @@ public class APDUAbort extends APDU implements Message {
 
     readBuffer.closeContext("APDUAbort");
     // Create the instance
-    return new APDUAbortBuilderImpl(
-        server, originalInvokeId, abortReason, apduLength, reservedField0);
+    return new APDUAbortBuilderImpl(server, originalInvokeId, abortReason, reservedField0);
   }
 
   public static class APDUAbortBuilderImpl implements APDU.APDUBuilder {
     private final boolean server;
     private final short originalInvokeId;
     private final BACnetAbortReasonTagged abortReason;
-    private final Integer apduLength;
     private final Byte reservedField0;
 
     public APDUAbortBuilderImpl(
         boolean server,
         short originalInvokeId,
         BACnetAbortReasonTagged abortReason,
-        Integer apduLength,
         Byte reservedField0) {
       this.server = server;
       this.originalInvokeId = originalInvokeId;
       this.abortReason = abortReason;
-      this.apduLength = apduLength;
       this.reservedField0 = reservedField0;
     }
 
-    public APDUAbort build(Integer apduLength) {
-
-      APDUAbort aPDUAbort = new APDUAbort(server, originalInvokeId, abortReason, apduLength);
+    public APDUAbort build() {
+      APDUAbort aPDUAbort = new APDUAbort(server, originalInvokeId, abortReason);
       aPDUAbort.reservedField0 = reservedField0;
       return aPDUAbort;
     }

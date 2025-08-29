@@ -46,22 +46,15 @@ public class APDUError extends APDU implements Message {
   protected final short originalInvokeId;
   protected final BACnetConfirmedServiceChoice errorChoice;
   protected final BACnetError error;
-
-  // Arguments.
-  protected final Integer apduLength;
   // Reserved Fields
   private Byte reservedField0;
 
   public APDUError(
-      short originalInvokeId,
-      BACnetConfirmedServiceChoice errorChoice,
-      BACnetError error,
-      Integer apduLength) {
-    super(apduLength);
+      short originalInvokeId, BACnetConfirmedServiceChoice errorChoice, BACnetError error) {
+    super();
     this.originalInvokeId = originalInvokeId;
     this.errorChoice = errorChoice;
     this.error = error;
-    this.apduLength = apduLength;
   }
 
   public short getOriginalInvokeId() {
@@ -161,33 +154,28 @@ public class APDUError extends APDU implements Message {
 
     readBuffer.closeContext("APDUError");
     // Create the instance
-    return new APDUErrorBuilderImpl(
-        originalInvokeId, errorChoice, error, apduLength, reservedField0);
+    return new APDUErrorBuilderImpl(originalInvokeId, errorChoice, error, reservedField0);
   }
 
   public static class APDUErrorBuilderImpl implements APDU.APDUBuilder {
     private final short originalInvokeId;
     private final BACnetConfirmedServiceChoice errorChoice;
     private final BACnetError error;
-    private final Integer apduLength;
     private final Byte reservedField0;
 
     public APDUErrorBuilderImpl(
         short originalInvokeId,
         BACnetConfirmedServiceChoice errorChoice,
         BACnetError error,
-        Integer apduLength,
         Byte reservedField0) {
       this.originalInvokeId = originalInvokeId;
       this.errorChoice = errorChoice;
       this.error = error;
-      this.apduLength = apduLength;
       this.reservedField0 = reservedField0;
     }
 
-    public APDUError build(Integer apduLength) {
-
-      APDUError aPDUError = new APDUError(originalInvokeId, errorChoice, error, apduLength);
+    public APDUError build() {
+      APDUError aPDUError = new APDUError(originalInvokeId, errorChoice, error);
       aPDUError.reservedField0 = reservedField0;
       return aPDUError;
     }

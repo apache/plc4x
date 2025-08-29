@@ -46,19 +46,9 @@ public class BACnetConstructedDataFileAll extends BACnetConstructedData implemen
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFileAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -103,29 +93,18 @@ public class BACnetConstructedDataFileAll extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataFileAll");
     // Create the instance
-    return new BACnetConstructedDataFileAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFileAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataFileAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFileAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataFileAllBuilderImpl() {}
 
     public BACnetConstructedDataFileAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFileAll bACnetConstructedDataFileAll =
-          new BACnetConstructedDataFileAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataFileAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataFileAll;
     }
   }

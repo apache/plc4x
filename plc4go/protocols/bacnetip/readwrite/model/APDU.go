@@ -50,8 +50,6 @@ type APDU interface {
 
 // APDUContract provides a set of functions which can be overwritten by a sub struct
 type APDUContract interface {
-	// GetApduLength() returns a parser argument
-	GetApduLength() uint16
 	// IsAPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDU()
 	// CreateBuilder creates a APDUBuilder
@@ -72,16 +70,13 @@ type _APDU struct {
 		APDUContract
 		APDURequirements
 	}
-
-	// Arguments.
-	ApduLength uint16
 }
 
 var _ APDUContract = (*_APDU)(nil)
 
 // NewAPDU factory function for _APDU
-func NewAPDU(apduLength uint16) *_APDU {
-	return &_APDU{ApduLength: apduLength}
+func NewAPDU() *_APDU {
+	return &_APDU{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type APDUBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() APDUBuilder
-	// WithArgApduLength sets a parser argument
-	WithArgApduLength(uint16) APDUBuilder
 	// AsAPDUConfirmedRequest converts this build to a subType of APDU. It is always possible to return to current builder using Done()
 	AsAPDUConfirmedRequest() APDUConfirmedRequestBuilder
 	// AsAPDUUnconfirmedRequest converts this build to a subType of APDU. It is always possible to return to current builder using Done()
@@ -146,11 +139,6 @@ type _APDUBuilder struct {
 var _ (APDUBuilder) = (*_APDUBuilder)(nil)
 
 func (b *_APDUBuilder) WithMandatoryFields() APDUBuilder {
-	return b
-}
-
-func (b *_APDUBuilder) WithArgApduLength(apduLength uint16) APDUBuilder {
-	b.ApduLength = apduLength
 	return b
 }
 
@@ -349,7 +337,7 @@ func APDUParseWithBufferProducer[T APDU](apduLength uint16) func(ctx context.Con
 }
 
 func APDUParseWithBuffer[T APDU](ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (T, error) {
-	v, err := (&_APDU{ApduLength: apduLength}).parse(ctx, readBuffer, apduLength)
+	v, err := (new(_APDU)).parse(ctx, readBuffer, apduLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -453,16 +441,6 @@ func (pm *_APDU) serializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_APDU) GetApduLength() uint16 {
-	return m.ApduLength
-}
-
-//
-////
-
 func (m *_APDU) IsAPDU() {}
 
 func (m *_APDU) DeepCopy() any {
@@ -475,7 +453,6 @@ func (m *_APDU) deepCopy() *_APDU {
 	}
 	_APDUCopy := &_APDU{
 		nil, // will be set by child
-		m.ApduLength,
 	}
 	return _APDUCopy
 }

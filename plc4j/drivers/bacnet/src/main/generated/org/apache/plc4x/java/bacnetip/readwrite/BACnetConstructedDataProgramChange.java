@@ -49,21 +49,13 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
   // Properties.
   protected final BACnetProgramRequestTagged programChange;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProgramChange(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetProgramRequestTagged programChange,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetProgramRequestTagged programChange) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.programChange = programChange;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetProgramRequestTagged getProgramChange() {
@@ -134,39 +126,22 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataProgramChange");
     // Create the instance
-    return new BACnetConstructedDataProgramChangeBuilderImpl(
-        programChange, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProgramChangeBuilderImpl(programChange);
   }
 
   public static class BACnetConstructedDataProgramChangeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProgramRequestTagged programChange;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProgramChangeBuilderImpl(
-        BACnetProgramRequestTagged programChange,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataProgramChangeBuilderImpl(BACnetProgramRequestTagged programChange) {
       this.programChange = programChange;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProgramChange build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProgramChange bACnetConstructedDataProgramChange =
           new BACnetConstructedDataProgramChange(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              programChange,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, programChange);
       return bACnetConstructedDataProgramChange;
     }
   }

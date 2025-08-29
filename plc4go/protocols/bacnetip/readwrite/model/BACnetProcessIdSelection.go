@@ -313,7 +313,7 @@ func BACnetProcessIdSelectionParseWithBufferProducer[T BACnetProcessIdSelection]
 }
 
 func BACnetProcessIdSelectionParseWithBuffer[T BACnetProcessIdSelection](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetProcessIdSelection{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetProcessIdSelection)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

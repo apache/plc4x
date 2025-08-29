@@ -42,18 +42,13 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
   // Properties.
   protected final BACnetContextTagReal realValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumRealValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagReal realValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagReal realValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.realValue = realValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagReal getRealValue() {
@@ -108,28 +103,21 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
 
     readBuffer.closeContext("BACnetLogRecordLogDatumRealValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumRealValueBuilderImpl(realValue, tagNumber);
+    return new BACnetLogRecordLogDatumRealValueBuilderImpl(realValue);
   }
 
   public static class BACnetLogRecordLogDatumRealValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagReal realValue;
-    private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumRealValueBuilderImpl(
-        BACnetContextTagReal realValue, Short tagNumber) {
+    public BACnetLogRecordLogDatumRealValueBuilderImpl(BACnetContextTagReal realValue) {
       this.realValue = realValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumRealValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumRealValue bACnetLogRecordLogDatumRealValue =
-          new BACnetLogRecordLogDatumRealValue(
-              openingTag, peekedTagHeader, closingTag, realValue, tagNumber);
+          new BACnetLogRecordLogDatumRealValue(openingTag, peekedTagHeader, closingTag, realValue);
       return bACnetLogRecordLogDatumRealValue;
     }
   }

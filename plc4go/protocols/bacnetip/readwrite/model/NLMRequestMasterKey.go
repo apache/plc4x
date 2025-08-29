@@ -62,9 +62,9 @@ var _ NLMRequestMasterKey = (*_NLMRequestMasterKey)(nil)
 var _ NLMRequirements = (*_NLMRequestMasterKey)(nil)
 
 // NewNLMRequestMasterKey factory function for _NLMRequestMasterKey
-func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte, apduLength uint16) *_NLMRequestMasterKey {
+func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte) *_NLMRequestMasterKey {
 	_result := &_NLMRequestMasterKey{
-		NLMContract:                      NewNLM(apduLength),
+		NLMContract:                      NewNLM(),
 		NumberOfSupportedKeyAlgorithms:   numberOfSupportedKeyAlgorithms,
 		EncryptionAndSignatureAlgorithms: encryptionAndSignatureAlgorithms,
 	}

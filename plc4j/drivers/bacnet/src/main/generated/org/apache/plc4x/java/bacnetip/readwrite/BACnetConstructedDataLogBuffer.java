@@ -51,23 +51,15 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetLogRecord> floorText;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLogBuffer(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetLogRecord> floorText,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetLogRecord> floorText) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.floorText = floorText;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (floorText)
     writeComplexTypeArrayField("floorText", floorText, writeBuffer);
@@ -169,43 +157,25 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLogBuffer");
     // Create the instance
-    return new BACnetConstructedDataLogBufferBuilderImpl(
-        numberOfDataElements, floorText, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLogBufferBuilderImpl(numberOfDataElements, floorText);
   }
 
   public static class BACnetConstructedDataLogBufferBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLogRecord> floorText;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLogBufferBuilderImpl(
-        BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetLogRecord> floorText,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger numberOfDataElements, List<BACnetLogRecord> floorText) {
       this.numberOfDataElements = numberOfDataElements;
       this.floorText = floorText;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLogBuffer build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLogBuffer bACnetConstructedDataLogBuffer =
           new BACnetConstructedDataLogBuffer(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              floorText,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, floorText);
       return bACnetConstructedDataLogBuffer;
     }
   }

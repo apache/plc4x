@@ -67,9 +67,9 @@ var _ GetAttributeAllResponse = (*_GetAttributeAllResponse)(nil)
 var _ CipServiceRequirements = (*_GetAttributeAllResponse)(nil)
 
 // NewGetAttributeAllResponse factory function for _GetAttributeAllResponse
-func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAttributes, serviceLen uint16) *_GetAttributeAllResponse {
+func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAttributes) *_GetAttributeAllResponse {
 	_result := &_GetAttributeAllResponse{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		Status:             status,
 		ExtStatus:          extStatus,
 		Attributes:         attributes,

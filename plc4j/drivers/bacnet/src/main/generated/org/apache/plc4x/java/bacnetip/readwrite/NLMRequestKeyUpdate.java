@@ -51,9 +51,6 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
   protected final long set2ExpirationTime;
   protected final byte distributionKeyRevision;
 
-  // Arguments.
-  protected final Integer apduLength;
-
   public NLMRequestKeyUpdate(
       byte set1KeyRevision,
       long set1ActivationTime,
@@ -61,9 +58,8 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
       byte set2KeyRevision,
       long set2ActivationTime,
       long set2ExpirationTime,
-      byte distributionKeyRevision,
-      Integer apduLength) {
-    super(apduLength);
+      byte distributionKeyRevision) {
+    super();
     this.set1KeyRevision = set1KeyRevision;
     this.set1ActivationTime = set1ActivationTime;
     this.set1ExpirationTime = set1ExpirationTime;
@@ -71,7 +67,6 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
     this.set2ActivationTime = set2ActivationTime;
     this.set2ExpirationTime = set2ExpirationTime;
     this.distributionKeyRevision = distributionKeyRevision;
-    this.apduLength = apduLength;
   }
 
   public byte getSet1KeyRevision() {
@@ -201,8 +196,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
         set2KeyRevision,
         set2ActivationTime,
         set2ExpirationTime,
-        distributionKeyRevision,
-        apduLength);
+        distributionKeyRevision);
   }
 
   public static class NLMRequestKeyUpdateBuilderImpl implements NLM.NLMBuilder {
@@ -213,7 +207,6 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
     private final long set2ActivationTime;
     private final long set2ExpirationTime;
     private final byte distributionKeyRevision;
-    private final Integer apduLength;
 
     public NLMRequestKeyUpdateBuilderImpl(
         byte set1KeyRevision,
@@ -222,8 +215,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
         byte set2KeyRevision,
         long set2ActivationTime,
         long set2ExpirationTime,
-        byte distributionKeyRevision,
-        Integer apduLength) {
+        byte distributionKeyRevision) {
       this.set1KeyRevision = set1KeyRevision;
       this.set1ActivationTime = set1ActivationTime;
       this.set1ExpirationTime = set1ExpirationTime;
@@ -231,11 +223,9 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
       this.set2ActivationTime = set2ActivationTime;
       this.set2ExpirationTime = set2ExpirationTime;
       this.distributionKeyRevision = distributionKeyRevision;
-      this.apduLength = apduLength;
     }
 
-    public NLMRequestKeyUpdate build(Integer apduLength) {
-
+    public NLMRequestKeyUpdate build() {
       NLMRequestKeyUpdate nLMRequestKeyUpdate =
           new NLMRequestKeyUpdate(
               set1KeyRevision,
@@ -244,8 +234,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
               set2KeyRevision,
               set2ActivationTime,
               set2ExpirationTime,
-              distributionKeyRevision,
-              apduLength);
+              distributionKeyRevision);
       return nLMRequestKeyUpdate;
     }
   }

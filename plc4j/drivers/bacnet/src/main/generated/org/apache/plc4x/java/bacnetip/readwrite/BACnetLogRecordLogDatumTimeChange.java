@@ -42,18 +42,13 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
   // Properties.
   protected final BACnetContextTagReal timeChange;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumTimeChange(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagReal timeChange,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagReal timeChange) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timeChange = timeChange;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagReal getTimeChange() {
@@ -108,28 +103,22 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
 
     readBuffer.closeContext("BACnetLogRecordLogDatumTimeChange");
     // Create the instance
-    return new BACnetLogRecordLogDatumTimeChangeBuilderImpl(timeChange, tagNumber);
+    return new BACnetLogRecordLogDatumTimeChangeBuilderImpl(timeChange);
   }
 
   public static class BACnetLogRecordLogDatumTimeChangeBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagReal timeChange;
-    private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumTimeChangeBuilderImpl(
-        BACnetContextTagReal timeChange, Short tagNumber) {
+    public BACnetLogRecordLogDatumTimeChangeBuilderImpl(BACnetContextTagReal timeChange) {
       this.timeChange = timeChange;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumTimeChange build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumTimeChange bACnetLogRecordLogDatumTimeChange =
           new BACnetLogRecordLogDatumTimeChange(
-              openingTag, peekedTagHeader, closingTag, timeChange, tagNumber);
+              openingTag, peekedTagHeader, closingTag, timeChange);
       return bACnetLogRecordLogDatumTimeChange;
     }
   }

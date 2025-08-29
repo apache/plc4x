@@ -52,23 +52,15 @@ public class BACnetConstructedDataSubordinateNodeTypes extends BACnetConstructed
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetNodeTypeTagged> subordinateNodeTypes;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSubordinateNodeTypes(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetNodeTypeTagged> subordinateNodeTypes,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetNodeTypeTagged> subordinateNodeTypes) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.subordinateNodeTypes = subordinateNodeTypes;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataSubordinateNodeTypes extends BACnetConstructed
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (subordinateNodeTypes)
     writeComplexTypeArrayField("subordinateNodeTypes", subordinateNodeTypes, writeBuffer);
@@ -175,42 +163,26 @@ public class BACnetConstructedDataSubordinateNodeTypes extends BACnetConstructed
     readBuffer.closeContext("BACnetConstructedDataSubordinateNodeTypes");
     // Create the instance
     return new BACnetConstructedDataSubordinateNodeTypesBuilderImpl(
-        numberOfDataElements, subordinateNodeTypes, tagNumber, arrayIndexArgument);
+        numberOfDataElements, subordinateNodeTypes);
   }
 
   public static class BACnetConstructedDataSubordinateNodeTypesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetNodeTypeTagged> subordinateNodeTypes;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSubordinateNodeTypesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetNodeTypeTagged> subordinateNodeTypes,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetNodeTypeTagged> subordinateNodeTypes) {
       this.numberOfDataElements = numberOfDataElements;
       this.subordinateNodeTypes = subordinateNodeTypes;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSubordinateNodeTypes build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSubordinateNodeTypes bACnetConstructedDataSubordinateNodeTypes =
           new BACnetConstructedDataSubordinateNodeTypes(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              subordinateNodeTypes,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, subordinateNodeTypes);
       return bACnetConstructedDataSubordinateNodeTypes;
     }
   }

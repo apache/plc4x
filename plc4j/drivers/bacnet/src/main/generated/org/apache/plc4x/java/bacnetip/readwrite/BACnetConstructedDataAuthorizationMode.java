@@ -50,21 +50,13 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
   // Properties.
   protected final BACnetAuthorizationModeTagged authorizationMode;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAuthorizationMode(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAuthorizationModeTagged authorizationMode,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAuthorizationModeTagged authorizationMode) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.authorizationMode = authorizationMode;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAuthorizationModeTagged getAuthorizationMode() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataAuthorizationMode");
     // Create the instance
-    return new BACnetConstructedDataAuthorizationModeBuilderImpl(
-        authorizationMode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAuthorizationModeBuilderImpl(authorizationMode);
   }
 
   public static class BACnetConstructedDataAuthorizationModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAuthorizationModeTagged authorizationMode;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAuthorizationModeBuilderImpl(
-        BACnetAuthorizationModeTagged authorizationMode,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetAuthorizationModeTagged authorizationMode) {
       this.authorizationMode = authorizationMode;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAuthorizationMode build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAuthorizationMode bACnetConstructedDataAuthorizationMode =
           new BACnetConstructedDataAuthorizationMode(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              authorizationMode,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, authorizationMode);
       return bACnetConstructedDataAuthorizationMode;
     }
   }

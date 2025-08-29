@@ -49,21 +49,13 @@ public class BACnetConstructedDataNetworkNumber extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger networkNumber;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNetworkNumber(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger networkNumber,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger networkNumber) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.networkNumber = networkNumber;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNetworkNumber() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataNetworkNumber extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataNetworkNumber");
     // Create the instance
-    return new BACnetConstructedDataNetworkNumberBuilderImpl(
-        networkNumber, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNetworkNumberBuilderImpl(networkNumber);
   }
 
   public static class BACnetConstructedDataNetworkNumberBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger networkNumber;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataNetworkNumberBuilderImpl(
-        BACnetApplicationTagUnsignedInteger networkNumber,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger networkNumber) {
       this.networkNumber = networkNumber;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNetworkNumber build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNetworkNumber bACnetConstructedDataNetworkNumber =
           new BACnetConstructedDataNetworkNumber(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              networkNumber,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, networkNumber);
       return bACnetConstructedDataNetworkNumber;
     }
   }

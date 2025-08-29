@@ -44,22 +44,17 @@ public class BACnetLogDataLogData extends BACnetLogData implements Message {
   protected final List<BACnetLogDataLogDataEntry> logData;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogDataLogData(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetOpeningTag innerOpeningTag,
       List<BACnetLogDataLogDataEntry> logData,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.logData = logData;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -147,8 +142,7 @@ public class BACnetLogDataLogData extends BACnetLogData implements Message {
 
     readBuffer.closeContext("BACnetLogDataLogData");
     // Create the instance
-    return new BACnetLogDataLogDataBuilderImpl(
-        innerOpeningTag, logData, innerClosingTag, tagNumber);
+    return new BACnetLogDataLogDataBuilderImpl(innerOpeningTag, logData, innerClosingTag);
   }
 
   public static class BACnetLogDataLogDataBuilderImpl
@@ -156,33 +150,21 @@ public class BACnetLogDataLogData extends BACnetLogData implements Message {
     private final BACnetOpeningTag innerOpeningTag;
     private final List<BACnetLogDataLogDataEntry> logData;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
 
     public BACnetLogDataLogDataBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         List<BACnetLogDataLogDataEntry> logData,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.logData = logData;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogDataLogData build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogDataLogData bACnetLogDataLogData =
           new BACnetLogDataLogData(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              innerOpeningTag,
-              logData,
-              innerClosingTag,
-              tagNumber);
+              openingTag, peekedTagHeader, closingTag, innerOpeningTag, logData, innerClosingTag);
       return bACnetLogDataLogData;
     }
   }

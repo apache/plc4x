@@ -50,21 +50,13 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
   // Properties.
   protected final BACnetVendorIdTagged vendorIdentifier;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataVendorIdentifier(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetVendorIdTagged vendorIdentifier,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetVendorIdTagged vendorIdentifier) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.vendorIdentifier = vendorIdentifier;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetVendorIdTagged getVendorIdentifier() {
@@ -135,39 +127,22 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataVendorIdentifier");
     // Create the instance
-    return new BACnetConstructedDataVendorIdentifierBuilderImpl(
-        vendorIdentifier, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataVendorIdentifierBuilderImpl(vendorIdentifier);
   }
 
   public static class BACnetConstructedDataVendorIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetVendorIdTagged vendorIdentifier;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVendorIdentifierBuilderImpl(
-        BACnetVendorIdTagged vendorIdentifier,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataVendorIdentifierBuilderImpl(BACnetVendorIdTagged vendorIdentifier) {
       this.vendorIdentifier = vendorIdentifier;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataVendorIdentifier build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataVendorIdentifier bACnetConstructedDataVendorIdentifier =
           new BACnetConstructedDataVendorIdentifier(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              vendorIdentifier,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, vendorIdentifier);
       return bACnetConstructedDataVendorIdentifier;
     }
   }

@@ -49,21 +49,13 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
   // Properties.
   protected final List<BACnetRecipient> covuRecipients;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCOVURecipients(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetRecipient> covuRecipients,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetRecipient> covuRecipients) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.covuRecipients = covuRecipients;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetRecipient> getCovuRecipients() {
@@ -126,39 +118,22 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataCOVURecipients");
     // Create the instance
-    return new BACnetConstructedDataCOVURecipientsBuilderImpl(
-        covuRecipients, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCOVURecipientsBuilderImpl(covuRecipients);
   }
 
   public static class BACnetConstructedDataCOVURecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRecipient> covuRecipients;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCOVURecipientsBuilderImpl(
-        List<BACnetRecipient> covuRecipients,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataCOVURecipientsBuilderImpl(List<BACnetRecipient> covuRecipients) {
       this.covuRecipients = covuRecipients;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCOVURecipients build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCOVURecipients bACnetConstructedDataCOVURecipients =
           new BACnetConstructedDataCOVURecipients(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              covuRecipients,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, covuRecipients);
       return bACnetConstructedDataCOVURecipients;
     }
   }

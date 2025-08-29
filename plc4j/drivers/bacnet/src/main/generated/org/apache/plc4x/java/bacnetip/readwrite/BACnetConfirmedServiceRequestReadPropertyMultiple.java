@@ -46,18 +46,10 @@ public class BACnetConfirmedServiceRequestReadPropertyMultiple extends BACnetCon
   // Properties.
   protected final List<BACnetReadAccessSpecification> data;
 
-  // Arguments.
-  protected final Long serviceRequestPayloadLength;
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestReadPropertyMultiple(
-      List<BACnetReadAccessSpecification> data,
-      Long serviceRequestPayloadLength,
-      Long serviceRequestLength) {
+      long serviceRequestLength, List<BACnetReadAccessSpecification> data) {
     super(serviceRequestLength);
     this.data = data;
-    this.serviceRequestPayloadLength = serviceRequestPayloadLength;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public List<BACnetReadAccessSpecification> getData() {
@@ -114,31 +106,22 @@ public class BACnetConfirmedServiceRequestReadPropertyMultiple extends BACnetCon
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadPropertyMultiple");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReadPropertyMultipleBuilderImpl(
-        data, serviceRequestPayloadLength, serviceRequestLength);
+    return new BACnetConfirmedServiceRequestReadPropertyMultipleBuilderImpl(data);
   }
 
   public static class BACnetConfirmedServiceRequestReadPropertyMultipleBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final List<BACnetReadAccessSpecification> data;
-    private final Long serviceRequestPayloadLength;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestReadPropertyMultipleBuilderImpl(
-        List<BACnetReadAccessSpecification> data,
-        Long serviceRequestPayloadLength,
-        Long serviceRequestLength) {
+        List<BACnetReadAccessSpecification> data) {
       this.data = data;
-      this.serviceRequestPayloadLength = serviceRequestPayloadLength;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestReadPropertyMultiple build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestReadPropertyMultiple build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestReadPropertyMultiple
           bACnetConfirmedServiceRequestReadPropertyMultiple =
-              new BACnetConfirmedServiceRequestReadPropertyMultiple(
-                  data, serviceRequestPayloadLength, serviceRequestLength);
+              new BACnetConfirmedServiceRequestReadPropertyMultiple(serviceRequestLength, data);
       return bACnetConfirmedServiceRequestReadPropertyMultiple;
     }
   }

@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueInteger extends BACnetTimerStateChangeVa
   // Properties.
   protected final BACnetApplicationTagSignedInteger integerValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueInteger(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagSignedInteger integerValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagSignedInteger integerValue) {
+    super(peekedTagHeader);
     this.integerValue = integerValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagSignedInteger getIntegerValue() {
@@ -106,24 +100,21 @@ public class BACnetTimerStateChangeValueInteger extends BACnetTimerStateChangeVa
 
     readBuffer.closeContext("BACnetTimerStateChangeValueInteger");
     // Create the instance
-    return new BACnetTimerStateChangeValueIntegerBuilderImpl(integerValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueIntegerBuilderImpl(integerValue);
   }
 
   public static class BACnetTimerStateChangeValueIntegerBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetTimerStateChangeValueIntegerBuilderImpl(
-        BACnetApplicationTagSignedInteger integerValue, BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagSignedInteger integerValue) {
       this.integerValue = integerValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueInteger build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueInteger build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueInteger bACnetTimerStateChangeValueInteger =
-          new BACnetTimerStateChangeValueInteger(peekedTagHeader, integerValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueInteger(peekedTagHeader, integerValue);
       return bACnetTimerStateChangeValueInteger;
     }
   }

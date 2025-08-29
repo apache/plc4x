@@ -58,9 +58,9 @@ var _ ApduDataGroupValueRead = (*_ApduDataGroupValueRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataGroupValueRead)(nil)
 
 // NewApduDataGroupValueRead factory function for _ApduDataGroupValueRead
-func NewApduDataGroupValueRead(dataLength uint8) *_ApduDataGroupValueRead {
+func NewApduDataGroupValueRead() *_ApduDataGroupValueRead {
 	_result := &_ApduDataGroupValueRead{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result

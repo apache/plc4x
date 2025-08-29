@@ -49,21 +49,13 @@ public class BACnetConstructedDataEntryPoints extends BACnetConstructedData impl
   // Properties.
   protected final List<BACnetDeviceObjectReference> entryPoints;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEntryPoints(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetDeviceObjectReference> entryPoints,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDeviceObjectReference> entryPoints) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.entryPoints = entryPoints;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetDeviceObjectReference> getEntryPoints() {
@@ -126,34 +118,23 @@ public class BACnetConstructedDataEntryPoints extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataEntryPoints");
     // Create the instance
-    return new BACnetConstructedDataEntryPointsBuilderImpl(
-        entryPoints, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEntryPointsBuilderImpl(entryPoints);
   }
 
   public static class BACnetConstructedDataEntryPointsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> entryPoints;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataEntryPointsBuilderImpl(
-        List<BACnetDeviceObjectReference> entryPoints,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDeviceObjectReference> entryPoints) {
       this.entryPoints = entryPoints;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEntryPoints build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEntryPoints bACnetConstructedDataEntryPoints =
           new BACnetConstructedDataEntryPoints(
-              openingTag, peekedTagHeader, closingTag, entryPoints, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, entryPoints);
       return bACnetConstructedDataEntryPoints;
     }
   }

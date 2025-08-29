@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntervalOffset = (*_BACnetConstructedDataIntervalOffs
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntervalOffset)(nil)
 
 // NewBACnetConstructedDataIntervalOffset factory function for _BACnetConstructedDataIntervalOffset
-func NewBACnetConstructedDataIntervalOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, intervalOffset BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntervalOffset {
+func NewBACnetConstructedDataIntervalOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, intervalOffset BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataIntervalOffset {
 	if intervalOffset == nil {
 		panic("intervalOffset of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIntervalOffset must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntervalOffset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IntervalOffset:                intervalOffset,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

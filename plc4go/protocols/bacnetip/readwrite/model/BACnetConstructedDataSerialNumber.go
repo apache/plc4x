@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSerialNumber = (*_BACnetConstructedDataSerialNumber)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSerialNumber)(nil)
 
 // NewBACnetConstructedDataSerialNumber factory function for _BACnetConstructedDataSerialNumber
-func NewBACnetConstructedDataSerialNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, serialNumber BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSerialNumber {
+func NewBACnetConstructedDataSerialNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, serialNumber BACnetApplicationTagCharacterString) *_BACnetConstructedDataSerialNumber {
 	if serialNumber == nil {
 		panic("serialNumber of type BACnetApplicationTagCharacterString for BACnetConstructedDataSerialNumber must not be nil")
 	}
 	_result := &_BACnetConstructedDataSerialNumber{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SerialNumber:                  serialNumber,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

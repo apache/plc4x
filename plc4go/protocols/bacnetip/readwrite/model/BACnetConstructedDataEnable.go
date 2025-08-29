@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEnable = (*_BACnetConstructedDataEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEnable)(nil)
 
 // NewBACnetConstructedDataEnable factory function for _BACnetConstructedDataEnable
-func NewBACnetConstructedDataEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnable {
+func NewBACnetConstructedDataEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enable BACnetApplicationTagBoolean) *_BACnetConstructedDataEnable {
 	if enable == nil {
 		panic("enable of type BACnetApplicationTagBoolean for BACnetConstructedDataEnable must not be nil")
 	}
 	_result := &_BACnetConstructedDataEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Enable:                        enable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

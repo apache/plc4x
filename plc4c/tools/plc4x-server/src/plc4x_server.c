@@ -30,7 +30,7 @@
 #define MSG_DONTWAIT 0
 #endif
 
-#include "plc4x_constants.h"
+#include "constants.h"
 
 #define MAX 80
 
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
   serverAddress.sin_family = AF_INET;
   serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
   serverAddress.sin_port =
-      htons(PLC4C_PLC4X_READ_WRITE_PLC4X_CONSTANTS_PLC4X_TCP_DEFAULT_PORT());
+      htons(PLC4C_PLC4X_READ_WRITE_CONSTANTS_PLC4X_TCP_DEFAULT_PORT());
 
   // Binding newly created socket to given IP and verification
   if ((bind(sockFd, (struct sockaddr*)&serverAddress, sizeof(serverAddress))) !=

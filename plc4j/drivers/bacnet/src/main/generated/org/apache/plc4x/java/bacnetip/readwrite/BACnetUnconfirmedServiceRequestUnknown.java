@@ -46,13 +46,9 @@ public class BACnetUnconfirmedServiceRequestUnknown extends BACnetUnconfirmedSer
   // Properties.
   protected final byte[] unknownBytes;
 
-  // Arguments.
-  protected final Integer serviceRequestLength;
-
-  public BACnetUnconfirmedServiceRequestUnknown(byte[] unknownBytes, Integer serviceRequestLength) {
-    super(serviceRequestLength);
+  public BACnetUnconfirmedServiceRequestUnknown(byte[] unknownBytes) {
+    super();
     this.unknownBytes = unknownBytes;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public byte[] getUnknownBytes() {
@@ -106,25 +102,20 @@ public class BACnetUnconfirmedServiceRequestUnknown extends BACnetUnconfirmedSer
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestUnknown");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestUnknownBuilderImpl(
-        unknownBytes, serviceRequestLength);
+    return new BACnetUnconfirmedServiceRequestUnknownBuilderImpl(unknownBytes);
   }
 
   public static class BACnetUnconfirmedServiceRequestUnknownBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final byte[] unknownBytes;
-    private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestUnknownBuilderImpl(
-        byte[] unknownBytes, Integer serviceRequestLength) {
+    public BACnetUnconfirmedServiceRequestUnknownBuilderImpl(byte[] unknownBytes) {
       this.unknownBytes = unknownBytes;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetUnconfirmedServiceRequestUnknown build(Integer serviceRequestLength) {
-
+    public BACnetUnconfirmedServiceRequestUnknown build() {
       BACnetUnconfirmedServiceRequestUnknown bACnetUnconfirmedServiceRequestUnknown =
-          new BACnetUnconfirmedServiceRequestUnknown(unknownBytes, serviceRequestLength);
+          new BACnetUnconfirmedServiceRequestUnknown(unknownBytes);
       return bACnetUnconfirmedServiceRequestUnknown;
     }
   }

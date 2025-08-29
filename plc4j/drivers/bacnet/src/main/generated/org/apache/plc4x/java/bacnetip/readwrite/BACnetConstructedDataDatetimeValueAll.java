@@ -47,19 +47,9 @@ public class BACnetConstructedDataDatetimeValueAll extends BACnetConstructedData
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDatetimeValueAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataDatetimeValueAll extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataDatetimeValueAll");
     // Create the instance
-    return new BACnetConstructedDataDatetimeValueAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDatetimeValueAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataDatetimeValueAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDatetimeValueAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataDatetimeValueAllBuilderImpl() {}
 
     public BACnetConstructedDataDatetimeValueAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDatetimeValueAll bACnetConstructedDataDatetimeValueAll =
-          new BACnetConstructedDataDatetimeValueAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataDatetimeValueAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataDatetimeValueAll;
     }
   }

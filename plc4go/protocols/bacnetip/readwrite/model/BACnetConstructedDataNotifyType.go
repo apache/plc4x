@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNotifyType = (*_BACnetConstructedDataNotifyType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotifyType)(nil)
 
 // NewBACnetConstructedDataNotifyType factory function for _BACnetConstructedDataNotifyType
-func NewBACnetConstructedDataNotifyType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notifyType BACnetNotifyTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotifyType {
+func NewBACnetConstructedDataNotifyType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notifyType BACnetNotifyTypeTagged) *_BACnetConstructedDataNotifyType {
 	if notifyType == nil {
 		panic("notifyType of type BACnetNotifyTypeTagged for BACnetConstructedDataNotifyType must not be nil")
 	}
 	_result := &_BACnetConstructedDataNotifyType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NotifyType:                    notifyType,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

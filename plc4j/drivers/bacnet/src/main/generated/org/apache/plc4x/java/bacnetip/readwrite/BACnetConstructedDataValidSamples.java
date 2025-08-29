@@ -49,21 +49,13 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger validSamples;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataValidSamples(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger validSamples,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger validSamples) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.validSamples = validSamples;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getValidSamples() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataValidSamples");
     // Create the instance
-    return new BACnetConstructedDataValidSamplesBuilderImpl(
-        validSamples, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataValidSamplesBuilderImpl(validSamples);
   }
 
   public static class BACnetConstructedDataValidSamplesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger validSamples;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataValidSamplesBuilderImpl(
-        BACnetApplicationTagUnsignedInteger validSamples,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger validSamples) {
       this.validSamples = validSamples;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataValidSamples build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataValidSamples bACnetConstructedDataValidSamples =
           new BACnetConstructedDataValidSamples(
-              openingTag, peekedTagHeader, closingTag, validSamples, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, validSamples);
       return bACnetConstructedDataValidSamples;
     }
   }

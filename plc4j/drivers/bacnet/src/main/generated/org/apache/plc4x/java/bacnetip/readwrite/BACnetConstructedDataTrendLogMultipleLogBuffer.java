@@ -50,21 +50,13 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
   // Properties.
   protected final List<BACnetLogMultipleRecord> floorText;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTrendLogMultipleLogBuffer(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetLogMultipleRecord> floorText,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetLogMultipleRecord> floorText) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.floorText = floorText;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetLogMultipleRecord> getFloorText() {
@@ -127,40 +119,24 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataTrendLogMultipleLogBuffer");
     // Create the instance
-    return new BACnetConstructedDataTrendLogMultipleLogBufferBuilderImpl(
-        floorText, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTrendLogMultipleLogBufferBuilderImpl(floorText);
   }
 
   public static class BACnetConstructedDataTrendLogMultipleLogBufferBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLogMultipleRecord> floorText;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTrendLogMultipleLogBufferBuilderImpl(
-        List<BACnetLogMultipleRecord> floorText,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetLogMultipleRecord> floorText) {
       this.floorText = floorText;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTrendLogMultipleLogBuffer build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTrendLogMultipleLogBuffer
           bACnetConstructedDataTrendLogMultipleLogBuffer =
               new BACnetConstructedDataTrendLogMultipleLogBuffer(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  floorText,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, floorText);
       return bACnetConstructedDataTrendLogMultipleLogBuffer;
     }
   }

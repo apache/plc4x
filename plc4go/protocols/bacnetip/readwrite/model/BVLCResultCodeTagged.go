@@ -54,20 +54,16 @@ type BVLCResultCodeTagged interface {
 type _BVLCResultCodeTagged struct {
 	Header BACnetTagHeader
 	Value  BVLCResultCode
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BVLCResultCodeTagged = (*_BVLCResultCodeTagged)(nil)
 
 // NewBVLCResultCodeTagged factory function for _BVLCResultCodeTagged
-func NewBVLCResultCodeTagged(header BACnetTagHeader, value BVLCResultCode, tagNumber uint8, tagClass TagClass) *_BVLCResultCodeTagged {
+func NewBVLCResultCodeTagged(header BACnetTagHeader, value BVLCResultCode) *_BVLCResultCodeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BVLCResultCodeTagged must not be nil")
 	}
-	return &_BVLCResultCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BVLCResultCodeTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BVLCResultCodeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BVLCResultCodeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BVLCResultCode) BVLCResultCodeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BVLCResultCodeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BVLCResultCodeTaggedBuilder
 	// Build builds the BVLCResultCodeTagged or returns an error if something is wrong
 	Build() (BVLCResultCodeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BVLCResultCodeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BA
 
 func (b *_BVLCResultCodeTaggedBuilder) WithValue(value BVLCResultCode) BVLCResultCodeTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BVLCResultCodeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BVLCResultCodeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BVLCResultCodeTaggedBuilder) WithArgTagClass(tagClass TagClass) BVLCResultCodeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BVLCResultCodeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagCl
 }
 
 func BVLCResultCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BVLCResultCodeTagged, error) {
-	v, err := (&_BVLCResultCodeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BVLCResultCodeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BVLCResultCodeTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BVLCResultCodeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BVLCResultCodeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BVLCResultCodeTagged) IsBVLCResultCodeTagged() {}
 
 func (m *_BVLCResultCodeTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BVLCResultCodeTagged) deepCopy() *_BVLCResultCodeTagged {
 	_BVLCResultCodeTaggedCopy := &_BVLCResultCodeTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BVLCResultCodeTaggedCopy
 }

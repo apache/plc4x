@@ -343,7 +343,7 @@ func BACnetCOVSubscriptionParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func BACnetCOVSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVSubscription, error) {
-	v, err := (&_BACnetCOVSubscription{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetCOVSubscription)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

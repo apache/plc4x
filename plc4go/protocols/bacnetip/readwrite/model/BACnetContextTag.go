@@ -56,8 +56,6 @@ type BACnetContextTagContract interface {
 	GetTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-	// GetTagNumberArgument() returns a parser argument
-	GetTagNumberArgument() uint8
 	// IsBACnetContextTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTag()
 	// CreateBuilder creates a BACnetContextTagBuilder
@@ -79,19 +77,16 @@ type _BACnetContextTag struct {
 		BACnetContextTagRequirements
 	}
 	Header BACnetTagHeader
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 var _ BACnetContextTagContract = (*_BACnetContextTag)(nil)
 
 // NewBACnetContextTag factory function for _BACnetContextTag
-func NewBACnetContextTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTag {
+func NewBACnetContextTag(header BACnetTagHeader) *_BACnetContextTag {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetContextTag must not be nil")
 	}
-	return &_BACnetContextTag{Header: header, TagNumberArgument: tagNumberArgument}
+	return &_BACnetContextTag{Header: header}
 }
 
 ///////////////////////////////////////////////////////////
@@ -108,8 +103,6 @@ type BACnetContextTagBuilder interface {
 	WithHeader(BACnetTagHeader) BACnetContextTagBuilder
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetContextTagBuilder
-	// WithArgTagNumberArgument sets a parser argument
-	WithArgTagNumberArgument(uint8) BACnetContextTagBuilder
 	// AsBACnetContextTagNull converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
 	AsBACnetContextTagNull() BACnetContextTagNullBuilder
 	// AsBACnetContextTagBoolean converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
@@ -185,11 +178,6 @@ func (b *_BACnetContextTagBuilder) WithHeaderBuilder(builderSupplier func(BACnet
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetContextTagBuilder) WithArgTagNumberArgument(tagNumberArgument uint8) BACnetContextTagBuilder {
-	b.TagNumberArgument = tagNumberArgument
 	return b
 }
 
@@ -483,7 +471,7 @@ func BACnetContextTagParseWithBufferProducer[T BACnetContextTag](tagNumberArgume
 }
 
 func BACnetContextTagParseWithBuffer[T BACnetContextTag](ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (T, error) {
-	v, err := (&_BACnetContextTag{TagNumberArgument: tagNumberArgument}).parse(ctx, readBuffer, tagNumberArgument, dataType)
+	v, err := (new(_BACnetContextTag)).parse(ctx, readBuffer, tagNumberArgument, dataType)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -647,16 +635,6 @@ func (pm *_BACnetContextTag) serializeParent(ctx context.Context, writeBuffer ut
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetContextTag) GetTagNumberArgument() uint8 {
-	return m.TagNumberArgument
-}
-
-//
-////
-
 func (m *_BACnetContextTag) IsBACnetContextTag() {}
 
 func (m *_BACnetContextTag) DeepCopy() any {
@@ -670,7 +648,6 @@ func (m *_BACnetContextTag) deepCopy() *_BACnetContextTag {
 	_BACnetContextTagCopy := &_BACnetContextTag{
 		nil, // will be set by child
 		utils.DeepCopy[BACnetTagHeader](m.Header),
-		m.TagNumberArgument,
 	}
 	return _BACnetContextTagCopy
 }

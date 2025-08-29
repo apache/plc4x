@@ -45,13 +45,9 @@ public class ParameterValueRaw extends ParameterValue implements Message {
   // Properties.
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short numBytes;
-
-  public ParameterValueRaw(byte[] data, Short numBytes) {
-    super(numBytes);
+  public ParameterValueRaw(byte[] data) {
+    super();
     this.data = data;
-    this.numBytes = numBytes;
   }
 
   public byte[] getData() {
@@ -100,21 +96,18 @@ public class ParameterValueRaw extends ParameterValue implements Message {
 
     readBuffer.closeContext("ParameterValueRaw");
     // Create the instance
-    return new ParameterValueRawBuilderImpl(data, numBytes);
+    return new ParameterValueRawBuilderImpl(data);
   }
 
   public static class ParameterValueRawBuilderImpl implements ParameterValue.ParameterValueBuilder {
     private final byte[] data;
-    private final Short numBytes;
 
-    public ParameterValueRawBuilderImpl(byte[] data, Short numBytes) {
+    public ParameterValueRawBuilderImpl(byte[] data) {
       this.data = data;
-      this.numBytes = numBytes;
     }
 
-    public ParameterValueRaw build(Short numBytes) {
-
-      ParameterValueRaw parameterValueRaw = new ParameterValueRaw(data, numBytes);
+    public ParameterValueRaw build() {
+      ParameterValueRaw parameterValueRaw = new ParameterValueRaw(data);
       return parameterValueRaw;
     }
   }

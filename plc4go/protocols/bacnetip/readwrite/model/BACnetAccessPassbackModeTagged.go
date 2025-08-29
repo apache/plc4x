@@ -54,20 +54,16 @@ type BACnetAccessPassbackModeTagged interface {
 type _BACnetAccessPassbackModeTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetAccessPassbackMode
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetAccessPassbackModeTagged = (*_BACnetAccessPassbackModeTagged)(nil)
 
 // NewBACnetAccessPassbackModeTagged factory function for _BACnetAccessPassbackModeTagged
-func NewBACnetAccessPassbackModeTagged(header BACnetTagHeader, value BACnetAccessPassbackMode, tagNumber uint8, tagClass TagClass) *_BACnetAccessPassbackModeTagged {
+func NewBACnetAccessPassbackModeTagged(header BACnetTagHeader, value BACnetAccessPassbackMode) *_BACnetAccessPassbackModeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetAccessPassbackModeTagged must not be nil")
 	}
-	return &_BACnetAccessPassbackModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetAccessPassbackModeTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetAccessPassbackModeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessPassbackModeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetAccessPassbackMode) BACnetAccessPassbackModeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAccessPassbackModeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetAccessPassbackModeTaggedBuilder
 	// Build builds the BACnetAccessPassbackModeTagged or returns an error if something is wrong
 	Build() (BACnetAccessPassbackModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetAccessPassbackModeTaggedBuilder) WithHeaderBuilder(builderSuppli
 
 func (b *_BACnetAccessPassbackModeTaggedBuilder) WithValue(value BACnetAccessPassbackMode) BACnetAccessPassbackModeTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetAccessPassbackModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessPassbackModeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetAccessPassbackModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessPassbackModeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetAccessPassbackModeTaggedParseWithBufferProducer(tagNumber uint8, tagC
 }
 
 func BACnetAccessPassbackModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessPassbackModeTagged, error) {
-	v, err := (&_BACnetAccessPassbackModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetAccessPassbackModeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetAccessPassbackModeTagged) SerializeWithWriteBuffer(ctx context.C
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAccessPassbackModeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetAccessPassbackModeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetAccessPassbackModeTagged) IsBACnetAccessPassbackModeTagged() {}
 
 func (m *_BACnetAccessPassbackModeTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetAccessPassbackModeTagged) deepCopy() *_BACnetAccessPassbackModeT
 	_BACnetAccessPassbackModeTaggedCopy := &_BACnetAccessPassbackModeTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetAccessPassbackModeTaggedCopy
 }

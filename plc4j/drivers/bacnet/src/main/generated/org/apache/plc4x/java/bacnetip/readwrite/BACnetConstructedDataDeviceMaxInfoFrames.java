@@ -50,21 +50,13 @@ public class BACnetConstructedDataDeviceMaxInfoFrames extends BACnetConstructedD
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger maxInfoFrames;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDeviceMaxInfoFrames(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger maxInfoFrames,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger maxInfoFrames) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.maxInfoFrames = maxInfoFrames;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getMaxInfoFrames() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataDeviceMaxInfoFrames extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataDeviceMaxInfoFrames");
     // Create the instance
-    return new BACnetConstructedDataDeviceMaxInfoFramesBuilderImpl(
-        maxInfoFrames, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDeviceMaxInfoFramesBuilderImpl(maxInfoFrames);
   }
 
   public static class BACnetConstructedDataDeviceMaxInfoFramesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxInfoFrames;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDeviceMaxInfoFramesBuilderImpl(
-        BACnetApplicationTagUnsignedInteger maxInfoFrames,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger maxInfoFrames) {
       this.maxInfoFrames = maxInfoFrames;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDeviceMaxInfoFrames build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDeviceMaxInfoFrames bACnetConstructedDataDeviceMaxInfoFrames =
           new BACnetConstructedDataDeviceMaxInfoFrames(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              maxInfoFrames,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, maxInfoFrames);
       return bACnetConstructedDataDeviceMaxInfoFrames;
     }
   }

@@ -64,12 +64,12 @@ var _ ModbusAsciiADU = (*_ModbusAsciiADU)(nil)
 var _ ModbusADURequirements = (*_ModbusAsciiADU)(nil)
 
 // NewModbusAsciiADU factory function for _ModbusAsciiADU
-func NewModbusAsciiADU(address uint8, pdu ModbusPDU, response bool) *_ModbusAsciiADU {
+func NewModbusAsciiADU(address uint8, pdu ModbusPDU) *_ModbusAsciiADU {
 	if pdu == nil {
 		panic("pdu of type ModbusPDU for ModbusAsciiADU must not be nil")
 	}
 	_result := &_ModbusAsciiADU{
-		ModbusADUContract: NewModbusADU(response),
+		ModbusADUContract: NewModbusADU(),
 		Address:           address,
 		Pdu:               pdu,
 	}

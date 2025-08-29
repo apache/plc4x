@@ -160,7 +160,7 @@ func LocaleIdParseWithBufferProducer() func(ctx context.Context, readBuffer util
 }
 
 func LocaleIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LocaleId, error) {
-	v, err := (&_LocaleId{}).parse(ctx, readBuffer)
+	v, err := (new(_LocaleId)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

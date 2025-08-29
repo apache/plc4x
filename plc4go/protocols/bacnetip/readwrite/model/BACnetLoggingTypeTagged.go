@@ -59,20 +59,16 @@ type _BACnetLoggingTypeTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetLoggingType
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLoggingTypeTagged = (*_BACnetLoggingTypeTagged)(nil)
 
 // NewBACnetLoggingTypeTagged factory function for _BACnetLoggingTypeTagged
-func NewBACnetLoggingTypeTagged(header BACnetTagHeader, value BACnetLoggingType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLoggingTypeTagged {
+func NewBACnetLoggingTypeTagged(header BACnetTagHeader, value BACnetLoggingType, proprietaryValue uint32) *_BACnetLoggingTypeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLoggingTypeTagged must not be nil")
 	}
-	return &_BACnetLoggingTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLoggingTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetLoggingTypeTaggedBuilder interface {
 	WithValue(BACnetLoggingType) BACnetLoggingTypeTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetLoggingTypeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLoggingTypeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLoggingTypeTaggedBuilder
 	// Build builds the BACnetLoggingTypeTagged or returns an error if something is wrong
 	Build() (BACnetLoggingTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetLoggingTypeTaggedBuilder) WithValue(value BACnetLoggingType) BAC
 
 func (b *_BACnetLoggingTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLoggingTypeTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetLoggingTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLoggingTypeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLoggingTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLoggingTypeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetLoggingTypeTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetLoggingTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLoggingTypeTagged, error) {
-	v, err := (&_BACnetLoggingTypeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLoggingTypeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetLoggingTypeTagged) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLoggingTypeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLoggingTypeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLoggingTypeTagged) IsBACnetLoggingTypeTagged() {}
 
 func (m *_BACnetLoggingTypeTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetLoggingTypeTagged) deepCopy() *_BACnetLoggingTypeTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLoggingTypeTaggedCopy
 }

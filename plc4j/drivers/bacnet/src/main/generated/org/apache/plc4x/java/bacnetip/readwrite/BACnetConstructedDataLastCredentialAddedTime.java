@@ -50,21 +50,13 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
   // Properties.
   protected final BACnetDateTime lastCredentialAddedTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLastCredentialAddedTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime lastCredentialAddedTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime lastCredentialAddedTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lastCredentialAddedTime = lastCredentialAddedTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getLastCredentialAddedTime() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataLastCredentialAddedTime");
     // Create the instance
-    return new BACnetConstructedDataLastCredentialAddedTimeBuilderImpl(
-        lastCredentialAddedTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastCredentialAddedTimeBuilderImpl(lastCredentialAddedTime);
   }
 
   public static class BACnetConstructedDataLastCredentialAddedTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime lastCredentialAddedTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLastCredentialAddedTimeBuilderImpl(
-        BACnetDateTime lastCredentialAddedTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDateTime lastCredentialAddedTime) {
       this.lastCredentialAddedTime = lastCredentialAddedTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLastCredentialAddedTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLastCredentialAddedTime bACnetConstructedDataLastCredentialAddedTime =
           new BACnetConstructedDataLastCredentialAddedTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              lastCredentialAddedTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lastCredentialAddedTime);
       return bACnetConstructedDataLastCredentialAddedTime;
     }
   }

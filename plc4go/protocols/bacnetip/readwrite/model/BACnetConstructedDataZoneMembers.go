@@ -59,9 +59,9 @@ var _ BACnetConstructedDataZoneMembers = (*_BACnetConstructedDataZoneMembers)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneMembers)(nil)
 
 // NewBACnetConstructedDataZoneMembers factory function for _BACnetConstructedDataZoneMembers
-func NewBACnetConstructedDataZoneMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, members []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneMembers {
+func NewBACnetConstructedDataZoneMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, members []BACnetDeviceObjectReference) *_BACnetConstructedDataZoneMembers {
 	_result := &_BACnetConstructedDataZoneMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Members:                       members,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

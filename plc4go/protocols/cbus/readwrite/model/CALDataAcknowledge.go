@@ -62,9 +62,9 @@ var _ CALDataAcknowledge = (*_CALDataAcknowledge)(nil)
 var _ CALDataRequirements = (*_CALDataAcknowledge)(nil)
 
 // NewCALDataAcknowledge factory function for _CALDataAcknowledge
-func NewCALDataAcknowledge(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code uint8, requestContext RequestContext) *_CALDataAcknowledge {
+func NewCALDataAcknowledge(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code uint8) *_CALDataAcknowledge {
 	_result := &_CALDataAcknowledge{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(requestContext, commandTypeContainer, additionalData),
 		ParamNo:         paramNo,
 		Code:            code,
 	}

@@ -42,19 +42,14 @@ public class BACnetEventParameterChangeOfTimerAlarmValue implements Message {
   protected final List<BACnetTimerStateTagged> alarmValues;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterChangeOfTimerAlarmValue(
       BACnetOpeningTag openingTag,
       List<BACnetTimerStateTagged> alarmValues,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.alarmValues = alarmValues;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -148,8 +143,7 @@ public class BACnetEventParameterChangeOfTimerAlarmValue implements Message {
     // Create the instance
     BACnetEventParameterChangeOfTimerAlarmValue _bACnetEventParameterChangeOfTimerAlarmValue;
     _bACnetEventParameterChangeOfTimerAlarmValue =
-        new BACnetEventParameterChangeOfTimerAlarmValue(
-            openingTag, alarmValues, closingTag, tagNumber);
+        new BACnetEventParameterChangeOfTimerAlarmValue(openingTag, alarmValues, closingTag);
     return _bACnetEventParameterChangeOfTimerAlarmValue;
   }
 

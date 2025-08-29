@@ -52,23 +52,15 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetApplicationTagObjectIdentifier> configurationFiles;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataConfigurationFiles(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetApplicationTagObjectIdentifier> configurationFiles,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagObjectIdentifier> configurationFiles) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.configurationFiles = configurationFiles;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (configurationFiles)
     writeComplexTypeArrayField("configurationFiles", configurationFiles, writeBuffer);
@@ -175,42 +163,26 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
     readBuffer.closeContext("BACnetConstructedDataConfigurationFiles");
     // Create the instance
     return new BACnetConstructedDataConfigurationFilesBuilderImpl(
-        numberOfDataElements, configurationFiles, tagNumber, arrayIndexArgument);
+        numberOfDataElements, configurationFiles);
   }
 
   public static class BACnetConstructedDataConfigurationFilesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> configurationFiles;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataConfigurationFilesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetApplicationTagObjectIdentifier> configurationFiles,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagObjectIdentifier> configurationFiles) {
       this.numberOfDataElements = numberOfDataElements;
       this.configurationFiles = configurationFiles;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataConfigurationFiles build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataConfigurationFiles bACnetConstructedDataConfigurationFiles =
           new BACnetConstructedDataConfigurationFiles(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              configurationFiles,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, configurationFiles);
       return bACnetConstructedDataConfigurationFiles;
     }
   }

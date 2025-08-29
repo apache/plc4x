@@ -39,7 +39,7 @@ func NewWhatIsNetworkNumber(args Args, kwArgs KWArgs, options ...Option) (*WhatI
 	}
 	ApplyAppliers(options, i)
 	options = AddLeafTypeIfAbundant(options, i)
-	options = AddNLMIfAbundant(options, model.NewNLMWhatIsNetworkNumber(0))
+	options = AddNLMIfAbundant(options, model.NewNLMWhatIsNetworkNumber())
 	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")

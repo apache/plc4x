@@ -65,9 +65,9 @@ var _ RequestSmartConnectShortcut = (*_RequestSmartConnectShortcut)(nil)
 var _ RequestRequirements = (*_RequestSmartConnectShortcut)(nil)
 
 // NewRequestSmartConnectShortcut factory function for _RequestSmartConnectShortcut
-func NewRequestSmartConnectShortcut(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, pipePeek RequestType, secondPipe *byte, cBusOptions CBusOptions) *_RequestSmartConnectShortcut {
+func NewRequestSmartConnectShortcut(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, pipePeek RequestType, secondPipe *byte) *_RequestSmartConnectShortcut {
 	_result := &_RequestSmartConnectShortcut{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination),
 		PipePeek:        pipePeek,
 		SecondPipe:      secondPipe,
 	}

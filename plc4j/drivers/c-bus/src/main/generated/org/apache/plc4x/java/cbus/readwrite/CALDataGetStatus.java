@@ -43,19 +43,15 @@ public class CALDataGetStatus extends CALData implements Message {
   protected final Parameter paramNo;
   protected final short count;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataGetStatus(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
       CALData additionalData,
       Parameter paramNo,
-      short count,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
+      short count) {
+    super(requestContext, commandTypeContainer, additionalData);
     this.paramNo = paramNo;
     this.count = count;
-    this.requestContext = requestContext;
   }
 
   public Parameter getParamNo() {
@@ -121,28 +117,25 @@ public class CALDataGetStatus extends CALData implements Message {
 
     readBuffer.closeContext("CALDataGetStatus");
     // Create the instance
-    return new CALDataGetStatusBuilderImpl(paramNo, count, requestContext);
+    return new CALDataGetStatusBuilderImpl(paramNo, count);
   }
 
   public static class CALDataGetStatusBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final short count;
-    private final RequestContext requestContext;
 
-    public CALDataGetStatusBuilderImpl(
-        Parameter paramNo, short count, RequestContext requestContext) {
+    public CALDataGetStatusBuilderImpl(Parameter paramNo, short count) {
       this.paramNo = paramNo;
       this.count = count;
-      this.requestContext = requestContext;
     }
 
     public CALDataGetStatus build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataGetStatus cALDataGetStatus =
           new CALDataGetStatus(
-              commandTypeContainer, additionalData, paramNo, count, requestContext);
+              requestContext, commandTypeContainer, additionalData, paramNo, count);
       return cALDataGetStatus;
     }
   }

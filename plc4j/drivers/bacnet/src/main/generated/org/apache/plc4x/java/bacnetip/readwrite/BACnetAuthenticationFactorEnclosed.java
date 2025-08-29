@@ -42,19 +42,14 @@ public class BACnetAuthenticationFactorEnclosed implements Message {
   protected final BACnetAuthenticationFactor authenticationFactor;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetAuthenticationFactorEnclosed(
       BACnetOpeningTag openingTag,
       BACnetAuthenticationFactor authenticationFactor,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.authenticationFactor = authenticationFactor;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -136,8 +131,7 @@ public class BACnetAuthenticationFactorEnclosed implements Message {
     // Create the instance
     BACnetAuthenticationFactorEnclosed _bACnetAuthenticationFactorEnclosed;
     _bACnetAuthenticationFactorEnclosed =
-        new BACnetAuthenticationFactorEnclosed(
-            openingTag, authenticationFactor, closingTag, tagNumber);
+        new BACnetAuthenticationFactorEnclosed(openingTag, authenticationFactor, closingTag);
     return _bACnetAuthenticationFactorEnclosed;
   }
 

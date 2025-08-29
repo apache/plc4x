@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSecurityPDUTimeout = (*_BACnetConstructedDataSecurity
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSecurityPDUTimeout)(nil)
 
 // NewBACnetConstructedDataSecurityPDUTimeout factory function for _BACnetConstructedDataSecurityPDUTimeout
-func NewBACnetConstructedDataSecurityPDUTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityPduTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityPDUTimeout {
+func NewBACnetConstructedDataSecurityPDUTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityPduTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataSecurityPDUTimeout {
 	if securityPduTimeout == nil {
 		panic("securityPduTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityPDUTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataSecurityPDUTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SecurityPduTimeout:            securityPduTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

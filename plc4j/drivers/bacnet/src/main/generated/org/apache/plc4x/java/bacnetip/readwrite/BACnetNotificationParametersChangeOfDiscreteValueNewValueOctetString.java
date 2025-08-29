@@ -43,18 +43,13 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStrin
   // Properties.
   protected final BACnetApplicationTagOctetString octetStringValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagOctetString octetStringValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetApplicationTagOctetString octetStringValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.octetStringValue = octetStringValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetApplicationTagOctetString getOctetStringValue() {
@@ -109,7 +104,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStrin
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString");
     // Create the instance
     return new BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilderImpl(
-        octetStringValue, tagNumber);
+        octetStringValue);
   }
 
   public static
@@ -117,23 +112,18 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStrin
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagOctetString octetStringValue;
-    private final Short tagNumber;
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilderImpl(
-        BACnetApplicationTagOctetString octetStringValue, Short tagNumber) {
+        BACnetApplicationTagOctetString octetStringValue) {
       this.octetStringValue = octetStringValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
           bACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString =
               new BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString(
-                  openingTag, peekedTagHeader, closingTag, octetStringValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, octetStringValue);
       return bACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString;
     }
   }

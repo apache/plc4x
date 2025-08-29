@@ -50,21 +50,13 @@ public class BACnetConstructedDataDateTimeValuePresentValue extends BACnetConstr
   // Properties.
   protected final BACnetDateTime presentValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDateTimeValuePresentValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime presentValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime presentValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.presentValue = presentValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getPresentValue() {
@@ -130,40 +122,23 @@ public class BACnetConstructedDataDateTimeValuePresentValue extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataDateTimeValuePresentValue");
     // Create the instance
-    return new BACnetConstructedDataDateTimeValuePresentValueBuilderImpl(
-        presentValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDateTimeValuePresentValueBuilderImpl(presentValue);
   }
 
   public static class BACnetConstructedDataDateTimeValuePresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime presentValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDateTimeValuePresentValueBuilderImpl(
-        BACnetDateTime presentValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataDateTimeValuePresentValueBuilderImpl(BACnetDateTime presentValue) {
       this.presentValue = presentValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDateTimeValuePresentValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDateTimeValuePresentValue
           bACnetConstructedDataDateTimeValuePresentValue =
               new BACnetConstructedDataDateTimeValuePresentValue(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  presentValue,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, presentValue);
       return bACnetConstructedDataDateTimeValuePresentValue;
     }
   }

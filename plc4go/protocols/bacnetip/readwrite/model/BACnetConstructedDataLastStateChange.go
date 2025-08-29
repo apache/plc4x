@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastStateChange = (*_BACnetConstructedDataLastStateCh
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastStateChange)(nil)
 
 // NewBACnetConstructedDataLastStateChange factory function for _BACnetConstructedDataLastStateChange
-func NewBACnetConstructedDataLastStateChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastStateChange BACnetTimerTransitionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastStateChange {
+func NewBACnetConstructedDataLastStateChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastStateChange BACnetTimerTransitionTagged) *_BACnetConstructedDataLastStateChange {
 	if lastStateChange == nil {
 		panic("lastStateChange of type BACnetTimerTransitionTagged for BACnetConstructedDataLastStateChange must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastStateChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastStateChange:               lastStateChange,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

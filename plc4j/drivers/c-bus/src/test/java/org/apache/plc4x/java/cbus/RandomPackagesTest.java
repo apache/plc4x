@@ -460,12 +460,12 @@ public class RandomPackagesTest {
         @Test
         void BridgedIdentify() throws Exception {
             cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
-            CALDataIdentify calDataIdentify = new CALDataIdentify(CALCommandTypeContainer.CALCommandIdentify, null, Attribute.Type, requestContext);
+            CALDataIdentify calDataIdentify = new CALDataIdentify(requestContext, CALCommandTypeContainer.CALCommandIdentify, null, Attribute.Type);
             NetworkRoute networkRoute = new NetworkRoute(new NetworkProtocolControlInformation((byte) 1, (byte) 1), new ArrayList<>());
-            CBusPointToPointCommandIndirect cBusPointToPointCommandIndirect = new CBusPointToPointCommandIndirect(1, calDataIdentify, new BridgeAddress((byte) 253), networkRoute, new UnitAddress((byte) 10), cBusOptions);
-            CBusCommandPointToPoint cbusCommand = new CBusCommandPointToPoint(new CBusHeader(PriorityClass.Class4, false, (byte) 0, DestinationAddressType.PointToPoint), cBusPointToPointCommandIndirect, cBusOptions);
-            RequestCommand request = new RequestCommand(RequestType.REQUEST_COMMAND, null, null, null, new RequestTermination(), cbusCommand, null, null, cBusOptions);
-            CBusMessageToServer cBusMessageToServer = new CBusMessageToServer(request, requestContext, cBusOptions);
+            CBusPointToPointCommandIndirect cBusPointToPointCommandIndirect = new CBusPointToPointCommandIndirect(1, calDataIdentify, new BridgeAddress((byte) 253), networkRoute, new UnitAddress((byte) 10));
+            CBusCommandPointToPoint cbusCommand = new CBusCommandPointToPoint(new CBusHeader(PriorityClass.Class4, false, (byte) 0, DestinationAddressType.PointToPoint), cBusPointToPointCommandIndirect);
+            RequestCommand request = new RequestCommand(RequestType.REQUEST_COMMAND, null, null, null, new RequestTermination(), cBusOptions, cbusCommand, null, null);
+            CBusMessageToServer cBusMessageToServer = new CBusMessageToServer(request);
 
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(cBusMessageToServer.getLengthInBytes());
             cBusMessageToServer.serialize(writeBuffer);

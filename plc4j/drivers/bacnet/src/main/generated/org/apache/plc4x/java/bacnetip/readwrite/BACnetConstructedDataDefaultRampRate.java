@@ -49,21 +49,13 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
   // Properties.
   protected final BACnetApplicationTagReal defaultRampRate;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDefaultRampRate(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal defaultRampRate,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal defaultRampRate) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.defaultRampRate = defaultRampRate;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getDefaultRampRate() {
@@ -132,39 +124,23 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataDefaultRampRate");
     // Create the instance
-    return new BACnetConstructedDataDefaultRampRateBuilderImpl(
-        defaultRampRate, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDefaultRampRateBuilderImpl(defaultRampRate);
   }
 
   public static class BACnetConstructedDataDefaultRampRateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal defaultRampRate;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDefaultRampRateBuilderImpl(
-        BACnetApplicationTagReal defaultRampRate,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagReal defaultRampRate) {
       this.defaultRampRate = defaultRampRate;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDefaultRampRate build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDefaultRampRate bACnetConstructedDataDefaultRampRate =
           new BACnetConstructedDataDefaultRampRate(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              defaultRampRate,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, defaultRampRate);
       return bACnetConstructedDataDefaultRampRate;
     }
   }

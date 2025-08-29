@@ -42,16 +42,10 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
   // Properties.
   protected final BACnetApplicationTagOctetString octetStringValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueOctetString(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagOctetString octetStringValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagOctetString octetStringValue) {
+    super(peekedTagHeader);
     this.octetStringValue = octetStringValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagOctetString getOctetStringValue() {
@@ -104,24 +98,21 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
 
     readBuffer.closeContext("BACnetPriorityValueOctetString");
     // Create the instance
-    return new BACnetPriorityValueOctetStringBuilderImpl(octetStringValue, objectTypeArgument);
+    return new BACnetPriorityValueOctetStringBuilderImpl(octetStringValue);
   }
 
   public static class BACnetPriorityValueOctetStringBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagOctetString octetStringValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetPriorityValueOctetStringBuilderImpl(
-        BACnetApplicationTagOctetString octetStringValue, BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagOctetString octetStringValue) {
       this.octetStringValue = octetStringValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueOctetString build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueOctetString build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueOctetString bACnetPriorityValueOctetString =
-          new BACnetPriorityValueOctetString(peekedTagHeader, octetStringValue, objectTypeArgument);
+          new BACnetPriorityValueOctetString(peekedTagHeader, octetStringValue);
       return bACnetPriorityValueOctetString;
     }
   }

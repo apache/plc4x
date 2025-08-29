@@ -64,9 +64,9 @@ var _ BACnetConstructedDataCharacterStringValueFaultValues = (*_BACnetConstructe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCharacterStringValueFaultValues)(nil)
 
 // NewBACnetConstructedDataCharacterStringValueFaultValues factory function for _BACnetConstructedDataCharacterStringValueFaultValues
-func NewBACnetConstructedDataCharacterStringValueFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, faultValues []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValueFaultValues {
+func NewBACnetConstructedDataCharacterStringValueFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, faultValues []BACnetOptionalCharacterString) *_BACnetConstructedDataCharacterStringValueFaultValues {
 	_result := &_BACnetConstructedDataCharacterStringValueFaultValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		FaultValues:                   faultValues,
 	}

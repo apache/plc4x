@@ -517,7 +517,7 @@ func BACnetEventParameterParseWithBufferProducer[T BACnetEventParameter]() func(
 }
 
 func BACnetEventParameterParseWithBuffer[T BACnetEventParameter](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetEventParameter{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetEventParameter)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

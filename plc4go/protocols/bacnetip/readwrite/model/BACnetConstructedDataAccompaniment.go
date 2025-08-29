@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccompaniment = (*_BACnetConstructedDataAccompaniment
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccompaniment)(nil)
 
 // NewBACnetConstructedDataAccompaniment factory function for _BACnetConstructedDataAccompaniment
-func NewBACnetConstructedDataAccompaniment(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accompaniment BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompaniment {
+func NewBACnetConstructedDataAccompaniment(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accompaniment BACnetDeviceObjectReference) *_BACnetConstructedDataAccompaniment {
 	if accompaniment == nil {
 		panic("accompaniment of type BACnetDeviceObjectReference for BACnetConstructedDataAccompaniment must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccompaniment{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Accompaniment:                 accompaniment,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -54,9 +54,9 @@ var _ ApduDataExtReadRouterStatusResponse = (*_ApduDataExtReadRouterStatusRespon
 var _ ApduDataExtRequirements = (*_ApduDataExtReadRouterStatusResponse)(nil)
 
 // NewApduDataExtReadRouterStatusResponse factory function for _ApduDataExtReadRouterStatusResponse
-func NewApduDataExtReadRouterStatusResponse(length uint8) *_ApduDataExtReadRouterStatusResponse {
+func NewApduDataExtReadRouterStatusResponse() *_ApduDataExtReadRouterStatusResponse {
 	_result := &_ApduDataExtReadRouterStatusResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

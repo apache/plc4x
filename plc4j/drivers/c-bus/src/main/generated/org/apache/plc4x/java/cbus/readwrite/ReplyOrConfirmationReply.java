@@ -43,21 +43,10 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
   protected final Reply reply;
   protected final ResponseTermination termination;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
-  public ReplyOrConfirmationReply(
-      byte peekedByte,
-      Reply reply,
-      ResponseTermination termination,
-      CBusOptions cBusOptions,
-      RequestContext requestContext) {
-    super(peekedByte, cBusOptions, requestContext);
+  public ReplyOrConfirmationReply(byte peekedByte, Reply reply, ResponseTermination termination) {
+    super(peekedByte);
     this.reply = reply;
     this.termination = termination;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public Reply getReply() {
@@ -127,31 +116,22 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
 
     readBuffer.closeContext("ReplyOrConfirmationReply");
     // Create the instance
-    return new ReplyOrConfirmationReplyBuilderImpl(reply, termination, cBusOptions, requestContext);
+    return new ReplyOrConfirmationReplyBuilderImpl(reply, termination);
   }
 
   public static class ReplyOrConfirmationReplyBuilderImpl
       implements ReplyOrConfirmation.ReplyOrConfirmationBuilder {
     private final Reply reply;
     private final ResponseTermination termination;
-    private final CBusOptions cBusOptions;
-    private final RequestContext requestContext;
 
-    public ReplyOrConfirmationReplyBuilderImpl(
-        Reply reply,
-        ResponseTermination termination,
-        CBusOptions cBusOptions,
-        RequestContext requestContext) {
+    public ReplyOrConfirmationReplyBuilderImpl(Reply reply, ResponseTermination termination) {
       this.reply = reply;
       this.termination = termination;
-      this.cBusOptions = cBusOptions;
-      this.requestContext = requestContext;
     }
 
-    public ReplyOrConfirmationReply build(
-        byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext) {
+    public ReplyOrConfirmationReply build(byte peekedByte) {
       ReplyOrConfirmationReply replyOrConfirmationReply =
-          new ReplyOrConfirmationReply(peekedByte, reply, termination, cBusOptions, requestContext);
+          new ReplyOrConfirmationReply(peekedByte, reply, termination);
       return replyOrConfirmationReply;
     }
   }

@@ -48,18 +48,14 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
       reinitializedStateOfDevice;
   protected final BACnetContextTagCharacterString password;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestReinitializeDevice(
+      long serviceRequestLength,
       BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
           reinitializedStateOfDevice,
-      BACnetContextTagCharacterString password,
-      Long serviceRequestLength) {
+      BACnetContextTagCharacterString password) {
     super(serviceRequestLength);
     this.reinitializedStateOfDevice = reinitializedStateOfDevice;
     this.password = password;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
@@ -145,7 +141,7 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
     readBuffer.closeContext("BACnetConfirmedServiceRequestReinitializeDevice");
     // Create the instance
     return new BACnetConfirmedServiceRequestReinitializeDeviceBuilderImpl(
-        reinitializedStateOfDevice, password, serviceRequestLength);
+        reinitializedStateOfDevice, password);
   }
 
   public static class BACnetConfirmedServiceRequestReinitializeDeviceBuilderImpl
@@ -153,24 +149,20 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
     private final BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
         reinitializedStateOfDevice;
     private final BACnetContextTagCharacterString password;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestReinitializeDeviceBuilderImpl(
         BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
             reinitializedStateOfDevice,
-        BACnetContextTagCharacterString password,
-        Long serviceRequestLength) {
+        BACnetContextTagCharacterString password) {
       this.reinitializedStateOfDevice = reinitializedStateOfDevice;
       this.password = password;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestReinitializeDevice build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestReinitializeDevice build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestReinitializeDevice
           bACnetConfirmedServiceRequestReinitializeDevice =
               new BACnetConfirmedServiceRequestReinitializeDevice(
-                  reinitializedStateOfDevice, password, serviceRequestLength);
+                  serviceRequestLength, reinitializedStateOfDevice, password);
       return bACnetConfirmedServiceRequestReinitializeDevice;
     }
   }

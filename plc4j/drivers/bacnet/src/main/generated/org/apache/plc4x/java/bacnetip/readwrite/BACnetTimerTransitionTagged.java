@@ -41,17 +41,10 @@ public class BACnetTimerTransitionTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetTimerTransition value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetTimerTransitionTagged(
-      BACnetTagHeader header, BACnetTimerTransition value, Short tagNumber, TagClass tagClass) {
+  public BACnetTimerTransitionTagged(BACnetTagHeader header, BACnetTimerTransition value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,8 +126,7 @@ public class BACnetTimerTransitionTagged implements Message {
     readBuffer.closeContext("BACnetTimerTransitionTagged");
     // Create the instance
     BACnetTimerTransitionTagged _bACnetTimerTransitionTagged;
-    _bACnetTimerTransitionTagged =
-        new BACnetTimerTransitionTagged(header, value, tagNumber, tagClass);
+    _bACnetTimerTransitionTagged = new BACnetTimerTransitionTagged(header, value);
     return _bACnetTimerTransitionTagged;
   }
 

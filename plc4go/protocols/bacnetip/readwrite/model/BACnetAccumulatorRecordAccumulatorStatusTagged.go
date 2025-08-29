@@ -54,20 +54,16 @@ type BACnetAccumulatorRecordAccumulatorStatusTagged interface {
 type _BACnetAccumulatorRecordAccumulatorStatusTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetAccumulatorRecordAccumulatorStatus
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetAccumulatorRecordAccumulatorStatusTagged = (*_BACnetAccumulatorRecordAccumulatorStatusTagged)(nil)
 
 // NewBACnetAccumulatorRecordAccumulatorStatusTagged factory function for _BACnetAccumulatorRecordAccumulatorStatusTagged
-func NewBACnetAccumulatorRecordAccumulatorStatusTagged(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus, tagNumber uint8, tagClass TagClass) *_BACnetAccumulatorRecordAccumulatorStatusTagged {
+func NewBACnetAccumulatorRecordAccumulatorStatusTagged(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus) *_BACnetAccumulatorRecordAccumulatorStatusTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetAccumulatorRecordAccumulatorStatusTagged must not be nil")
 	}
-	return &_BACnetAccumulatorRecordAccumulatorStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetAccumulatorRecordAccumulatorStatusTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
 	// Build builds the BACnetAccumulatorRecordAccumulatorStatusTagged or returns an error if something is wrong
 	Build() (BACnetAccumulatorRecordAccumulatorStatusTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithHeaderBuild
 
 func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithValue(value BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBufferProducer(tagNu
 }
 
 func BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccumulatorRecordAccumulatorStatusTagged, error) {
-	v, err := (&_BACnetAccumulatorRecordAccumulatorStatusTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetAccumulatorRecordAccumulatorStatusTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) SerializeWithWriteBuff
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) IsBACnetAccumulatorRecordAccumulatorStatusTagged() {
 }
 
@@ -344,8 +314,6 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) deepCopy() *_BACnetAcc
 	_BACnetAccumulatorRecordAccumulatorStatusTaggedCopy := &_BACnetAccumulatorRecordAccumulatorStatusTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetAccumulatorRecordAccumulatorStatusTaggedCopy
 }

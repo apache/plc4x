@@ -46,14 +46,10 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
   // Properties.
   protected final BACnetApplicationTagObjectIdentifier objectIdentifier;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestDeleteObject(
-      BACnetApplicationTagObjectIdentifier objectIdentifier, Long serviceRequestLength) {
+      long serviceRequestLength, BACnetApplicationTagObjectIdentifier objectIdentifier) {
     super(serviceRequestLength);
     this.objectIdentifier = objectIdentifier;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetApplicationTagObjectIdentifier getObjectIdentifier() {
@@ -108,25 +104,21 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestDeleteObject");
     // Create the instance
-    return new BACnetConfirmedServiceRequestDeleteObjectBuilderImpl(
-        objectIdentifier, serviceRequestLength);
+    return new BACnetConfirmedServiceRequestDeleteObjectBuilderImpl(objectIdentifier);
   }
 
   public static class BACnetConfirmedServiceRequestDeleteObjectBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestDeleteObjectBuilderImpl(
-        BACnetApplicationTagObjectIdentifier objectIdentifier, Long serviceRequestLength) {
+        BACnetApplicationTagObjectIdentifier objectIdentifier) {
       this.objectIdentifier = objectIdentifier;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestDeleteObject build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestDeleteObject build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestDeleteObject bACnetConfirmedServiceRequestDeleteObject =
-          new BACnetConfirmedServiceRequestDeleteObject(objectIdentifier, serviceRequestLength);
+          new BACnetConfirmedServiceRequestDeleteObject(serviceRequestLength, objectIdentifier);
       return bACnetConfirmedServiceRequestDeleteObject;
     }
   }

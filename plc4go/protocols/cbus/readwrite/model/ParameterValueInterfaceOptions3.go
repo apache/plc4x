@@ -62,12 +62,12 @@ var _ ParameterValueInterfaceOptions3 = (*_ParameterValueInterfaceOptions3)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions3)(nil)
 
 // NewParameterValueInterfaceOptions3 factory function for _ParameterValueInterfaceOptions3
-func NewParameterValueInterfaceOptions3(value InterfaceOptions3, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions3 {
+func NewParameterValueInterfaceOptions3(value InterfaceOptions3, data []byte) *_ParameterValueInterfaceOptions3 {
 	if value == nil {
 		panic("value of type InterfaceOptions3 for ParameterValueInterfaceOptions3 must not be nil")
 	}
 	_result := &_ParameterValueInterfaceOptions3{
-		ParameterValueContract: NewParameterValue(numBytes),
+		ParameterValueContract: NewParameterValue(),
 		Value:                  value,
 		Data:                   data,
 	}

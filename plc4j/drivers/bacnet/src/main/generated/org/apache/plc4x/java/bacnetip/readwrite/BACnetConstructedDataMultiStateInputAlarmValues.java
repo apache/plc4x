@@ -50,21 +50,13 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
   // Properties.
   protected final List<BACnetApplicationTagUnsignedInteger> alarmValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMultiStateInputAlarmValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetApplicationTagUnsignedInteger> alarmValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagUnsignedInteger> alarmValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.alarmValues = alarmValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetApplicationTagUnsignedInteger> getAlarmValues() {
@@ -131,40 +123,24 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateInputAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl(
-        alarmValues, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl(alarmValues);
   }
 
   public static class BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetApplicationTagUnsignedInteger> alarmValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl(
-        List<BACnetApplicationTagUnsignedInteger> alarmValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagUnsignedInteger> alarmValues) {
       this.alarmValues = alarmValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMultiStateInputAlarmValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMultiStateInputAlarmValues
           bACnetConstructedDataMultiStateInputAlarmValues =
               new BACnetConstructedDataMultiStateInputAlarmValues(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  alarmValues,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, alarmValues);
       return bACnetConstructedDataMultiStateInputAlarmValues;
     }
   }

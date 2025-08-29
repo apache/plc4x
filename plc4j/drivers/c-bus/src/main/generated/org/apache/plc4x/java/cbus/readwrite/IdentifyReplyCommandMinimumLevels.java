@@ -45,13 +45,9 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
   // Properties.
   protected final byte[] minimumLevels;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandMinimumLevels(byte[] minimumLevels, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandMinimumLevels(byte[] minimumLevels) {
+    super();
     this.minimumLevels = minimumLevels;
-    this.numBytes = numBytes;
   }
 
   public byte[] getMinimumLevels() {
@@ -100,23 +96,20 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
 
     readBuffer.closeContext("IdentifyReplyCommandMinimumLevels");
     // Create the instance
-    return new IdentifyReplyCommandMinimumLevelsBuilderImpl(minimumLevels, numBytes);
+    return new IdentifyReplyCommandMinimumLevelsBuilderImpl(minimumLevels);
   }
 
   public static class IdentifyReplyCommandMinimumLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] minimumLevels;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandMinimumLevelsBuilderImpl(byte[] minimumLevels, Byte numBytes) {
+    public IdentifyReplyCommandMinimumLevelsBuilderImpl(byte[] minimumLevels) {
       this.minimumLevels = minimumLevels;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandMinimumLevels build(Byte numBytes) {
-
+    public IdentifyReplyCommandMinimumLevels build() {
       IdentifyReplyCommandMinimumLevels identifyReplyCommandMinimumLevels =
-          new IdentifyReplyCommandMinimumLevels(minimumLevels, numBytes);
+          new IdentifyReplyCommandMinimumLevels(minimumLevels);
       return identifyReplyCommandMinimumLevels;
     }
   }

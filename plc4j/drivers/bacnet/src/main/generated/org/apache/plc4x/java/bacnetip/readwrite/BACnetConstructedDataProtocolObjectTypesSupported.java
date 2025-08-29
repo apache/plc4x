@@ -50,21 +50,13 @@ public class BACnetConstructedDataProtocolObjectTypesSupported extends BACnetCon
   // Properties.
   protected final BACnetObjectTypesSupportedTagged protocolObjectTypesSupported;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProtocolObjectTypesSupported(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetObjectTypesSupportedTagged protocolObjectTypesSupported,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetObjectTypesSupportedTagged protocolObjectTypesSupported) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.protocolObjectTypesSupported = protocolObjectTypesSupported;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetObjectTypesSupportedTagged getProtocolObjectTypesSupported() {
@@ -138,39 +130,24 @@ public class BACnetConstructedDataProtocolObjectTypesSupported extends BACnetCon
     readBuffer.closeContext("BACnetConstructedDataProtocolObjectTypesSupported");
     // Create the instance
     return new BACnetConstructedDataProtocolObjectTypesSupportedBuilderImpl(
-        protocolObjectTypesSupported, tagNumber, arrayIndexArgument);
+        protocolObjectTypesSupported);
   }
 
   public static class BACnetConstructedDataProtocolObjectTypesSupportedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetObjectTypesSupportedTagged protocolObjectTypesSupported;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataProtocolObjectTypesSupportedBuilderImpl(
-        BACnetObjectTypesSupportedTagged protocolObjectTypesSupported,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetObjectTypesSupportedTagged protocolObjectTypesSupported) {
       this.protocolObjectTypesSupported = protocolObjectTypesSupported;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProtocolObjectTypesSupported build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProtocolObjectTypesSupported
           bACnetConstructedDataProtocolObjectTypesSupported =
               new BACnetConstructedDataProtocolObjectTypesSupported(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  protocolObjectTypesSupported,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, protocolObjectTypesSupported);
       return bACnetConstructedDataProtocolObjectTypesSupported;
     }
   }

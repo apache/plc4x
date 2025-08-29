@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimeDelay = (*_BACnetConstructedDataTimeDelay)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeDelay)(nil)
 
 // NewBACnetConstructedDataTimeDelay factory function for _BACnetConstructedDataTimeDelay
-func NewBACnetConstructedDataTimeDelay(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeDelay BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeDelay {
+func NewBACnetConstructedDataTimeDelay(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeDelay BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataTimeDelay {
 	if timeDelay == nil {
 		panic("timeDelay of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeDelay must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimeDelay{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimeDelay:                     timeDelay,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

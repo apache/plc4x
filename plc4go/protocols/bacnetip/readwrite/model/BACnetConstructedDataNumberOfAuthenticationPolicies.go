@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNumberOfAuthenticationPolicies = (*_BACnetConstructed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfAuthenticationPolicies)(nil)
 
 // NewBACnetConstructedDataNumberOfAuthenticationPolicies factory function for _BACnetConstructedDataNumberOfAuthenticationPolicies
-func NewBACnetConstructedDataNumberOfAuthenticationPolicies(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAuthenticationPolicies {
+func NewBACnetConstructedDataNumberOfAuthenticationPolicies(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNumberOfAuthenticationPolicies {
 	if numberOfAuthenticationPolicies == nil {
 		panic("numberOfAuthenticationPolicies of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAuthenticationPolicies must not be nil")
 	}
 	_result := &_BACnetConstructedDataNumberOfAuthenticationPolicies{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfAuthenticationPolicies: numberOfAuthenticationPolicies,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

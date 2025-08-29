@@ -61,12 +61,12 @@ var _ BACnetConstructedDataElevatorGroup = (*_BACnetConstructedDataElevatorGroup
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataElevatorGroup)(nil)
 
 // NewBACnetConstructedDataElevatorGroup factory function for _BACnetConstructedDataElevatorGroup
-func NewBACnetConstructedDataElevatorGroup(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elevatorGroup BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElevatorGroup {
+func NewBACnetConstructedDataElevatorGroup(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elevatorGroup BACnetApplicationTagObjectIdentifier) *_BACnetConstructedDataElevatorGroup {
 	if elevatorGroup == nil {
 		panic("elevatorGroup of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataElevatorGroup must not be nil")
 	}
 	_result := &_BACnetConstructedDataElevatorGroup{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ElevatorGroup:                 elevatorGroup,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

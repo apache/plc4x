@@ -43,12 +43,10 @@ public class RequestCommand extends Request implements Message {
   public static final Byte INITIATOR = 0x5C;
 
   // Properties.
+  protected final CBusOptions cBusOptions;
   protected final CBusCommand cbusCommand;
   protected final Checksum chksum;
   protected final Alpha alpha;
-
-  // Arguments.
-  protected final CBusOptions cBusOptions;
 
   public RequestCommand(
       RequestType peekedByte,
@@ -56,15 +54,19 @@ public class RequestCommand extends Request implements Message {
       RequestType resetMode,
       RequestType secondPeek,
       RequestTermination termination,
+      CBusOptions cBusOptions,
       CBusCommand cbusCommand,
       Checksum chksum,
-      Alpha alpha,
-      CBusOptions cBusOptions) {
-    super(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions);
+      Alpha alpha) {
+    super(peekedByte, startingCR, resetMode, secondPeek, termination);
+    this.cBusOptions = cBusOptions;
     this.cbusCommand = cbusCommand;
     this.chksum = chksum;
     this.alpha = alpha;
-    this.cBusOptions = cBusOptions;
+  }
+
+  public CBusOptions getCBusOptions() {
+    return cBusOptions;
   }
 
   public CBusCommand getCbusCommand() {
@@ -196,21 +198,21 @@ public class RequestCommand extends Request implements Message {
 
     readBuffer.closeContext("RequestCommand");
     // Create the instance
-    return new RequestCommandBuilderImpl(cbusCommand, chksum, alpha, cBusOptions);
+    return new RequestCommandBuilderImpl(cBusOptions, cbusCommand, chksum, alpha);
   }
 
   public static class RequestCommandBuilderImpl implements Request.RequestBuilder {
+    private final CBusOptions cBusOptions;
     private final CBusCommand cbusCommand;
     private final Checksum chksum;
     private final Alpha alpha;
-    private final CBusOptions cBusOptions;
 
     public RequestCommandBuilderImpl(
-        CBusCommand cbusCommand, Checksum chksum, Alpha alpha, CBusOptions cBusOptions) {
+        CBusOptions cBusOptions, CBusCommand cbusCommand, Checksum chksum, Alpha alpha) {
+      this.cBusOptions = cBusOptions;
       this.cbusCommand = cbusCommand;
       this.chksum = chksum;
       this.alpha = alpha;
-      this.cBusOptions = cBusOptions;
     }
 
     public RequestCommand build(
@@ -218,8 +220,7 @@ public class RequestCommand extends Request implements Message {
         RequestType startingCR,
         RequestType resetMode,
         RequestType secondPeek,
-        RequestTermination termination,
-        CBusOptions cBusOptions) {
+        RequestTermination termination) {
       RequestCommand requestCommand =
           new RequestCommand(
               peekedByte,
@@ -227,10 +228,10 @@ public class RequestCommand extends Request implements Message {
               resetMode,
               secondPeek,
               termination,
+              cBusOptions,
               cbusCommand,
               chksum,
-              alpha,
-              cBusOptions);
+              alpha);
       return requestCommand;
     }
   }
@@ -244,7 +245,8 @@ public class RequestCommand extends Request implements Message {
       return false;
     }
     RequestCommand that = (RequestCommand) o;
-    return (getCbusCommand() == that.getCbusCommand())
+    return (getCBusOptions() == that.getCBusOptions())
+        && (getCbusCommand() == that.getCbusCommand())
         && (getChksum() == that.getChksum())
         && (getAlpha() == that.getAlpha())
         && super.equals(that)
@@ -253,7 +255,8 @@ public class RequestCommand extends Request implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getCbusCommand(), getChksum(), getAlpha());
+    return Objects.hash(
+        super.hashCode(), getCBusOptions(), getCbusCommand(), getChksum(), getAlpha());
   }
 
   @Override

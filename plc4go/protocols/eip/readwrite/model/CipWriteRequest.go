@@ -68,9 +68,9 @@ var _ CipWriteRequest = (*_CipWriteRequest)(nil)
 var _ CipServiceRequirements = (*_CipWriteRequest)(nil)
 
 // NewCipWriteRequest factory function for _CipWriteRequest
-func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *_CipWriteRequest {
+func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) *_CipWriteRequest {
 	_result := &_CipWriteRequest{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		Tag:                tag,
 		DataType:           dataType,
 		ElementNb:          elementNb,

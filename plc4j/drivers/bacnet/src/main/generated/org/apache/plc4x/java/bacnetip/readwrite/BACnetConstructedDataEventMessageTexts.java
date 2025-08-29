@@ -52,23 +52,15 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetOptionalCharacterString> eventMessageTexts;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEventMessageTexts(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetOptionalCharacterString> eventMessageTexts,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetOptionalCharacterString> eventMessageTexts) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.eventMessageTexts = eventMessageTexts;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -112,11 +104,7 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (eventMessageTexts)
     writeComplexTypeArrayField("eventMessageTexts", eventMessageTexts, writeBuffer);
@@ -223,42 +211,26 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
     readBuffer.closeContext("BACnetConstructedDataEventMessageTexts");
     // Create the instance
     return new BACnetConstructedDataEventMessageTextsBuilderImpl(
-        numberOfDataElements, eventMessageTexts, tagNumber, arrayIndexArgument);
+        numberOfDataElements, eventMessageTexts);
   }
 
   public static class BACnetConstructedDataEventMessageTextsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetOptionalCharacterString> eventMessageTexts;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataEventMessageTextsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetOptionalCharacterString> eventMessageTexts,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetOptionalCharacterString> eventMessageTexts) {
       this.numberOfDataElements = numberOfDataElements;
       this.eventMessageTexts = eventMessageTexts;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEventMessageTexts build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEventMessageTexts bACnetConstructedDataEventMessageTexts =
           new BACnetConstructedDataEventMessageTexts(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              eventMessageTexts,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, eventMessageTexts);
       return bACnetConstructedDataEventMessageTexts;
     }
   }

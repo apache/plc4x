@@ -71,7 +71,7 @@ var _ BACnetNotificationParametersExtended = (*_BACnetNotificationParametersExte
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersExtended)(nil)
 
 // NewBACnetNotificationParametersExtended factory function for _BACnetNotificationParametersExtended
-func NewBACnetNotificationParametersExtended(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetNotificationParametersExtendedParameters, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersExtended {
+func NewBACnetNotificationParametersExtended(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetNotificationParametersExtendedParameters, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersExtended {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersExtended must not be nil")
 	}
@@ -88,7 +88,7 @@ func NewBACnetNotificationParametersExtended(openingTag BACnetOpeningTag, peeked
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersExtended must not be nil")
 	}
 	_result := &_BACnetNotificationParametersExtended{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		VendorId:                             vendorId,
 		ExtendedEventType:                    extendedEventType,

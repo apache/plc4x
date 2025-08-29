@@ -61,12 +61,12 @@ var _ BACnetConstructedDataReferencePort = (*_BACnetConstructedDataReferencePort
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReferencePort)(nil)
 
 // NewBACnetConstructedDataReferencePort factory function for _BACnetConstructedDataReferencePort
-func NewBACnetConstructedDataReferencePort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencePort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReferencePort {
+func NewBACnetConstructedDataReferencePort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencePort BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataReferencePort {
 	if referencePort == nil {
 		panic("referencePort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataReferencePort must not be nil")
 	}
 	_result := &_BACnetConstructedDataReferencePort{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ReferencePort:                 referencePort,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

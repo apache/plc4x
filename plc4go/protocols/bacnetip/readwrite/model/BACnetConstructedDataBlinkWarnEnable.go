@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBlinkWarnEnable = (*_BACnetConstructedDataBlinkWarnEn
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBlinkWarnEnable)(nil)
 
 // NewBACnetConstructedDataBlinkWarnEnable factory function for _BACnetConstructedDataBlinkWarnEnable
-func NewBACnetConstructedDataBlinkWarnEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, blinkWarnEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBlinkWarnEnable {
+func NewBACnetConstructedDataBlinkWarnEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, blinkWarnEnable BACnetApplicationTagBoolean) *_BACnetConstructedDataBlinkWarnEnable {
 	if blinkWarnEnable == nil {
 		panic("blinkWarnEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataBlinkWarnEnable must not be nil")
 	}
 	_result := &_BACnetConstructedDataBlinkWarnEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BlinkWarnEnable:               blinkWarnEnable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -42,22 +42,11 @@ public class ErrorClassTagged implements Message {
   protected final ErrorClass value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public ErrorClassTagged(
-      BACnetTagHeader header,
-      ErrorClass value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+  public ErrorClassTagged(BACnetTagHeader header, ErrorClass value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -178,7 +167,7 @@ public class ErrorClassTagged implements Message {
     readBuffer.closeContext("ErrorClassTagged");
     // Create the instance
     ErrorClassTagged _errorClassTagged;
-    _errorClassTagged = new ErrorClassTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _errorClassTagged = new ErrorClassTagged(header, value, proprietaryValue);
     return _errorClassTagged;
   }
 

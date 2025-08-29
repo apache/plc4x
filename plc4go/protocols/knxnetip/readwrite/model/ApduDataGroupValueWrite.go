@@ -62,9 +62,9 @@ var _ ApduDataGroupValueWrite = (*_ApduDataGroupValueWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataGroupValueWrite)(nil)
 
 // NewApduDataGroupValueWrite factory function for _ApduDataGroupValueWrite
-func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueWrite {
+func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte) *_ApduDataGroupValueWrite {
 	_result := &_ApduDataGroupValueWrite{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		DataFirstByte:    dataFirstByte,
 		Data:             data,
 	}

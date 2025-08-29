@@ -48,8 +48,6 @@ type ParameterValue interface {
 
 // ParameterValueContract provides a set of functions which can be overwritten by a sub struct
 type ParameterValueContract interface {
-	// GetNumBytes() returns a parser argument
-	GetNumBytes() uint8
 	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValue()
 	// CreateBuilder creates a ParameterValueBuilder
@@ -70,16 +68,13 @@ type _ParameterValue struct {
 		ParameterValueContract
 		ParameterValueRequirements
 	}
-
-	// Arguments.
-	NumBytes uint8
 }
 
 var _ ParameterValueContract = (*_ParameterValue)(nil)
 
 // NewParameterValue factory function for _ParameterValue
-func NewParameterValue(numBytes uint8) *_ParameterValue {
-	return &_ParameterValue{NumBytes: numBytes}
+func NewParameterValue() *_ParameterValue {
+	return &_ParameterValue{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,8 +87,6 @@ type ParameterValueBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ParameterValueBuilder
-	// WithArgNumBytes sets a parser argument
-	WithArgNumBytes(uint8) ParameterValueBuilder
 	// AsParameterValueApplicationAddress1 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
 	AsParameterValueApplicationAddress1() ParameterValueApplicationAddress1Builder
 	// AsParameterValueApplicationAddress2 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
@@ -148,11 +141,6 @@ type _ParameterValueBuilder struct {
 var _ (ParameterValueBuilder) = (*_ParameterValueBuilder)(nil)
 
 func (b *_ParameterValueBuilder) WithMandatoryFields() ParameterValueBuilder {
-	return b
-}
-
-func (b *_ParameterValueBuilder) WithArgNumBytes(numBytes uint8) ParameterValueBuilder {
-	b.NumBytes = numBytes
 	return b
 }
 
@@ -369,7 +357,7 @@ func ParameterValueParseWithBufferProducer[T ParameterValue](parameterType Param
 }
 
 func ParameterValueParseWithBuffer[T ParameterValue](ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (T, error) {
-	v, err := (&_ParameterValue{NumBytes: numBytes}).parse(ctx, readBuffer, parameterType, numBytes)
+	v, err := (new(_ParameterValue)).parse(ctx, readBuffer, parameterType, numBytes)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -472,16 +460,6 @@ func (pm *_ParameterValue) serializeParent(ctx context.Context, writeBuffer util
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ParameterValue) GetNumBytes() uint8 {
-	return m.NumBytes
-}
-
-//
-////
-
 func (m *_ParameterValue) IsParameterValue() {}
 
 func (m *_ParameterValue) DeepCopy() any {
@@ -494,7 +472,6 @@ func (m *_ParameterValue) deepCopy() *_ParameterValue {
 	}
 	_ParameterValueCopy := &_ParameterValue{
 		nil, // will be set by child
-		m.NumBytes,
 	}
 	return _ParameterValueCopy
 }

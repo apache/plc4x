@@ -52,23 +52,15 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetApplicationTagUnsignedInteger> supportedFormats;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSupportedFormatClasses(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetApplicationTagUnsignedInteger> supportedFormats,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagUnsignedInteger> supportedFormats) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.supportedFormats = supportedFormats;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (supportedFormats)
     writeComplexTypeArrayField("supportedFormats", supportedFormats, writeBuffer);
@@ -175,42 +163,26 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
     readBuffer.closeContext("BACnetConstructedDataSupportedFormatClasses");
     // Create the instance
     return new BACnetConstructedDataSupportedFormatClassesBuilderImpl(
-        numberOfDataElements, supportedFormats, tagNumber, arrayIndexArgument);
+        numberOfDataElements, supportedFormats);
   }
 
   public static class BACnetConstructedDataSupportedFormatClassesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagUnsignedInteger> supportedFormats;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSupportedFormatClassesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetApplicationTagUnsignedInteger> supportedFormats,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagUnsignedInteger> supportedFormats) {
       this.numberOfDataElements = numberOfDataElements;
       this.supportedFormats = supportedFormats;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSupportedFormatClasses build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSupportedFormatClasses bACnetConstructedDataSupportedFormatClasses =
           new BACnetConstructedDataSupportedFormatClasses(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              supportedFormats,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, supportedFormats);
       return bACnetConstructedDataSupportedFormatClasses;
     }
   }

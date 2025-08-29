@@ -48,7 +48,6 @@ func NewWhoIsRequest(args Args, kwArgs KWArgs, options ...Option) (*WhoIsRequest
 	options = AddRootMessageIfAbundant(options, readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(
 		readWriteModel.CreateBACnetContextTagUnsignedInteger(0, 0), // TODO: set the right values
 		readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: set the right values
-		0,
 	))
 	options = AddLeafTypeIfAbundant(options, w)
 	var err error
@@ -60,7 +59,6 @@ func NewWhoIsRequest(args Args, kwArgs KWArgs, options ...Option) (*WhoIsRequest
 		w.SetRootMessage(readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(
 			readWriteModel.CreateBACnetContextTagUnsignedInteger(0, 0), // TODO: set the right values
 			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: set the right values
-			0,
 		))
 	}
 	return w, nil

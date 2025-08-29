@@ -50,21 +50,13 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagObjectIdentifier objectIdentifier;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataObjectIdentifier(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagObjectIdentifier objectIdentifier,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagObjectIdentifier objectIdentifier) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.objectIdentifier = objectIdentifier;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagObjectIdentifier getObjectIdentifier() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataObjectIdentifier");
     // Create the instance
-    return new BACnetConstructedDataObjectIdentifierBuilderImpl(
-        objectIdentifier, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataObjectIdentifierBuilderImpl(objectIdentifier);
   }
 
   public static class BACnetConstructedDataObjectIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataObjectIdentifierBuilderImpl(
-        BACnetApplicationTagObjectIdentifier objectIdentifier,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagObjectIdentifier objectIdentifier) {
       this.objectIdentifier = objectIdentifier;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataObjectIdentifier build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataObjectIdentifier bACnetConstructedDataObjectIdentifier =
           new BACnetConstructedDataObjectIdentifier(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              objectIdentifier,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, objectIdentifier);
       return bACnetConstructedDataObjectIdentifier;
     }
   }

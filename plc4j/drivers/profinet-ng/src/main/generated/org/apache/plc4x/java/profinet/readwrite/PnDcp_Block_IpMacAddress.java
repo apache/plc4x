@@ -48,7 +48,6 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
 
   // Properties.
   protected final MacAddress macAddress;
-
   // Reserved Fields
   private Integer reservedField0;
 

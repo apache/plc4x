@@ -51,23 +51,15 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetApplicationTagOctetString> ipv6DnsServer;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPv6DNSServer(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetApplicationTagOctetString> ipv6DnsServer,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagOctetString> ipv6DnsServer) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.ipv6DnsServer = ipv6DnsServer;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (ipv6DnsServer)
     writeComplexTypeArrayField("ipv6DnsServer", ipv6DnsServer, writeBuffer);
@@ -172,43 +160,26 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataIPv6DNSServer");
     // Create the instance
-    return new BACnetConstructedDataIPv6DNSServerBuilderImpl(
-        numberOfDataElements, ipv6DnsServer, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPv6DNSServerBuilderImpl(numberOfDataElements, ipv6DnsServer);
   }
 
   public static class BACnetConstructedDataIPv6DNSServerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagOctetString> ipv6DnsServer;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPv6DNSServerBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetApplicationTagOctetString> ipv6DnsServer,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagOctetString> ipv6DnsServer) {
       this.numberOfDataElements = numberOfDataElements;
       this.ipv6DnsServer = ipv6DnsServer;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPv6DNSServer build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPv6DNSServer bACnetConstructedDataIPv6DNSServer =
           new BACnetConstructedDataIPv6DNSServer(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              ipv6DnsServer,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, ipv6DnsServer);
       return bACnetConstructedDataIPv6DNSServer;
     }
   }

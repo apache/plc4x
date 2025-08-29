@@ -58,10 +58,6 @@ type BACnetNotificationParametersContract interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetTagNumber() returns a parser argument
-	GetTagNumber() uint8
-	// GetObjectTypeArgument() returns a parser argument
-	GetObjectTypeArgument() BACnetObjectType
 	// IsBACnetNotificationParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParameters()
 	// CreateBuilder creates a BACnetNotificationParametersBuilder
@@ -85,16 +81,12 @@ type _BACnetNotificationParameters struct {
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 var _ BACnetNotificationParametersContract = (*_BACnetNotificationParameters)(nil)
 
 // NewBACnetNotificationParameters factory function for _BACnetNotificationParameters
-func NewBACnetNotificationParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParameters {
+func NewBACnetNotificationParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetNotificationParameters {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetNotificationParameters must not be nil")
 	}
@@ -104,7 +96,7 @@ func NewBACnetNotificationParameters(openingTag BACnetOpeningTag, peekedTagHeade
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetNotificationParameters must not be nil")
 	}
-	return &_BACnetNotificationParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
+	return &_BACnetNotificationParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -129,10 +121,6 @@ type BACnetNotificationParametersBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetNotificationParametersBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetNotificationParametersBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) BACnetNotificationParametersBuilder
 	// AsBACnetNotificationParametersChangeOfBitString converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
 	AsBACnetNotificationParametersChangeOfBitString() BACnetNotificationParametersChangeOfBitStringBuilder
 	// AsBACnetNotificationParametersChangeOfState converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
@@ -250,15 +238,6 @@ func (b *_BACnetNotificationParametersBuilder) WithClosingTagBuilder(builderSupp
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetNotificationParametersBuilder) WithArgTagNumber(tagNumber uint8) BACnetNotificationParametersBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetNotificationParametersBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetNotificationParametersBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 
@@ -620,7 +599,7 @@ func BACnetNotificationParametersParseWithBufferProducer[T BACnetNotificationPar
 }
 
 func BACnetNotificationParametersParseWithBuffer[T BACnetNotificationParameters](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (T, error) {
-	v, err := (&_BACnetNotificationParameters{TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
+	v, err := (new(_BACnetNotificationParameters)).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -797,19 +776,6 @@ func (pm *_BACnetNotificationParameters) serializeParent(ctx context.Context, wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetNotificationParameters) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetNotificationParameters) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-
-//
-////
-
 func (m *_BACnetNotificationParameters) IsBACnetNotificationParameters() {}
 
 func (m *_BACnetNotificationParameters) DeepCopy() any {
@@ -825,8 +791,6 @@ func (m *_BACnetNotificationParameters) deepCopy() *_BACnetNotificationParameter
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
-		m.ObjectTypeArgument,
 	}
 	return _BACnetNotificationParametersCopy
 }

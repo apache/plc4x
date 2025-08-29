@@ -49,21 +49,13 @@ public class BACnetConstructedDataProtocolLevel extends BACnetConstructedData im
   // Properties.
   protected final BACnetProtocolLevelTagged protocolLevel;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProtocolLevel(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetProtocolLevelTagged protocolLevel,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetProtocolLevelTagged protocolLevel) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.protocolLevel = protocolLevel;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetProtocolLevelTagged getProtocolLevel() {
@@ -134,39 +126,22 @@ public class BACnetConstructedDataProtocolLevel extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataProtocolLevel");
     // Create the instance
-    return new BACnetConstructedDataProtocolLevelBuilderImpl(
-        protocolLevel, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProtocolLevelBuilderImpl(protocolLevel);
   }
 
   public static class BACnetConstructedDataProtocolLevelBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProtocolLevelTagged protocolLevel;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProtocolLevelBuilderImpl(
-        BACnetProtocolLevelTagged protocolLevel,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataProtocolLevelBuilderImpl(BACnetProtocolLevelTagged protocolLevel) {
       this.protocolLevel = protocolLevel;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProtocolLevel build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProtocolLevel bACnetConstructedDataProtocolLevel =
           new BACnetConstructedDataProtocolLevel(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              protocolLevel,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, protocolLevel);
       return bACnetConstructedDataProtocolLevel;
     }
   }

@@ -59,7 +59,7 @@ var _ BACnetServiceAckVTOpen = (*_BACnetServiceAckVTOpen)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckVTOpen)(nil)
 
 // NewBACnetServiceAckVTOpen factory function for _BACnetServiceAckVTOpen
-func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTOpen {
+func NewBACnetServiceAckVTOpen(serviceAckLength uint32, remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger) *_BACnetServiceAckVTOpen {
 	if remoteVtSessionIdentifier == nil {
 		panic("remoteVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTOpen must not be nil")
 	}

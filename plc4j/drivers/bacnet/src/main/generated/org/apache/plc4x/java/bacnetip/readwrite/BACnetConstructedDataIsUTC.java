@@ -49,21 +49,13 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
   // Properties.
   protected final BACnetApplicationTagBoolean isUtc;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIsUTC(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean isUtc,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean isUtc) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.isUtc = isUtc;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getIsUtc() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataIsUTC");
     // Create the instance
-    return new BACnetConstructedDataIsUTCBuilderImpl(isUtc, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIsUTCBuilderImpl(isUtc);
   }
 
   public static class BACnetConstructedDataIsUTCBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean isUtc;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIsUTCBuilderImpl(
-        BACnetApplicationTagBoolean isUtc,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataIsUTCBuilderImpl(BACnetApplicationTagBoolean isUtc) {
       this.isUtc = isUtc;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIsUTC build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIsUTC bACnetConstructedDataIsUTC =
-          new BACnetConstructedDataIsUTC(
-              openingTag, peekedTagHeader, closingTag, isUtc, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataIsUTC(openingTag, peekedTagHeader, closingTag, isUtc);
       return bACnetConstructedDataIsUTC;
     }
   }

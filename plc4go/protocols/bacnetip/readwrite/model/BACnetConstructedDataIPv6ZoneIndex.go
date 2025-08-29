@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPv6ZoneIndex = (*_BACnetConstructedDataIPv6ZoneIndex
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6ZoneIndex)(nil)
 
 // NewBACnetConstructedDataIPv6ZoneIndex factory function for _BACnetConstructedDataIPv6ZoneIndex
-func NewBACnetConstructedDataIPv6ZoneIndex(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6ZoneIndex BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6ZoneIndex {
+func NewBACnetConstructedDataIPv6ZoneIndex(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6ZoneIndex BACnetApplicationTagCharacterString) *_BACnetConstructedDataIPv6ZoneIndex {
 	if ipv6ZoneIndex == nil {
 		panic("ipv6ZoneIndex of type BACnetApplicationTagCharacterString for BACnetConstructedDataIPv6ZoneIndex must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPv6ZoneIndex{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Ipv6ZoneIndex:                 ipv6ZoneIndex,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

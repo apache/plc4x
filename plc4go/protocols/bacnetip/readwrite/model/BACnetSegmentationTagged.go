@@ -54,20 +54,16 @@ type BACnetSegmentationTagged interface {
 type _BACnetSegmentationTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetSegmentation
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetSegmentationTagged = (*_BACnetSegmentationTagged)(nil)
 
 // NewBACnetSegmentationTagged factory function for _BACnetSegmentationTagged
-func NewBACnetSegmentationTagged(header BACnetTagHeader, value BACnetSegmentation, tagNumber uint8, tagClass TagClass) *_BACnetSegmentationTagged {
+func NewBACnetSegmentationTagged(header BACnetTagHeader, value BACnetSegmentation) *_BACnetSegmentationTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetSegmentationTagged must not be nil")
 	}
-	return &_BACnetSegmentationTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetSegmentationTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetSegmentationTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSegmentationTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetSegmentation) BACnetSegmentationTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetSegmentationTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetSegmentationTaggedBuilder
 	// Build builds the BACnetSegmentationTagged or returns an error if something is wrong
 	Build() (BACnetSegmentationTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetSegmentationTaggedBuilder) WithHeaderBuilder(builderSupplier fun
 
 func (b *_BACnetSegmentationTaggedBuilder) WithValue(value BACnetSegmentation) BACnetSegmentationTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetSegmentationTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetSegmentationTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetSegmentationTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetSegmentationTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetSegmentationTaggedParseWithBufferProducer(tagNumber uint8, tagClass T
 }
 
 func BACnetSegmentationTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSegmentationTagged, error) {
-	v, err := (&_BACnetSegmentationTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetSegmentationTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetSegmentationTagged) SerializeWithWriteBuffer(ctx context.Context
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetSegmentationTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetSegmentationTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetSegmentationTagged) IsBACnetSegmentationTagged() {}
 
 func (m *_BACnetSegmentationTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetSegmentationTagged) deepCopy() *_BACnetSegmentationTagged {
 	_BACnetSegmentationTaggedCopy := &_BACnetSegmentationTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetSegmentationTaggedCopy
 }

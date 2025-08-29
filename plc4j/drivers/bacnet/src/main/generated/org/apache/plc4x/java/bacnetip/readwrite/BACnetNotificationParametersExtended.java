@@ -47,10 +47,6 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
   protected final BACnetNotificationParametersExtendedParameters parameters;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersExtended(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -59,17 +55,13 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
       BACnetVendorIdTagged vendorId,
       BACnetContextTagUnsignedInteger extendedEventType,
       BACnetNotificationParametersExtendedParameters parameters,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.vendorId = vendorId;
     this.extendedEventType = extendedEventType;
     this.parameters = parameters;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -203,13 +195,7 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
     readBuffer.closeContext("BACnetNotificationParametersExtended");
     // Create the instance
     return new BACnetNotificationParametersExtendedBuilderImpl(
-        innerOpeningTag,
-        vendorId,
-        extendedEventType,
-        parameters,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerOpeningTag, vendorId, extendedEventType, parameters, innerClosingTag);
   }
 
   public static class BACnetNotificationParametersExtendedBuilderImpl
@@ -219,32 +205,22 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
     private final BACnetContextTagUnsignedInteger extendedEventType;
     private final BACnetNotificationParametersExtendedParameters parameters;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersExtendedBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetVendorIdTagged vendorId,
         BACnetContextTagUnsignedInteger extendedEventType,
         BACnetNotificationParametersExtendedParameters parameters,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.vendorId = vendorId;
       this.extendedEventType = extendedEventType;
       this.parameters = parameters;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersExtended build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersExtended bACnetNotificationParametersExtended =
           new BACnetNotificationParametersExtended(
               openingTag,
@@ -254,9 +230,7 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
               vendorId,
               extendedEventType,
               parameters,
-              innerClosingTag,
-              tagNumber,
-              objectTypeArgument);
+              innerClosingTag);
       return bACnetNotificationParametersExtended;
     }
   }

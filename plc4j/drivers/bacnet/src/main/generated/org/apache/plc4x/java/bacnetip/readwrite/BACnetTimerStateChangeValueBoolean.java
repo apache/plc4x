@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
   // Properties.
   protected final BACnetApplicationTagBoolean booleanValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueBoolean(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagBoolean booleanValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagBoolean booleanValue) {
+    super(peekedTagHeader);
     this.booleanValue = booleanValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagBoolean getBooleanValue() {
@@ -104,24 +98,20 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
 
     readBuffer.closeContext("BACnetTimerStateChangeValueBoolean");
     // Create the instance
-    return new BACnetTimerStateChangeValueBooleanBuilderImpl(booleanValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueBooleanBuilderImpl(booleanValue);
   }
 
   public static class BACnetTimerStateChangeValueBooleanBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueBooleanBuilderImpl(
-        BACnetApplicationTagBoolean booleanValue, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueBooleanBuilderImpl(BACnetApplicationTagBoolean booleanValue) {
       this.booleanValue = booleanValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueBoolean build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueBoolean build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueBoolean bACnetTimerStateChangeValueBoolean =
-          new BACnetTimerStateChangeValueBoolean(peekedTagHeader, booleanValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueBoolean(peekedTagHeader, booleanValue);
       return bACnetTimerStateChangeValueBoolean;
     }
   }

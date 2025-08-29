@@ -64,9 +64,9 @@ var _ CipWriteResponse = (*_CipWriteResponse)(nil)
 var _ CipServiceRequirements = (*_CipWriteResponse)(nil)
 
 // NewCipWriteResponse factory function for _CipWriteResponse
-func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_CipWriteResponse {
+func NewCipWriteResponse(status uint8, extStatus uint8) *_CipWriteResponse {
 	_result := &_CipWriteResponse{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		Status:             status,
 		ExtStatus:          extStatus,
 	}

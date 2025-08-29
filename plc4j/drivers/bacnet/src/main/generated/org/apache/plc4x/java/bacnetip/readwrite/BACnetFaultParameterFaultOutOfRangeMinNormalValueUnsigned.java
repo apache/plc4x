@@ -43,18 +43,13 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger unsignedValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger unsignedValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetApplicationTagUnsignedInteger unsignedValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.unsignedValue = unsignedValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetApplicationTagUnsignedInteger getUnsignedValue() {
@@ -109,31 +104,25 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilderImpl(
-        unsignedValue, tagNumber);
+    return new BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilderImpl(unsignedValue);
   }
 
   public static class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilderImpl
       implements BACnetFaultParameterFaultOutOfRangeMinNormalValue
           .BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
-    private final Short tagNumber;
 
     public BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilderImpl(
-        BACnetApplicationTagUnsignedInteger unsignedValue, Short tagNumber) {
+        BACnetApplicationTagUnsignedInteger unsignedValue) {
       this.unsignedValue = unsignedValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
           bACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned =
               new BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned(
-                  openingTag, peekedTagHeader, closingTag, unsignedValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, unsignedValue);
       return bACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned;
     }
   }

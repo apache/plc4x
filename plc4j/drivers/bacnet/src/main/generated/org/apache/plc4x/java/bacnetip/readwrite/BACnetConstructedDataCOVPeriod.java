@@ -49,21 +49,13 @@ public class BACnetConstructedDataCOVPeriod extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger covPeriod;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCOVPeriod(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger covPeriod,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger covPeriod) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.covPeriod = covPeriod;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getCovPeriod() {
@@ -134,33 +126,22 @@ public class BACnetConstructedDataCOVPeriod extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataCOVPeriod");
     // Create the instance
-    return new BACnetConstructedDataCOVPeriodBuilderImpl(covPeriod, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCOVPeriodBuilderImpl(covPeriod);
   }
 
   public static class BACnetConstructedDataCOVPeriodBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger covPeriod;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCOVPeriodBuilderImpl(
-        BACnetApplicationTagUnsignedInteger covPeriod,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger covPeriod) {
       this.covPeriod = covPeriod;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCOVPeriod build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCOVPeriod bACnetConstructedDataCOVPeriod =
-          new BACnetConstructedDataCOVPeriod(
-              openingTag, peekedTagHeader, closingTag, covPeriod, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataCOVPeriod(openingTag, peekedTagHeader, closingTag, covPeriod);
       return bACnetConstructedDataCOVPeriod;
     }
   }

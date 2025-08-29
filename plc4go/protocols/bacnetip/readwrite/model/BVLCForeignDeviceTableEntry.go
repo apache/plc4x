@@ -242,7 +242,7 @@ func BVLCForeignDeviceTableEntryParseWithBufferProducer() func(ctx context.Conte
 }
 
 func BVLCForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
-	v, err := (&_BVLCForeignDeviceTableEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BVLCForeignDeviceTableEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastNotifyRecord = (*_BACnetConstructedDataLastNotify
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastNotifyRecord)(nil)
 
 // NewBACnetConstructedDataLastNotifyRecord factory function for _BACnetConstructedDataLastNotifyRecord
-func NewBACnetConstructedDataLastNotifyRecord(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastNotifyRecord BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastNotifyRecord {
+func NewBACnetConstructedDataLastNotifyRecord(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastNotifyRecord BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataLastNotifyRecord {
 	if lastNotifyRecord == nil {
 		panic("lastNotifyRecord of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLastNotifyRecord must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastNotifyRecord{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastNotifyRecord:              lastNotifyRecord,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

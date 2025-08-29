@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCarLoadUnits = (*_BACnetConstructedDataCarLoadUnits)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarLoadUnits)(nil)
 
 // NewBACnetConstructedDataCarLoadUnits factory function for _BACnetConstructedDataCarLoadUnits
-func NewBACnetConstructedDataCarLoadUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarLoadUnits {
+func NewBACnetConstructedDataCarLoadUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged) *_BACnetConstructedDataCarLoadUnits {
 	if units == nil {
 		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataCarLoadUnits must not be nil")
 	}
 	_result := &_BACnetConstructedDataCarLoadUnits{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Units:                         units,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

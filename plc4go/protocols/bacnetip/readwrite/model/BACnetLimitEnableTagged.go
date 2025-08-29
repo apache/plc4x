@@ -58,23 +58,19 @@ type BACnetLimitEnableTagged interface {
 type _BACnetLimitEnableTagged struct {
 	Header  BACnetTagHeader
 	Payload BACnetTagPayloadBitString
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLimitEnableTagged = (*_BACnetLimitEnableTagged)(nil)
 
 // NewBACnetLimitEnableTagged factory function for _BACnetLimitEnableTagged
-func NewBACnetLimitEnableTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetLimitEnableTagged {
+func NewBACnetLimitEnableTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString) *_BACnetLimitEnableTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLimitEnableTagged must not be nil")
 	}
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadBitString for BACnetLimitEnableTagged must not be nil")
 	}
-	return &_BACnetLimitEnableTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLimitEnableTagged{Header: header, Payload: payload}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,10 +91,6 @@ type BACnetLimitEnableTaggedBuilder interface {
 	WithPayload(BACnetTagPayloadBitString) BACnetLimitEnableTaggedBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetLimitEnableTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLimitEnableTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLimitEnableTaggedBuilder
 	// Build builds the BACnetLimitEnableTagged or returns an error if something is wrong
 	Build() (BACnetLimitEnableTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -149,15 +141,6 @@ func (b *_BACnetLimitEnableTaggedBuilder) WithPayloadBuilder(builderSupplier fun
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetLimitEnableTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLimitEnableTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLimitEnableTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLimitEnableTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -288,7 +271,7 @@ func BACnetLimitEnableTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetLimitEnableTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLimitEnableTagged, error) {
-	v, err := (&_BACnetLimitEnableTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLimitEnableTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -388,19 +371,6 @@ func (m *_BACnetLimitEnableTagged) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLimitEnableTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLimitEnableTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLimitEnableTagged) IsBACnetLimitEnableTagged() {}
 
 func (m *_BACnetLimitEnableTagged) DeepCopy() any {
@@ -414,8 +384,6 @@ func (m *_BACnetLimitEnableTagged) deepCopy() *_BACnetLimitEnableTagged {
 	_BACnetLimitEnableTaggedCopy := &_BACnetLimitEnableTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLimitEnableTaggedCopy
 }

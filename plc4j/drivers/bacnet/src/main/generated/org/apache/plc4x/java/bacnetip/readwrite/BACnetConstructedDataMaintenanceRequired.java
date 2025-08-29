@@ -50,21 +50,13 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
   // Properties.
   protected final BACnetMaintenanceTagged maintenanceRequired;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMaintenanceRequired(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetMaintenanceTagged maintenanceRequired,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetMaintenanceTagged maintenanceRequired) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.maintenanceRequired = maintenanceRequired;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetMaintenanceTagged getMaintenanceRequired() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataMaintenanceRequired");
     // Create the instance
-    return new BACnetConstructedDataMaintenanceRequiredBuilderImpl(
-        maintenanceRequired, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMaintenanceRequiredBuilderImpl(maintenanceRequired);
   }
 
   public static class BACnetConstructedDataMaintenanceRequiredBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetMaintenanceTagged maintenanceRequired;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMaintenanceRequiredBuilderImpl(
-        BACnetMaintenanceTagged maintenanceRequired,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetMaintenanceTagged maintenanceRequired) {
       this.maintenanceRequired = maintenanceRequired;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMaintenanceRequired build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMaintenanceRequired bACnetConstructedDataMaintenanceRequired =
           new BACnetConstructedDataMaintenanceRequired(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              maintenanceRequired,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, maintenanceRequired);
       return bACnetConstructedDataMaintenanceRequired;
     }
   }

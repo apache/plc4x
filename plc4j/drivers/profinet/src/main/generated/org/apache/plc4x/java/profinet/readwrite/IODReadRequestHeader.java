@@ -219,7 +219,6 @@ public class IODReadRequestHeader extends PnIoCm_Block implements Message {
         "targetArUuid",
         targetArUuid,
         writeComplex(writeBuffer),
-        org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.isNullUuid(getArUuid()),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Padding Field (padding)

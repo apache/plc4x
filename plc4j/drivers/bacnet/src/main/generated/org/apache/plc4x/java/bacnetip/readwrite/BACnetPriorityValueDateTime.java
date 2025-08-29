@@ -42,16 +42,10 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
   // Properties.
   protected final BACnetDateTimeEnclosed dateTimeValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueDateTime(
-      BACnetTagHeader peekedTagHeader,
-      BACnetDateTimeEnclosed dateTimeValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetDateTimeEnclosed dateTimeValue) {
+    super(peekedTagHeader);
     this.dateTimeValue = dateTimeValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetDateTimeEnclosed getDateTimeValue() {
@@ -102,24 +96,20 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
 
     readBuffer.closeContext("BACnetPriorityValueDateTime");
     // Create the instance
-    return new BACnetPriorityValueDateTimeBuilderImpl(dateTimeValue, objectTypeArgument);
+    return new BACnetPriorityValueDateTimeBuilderImpl(dateTimeValue);
   }
 
   public static class BACnetPriorityValueDateTimeBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetDateTimeEnclosed dateTimeValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueDateTimeBuilderImpl(
-        BACnetDateTimeEnclosed dateTimeValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueDateTimeBuilderImpl(BACnetDateTimeEnclosed dateTimeValue) {
       this.dateTimeValue = dateTimeValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueDateTime build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueDateTime build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueDateTime bACnetPriorityValueDateTime =
-          new BACnetPriorityValueDateTime(peekedTagHeader, dateTimeValue, objectTypeArgument);
+          new BACnetPriorityValueDateTime(peekedTagHeader, dateTimeValue);
       return bACnetPriorityValueDateTime;
     }
   }

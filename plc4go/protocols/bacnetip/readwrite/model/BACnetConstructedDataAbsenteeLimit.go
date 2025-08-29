@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAbsenteeLimit = (*_BACnetConstructedDataAbsenteeLimit
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAbsenteeLimit)(nil)
 
 // NewBACnetConstructedDataAbsenteeLimit factory function for _BACnetConstructedDataAbsenteeLimit
-func NewBACnetConstructedDataAbsenteeLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, absenteeLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAbsenteeLimit {
+func NewBACnetConstructedDataAbsenteeLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, absenteeLimit BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAbsenteeLimit {
 	if absenteeLimit == nil {
 		panic("absenteeLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAbsenteeLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataAbsenteeLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AbsenteeLimit:                 absenteeLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

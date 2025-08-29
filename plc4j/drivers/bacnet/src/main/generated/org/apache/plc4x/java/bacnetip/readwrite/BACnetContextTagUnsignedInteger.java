@@ -46,14 +46,10 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
   // Properties.
   protected final BACnetTagPayloadUnsignedInteger payload;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
   public BACnetContextTagUnsignedInteger(
-      BACnetTagHeader header, BACnetTagPayloadUnsignedInteger payload, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+      BACnetTagHeader header, BACnetTagPayloadUnsignedInteger payload) {
+    super(header);
     this.payload = payload;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagPayloadUnsignedInteger getPayload() {
@@ -125,23 +121,20 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
 
     readBuffer.closeContext("BACnetContextTagUnsignedInteger");
     // Create the instance
-    return new BACnetContextTagUnsignedIntegerBuilderImpl(payload, tagNumberArgument);
+    return new BACnetContextTagUnsignedIntegerBuilderImpl(payload);
   }
 
   public static class BACnetContextTagUnsignedIntegerBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadUnsignedInteger payload;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagUnsignedIntegerBuilderImpl(
-        BACnetTagPayloadUnsignedInteger payload, Short tagNumberArgument) {
+    public BACnetContextTagUnsignedIntegerBuilderImpl(BACnetTagPayloadUnsignedInteger payload) {
       this.payload = payload;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagUnsignedInteger build(BACnetTagHeader header, Short tagNumberArgument) {
+    public BACnetContextTagUnsignedInteger build(BACnetTagHeader header) {
       BACnetContextTagUnsignedInteger bACnetContextTagUnsignedInteger =
-          new BACnetContextTagUnsignedInteger(header, payload, tagNumberArgument);
+          new BACnetContextTagUnsignedInteger(header, payload);
       return bACnetContextTagUnsignedInteger;
     }
   }

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPDefaultGateway = (*_BACnetConstructedDataIPDefaultG
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDefaultGateway)(nil)
 
 // NewBACnetConstructedDataIPDefaultGateway factory function for _BACnetConstructedDataIPDefaultGateway
-func NewBACnetConstructedDataIPDefaultGateway(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDefaultGateway BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDefaultGateway {
+func NewBACnetConstructedDataIPDefaultGateway(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDefaultGateway BACnetApplicationTagOctetString) *_BACnetConstructedDataIPDefaultGateway {
 	if ipDefaultGateway == nil {
 		panic("ipDefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPDefaultGateway must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPDefaultGateway{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpDefaultGateway:              ipDefaultGateway,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

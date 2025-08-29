@@ -44,19 +44,12 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
   protected final NetworkRoute networkRoute;
   protected final byte peekedApplication;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public CBusPointToPointToMultiPointCommand(
-      BridgeAddress bridgeAddress,
-      NetworkRoute networkRoute,
-      byte peekedApplication,
-      CBusOptions cBusOptions) {
+      BridgeAddress bridgeAddress, NetworkRoute networkRoute, byte peekedApplication) {
     super();
     this.bridgeAddress = bridgeAddress;
     this.networkRoute = networkRoute;
     this.peekedApplication = peekedApplication;
-    this.cBusOptions = cBusOptions;
   }
 
   public BridgeAddress getBridgeAddress() {
@@ -152,16 +145,13 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
     readBuffer.closeContext("CBusPointToPointToMultiPointCommand");
     // Create the instance
     CBusPointToPointToMultiPointCommand _cBusPointToPointToMultiPointCommand =
-        builder.build(bridgeAddress, networkRoute, peekedApplication, cBusOptions);
+        builder.build(bridgeAddress, networkRoute, peekedApplication);
     return _cBusPointToPointToMultiPointCommand;
   }
 
   public interface CBusPointToPointToMultiPointCommandBuilder {
     CBusPointToPointToMultiPointCommand build(
-        BridgeAddress bridgeAddress,
-        NetworkRoute networkRoute,
-        byte peekedApplication,
-        CBusOptions cBusOptions);
+        BridgeAddress bridgeAddress, NetworkRoute networkRoute, byte peekedApplication);
   }
 
   @Override

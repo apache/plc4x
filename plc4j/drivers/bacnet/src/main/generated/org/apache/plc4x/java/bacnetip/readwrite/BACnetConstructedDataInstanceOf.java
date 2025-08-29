@@ -49,21 +49,13 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
   // Properties.
   protected final BACnetApplicationTagCharacterString instanceOf;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataInstanceOf(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString instanceOf,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString instanceOf) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.instanceOf = instanceOf;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getInstanceOf() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataInstanceOf");
     // Create the instance
-    return new BACnetConstructedDataInstanceOfBuilderImpl(
-        instanceOf, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInstanceOfBuilderImpl(instanceOf);
   }
 
   public static class BACnetConstructedDataInstanceOfBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString instanceOf;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataInstanceOfBuilderImpl(
-        BACnetApplicationTagCharacterString instanceOf,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString instanceOf) {
       this.instanceOf = instanceOf;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataInstanceOf build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataInstanceOf bACnetConstructedDataInstanceOf =
-          new BACnetConstructedDataInstanceOf(
-              openingTag, peekedTagHeader, closingTag, instanceOf, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataInstanceOf(openingTag, peekedTagHeader, closingTag, instanceOf);
       return bACnetConstructedDataInstanceOf;
     }
   }

@@ -62,8 +62,6 @@ type RequestContract interface {
 	GetTermination() RequestTermination
 	// GetActualPeek returns ActualPeek (virtual field)
 	GetActualPeek() RequestType
-	// GetCBusOptions() returns a parser argument
-	GetCBusOptions() CBusOptions
 	// IsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequest()
 	// CreateBuilder creates a RequestBuilder
@@ -89,19 +87,16 @@ type _Request struct {
 	ResetMode   *RequestType
 	SecondPeek  RequestType
 	Termination RequestTermination
-
-	// Arguments.
-	CBusOptions CBusOptions
 }
 
 var _ RequestContract = (*_Request)(nil)
 
 // NewRequest factory function for _Request
-func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_Request {
+func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) *_Request {
 	if termination == nil {
 		panic("termination of type RequestTermination for Request must not be nil")
 	}
-	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions}
+	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination}
 }
 
 ///////////////////////////////////////////////////////////
@@ -126,8 +121,6 @@ type RequestBuilder interface {
 	WithTermination(RequestTermination) RequestBuilder
 	// WithTerminationBuilder adds Termination (property field) which is build by the builder
 	WithTerminationBuilder(func(RequestTerminationBuilder) RequestTerminationBuilder) RequestBuilder
-	// WithArgCBusOptions sets a parser argument
-	WithArgCBusOptions(CBusOptions) RequestBuilder
 	// AsRequestSmartConnectShortcut converts this build to a subType of Request. It is always possible to return to current builder using Done()
 	AsRequestSmartConnectShortcut() RequestSmartConnectShortcutBuilder
 	// AsRequestReset converts this build to a subType of Request. It is always possible to return to current builder using Done()
@@ -209,11 +202,6 @@ func (b *_RequestBuilder) WithTerminationBuilder(builderSupplier func(RequestTer
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RequestTerminationBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RequestBuilder) WithArgCBusOptions(cBusOptions CBusOptions) RequestBuilder {
-	b.CBusOptions = cBusOptions
 	return b
 }
 
@@ -458,7 +446,7 @@ func RequestParseWithBufferProducer[T Request](cBusOptions CBusOptions) func(ctx
 }
 
 func RequestParseWithBuffer[T Request](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_Request{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
+	v, err := (new(_Request)).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -601,16 +589,6 @@ func (pm *_Request) serializeParent(ctx context.Context, writeBuffer utils.Write
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_Request) GetCBusOptions() CBusOptions {
-	return m.CBusOptions
-}
-
-//
-////
-
 func (m *_Request) IsRequest() {}
 
 func (m *_Request) DeepCopy() any {
@@ -628,7 +606,6 @@ func (m *_Request) deepCopy() *_Request {
 		utils.CopyPtr[RequestType](m.ResetMode),
 		m.SecondPeek,
 		utils.DeepCopy[RequestTermination](m.Termination),
-		m.CBusOptions,
 	}
 	return _RequestCopy
 }

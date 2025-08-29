@@ -49,21 +49,13 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
   // Properties.
   protected final BACnetNetworkPortCommandTagged command;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCommand(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetNetworkPortCommandTagged command,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetNetworkPortCommandTagged command) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.command = command;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetNetworkPortCommandTagged getCommand() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataCommand");
     // Create the instance
-    return new BACnetConstructedDataCommandBuilderImpl(command, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCommandBuilderImpl(command);
   }
 
   public static class BACnetConstructedDataCommandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetNetworkPortCommandTagged command;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCommandBuilderImpl(
-        BACnetNetworkPortCommandTagged command,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataCommandBuilderImpl(BACnetNetworkPortCommandTagged command) {
       this.command = command;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCommand build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCommand bACnetConstructedDataCommand =
-          new BACnetConstructedDataCommand(
-              openingTag, peekedTagHeader, closingTag, command, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataCommand(openingTag, peekedTagHeader, closingTag, command);
       return bACnetConstructedDataCommand;
     }
   }

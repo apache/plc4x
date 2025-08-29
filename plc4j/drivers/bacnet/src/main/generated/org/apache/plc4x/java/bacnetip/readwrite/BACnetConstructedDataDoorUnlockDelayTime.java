@@ -50,21 +50,13 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger doorUnlockDelayTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDoorUnlockDelayTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger doorUnlockDelayTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger doorUnlockDelayTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.doorUnlockDelayTime = doorUnlockDelayTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getDoorUnlockDelayTime() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataDoorUnlockDelayTime");
     // Create the instance
-    return new BACnetConstructedDataDoorUnlockDelayTimeBuilderImpl(
-        doorUnlockDelayTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoorUnlockDelayTimeBuilderImpl(doorUnlockDelayTime);
   }
 
   public static class BACnetConstructedDataDoorUnlockDelayTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger doorUnlockDelayTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDoorUnlockDelayTimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger doorUnlockDelayTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger doorUnlockDelayTime) {
       this.doorUnlockDelayTime = doorUnlockDelayTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDoorUnlockDelayTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDoorUnlockDelayTime bACnetConstructedDataDoorUnlockDelayTime =
           new BACnetConstructedDataDoorUnlockDelayTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              doorUnlockDelayTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, doorUnlockDelayTime);
       return bACnetConstructedDataDoorUnlockDelayTime;
     }
   }

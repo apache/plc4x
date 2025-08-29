@@ -64,9 +64,9 @@ var _ RequestObsolete = (*_RequestObsolete)(nil)
 var _ RequestRequirements = (*_RequestObsolete)(nil)
 
 // NewRequestObsolete factory function for _RequestObsolete
-func NewRequestObsolete(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestObsolete {
+func NewRequestObsolete(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha) *_RequestObsolete {
 	_result := &_RequestObsolete{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination),
 		CalData:         calData,
 		Alpha:           alpha,
 	}

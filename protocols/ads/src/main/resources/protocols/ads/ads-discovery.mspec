@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type AdsDiscoveryConstants
+[constants
     [const          uint 16     adsDiscoveryUdpDefaultPort 48899]
 ]
 

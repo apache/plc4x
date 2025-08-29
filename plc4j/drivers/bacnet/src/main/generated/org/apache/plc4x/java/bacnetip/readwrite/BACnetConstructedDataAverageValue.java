@@ -49,21 +49,13 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagReal averageValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAverageValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal averageValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal averageValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.averageValue = averageValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getAverageValue() {
@@ -132,34 +124,22 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataAverageValue");
     // Create the instance
-    return new BACnetConstructedDataAverageValueBuilderImpl(
-        averageValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAverageValueBuilderImpl(averageValue);
   }
 
   public static class BACnetConstructedDataAverageValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal averageValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAverageValueBuilderImpl(
-        BACnetApplicationTagReal averageValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataAverageValueBuilderImpl(BACnetApplicationTagReal averageValue) {
       this.averageValue = averageValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAverageValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAverageValue bACnetConstructedDataAverageValue =
           new BACnetConstructedDataAverageValue(
-              openingTag, peekedTagHeader, closingTag, averageValue, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, averageValue);
       return bACnetConstructedDataAverageValue;
     }
   }

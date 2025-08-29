@@ -42,7 +42,7 @@ func NewICouldBeRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*I
 	}
 	ApplyAppliers(options, i)
 	options = AddLeafTypeIfAbundant(options, i)
-	options = AddNLMIfAbundant(options, model.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex, 0))
+	options = AddNLMIfAbundant(options, model.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex))
 	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")

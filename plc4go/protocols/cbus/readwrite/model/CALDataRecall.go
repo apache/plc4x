@@ -62,9 +62,9 @@ var _ CALDataRecall = (*_CALDataRecall)(nil)
 var _ CALDataRequirements = (*_CALDataRecall)(nil)
 
 // NewCALDataRecall factory function for _CALDataRecall
-func NewCALDataRecall(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8, requestContext RequestContext) *_CALDataRecall {
+func NewCALDataRecall(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8) *_CALDataRecall {
 	_result := &_CALDataRecall{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract: NewCALData(requestContext, commandTypeContainer, additionalData),
 		ParamNo:         paramNo,
 		Count:           count,
 	}

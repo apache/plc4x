@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIntegerValueResolution = (*_BACnetConstructedDataInte
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueResolution)(nil)
 
 // NewBACnetConstructedDataIntegerValueResolution factory function for _BACnetConstructedDataIntegerValueResolution
-func NewBACnetConstructedDataIntegerValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueResolution {
+func NewBACnetConstructedDataIntegerValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagSignedInteger) *_BACnetConstructedDataIntegerValueResolution {
 	if resolution == nil {
 		panic("resolution of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueResolution must not be nil")
 	}
 	_result := &_BACnetConstructedDataIntegerValueResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Resolution:                    resolution,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

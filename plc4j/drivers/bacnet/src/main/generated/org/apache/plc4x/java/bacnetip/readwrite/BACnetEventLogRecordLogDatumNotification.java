@@ -45,22 +45,17 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
   protected final ConfirmedEventNotificationRequest notification;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventLogRecordLogDatumNotification(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetOpeningTag innerOpeningTag,
       ConfirmedEventNotificationRequest notification,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.notification = notification;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -143,7 +138,7 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     readBuffer.closeContext("BACnetEventLogRecordLogDatumNotification");
     // Create the instance
     return new BACnetEventLogRecordLogDatumNotificationBuilderImpl(
-        innerOpeningTag, notification, innerClosingTag, tagNumber);
+        innerOpeningTag, notification, innerClosingTag);
   }
 
   public static class BACnetEventLogRecordLogDatumNotificationBuilderImpl
@@ -151,24 +146,18 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     private final BACnetOpeningTag innerOpeningTag;
     private final ConfirmedEventNotificationRequest notification;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
 
     public BACnetEventLogRecordLogDatumNotificationBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         ConfirmedEventNotificationRequest notification,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.notification = notification;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetEventLogRecordLogDatumNotification build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetEventLogRecordLogDatumNotification bACnetEventLogRecordLogDatumNotification =
           new BACnetEventLogRecordLogDatumNotification(
               openingTag,
@@ -176,8 +165,7 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
               closingTag,
               innerOpeningTag,
               notification,
-              innerClosingTag,
-              tagNumber);
+              innerClosingTag);
       return bACnetEventLogRecordLogDatumNotification;
     }
   }

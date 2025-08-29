@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimeOfStateCountReset = (*_BACnetConstructedDataTimeO
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeOfStateCountReset)(nil)
 
 // NewBACnetConstructedDataTimeOfStateCountReset factory function for _BACnetConstructedDataTimeOfStateCountReset
-func NewBACnetConstructedDataTimeOfStateCountReset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfStateCountReset BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfStateCountReset {
+func NewBACnetConstructedDataTimeOfStateCountReset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfStateCountReset BACnetDateTime) *_BACnetConstructedDataTimeOfStateCountReset {
 	if timeOfStateCountReset == nil {
 		panic("timeOfStateCountReset of type BACnetDateTime for BACnetConstructedDataTimeOfStateCountReset must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimeOfStateCountReset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimeOfStateCountReset:         timeOfStateCountReset,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

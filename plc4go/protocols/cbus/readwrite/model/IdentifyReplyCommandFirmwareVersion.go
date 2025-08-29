@@ -59,9 +59,9 @@ var _ IdentifyReplyCommandFirmwareVersion = (*_IdentifyReplyCommandFirmwareVersi
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandFirmwareVersion)(nil)
 
 // NewIdentifyReplyCommandFirmwareVersion factory function for _IdentifyReplyCommandFirmwareVersion
-func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uint8) *_IdentifyReplyCommandFirmwareVersion {
+func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string) *_IdentifyReplyCommandFirmwareVersion {
 	_result := &_IdentifyReplyCommandFirmwareVersion{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		FirmwareVersion:              firmwareVersion,
 	}
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result

@@ -40,13 +40,9 @@ public class BACnetTagPayloadEnumerated implements Message {
   // Properties.
   protected final byte[] data;
 
-  // Arguments.
-  protected final Long actualLength;
-
-  public BACnetTagPayloadEnumerated(byte[] data, Long actualLength) {
+  public BACnetTagPayloadEnumerated(byte[] data) {
     super();
     this.data = data;
-    this.actualLength = actualLength;
   }
 
   public byte[] getData() {
@@ -110,7 +106,7 @@ public class BACnetTagPayloadEnumerated implements Message {
     readBuffer.closeContext("BACnetTagPayloadEnumerated");
     // Create the instance
     BACnetTagPayloadEnumerated _bACnetTagPayloadEnumerated;
-    _bACnetTagPayloadEnumerated = new BACnetTagPayloadEnumerated(data, actualLength);
+    _bACnetTagPayloadEnumerated = new BACnetTagPayloadEnumerated(data);
     return _bACnetTagPayloadEnumerated;
   }
 

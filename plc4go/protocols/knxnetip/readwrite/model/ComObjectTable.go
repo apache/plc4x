@@ -261,7 +261,7 @@ func ComObjectTableParseWithBufferProducer[T ComObjectTable](firmwareType Firmwa
 }
 
 func ComObjectTableParseWithBuffer[T ComObjectTable](ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (T, error) {
-	v, err := (&_ComObjectTable{}).parse(ctx, readBuffer, firmwareType)
+	v, err := (new(_ComObjectTable)).parse(ctx, readBuffer, firmwareType)
 	if err != nil {
 		var zero T
 		return zero, err

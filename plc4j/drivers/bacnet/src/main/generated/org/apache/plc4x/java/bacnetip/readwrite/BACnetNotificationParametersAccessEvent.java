@@ -50,10 +50,6 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
   protected final BACnetAuthenticationFactorTypeTagged authenticationFactor;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersAccessEvent(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -65,10 +61,8 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
       BACnetTimeStampEnclosed accessEventTime,
       BACnetDeviceObjectReferenceEnclosed accessCredential,
       BACnetAuthenticationFactorTypeTagged authenticationFactor,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.accessEvent = accessEvent;
     this.statusFlags = statusFlags;
@@ -77,8 +71,6 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     this.accessCredential = accessCredential;
     this.authenticationFactor = authenticationFactor;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -273,9 +265,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
         accessEventTime,
         accessCredential,
         authenticationFactor,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerClosingTag);
   }
 
   public static class BACnetNotificationParametersAccessEventBuilderImpl
@@ -288,8 +278,6 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     private final BACnetDeviceObjectReferenceEnclosed accessCredential;
     private final BACnetAuthenticationFactorTypeTagged authenticationFactor;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersAccessEventBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
@@ -299,9 +287,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
         BACnetTimeStampEnclosed accessEventTime,
         BACnetDeviceObjectReferenceEnclosed accessCredential,
         BACnetAuthenticationFactorTypeTagged authenticationFactor,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.accessEvent = accessEvent;
       this.statusFlags = statusFlags;
@@ -310,16 +296,10 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
       this.accessCredential = accessCredential;
       this.authenticationFactor = authenticationFactor;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersAccessEvent build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersAccessEvent bACnetNotificationParametersAccessEvent =
           new BACnetNotificationParametersAccessEvent(
               openingTag,
@@ -332,9 +312,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
               accessEventTime,
               accessCredential,
               authenticationFactor,
-              innerClosingTag,
-              tagNumber,
-              objectTypeArgument);
+              innerClosingTag);
       return bACnetNotificationParametersAccessEvent;
     }
   }

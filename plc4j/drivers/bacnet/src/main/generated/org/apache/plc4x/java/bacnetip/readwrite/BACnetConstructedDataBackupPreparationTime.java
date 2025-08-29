@@ -50,21 +50,13 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger backupPreparationTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBackupPreparationTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger backupPreparationTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger backupPreparationTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.backupPreparationTime = backupPreparationTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getBackupPreparationTime() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataBackupPreparationTime");
     // Create the instance
-    return new BACnetConstructedDataBackupPreparationTimeBuilderImpl(
-        backupPreparationTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBackupPreparationTimeBuilderImpl(backupPreparationTime);
   }
 
   public static class BACnetConstructedDataBackupPreparationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger backupPreparationTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBackupPreparationTimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger backupPreparationTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger backupPreparationTime) {
       this.backupPreparationTime = backupPreparationTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBackupPreparationTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBackupPreparationTime bACnetConstructedDataBackupPreparationTime =
           new BACnetConstructedDataBackupPreparationTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              backupPreparationTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, backupPreparationTime);
       return bACnetConstructedDataBackupPreparationTime;
     }
   }

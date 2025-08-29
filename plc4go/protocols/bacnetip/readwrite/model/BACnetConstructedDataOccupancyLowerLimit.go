@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOccupancyLowerLimit = (*_BACnetConstructedDataOccupan
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyLowerLimit)(nil)
 
 // NewBACnetConstructedDataOccupancyLowerLimit factory function for _BACnetConstructedDataOccupancyLowerLimit
-func NewBACnetConstructedDataOccupancyLowerLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyLowerLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyLowerLimit {
+func NewBACnetConstructedDataOccupancyLowerLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyLowerLimit BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataOccupancyLowerLimit {
 	if occupancyLowerLimit == nil {
 		panic("occupancyLowerLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataOccupancyLowerLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataOccupancyLowerLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		OccupancyLowerLimit:           occupancyLowerLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

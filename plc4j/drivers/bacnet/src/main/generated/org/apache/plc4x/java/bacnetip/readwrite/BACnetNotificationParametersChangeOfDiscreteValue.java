@@ -46,10 +46,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
   protected final BACnetStatusFlagsTagged statusFlags;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersChangeOfDiscreteValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -57,16 +53,12 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
       BACnetOpeningTag innerOpeningTag,
       BACnetNotificationParametersChangeOfDiscreteValueNewValue newValue,
       BACnetStatusFlagsTagged statusFlags,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.newValue = newValue;
     this.statusFlags = statusFlags;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -178,7 +170,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValue");
     // Create the instance
     return new BACnetNotificationParametersChangeOfDiscreteValueBuilderImpl(
-        innerOpeningTag, newValue, statusFlags, innerClosingTag, tagNumber, objectTypeArgument);
+        innerOpeningTag, newValue, statusFlags, innerClosingTag);
   }
 
   public static class BACnetNotificationParametersChangeOfDiscreteValueBuilderImpl
@@ -187,30 +179,20 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     private final BACnetNotificationParametersChangeOfDiscreteValueNewValue newValue;
     private final BACnetStatusFlagsTagged statusFlags;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersChangeOfDiscreteValueBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetNotificationParametersChangeOfDiscreteValueNewValue newValue,
         BACnetStatusFlagsTagged statusFlags,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.newValue = newValue;
       this.statusFlags = statusFlags;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersChangeOfDiscreteValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfDiscreteValue
           bACnetNotificationParametersChangeOfDiscreteValue =
               new BACnetNotificationParametersChangeOfDiscreteValue(
@@ -220,9 +202,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
                   innerOpeningTag,
                   newValue,
                   statusFlags,
-                  innerClosingTag,
-                  tagNumber,
-                  objectTypeArgument);
+                  innerClosingTag);
       return bACnetNotificationParametersChangeOfDiscreteValue;
     }
   }

@@ -50,21 +50,13 @@ public class BACnetConstructedDataIntegerValueCOVIncrement extends BACnetConstru
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger covIncrement;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIntegerValueCOVIncrement(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger covIncrement,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger covIncrement) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.covIncrement = covIncrement;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getCovIncrement() {
@@ -135,34 +127,23 @@ public class BACnetConstructedDataIntegerValueCOVIncrement extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataIntegerValueCOVIncrement");
     // Create the instance
-    return new BACnetConstructedDataIntegerValueCOVIncrementBuilderImpl(
-        covIncrement, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIntegerValueCOVIncrementBuilderImpl(covIncrement);
   }
 
   public static class BACnetConstructedDataIntegerValueCOVIncrementBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger covIncrement;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIntegerValueCOVIncrementBuilderImpl(
-        BACnetApplicationTagUnsignedInteger covIncrement,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger covIncrement) {
       this.covIncrement = covIncrement;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIntegerValueCOVIncrement build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIntegerValueCOVIncrement bACnetConstructedDataIntegerValueCOVIncrement =
           new BACnetConstructedDataIntegerValueCOVIncrement(
-              openingTag, peekedTagHeader, closingTag, covIncrement, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, covIncrement);
       return bACnetConstructedDataIntegerValueCOVIncrement;
     }
   }

@@ -65,12 +65,12 @@ var _ LDataReq = (*_LDataReq)(nil)
 var _ CEMIRequirements = (*_LDataReq)(nil)
 
 // NewLDataReq factory function for _LDataReq
-func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataReq {
+func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) *_LDataReq {
 	if dataFrame == nil {
 		panic("dataFrame of type LDataFrame for LDataReq must not be nil")
 	}
 	_result := &_LDataReq{
-		CEMIContract:                NewCEMI(size),
+		CEMIContract:                NewCEMI(),
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,

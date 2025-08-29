@@ -59,20 +59,16 @@ type _BACnetRelationshipTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetRelationship
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetRelationshipTagged = (*_BACnetRelationshipTagged)(nil)
 
 // NewBACnetRelationshipTagged factory function for _BACnetRelationshipTagged
-func NewBACnetRelationshipTagged(header BACnetTagHeader, value BACnetRelationship, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetRelationshipTagged {
+func NewBACnetRelationshipTagged(header BACnetTagHeader, value BACnetRelationship, proprietaryValue uint32) *_BACnetRelationshipTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetRelationshipTagged must not be nil")
 	}
-	return &_BACnetRelationshipTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetRelationshipTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetRelationshipTaggedBuilder interface {
 	WithValue(BACnetRelationship) BACnetRelationshipTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetRelationshipTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetRelationshipTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetRelationshipTaggedBuilder
 	// Build builds the BACnetRelationshipTagged or returns an error if something is wrong
 	Build() (BACnetRelationshipTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetRelationshipTaggedBuilder) WithValue(value BACnetRelationship) B
 
 func (b *_BACnetRelationshipTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRelationshipTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetRelationshipTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetRelationshipTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetRelationshipTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetRelationshipTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetRelationshipTaggedParseWithBufferProducer(tagNumber uint8, tagClass T
 }
 
 func BACnetRelationshipTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRelationshipTagged, error) {
-	v, err := (&_BACnetRelationshipTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetRelationshipTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetRelationshipTagged) SerializeWithWriteBuffer(ctx context.Context
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetRelationshipTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetRelationshipTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetRelationshipTagged) IsBACnetRelationshipTagged() {}
 
 func (m *_BACnetRelationshipTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetRelationshipTagged) deepCopy() *_BACnetRelationshipTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetRelationshipTaggedCopy
 }

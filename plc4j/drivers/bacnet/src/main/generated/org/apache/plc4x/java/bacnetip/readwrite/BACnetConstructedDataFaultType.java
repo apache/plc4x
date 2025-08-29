@@ -49,21 +49,13 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
   // Properties.
   protected final BACnetFaultTypeTagged faultType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFaultType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetFaultTypeTagged faultType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetFaultTypeTagged faultType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.faultType = faultType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetFaultTypeTagged getFaultType() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataFaultType");
     // Create the instance
-    return new BACnetConstructedDataFaultTypeBuilderImpl(faultType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFaultTypeBuilderImpl(faultType);
   }
 
   public static class BACnetConstructedDataFaultTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetFaultTypeTagged faultType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFaultTypeBuilderImpl(
-        BACnetFaultTypeTagged faultType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataFaultTypeBuilderImpl(BACnetFaultTypeTagged faultType) {
       this.faultType = faultType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFaultType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFaultType bACnetConstructedDataFaultType =
-          new BACnetConstructedDataFaultType(
-              openingTag, peekedTagHeader, closingTag, faultType, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataFaultType(openingTag, peekedTagHeader, closingTag, faultType);
       return bACnetConstructedDataFaultType;
     }
   }

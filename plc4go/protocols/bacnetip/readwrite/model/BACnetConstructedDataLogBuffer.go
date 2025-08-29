@@ -64,9 +64,9 @@ var _ BACnetConstructedDataLogBuffer = (*_BACnetConstructedDataLogBuffer)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLogBuffer)(nil)
 
 // NewBACnetConstructedDataLogBuffer factory function for _BACnetConstructedDataLogBuffer
-func NewBACnetConstructedDataLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, floorText []BACnetLogRecord, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogBuffer {
+func NewBACnetConstructedDataLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, floorText []BACnetLogRecord) *_BACnetConstructedDataLogBuffer {
 	_result := &_BACnetConstructedDataLogBuffer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		FloorText:                     floorText,
 	}

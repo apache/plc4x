@@ -61,12 +61,12 @@ var _ BACnetConstructedDataControlledVariableValue = (*_BACnetConstructedDataCon
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataControlledVariableValue)(nil)
 
 // NewBACnetConstructedDataControlledVariableValue factory function for _BACnetConstructedDataControlledVariableValue
-func NewBACnetConstructedDataControlledVariableValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableValue {
+func NewBACnetConstructedDataControlledVariableValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableValue BACnetApplicationTagReal) *_BACnetConstructedDataControlledVariableValue {
 	if controlledVariableValue == nil {
 		panic("controlledVariableValue of type BACnetApplicationTagReal for BACnetConstructedDataControlledVariableValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataControlledVariableValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ControlledVariableValue:       controlledVariableValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

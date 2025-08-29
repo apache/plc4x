@@ -62,9 +62,9 @@ var _ ApduDataDeviceDescriptorResponse = (*_ApduDataDeviceDescriptorResponse)(ni
 var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorResponse)(nil)
 
 // NewApduDataDeviceDescriptorResponse factory function for _ApduDataDeviceDescriptorResponse
-func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *_ApduDataDeviceDescriptorResponse {
+func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte) *_ApduDataDeviceDescriptorResponse {
 	_result := &_ApduDataDeviceDescriptorResponse{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		DescriptorType:   descriptorType,
 		Data:             data,
 	}

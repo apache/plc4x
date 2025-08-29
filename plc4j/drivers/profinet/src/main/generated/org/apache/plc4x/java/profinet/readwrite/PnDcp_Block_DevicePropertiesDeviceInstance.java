@@ -49,7 +49,6 @@ public class PnDcp_Block_DevicePropertiesDeviceInstance extends PnDcp_Block impl
   // Properties.
   protected final short deviceInstanceHigh;
   protected final short deviceInstanceLow;
-
   // Reserved Fields
   private Integer reservedField0;
 

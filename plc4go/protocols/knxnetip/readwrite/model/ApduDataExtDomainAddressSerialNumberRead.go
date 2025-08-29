@@ -54,9 +54,9 @@ var _ ApduDataExtDomainAddressSerialNumberRead = (*_ApduDataExtDomainAddressSeri
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressSerialNumberRead)(nil)
 
 // NewApduDataExtDomainAddressSerialNumberRead factory function for _ApduDataExtDomainAddressSerialNumberRead
-func NewApduDataExtDomainAddressSerialNumberRead(length uint8) *_ApduDataExtDomainAddressSerialNumberRead {
+func NewApduDataExtDomainAddressSerialNumberRead() *_ApduDataExtDomainAddressSerialNumberRead {
 	_result := &_ApduDataExtDomainAddressSerialNumberRead{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

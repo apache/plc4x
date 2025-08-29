@@ -242,7 +242,7 @@ func ErrorParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 }
 
 func ErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Error, error) {
-	v, err := (&_Error{}).parse(ctx, readBuffer)
+	v, err := (new(_Error)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

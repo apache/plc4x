@@ -47,19 +47,9 @@ public class BACnetConstructedDataLifeSafetyZoneAll extends BACnetConstructedDat
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLifeSafetyZoneAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataLifeSafetyZoneAll extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyZoneAll");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyZoneAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLifeSafetyZoneAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataLifeSafetyZoneAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLifeSafetyZoneAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataLifeSafetyZoneAllBuilderImpl() {}
 
     public BACnetConstructedDataLifeSafetyZoneAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLifeSafetyZoneAll bACnetConstructedDataLifeSafetyZoneAll =
-          new BACnetConstructedDataLifeSafetyZoneAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLifeSafetyZoneAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataLifeSafetyZoneAll;
     }
   }

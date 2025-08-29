@@ -50,21 +50,13 @@ public class BACnetConstructedDataPositiveIntegerValueHighLimit extends BACnetCo
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger highLimit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPositiveIntegerValueHighLimit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger highLimit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger highLimit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.highLimit = highLimit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getHighLimit() {
@@ -135,40 +127,24 @@ public class BACnetConstructedDataPositiveIntegerValueHighLimit extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataPositiveIntegerValueHighLimit");
     // Create the instance
-    return new BACnetConstructedDataPositiveIntegerValueHighLimitBuilderImpl(
-        highLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPositiveIntegerValueHighLimitBuilderImpl(highLimit);
   }
 
   public static class BACnetConstructedDataPositiveIntegerValueHighLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger highLimit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataPositiveIntegerValueHighLimitBuilderImpl(
-        BACnetApplicationTagUnsignedInteger highLimit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger highLimit) {
       this.highLimit = highLimit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPositiveIntegerValueHighLimit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPositiveIntegerValueHighLimit
           bACnetConstructedDataPositiveIntegerValueHighLimit =
               new BACnetConstructedDataPositiveIntegerValueHighLimit(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  highLimit,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, highLimit);
       return bACnetConstructedDataPositiveIntegerValueHighLimit;
     }
   }

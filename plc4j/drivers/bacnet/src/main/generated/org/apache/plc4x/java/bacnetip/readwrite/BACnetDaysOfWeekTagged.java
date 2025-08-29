@@ -41,20 +41,10 @@ public class BACnetDaysOfWeekTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetTagPayloadBitString payload;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetDaysOfWeekTagged(
-      BACnetTagHeader header,
-      BACnetTagPayloadBitString payload,
-      Short tagNumber,
-      TagClass tagClass) {
+  public BACnetDaysOfWeekTagged(BACnetTagHeader header, BACnetTagPayloadBitString payload) {
     super();
     this.header = header;
     this.payload = payload;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -242,7 +232,7 @@ public class BACnetDaysOfWeekTagged implements Message {
     readBuffer.closeContext("BACnetDaysOfWeekTagged");
     // Create the instance
     BACnetDaysOfWeekTagged _bACnetDaysOfWeekTagged;
-    _bACnetDaysOfWeekTagged = new BACnetDaysOfWeekTagged(header, payload, tagNumber, tagClass);
+    _bACnetDaysOfWeekTagged = new BACnetDaysOfWeekTagged(header, payload);
     return _bACnetDaysOfWeekTagged;
   }
 

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPassbackTimeout = (*_BACnetConstructedDataPassbackTim
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPassbackTimeout)(nil)
 
 // NewBACnetConstructedDataPassbackTimeout factory function for _BACnetConstructedDataPassbackTimeout
-func NewBACnetConstructedDataPassbackTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackTimeout {
+func NewBACnetConstructedDataPassbackTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataPassbackTimeout {
 	if passbackTimeout == nil {
 		panic("passbackTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPassbackTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataPassbackTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PassbackTimeout:               passbackTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

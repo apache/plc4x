@@ -54,20 +54,16 @@ type BACnetRouterEntryStatusTagged interface {
 type _BACnetRouterEntryStatusTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetRouterEntryStatus
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetRouterEntryStatusTagged = (*_BACnetRouterEntryStatusTagged)(nil)
 
 // NewBACnetRouterEntryStatusTagged factory function for _BACnetRouterEntryStatusTagged
-func NewBACnetRouterEntryStatusTagged(header BACnetTagHeader, value BACnetRouterEntryStatus, tagNumber uint8, tagClass TagClass) *_BACnetRouterEntryStatusTagged {
+func NewBACnetRouterEntryStatusTagged(header BACnetTagHeader, value BACnetRouterEntryStatus) *_BACnetRouterEntryStatusTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetRouterEntryStatusTagged must not be nil")
 	}
-	return &_BACnetRouterEntryStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetRouterEntryStatusTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetRouterEntryStatusTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRouterEntryStatusTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetRouterEntryStatus) BACnetRouterEntryStatusTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetRouterEntryStatusTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetRouterEntryStatusTaggedBuilder
 	// Build builds the BACnetRouterEntryStatusTagged or returns an error if something is wrong
 	Build() (BACnetRouterEntryStatusTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetRouterEntryStatusTaggedBuilder) WithHeaderBuilder(builderSupplie
 
 func (b *_BACnetRouterEntryStatusTaggedBuilder) WithValue(value BACnetRouterEntryStatus) BACnetRouterEntryStatusTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetRouterEntryStatusTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetRouterEntryStatusTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetRouterEntryStatusTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetRouterEntryStatusTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetRouterEntryStatusTaggedParseWithBufferProducer(tagNumber uint8, tagCl
 }
 
 func BACnetRouterEntryStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRouterEntryStatusTagged, error) {
-	v, err := (&_BACnetRouterEntryStatusTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetRouterEntryStatusTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetRouterEntryStatusTagged) SerializeWithWriteBuffer(ctx context.Co
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetRouterEntryStatusTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetRouterEntryStatusTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetRouterEntryStatusTagged) IsBACnetRouterEntryStatusTagged() {}
 
 func (m *_BACnetRouterEntryStatusTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetRouterEntryStatusTagged) deepCopy() *_BACnetRouterEntryStatusTag
 	_BACnetRouterEntryStatusTaggedCopy := &_BACnetRouterEntryStatusTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetRouterEntryStatusTaggedCopy
 }

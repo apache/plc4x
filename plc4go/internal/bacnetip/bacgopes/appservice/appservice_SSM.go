@@ -321,7 +321,6 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU PDU, moreFollows bool, err er
 			nil,
 			serviceChoice,
 			segmentBytes,
-			0,
 		)))
 	} else {
 		s.log.Debug().Msg("complex ack context")
@@ -334,7 +333,6 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU PDU, moreFollows bool, err er
 			nil,
 			serviceChoice,
 			segmentBytes,
-			0,
 		)))
 	}
 	return segmentAPDU, moreFollows, nil

@@ -61,12 +61,12 @@ var _ APDUUnconfirmedRequest = (*_APDUUnconfirmedRequest)(nil)
 var _ APDURequirements = (*_APDUUnconfirmedRequest)(nil)
 
 // NewAPDUUnconfirmedRequest factory function for _APDUUnconfirmedRequest
-func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, apduLength uint16) *_APDUUnconfirmedRequest {
+func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest) *_APDUUnconfirmedRequest {
 	if serviceRequest == nil {
 		panic("serviceRequest of type BACnetUnconfirmedServiceRequest for APDUUnconfirmedRequest must not be nil")
 	}
 	_result := &_APDUUnconfirmedRequest{
-		APDUContract:   NewAPDU(apduLength),
+		APDUContract:   NewAPDU(),
 		ServiceRequest: serviceRequest,
 	}
 	_result.APDUContract.(*_APDU)._SubType = _result

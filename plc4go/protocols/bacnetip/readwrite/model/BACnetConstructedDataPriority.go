@@ -64,9 +64,9 @@ var _ BACnetConstructedDataPriority = (*_BACnetConstructedDataPriority)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPriority)(nil)
 
 // NewBACnetConstructedDataPriority factory function for _BACnetConstructedDataPriority
-func NewBACnetConstructedDataPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, priority []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriority {
+func NewBACnetConstructedDataPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, priority []BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataPriority {
 	_result := &_BACnetConstructedDataPriority{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		Priority:                      priority,
 	}

@@ -19,14 +19,14 @@
 
 package org.apache.plc4x.java.bacnetip.configuration;
 
-import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
+import org.apache.plc4x.java.bacnetip.readwrite.Constants;
 import org.apache.plc4x.java.transport.udp.DefaultUdpTransportConfiguration;
 
 public class BacNetUdpTransportConfiguration extends DefaultUdpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {
-        return BacnetConstants.BACNETUDPDEFAULTPORT;
+        return Constants.BACNETUDPDEFAULTPORT;
     }
 
 }

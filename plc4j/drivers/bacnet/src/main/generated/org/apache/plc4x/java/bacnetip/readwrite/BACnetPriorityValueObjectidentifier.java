@@ -42,16 +42,10 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
   // Properties.
   protected final BACnetApplicationTagObjectIdentifier objectidentifierValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueObjectidentifier(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagObjectIdentifier objectidentifierValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagObjectIdentifier objectidentifierValue) {
+    super(peekedTagHeader);
     this.objectidentifierValue = objectidentifierValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagObjectIdentifier getObjectidentifierValue() {
@@ -105,27 +99,21 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
 
     readBuffer.closeContext("BACnetPriorityValueObjectidentifier");
     // Create the instance
-    return new BACnetPriorityValueObjectidentifierBuilderImpl(
-        objectidentifierValue, objectTypeArgument);
+    return new BACnetPriorityValueObjectidentifierBuilderImpl(objectidentifierValue);
   }
 
   public static class BACnetPriorityValueObjectidentifierBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetPriorityValueObjectidentifierBuilderImpl(
-        BACnetApplicationTagObjectIdentifier objectidentifierValue,
-        BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagObjectIdentifier objectidentifierValue) {
       this.objectidentifierValue = objectidentifierValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueObjectidentifier build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueObjectidentifier build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueObjectidentifier bACnetPriorityValueObjectidentifier =
-          new BACnetPriorityValueObjectidentifier(
-              peekedTagHeader, objectidentifierValue, objectTypeArgument);
+          new BACnetPriorityValueObjectidentifier(peekedTagHeader, objectidentifierValue);
       return bACnetPriorityValueObjectidentifier;
     }
   }

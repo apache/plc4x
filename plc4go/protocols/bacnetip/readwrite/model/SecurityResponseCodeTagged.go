@@ -54,20 +54,16 @@ type SecurityResponseCodeTagged interface {
 type _SecurityResponseCodeTagged struct {
 	Header BACnetTagHeader
 	Value  SecurityResponseCode
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ SecurityResponseCodeTagged = (*_SecurityResponseCodeTagged)(nil)
 
 // NewSecurityResponseCodeTagged factory function for _SecurityResponseCodeTagged
-func NewSecurityResponseCodeTagged(header BACnetTagHeader, value SecurityResponseCode, tagNumber uint8, tagClass TagClass) *_SecurityResponseCodeTagged {
+func NewSecurityResponseCodeTagged(header BACnetTagHeader, value SecurityResponseCode) *_SecurityResponseCodeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for SecurityResponseCodeTagged must not be nil")
 	}
-	return &_SecurityResponseCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_SecurityResponseCodeTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type SecurityResponseCodeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) SecurityResponseCodeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(SecurityResponseCode) SecurityResponseCodeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) SecurityResponseCodeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) SecurityResponseCodeTaggedBuilder
 	// Build builds the SecurityResponseCodeTagged or returns an error if something is wrong
 	Build() (SecurityResponseCodeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_SecurityResponseCodeTaggedBuilder) WithHeaderBuilder(builderSupplier f
 
 func (b *_SecurityResponseCodeTaggedBuilder) WithValue(value SecurityResponseCode) SecurityResponseCodeTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_SecurityResponseCodeTaggedBuilder) WithArgTagNumber(tagNumber uint8) SecurityResponseCodeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_SecurityResponseCodeTaggedBuilder) WithArgTagClass(tagClass TagClass) SecurityResponseCodeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func SecurityResponseCodeTaggedParseWithBufferProducer(tagNumber uint8, tagClass
 }
 
 func SecurityResponseCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (SecurityResponseCodeTagged, error) {
-	v, err := (&_SecurityResponseCodeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_SecurityResponseCodeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_SecurityResponseCodeTagged) SerializeWithWriteBuffer(ctx context.Conte
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_SecurityResponseCodeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_SecurityResponseCodeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_SecurityResponseCodeTagged) IsSecurityResponseCodeTagged() {}
 
 func (m *_SecurityResponseCodeTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_SecurityResponseCodeTagged) deepCopy() *_SecurityResponseCodeTagged {
 	_SecurityResponseCodeTaggedCopy := &_SecurityResponseCodeTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _SecurityResponseCodeTaggedCopy
 }

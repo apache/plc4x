@@ -50,10 +50,10 @@ type BACnetServiceAck interface {
 
 // BACnetServiceAckContract provides a set of functions which can be overwritten by a sub struct
 type BACnetServiceAckContract interface {
+	// GetServiceAckLength returns ServiceAckLength (property field)
+	GetServiceAckLength() uint32
 	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
 	GetServiceAckPayloadLength() uint32
-	// GetServiceAckLength() returns a parser argument
-	GetServiceAckLength() uint32
 	// IsBACnetServiceAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAck()
 	// CreateBuilder creates a BACnetServiceAckBuilder
@@ -74,8 +74,6 @@ type _BACnetServiceAck struct {
 		BACnetServiceAckContract
 		BACnetServiceAckRequirements
 	}
-
-	// Arguments.
 	ServiceAckLength uint32
 }
 
@@ -95,9 +93,9 @@ func NewBACnetServiceAck(serviceAckLength uint32) *_BACnetServiceAck {
 type BACnetServiceAckBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields() BACnetServiceAckBuilder
-	// WithArgServiceAckLength sets a parser argument
-	WithArgServiceAckLength(uint32) BACnetServiceAckBuilder
+	WithMandatoryFields(serviceAckLength uint32) BACnetServiceAckBuilder
+	// WithServiceAckLength adds ServiceAckLength (property field)
+	WithServiceAckLength(uint32) BACnetServiceAckBuilder
 	// AsBACnetServiceAckGetAlarmSummary converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
 	AsBACnetServiceAckGetAlarmSummary() BACnetServiceAckGetAlarmSummaryBuilder
 	// AsBACnetServiceAckGetEnrollmentSummary converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
@@ -159,11 +157,11 @@ type _BACnetServiceAckBuilder struct {
 
 var _ (BACnetServiceAckBuilder) = (*_BACnetServiceAckBuilder)(nil)
 
-func (b *_BACnetServiceAckBuilder) WithMandatoryFields() BACnetServiceAckBuilder {
-	return b
+func (b *_BACnetServiceAckBuilder) WithMandatoryFields(serviceAckLength uint32) BACnetServiceAckBuilder {
+	return b.WithServiceAckLength(serviceAckLength)
 }
 
-func (b *_BACnetServiceAckBuilder) WithArgServiceAckLength(serviceAckLength uint32) BACnetServiceAckBuilder {
+func (b *_BACnetServiceAckBuilder) WithServiceAckLength(serviceAckLength uint32) BACnetServiceAckBuilder {
 	b.ServiceAckLength = serviceAckLength
 	return b
 }
@@ -378,6 +376,19 @@ func (b *_BACnetServiceAck) CreateBACnetServiceAckBuilder() BACnetServiceAckBuil
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_BACnetServiceAck) GetServiceAckLength() uint32 {
+	return m.ServiceAckLength
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
@@ -442,7 +453,7 @@ func BACnetServiceAckParseWithBufferProducer[T BACnetServiceAck](serviceAckLengt
 }
 
 func BACnetServiceAckParseWithBuffer[T BACnetServiceAck](ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (T, error) {
-	v, err := (&_BACnetServiceAck{ServiceAckLength: serviceAckLength}).parse(ctx, readBuffer, serviceAckLength)
+	v, err := (new(_BACnetServiceAck)).parse(ctx, readBuffer, serviceAckLength)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -463,6 +474,7 @@ func (m *_BACnetServiceAck) parse(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.ServiceAckLength = serviceAckLength
 
 	serviceChoice, err := ReadDiscriminatorEnumField[BACnetConfirmedServiceChoice](ctx, "serviceChoice", "BACnetConfirmedServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, uint8(8))))
 	if err != nil {
@@ -581,16 +593,6 @@ func (pm *_BACnetServiceAck) serializeParent(ctx context.Context, writeBuffer ut
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_BACnetServiceAck) GetServiceAckLength() uint32 {
-	return m.ServiceAckLength
-}
-
-//
-////
 
 func (m *_BACnetServiceAck) IsBACnetServiceAck() {}
 

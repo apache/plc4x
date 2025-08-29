@@ -362,7 +362,7 @@ func TriggerControlDataParseWithBufferProducer[T TriggerControlData]() func(ctx 
 }
 
 func TriggerControlDataParseWithBuffer[T TriggerControlData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_TriggerControlData{}).parse(ctx, readBuffer)
+	v, err := (new(_TriggerControlData)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

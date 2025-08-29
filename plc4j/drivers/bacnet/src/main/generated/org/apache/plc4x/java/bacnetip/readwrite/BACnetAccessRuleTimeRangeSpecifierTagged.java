@@ -41,20 +41,11 @@ public class BACnetAccessRuleTimeRangeSpecifierTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetAccessRuleTimeRangeSpecifier value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetAccessRuleTimeRangeSpecifierTagged(
-      BACnetTagHeader header,
-      BACnetAccessRuleTimeRangeSpecifier value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetAccessRuleTimeRangeSpecifier value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -139,7 +130,7 @@ public class BACnetAccessRuleTimeRangeSpecifierTagged implements Message {
     // Create the instance
     BACnetAccessRuleTimeRangeSpecifierTagged _bACnetAccessRuleTimeRangeSpecifierTagged;
     _bACnetAccessRuleTimeRangeSpecifierTagged =
-        new BACnetAccessRuleTimeRangeSpecifierTagged(header, value, tagNumber, tagClass);
+        new BACnetAccessRuleTimeRangeSpecifierTagged(header, value);
     return _bACnetAccessRuleTimeRangeSpecifierTagged;
   }
 

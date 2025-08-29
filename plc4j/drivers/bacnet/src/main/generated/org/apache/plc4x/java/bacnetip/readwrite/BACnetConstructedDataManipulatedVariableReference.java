@@ -50,21 +50,13 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
   // Properties.
   protected final BACnetObjectPropertyReference manipulatedVariableReference;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataManipulatedVariableReference(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetObjectPropertyReference manipulatedVariableReference,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetObjectPropertyReference manipulatedVariableReference) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.manipulatedVariableReference = manipulatedVariableReference;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetObjectPropertyReference getManipulatedVariableReference() {
@@ -134,39 +126,24 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
     readBuffer.closeContext("BACnetConstructedDataManipulatedVariableReference");
     // Create the instance
     return new BACnetConstructedDataManipulatedVariableReferenceBuilderImpl(
-        manipulatedVariableReference, tagNumber, arrayIndexArgument);
+        manipulatedVariableReference);
   }
 
   public static class BACnetConstructedDataManipulatedVariableReferenceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetObjectPropertyReference manipulatedVariableReference;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataManipulatedVariableReferenceBuilderImpl(
-        BACnetObjectPropertyReference manipulatedVariableReference,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetObjectPropertyReference manipulatedVariableReference) {
       this.manipulatedVariableReference = manipulatedVariableReference;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataManipulatedVariableReference build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataManipulatedVariableReference
           bACnetConstructedDataManipulatedVariableReference =
               new BACnetConstructedDataManipulatedVariableReference(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  manipulatedVariableReference,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, manipulatedVariableReference);
       return bACnetConstructedDataManipulatedVariableReference;
     }
   }

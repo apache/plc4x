@@ -50,21 +50,13 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagBoolean slaveProxyEnable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSlaveProxyEnable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean slaveProxyEnable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean slaveProxyEnable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.slaveProxyEnable = slaveProxyEnable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getSlaveProxyEnable() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataSlaveProxyEnable");
     // Create the instance
-    return new BACnetConstructedDataSlaveProxyEnableBuilderImpl(
-        slaveProxyEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSlaveProxyEnableBuilderImpl(slaveProxyEnable);
   }
 
   public static class BACnetConstructedDataSlaveProxyEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean slaveProxyEnable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSlaveProxyEnableBuilderImpl(
-        BACnetApplicationTagBoolean slaveProxyEnable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean slaveProxyEnable) {
       this.slaveProxyEnable = slaveProxyEnable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSlaveProxyEnable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSlaveProxyEnable bACnetConstructedDataSlaveProxyEnable =
           new BACnetConstructedDataSlaveProxyEnable(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              slaveProxyEnable,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, slaveProxyEnable);
       return bACnetConstructedDataSlaveProxyEnable;
     }
   }

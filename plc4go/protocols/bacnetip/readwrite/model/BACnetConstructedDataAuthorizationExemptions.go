@@ -59,9 +59,9 @@ var _ BACnetConstructedDataAuthorizationExemptions = (*_BACnetConstructedDataAut
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
 
 // NewBACnetConstructedDataAuthorizationExemptions factory function for _BACnetConstructedDataAuthorizationExemptions
-func NewBACnetConstructedDataAuthorizationExemptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationExemption []BACnetAuthorizationExemptionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationExemptions {
+func NewBACnetConstructedDataAuthorizationExemptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationExemption []BACnetAuthorizationExemptionTagged) *_BACnetConstructedDataAuthorizationExemptions {
 	_result := &_BACnetConstructedDataAuthorizationExemptions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AuthorizationExemption:        authorizationExemption,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

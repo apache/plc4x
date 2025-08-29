@@ -61,12 +61,12 @@ var _ BACnetConstructedDataUserInformationReference = (*_BACnetConstructedDataUs
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserInformationReference)(nil)
 
 // NewBACnetConstructedDataUserInformationReference factory function for _BACnetConstructedDataUserInformationReference
-func NewBACnetConstructedDataUserInformationReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userInformationReference BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserInformationReference {
+func NewBACnetConstructedDataUserInformationReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userInformationReference BACnetApplicationTagCharacterString) *_BACnetConstructedDataUserInformationReference {
 	if userInformationReference == nil {
 		panic("userInformationReference of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserInformationReference must not be nil")
 	}
 	_result := &_BACnetConstructedDataUserInformationReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		UserInformationReference:      userInformationReference,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

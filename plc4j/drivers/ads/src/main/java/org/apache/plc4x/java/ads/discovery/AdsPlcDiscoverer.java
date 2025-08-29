@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.ads.discovery;
 
 import org.apache.plc4x.java.ads.discovery.readwrite.*;
-import org.apache.plc4x.java.ads.readwrite.AdsConstants;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
@@ -63,7 +62,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                         if ((interfaceAddress.getBroadcast() != null) && (interfaceAddress.getAddress() instanceof Inet4Address)) {
                             Inet4Address inet4Address = (Inet4Address) interfaceAddress.getAddress();
                             // Open a listening socket on the AMS discovery default port for taking in responses.
-                            DatagramSocket adsDiscoverySocket = new DatagramSocket(AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT, inet4Address);
+                            DatagramSocket adsDiscoverySocket = new DatagramSocket(Constants.ADSDISCOVERYUDPDEFAULTPORT, inet4Address);
                             adsDiscoverySocket.setBroadcast(true);
 
                             openSockets.add(adsDiscoverySocket);
@@ -133,7 +132,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                                 // Add an entry to the results.
                                                 PlcDiscoveryItem plcDiscoveryItem = new DefaultPlcDiscoveryItem(
                                                     "ads", "tcp",
-                                                    plcAddress.getHostAddress() + ":" + AdsConstants.ADSTCPDEFAULTPORT,
+                                                    plcAddress.getHostAddress() + ":" + org.apache.plc4x.java.ads.readwrite.Constants.ADSTCPDEFAULTPORT,
                                                     options, hostNameBlock.getHostName().getText(), attributes);
 
                                                 // If we've got an explicit handler, pass the new item to that.
@@ -174,7 +173,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                 InetAddress broadcastAddress = interfaceAddress.getBroadcast();
 
                                 // Create the UDP packet to the broadcast address.
-                                DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, broadcastAddress, AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT);
+                                DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, broadcastAddress, Constants.ADSDISCOVERYUDPDEFAULTPORT);
                                 adsDiscoverySocket.send(discoveryRequestPacket);
                             } catch (SerializationException e) {
                                 logger.error("Error serializing ADS discovery request", e);

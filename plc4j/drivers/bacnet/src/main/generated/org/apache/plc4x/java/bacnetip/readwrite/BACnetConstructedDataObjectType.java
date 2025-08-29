@@ -49,21 +49,13 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
   // Properties.
   protected final BACnetObjectTypeTagged objectType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataObjectType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetObjectTypeTagged objectType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetObjectTypeTagged objectType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.objectType = objectType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetObjectTypeTagged getObjectType() {
@@ -134,34 +126,21 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataObjectType");
     // Create the instance
-    return new BACnetConstructedDataObjectTypeBuilderImpl(
-        objectType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataObjectTypeBuilderImpl(objectType);
   }
 
   public static class BACnetConstructedDataObjectTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetObjectTypeTagged objectType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataObjectTypeBuilderImpl(
-        BACnetObjectTypeTagged objectType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataObjectTypeBuilderImpl(BACnetObjectTypeTagged objectType) {
       this.objectType = objectType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataObjectType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataObjectType bACnetConstructedDataObjectType =
-          new BACnetConstructedDataObjectType(
-              openingTag, peekedTagHeader, closingTag, objectType, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataObjectType(openingTag, peekedTagHeader, closingTag, objectType);
       return bACnetConstructedDataObjectType;
     }
   }

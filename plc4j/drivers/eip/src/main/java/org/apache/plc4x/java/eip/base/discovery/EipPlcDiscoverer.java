@@ -60,7 +60,7 @@ public class EipPlcDiscoverer implements PlcDiscoverer {
                         if ((interfaceAddress.getBroadcast() != null) && (interfaceAddress.getAddress() instanceof Inet4Address)) {
                             Inet4Address inet4Address = (Inet4Address) interfaceAddress.getAddress();
                             // Open a listening socket on the AMS discovery default port for taking in responses.
-                            DatagramSocket discoverySocket = new DatagramSocket(EipConstants.EIPUDPDISCOVERYDEFAULTPORT, inet4Address);
+                            DatagramSocket discoverySocket = new DatagramSocket(Constants.EIPUDPDISCOVERYDEFAULTPORT, inet4Address);
                             discoverySocket.setBroadcast(true);
 
                             openSockets.add(discoverySocket);
@@ -89,7 +89,7 @@ public class EipPlcDiscoverer implements PlcDiscoverer {
                                                         // Add an entry to the results.
                                                         PlcDiscoveryItem plcDiscoveryItem = new DefaultPlcDiscoveryItem(
                                                             "eip", "tcp",
-                                                            plcAddress.getHostAddress() + ":" + EipConstants.EIPTCPDEFAULTPORT,
+                                                            plcAddress.getHostAddress() + ":" + Constants.EIPTCPDEFAULTPORT,
                                                             Collections.emptyMap(), identityItem.getProductName(), Collections.emptyMap());
 
                                                         // If we've got an explicit handler, pass the new item to that.
@@ -131,7 +131,7 @@ public class EipPlcDiscoverer implements PlcDiscoverer {
                                 InetAddress broadcastAddress = interfaceAddress.getBroadcast();
 
                                 // Create the UDP packet to the broadcast address.
-                                DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, broadcastAddress, EipConstants.EIPUDPDISCOVERYDEFAULTPORT);
+                                DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, broadcastAddress, Constants.EIPUDPDISCOVERYDEFAULTPORT);
                                 discoverySocket.send(discoveryRequestPacket);
                             } catch (SerializationException e) {
                                 logger.error("Error serializing EIP discovery request", e);

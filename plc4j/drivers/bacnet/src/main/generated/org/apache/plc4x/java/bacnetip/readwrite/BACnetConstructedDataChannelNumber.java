@@ -49,21 +49,13 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger channelNumber;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataChannelNumber(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger channelNumber,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger channelNumber) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.channelNumber = channelNumber;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getChannelNumber() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataChannelNumber");
     // Create the instance
-    return new BACnetConstructedDataChannelNumberBuilderImpl(
-        channelNumber, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataChannelNumberBuilderImpl(channelNumber);
   }
 
   public static class BACnetConstructedDataChannelNumberBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger channelNumber;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataChannelNumberBuilderImpl(
-        BACnetApplicationTagUnsignedInteger channelNumber,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger channelNumber) {
       this.channelNumber = channelNumber;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataChannelNumber build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataChannelNumber bACnetConstructedDataChannelNumber =
           new BACnetConstructedDataChannelNumber(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              channelNumber,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, channelNumber);
       return bACnetConstructedDataChannelNumber;
     }
   }

@@ -48,7 +48,6 @@ public class PnIoCm_Control_Request_ApplicationReady extends PnIoCm_Block implem
   protected final Uuid arUuid;
   protected final int sessionKey;
   protected final int controlCommand;
-
   // Reserved Fields
   private Integer reservedField0;
   private Integer reservedField1;

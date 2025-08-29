@@ -52,23 +52,15 @@ public class BACnetConstructedDataPositiveAccessRules extends BACnetConstructedD
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetAccessRule> positiveAccessRules;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPositiveAccessRules(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetAccessRule> positiveAccessRules,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetAccessRule> positiveAccessRules) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.positiveAccessRules = positiveAccessRules;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataPositiveAccessRules extends BACnetConstructedD
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (positiveAccessRules)
     writeComplexTypeArrayField("positiveAccessRules", positiveAccessRules, writeBuffer);
@@ -171,42 +159,26 @@ public class BACnetConstructedDataPositiveAccessRules extends BACnetConstructedD
     readBuffer.closeContext("BACnetConstructedDataPositiveAccessRules");
     // Create the instance
     return new BACnetConstructedDataPositiveAccessRulesBuilderImpl(
-        numberOfDataElements, positiveAccessRules, tagNumber, arrayIndexArgument);
+        numberOfDataElements, positiveAccessRules);
   }
 
   public static class BACnetConstructedDataPositiveAccessRulesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetAccessRule> positiveAccessRules;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataPositiveAccessRulesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetAccessRule> positiveAccessRules,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetAccessRule> positiveAccessRules) {
       this.numberOfDataElements = numberOfDataElements;
       this.positiveAccessRules = positiveAccessRules;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPositiveAccessRules build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPositiveAccessRules bACnetConstructedDataPositiveAccessRules =
           new BACnetConstructedDataPositiveAccessRules(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              positiveAccessRules,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, positiveAccessRules);
       return bACnetConstructedDataPositiveAccessRules;
     }
   }

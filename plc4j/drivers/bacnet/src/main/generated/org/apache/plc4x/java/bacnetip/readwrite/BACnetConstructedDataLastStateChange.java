@@ -49,21 +49,13 @@ public class BACnetConstructedDataLastStateChange extends BACnetConstructedData 
   // Properties.
   protected final BACnetTimerTransitionTagged lastStateChange;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLastStateChange(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetTimerTransitionTagged lastStateChange,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetTimerTransitionTagged lastStateChange) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lastStateChange = lastStateChange;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetTimerTransitionTagged getLastStateChange() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataLastStateChange extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataLastStateChange");
     // Create the instance
-    return new BACnetConstructedDataLastStateChangeBuilderImpl(
-        lastStateChange, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastStateChangeBuilderImpl(lastStateChange);
   }
 
   public static class BACnetConstructedDataLastStateChangeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimerTransitionTagged lastStateChange;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLastStateChangeBuilderImpl(
-        BACnetTimerTransitionTagged lastStateChange,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetTimerTransitionTagged lastStateChange) {
       this.lastStateChange = lastStateChange;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLastStateChange build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLastStateChange bACnetConstructedDataLastStateChange =
           new BACnetConstructedDataLastStateChange(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              lastStateChange,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lastStateChange);
       return bACnetConstructedDataLastStateChange;
     }
   }

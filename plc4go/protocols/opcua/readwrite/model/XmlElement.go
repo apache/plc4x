@@ -208,7 +208,7 @@ func XmlElementParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func XmlElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (XmlElement, error) {
-	v, err := (&_XmlElement{}).parse(ctx, readBuffer)
+	v, err := (new(_XmlElement)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

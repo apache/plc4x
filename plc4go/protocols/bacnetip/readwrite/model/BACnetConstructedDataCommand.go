@@ -61,12 +61,12 @@ var _ BACnetConstructedDataCommand = (*_BACnetConstructedDataCommand)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCommand)(nil)
 
 // NewBACnetConstructedDataCommand factory function for _BACnetConstructedDataCommand
-func NewBACnetConstructedDataCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, command BACnetNetworkPortCommandTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommand {
+func NewBACnetConstructedDataCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, command BACnetNetworkPortCommandTagged) *_BACnetConstructedDataCommand {
 	if command == nil {
 		panic("command of type BACnetNetworkPortCommandTagged for BACnetConstructedDataCommand must not be nil")
 	}
 	_result := &_BACnetConstructedDataCommand{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Command:                       command,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

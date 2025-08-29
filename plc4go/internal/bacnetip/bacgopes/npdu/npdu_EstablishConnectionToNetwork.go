@@ -42,7 +42,7 @@ func NewEstablishConnectionToNetwork(args Args, kwArgs KWArgs, options ...Option
 	}
 	ApplyAppliers(options, e)
 	options = AddLeafTypeIfAbundant(options, e)
-	options = AddNLMIfAbundant(options, model.NewNLMEstablishConnectionToNetwork(e.ectnDNET, e.ectnTerminationTime, 0))
+	options = AddNLMIfAbundant(options, model.NewNLMEstablishConnectionToNetwork(e.ectnDNET, e.ectnTerminationTime))
 	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")

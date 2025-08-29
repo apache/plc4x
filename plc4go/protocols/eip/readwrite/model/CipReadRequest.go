@@ -62,9 +62,9 @@ var _ CipReadRequest = (*_CipReadRequest)(nil)
 var _ CipServiceRequirements = (*_CipReadRequest)(nil)
 
 // NewCipReadRequest factory function for _CipReadRequest
-func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16) *_CipReadRequest {
+func NewCipReadRequest(tag []byte, elementNb uint16) *_CipReadRequest {
 	_result := &_CipReadRequest{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		Tag:                tag,
 		ElementNb:          elementNb,
 	}

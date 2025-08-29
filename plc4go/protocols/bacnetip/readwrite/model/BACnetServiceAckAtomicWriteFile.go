@@ -59,7 +59,7 @@ var _ BACnetServiceAckAtomicWriteFile = (*_BACnetServiceAckAtomicWriteFile)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicWriteFile)(nil)
 
 // NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
-func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
+func NewBACnetServiceAckAtomicWriteFile(serviceAckLength uint32, fileStartPosition BACnetContextTagSignedInteger) *_BACnetServiceAckAtomicWriteFile {
 	if fileStartPosition == nil {
 		panic("fileStartPosition of type BACnetContextTagSignedInteger for BACnetServiceAckAtomicWriteFile must not be nil")
 	}

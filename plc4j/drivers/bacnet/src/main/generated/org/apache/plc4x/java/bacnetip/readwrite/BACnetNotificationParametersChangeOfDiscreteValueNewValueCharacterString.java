@@ -43,18 +43,13 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
   // Properties.
   protected final BACnetApplicationTagCharacterString characterStringValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString characterStringValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetApplicationTagCharacterString characterStringValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.characterStringValue = characterStringValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetApplicationTagCharacterString getCharacterStringValue() {
@@ -114,7 +109,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString");
     // Create the instance
     return new BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilderImpl(
-        characterStringValue, tagNumber);
+        characterStringValue);
   }
 
   public static
@@ -122,23 +117,18 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagCharacterString characterStringValue;
-    private final Short tagNumber;
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilderImpl(
-        BACnetApplicationTagCharacterString characterStringValue, Short tagNumber) {
+        BACnetApplicationTagCharacterString characterStringValue) {
       this.characterStringValue = characterStringValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
           bACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString =
               new BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString(
-                  openingTag, peekedTagHeader, closingTag, characterStringValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, characterStringValue);
       return bACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString;
     }
   }

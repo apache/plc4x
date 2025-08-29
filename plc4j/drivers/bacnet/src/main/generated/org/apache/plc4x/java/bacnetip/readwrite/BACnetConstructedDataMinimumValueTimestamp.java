@@ -50,21 +50,13 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
   // Properties.
   protected final BACnetDateTime minimumValueTimestamp;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMinimumValueTimestamp(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime minimumValueTimestamp,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime minimumValueTimestamp) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.minimumValueTimestamp = minimumValueTimestamp;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getMinimumValueTimestamp() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataMinimumValueTimestamp");
     // Create the instance
-    return new BACnetConstructedDataMinimumValueTimestampBuilderImpl(
-        minimumValueTimestamp, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMinimumValueTimestampBuilderImpl(minimumValueTimestamp);
   }
 
   public static class BACnetConstructedDataMinimumValueTimestampBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime minimumValueTimestamp;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMinimumValueTimestampBuilderImpl(
-        BACnetDateTime minimumValueTimestamp,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDateTime minimumValueTimestamp) {
       this.minimumValueTimestamp = minimumValueTimestamp;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMinimumValueTimestamp build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMinimumValueTimestamp bACnetConstructedDataMinimumValueTimestamp =
           new BACnetConstructedDataMinimumValueTimestamp(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              minimumValueTimestamp,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, minimumValueTimestamp);
       return bACnetConstructedDataMinimumValueTimestamp;
     }
   }

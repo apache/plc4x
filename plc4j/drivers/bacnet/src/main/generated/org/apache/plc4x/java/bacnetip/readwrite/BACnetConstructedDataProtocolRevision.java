@@ -50,21 +50,13 @@ public class BACnetConstructedDataProtocolRevision extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger protocolRevision;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataProtocolRevision(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger protocolRevision,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger protocolRevision) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.protocolRevision = protocolRevision;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getProtocolRevision() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataProtocolRevision extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataProtocolRevision");
     // Create the instance
-    return new BACnetConstructedDataProtocolRevisionBuilderImpl(
-        protocolRevision, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataProtocolRevisionBuilderImpl(protocolRevision);
   }
 
   public static class BACnetConstructedDataProtocolRevisionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger protocolRevision;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataProtocolRevisionBuilderImpl(
-        BACnetApplicationTagUnsignedInteger protocolRevision,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger protocolRevision) {
       this.protocolRevision = protocolRevision;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataProtocolRevision build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataProtocolRevision bACnetConstructedDataProtocolRevision =
           new BACnetConstructedDataProtocolRevision(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              protocolRevision,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, protocolRevision);
       return bACnetConstructedDataProtocolRevision;
     }
   }

@@ -46,19 +46,9 @@ public class BACnetConstructedDataBinaryInputAll extends BACnetConstructedData i
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBinaryInputAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -103,29 +93,18 @@ public class BACnetConstructedDataBinaryInputAll extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataBinaryInputAll");
     // Create the instance
-    return new BACnetConstructedDataBinaryInputAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBinaryInputAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataBinaryInputAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBinaryInputAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataBinaryInputAllBuilderImpl() {}
 
     public BACnetConstructedDataBinaryInputAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBinaryInputAll bACnetConstructedDataBinaryInputAll =
-          new BACnetConstructedDataBinaryInputAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataBinaryInputAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataBinaryInputAll;
     }
   }

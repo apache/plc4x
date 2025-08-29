@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMinimumOffTime = (*_BACnetConstructedDataMinimumOffTi
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumOffTime)(nil)
 
 // NewBACnetConstructedDataMinimumOffTime factory function for _BACnetConstructedDataMinimumOffTime
-func NewBACnetConstructedDataMinimumOffTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumOffTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOffTime {
+func NewBACnetConstructedDataMinimumOffTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumOffTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataMinimumOffTime {
 	if minimumOffTime == nil {
 		panic("minimumOffTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOffTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataMinimumOffTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MinimumOffTime:                minimumOffTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

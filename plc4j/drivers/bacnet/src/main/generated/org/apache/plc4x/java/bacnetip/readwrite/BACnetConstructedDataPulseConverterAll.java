@@ -47,19 +47,9 @@ public class BACnetConstructedDataPulseConverterAll extends BACnetConstructedDat
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPulseConverterAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataPulseConverterAll extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataPulseConverterAll");
     // Create the instance
-    return new BACnetConstructedDataPulseConverterAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPulseConverterAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataPulseConverterAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPulseConverterAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataPulseConverterAllBuilderImpl() {}
 
     public BACnetConstructedDataPulseConverterAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPulseConverterAll bACnetConstructedDataPulseConverterAll =
-          new BACnetConstructedDataPulseConverterAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataPulseConverterAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataPulseConverterAll;
     }
   }

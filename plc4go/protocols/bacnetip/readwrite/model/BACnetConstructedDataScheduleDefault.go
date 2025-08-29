@@ -61,12 +61,12 @@ var _ BACnetConstructedDataScheduleDefault = (*_BACnetConstructedDataScheduleDef
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScheduleDefault)(nil)
 
 // NewBACnetConstructedDataScheduleDefault factory function for _BACnetConstructedDataScheduleDefault
-func NewBACnetConstructedDataScheduleDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scheduleDefault BACnetConstructedDataElement, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleDefault {
+func NewBACnetConstructedDataScheduleDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scheduleDefault BACnetConstructedDataElement) *_BACnetConstructedDataScheduleDefault {
 	if scheduleDefault == nil {
 		panic("scheduleDefault of type BACnetConstructedDataElement for BACnetConstructedDataScheduleDefault must not be nil")
 	}
 	_result := &_BACnetConstructedDataScheduleDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ScheduleDefault:               scheduleDefault,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

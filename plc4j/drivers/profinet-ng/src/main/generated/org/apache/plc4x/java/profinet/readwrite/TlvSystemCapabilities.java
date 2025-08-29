@@ -59,7 +59,6 @@ public class TlvSystemCapabilities extends LldpUnit implements Message {
   protected final boolean bridgeEnabled;
   protected final boolean repeaterEnabled;
   protected final boolean otherEnabled;
-
   // Reserved Fields
   private Short reservedField0;
   private Short reservedField1;

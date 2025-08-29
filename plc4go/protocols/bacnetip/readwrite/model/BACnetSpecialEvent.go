@@ -277,7 +277,7 @@ func BACnetSpecialEventParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func BACnetSpecialEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEvent, error) {
-	v, err := (&_BACnetSpecialEvent{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetSpecialEvent)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -47,19 +47,9 @@ public class BACnetConstructedDataMultiStateInputAll extends BACnetConstructedDa
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMultiStateInputAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataMultiStateInputAll extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateInputAll");
     // Create the instance
-    return new BACnetConstructedDataMultiStateInputAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMultiStateInputAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataMultiStateInputAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMultiStateInputAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataMultiStateInputAllBuilderImpl() {}
 
     public BACnetConstructedDataMultiStateInputAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMultiStateInputAll bACnetConstructedDataMultiStateInputAll =
-          new BACnetConstructedDataMultiStateInputAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataMultiStateInputAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataMultiStateInputAll;
     }
   }

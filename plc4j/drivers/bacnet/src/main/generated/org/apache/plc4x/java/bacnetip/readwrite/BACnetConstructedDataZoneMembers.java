@@ -49,21 +49,13 @@ public class BACnetConstructedDataZoneMembers extends BACnetConstructedData impl
   // Properties.
   protected final List<BACnetDeviceObjectReference> members;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataZoneMembers(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetDeviceObjectReference> members,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDeviceObjectReference> members) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.members = members;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetDeviceObjectReference> getMembers() {
@@ -126,33 +118,21 @@ public class BACnetConstructedDataZoneMembers extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataZoneMembers");
     // Create the instance
-    return new BACnetConstructedDataZoneMembersBuilderImpl(members, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataZoneMembersBuilderImpl(members);
   }
 
   public static class BACnetConstructedDataZoneMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> members;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataZoneMembersBuilderImpl(
-        List<BACnetDeviceObjectReference> members,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataZoneMembersBuilderImpl(List<BACnetDeviceObjectReference> members) {
       this.members = members;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataZoneMembers build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataZoneMembers bACnetConstructedDataZoneMembers =
-          new BACnetConstructedDataZoneMembers(
-              openingTag, peekedTagHeader, closingTag, members, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataZoneMembers(openingTag, peekedTagHeader, closingTag, members);
       return bACnetConstructedDataZoneMembers;
     }
   }

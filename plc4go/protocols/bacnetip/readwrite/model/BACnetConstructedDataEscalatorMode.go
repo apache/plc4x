@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEscalatorMode = (*_BACnetConstructedDataEscalatorMode
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEscalatorMode)(nil)
 
 // NewBACnetConstructedDataEscalatorMode factory function for _BACnetConstructedDataEscalatorMode
-func NewBACnetConstructedDataEscalatorMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, escalatorMode BACnetEscalatorModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
+func NewBACnetConstructedDataEscalatorMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, escalatorMode BACnetEscalatorModeTagged) *_BACnetConstructedDataEscalatorMode {
 	if escalatorMode == nil {
 		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetConstructedDataEscalatorMode must not be nil")
 	}
 	_result := &_BACnetConstructedDataEscalatorMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EscalatorMode:                 escalatorMode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

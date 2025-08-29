@@ -53,7 +53,6 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
   protected final byte[] ipAddress;
   protected final byte[] subnetMask;
   protected final byte[] standardGateway;
-
   // Reserved Fields
   private Short reservedField0;
   private Byte reservedField1;

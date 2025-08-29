@@ -48,7 +48,6 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   protected final boolean dataValid;
   protected final boolean redundancy;
   protected final boolean statePrimary;
-
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;

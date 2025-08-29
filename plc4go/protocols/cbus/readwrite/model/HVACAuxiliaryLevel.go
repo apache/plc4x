@@ -260,7 +260,7 @@ func HVACAuxiliaryLevelParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
-	v, err := (&_HVACAuxiliaryLevel{}).parse(ctx, readBuffer)
+	v, err := (new(_HVACAuxiliaryLevel)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

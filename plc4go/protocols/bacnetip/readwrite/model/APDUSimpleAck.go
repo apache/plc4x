@@ -64,9 +64,9 @@ var _ APDUSimpleAck = (*_APDUSimpleAck)(nil)
 var _ APDURequirements = (*_APDUSimpleAck)(nil)
 
 // NewAPDUSimpleAck factory function for _APDUSimpleAck
-func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice, apduLength uint16) *_APDUSimpleAck {
+func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice) *_APDUSimpleAck {
 	_result := &_APDUSimpleAck{
-		APDUContract:     NewAPDU(apduLength),
+		APDUContract:     NewAPDU(),
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
 	}

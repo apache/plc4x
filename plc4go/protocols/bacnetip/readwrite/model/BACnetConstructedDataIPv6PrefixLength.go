@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPv6PrefixLength = (*_BACnetConstructedDataIPv6Prefix
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6PrefixLength)(nil)
 
 // NewBACnetConstructedDataIPv6PrefixLength factory function for _BACnetConstructedDataIPv6PrefixLength
-func NewBACnetConstructedDataIPv6PrefixLength(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6PrefixLength BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6PrefixLength {
+func NewBACnetConstructedDataIPv6PrefixLength(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6PrefixLength BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataIPv6PrefixLength {
 	if ipv6PrefixLength == nil {
 		panic("ipv6PrefixLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPv6PrefixLength must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPv6PrefixLength{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Ipv6PrefixLength:              ipv6PrefixLength,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

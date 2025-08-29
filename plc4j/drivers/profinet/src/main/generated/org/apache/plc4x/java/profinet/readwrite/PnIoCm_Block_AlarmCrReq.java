@@ -55,7 +55,6 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
   protected final int maxAlarmDataLength;
   protected final int alarmCtrTagHeaderHigh;
   protected final int alarmCtrTagHeaderLow;
-
   // Reserved Fields
   private Integer reservedField0;
 

@@ -49,21 +49,13 @@ public class BACnetConstructedDataDeviceType extends BACnetConstructedData imple
   // Properties.
   protected final BACnetApplicationTagCharacterString deviceType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDeviceType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString deviceType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString deviceType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.deviceType = deviceType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getDeviceType() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataDeviceType extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataDeviceType");
     // Create the instance
-    return new BACnetConstructedDataDeviceTypeBuilderImpl(
-        deviceType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDeviceTypeBuilderImpl(deviceType);
   }
 
   public static class BACnetConstructedDataDeviceTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString deviceType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDeviceTypeBuilderImpl(
-        BACnetApplicationTagCharacterString deviceType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString deviceType) {
       this.deviceType = deviceType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDeviceType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDeviceType bACnetConstructedDataDeviceType =
-          new BACnetConstructedDataDeviceType(
-              openingTag, peekedTagHeader, closingTag, deviceType, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataDeviceType(openingTag, peekedTagHeader, closingTag, deviceType);
       return bACnetConstructedDataDeviceType;
     }
   }

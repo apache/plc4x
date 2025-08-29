@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPower = (*_BACnetConstructedDataPower)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPower)(nil)
 
 // NewBACnetConstructedDataPower factory function for _BACnetConstructedDataPower
-func NewBACnetConstructedDataPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, power BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPower {
+func NewBACnetConstructedDataPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, power BACnetApplicationTagReal) *_BACnetConstructedDataPower {
 	if power == nil {
 		panic("power of type BACnetApplicationTagReal for BACnetConstructedDataPower must not be nil")
 	}
 	_result := &_BACnetConstructedDataPower{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Power:                         power,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -40,7 +40,6 @@ public class PnDcp_ServiceType implements Message {
   // Properties.
   protected final boolean notSupported;
   protected final boolean response;
-
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;

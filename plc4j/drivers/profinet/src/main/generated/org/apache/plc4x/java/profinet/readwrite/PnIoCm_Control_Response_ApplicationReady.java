@@ -49,7 +49,6 @@ public class PnIoCm_Control_Response_ApplicationReady extends PnIoCm_Block imple
   protected final int sessionKey;
   protected final int controlCommand;
   protected final int controlBlockProperties;
-
   // Reserved Fields
   private Integer reservedField0;
   private Integer reservedField1;

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataProgramChange = (*_BACnetConstructedDataProgramChange
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramChange)(nil)
 
 // NewBACnetConstructedDataProgramChange factory function for _BACnetConstructedDataProgramChange
-func NewBACnetConstructedDataProgramChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programChange BACnetProgramRequestTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramChange {
+func NewBACnetConstructedDataProgramChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programChange BACnetProgramRequestTagged) *_BACnetConstructedDataProgramChange {
 	if programChange == nil {
 		panic("programChange of type BACnetProgramRequestTagged for BACnetConstructedDataProgramChange must not be nil")
 	}
 	_result := &_BACnetConstructedDataProgramChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProgramChange:                 programChange,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

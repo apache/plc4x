@@ -46,19 +46,9 @@ public class BACnetConstructedDataAccessZoneAll extends BACnetConstructedData im
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessZoneAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -103,29 +93,18 @@ public class BACnetConstructedDataAccessZoneAll extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataAccessZoneAll");
     // Create the instance
-    return new BACnetConstructedDataAccessZoneAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessZoneAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataAccessZoneAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessZoneAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataAccessZoneAllBuilderImpl() {}
 
     public BACnetConstructedDataAccessZoneAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessZoneAll bACnetConstructedDataAccessZoneAll =
-          new BACnetConstructedDataAccessZoneAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataAccessZoneAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataAccessZoneAll;
     }
   }

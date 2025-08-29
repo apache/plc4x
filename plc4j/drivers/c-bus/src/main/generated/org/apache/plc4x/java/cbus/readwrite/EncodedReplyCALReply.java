@@ -42,16 +42,9 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
   // Properties.
   protected final CALReply calReply;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
-  public EncodedReplyCALReply(
-      byte peekedByte, CALReply calReply, CBusOptions cBusOptions, RequestContext requestContext) {
-    super(peekedByte, cBusOptions, requestContext);
+  public EncodedReplyCALReply(RequestContext requestContext, byte peekedByte, CALReply calReply) {
+    super(requestContext, peekedByte);
     this.calReply = calReply;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public CALReply getCalReply() {
@@ -105,25 +98,19 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
 
     readBuffer.closeContext("EncodedReplyCALReply");
     // Create the instance
-    return new EncodedReplyCALReplyBuilderImpl(calReply, cBusOptions, requestContext);
+    return new EncodedReplyCALReplyBuilderImpl(calReply);
   }
 
   public static class EncodedReplyCALReplyBuilderImpl implements EncodedReply.EncodedReplyBuilder {
     private final CALReply calReply;
-    private final CBusOptions cBusOptions;
-    private final RequestContext requestContext;
 
-    public EncodedReplyCALReplyBuilderImpl(
-        CALReply calReply, CBusOptions cBusOptions, RequestContext requestContext) {
+    public EncodedReplyCALReplyBuilderImpl(CALReply calReply) {
       this.calReply = calReply;
-      this.cBusOptions = cBusOptions;
-      this.requestContext = requestContext;
     }
 
-    public EncodedReplyCALReply build(
-        byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext) {
+    public EncodedReplyCALReply build(RequestContext requestContext, byte peekedByte) {
       EncodedReplyCALReply encodedReplyCALReply =
-          new EncodedReplyCALReply(peekedByte, calReply, cBusOptions, requestContext);
+          new EncodedReplyCALReply(requestContext, peekedByte, calReply);
       return encodedReplyCALReply;
     }
   }

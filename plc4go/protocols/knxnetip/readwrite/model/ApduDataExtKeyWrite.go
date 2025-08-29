@@ -54,9 +54,9 @@ var _ ApduDataExtKeyWrite = (*_ApduDataExtKeyWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtKeyWrite)(nil)
 
 // NewApduDataExtKeyWrite factory function for _ApduDataExtKeyWrite
-func NewApduDataExtKeyWrite(length uint8) *_ApduDataExtKeyWrite {
+func NewApduDataExtKeyWrite() *_ApduDataExtKeyWrite {
 	_result := &_ApduDataExtKeyWrite{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

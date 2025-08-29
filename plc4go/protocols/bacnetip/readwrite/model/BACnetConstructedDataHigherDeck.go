@@ -61,12 +61,12 @@ var _ BACnetConstructedDataHigherDeck = (*_BACnetConstructedDataHigherDeck)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataHigherDeck)(nil)
 
 // NewBACnetConstructedDataHigherDeck factory function for _BACnetConstructedDataHigherDeck
-func NewBACnetConstructedDataHigherDeck(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, higherDeck BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHigherDeck {
+func NewBACnetConstructedDataHigherDeck(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, higherDeck BACnetApplicationTagObjectIdentifier) *_BACnetConstructedDataHigherDeck {
 	if higherDeck == nil {
 		panic("higherDeck of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataHigherDeck must not be nil")
 	}
 	_result := &_BACnetConstructedDataHigherDeck{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		HigherDeck:                    higherDeck,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

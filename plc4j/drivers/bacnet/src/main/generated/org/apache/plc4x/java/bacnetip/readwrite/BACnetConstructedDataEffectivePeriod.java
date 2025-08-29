@@ -49,21 +49,13 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
   // Properties.
   protected final BACnetDateRange dateRange;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEffectivePeriod(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateRange dateRange,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateRange dateRange) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.dateRange = dateRange;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateRange getDateRange() {
@@ -128,34 +120,22 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataEffectivePeriod");
     // Create the instance
-    return new BACnetConstructedDataEffectivePeriodBuilderImpl(
-        dateRange, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEffectivePeriodBuilderImpl(dateRange);
   }
 
   public static class BACnetConstructedDataEffectivePeriodBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateRange dateRange;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEffectivePeriodBuilderImpl(
-        BACnetDateRange dateRange,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataEffectivePeriodBuilderImpl(BACnetDateRange dateRange) {
       this.dateRange = dateRange;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEffectivePeriod build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEffectivePeriod bACnetConstructedDataEffectivePeriod =
           new BACnetConstructedDataEffectivePeriod(
-              openingTag, peekedTagHeader, closingTag, dateRange, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, dateRange);
       return bACnetConstructedDataEffectivePeriod;
     }
   }

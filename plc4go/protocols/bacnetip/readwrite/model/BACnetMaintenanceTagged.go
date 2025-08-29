@@ -59,20 +59,16 @@ type _BACnetMaintenanceTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetMaintenance
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetMaintenanceTagged = (*_BACnetMaintenanceTagged)(nil)
 
 // NewBACnetMaintenanceTagged factory function for _BACnetMaintenanceTagged
-func NewBACnetMaintenanceTagged(header BACnetTagHeader, value BACnetMaintenance, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetMaintenanceTagged {
+func NewBACnetMaintenanceTagged(header BACnetTagHeader, value BACnetMaintenance, proprietaryValue uint32) *_BACnetMaintenanceTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetMaintenanceTagged must not be nil")
 	}
-	return &_BACnetMaintenanceTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetMaintenanceTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetMaintenanceTaggedBuilder interface {
 	WithValue(BACnetMaintenance) BACnetMaintenanceTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetMaintenanceTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetMaintenanceTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetMaintenanceTaggedBuilder
 	// Build builds the BACnetMaintenanceTagged or returns an error if something is wrong
 	Build() (BACnetMaintenanceTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetMaintenanceTaggedBuilder) WithValue(value BACnetMaintenance) BAC
 
 func (b *_BACnetMaintenanceTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetMaintenanceTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetMaintenanceTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetMaintenanceTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetMaintenanceTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetMaintenanceTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetMaintenanceTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetMaintenanceTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetMaintenanceTagged, error) {
-	v, err := (&_BACnetMaintenanceTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetMaintenanceTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetMaintenanceTagged) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetMaintenanceTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetMaintenanceTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetMaintenanceTagged) IsBACnetMaintenanceTagged() {}
 
 func (m *_BACnetMaintenanceTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetMaintenanceTagged) deepCopy() *_BACnetMaintenanceTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetMaintenanceTaggedCopy
 }

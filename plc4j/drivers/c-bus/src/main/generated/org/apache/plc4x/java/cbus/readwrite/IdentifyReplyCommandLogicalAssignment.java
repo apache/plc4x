@@ -45,14 +45,9 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
   // Properties.
   protected final List<LogicAssignment> logicAssigment;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandLogicalAssignment(
-      List<LogicAssignment> logicAssigment, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandLogicalAssignment(List<LogicAssignment> logicAssigment) {
+    super();
     this.logicAssigment = logicAssigment;
-    this.numBytes = numBytes;
   }
 
   public List<LogicAssignment> getLogicAssigment() {
@@ -109,24 +104,20 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
 
     readBuffer.closeContext("IdentifyReplyCommandLogicalAssignment");
     // Create the instance
-    return new IdentifyReplyCommandLogicalAssignmentBuilderImpl(logicAssigment, numBytes);
+    return new IdentifyReplyCommandLogicalAssignmentBuilderImpl(logicAssigment);
   }
 
   public static class IdentifyReplyCommandLogicalAssignmentBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final List<LogicAssignment> logicAssigment;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandLogicalAssignmentBuilderImpl(
-        List<LogicAssignment> logicAssigment, Byte numBytes) {
+    public IdentifyReplyCommandLogicalAssignmentBuilderImpl(List<LogicAssignment> logicAssigment) {
       this.logicAssigment = logicAssigment;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandLogicalAssignment build(Byte numBytes) {
-
+    public IdentifyReplyCommandLogicalAssignment build() {
       IdentifyReplyCommandLogicalAssignment identifyReplyCommandLogicalAssignment =
-          new IdentifyReplyCommandLogicalAssignment(logicAssigment, numBytes);
+          new IdentifyReplyCommandLogicalAssignment(logicAssigment);
       return identifyReplyCommandLogicalAssignment;
     }
   }

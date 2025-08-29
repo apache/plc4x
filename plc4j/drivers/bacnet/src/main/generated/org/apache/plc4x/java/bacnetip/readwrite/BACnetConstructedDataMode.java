@@ -49,21 +49,13 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
   // Properties.
   protected final BACnetLifeSafetyModeTagged mode;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMode(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLifeSafetyModeTagged mode,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLifeSafetyModeTagged mode) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.mode = mode;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLifeSafetyModeTagged getMode() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
 
     readBuffer.closeContext("BACnetConstructedDataMode");
     // Create the instance
-    return new BACnetConstructedDataModeBuilderImpl(mode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataModeBuilderImpl(mode);
   }
 
   public static class BACnetConstructedDataModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLifeSafetyModeTagged mode;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataModeBuilderImpl(
-        BACnetLifeSafetyModeTagged mode,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataModeBuilderImpl(BACnetLifeSafetyModeTagged mode) {
       this.mode = mode;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMode build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMode bACnetConstructedDataMode =
-          new BACnetConstructedDataMode(
-              openingTag, peekedTagHeader, closingTag, mode, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataMode(openingTag, peekedTagHeader, closingTag, mode);
       return bACnetConstructedDataMode;
     }
   }

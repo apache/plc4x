@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLinkSpeed = (*_BACnetConstructedDataLinkSpeed)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeed)(nil)
 
 // NewBACnetConstructedDataLinkSpeed factory function for _BACnetConstructedDataLinkSpeed
-func NewBACnetConstructedDataLinkSpeed(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, linkSpeed BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeed {
+func NewBACnetConstructedDataLinkSpeed(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, linkSpeed BACnetApplicationTagReal) *_BACnetConstructedDataLinkSpeed {
 	if linkSpeed == nil {
 		panic("linkSpeed of type BACnetApplicationTagReal for BACnetConstructedDataLinkSpeed must not be nil")
 	}
 	_result := &_BACnetConstructedDataLinkSpeed{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LinkSpeed:                     linkSpeed,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -59,9 +59,9 @@ var _ COTPParameterCallingTsap = (*_COTPParameterCallingTsap)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterCallingTsap)(nil)
 
 // NewCOTPParameterCallingTsap factory function for _COTPParameterCallingTsap
-func NewCOTPParameterCallingTsap(tsapId uint16, rest uint8) *_COTPParameterCallingTsap {
+func NewCOTPParameterCallingTsap(tsapId uint16) *_COTPParameterCallingTsap {
 	_result := &_COTPParameterCallingTsap{
-		COTPParameterContract: NewCOTPParameter(rest),
+		COTPParameterContract: NewCOTPParameter(),
 		TsapId:                tsapId,
 	}
 	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result

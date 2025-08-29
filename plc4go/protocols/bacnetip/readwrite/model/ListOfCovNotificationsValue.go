@@ -60,22 +60,19 @@ type _ListOfCovNotificationsValue struct {
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	PropertyValue      BACnetConstructedData
 	TimeOfChange       BACnetContextTagTime
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 var _ ListOfCovNotificationsValue = (*_ListOfCovNotificationsValue)(nil)
 
 // NewListOfCovNotificationsValue factory function for _ListOfCovNotificationsValue
-func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime, objectTypeArgument BACnetObjectType) *_ListOfCovNotificationsValue {
+func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime) *_ListOfCovNotificationsValue {
 	if propertyIdentifier == nil {
 		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for ListOfCovNotificationsValue must not be nil")
 	}
 	if propertyValue == nil {
 		panic("propertyValue of type BACnetConstructedData for ListOfCovNotificationsValue must not be nil")
 	}
-	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectTypeArgument: objectTypeArgument}
+	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange}
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,8 +101,6 @@ type ListOfCovNotificationsValueBuilder interface {
 	WithOptionalTimeOfChange(BACnetContextTagTime) ListOfCovNotificationsValueBuilder
 	// WithOptionalTimeOfChangeBuilder adds TimeOfChange (property field) which is build by the builder
 	WithOptionalTimeOfChangeBuilder(func(BACnetContextTagTimeBuilder) BACnetContextTagTimeBuilder) ListOfCovNotificationsValueBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) ListOfCovNotificationsValueBuilder
 	// Build builds the ListOfCovNotificationsValue or returns an error if something is wrong
 	Build() (ListOfCovNotificationsValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -186,11 +181,6 @@ func (b *_ListOfCovNotificationsValueBuilder) WithOptionalTimeOfChangeBuilder(bu
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagTimeBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ListOfCovNotificationsValueBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) ListOfCovNotificationsValueBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 
@@ -314,7 +304,7 @@ func ListOfCovNotificationsValueParseWithBufferProducer(objectTypeArgument BACne
 }
 
 func ListOfCovNotificationsValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
-	v, err := (&_ListOfCovNotificationsValue{ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := (new(_ListOfCovNotificationsValue)).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -408,16 +398,6 @@ func (m *_ListOfCovNotificationsValue) SerializeWithWriteBuffer(ctx context.Cont
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ListOfCovNotificationsValue) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-
-//
-////
-
 func (m *_ListOfCovNotificationsValue) IsListOfCovNotificationsValue() {}
 
 func (m *_ListOfCovNotificationsValue) DeepCopy() any {
@@ -433,7 +413,6 @@ func (m *_ListOfCovNotificationsValue) deepCopy() *_ListOfCovNotificationsValue 
 		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
 		utils.DeepCopy[BACnetConstructedData](m.PropertyValue),
 		utils.DeepCopy[BACnetContextTagTime](m.TimeOfChange),
-		m.ObjectTypeArgument,
 	}
 	return _ListOfCovNotificationsValueCopy
 }

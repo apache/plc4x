@@ -57,15 +57,12 @@ type _BACnetPropertyStatesEnclosed struct {
 	OpeningTag    BACnetOpeningTag
 	PropertyState BACnetPropertyStates
 	ClosingTag    BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetPropertyStatesEnclosed = (*_BACnetPropertyStatesEnclosed)(nil)
 
 // NewBACnetPropertyStatesEnclosed factory function for _BACnetPropertyStatesEnclosed
-func NewBACnetPropertyStatesEnclosed(openingTag BACnetOpeningTag, propertyState BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetPropertyStatesEnclosed {
+func NewBACnetPropertyStatesEnclosed(openingTag BACnetOpeningTag, propertyState BACnetPropertyStates, closingTag BACnetClosingTag) *_BACnetPropertyStatesEnclosed {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetPropertyStatesEnclosed must not be nil")
 	}
@@ -75,7 +72,7 @@ func NewBACnetPropertyStatesEnclosed(openingTag BACnetOpeningTag, propertyState 
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetPropertyStatesEnclosed must not be nil")
 	}
-	return &_BACnetPropertyStatesEnclosed{OpeningTag: openingTag, PropertyState: propertyState, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetPropertyStatesEnclosed{OpeningTag: openingTag, PropertyState: propertyState, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,8 +97,6 @@ type BACnetPropertyStatesEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetPropertyStatesEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetPropertyStatesEnclosedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetPropertyStatesEnclosedBuilder
 	// Build builds the BACnetPropertyStatesEnclosed or returns an error if something is wrong
 	Build() (BACnetPropertyStatesEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -167,11 +162,6 @@ func (b *_BACnetPropertyStatesEnclosedBuilder) WithClosingTagBuilder(builderSupp
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetPropertyStatesEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetPropertyStatesEnclosedBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -287,7 +277,7 @@ func BACnetPropertyStatesEnclosedParseWithBufferProducer(tagNumber uint8) func(c
 }
 
 func BACnetPropertyStatesEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetPropertyStatesEnclosed, error) {
-	v, err := (&_BACnetPropertyStatesEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetPropertyStatesEnclosed)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -363,16 +353,6 @@ func (m *_BACnetPropertyStatesEnclosed) SerializeWithWriteBuffer(ctx context.Con
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetPropertyStatesEnclosed) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetPropertyStatesEnclosed) IsBACnetPropertyStatesEnclosed() {}
 
 func (m *_BACnetPropertyStatesEnclosed) DeepCopy() any {
@@ -387,7 +367,6 @@ func (m *_BACnetPropertyStatesEnclosed) deepCopy() *_BACnetPropertyStatesEnclose
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetPropertyStates](m.PropertyState),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetPropertyStatesEnclosedCopy
 }

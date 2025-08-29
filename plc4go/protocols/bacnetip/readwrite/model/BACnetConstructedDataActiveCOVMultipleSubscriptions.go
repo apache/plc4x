@@ -59,9 +59,9 @@ var _ BACnetConstructedDataActiveCOVMultipleSubscriptions = (*_BACnetConstructed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveCOVMultipleSubscriptions)(nil)
 
 // NewBACnetConstructedDataActiveCOVMultipleSubscriptions factory function for _BACnetConstructedDataActiveCOVMultipleSubscriptions
-func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
+func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription) *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
 	_result := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

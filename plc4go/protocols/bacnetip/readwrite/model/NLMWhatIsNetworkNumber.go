@@ -54,9 +54,9 @@ var _ NLMWhatIsNetworkNumber = (*_NLMWhatIsNetworkNumber)(nil)
 var _ NLMRequirements = (*_NLMWhatIsNetworkNumber)(nil)
 
 // NewNLMWhatIsNetworkNumber factory function for _NLMWhatIsNetworkNumber
-func NewNLMWhatIsNetworkNumber(apduLength uint16) *_NLMWhatIsNetworkNumber {
+func NewNLMWhatIsNetworkNumber() *_NLMWhatIsNetworkNumber {
 	_result := &_NLMWhatIsNetworkNumber{
-		NLMContract: NewNLM(apduLength),
+		NLMContract: NewNLM(),
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result

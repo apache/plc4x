@@ -238,7 +238,7 @@ func BACnetNameValueParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetNameValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNameValue, error) {
-	v, err := (&_BACnetNameValue{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetNameValue)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

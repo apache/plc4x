@@ -1790,6 +1790,14 @@ public enum BACnetVendorId {
   ZAPHIREAS((int) 1557, (int) 1557, (String) "Zaphire AS"),
   AJ_MANUFACTURING((int) 1558, (int) 1558, (String) "AJ Manufacturing"),
   FUTURE_MOTORS_LTD((int) 1559, (int) 1559, (String) "Future Motors Ltd."),
+  HIMEL_HONG_KONG_LIMITED((int) 1560, (int) 1560, (String) "Himel Hong Kong Limited"),
+  SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD(
+      (int) 1561, (int) 1561, (String) "Shenzhen Sunricher Technology Co., Ltd."),
+  ACTILITYSA((int) 1562, (int) 1562, (String) "Actility S.A."),
+  OY_HALTON_GROUP_LTD((int) 1563, (int) 1563, (String) "Oy Halton Group Ltd."),
+  AVTECH_SOFTWARE_INC((int) 1564, (int) 1564, (String) "AVTECH Software, Inc."),
+  IN_CONTROL_ENGINEERINGLLC((int) 1565, (int) 1565, (String) "InControl Engineering LLC"),
+  SOUND_WATER_TECHNOLOGIESLLC((int) 1566, (int) 1566, (String) "SoundWater Technologies LLC"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

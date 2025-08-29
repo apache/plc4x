@@ -50,21 +50,13 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
   // Properties.
   protected final BACnetEscalatorOperationDirectionTagged operationDirection;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataOperationDirection(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetEscalatorOperationDirectionTagged operationDirection,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetEscalatorOperationDirectionTagged operationDirection) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.operationDirection = operationDirection;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetEscalatorOperationDirectionTagged getOperationDirection() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataOperationDirection");
     // Create the instance
-    return new BACnetConstructedDataOperationDirectionBuilderImpl(
-        operationDirection, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataOperationDirectionBuilderImpl(operationDirection);
   }
 
   public static class BACnetConstructedDataOperationDirectionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEscalatorOperationDirectionTagged operationDirection;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataOperationDirectionBuilderImpl(
-        BACnetEscalatorOperationDirectionTagged operationDirection,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetEscalatorOperationDirectionTagged operationDirection) {
       this.operationDirection = operationDirection;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataOperationDirection build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataOperationDirection bACnetConstructedDataOperationDirection =
           new BACnetConstructedDataOperationDirection(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              operationDirection,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, operationDirection);
       return bACnetConstructedDataOperationDirection;
     }
   }

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLastRestartReason = (*_BACnetConstructedDataLastResta
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastRestartReason)(nil)
 
 // NewBACnetConstructedDataLastRestartReason factory function for _BACnetConstructedDataLastRestartReason
-func NewBACnetConstructedDataLastRestartReason(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastRestartReason BACnetRestartReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestartReason {
+func NewBACnetConstructedDataLastRestartReason(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastRestartReason BACnetRestartReasonTagged) *_BACnetConstructedDataLastRestartReason {
 	if lastRestartReason == nil {
 		panic("lastRestartReason of type BACnetRestartReasonTagged for BACnetConstructedDataLastRestartReason must not be nil")
 	}
 	_result := &_BACnetConstructedDataLastRestartReason{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LastRestartReason:             lastRestartReason,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

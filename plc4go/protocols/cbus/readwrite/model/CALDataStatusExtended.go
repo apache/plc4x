@@ -75,9 +75,9 @@ var _ CALDataStatusExtended = (*_CALDataStatusExtended)(nil)
 var _ CALDataRequirements = (*_CALDataStatusExtended)(nil)
 
 // NewCALDataStatusExtended factory function for _CALDataStatusExtended
-func NewCALDataStatusExtended(commandTypeContainer CALCommandTypeContainer, additionalData CALData, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, requestContext RequestContext) *_CALDataStatusExtended {
+func NewCALDataStatusExtended(requestContext RequestContext, commandTypeContainer CALCommandTypeContainer, additionalData CALData, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation) *_CALDataStatusExtended {
 	_result := &_CALDataStatusExtended{
-		CALDataContract:  NewCALData(commandTypeContainer, additionalData, requestContext),
+		CALDataContract:  NewCALData(requestContext, commandTypeContainer, additionalData),
 		Coding:           coding,
 		Application:      application,
 		BlockStart:       blockStart,

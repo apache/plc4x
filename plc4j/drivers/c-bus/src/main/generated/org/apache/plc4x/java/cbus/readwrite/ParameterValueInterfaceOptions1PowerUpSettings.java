@@ -46,14 +46,9 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
   // Properties.
   protected final InterfaceOptions1PowerUpSettings value;
 
-  // Arguments.
-  protected final Short numBytes;
-
-  public ParameterValueInterfaceOptions1PowerUpSettings(
-      InterfaceOptions1PowerUpSettings value, Short numBytes) {
-    super(numBytes);
+  public ParameterValueInterfaceOptions1PowerUpSettings(InterfaceOptions1PowerUpSettings value) {
+    super();
     this.value = value;
-    this.numBytes = numBytes;
   }
 
   public InterfaceOptions1PowerUpSettings getValue() {
@@ -108,25 +103,22 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
 
     readBuffer.closeContext("ParameterValueInterfaceOptions1PowerUpSettings");
     // Create the instance
-    return new ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl(value, numBytes);
+    return new ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl(value);
   }
 
   public static class ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final InterfaceOptions1PowerUpSettings value;
-    private final Short numBytes;
 
     public ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl(
-        InterfaceOptions1PowerUpSettings value, Short numBytes) {
+        InterfaceOptions1PowerUpSettings value) {
       this.value = value;
-      this.numBytes = numBytes;
     }
 
-    public ParameterValueInterfaceOptions1PowerUpSettings build(Short numBytes) {
-
+    public ParameterValueInterfaceOptions1PowerUpSettings build() {
       ParameterValueInterfaceOptions1PowerUpSettings
           parameterValueInterfaceOptions1PowerUpSettings =
-              new ParameterValueInterfaceOptions1PowerUpSettings(value, numBytes);
+              new ParameterValueInterfaceOptions1PowerUpSettings(value);
       return parameterValueInterfaceOptions1PowerUpSettings;
     }
   }

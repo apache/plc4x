@@ -45,13 +45,9 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
   // Properties.
   protected final String manufacturerName;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandManufacturer(String manufacturerName, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandManufacturer(String manufacturerName) {
+    super();
     this.manufacturerName = manufacturerName;
-    this.numBytes = numBytes;
   }
 
   public String getManufacturerName() {
@@ -98,23 +94,20 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
 
     readBuffer.closeContext("IdentifyReplyCommandManufacturer");
     // Create the instance
-    return new IdentifyReplyCommandManufacturerBuilderImpl(manufacturerName, numBytes);
+    return new IdentifyReplyCommandManufacturerBuilderImpl(manufacturerName);
   }
 
   public static class IdentifyReplyCommandManufacturerBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String manufacturerName;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandManufacturerBuilderImpl(String manufacturerName, Byte numBytes) {
+    public IdentifyReplyCommandManufacturerBuilderImpl(String manufacturerName) {
       this.manufacturerName = manufacturerName;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandManufacturer build(Byte numBytes) {
-
+    public IdentifyReplyCommandManufacturer build() {
       IdentifyReplyCommandManufacturer identifyReplyCommandManufacturer =
-          new IdentifyReplyCommandManufacturer(manufacturerName, numBytes);
+          new IdentifyReplyCommandManufacturer(manufacturerName);
       return identifyReplyCommandManufacturer;
     }
   }

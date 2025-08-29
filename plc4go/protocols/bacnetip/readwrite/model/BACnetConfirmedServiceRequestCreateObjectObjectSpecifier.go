@@ -66,22 +66,19 @@ type _BACnetConfirmedServiceRequestCreateObjectObjectSpecifier struct {
 	RawObjectType    BACnetContextTagEnumerated
 	ObjectIdentifier BACnetContextTagObjectIdentifier
 	ClosingTag       BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetConfirmedServiceRequestCreateObjectObjectSpecifier = (*_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier)(nil)
 
 // NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier factory function for _BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
-func NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(openingTag BACnetOpeningTag, rawObjectType BACnetContextTagEnumerated, objectIdentifier BACnetContextTagObjectIdentifier, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
+func NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(openingTag BACnetOpeningTag, rawObjectType BACnetContextTagEnumerated, objectIdentifier BACnetContextTagObjectIdentifier, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestCreateObjectObjectSpecifier must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestCreateObjectObjectSpecifier must not be nil")
 	}
-	return &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{OpeningTag: openingTag, RawObjectType: rawObjectType, ObjectIdentifier: objectIdentifier, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{OpeningTag: openingTag, RawObjectType: rawObjectType, ObjectIdentifier: objectIdentifier, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,8 +107,6 @@ type BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder
 	// Build builds the BACnetConfirmedServiceRequestCreateObjectObjectSpecifier or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -192,11 +187,6 @@ func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithC
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -365,7 +355,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBufferProd
 }
 
 func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
-	v, err := (&_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -500,16 +490,6 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) IsBACnetConfirmedServiceRequestCreateObjectObjectSpecifier() {
 }
 
@@ -526,7 +506,6 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) deepCopy() *
 		utils.DeepCopy[BACnetContextTagEnumerated](m.RawObjectType),
 		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetConfirmedServiceRequestCreateObjectObjectSpecifierCopy
 }

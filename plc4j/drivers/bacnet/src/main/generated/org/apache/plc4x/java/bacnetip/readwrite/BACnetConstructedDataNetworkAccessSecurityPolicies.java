@@ -52,23 +52,15 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNetworkAccessSecurityPolicies(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.networkAccessSecurityPolicies = networkAccessSecurityPolicies;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (networkAccessSecurityPolicies)
     writeComplexTypeArrayField(
@@ -172,33 +160,23 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
     readBuffer.closeContext("BACnetConstructedDataNetworkAccessSecurityPolicies");
     // Create the instance
     return new BACnetConstructedDataNetworkAccessSecurityPoliciesBuilderImpl(
-        numberOfDataElements, networkAccessSecurityPolicies, tagNumber, arrayIndexArgument);
+        numberOfDataElements, networkAccessSecurityPolicies);
   }
 
   public static class BACnetConstructedDataNetworkAccessSecurityPoliciesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataNetworkAccessSecurityPoliciesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies) {
       this.numberOfDataElements = numberOfDataElements;
       this.networkAccessSecurityPolicies = networkAccessSecurityPolicies;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNetworkAccessSecurityPolicies build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNetworkAccessSecurityPolicies
           bACnetConstructedDataNetworkAccessSecurityPolicies =
               new BACnetConstructedDataNetworkAccessSecurityPolicies(
@@ -206,9 +184,7 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
                   peekedTagHeader,
                   closingTag,
                   numberOfDataElements,
-                  networkAccessSecurityPolicies,
-                  tagNumber,
-                  arrayIndexArgument);
+                  networkAccessSecurityPolicies);
       return bACnetConstructedDataNetworkAccessSecurityPolicies;
     }
   }

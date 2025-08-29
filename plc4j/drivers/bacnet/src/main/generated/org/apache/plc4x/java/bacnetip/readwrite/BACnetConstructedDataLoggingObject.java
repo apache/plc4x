@@ -49,21 +49,13 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagObjectIdentifier loggingObject;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLoggingObject(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagObjectIdentifier loggingObject,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagObjectIdentifier loggingObject) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.loggingObject = loggingObject;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagObjectIdentifier getLoggingObject() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataLoggingObject");
     // Create the instance
-    return new BACnetConstructedDataLoggingObjectBuilderImpl(
-        loggingObject, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLoggingObjectBuilderImpl(loggingObject);
   }
 
   public static class BACnetConstructedDataLoggingObjectBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier loggingObject;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLoggingObjectBuilderImpl(
-        BACnetApplicationTagObjectIdentifier loggingObject,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagObjectIdentifier loggingObject) {
       this.loggingObject = loggingObject;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLoggingObject build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLoggingObject bACnetConstructedDataLoggingObject =
           new BACnetConstructedDataLoggingObject(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              loggingObject,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, loggingObject);
       return bACnetConstructedDataLoggingObject;
     }
   }

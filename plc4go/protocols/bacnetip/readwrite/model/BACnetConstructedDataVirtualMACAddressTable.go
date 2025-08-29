@@ -59,9 +59,9 @@ var _ BACnetConstructedDataVirtualMACAddressTable = (*_BACnetConstructedDataVirt
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVirtualMACAddressTable)(nil)
 
 // NewBACnetConstructedDataVirtualMACAddressTable factory function for _BACnetConstructedDataVirtualMACAddressTable
-func NewBACnetConstructedDataVirtualMACAddressTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, virtualMacAddressTable []BACnetVMACEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVirtualMACAddressTable {
+func NewBACnetConstructedDataVirtualMACAddressTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, virtualMacAddressTable []BACnetVMACEntry) *_BACnetConstructedDataVirtualMACAddressTable {
 	_result := &_BACnetConstructedDataVirtualMACAddressTable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		VirtualMacAddressTable:        virtualMacAddressTable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

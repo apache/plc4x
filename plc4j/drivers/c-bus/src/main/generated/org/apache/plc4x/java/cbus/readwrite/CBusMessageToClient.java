@@ -45,16 +45,9 @@ public class CBusMessageToClient extends CBusMessage implements Message {
   // Properties.
   protected final ReplyOrConfirmation reply;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-  protected final CBusOptions cBusOptions;
-
-  public CBusMessageToClient(
-      ReplyOrConfirmation reply, RequestContext requestContext, CBusOptions cBusOptions) {
-    super(requestContext, cBusOptions);
+  public CBusMessageToClient(ReplyOrConfirmation reply) {
+    super();
     this.reply = reply;
-    this.requestContext = requestContext;
-    this.cBusOptions = cBusOptions;
   }
 
   public ReplyOrConfirmation getReply() {
@@ -111,25 +104,18 @@ public class CBusMessageToClient extends CBusMessage implements Message {
 
     readBuffer.closeContext("CBusMessageToClient");
     // Create the instance
-    return new CBusMessageToClientBuilderImpl(reply, requestContext, cBusOptions);
+    return new CBusMessageToClientBuilderImpl(reply);
   }
 
   public static class CBusMessageToClientBuilderImpl implements CBusMessage.CBusMessageBuilder {
     private final ReplyOrConfirmation reply;
-    private final RequestContext requestContext;
-    private final CBusOptions cBusOptions;
 
-    public CBusMessageToClientBuilderImpl(
-        ReplyOrConfirmation reply, RequestContext requestContext, CBusOptions cBusOptions) {
+    public CBusMessageToClientBuilderImpl(ReplyOrConfirmation reply) {
       this.reply = reply;
-      this.requestContext = requestContext;
-      this.cBusOptions = cBusOptions;
     }
 
-    public CBusMessageToClient build(RequestContext requestContext, CBusOptions cBusOptions) {
-
-      CBusMessageToClient cBusMessageToClient =
-          new CBusMessageToClient(reply, requestContext, cBusOptions);
+    public CBusMessageToClient build() {
+      CBusMessageToClient cBusMessageToClient = new CBusMessageToClient(reply);
       return cBusMessageToClient;
     }
   }

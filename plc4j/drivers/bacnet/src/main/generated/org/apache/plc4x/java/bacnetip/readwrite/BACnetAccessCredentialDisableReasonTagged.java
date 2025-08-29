@@ -42,22 +42,12 @@ public class BACnetAccessCredentialDisableReasonTagged implements Message {
   protected final BACnetAccessCredentialDisableReason value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetAccessCredentialDisableReasonTagged(
-      BACnetTagHeader header,
-      BACnetAccessCredentialDisableReason value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetAccessCredentialDisableReason value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -182,8 +172,7 @@ public class BACnetAccessCredentialDisableReasonTagged implements Message {
     // Create the instance
     BACnetAccessCredentialDisableReasonTagged _bACnetAccessCredentialDisableReasonTagged;
     _bACnetAccessCredentialDisableReasonTagged =
-        new BACnetAccessCredentialDisableReasonTagged(
-            header, value, proprietaryValue, tagNumber, tagClass);
+        new BACnetAccessCredentialDisableReasonTagged(header, value, proprietaryValue);
     return _bACnetAccessCredentialDisableReasonTagged;
   }
 

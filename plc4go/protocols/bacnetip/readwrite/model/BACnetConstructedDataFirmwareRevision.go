@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFirmwareRevision = (*_BACnetConstructedDataFirmwareRe
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFirmwareRevision)(nil)
 
 // NewBACnetConstructedDataFirmwareRevision factory function for _BACnetConstructedDataFirmwareRevision
-func NewBACnetConstructedDataFirmwareRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, firmwareRevision BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFirmwareRevision {
+func NewBACnetConstructedDataFirmwareRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, firmwareRevision BACnetApplicationTagCharacterString) *_BACnetConstructedDataFirmwareRevision {
 	if firmwareRevision == nil {
 		panic("firmwareRevision of type BACnetApplicationTagCharacterString for BACnetConstructedDataFirmwareRevision must not be nil")
 	}
 	_result := &_BACnetConstructedDataFirmwareRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FirmwareRevision:              firmwareRevision,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

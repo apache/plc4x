@@ -61,12 +61,12 @@ var _ BACnetConstructedDataTimeOfDeviceRestart = (*_BACnetConstructedDataTimeOfD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeOfDeviceRestart)(nil)
 
 // NewBACnetConstructedDataTimeOfDeviceRestart factory function for _BACnetConstructedDataTimeOfDeviceRestart
-func NewBACnetConstructedDataTimeOfDeviceRestart(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfDeviceRestart BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfDeviceRestart {
+func NewBACnetConstructedDataTimeOfDeviceRestart(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfDeviceRestart BACnetTimeStamp) *_BACnetConstructedDataTimeOfDeviceRestart {
 	if timeOfDeviceRestart == nil {
 		panic("timeOfDeviceRestart of type BACnetTimeStamp for BACnetConstructedDataTimeOfDeviceRestart must not be nil")
 	}
 	_result := &_BACnetConstructedDataTimeOfDeviceRestart{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		TimeOfDeviceRestart:           timeOfDeviceRestart,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

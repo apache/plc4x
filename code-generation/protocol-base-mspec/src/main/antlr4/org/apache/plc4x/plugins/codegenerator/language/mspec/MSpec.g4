@@ -19,7 +19,19 @@ grammar MSpec;
  */
 
 file
- : complexTypeDefinition* EOF
+ : contantsDefinition? globalsDefinition? contextDefintion? complexTypeDefinition* EOF
+ ;
+
+contantsDefinition
+ : LBRACKET CONSTANTS (LBRACKET constField RBRACKET)* RBRACKET
+ ;
+
+globalsDefinition
+ : LBRACKET GLOBALS fieldDefinition* RBRACKET
+ ;
+
+contextDefintion
+ : LBRACKET CONTEXT fieldDefinition* RBRACKET
  ;
 
 complexTypeDefinition
@@ -27,10 +39,10 @@ complexTypeDefinition
  ;
 
 complexType
- : 'type' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)*
- | 'discriminatedType' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)*
- | 'enum' (type=dataType)? name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList enumValues=enumValueDefinition*
- | 'dataIo' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? (attributes=attributeList) dataIoTypeSwitch=dataIoDefinition
+ : TYPE name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)*
+ | DISCRIMINATEDTYPE name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)*
+ | ENUM (type=dataType)? name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList enumValues=enumValueDefinition*
+ | DATAIO name=idExpression (LRBRACKET params=argumentList RRBRACKET)? (attributes=attributeList) dataIoTypeSwitch=dataIoDefinition
  ;
 
 fieldDefinition
@@ -38,11 +50,11 @@ fieldDefinition
  ;
 
 batchSetDefinition
- : LBRACKET 'batchSet' attributes=attributeList fieldDefinition+ RBRACKET
+ : LBRACKET BATCHSET attributes=attributeList fieldDefinition+ RBRACKET
  ;
 
 dataIoDefinition
-// TODO: remove typeSwitchField as it's a unnecessary indirection
+// TODO: possibly alow more fields than just one typeSwitch field.
  : LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
@@ -59,89 +71,94 @@ field
  | manualField
  | optionalField
  | paddingField
+ | peekField
  | reservedField
  | simpleField
+ | stateField
  | typeSwitchField
  | unknownField
- | virtualField
  | validationField
- | peekField
+ | virtualField
  ;
 
 abstractField
- : 'abstract' type=typeReference name=idExpression
+ : ABSTRACT type=typeReference name=idExpression
  ;
 
 arrayField
- : 'array' type=typeReference name=idExpression loopType=ARRAY_LOOP_TYPE loopExpression=expression
+ : ARRAY type=typeReference name=idExpression loopType=ARRAY_LOOP_TYPE loopExpression=expression
  ;
 
 assertField
- : 'assert' type=typeReference name=idExpression condition=expression
+ : ASSERT type=typeReference name=idExpression condition=expression
  ;
 
 checksumField
- : 'checksum' type=dataType name=idExpression checksumExpression=expression
+ : CHECKSUM type=dataType name=idExpression checksumExpression=expression
  ;
 
 constField
- : 'const' type=typeReference name=idExpression expected=valueLiteral
+ : CONST type=typeReference name=idExpression expected=valueLiteral
  ;
 
 discriminatorField
- : 'discriminator' type=typeReference name=idExpression
+ : DISCRIMINATOR type=typeReference name=idExpression
  ;
 
 enumField
- : 'enum' type=typeReference name=idExpression fieldName=idExpression
+ : ENUM type=typeReference name=idExpression fieldName=idExpression
  ;
 
 implicitField
- : 'implicit' type=dataType name=idExpression serializeExpression=expression
+ : IMPLICIT type=dataType name=idExpression serializeExpression=expression
  ;
 
 manualArrayField
- : 'manualArray' type=typeReference name=idExpression loopType=ARRAY_LOOP_TYPE loopExpression=expression parseExpression=expression serializeExpression=expression lengthExpression=expression
+ : MANUALARRAY type=typeReference name=idExpression loopType=ARRAY_LOOP_TYPE loopExpression=expression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
 
 manualField
- : 'manual' type=typeReference name=idExpression parseExpression=expression serializeExpression=expression lengthExpression=expression
+ : MANUAL type=typeReference name=idExpression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
 
 optionalField
- : 'optional' type=typeReference name=idExpression (condition=expression)?
+ : OPTIONAL type=typeReference name=idExpression (condition=expression)?
  ;
 
 paddingField
- : 'padding' type=dataType name=idExpression paddingValue=expression timesPadding=expression
- ;
-
-reservedField
- : 'reserved' type=dataType expected=expression
- ;
-
-simpleField
- : 'simple' type=typeReference name=idExpression
- ;
-
-typeSwitchField
- : 'typeSwitch' discriminators=multipleVariableLiterals caseStatement*
- ;
-
-unknownField
- : 'unknown' type=dataType
- ;
-
-virtualField
- : 'virtual' type=typeReference name=idExpression valueExpression=expression
- ;
-
-validationField
- : 'validation' validationExpression=expression (description=STRING_LITERAL)? ('shouldFail='shouldFail=BOOLEAN_LITERAL)?
+ : PADDING type=dataType name=idExpression paddingValue=expression timesPadding=expression
  ;
 
 peekField
- : 'peek' type=typeReference name=idExpression (offset=expression)?
+ : PEEK type=typeReference name=idExpression (offset=expression)?
+ ;
+
+reservedField
+ : RESERVED type=dataType expected=expression
+ ;
+
+simpleField
+ : SIMPLE type=typeReference name=idExpression
+ ;
+
+stateField
+ : STATE name=idExpression
+ ;
+
+typeSwitchField
+ : TYPESWITCH discriminators=multipleVariableLiterals caseStatement*
+ ;
+
+unknownField
+ : UNKNOWN type=dataType
+ ;
+
+validationField
+ : VALIDATION validationExpression=expression (description=STRING_LITERAL)? (SHOULD_FAIL '=' shouldFail=BOOLEAN_LITERAL)?
+ ;
+
+virtualField
+ : VIRTUAL type=typeReference name=idExpression valueExpression=expression
  ;
 
 enumValueDefinition
@@ -158,19 +175,19 @@ caseStatement
  ;
 
 dataType
- : base='bit'
- | base='byte'
- | base='int' size=INTEGER_LITERAL
- | base='vint'
- | base='uint' size=INTEGER_LITERAL
- | base='vuint'
- | base='float' size=INTEGER_LITERAL
- | base='ufloat' size=INTEGER_LITERAL
- | base='string' size=INTEGER_LITERAL
- | base='vstring' (length=expression)?
- | base='time'
- | base='date'
- | base='dateTime'
+ : base=BIT
+ | base=BYTE
+ | base=INT size=INTEGER_LITERAL
+ | base=VINT
+ | base=UINT size=INTEGER_LITERAL
+ | base=VUINT
+ | base=FLOAT size=INTEGER_LITERAL
+ | base=UFLOAT size=INTEGER_LITERAL
+ | base=STRING size=INTEGER_LITERAL
+ | base=VSTRING (length=expression)?
+ | base=TIME
+ | base=DATE
+ | base=DATETIME
  ;
 
 attribute
@@ -233,8 +250,16 @@ valueLiteral
 
 idExpression
  : id=IDENTIFIER_LITERAL
- // Explicitly allow the loop type keywords in id-expressions
+ // Explicitly allow keywords in id-expressions
  | id=ARRAY_LOOP_TYPE
+ | id=CONSTANTS | id=GLOBALS | id=CONTEXT | id=TYPE | id=DISCRIMINATEDTYPE | id=DATAIO
+ | id=ENUM | id=BATCHSET | id=ABSTRACT | id=ARRAY | id=ASSERT | id=CHECKSUM | id=CONST
+ | id=DISCRIMINATOR | id=IMPLICIT | id=MANUALARRAY | id=MANUAL | id=OPTIONAL | id=PADDING
+ | id=PEEK | id=RESERVED | id=SIMPLE | id=STATE | id=TYPESWITCH | id=UNKNOWN | id=VALIDATION
+ | id=VIRTUAL
+ | id=BIT | id=BYTE | id=INT | id=VINT | id=UINT | id=VUINT
+ | id=FLOAT | id=UFLOAT | id=STRING | id=VSTRING | id=TIME | id=DATE | id=DATETIME
+ | id=SHOULD_FAIL
  ;
 
 binaryOperator
@@ -267,6 +292,55 @@ LCBRACKET : '{';
 RCBRACKET : '}';
 
 ASTERISK : '*';
+
+// Keywords used for higher level constructs
+CONSTANTS       : 'constants';
+GLOBALS         : 'globals';
+CONTEXT         : 'context';
+TYPE            : 'type';
+DISCRIMINATEDTYPE : 'discriminatedType';
+DATAIO          : 'dataIo';
+ENUM            : 'enum';
+BATCHSET        : 'batchSet';
+
+// Keywords used for fields
+ABSTRACT        : 'abstract';
+ARRAY           : 'array';
+ASSERT          : 'assert';
+CHECKSUM        : 'checksum';
+CONST           : 'const';
+DISCRIMINATOR   : 'discriminator';
+IMPLICIT        : 'implicit';
+MANUALARRAY     : 'manualArray';
+MANUAL          : 'manual';
+OPTIONAL        : 'optional';
+PADDING         : 'padding';
+PEEK            : 'peek';
+RESERVED        : 'reserved';
+SIMPLE          : 'simple';
+STATE           : 'state';
+TYPESWITCH      : 'typeSwitch';
+UNKNOWN         : 'unknown';
+VALIDATION      : 'validation';
+VIRTUAL         : 'virtual';
+
+// Keywords for types
+BIT             : 'bit';
+BYTE            : 'byte';
+INT             : 'int';
+VINT            : 'vint';
+UINT            : 'uint';
+VUINT           : 'vuint';
+FLOAT           : 'float';
+UFLOAT          : 'ufloat';
+STRING          : 'string';
+VSTRING         : 'vstring';
+TIME            : 'time';
+DATE            : 'date';
+DATETIME        : 'dateTime';
+
+// Keywords used elsewhere
+SHOULD_FAIL     : 'shouldFail';
 
 ARRAY_LOOP_TYPE
  : 'count'

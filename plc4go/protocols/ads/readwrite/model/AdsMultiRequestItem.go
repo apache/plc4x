@@ -261,7 +261,7 @@ func AdsMultiRequestItemParseWithBufferProducer[T AdsMultiRequestItem](indexGrou
 }
 
 func AdsMultiRequestItemParseWithBuffer[T AdsMultiRequestItem](ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (T, error) {
-	v, err := (&_AdsMultiRequestItem{}).parse(ctx, readBuffer, indexGroup)
+	v, err := (new(_AdsMultiRequestItem)).parse(ctx, readBuffer, indexGroup)
 	if err != nil {
 		var zero T
 		return zero, err

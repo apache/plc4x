@@ -49,21 +49,13 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
   // Properties.
   protected final BACnetAccumulatorRecord loggingRecord;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLoggingRecord(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAccumulatorRecord loggingRecord,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAccumulatorRecord loggingRecord) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.loggingRecord = loggingRecord;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAccumulatorRecord getLoggingRecord() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataLoggingRecord");
     // Create the instance
-    return new BACnetConstructedDataLoggingRecordBuilderImpl(
-        loggingRecord, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLoggingRecordBuilderImpl(loggingRecord);
   }
 
   public static class BACnetConstructedDataLoggingRecordBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccumulatorRecord loggingRecord;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLoggingRecordBuilderImpl(
-        BACnetAccumulatorRecord loggingRecord,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLoggingRecordBuilderImpl(BACnetAccumulatorRecord loggingRecord) {
       this.loggingRecord = loggingRecord;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLoggingRecord build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLoggingRecord bACnetConstructedDataLoggingRecord =
           new BACnetConstructedDataLoggingRecord(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              loggingRecord,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, loggingRecord);
       return bACnetConstructedDataLoggingRecord;
     }
   }

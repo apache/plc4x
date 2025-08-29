@@ -41,17 +41,10 @@ public class BACnetLightingInProgressTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetLightingInProgress value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetLightingInProgressTagged(
-      BACnetTagHeader header, BACnetLightingInProgress value, Short tagNumber, TagClass tagClass) {
+  public BACnetLightingInProgressTagged(BACnetTagHeader header, BACnetLightingInProgress value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,8 +126,7 @@ public class BACnetLightingInProgressTagged implements Message {
     readBuffer.closeContext("BACnetLightingInProgressTagged");
     // Create the instance
     BACnetLightingInProgressTagged _bACnetLightingInProgressTagged;
-    _bACnetLightingInProgressTagged =
-        new BACnetLightingInProgressTagged(header, value, tagNumber, tagClass);
+    _bACnetLightingInProgressTagged = new BACnetLightingInProgressTagged(header, value);
     return _bACnetLightingInProgressTagged;
   }
 

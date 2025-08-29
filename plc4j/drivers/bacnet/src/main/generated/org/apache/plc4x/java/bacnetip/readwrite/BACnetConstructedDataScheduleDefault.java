@@ -49,21 +49,13 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
   // Properties.
   protected final BACnetConstructedDataElement scheduleDefault;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataScheduleDefault(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetConstructedDataElement scheduleDefault,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetConstructedDataElement scheduleDefault) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.scheduleDefault = scheduleDefault;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetConstructedDataElement getScheduleDefault() {
@@ -137,39 +129,23 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataScheduleDefault");
     // Create the instance
-    return new BACnetConstructedDataScheduleDefaultBuilderImpl(
-        scheduleDefault, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataScheduleDefaultBuilderImpl(scheduleDefault);
   }
 
   public static class BACnetConstructedDataScheduleDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetConstructedDataElement scheduleDefault;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataScheduleDefaultBuilderImpl(
-        BACnetConstructedDataElement scheduleDefault,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetConstructedDataElement scheduleDefault) {
       this.scheduleDefault = scheduleDefault;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataScheduleDefault build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataScheduleDefault bACnetConstructedDataScheduleDefault =
           new BACnetConstructedDataScheduleDefault(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              scheduleDefault,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, scheduleDefault);
       return bACnetConstructedDataScheduleDefault;
     }
   }

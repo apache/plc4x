@@ -46,17 +46,13 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
   protected final BACnetApplicationTagBoolean endOfFile;
   protected final BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckAtomicReadFile(
+      long serviceAckLength,
       BACnetApplicationTagBoolean endOfFile,
-      BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod,
-      Long serviceAckLength) {
+      BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod) {
     super(serviceAckLength);
     this.endOfFile = endOfFile;
     this.accessMethod = accessMethod;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetApplicationTagBoolean getEndOfFile() {
@@ -125,28 +121,24 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
 
     readBuffer.closeContext("BACnetServiceAckAtomicReadFile");
     // Create the instance
-    return new BACnetServiceAckAtomicReadFileBuilderImpl(endOfFile, accessMethod, serviceAckLength);
+    return new BACnetServiceAckAtomicReadFileBuilderImpl(endOfFile, accessMethod);
   }
 
   public static class BACnetServiceAckAtomicReadFileBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagBoolean endOfFile;
     private final BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckAtomicReadFileBuilderImpl(
         BACnetApplicationTagBoolean endOfFile,
-        BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod,
-        Long serviceAckLength) {
+        BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod) {
       this.endOfFile = endOfFile;
       this.accessMethod = accessMethod;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckAtomicReadFile build(Long serviceAckLength) {
-
+    public BACnetServiceAckAtomicReadFile build(long serviceAckLength) {
       BACnetServiceAckAtomicReadFile bACnetServiceAckAtomicReadFile =
-          new BACnetServiceAckAtomicReadFile(endOfFile, accessMethod, serviceAckLength);
+          new BACnetServiceAckAtomicReadFile(serviceAckLength, endOfFile, accessMethod);
       return bACnetServiceAckAtomicReadFile;
     }
   }

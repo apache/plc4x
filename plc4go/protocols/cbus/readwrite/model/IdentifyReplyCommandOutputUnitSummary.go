@@ -68,12 +68,12 @@ var _ IdentifyReplyCommandOutputUnitSummary = (*_IdentifyReplyCommandOutputUnitS
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandOutputUnitSummary)(nil)
 
 // NewIdentifyReplyCommandOutputUnitSummary factory function for _IdentifyReplyCommandOutputUnitSummary
-func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
+func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8) *_IdentifyReplyCommandOutputUnitSummary {
 	if unitFlags == nil {
 		panic("unitFlags of type IdentifyReplyCommandUnitSummary for IdentifyReplyCommandOutputUnitSummary must not be nil")
 	}
 	_result := &_IdentifyReplyCommandOutputUnitSummary{
-		IdentifyReplyCommandContract:        NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract:        NewIdentifyReplyCommand(),
 		UnitFlags:                           unitFlags,
 		GavStoreEnabledByte1:                gavStoreEnabledByte1,
 		GavStoreEnabledByte2:                gavStoreEnabledByte2,

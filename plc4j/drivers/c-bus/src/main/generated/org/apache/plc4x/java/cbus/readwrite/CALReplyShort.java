@@ -39,15 +39,8 @@ public class CALReplyShort extends CALReply implements Message {
 
   // Accessors for discriminator values.
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
-  public CALReplyShort(
-      byte calType, CALData calData, CBusOptions cBusOptions, RequestContext requestContext) {
-    super(calType, calData, cBusOptions, requestContext);
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
+  public CALReplyShort(byte calType, CALData calData) {
+    super(calType, calData);
   }
 
   @Override
@@ -82,22 +75,15 @@ public class CALReplyShort extends CALReply implements Message {
 
     readBuffer.closeContext("CALReplyShort");
     // Create the instance
-    return new CALReplyShortBuilderImpl(cBusOptions, requestContext);
+    return new CALReplyShortBuilderImpl();
   }
 
   public static class CALReplyShortBuilderImpl implements CALReply.CALReplyBuilder {
-    private final CBusOptions cBusOptions;
-    private final RequestContext requestContext;
 
-    public CALReplyShortBuilderImpl(CBusOptions cBusOptions, RequestContext requestContext) {
-      this.cBusOptions = cBusOptions;
-      this.requestContext = requestContext;
-    }
+    public CALReplyShortBuilderImpl() {}
 
-    public CALReplyShort build(
-        byte calType, CALData calData, CBusOptions cBusOptions, RequestContext requestContext) {
-      CALReplyShort cALReplyShort =
-          new CALReplyShort(calType, calData, cBusOptions, requestContext);
+    public CALReplyShort build(byte calType, CALData calData) {
+      CALReplyShort cALReplyShort = new CALReplyShort(calType, calData);
       return cALReplyShort;
     }
   }

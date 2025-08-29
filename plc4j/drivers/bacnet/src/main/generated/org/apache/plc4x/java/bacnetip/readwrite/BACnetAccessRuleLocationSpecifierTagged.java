@@ -41,20 +41,11 @@ public class BACnetAccessRuleLocationSpecifierTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetAccessRuleLocationSpecifier value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetAccessRuleLocationSpecifierTagged(
-      BACnetTagHeader header,
-      BACnetAccessRuleLocationSpecifier value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetAccessRuleLocationSpecifier value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -139,7 +130,7 @@ public class BACnetAccessRuleLocationSpecifierTagged implements Message {
     // Create the instance
     BACnetAccessRuleLocationSpecifierTagged _bACnetAccessRuleLocationSpecifierTagged;
     _bACnetAccessRuleLocationSpecifierTagged =
-        new BACnetAccessRuleLocationSpecifierTagged(header, value, tagNumber, tagClass);
+        new BACnetAccessRuleLocationSpecifierTagged(header, value);
     return _bACnetAccessRuleLocationSpecifierTagged;
   }
 

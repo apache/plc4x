@@ -49,21 +49,13 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
   // Properties.
   protected final BACnetApplicationTagBoolean trigger;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTrigger(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean trigger,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean trigger) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.trigger = trigger;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getTrigger() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataTrigger");
     // Create the instance
-    return new BACnetConstructedDataTriggerBuilderImpl(trigger, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTriggerBuilderImpl(trigger);
   }
 
   public static class BACnetConstructedDataTriggerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean trigger;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTriggerBuilderImpl(
-        BACnetApplicationTagBoolean trigger,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataTriggerBuilderImpl(BACnetApplicationTagBoolean trigger) {
       this.trigger = trigger;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTrigger build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTrigger bACnetConstructedDataTrigger =
-          new BACnetConstructedDataTrigger(
-              openingTag, peekedTagHeader, closingTag, trigger, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataTrigger(openingTag, peekedTagHeader, closingTag, trigger);
       return bACnetConstructedDataTrigger;
     }
   }

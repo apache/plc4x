@@ -54,20 +54,16 @@ type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 type _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged = (*_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged)(nil)
 
 // NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged factory function for _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
-func NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
+func NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged must not be nil")
 	}
-	return &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
 	// Build builds the BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 
 func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 }
 
 func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, error) {
-	v, err := (&_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) IsBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged() {
 }
 
@@ -344,8 +314,6 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 	_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedCopy := &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedCopy
 }

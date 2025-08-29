@@ -411,7 +411,7 @@ func SysexCommandParseWithBufferProducer[T SysexCommand](response bool) func(ctx
 }
 
 func SysexCommandParseWithBuffer[T SysexCommand](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := (&_SysexCommand{}).parse(ctx, readBuffer, response)
+	v, err := (new(_SysexCommand)).parse(ctx, readBuffer, response)
 	if err != nil {
 		var zero T
 		return zero, err

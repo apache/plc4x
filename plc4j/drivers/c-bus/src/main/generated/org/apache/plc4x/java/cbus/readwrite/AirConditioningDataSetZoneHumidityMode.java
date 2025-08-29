@@ -122,19 +122,13 @@ public class AirConditioningDataSetZoneHumidityMode extends AirConditioningData 
             writeUnsignedShort(writeBuffer, 8)));
 
     // Optional Field (level) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "level", level, writeComplex(writeBuffer), getHumidityModeAndFlags().getIsLevelHumidity());
+    writeOptionalField("level", level, writeComplex(writeBuffer));
 
     // Optional Field (rawLevel) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "rawLevel", rawLevel, writeComplex(writeBuffer), getHumidityModeAndFlags().getIsLevelRaw());
+    writeOptionalField("rawLevel", rawLevel, writeComplex(writeBuffer));
 
     // Optional Field (auxLevel) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "auxLevel",
-        auxLevel,
-        writeComplex(writeBuffer),
-        getHumidityModeAndFlags().getIsAuxLevelUsed());
+    writeOptionalField("auxLevel", auxLevel, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AirConditioningDataSetZoneHumidityMode");
   }

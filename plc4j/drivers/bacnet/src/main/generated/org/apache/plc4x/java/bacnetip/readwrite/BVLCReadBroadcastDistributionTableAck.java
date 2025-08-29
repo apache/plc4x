@@ -45,14 +45,9 @@ public class BVLCReadBroadcastDistributionTableAck extends BVLC implements Messa
   // Properties.
   protected final List<BVLCBroadcastDistributionTableEntry> table;
 
-  // Arguments.
-  protected final Integer bvlcPayloadLength;
-
-  public BVLCReadBroadcastDistributionTableAck(
-      List<BVLCBroadcastDistributionTableEntry> table, Integer bvlcPayloadLength) {
+  public BVLCReadBroadcastDistributionTableAck(List<BVLCBroadcastDistributionTableEntry> table) {
     super();
     this.table = table;
-    this.bvlcPayloadLength = bvlcPayloadLength;
   }
 
   public List<BVLCBroadcastDistributionTableEntry> getTable() {
@@ -109,22 +104,20 @@ public class BVLCReadBroadcastDistributionTableAck extends BVLC implements Messa
 
     readBuffer.closeContext("BVLCReadBroadcastDistributionTableAck");
     // Create the instance
-    return new BVLCReadBroadcastDistributionTableAckBuilderImpl(table, bvlcPayloadLength);
+    return new BVLCReadBroadcastDistributionTableAckBuilderImpl(table);
   }
 
   public static class BVLCReadBroadcastDistributionTableAckBuilderImpl implements BVLC.BVLCBuilder {
     private final List<BVLCBroadcastDistributionTableEntry> table;
-    private final Integer bvlcPayloadLength;
 
     public BVLCReadBroadcastDistributionTableAckBuilderImpl(
-        List<BVLCBroadcastDistributionTableEntry> table, Integer bvlcPayloadLength) {
+        List<BVLCBroadcastDistributionTableEntry> table) {
       this.table = table;
-      this.bvlcPayloadLength = bvlcPayloadLength;
     }
 
     public BVLCReadBroadcastDistributionTableAck build() {
       BVLCReadBroadcastDistributionTableAck bVLCReadBroadcastDistributionTableAck =
-          new BVLCReadBroadcastDistributionTableAck(table, bvlcPayloadLength);
+          new BVLCReadBroadcastDistributionTableAck(table);
       return bVLCReadBroadcastDistributionTableAck;
     }
   }

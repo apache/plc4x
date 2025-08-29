@@ -43,18 +43,13 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
   // Properties.
   protected final BACnetContextTagReal referencedPropertyIncrement;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagReal referencedPropertyIncrement,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagReal referencedPropertyIncrement) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.referencedPropertyIncrement = referencedPropertyIncrement;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagReal getReferencedPropertyIncrement() {
@@ -116,7 +111,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
         "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement");
     // Create the instance
     return new BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilderImpl(
-        referencedPropertyIncrement, tagNumber);
+        referencedPropertyIncrement);
   }
 
   public static
@@ -124,23 +119,18 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
       implements BACnetEventParameterChangeOfValueCivCriteria
           .BACnetEventParameterChangeOfValueCivCriteriaBuilder {
     private final BACnetContextTagReal referencedPropertyIncrement;
-    private final Short tagNumber;
 
     public BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilderImpl(
-        BACnetContextTagReal referencedPropertyIncrement, Short tagNumber) {
+        BACnetContextTagReal referencedPropertyIncrement) {
       this.referencedPropertyIncrement = referencedPropertyIncrement;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
           bACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement =
               new BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(
-                  openingTag, peekedTagHeader, closingTag, referencedPropertyIncrement, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, referencedPropertyIncrement);
       return bACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement;
     }
   }

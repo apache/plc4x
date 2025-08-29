@@ -42,19 +42,14 @@ public class VTCloseErrorListOfVTSessionIdentifiers implements Message {
   protected final List<BACnetApplicationTagUnsignedInteger> listOfVtSessionIdentifiers;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public VTCloseErrorListOfVTSessionIdentifiers(
       BACnetOpeningTag openingTag,
       List<BACnetApplicationTagUnsignedInteger> listOfVtSessionIdentifiers,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfVtSessionIdentifiers = listOfVtSessionIdentifiers;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -150,7 +145,7 @@ public class VTCloseErrorListOfVTSessionIdentifiers implements Message {
     VTCloseErrorListOfVTSessionIdentifiers _vTCloseErrorListOfVTSessionIdentifiers;
     _vTCloseErrorListOfVTSessionIdentifiers =
         new VTCloseErrorListOfVTSessionIdentifiers(
-            openingTag, listOfVtSessionIdentifiers, closingTag, tagNumber);
+            openingTag, listOfVtSessionIdentifiers, closingTag);
     return _vTCloseErrorListOfVTSessionIdentifiers;
   }
 

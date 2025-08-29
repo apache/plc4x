@@ -59,9 +59,9 @@ var _ NLMDisconnectConnectionToNetwork = (*_NLMDisconnectConnectionToNetwork)(ni
 var _ NLMRequirements = (*_NLMDisconnectConnectionToNetwork)(nil)
 
 // NewNLMDisconnectConnectionToNetwork factory function for _NLMDisconnectConnectionToNetwork
-func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
+func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16) *_NLMDisconnectConnectionToNetwork {
 	_result := &_NLMDisconnectConnectionToNetwork{
-		NLMContract:               NewNLM(apduLength),
+		NLMContract:               NewNLM(),
 		DestinationNetworkAddress: destinationNetworkAddress,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result

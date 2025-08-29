@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDeployedProfileLocation = (*_BACnetConstructedDataDep
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeployedProfileLocation)(nil)
 
 // NewBACnetConstructedDataDeployedProfileLocation factory function for _BACnetConstructedDataDeployedProfileLocation
-func NewBACnetConstructedDataDeployedProfileLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deployedProfileLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeployedProfileLocation {
+func NewBACnetConstructedDataDeployedProfileLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deployedProfileLocation BACnetApplicationTagCharacterString) *_BACnetConstructedDataDeployedProfileLocation {
 	if deployedProfileLocation == nil {
 		panic("deployedProfileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeployedProfileLocation must not be nil")
 	}
 	_result := &_BACnetConstructedDataDeployedProfileLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DeployedProfileLocation:       deployedProfileLocation,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

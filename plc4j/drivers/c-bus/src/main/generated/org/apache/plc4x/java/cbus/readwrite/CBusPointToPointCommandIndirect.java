@@ -44,21 +44,16 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
   protected final NetworkRoute networkRoute;
   protected final UnitAddress unitAddress;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public CBusPointToPointCommandIndirect(
       int bridgeAddressCountPeek,
       CALData calData,
       BridgeAddress bridgeAddress,
       NetworkRoute networkRoute,
-      UnitAddress unitAddress,
-      CBusOptions cBusOptions) {
-    super(bridgeAddressCountPeek, calData, cBusOptions);
+      UnitAddress unitAddress) {
+    super(bridgeAddressCountPeek, calData);
     this.bridgeAddress = bridgeAddress;
     this.networkRoute = networkRoute;
     this.unitAddress = unitAddress;
-    this.cBusOptions = cBusOptions;
   }
 
   public BridgeAddress getBridgeAddress() {
@@ -135,8 +130,7 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
 
     readBuffer.closeContext("CBusPointToPointCommandIndirect");
     // Create the instance
-    return new CBusPointToPointCommandIndirectBuilderImpl(
-        bridgeAddress, networkRoute, unitAddress, cBusOptions);
+    return new CBusPointToPointCommandIndirectBuilderImpl(bridgeAddress, networkRoute, unitAddress);
   }
 
   public static class CBusPointToPointCommandIndirectBuilderImpl
@@ -144,29 +138,18 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
     private final BridgeAddress bridgeAddress;
     private final NetworkRoute networkRoute;
     private final UnitAddress unitAddress;
-    private final CBusOptions cBusOptions;
 
     public CBusPointToPointCommandIndirectBuilderImpl(
-        BridgeAddress bridgeAddress,
-        NetworkRoute networkRoute,
-        UnitAddress unitAddress,
-        CBusOptions cBusOptions) {
+        BridgeAddress bridgeAddress, NetworkRoute networkRoute, UnitAddress unitAddress) {
       this.bridgeAddress = bridgeAddress;
       this.networkRoute = networkRoute;
       this.unitAddress = unitAddress;
-      this.cBusOptions = cBusOptions;
     }
 
-    public CBusPointToPointCommandIndirect build(
-        int bridgeAddressCountPeek, CALData calData, CBusOptions cBusOptions) {
+    public CBusPointToPointCommandIndirect build(int bridgeAddressCountPeek, CALData calData) {
       CBusPointToPointCommandIndirect cBusPointToPointCommandIndirect =
           new CBusPointToPointCommandIndirect(
-              bridgeAddressCountPeek,
-              calData,
-              bridgeAddress,
-              networkRoute,
-              unitAddress,
-              cBusOptions);
+              bridgeAddressCountPeek, calData, bridgeAddress, networkRoute, unitAddress);
       return cBusPointToPointCommandIndirect;
     }
   }

@@ -68,8 +68,7 @@ var (
 	BINARY_ENCODING_MASK  = readWriteModel.NewExtensionObjectEncodingMask(false, false, true)
 	NULL_EXTENSION_OBJECT = readWriteModel.NewNullExtensionObjectWithMask(NULL_EXPANDED_NODEID,
 		readWriteModel.NewExtensionObjectEncodingMask(false, false, false),
-		0,
-		false) // Body
+	) // Body
 
 	INET_ADDRESS_PATTERN = regexp.MustCompile(`(.(?P<transportCode>tcp))?://(?P<transportHost>[\w.-]+)(:(?P<transportPort>\d*))?`)
 
@@ -196,10 +195,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 		readWriteModel.NewBinaryPayload(
 			readWriteModel.NewSequenceHeader(transactionId, transactionId),
 			buffer.GetBytes(),
-			uint32(len(buffer.GetBytes())),
 		),
-		uint32(len(buffer.GetBytes())),
-		true,
 	)
 
 	var apu readWriteModel.OpcuaAPU
@@ -215,7 +211,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 			return
 		}
 	} else {
-		apu = readWriteModel.NewOpcuaAPU(messageRequest, false, true)
+		apu = readWriteModel.NewOpcuaAPU(messageRequest)
 	}
 
 	requestConsumer := func(transactionId int32) {
@@ -302,7 +298,6 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 			DEFAULT_MAX_CHUNK_COUNT,
 		),
 		s.endpoint,
-		true,
 	)
 
 	requestConsumer := func(transactionId int32) {
@@ -388,7 +383,6 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 	extObject := readWriteModel.NewRootExtensionObject(
 		expandedNodeId,
 		openSecureChannelRequest,
-		identifier,
 	)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
@@ -408,10 +402,7 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 		readWriteModel.NewBinaryPayload(
 			readWriteModel.NewSequenceHeader(transactionId, transactionId),
 			buffer.GetBytes(),
-			uint32(len(buffer.GetBytes())),
 		),
-		uint32(len(buffer.GetBytes())),
-		true,
 	)
 
 	var apu readWriteModel.OpcuaAPU
@@ -430,7 +421,7 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 			return
 		}
 	} else {
-		apu = readWriteModel.NewOpcuaAPU(openRequest, false, true)
+		apu = readWriteModel.NewOpcuaAPU(openRequest)
 	}
 
 	requestConsumer := func(transactionId int32) {
@@ -547,7 +538,6 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 	extObject := readWriteModel.NewRootExtensionObject(
 		expandedNodeId,
 		createSessionRequest,
-		identifier,
 	)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
@@ -663,7 +653,6 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 	extObject := readWriteModel.NewRootExtensionObject(
 		expandedNodeId,
 		activateSessionRequest,
-		identifier,
 	)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
@@ -760,7 +749,6 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, connection *Connection
 	extObject := readWriteModel.NewRootExtensionObject(
 		expandedNodeId,
 		closeSessionRequest,
-		closeSessionRequest.GetExtensionId(),
 	)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
@@ -842,14 +830,11 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, conn
 			readWriteModel.NewRootExtensionObject(
 				expandedNodeId,
 				closeSecureChannelRequest,
-				identifier,
 			),
-			0,
 		),
-		true,
 	)
 
-	apu := readWriteModel.NewOpcuaAPU(closeRequest, false, true)
+	apu := readWriteModel.NewOpcuaAPU(closeRequest)
 
 	requestConsumer := func(transactionId int32) {
 		if err := connection.messageCodec.SendRequest(
@@ -906,10 +891,9 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 			DEFAULT_MAX_CHUNK_COUNT,
 		),
 		s.endpoint,
-		true,
 	)
 
-	apu := readWriteModel.NewOpcuaAPU(hello, false, true)
+	apu := readWriteModel.NewOpcuaAPU(hello)
 
 	requestConsumer := func(transactionId int32) {
 		if err := codec.SendRequest(
@@ -985,7 +969,6 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 	extObject := readWriteModel.NewRootExtensionObject(
 		expandedNodeId,
 		openSecureChannelRequest,
-		identifier,
 	)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
@@ -1005,13 +988,10 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 		readWriteModel.NewBinaryPayload(
 			readWriteModel.NewSequenceHeader(transactionId, transactionId),
 			buffer.GetBytes(),
-			uint32(len(buffer.GetBytes())),
 		),
-		uint32(len(buffer.GetBytes())),
-		true,
 	)
 
-	apu := readWriteModel.NewOpcuaAPU(openRequest, false, true)
+	apu := readWriteModel.NewOpcuaAPU(openRequest)
 
 	requestConsumer := func(transactionId int32) {
 		if err := codec.SendRequest(
@@ -1114,7 +1094,6 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 	extObject := readWriteModel.NewRootExtensionObject(
 		expandedNodeId,
 		endpointsRequest,
-		identifier,
 	)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
@@ -1132,13 +1111,10 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 		readWriteModel.NewBinaryPayload(
 			readWriteModel.NewSequenceHeader(nextSequenceNumber, nextRequestId),
 			buffer.GetBytes(),
-			uint32(len(buffer.GetBytes())),
 		),
-		uint32(len(buffer.GetBytes())),
-		true,
 	)
 
-	apu := readWriteModel.NewOpcuaAPU(messageRequest, false, true)
+	apu := readWriteModel.NewOpcuaAPU(messageRequest)
 
 	requestConsumer := func(transactionId int32) {
 		if err := codec.SendRequest(
@@ -1244,14 +1220,11 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 			readWriteModel.NewRootExtensionObject(
 				expandedNodeId,
 				closeSecureChannelRequest,
-				identifier,
 			),
-			uint32(0),
 		),
-		true,
 	)
 
-	apu := readWriteModel.NewOpcuaAPU(closeRequest, false, true)
+	apu := readWriteModel.NewOpcuaAPU(closeRequest)
 
 	requestConsumer := func(transactionId int32) {
 		if err := codec.SendRequest(
@@ -1354,7 +1327,6 @@ func (s *SecureChannel) keepAlive() {
 			extObject := readWriteModel.NewRootExtensionObject(
 				expandedNodeId,
 				openSecureChannelRequest,
-				identifier,
 			)
 
 			buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
@@ -1373,10 +1345,7 @@ func (s *SecureChannel) keepAlive() {
 				readWriteModel.NewBinaryPayload(
 					readWriteModel.NewSequenceHeader(transactionId, transactionId),
 					buffer.GetBytes(),
-					uint32(len(buffer.GetBytes())),
 				),
-				uint32(len(buffer.GetBytes())),
-				true,
 			)
 
 			var apu readWriteModel.OpcuaAPU
@@ -1393,7 +1362,7 @@ func (s *SecureChannel) keepAlive() {
 					return
 				}
 			} else {
-				apu = readWriteModel.NewOpcuaAPU(openRequest, false, true)
+				apu = readWriteModel.NewOpcuaAPU(openRequest)
 			}
 
 			requestConsumer := func(transactionId int32) {
@@ -1588,8 +1557,6 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 			extExpandedNodeId,
 			BINARY_ENCODING_MASK,
 			anonymousIdentityToken,
-			anonymousIdentityToken.GetExtensionId(),
-			false,
 		)
 	case readWriteModel.UserTokenType_userTokenTypeUserName:
 		//Encrypt the password using the server nonce and server public key
@@ -1626,8 +1593,6 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 			extExpandedNodeId,
 			BINARY_ENCODING_MASK,
 			userNameIdentityToken,
-			userNameIdentityToken.GetExtensionId(),
-			false,
 		)
 	}
 	return nil

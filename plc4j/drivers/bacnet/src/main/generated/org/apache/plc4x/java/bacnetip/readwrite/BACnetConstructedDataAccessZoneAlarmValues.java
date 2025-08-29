@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
   // Properties.
   protected final List<BACnetAccessZoneOccupancyStateTagged> alarmValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccessZoneAlarmValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetAccessZoneOccupancyStateTagged> alarmValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetAccessZoneOccupancyStateTagged> alarmValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.alarmValues = alarmValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetAccessZoneOccupancyStateTagged> getAlarmValues() {
@@ -131,34 +123,23 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessZoneAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl(
-        alarmValues, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl(alarmValues);
   }
 
   public static class BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessZoneOccupancyStateTagged> alarmValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl(
-        List<BACnetAccessZoneOccupancyStateTagged> alarmValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetAccessZoneOccupancyStateTagged> alarmValues) {
       this.alarmValues = alarmValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccessZoneAlarmValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccessZoneAlarmValues bACnetConstructedDataAccessZoneAlarmValues =
           new BACnetConstructedDataAccessZoneAlarmValues(
-              openingTag, peekedTagHeader, closingTag, alarmValues, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, alarmValues);
       return bACnetConstructedDataAccessZoneAlarmValues;
     }
   }

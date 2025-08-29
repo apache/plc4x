@@ -61,12 +61,12 @@ var _ BACnetConstructedDataProgramLocation = (*_BACnetConstructedDataProgramLoca
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramLocation)(nil)
 
 // NewBACnetConstructedDataProgramLocation factory function for _BACnetConstructedDataProgramLocation
-func NewBACnetConstructedDataProgramLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramLocation {
+func NewBACnetConstructedDataProgramLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programLocation BACnetApplicationTagCharacterString) *_BACnetConstructedDataProgramLocation {
 	if programLocation == nil {
 		panic("programLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProgramLocation must not be nil")
 	}
 	_result := &_BACnetConstructedDataProgramLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ProgramLocation:               programLocation,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

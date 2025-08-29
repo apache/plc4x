@@ -49,21 +49,13 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger groupId;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataGroupID(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger groupId,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger groupId) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.groupId = groupId;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getGroupId() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataGroupID");
     // Create the instance
-    return new BACnetConstructedDataGroupIDBuilderImpl(groupId, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataGroupIDBuilderImpl(groupId);
   }
 
   public static class BACnetConstructedDataGroupIDBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger groupId;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataGroupIDBuilderImpl(
-        BACnetApplicationTagUnsignedInteger groupId,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataGroupIDBuilderImpl(BACnetApplicationTagUnsignedInteger groupId) {
       this.groupId = groupId;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataGroupID build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataGroupID bACnetConstructedDataGroupID =
-          new BACnetConstructedDataGroupID(
-              openingTag, peekedTagHeader, closingTag, groupId, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataGroupID(openingTag, peekedTagHeader, closingTag, groupId);
       return bACnetConstructedDataGroupID;
     }
   }

@@ -45,14 +45,10 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
   // Properties.
   protected final BACnetTagPayloadObjectIdentifier payload;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
   public BACnetContextTagObjectIdentifier(
-      BACnetTagHeader header, BACnetTagPayloadObjectIdentifier payload, Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+      BACnetTagHeader header, BACnetTagPayloadObjectIdentifier payload) {
+    super(header);
     this.payload = payload;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public BACnetTagPayloadObjectIdentifier getPayload() {
@@ -127,23 +123,20 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
 
     readBuffer.closeContext("BACnetContextTagObjectIdentifier");
     // Create the instance
-    return new BACnetContextTagObjectIdentifierBuilderImpl(payload, tagNumberArgument);
+    return new BACnetContextTagObjectIdentifierBuilderImpl(payload);
   }
 
   public static class BACnetContextTagObjectIdentifierBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadObjectIdentifier payload;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagObjectIdentifierBuilderImpl(
-        BACnetTagPayloadObjectIdentifier payload, Short tagNumberArgument) {
+    public BACnetContextTagObjectIdentifierBuilderImpl(BACnetTagPayloadObjectIdentifier payload) {
       this.payload = payload;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagObjectIdentifier build(BACnetTagHeader header, Short tagNumberArgument) {
+    public BACnetContextTagObjectIdentifier build(BACnetTagHeader header) {
       BACnetContextTagObjectIdentifier bACnetContextTagObjectIdentifier =
-          new BACnetContextTagObjectIdentifier(header, payload, tagNumberArgument);
+          new BACnetContextTagObjectIdentifier(header, payload);
       return bACnetContextTagObjectIdentifier;
     }
   }

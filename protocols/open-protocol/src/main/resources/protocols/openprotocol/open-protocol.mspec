@@ -20,7 +20,7 @@
 // Spec available from here:
 // https://de.scribd.com/document/428086428/OpenProtocol-Specification-R-2-8-0-9836-4415-01
 
-[type Constants
+[constants
     [const          uint 16     tcpDefaultPort 4545]
 ]
 

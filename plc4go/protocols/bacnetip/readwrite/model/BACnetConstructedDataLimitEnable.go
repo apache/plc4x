@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLimitEnable = (*_BACnetConstructedDataLimitEnable)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLimitEnable)(nil)
 
 // NewBACnetConstructedDataLimitEnable factory function for _BACnetConstructedDataLimitEnable
-func NewBACnetConstructedDataLimitEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitEnable BACnetLimitEnableTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitEnable {
+func NewBACnetConstructedDataLimitEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitEnable BACnetLimitEnableTagged) *_BACnetConstructedDataLimitEnable {
 	if limitEnable == nil {
 		panic("limitEnable of type BACnetLimitEnableTagged for BACnetConstructedDataLimitEnable must not be nil")
 	}
 	_result := &_BACnetConstructedDataLimitEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LimitEnable:                   limitEnable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

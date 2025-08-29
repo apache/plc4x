@@ -208,7 +208,7 @@ func ByteStringArrayParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func ByteStringArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ByteStringArray, error) {
-	v, err := (&_ByteStringArray{}).parse(ctx, readBuffer)
+	v, err := (new(_ByteStringArray)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

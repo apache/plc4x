@@ -59,12 +59,12 @@ var _ BACnetEventLogRecordLogDatumTimeChange = (*_BACnetEventLogRecordLogDatumTi
 var _ BACnetEventLogRecordLogDatumRequirements = (*_BACnetEventLogRecordLogDatumTimeChange)(nil)
 
 // NewBACnetEventLogRecordLogDatumTimeChange factory function for _BACnetEventLogRecordLogDatumTimeChange
-func NewBACnetEventLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetEventLogRecordLogDatumTimeChange {
+func NewBACnetEventLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal) *_BACnetEventLogRecordLogDatumTimeChange {
 	if timeChange == nil {
 		panic("timeChange of type BACnetContextTagReal for BACnetEventLogRecordLogDatumTimeChange must not be nil")
 	}
 	_result := &_BACnetEventLogRecordLogDatumTimeChange{
-		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		TimeChange:                           timeChange,
 	}
 	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result

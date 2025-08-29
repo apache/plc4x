@@ -50,21 +50,13 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger globalIdentifier;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataGlobalIdentifier(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger globalIdentifier,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger globalIdentifier) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.globalIdentifier = globalIdentifier;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getGlobalIdentifier() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataGlobalIdentifier");
     // Create the instance
-    return new BACnetConstructedDataGlobalIdentifierBuilderImpl(
-        globalIdentifier, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataGlobalIdentifierBuilderImpl(globalIdentifier);
   }
 
   public static class BACnetConstructedDataGlobalIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger globalIdentifier;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataGlobalIdentifierBuilderImpl(
-        BACnetApplicationTagUnsignedInteger globalIdentifier,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger globalIdentifier) {
       this.globalIdentifier = globalIdentifier;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataGlobalIdentifier build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataGlobalIdentifier bACnetConstructedDataGlobalIdentifier =
           new BACnetConstructedDataGlobalIdentifier(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              globalIdentifier,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, globalIdentifier);
       return bACnetConstructedDataGlobalIdentifier;
     }
   }

@@ -64,9 +64,9 @@ var _ NLMNetworkNumberIs = (*_NLMNetworkNumberIs)(nil)
 var _ NLMRequirements = (*_NLMNetworkNumberIs)(nil)
 
 // NewNLMNetworkNumberIs factory function for _NLMNetworkNumberIs
-func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool, apduLength uint16) *_NLMNetworkNumberIs {
+func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool) *_NLMNetworkNumberIs {
 	_result := &_NLMNetworkNumberIs{
-		NLMContract:             NewNLM(apduLength),
+		NLMContract:             NewNLM(),
 		NetworkNumber:           networkNumber,
 		NetworkNumberConfigured: networkNumberConfigured,
 	}

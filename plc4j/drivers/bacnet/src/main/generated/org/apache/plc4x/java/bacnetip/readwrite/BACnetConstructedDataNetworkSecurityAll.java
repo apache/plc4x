@@ -47,19 +47,9 @@ public class BACnetConstructedDataNetworkSecurityAll extends BACnetConstructedDa
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNetworkSecurityAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataNetworkSecurityAll extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataNetworkSecurityAll");
     // Create the instance
-    return new BACnetConstructedDataNetworkSecurityAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNetworkSecurityAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataNetworkSecurityAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkSecurityAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataNetworkSecurityAllBuilderImpl() {}
 
     public BACnetConstructedDataNetworkSecurityAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNetworkSecurityAll bACnetConstructedDataNetworkSecurityAll =
-          new BACnetConstructedDataNetworkSecurityAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataNetworkSecurityAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataNetworkSecurityAll;
     }
   }

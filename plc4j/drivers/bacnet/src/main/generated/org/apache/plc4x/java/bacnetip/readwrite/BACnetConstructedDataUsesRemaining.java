@@ -49,21 +49,13 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagSignedInteger usesRemaining;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataUsesRemaining(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagSignedInteger usesRemaining,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagSignedInteger usesRemaining) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.usesRemaining = usesRemaining;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagSignedInteger getUsesRemaining() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataUsesRemaining");
     // Create the instance
-    return new BACnetConstructedDataUsesRemainingBuilderImpl(
-        usesRemaining, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUsesRemainingBuilderImpl(usesRemaining);
   }
 
   public static class BACnetConstructedDataUsesRemainingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger usesRemaining;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataUsesRemainingBuilderImpl(
-        BACnetApplicationTagSignedInteger usesRemaining,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagSignedInteger usesRemaining) {
       this.usesRemaining = usesRemaining;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataUsesRemaining build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataUsesRemaining bACnetConstructedDataUsesRemaining =
           new BACnetConstructedDataUsesRemaining(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              usesRemaining,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, usesRemaining);
       return bACnetConstructedDataUsesRemaining;
     }
   }

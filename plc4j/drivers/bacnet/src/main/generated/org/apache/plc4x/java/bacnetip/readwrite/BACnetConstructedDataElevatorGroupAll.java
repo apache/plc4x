@@ -47,19 +47,9 @@ public class BACnetConstructedDataElevatorGroupAll extends BACnetConstructedData
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataElevatorGroupAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataElevatorGroupAll extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataElevatorGroupAll");
     // Create the instance
-    return new BACnetConstructedDataElevatorGroupAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataElevatorGroupAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataElevatorGroupAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataElevatorGroupAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataElevatorGroupAllBuilderImpl() {}
 
     public BACnetConstructedDataElevatorGroupAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataElevatorGroupAll bACnetConstructedDataElevatorGroupAll =
-          new BACnetConstructedDataElevatorGroupAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataElevatorGroupAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataElevatorGroupAll;
     }
   }

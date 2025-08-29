@@ -486,10 +486,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						nil,
 						0,
 						nil,
-						nil,
 					),
-					nil,
-					nil,
 				),
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -566,10 +563,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						nil,
 						0,
 						nil,
-						nil,
 					),
-					nil,
-					nil,
 				),
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -644,16 +638,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
 						readWriteModel.NewCALDataIdentify(
+							readWriteModel.NewRequestContext(false),
 							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 							nil,
 							readWriteModel.Attribute_CurrentSenseLevels,
-							nil,
 						),
 						readWriteModel.NewAlpha('g'),
-						nil,
 					),
-					nil,
-					nil,
 				),
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -727,16 +718,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
 						readWriteModel.NewCALDataIdentify(
+							readWriteModel.NewRequestContext(false),
 							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 							nil,
 							readWriteModel.Attribute_CurrentSenseLevels,
-							nil,
 						),
 						readWriteModel.NewAlpha('g'),
-						nil,
 					),
-					nil,
-					nil,
 				),
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -810,16 +798,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
 						readWriteModel.NewCALDataIdentify(
+							readWriteModel.NewRequestContext(false),
 							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 							nil,
 							readWriteModel.Attribute_CurrentSenseLevels,
-							nil,
 						),
 						readWriteModel.NewAlpha('g'),
-						nil,
 					),
-					nil,
-					nil,
 				),
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -893,16 +878,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
 						readWriteModel.NewCALDataIdentify(
+							readWriteModel.NewRequestContext(false),
 							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 							nil,
 							readWriteModel.Attribute_CurrentSenseLevels,
-							nil,
 						),
 						readWriteModel.NewAlpha('g'),
-						nil,
 					),
-					nil,
-					nil,
 				),
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -976,16 +958,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
 						readWriteModel.NewCALDataIdentify(
+							readWriteModel.NewRequestContext(false),
 							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 							nil,
 							readWriteModel.Attribute_CurrentSenseLevels,
-							nil,
 						),
 						readWriteModel.NewAlpha('g'),
-						nil,
 					),
-					nil,
-					nil,
 				),
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -1059,16 +1038,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
 						readWriteModel.NewCALDataIdentify(
+							readWriteModel.NewRequestContext(false),
 							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 							nil,
 							readWriteModel.Attribute_CurrentSenseLevels,
-							nil,
 						),
 						readWriteModel.NewAlpha('g'),
-						nil,
 					),
-					nil,
-					nil,
 				),
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {

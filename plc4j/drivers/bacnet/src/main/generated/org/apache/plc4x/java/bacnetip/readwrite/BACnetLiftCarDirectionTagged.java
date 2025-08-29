@@ -42,22 +42,12 @@ public class BACnetLiftCarDirectionTagged implements Message {
   protected final BACnetLiftCarDirection value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetLiftCarDirectionTagged(
-      BACnetTagHeader header,
-      BACnetLiftCarDirection value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetLiftCarDirection value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -181,7 +171,7 @@ public class BACnetLiftCarDirectionTagged implements Message {
     // Create the instance
     BACnetLiftCarDirectionTagged _bACnetLiftCarDirectionTagged;
     _bACnetLiftCarDirectionTagged =
-        new BACnetLiftCarDirectionTagged(header, value, proprietaryValue, tagNumber, tagClass);
+        new BACnetLiftCarDirectionTagged(header, value, proprietaryValue);
     return _bACnetLiftCarDirectionTagged;
   }
 

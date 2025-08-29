@@ -59,9 +59,9 @@ var _ NLMReserved = (*_NLMReserved)(nil)
 var _ NLMRequirements = (*_NLMReserved)(nil)
 
 // NewNLMReserved factory function for _NLMReserved
-func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
+func NewNLMReserved(unknownBytes []byte) *_NLMReserved {
 	_result := &_NLMReserved{
-		NLMContract:  NewNLM(apduLength),
+		NLMContract:  NewNLM(),
 		UnknownBytes: unknownBytes,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result

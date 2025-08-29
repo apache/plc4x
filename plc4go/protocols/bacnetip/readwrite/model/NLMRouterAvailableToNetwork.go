@@ -59,9 +59,9 @@ var _ NLMRouterAvailableToNetwork = (*_NLMRouterAvailableToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRouterAvailableToNetwork)(nil)
 
 // NewNLMRouterAvailableToNetwork factory function for _NLMRouterAvailableToNetwork
-func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterAvailableToNetwork {
+func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16) *_NLMRouterAvailableToNetwork {
 	_result := &_NLMRouterAvailableToNetwork{
-		NLMContract:                 NewNLM(apduLength),
+		NLMContract:                 NewNLM(),
 		DestinationNetworkAddresses: destinationNetworkAddresses,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result

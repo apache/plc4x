@@ -64,9 +64,9 @@ var _ BACnetConstructedDataGlobalGroupGroupMembers = (*_BACnetConstructedDataGlo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGlobalGroupGroupMembers)(nil)
 
 // NewBACnetConstructedDataGlobalGroupGroupMembers factory function for _BACnetConstructedDataGlobalGroupGroupMembers
-func NewBACnetConstructedDataGlobalGroupGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalGroupGroupMembers {
+func NewBACnetConstructedDataGlobalGroupGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference) *_BACnetConstructedDataGlobalGroupGroupMembers {
 	_result := &_BACnetConstructedDataGlobalGroupGroupMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		GroupMembers:                  groupMembers,
 	}

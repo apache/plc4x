@@ -42,19 +42,12 @@ public class BACnetDateRangeEnclosed implements Message {
   protected final BACnetDateRange dateRange;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetDateRangeEnclosed(
-      BACnetOpeningTag openingTag,
-      BACnetDateRange dateRange,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetDateRange dateRange, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.dateRange = dateRange;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -134,8 +127,7 @@ public class BACnetDateRangeEnclosed implements Message {
     readBuffer.closeContext("BACnetDateRangeEnclosed");
     // Create the instance
     BACnetDateRangeEnclosed _bACnetDateRangeEnclosed;
-    _bACnetDateRangeEnclosed =
-        new BACnetDateRangeEnclosed(openingTag, dateRange, closingTag, tagNumber);
+    _bACnetDateRangeEnclosed = new BACnetDateRangeEnclosed(openingTag, dateRange, closingTag);
     return _bACnetDateRangeEnclosed;
   }
 

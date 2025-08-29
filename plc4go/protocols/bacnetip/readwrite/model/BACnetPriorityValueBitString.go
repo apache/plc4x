@@ -59,12 +59,12 @@ var _ BACnetPriorityValueBitString = (*_BACnetPriorityValueBitString)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueBitString)(nil)
 
 // NewBACnetPriorityValueBitString factory function for _BACnetPriorityValueBitString
-func NewBACnetPriorityValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBitString {
+func NewBACnetPriorityValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString) *_BACnetPriorityValueBitString {
 	if bitStringValue == nil {
 		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetPriorityValueBitString must not be nil")
 	}
 	_result := &_BACnetPriorityValueBitString{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		BitStringValue:              bitStringValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result

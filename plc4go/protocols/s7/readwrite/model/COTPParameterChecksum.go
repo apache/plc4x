@@ -59,9 +59,9 @@ var _ COTPParameterChecksum = (*_COTPParameterChecksum)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterChecksum)(nil)
 
 // NewCOTPParameterChecksum factory function for _COTPParameterChecksum
-func NewCOTPParameterChecksum(crc uint8, rest uint8) *_COTPParameterChecksum {
+func NewCOTPParameterChecksum(crc uint8) *_COTPParameterChecksum {
 	_result := &_COTPParameterChecksum{
-		COTPParameterContract: NewCOTPParameter(rest),
+		COTPParameterContract: NewCOTPParameter(),
 		Crc:                   crc,
 	}
 	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result

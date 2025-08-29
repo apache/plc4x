@@ -54,9 +54,9 @@ var _ ApduDataExtDomainAddressSelectiveRead = (*_ApduDataExtDomainAddressSelecti
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressSelectiveRead)(nil)
 
 // NewApduDataExtDomainAddressSelectiveRead factory function for _ApduDataExtDomainAddressSelectiveRead
-func NewApduDataExtDomainAddressSelectiveRead(length uint8) *_ApduDataExtDomainAddressSelectiveRead {
+func NewApduDataExtDomainAddressSelectiveRead() *_ApduDataExtDomainAddressSelectiveRead {
 	_result := &_ApduDataExtDomainAddressSelectiveRead{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

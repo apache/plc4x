@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBACnetIPNATTraversal = (*_BACnetConstructedDataBACnet
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPNATTraversal)(nil)
 
 // NewBACnetConstructedDataBACnetIPNATTraversal factory function for _BACnetConstructedDataBACnetIPNATTraversal
-func NewBACnetConstructedDataBACnetIPNATTraversal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIPNATTraversal BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPNATTraversal {
+func NewBACnetConstructedDataBACnetIPNATTraversal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIPNATTraversal BACnetApplicationTagBoolean) *_BACnetConstructedDataBACnetIPNATTraversal {
 	if bacnetIPNATTraversal == nil {
 		panic("bacnetIPNATTraversal of type BACnetApplicationTagBoolean for BACnetConstructedDataBACnetIPNATTraversal must not be nil")
 	}
 	_result := &_BACnetConstructedDataBACnetIPNATTraversal{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BacnetIPNATTraversal:          bacnetIPNATTraversal,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

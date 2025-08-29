@@ -50,21 +50,13 @@ public class BACnetConstructedDataAccumulatorMinPresValue extends BACnetConstruc
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger minPresValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataAccumulatorMinPresValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger minPresValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger minPresValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.minPresValue = minPresValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getMinPresValue() {
@@ -135,34 +127,23 @@ public class BACnetConstructedDataAccumulatorMinPresValue extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataAccumulatorMinPresValue");
     // Create the instance
-    return new BACnetConstructedDataAccumulatorMinPresValueBuilderImpl(
-        minPresValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccumulatorMinPresValueBuilderImpl(minPresValue);
   }
 
   public static class BACnetConstructedDataAccumulatorMinPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger minPresValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataAccumulatorMinPresValueBuilderImpl(
-        BACnetApplicationTagUnsignedInteger minPresValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger minPresValue) {
       this.minPresValue = minPresValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataAccumulatorMinPresValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataAccumulatorMinPresValue bACnetConstructedDataAccumulatorMinPresValue =
           new BACnetConstructedDataAccumulatorMinPresValue(
-              openingTag, peekedTagHeader, closingTag, minPresValue, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, minPresValue);
       return bACnetConstructedDataAccumulatorMinPresValue;
     }
   }

@@ -62,12 +62,12 @@ var _ CBusPointToPointToMultiPointCommandNormal = (*_CBusPointToPointToMultiPoin
 var _ CBusPointToPointToMultiPointCommandRequirements = (*_CBusPointToPointToMultiPointCommandNormal)(nil)
 
 // NewCBusPointToPointToMultiPointCommandNormal factory function for _CBusPointToPointToMultiPointCommandNormal
-func NewCBusPointToPointToMultiPointCommandNormal(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandNormal {
+func NewCBusPointToPointToMultiPointCommandNormal(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, application ApplicationIdContainer, salData SALData) *_CBusPointToPointToMultiPointCommandNormal {
 	if salData == nil {
 		panic("salData of type SALData for CBusPointToPointToMultiPointCommandNormal must not be nil")
 	}
 	_result := &_CBusPointToPointToMultiPointCommandNormal{
-		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
+		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication),
 		Application: application,
 		SalData:     salData,
 	}

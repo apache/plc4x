@@ -49,21 +49,13 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
   // Properties.
   protected final List<BACnetLiftFaultTagged> faultSignals;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFaultSignals(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetLiftFaultTagged> faultSignals,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetLiftFaultTagged> faultSignals) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.faultSignals = faultSignals;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetLiftFaultTagged> getFaultSignals() {
@@ -130,34 +122,22 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataFaultSignals");
     // Create the instance
-    return new BACnetConstructedDataFaultSignalsBuilderImpl(
-        faultSignals, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFaultSignalsBuilderImpl(faultSignals);
   }
 
   public static class BACnetConstructedDataFaultSignalsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLiftFaultTagged> faultSignals;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFaultSignalsBuilderImpl(
-        List<BACnetLiftFaultTagged> faultSignals,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataFaultSignalsBuilderImpl(List<BACnetLiftFaultTagged> faultSignals) {
       this.faultSignals = faultSignals;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFaultSignals build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFaultSignals bACnetConstructedDataFaultSignals =
           new BACnetConstructedDataFaultSignals(
-              openingTag, peekedTagHeader, closingTag, faultSignals, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, faultSignals);
       return bACnetConstructedDataFaultSignals;
     }
   }

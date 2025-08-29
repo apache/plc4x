@@ -50,21 +50,13 @@ public class BACnetConstructedDataLargeAnalogValueResolution extends BACnetConst
   // Properties.
   protected final BACnetApplicationTagDouble resolution;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLargeAnalogValueResolution(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagDouble resolution,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagDouble resolution) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.resolution = resolution;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagDouble getResolution() {
@@ -133,40 +125,24 @@ public class BACnetConstructedDataLargeAnalogValueResolution extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueResolution");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueResolutionBuilderImpl(
-        resolution, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLargeAnalogValueResolutionBuilderImpl(resolution);
   }
 
   public static class BACnetConstructedDataLargeAnalogValueResolutionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble resolution;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLargeAnalogValueResolutionBuilderImpl(
-        BACnetApplicationTagDouble resolution,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagDouble resolution) {
       this.resolution = resolution;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLargeAnalogValueResolution build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLargeAnalogValueResolution
           bACnetConstructedDataLargeAnalogValueResolution =
               new BACnetConstructedDataLargeAnalogValueResolution(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  resolution,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, resolution);
       return bACnetConstructedDataLargeAnalogValueResolution;
     }
   }

@@ -44,19 +44,12 @@ public abstract class BACnetEventParameterChangeOfValueCivCriteria implements Me
   protected final BACnetTagHeader peekedTagHeader;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterChangeOfValueCivCriteria(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.peekedTagHeader = peekedTagHeader;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -173,16 +166,13 @@ public abstract class BACnetEventParameterChangeOfValueCivCriteria implements Me
     readBuffer.closeContext("BACnetEventParameterChangeOfValueCivCriteria");
     // Create the instance
     BACnetEventParameterChangeOfValueCivCriteria _bACnetEventParameterChangeOfValueCivCriteria =
-        builder.build(openingTag, peekedTagHeader, closingTag, tagNumber);
+        builder.build(openingTag, peekedTagHeader, closingTag);
     return _bACnetEventParameterChangeOfValueCivCriteria;
   }
 
   public interface BACnetEventParameterChangeOfValueCivCriteriaBuilder {
     BACnetEventParameterChangeOfValueCivCriteria build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber);
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag);
   }
 
   @Override

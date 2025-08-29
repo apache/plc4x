@@ -43,18 +43,13 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
   // Properties.
   protected final BACnetContextTagBoolean booleanValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumBooleanValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagBoolean booleanValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagBoolean booleanValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.booleanValue = booleanValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagBoolean getBooleanValue() {
@@ -109,28 +104,22 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
 
     readBuffer.closeContext("BACnetLogRecordLogDatumBooleanValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumBooleanValueBuilderImpl(booleanValue, tagNumber);
+    return new BACnetLogRecordLogDatumBooleanValueBuilderImpl(booleanValue);
   }
 
   public static class BACnetLogRecordLogDatumBooleanValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagBoolean booleanValue;
-    private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumBooleanValueBuilderImpl(
-        BACnetContextTagBoolean booleanValue, Short tagNumber) {
+    public BACnetLogRecordLogDatumBooleanValueBuilderImpl(BACnetContextTagBoolean booleanValue) {
       this.booleanValue = booleanValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumBooleanValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumBooleanValue bACnetLogRecordLogDatumBooleanValue =
           new BACnetLogRecordLogDatumBooleanValue(
-              openingTag, peekedTagHeader, closingTag, booleanValue, tagNumber);
+              openingTag, peekedTagHeader, closingTag, booleanValue);
       return bACnetLogRecordLogDatumBooleanValue;
     }
   }

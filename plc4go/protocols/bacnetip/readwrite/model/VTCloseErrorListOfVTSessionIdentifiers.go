@@ -57,22 +57,19 @@ type _VTCloseErrorListOfVTSessionIdentifiers struct {
 	OpeningTag                 BACnetOpeningTag
 	ListOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger
 	ClosingTag                 BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ VTCloseErrorListOfVTSessionIdentifiers = (*_VTCloseErrorListOfVTSessionIdentifiers)(nil)
 
 // NewVTCloseErrorListOfVTSessionIdentifiers factory function for _VTCloseErrorListOfVTSessionIdentifiers
-func NewVTCloseErrorListOfVTSessionIdentifiers(openingTag BACnetOpeningTag, listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_VTCloseErrorListOfVTSessionIdentifiers {
+func NewVTCloseErrorListOfVTSessionIdentifiers(openingTag BACnetOpeningTag, listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) *_VTCloseErrorListOfVTSessionIdentifiers {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
 	}
-	return &_VTCloseErrorListOfVTSessionIdentifiers{OpeningTag: openingTag, ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_VTCloseErrorListOfVTSessionIdentifiers{OpeningTag: openingTag, ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type VTCloseErrorListOfVTSessionIdentifiersBuilder interface {
 	WithClosingTag(BACnetClosingTag) VTCloseErrorListOfVTSessionIdentifiersBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) VTCloseErrorListOfVTSessionIdentifiersBuilder
 	// Build builds the VTCloseErrorListOfVTSessionIdentifiers or returns an error if something is wrong
 	Build() (VTCloseErrorListOfVTSessionIdentifiers, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithClosingTagBuilder(b
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithArgTagNumber(tagNumber uint8) VTCloseErrorListOfVTSessionIdentifiersBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func VTCloseErrorListOfVTSessionIdentifiersParseWithBufferProducer(tagNumber uin
 }
 
 func VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (VTCloseErrorListOfVTSessionIdentifiers, error) {
-	v, err := (&_VTCloseErrorListOfVTSessionIdentifiers{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_VTCloseErrorListOfVTSessionIdentifiers)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) SerializeWithWriteBuffer(ctx c
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_VTCloseErrorListOfVTSessionIdentifiers) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) IsVTCloseErrorListOfVTSessionIdentifiers() {}
 
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) DeepCopy() any {
@@ -373,7 +353,6 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) deepCopy() *_VTCloseErrorListO
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ListOfVtSessionIdentifiers),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _VTCloseErrorListOfVTSessionIdentifiersCopy
 }

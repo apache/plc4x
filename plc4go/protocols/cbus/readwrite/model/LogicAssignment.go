@@ -283,7 +283,7 @@ func LogicAssignmentParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LogicAssignment, error) {
-	v, err := (&_LogicAssignment{}).parse(ctx, readBuffer)
+	v, err := (new(_LogicAssignment)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

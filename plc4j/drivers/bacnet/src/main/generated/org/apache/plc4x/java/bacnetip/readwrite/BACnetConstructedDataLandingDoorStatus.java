@@ -52,23 +52,15 @@ public class BACnetConstructedDataLandingDoorStatus extends BACnetConstructedDat
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetLandingDoorStatus> landingDoorStatus;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLandingDoorStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetLandingDoorStatus> landingDoorStatus,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetLandingDoorStatus> landingDoorStatus) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.landingDoorStatus = landingDoorStatus;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataLandingDoorStatus extends BACnetConstructedDat
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (landingDoorStatus)
     writeComplexTypeArrayField("landingDoorStatus", landingDoorStatus, writeBuffer);
@@ -171,42 +159,26 @@ public class BACnetConstructedDataLandingDoorStatus extends BACnetConstructedDat
     readBuffer.closeContext("BACnetConstructedDataLandingDoorStatus");
     // Create the instance
     return new BACnetConstructedDataLandingDoorStatusBuilderImpl(
-        numberOfDataElements, landingDoorStatus, tagNumber, arrayIndexArgument);
+        numberOfDataElements, landingDoorStatus);
   }
 
   public static class BACnetConstructedDataLandingDoorStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLandingDoorStatus> landingDoorStatus;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLandingDoorStatusBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetLandingDoorStatus> landingDoorStatus,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetLandingDoorStatus> landingDoorStatus) {
       this.numberOfDataElements = numberOfDataElements;
       this.landingDoorStatus = landingDoorStatus;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLandingDoorStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLandingDoorStatus bACnetConstructedDataLandingDoorStatus =
           new BACnetConstructedDataLandingDoorStatus(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              landingDoorStatus,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, landingDoorStatus);
       return bACnetConstructedDataLandingDoorStatus;
     }
   }

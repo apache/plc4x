@@ -92,7 +92,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		s7MessageRequest := readWriteModel.NewS7MessageRequest(
 			tpduId,
 			readWriteModel.NewS7ParameterWriteVarRequest(parameterItems),
-			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems, nil),
+			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems),
 		)
 
 		// Assemble the finished paket
@@ -104,7 +104,6 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				s7MessageRequest,
 				true,
 				uint8(tpduId),
-				0,
 			),
 		)
 

@@ -45,13 +45,9 @@ public class IdentifyReplyCommandGAVValuesCurrent extends IdentifyReplyCommand i
   // Properties.
   protected final byte[] values;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandGAVValuesCurrent(byte[] values, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandGAVValuesCurrent(byte[] values) {
+    super();
     this.values = values;
-    this.numBytes = numBytes;
   }
 
   public byte[] getValues() {
@@ -100,23 +96,20 @@ public class IdentifyReplyCommandGAVValuesCurrent extends IdentifyReplyCommand i
 
     readBuffer.closeContext("IdentifyReplyCommandGAVValuesCurrent");
     // Create the instance
-    return new IdentifyReplyCommandGAVValuesCurrentBuilderImpl(values, numBytes);
+    return new IdentifyReplyCommandGAVValuesCurrentBuilderImpl(values);
   }
 
   public static class IdentifyReplyCommandGAVValuesCurrentBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] values;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandGAVValuesCurrentBuilderImpl(byte[] values, Byte numBytes) {
+    public IdentifyReplyCommandGAVValuesCurrentBuilderImpl(byte[] values) {
       this.values = values;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandGAVValuesCurrent build(Byte numBytes) {
-
+    public IdentifyReplyCommandGAVValuesCurrent build() {
       IdentifyReplyCommandGAVValuesCurrent identifyReplyCommandGAVValuesCurrent =
-          new IdentifyReplyCommandGAVValuesCurrent(values, numBytes);
+          new IdentifyReplyCommandGAVValuesCurrent(values);
       return identifyReplyCommandGAVValuesCurrent;
     }
   }

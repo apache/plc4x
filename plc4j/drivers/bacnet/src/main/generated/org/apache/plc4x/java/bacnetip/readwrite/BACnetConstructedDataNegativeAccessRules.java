@@ -52,23 +52,15 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetAccessRule> negativeAccessRules;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNegativeAccessRules(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetAccessRule> negativeAccessRules,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetAccessRule> negativeAccessRules) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.negativeAccessRules = negativeAccessRules;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (negativeAccessRules)
     writeComplexTypeArrayField("negativeAccessRules", negativeAccessRules, writeBuffer);
@@ -171,42 +159,26 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
     readBuffer.closeContext("BACnetConstructedDataNegativeAccessRules");
     // Create the instance
     return new BACnetConstructedDataNegativeAccessRulesBuilderImpl(
-        numberOfDataElements, negativeAccessRules, tagNumber, arrayIndexArgument);
+        numberOfDataElements, negativeAccessRules);
   }
 
   public static class BACnetConstructedDataNegativeAccessRulesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetAccessRule> negativeAccessRules;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataNegativeAccessRulesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetAccessRule> negativeAccessRules,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetAccessRule> negativeAccessRules) {
       this.numberOfDataElements = numberOfDataElements;
       this.negativeAccessRules = negativeAccessRules;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNegativeAccessRules build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNegativeAccessRules bACnetConstructedDataNegativeAccessRules =
           new BACnetConstructedDataNegativeAccessRules(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              negativeAccessRules,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, negativeAccessRules);
       return bACnetConstructedDataNegativeAccessRules;
     }
   }

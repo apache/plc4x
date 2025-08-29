@@ -93,8 +93,8 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				return
 			}
 			requestItem := readWriteModel.NewCipUnconnectedRequest(classSegment, instanceSegment,
-				readWriteModel.NewCipReadRequest(ansi, elementsNb, 0),
-				m.configuration.backplane, m.configuration.slot, uint16(0))
+				readWriteModel.NewCipReadRequest(ansi, elementsNb),
+				m.configuration.backplane, m.configuration.slot)
 			typeIds := []readWriteModel.TypeId{
 				readWriteModel.NewNullAddressItem(),
 				readWriteModel.NewUnConnectedDataItem(requestItem),
@@ -257,7 +257,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 				return nil, err
 			}
 		}
-		services := readWriteModel.NewServices(multipleServiceResponse.GetOffsets(), arr, uint16(0))
+		services := readWriteModel.NewServices(multipleServiceResponse.GetOffsets(), arr)
 		for i, tagName := range readRequest.GetTagNames() {
 			tag := readRequest.GetTag(tagName).(PlcTag)
 			if cipReadResponse, ok := services.Services[i].(readWriteModel.CipReadResponse); ok {

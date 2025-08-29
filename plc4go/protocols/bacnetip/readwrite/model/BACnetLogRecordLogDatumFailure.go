@@ -59,12 +59,12 @@ var _ BACnetLogRecordLogDatumFailure = (*_BACnetLogRecordLogDatumFailure)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumFailure)(nil)
 
 // NewBACnetLogRecordLogDatumFailure factory function for _BACnetLogRecordLogDatumFailure
-func NewBACnetLogRecordLogDatumFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failure ErrorEnclosed, tagNumber uint8) *_BACnetLogRecordLogDatumFailure {
+func NewBACnetLogRecordLogDatumFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failure ErrorEnclosed) *_BACnetLogRecordLogDatumFailure {
 	if failure == nil {
 		panic("failure of type ErrorEnclosed for BACnetLogRecordLogDatumFailure must not be nil")
 	}
 	_result := &_BACnetLogRecordLogDatumFailure{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		Failure:                         failure,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result

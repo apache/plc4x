@@ -45,14 +45,10 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
   // Properties.
   protected final BACnetContextTagSignedInteger fileStartPosition;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckAtomicWriteFile(
-      BACnetContextTagSignedInteger fileStartPosition, Long serviceAckLength) {
+      long serviceAckLength, BACnetContextTagSignedInteger fileStartPosition) {
     super(serviceAckLength);
     this.fileStartPosition = fileStartPosition;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetContextTagSignedInteger getFileStartPosition() {
@@ -109,24 +105,21 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
 
     readBuffer.closeContext("BACnetServiceAckAtomicWriteFile");
     // Create the instance
-    return new BACnetServiceAckAtomicWriteFileBuilderImpl(fileStartPosition, serviceAckLength);
+    return new BACnetServiceAckAtomicWriteFileBuilderImpl(fileStartPosition);
   }
 
   public static class BACnetServiceAckAtomicWriteFileBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetContextTagSignedInteger fileStartPosition;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckAtomicWriteFileBuilderImpl(
-        BACnetContextTagSignedInteger fileStartPosition, Long serviceAckLength) {
+        BACnetContextTagSignedInteger fileStartPosition) {
       this.fileStartPosition = fileStartPosition;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckAtomicWriteFile build(Long serviceAckLength) {
-
+    public BACnetServiceAckAtomicWriteFile build(long serviceAckLength) {
       BACnetServiceAckAtomicWriteFile bACnetServiceAckAtomicWriteFile =
-          new BACnetServiceAckAtomicWriteFile(fileStartPosition, serviceAckLength);
+          new BACnetServiceAckAtomicWriteFile(serviceAckLength, fileStartPosition);
       return bACnetServiceAckAtomicWriteFile;
     }
   }

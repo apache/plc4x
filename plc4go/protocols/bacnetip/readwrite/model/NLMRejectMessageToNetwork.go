@@ -62,9 +62,9 @@ var _ NLMRejectMessageToNetwork = (*_NLMRejectMessageToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRejectMessageToNetwork)(nil)
 
 // NewNLMRejectMessageToNetwork factory function for _NLMRejectMessageToNetwork
-func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16, apduLength uint16) *_NLMRejectMessageToNetwork {
+func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16) *_NLMRejectMessageToNetwork {
 	_result := &_NLMRejectMessageToNetwork{
-		NLMContract:               NewNLM(apduLength),
+		NLMContract:               NewNLM(),
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
 	}

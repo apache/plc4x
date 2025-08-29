@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAlignIntervals = (*_BACnetConstructedDataAlignInterva
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlignIntervals)(nil)
 
 // NewBACnetConstructedDataAlignIntervals factory function for _BACnetConstructedDataAlignIntervals
-func NewBACnetConstructedDataAlignIntervals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alignIntervals BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlignIntervals {
+func NewBACnetConstructedDataAlignIntervals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alignIntervals BACnetApplicationTagBoolean) *_BACnetConstructedDataAlignIntervals {
 	if alignIntervals == nil {
 		panic("alignIntervals of type BACnetApplicationTagBoolean for BACnetConstructedDataAlignIntervals must not be nil")
 	}
 	_result := &_BACnetConstructedDataAlignIntervals{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AlignIntervals:                alignIntervals,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

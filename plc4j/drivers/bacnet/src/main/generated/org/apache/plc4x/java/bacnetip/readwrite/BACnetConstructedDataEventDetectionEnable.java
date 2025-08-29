@@ -50,21 +50,13 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
   // Properties.
   protected final BACnetApplicationTagBoolean eventDetectionEnable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEventDetectionEnable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean eventDetectionEnable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean eventDetectionEnable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.eventDetectionEnable = eventDetectionEnable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getEventDetectionEnable() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataEventDetectionEnable");
     // Create the instance
-    return new BACnetConstructedDataEventDetectionEnableBuilderImpl(
-        eventDetectionEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEventDetectionEnableBuilderImpl(eventDetectionEnable);
   }
 
   public static class BACnetConstructedDataEventDetectionEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean eventDetectionEnable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataEventDetectionEnableBuilderImpl(
-        BACnetApplicationTagBoolean eventDetectionEnable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean eventDetectionEnable) {
       this.eventDetectionEnable = eventDetectionEnable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEventDetectionEnable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEventDetectionEnable bACnetConstructedDataEventDetectionEnable =
           new BACnetConstructedDataEventDetectionEnable(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              eventDetectionEnable,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, eventDetectionEnable);
       return bACnetConstructedDataEventDetectionEnable;
     }
   }

@@ -68,9 +68,9 @@ var _ RequestReset = (*_RequestReset)(nil)
 var _ RequestRequirements = (*_RequestReset)(nil)
 
 // NewRequestReset factory function for _RequestReset
-func NewRequestReset(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, tildePeek RequestType, secondTilde *RequestType, tildePeek2 RequestType, thirdTilde *RequestType, cBusOptions CBusOptions) *_RequestReset {
+func NewRequestReset(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, tildePeek RequestType, secondTilde *RequestType, tildePeek2 RequestType, thirdTilde *RequestType) *_RequestReset {
 	_result := &_RequestReset{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination),
 		TildePeek:       tildePeek,
 		SecondTilde:     secondTilde,
 		TildePeek2:      tildePeek2,

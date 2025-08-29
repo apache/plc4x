@@ -56,7 +56,7 @@ func TagToCBusMessage(
 			statusRequest = readWriteModel.NewStatusRequestLevel(0x73, tagType.application, *tagType.startingGroupAddressLabel)
 		}
 		var cbusCommand readWriteModel.CBusCommand
-		cbusCommand, err = producePointToMultiPointCommandStatus(tagType.bridgeAddresses, tagType.application, statusRequest, cbusOptions)
+		cbusCommand, err = producePointToMultiPointCommandStatus(tagType.bridgeAddresses, tagType.application, statusRequest)
 		if err != nil {
 			return nil, false, false, false, errors.Wrap(err, "error producing point to multipoint command")
 		}
@@ -66,24 +66,24 @@ func TagToCBusMessage(
 			nil,
 			readWriteModel.RequestType_EMPTY,
 			readWriteModel.NewRequestTermination(),
+			cbusOptions,
 			cbusCommand,
 			nil,
 			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
-			cbusOptions,
 		)
 
-		cBusMessage, supportsRead, supportsSubscribe = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true, true
+		cBusMessage, supportsRead, supportsSubscribe = readWriteModel.NewCBusMessageToServer(request), true, true
 		return
 	case *calRecallTag:
 		calData := readWriteModel.NewCALDataRecall(
+			requestContext,
 			readWriteModel.CALCommandTypeContainer_CALCommandRecall,
 			nil,
 			tagType.parameter,
 			tagType.count,
-			requestContext,
 		)
 		var command readWriteModel.CBusCommand
-		command, err = producePointToPointCommand(tagType.unitAddress, tagType.bridgeAddresses, calData, cbusOptions)
+		command, err = producePointToPointCommand(tagType.unitAddress, tagType.bridgeAddresses, calData)
 		if err != nil {
 			return nil, false, false, false, errors.Wrap(err, "error producing cal command")
 		}
@@ -93,23 +93,23 @@ func TagToCBusMessage(
 			nil,
 			readWriteModel.RequestType_EMPTY,
 			readWriteModel.NewRequestTermination(),
+			cbusOptions,
 			command,
 			nil,
 			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
-			cbusOptions,
 		)
 
-		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
+		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request), true
 		return
 	case *calIdentifyTag:
 		calData := readWriteModel.NewCALDataIdentify(
+			requestContext,
 			readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 			nil,
 			tagType.attribute,
-			requestContext,
 		)
 		var command readWriteModel.CBusCommand
-		command, err = producePointToPointCommand(tagType.unitAddress, tagType.bridgeAddresses, calData, cbusOptions)
+		command, err = producePointToPointCommand(tagType.unitAddress, tagType.bridgeAddresses, calData)
 		if err != nil {
 			return nil, false, false, false, errors.Wrap(err, "error producing cal command")
 		}
@@ -119,24 +119,24 @@ func TagToCBusMessage(
 			nil,
 			readWriteModel.RequestType_EMPTY,
 			readWriteModel.NewRequestTermination(),
+			cbusOptions,
 			command,
 			nil,
 			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
-			cbusOptions,
 		)
 
-		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
+		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request), true
 		return
 	case *calGetStatusTag:
 		calData := readWriteModel.NewCALDataGetStatus(
+			requestContext,
 			readWriteModel.CALCommandTypeContainer_CALCommandGetStatus,
 			nil,
 			tagType.parameter,
 			tagType.count,
-			requestContext,
 		)
 		var command readWriteModel.CBusCommand
-		command, err = producePointToPointCommand(tagType.unitAddress, tagType.bridgeAddresses, calData, cbusOptions)
+		command, err = producePointToPointCommand(tagType.unitAddress, tagType.bridgeAddresses, calData)
 		if err != nil {
 			return nil, false, false, false, errors.Wrap(err, "error producing cal command")
 		}
@@ -146,13 +146,13 @@ func TagToCBusMessage(
 			nil,
 			readWriteModel.RequestType_EMPTY,
 			readWriteModel.NewRequestTermination(),
+			cbusOptions,
 			command,
 			nil,
 			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
-			cbusOptions,
 		)
 
-		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
+		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request), true
 		return
 	case *salTag:
 		var salCommand = tagType.salCommand
@@ -290,19 +290,19 @@ func TagToCBusMessage(
 			nil,
 			readWriteModel.RequestType_EMPTY,
 			readWriteModel.NewRequestTermination(),
+			cbusOptions,
 			cbusCommand,
 			nil,
 			readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()),
-			cbusOptions,
 		)
-		cBusMessage = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions)
+		cBusMessage = readWriteModel.NewCBusMessageToServer(request)
 		return
 	default:
 		return nil, false, false, false, errors.Errorf("Unsupported type %T", tagType)
 	}
 }
 
-func producePointToPointCommand(unitAddress readWriteModel.UnitAddress, bridgeAddresses []readWriteModel.BridgeAddress, calData readWriteModel.CALData, cbusOptions readWriteModel.CBusOptions) (readWriteModel.CBusCommand, error) {
+func producePointToPointCommand(unitAddress readWriteModel.UnitAddress, bridgeAddresses []readWriteModel.BridgeAddress, calData readWriteModel.CALData) (readWriteModel.CBusCommand, error) {
 	if calData == nil {
 		return nil, errors.New("cal data required")
 	}
@@ -314,29 +314,29 @@ func producePointToPointCommand(unitAddress readWriteModel.UnitAddress, bridgeAd
 		}
 		networkRoute := readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
 
-		command = readWriteModel.NewCBusPointToPointCommandIndirect(0x0000, calData, bridgeAddresses[0], networkRoute, unitAddress, cbusOptions)
+		command = readWriteModel.NewCBusPointToPointCommandIndirect(0x0000, calData, bridgeAddresses[0], networkRoute, unitAddress)
 	} else {
-		command = readWriteModel.NewCBusPointToPointCommandDirect(0x0000, calData, unitAddress, cbusOptions)
+		command = readWriteModel.NewCBusPointToPointCommandDirect(0x0000, calData, unitAddress)
 	}
 
 	header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-	return readWriteModel.NewCBusCommandPointToPoint(header, command, cbusOptions), nil
+	return readWriteModel.NewCBusCommandPointToPoint(header, command), nil
 }
 
-func producePointToMultiPointCommandStatus(bridgeAddresses []readWriteModel.BridgeAddress, application readWriteModel.ApplicationIdContainer, statusRequest readWriteModel.StatusRequest, cbusOptions readWriteModel.CBusOptions) (readWriteModel.CBusCommand, error) {
+func producePointToMultiPointCommandStatus(bridgeAddresses []readWriteModel.BridgeAddress, application readWriteModel.ApplicationIdContainer, statusRequest readWriteModel.StatusRequest) (readWriteModel.CBusCommand, error) {
 	numberOfBridgeAddresses := len(bridgeAddresses)
 	if numberOfBridgeAddresses > 0 {
 		if numberOfBridgeAddresses > 6 {
 			return nil, errors.Errorf("Can't have a path longer than 6. Actuall path length = %d", numberOfBridgeAddresses)
 		}
 		networkRoute := readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
-		command := readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(bridgeAddresses[0], networkRoute, byte(application), statusRequest, cbusOptions)
+		command := readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(bridgeAddresses[0], networkRoute, byte(application), statusRequest)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint)
-		return readWriteModel.NewCBusCommandPointToPointToMultiPoint(header, command, cbusOptions), nil
+		return readWriteModel.NewCBusCommandPointToPointToMultiPoint(header, command), nil
 	}
-	command := readWriteModel.NewCBusPointToMultiPointCommandStatus(byte(application), statusRequest, cbusOptions)
+	command := readWriteModel.NewCBusPointToMultiPointCommandStatus(byte(application), statusRequest)
 	header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
-	return readWriteModel.NewCBusCommandPointToMultiPoint(header, command, cbusOptions), nil
+	return readWriteModel.NewCBusCommandPointToMultiPoint(header, command), nil
 }
 
 func producePointToMultiPointCommandNormal(bridgeAddresses []readWriteModel.BridgeAddress, application readWriteModel.ApplicationIdContainer, salData readWriteModel.SALData, cbusOptions readWriteModel.CBusOptions) (readWriteModel.CBusCommand, error) {
@@ -346,14 +346,14 @@ func producePointToMultiPointCommandNormal(bridgeAddresses []readWriteModel.Brid
 			return nil, errors.Errorf("Can't have a path longer than 6. Actuall path length = %d", numberOfBridgeAddresses)
 		}
 		networkRoute := readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
-		command := readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(bridgeAddresses[0], networkRoute, byte(application), application, salData, cbusOptions)
+		command := readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(bridgeAddresses[0], networkRoute, byte(application), application, salData)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint)
-		return readWriteModel.NewCBusCommandPointToPointToMultiPoint(header, command, cbusOptions), nil
+		return readWriteModel.NewCBusCommandPointToPointToMultiPoint(header, command), nil
 	}
 
-	command := readWriteModel.NewCBusPointToMultiPointCommandNormal(0x00, application, salData, cbusOptions)
+	command := readWriteModel.NewCBusPointToMultiPointCommandNormal(0x00, application, salData)
 	header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-	return readWriteModel.NewCBusCommandPointToMultiPoint(header, command, cbusOptions), nil
+	return readWriteModel.NewCBusCommandPointToMultiPoint(header, command), nil
 }
 
 func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTransaction, encodedReply readWriteModel.EncodedReply, tagName string, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), addPlcValue func(name string, plcValue apiValues.PlcValue)) error {

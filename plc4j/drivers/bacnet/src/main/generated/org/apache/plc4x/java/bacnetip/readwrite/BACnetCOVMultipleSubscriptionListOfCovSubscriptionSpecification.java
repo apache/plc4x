@@ -43,20 +43,15 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
       listOfCovSubscriptionSpecificationEntry;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(
       BACnetOpeningTag openingTag,
       List<BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry>
           listOfCovSubscriptionSpecificationEntry,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfCovSubscriptionSpecificationEntry = listOfCovSubscriptionSpecificationEntry;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -157,7 +152,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
         _bACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification;
     _bACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification =
         new BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(
-            openingTag, listOfCovSubscriptionSpecificationEntry, closingTag, tagNumber);
+            openingTag, listOfCovSubscriptionSpecificationEntry, closingTag);
     return _bACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification;
   }
 

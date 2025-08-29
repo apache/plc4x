@@ -47,19 +47,9 @@ public class BACnetConstructedDataTrendLogMultipleAll extends BACnetConstructedD
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTrendLogMultipleAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,29 +94,18 @@ public class BACnetConstructedDataTrendLogMultipleAll extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataTrendLogMultipleAll");
     // Create the instance
-    return new BACnetConstructedDataTrendLogMultipleAllBuilderImpl(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTrendLogMultipleAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataTrendLogMultipleAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTrendLogMultipleAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataTrendLogMultipleAllBuilderImpl() {}
 
     public BACnetConstructedDataTrendLogMultipleAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTrendLogMultipleAll bACnetConstructedDataTrendLogMultipleAll =
-          new BACnetConstructedDataTrendLogMultipleAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataTrendLogMultipleAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataTrendLogMultipleAll;
     }
   }

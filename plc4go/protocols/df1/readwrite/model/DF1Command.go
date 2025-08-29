@@ -297,7 +297,7 @@ func DF1CommandParseWithBufferProducer[T DF1Command]() func(ctx context.Context,
 }
 
 func DF1CommandParseWithBuffer[T DF1Command](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_DF1Command{}).parse(ctx, readBuffer)
+	v, err := (new(_DF1Command)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

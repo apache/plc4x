@@ -43,21 +43,16 @@ public class BACnetPropertyWriteDefinition implements Message {
   protected final BACnetConstructedData propertyValue;
   protected final BACnetContextTagUnsignedInteger priority;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPropertyWriteDefinition(
       BACnetPropertyIdentifierTagged propertyIdentifier,
       BACnetContextTagUnsignedInteger arrayIndex,
       BACnetConstructedData propertyValue,
-      BACnetContextTagUnsignedInteger priority,
-      BACnetObjectType objectTypeArgument) {
+      BACnetContextTagUnsignedInteger priority) {
     super();
     this.propertyIdentifier = propertyIdentifier;
     this.arrayIndex = arrayIndex;
     this.propertyValue = propertyValue;
     this.priority = priority;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetPropertyIdentifierTagged getPropertyIdentifier() {
@@ -185,8 +180,7 @@ public class BACnetPropertyWriteDefinition implements Message {
     // Create the instance
     BACnetPropertyWriteDefinition _bACnetPropertyWriteDefinition;
     _bACnetPropertyWriteDefinition =
-        new BACnetPropertyWriteDefinition(
-            propertyIdentifier, arrayIndex, propertyValue, priority, objectTypeArgument);
+        new BACnetPropertyWriteDefinition(propertyIdentifier, arrayIndex, propertyValue, priority);
     return _bACnetPropertyWriteDefinition;
   }
 

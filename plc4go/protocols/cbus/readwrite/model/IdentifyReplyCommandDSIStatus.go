@@ -86,9 +86,9 @@ var _ IdentifyReplyCommandDSIStatus = (*_IdentifyReplyCommandDSIStatus)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandDSIStatus)(nil)
 
 // NewIdentifyReplyCommandDSIStatus factory function for _IdentifyReplyCommandDSIStatus
-func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte, numBytes uint8) *_IdentifyReplyCommandDSIStatus {
+func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte) *_IdentifyReplyCommandDSIStatus {
 	_result := &_IdentifyReplyCommandDSIStatus{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		ChannelStatus1:               channelStatus1,
 		ChannelStatus2:               channelStatus2,
 		ChannelStatus3:               channelStatus3,

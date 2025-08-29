@@ -50,21 +50,13 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger totalRecordCount;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTotalRecordCount(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger totalRecordCount,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger totalRecordCount) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.totalRecordCount = totalRecordCount;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getTotalRecordCount() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataTotalRecordCount");
     // Create the instance
-    return new BACnetConstructedDataTotalRecordCountBuilderImpl(
-        totalRecordCount, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTotalRecordCountBuilderImpl(totalRecordCount);
   }
 
   public static class BACnetConstructedDataTotalRecordCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger totalRecordCount;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTotalRecordCountBuilderImpl(
-        BACnetApplicationTagUnsignedInteger totalRecordCount,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger totalRecordCount) {
       this.totalRecordCount = totalRecordCount;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTotalRecordCount build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTotalRecordCount bACnetConstructedDataTotalRecordCount =
           new BACnetConstructedDataTotalRecordCount(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              totalRecordCount,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, totalRecordCount);
       return bACnetConstructedDataTotalRecordCount;
     }
   }

@@ -41,17 +41,10 @@ public class BACnetAccessPassbackModeTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetAccessPassbackMode value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetAccessPassbackModeTagged(
-      BACnetTagHeader header, BACnetAccessPassbackMode value, Short tagNumber, TagClass tagClass) {
+  public BACnetAccessPassbackModeTagged(BACnetTagHeader header, BACnetAccessPassbackMode value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -135,8 +128,7 @@ public class BACnetAccessPassbackModeTagged implements Message {
     readBuffer.closeContext("BACnetAccessPassbackModeTagged");
     // Create the instance
     BACnetAccessPassbackModeTagged _bACnetAccessPassbackModeTagged;
-    _bACnetAccessPassbackModeTagged =
-        new BACnetAccessPassbackModeTagged(header, value, tagNumber, tagClass);
+    _bACnetAccessPassbackModeTagged = new BACnetAccessPassbackModeTagged(header, value);
     return _bACnetAccessPassbackModeTagged;
   }
 

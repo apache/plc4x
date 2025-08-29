@@ -41,17 +41,10 @@ public class NPDUNetworkPriorityTagged implements Message {
   protected final BACnetTagHeader header;
   protected final NPDUNetworkPriority value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public NPDUNetworkPriorityTagged(
-      BACnetTagHeader header, NPDUNetworkPriority value, Short tagNumber, TagClass tagClass) {
+  public NPDUNetworkPriorityTagged(BACnetTagHeader header, NPDUNetworkPriority value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -135,7 +128,7 @@ public class NPDUNetworkPriorityTagged implements Message {
     readBuffer.closeContext("NPDUNetworkPriorityTagged");
     // Create the instance
     NPDUNetworkPriorityTagged _nPDUNetworkPriorityTagged;
-    _nPDUNetworkPriorityTagged = new NPDUNetworkPriorityTagged(header, value, tagNumber, tagClass);
+    _nPDUNetworkPriorityTagged = new NPDUNetworkPriorityTagged(header, value);
     return _nPDUNetworkPriorityTagged;
   }
 

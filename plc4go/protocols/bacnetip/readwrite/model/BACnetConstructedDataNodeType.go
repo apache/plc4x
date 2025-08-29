@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNodeType = (*_BACnetConstructedDataNodeType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNodeType)(nil)
 
 // NewBACnetConstructedDataNodeType factory function for _BACnetConstructedDataNodeType
-func NewBACnetConstructedDataNodeType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeType BACnetNodeTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeType {
+func NewBACnetConstructedDataNodeType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeType BACnetNodeTypeTagged) *_BACnetConstructedDataNodeType {
 	if nodeType == nil {
 		panic("nodeType of type BACnetNodeTypeTagged for BACnetConstructedDataNodeType must not be nil")
 	}
 	_result := &_BACnetConstructedDataNodeType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NodeType:                      nodeType,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

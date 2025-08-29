@@ -160,7 +160,7 @@ func ImageJPGParseWithBufferProducer() func(ctx context.Context, readBuffer util
 }
 
 func ImageJPGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageJPG, error) {
-	v, err := (&_ImageJPG{}).parse(ctx, readBuffer)
+	v, err := (new(_ImageJPG)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

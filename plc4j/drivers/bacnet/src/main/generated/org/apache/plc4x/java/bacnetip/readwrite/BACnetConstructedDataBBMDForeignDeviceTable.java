@@ -50,21 +50,13 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
   // Properties.
   protected final List<BACnetBDTEntry> bbmdForeignDeviceTable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBBMDForeignDeviceTable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetBDTEntry> bbmdForeignDeviceTable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetBDTEntry> bbmdForeignDeviceTable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.bbmdForeignDeviceTable = bbmdForeignDeviceTable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetBDTEntry> getBbmdForeignDeviceTable() {
@@ -127,39 +119,23 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataBBMDForeignDeviceTable");
     // Create the instance
-    return new BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl(
-        bbmdForeignDeviceTable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl(bbmdForeignDeviceTable);
   }
 
   public static class BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetBDTEntry> bbmdForeignDeviceTable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl(
-        List<BACnetBDTEntry> bbmdForeignDeviceTable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetBDTEntry> bbmdForeignDeviceTable) {
       this.bbmdForeignDeviceTable = bbmdForeignDeviceTable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBBMDForeignDeviceTable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBBMDForeignDeviceTable bACnetConstructedDataBBMDForeignDeviceTable =
           new BACnetConstructedDataBBMDForeignDeviceTable(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              bbmdForeignDeviceTable,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, bbmdForeignDeviceTable);
       return bACnetConstructedDataBBMDForeignDeviceTable;
     }
   }

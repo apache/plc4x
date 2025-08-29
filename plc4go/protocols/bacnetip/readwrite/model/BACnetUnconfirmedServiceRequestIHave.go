@@ -65,7 +65,7 @@ var _ BACnetUnconfirmedServiceRequestIHave = (*_BACnetUnconfirmedServiceRequestI
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestIHave)(nil)
 
 // NewBACnetUnconfirmedServiceRequestIHave factory function for _BACnetUnconfirmedServiceRequestIHave
-func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationTagObjectIdentifier, objectIdentifier BACnetApplicationTagObjectIdentifier, objectName BACnetApplicationTagCharacterString, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestIHave {
+func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationTagObjectIdentifier, objectIdentifier BACnetApplicationTagObjectIdentifier, objectName BACnetApplicationTagCharacterString) *_BACnetUnconfirmedServiceRequestIHave {
 	if deviceIdentifier == nil {
 		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetUnconfirmedServiceRequestIHave must not be nil")
 	}
@@ -76,7 +76,7 @@ func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationT
 		panic("objectName of type BACnetApplicationTagCharacterString for BACnetUnconfirmedServiceRequestIHave must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestIHave{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		DeviceIdentifier:                        deviceIdentifier,
 		ObjectIdentifier:                        objectIdentifier,
 		ObjectName:                              objectName,

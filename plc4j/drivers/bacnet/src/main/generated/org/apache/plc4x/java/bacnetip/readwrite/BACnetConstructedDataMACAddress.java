@@ -49,21 +49,13 @@ public class BACnetConstructedDataMACAddress extends BACnetConstructedData imple
   // Properties.
   protected final BACnetApplicationTagOctetString macAddress;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMACAddress(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagOctetString macAddress,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagOctetString macAddress) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.macAddress = macAddress;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagOctetString getMacAddress() {
@@ -133,34 +125,21 @@ public class BACnetConstructedDataMACAddress extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataMACAddress");
     // Create the instance
-    return new BACnetConstructedDataMACAddressBuilderImpl(
-        macAddress, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMACAddressBuilderImpl(macAddress);
   }
 
   public static class BACnetConstructedDataMACAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString macAddress;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMACAddressBuilderImpl(
-        BACnetApplicationTagOctetString macAddress,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataMACAddressBuilderImpl(BACnetApplicationTagOctetString macAddress) {
       this.macAddress = macAddress;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMACAddress build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMACAddress bACnetConstructedDataMACAddress =
-          new BACnetConstructedDataMACAddress(
-              openingTag, peekedTagHeader, closingTag, macAddress, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataMACAddress(openingTag, peekedTagHeader, closingTag, macAddress);
       return bACnetConstructedDataMACAddress;
     }
   }

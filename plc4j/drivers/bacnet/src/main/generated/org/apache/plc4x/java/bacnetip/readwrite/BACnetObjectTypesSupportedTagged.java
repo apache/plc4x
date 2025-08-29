@@ -41,20 +41,11 @@ public class BACnetObjectTypesSupportedTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetTagPayloadBitString payload;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetObjectTypesSupportedTagged(
-      BACnetTagHeader header,
-      BACnetTagPayloadBitString payload,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetTagPayloadBitString payload) {
     super();
     this.header = header;
     this.payload = payload;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -290,8 +281,7 @@ public class BACnetObjectTypesSupportedTagged implements Message {
     readBuffer.closeContext("BACnetObjectTypesSupportedTagged");
     // Create the instance
     BACnetObjectTypesSupportedTagged _bACnetObjectTypesSupportedTagged;
-    _bACnetObjectTypesSupportedTagged =
-        new BACnetObjectTypesSupportedTagged(header, payload, tagNumber, tagClass);
+    _bACnetObjectTypesSupportedTagged = new BACnetObjectTypesSupportedTagged(header, payload);
     return _bACnetObjectTypesSupportedTagged;
   }
 

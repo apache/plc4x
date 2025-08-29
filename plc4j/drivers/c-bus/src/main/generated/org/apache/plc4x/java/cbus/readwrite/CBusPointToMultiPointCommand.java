@@ -42,13 +42,9 @@ public abstract class CBusPointToMultiPointCommand implements Message {
   // Properties.
   protected final byte peekedApplication;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
-  public CBusPointToMultiPointCommand(byte peekedApplication, CBusOptions cBusOptions) {
+  public CBusPointToMultiPointCommand(byte peekedApplication) {
     super();
     this.peekedApplication = peekedApplication;
-    this.cBusOptions = cBusOptions;
   }
 
   public byte getPeekedApplication() {
@@ -115,13 +111,12 @@ public abstract class CBusPointToMultiPointCommand implements Message {
 
     readBuffer.closeContext("CBusPointToMultiPointCommand");
     // Create the instance
-    CBusPointToMultiPointCommand _cBusPointToMultiPointCommand =
-        builder.build(peekedApplication, cBusOptions);
+    CBusPointToMultiPointCommand _cBusPointToMultiPointCommand = builder.build(peekedApplication);
     return _cBusPointToMultiPointCommand;
   }
 
   public interface CBusPointToMultiPointCommandBuilder {
-    CBusPointToMultiPointCommand build(byte peekedApplication, CBusOptions cBusOptions);
+    CBusPointToMultiPointCommand build(byte peekedApplication);
   }
 
   @Override

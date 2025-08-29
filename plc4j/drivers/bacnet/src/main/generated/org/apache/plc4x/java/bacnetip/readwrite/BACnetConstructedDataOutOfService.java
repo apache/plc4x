@@ -49,21 +49,13 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagBoolean outOfService;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataOutOfService(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean outOfService,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean outOfService) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.outOfService = outOfService;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getOutOfService() {
@@ -132,34 +124,22 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataOutOfService");
     // Create the instance
-    return new BACnetConstructedDataOutOfServiceBuilderImpl(
-        outOfService, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataOutOfServiceBuilderImpl(outOfService);
   }
 
   public static class BACnetConstructedDataOutOfServiceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean outOfService;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOutOfServiceBuilderImpl(
-        BACnetApplicationTagBoolean outOfService,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataOutOfServiceBuilderImpl(BACnetApplicationTagBoolean outOfService) {
       this.outOfService = outOfService;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataOutOfService build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataOutOfService bACnetConstructedDataOutOfService =
           new BACnetConstructedDataOutOfService(
-              openingTag, peekedTagHeader, closingTag, outOfService, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, outOfService);
       return bACnetConstructedDataOutOfService;
     }
   }

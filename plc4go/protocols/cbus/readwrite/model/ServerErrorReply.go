@@ -59,9 +59,9 @@ var _ ServerErrorReply = (*_ServerErrorReply)(nil)
 var _ ReplyOrConfirmationRequirements = (*_ServerErrorReply)(nil)
 
 // NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
+func NewServerErrorReply(peekedByte byte) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte),
 	}
 	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
 	return _result

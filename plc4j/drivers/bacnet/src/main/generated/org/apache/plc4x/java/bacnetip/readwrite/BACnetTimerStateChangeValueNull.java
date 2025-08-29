@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
   // Properties.
   protected final BACnetApplicationTagNull nullValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueNull(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagNull nullValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagNull nullValue) {
+    super(peekedTagHeader);
     this.nullValue = nullValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagNull getNullValue() {
@@ -104,24 +98,20 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
 
     readBuffer.closeContext("BACnetTimerStateChangeValueNull");
     // Create the instance
-    return new BACnetTimerStateChangeValueNullBuilderImpl(nullValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueNullBuilderImpl(nullValue);
   }
 
   public static class BACnetTimerStateChangeValueNullBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagNull nullValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueNullBuilderImpl(
-        BACnetApplicationTagNull nullValue, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueNullBuilderImpl(BACnetApplicationTagNull nullValue) {
       this.nullValue = nullValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueNull build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueNull build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueNull bACnetTimerStateChangeValueNull =
-          new BACnetTimerStateChangeValueNull(peekedTagHeader, nullValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueNull(peekedTagHeader, nullValue);
       return bACnetTimerStateChangeValueNull;
     }
   }

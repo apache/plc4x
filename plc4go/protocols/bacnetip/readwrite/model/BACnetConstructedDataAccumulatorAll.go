@@ -54,9 +54,9 @@ var _ BACnetConstructedDataAccumulatorAll = (*_BACnetConstructedDataAccumulatorA
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorAll)(nil)
 
 // NewBACnetConstructedDataAccumulatorAll factory function for _BACnetConstructedDataAccumulatorAll
-func NewBACnetConstructedDataAccumulatorAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorAll {
+func NewBACnetConstructedDataAccumulatorAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataAccumulatorAll {
 	_result := &_BACnetConstructedDataAccumulatorAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

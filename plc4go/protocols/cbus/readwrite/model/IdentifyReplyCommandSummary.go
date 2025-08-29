@@ -65,9 +65,9 @@ var _ IdentifyReplyCommandSummary = (*_IdentifyReplyCommandSummary)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandSummary)(nil)
 
 // NewIdentifyReplyCommandSummary factory function for _IdentifyReplyCommandSummary
-func NewIdentifyReplyCommandSummary(partName string, unitServiceType byte, version string, numBytes uint8) *_IdentifyReplyCommandSummary {
+func NewIdentifyReplyCommandSummary(partName string, unitServiceType byte, version string) *_IdentifyReplyCommandSummary {
 	_result := &_IdentifyReplyCommandSummary{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(),
 		PartName:                     partName,
 		UnitServiceType:              unitServiceType,
 		Version:                      version,

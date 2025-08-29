@@ -61,12 +61,12 @@ var _ BACnetConstructedDataElapsedActiveTime = (*_BACnetConstructedDataElapsedAc
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataElapsedActiveTime)(nil)
 
 // NewBACnetConstructedDataElapsedActiveTime factory function for _BACnetConstructedDataElapsedActiveTime
-func NewBACnetConstructedDataElapsedActiveTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elapsedActiveTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElapsedActiveTime {
+func NewBACnetConstructedDataElapsedActiveTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elapsedActiveTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataElapsedActiveTime {
 	if elapsedActiveTime == nil {
 		panic("elapsedActiveTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataElapsedActiveTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataElapsedActiveTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ElapsedActiveTime:             elapsedActiveTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

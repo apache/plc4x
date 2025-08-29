@@ -57,22 +57,19 @@ type _BACnetEventParameterAccessEventListOfAccessEvents struct {
 	OpeningTag         BACnetOpeningTag
 	ListOfAccessEvents []BACnetDeviceObjectPropertyReference
 	ClosingTag         BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetEventParameterAccessEventListOfAccessEvents = (*_BACnetEventParameterAccessEventListOfAccessEvents)(nil)
 
 // NewBACnetEventParameterAccessEventListOfAccessEvents factory function for _BACnetEventParameterAccessEventListOfAccessEvents
-func NewBACnetEventParameterAccessEventListOfAccessEvents(openingTag BACnetOpeningTag, listOfAccessEvents []BACnetDeviceObjectPropertyReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterAccessEventListOfAccessEvents {
+func NewBACnetEventParameterAccessEventListOfAccessEvents(openingTag BACnetOpeningTag, listOfAccessEvents []BACnetDeviceObjectPropertyReference, closingTag BACnetClosingTag) *_BACnetEventParameterAccessEventListOfAccessEvents {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterAccessEventListOfAccessEvents must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetEventParameterAccessEventListOfAccessEvents must not be nil")
 	}
-	return &_BACnetEventParameterAccessEventListOfAccessEvents{OpeningTag: openingTag, ListOfAccessEvents: listOfAccessEvents, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetEventParameterAccessEventListOfAccessEvents{OpeningTag: openingTag, ListOfAccessEvents: listOfAccessEvents, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetEventParameterAccessEventListOfAccessEventsBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterAccessEventListOfAccessEventsBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterAccessEventListOfAccessEventsBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEventParameterAccessEventListOfAccessEventsBuilder
 	// Build builds the BACnetEventParameterAccessEventListOfAccessEvents or returns an error if something is wrong
 	Build() (BACnetEventParameterAccessEventListOfAccessEvents, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithClosingT
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterAccessEventListOfAccessEventsBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func BACnetEventParameterAccessEventListOfAccessEventsParseWithBufferProducer(ta
 }
 
 func BACnetEventParameterAccessEventListOfAccessEventsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterAccessEventListOfAccessEvents, error) {
-	v, err := (&_BACnetEventParameterAccessEventListOfAccessEvents{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetEventParameterAccessEventListOfAccessEvents)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetEventParameterAccessEventListOfAccessEvents) SerializeWithWriteB
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEventParameterAccessEventListOfAccessEvents) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) IsBACnetEventParameterAccessEventListOfAccessEvents() {
 }
 
@@ -374,7 +354,6 @@ func (m *_BACnetEventParameterAccessEventListOfAccessEvents) deepCopy() *_BACnet
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.ListOfAccessEvents),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetEventParameterAccessEventListOfAccessEventsCopy
 }

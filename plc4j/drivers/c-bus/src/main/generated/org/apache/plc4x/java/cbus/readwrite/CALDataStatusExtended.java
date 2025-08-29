@@ -46,25 +46,21 @@ public class CALDataStatusExtended extends CALData implements Message {
   protected final List<StatusByte> statusBytes;
   protected final List<LevelInformation> levelInformation;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataStatusExtended(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
       CALData additionalData,
       StatusCoding coding,
       ApplicationIdContainer application,
       short blockStart,
       List<StatusByte> statusBytes,
-      List<LevelInformation> levelInformation,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
+      List<LevelInformation> levelInformation) {
+    super(requestContext, commandTypeContainer, additionalData);
     this.coding = coding;
     this.application = application;
     this.blockStart = blockStart;
     this.statusBytes = statusBytes;
     this.levelInformation = levelInformation;
-    this.requestContext = requestContext;
   }
 
   public StatusCoding getCoding() {
@@ -245,7 +241,7 @@ public class CALDataStatusExtended extends CALData implements Message {
     readBuffer.closeContext("CALDataStatusExtended");
     // Create the instance
     return new CALDataStatusExtendedBuilderImpl(
-        coding, application, blockStart, statusBytes, levelInformation, requestContext);
+        coding, application, blockStart, statusBytes, levelInformation);
   }
 
   public static class CALDataStatusExtendedBuilderImpl implements CALData.CALDataBuilder {
@@ -254,37 +250,34 @@ public class CALDataStatusExtended extends CALData implements Message {
     private final short blockStart;
     private final List<StatusByte> statusBytes;
     private final List<LevelInformation> levelInformation;
-    private final RequestContext requestContext;
 
     public CALDataStatusExtendedBuilderImpl(
         StatusCoding coding,
         ApplicationIdContainer application,
         short blockStart,
         List<StatusByte> statusBytes,
-        List<LevelInformation> levelInformation,
-        RequestContext requestContext) {
+        List<LevelInformation> levelInformation) {
       this.coding = coding;
       this.application = application;
       this.blockStart = blockStart;
       this.statusBytes = statusBytes;
       this.levelInformation = levelInformation;
-      this.requestContext = requestContext;
     }
 
     public CALDataStatusExtended build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataStatusExtended cALDataStatusExtended =
           new CALDataStatusExtended(
+              requestContext,
               commandTypeContainer,
               additionalData,
               coding,
               application,
               blockStart,
               statusBytes,
-              levelInformation,
-              requestContext);
+              levelInformation);
       return cALDataStatusExtended;
     }
   }

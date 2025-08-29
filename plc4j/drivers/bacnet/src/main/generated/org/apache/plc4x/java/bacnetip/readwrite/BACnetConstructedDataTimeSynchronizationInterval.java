@@ -50,21 +50,13 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger timeSynchronization;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataTimeSynchronizationInterval(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger timeSynchronization,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger timeSynchronization) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.timeSynchronization = timeSynchronization;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getTimeSynchronization() {
@@ -136,40 +128,24 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
 
     readBuffer.closeContext("BACnetConstructedDataTimeSynchronizationInterval");
     // Create the instance
-    return new BACnetConstructedDataTimeSynchronizationIntervalBuilderImpl(
-        timeSynchronization, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimeSynchronizationIntervalBuilderImpl(timeSynchronization);
   }
 
   public static class BACnetConstructedDataTimeSynchronizationIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger timeSynchronization;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataTimeSynchronizationIntervalBuilderImpl(
-        BACnetApplicationTagUnsignedInteger timeSynchronization,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger timeSynchronization) {
       this.timeSynchronization = timeSynchronization;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataTimeSynchronizationInterval build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataTimeSynchronizationInterval
           bACnetConstructedDataTimeSynchronizationInterval =
               new BACnetConstructedDataTimeSynchronizationInterval(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  timeSynchronization,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, timeSynchronization);
       return bACnetConstructedDataTimeSynchronizationInterval;
     }
   }

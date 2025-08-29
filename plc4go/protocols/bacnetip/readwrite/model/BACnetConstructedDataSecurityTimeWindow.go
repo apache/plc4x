@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSecurityTimeWindow = (*_BACnetConstructedDataSecurity
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSecurityTimeWindow)(nil)
 
 // NewBACnetConstructedDataSecurityTimeWindow factory function for _BACnetConstructedDataSecurityTimeWindow
-func NewBACnetConstructedDataSecurityTimeWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityTimeWindow BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityTimeWindow {
+func NewBACnetConstructedDataSecurityTimeWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityTimeWindow BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataSecurityTimeWindow {
 	if securityTimeWindow == nil {
 		panic("securityTimeWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityTimeWindow must not be nil")
 	}
 	_result := &_BACnetConstructedDataSecurityTimeWindow{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SecurityTimeWindow:            securityTimeWindow,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

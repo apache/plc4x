@@ -41,17 +41,10 @@ public class BACnetFileAccessMethodTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetFileAccessMethod value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetFileAccessMethodTagged(
-      BACnetTagHeader header, BACnetFileAccessMethod value, Short tagNumber, TagClass tagClass) {
+  public BACnetFileAccessMethodTagged(BACnetTagHeader header, BACnetFileAccessMethod value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -135,8 +128,7 @@ public class BACnetFileAccessMethodTagged implements Message {
     readBuffer.closeContext("BACnetFileAccessMethodTagged");
     // Create the instance
     BACnetFileAccessMethodTagged _bACnetFileAccessMethodTagged;
-    _bACnetFileAccessMethodTagged =
-        new BACnetFileAccessMethodTagged(header, value, tagNumber, tagClass);
+    _bACnetFileAccessMethodTagged = new BACnetFileAccessMethodTagged(header, value);
     return _bACnetFileAccessMethodTagged;
   }
 

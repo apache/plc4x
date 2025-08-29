@@ -60,19 +60,16 @@ type _BACnetPropertyValue struct {
 	PropertyArrayIndex BACnetContextTagUnsignedInteger
 	PropertyValue      BACnetConstructedDataElement
 	Priority           BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 var _ BACnetPropertyValue = (*_BACnetPropertyValue)(nil)
 
 // NewBACnetPropertyValue factory function for _BACnetPropertyValue
-func NewBACnetPropertyValue(propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedDataElement, priority BACnetContextTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPropertyValue {
+func NewBACnetPropertyValue(propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedDataElement, priority BACnetContextTagUnsignedInteger) *_BACnetPropertyValue {
 	if propertyIdentifier == nil {
 		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyValue must not be nil")
 	}
-	return &_BACnetPropertyValue{PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectTypeArgument: objectTypeArgument}
+	return &_BACnetPropertyValue{PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, PropertyValue: propertyValue, Priority: priority}
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,8 +98,6 @@ type BACnetPropertyValueBuilder interface {
 	WithOptionalPriority(BACnetContextTagUnsignedInteger) BACnetPropertyValueBuilder
 	// WithOptionalPriorityBuilder adds Priority (property field) which is build by the builder
 	WithOptionalPriorityBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyValueBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) BACnetPropertyValueBuilder
 	// Build builds the BACnetPropertyValue or returns an error if something is wrong
 	Build() (BACnetPropertyValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -183,11 +178,6 @@ func (b *_BACnetPropertyValueBuilder) WithOptionalPriorityBuilder(builderSupplie
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetPropertyValueBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPropertyValueBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 
@@ -310,7 +300,7 @@ func BACnetPropertyValueParseWithBufferProducer(objectTypeArgument BACnetObjectT
 }
 
 func BACnetPropertyValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPropertyValue, error) {
-	v, err := (&_BACnetPropertyValue{ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := (new(_BACnetPropertyValue)).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -408,16 +398,6 @@ func (m *_BACnetPropertyValue) SerializeWithWriteBuffer(ctx context.Context, wri
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetPropertyValue) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-
-//
-////
-
 func (m *_BACnetPropertyValue) IsBACnetPropertyValue() {}
 
 func (m *_BACnetPropertyValue) DeepCopy() any {
@@ -433,7 +413,6 @@ func (m *_BACnetPropertyValue) deepCopy() *_BACnetPropertyValue {
 		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.PropertyArrayIndex),
 		utils.DeepCopy[BACnetConstructedDataElement](m.PropertyValue),
 		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Priority),
-		m.ObjectTypeArgument,
 	}
 	return _BACnetPropertyValueCopy
 }

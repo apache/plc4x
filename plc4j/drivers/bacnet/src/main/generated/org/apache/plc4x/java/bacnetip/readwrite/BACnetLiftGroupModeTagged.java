@@ -41,17 +41,10 @@ public class BACnetLiftGroupModeTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetLiftGroupMode value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetLiftGroupModeTagged(
-      BACnetTagHeader header, BACnetLiftGroupMode value, Short tagNumber, TagClass tagClass) {
+  public BACnetLiftGroupModeTagged(BACnetTagHeader header, BACnetLiftGroupMode value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,7 +126,7 @@ public class BACnetLiftGroupModeTagged implements Message {
     readBuffer.closeContext("BACnetLiftGroupModeTagged");
     // Create the instance
     BACnetLiftGroupModeTagged _bACnetLiftGroupModeTagged;
-    _bACnetLiftGroupModeTagged = new BACnetLiftGroupModeTagged(header, value, tagNumber, tagClass);
+    _bACnetLiftGroupModeTagged = new BACnetLiftGroupModeTagged(header, value);
     return _bACnetLiftGroupModeTagged;
   }
 

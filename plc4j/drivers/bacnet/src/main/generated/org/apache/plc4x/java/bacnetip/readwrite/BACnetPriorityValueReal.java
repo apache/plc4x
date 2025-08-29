@@ -42,16 +42,10 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
   // Properties.
   protected final BACnetApplicationTagReal realValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueReal(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagReal realValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagReal realValue) {
+    super(peekedTagHeader);
     this.realValue = realValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagReal getRealValue() {
@@ -103,24 +97,20 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
 
     readBuffer.closeContext("BACnetPriorityValueReal");
     // Create the instance
-    return new BACnetPriorityValueRealBuilderImpl(realValue, objectTypeArgument);
+    return new BACnetPriorityValueRealBuilderImpl(realValue);
   }
 
   public static class BACnetPriorityValueRealBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagReal realValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueRealBuilderImpl(
-        BACnetApplicationTagReal realValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueRealBuilderImpl(BACnetApplicationTagReal realValue) {
       this.realValue = realValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueReal build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueReal build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueReal bACnetPriorityValueReal =
-          new BACnetPriorityValueReal(peekedTagHeader, realValue, objectTypeArgument);
+          new BACnetPriorityValueReal(peekedTagHeader, realValue);
       return bACnetPriorityValueReal;
     }
   }

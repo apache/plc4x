@@ -50,21 +50,13 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
   // Properties.
   protected final BACnetApplicationTagBoolean bbmdAcceptFDRegistrations;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBBMDAcceptFDRegistrations(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean bbmdAcceptFDRegistrations,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean bbmdAcceptFDRegistrations) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.bbmdAcceptFDRegistrations = bbmdAcceptFDRegistrations;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getBbmdAcceptFDRegistrations() {
@@ -135,40 +127,24 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataBBMDAcceptFDRegistrations");
     // Create the instance
-    return new BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl(
-        bbmdAcceptFDRegistrations, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl(bbmdAcceptFDRegistrations);
   }
 
   public static class BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean bbmdAcceptFDRegistrations;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl(
-        BACnetApplicationTagBoolean bbmdAcceptFDRegistrations,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean bbmdAcceptFDRegistrations) {
       this.bbmdAcceptFDRegistrations = bbmdAcceptFDRegistrations;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBBMDAcceptFDRegistrations build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBBMDAcceptFDRegistrations
           bACnetConstructedDataBBMDAcceptFDRegistrations =
               new BACnetConstructedDataBBMDAcceptFDRegistrations(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  bbmdAcceptFDRegistrations,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, bbmdAcceptFDRegistrations);
       return bACnetConstructedDataBBMDAcceptFDRegistrations;
     }
   }

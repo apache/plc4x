@@ -50,21 +50,13 @@ public class BACnetConstructedDataActiveAuthenticationPolicy extends BACnetConst
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataActiveAuthenticationPolicy(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.activeAuthenticationPolicy = activeAuthenticationPolicy;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getActiveAuthenticationPolicy() {
@@ -138,39 +130,24 @@ public class BACnetConstructedDataActiveAuthenticationPolicy extends BACnetConst
     readBuffer.closeContext("BACnetConstructedDataActiveAuthenticationPolicy");
     // Create the instance
     return new BACnetConstructedDataActiveAuthenticationPolicyBuilderImpl(
-        activeAuthenticationPolicy, tagNumber, arrayIndexArgument);
+        activeAuthenticationPolicy);
   }
 
   public static class BACnetConstructedDataActiveAuthenticationPolicyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataActiveAuthenticationPolicyBuilderImpl(
-        BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy) {
       this.activeAuthenticationPolicy = activeAuthenticationPolicy;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataActiveAuthenticationPolicy build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataActiveAuthenticationPolicy
           bACnetConstructedDataActiveAuthenticationPolicy =
               new BACnetConstructedDataActiveAuthenticationPolicy(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  activeAuthenticationPolicy,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, activeAuthenticationPolicy);
       return bACnetConstructedDataActiveAuthenticationPolicy;
     }
   }

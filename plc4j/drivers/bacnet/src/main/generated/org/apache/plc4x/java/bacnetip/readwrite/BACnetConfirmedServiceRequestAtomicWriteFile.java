@@ -50,23 +50,19 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
   protected final BACnetApplicationTagOctetString fileData;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestAtomicWriteFile(
+      long serviceRequestLength,
       BACnetApplicationTagObjectIdentifier deviceIdentifier,
       BACnetOpeningTag openingTag,
       BACnetApplicationTagSignedInteger fileStartPosition,
       BACnetApplicationTagOctetString fileData,
-      BACnetClosingTag closingTag,
-      Long serviceRequestLength) {
+      BACnetClosingTag closingTag) {
     super(serviceRequestLength);
     this.deviceIdentifier = deviceIdentifier;
     this.openingTag = openingTag;
     this.fileStartPosition = fileStartPosition;
     this.fileData = fileData;
     this.closingTag = closingTag;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetApplicationTagObjectIdentifier getDeviceIdentifier() {
@@ -193,12 +189,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     readBuffer.closeContext("BACnetConfirmedServiceRequestAtomicWriteFile");
     // Create the instance
     return new BACnetConfirmedServiceRequestAtomicWriteFileBuilderImpl(
-        deviceIdentifier,
-        openingTag,
-        fileStartPosition,
-        fileData,
-        closingTag,
-        serviceRequestLength);
+        deviceIdentifier, openingTag, fileStartPosition, fileData, closingTag);
   }
 
   public static class BACnetConfirmedServiceRequestAtomicWriteFileBuilderImpl
@@ -208,33 +199,29 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     private final BACnetApplicationTagSignedInteger fileStartPosition;
     private final BACnetApplicationTagOctetString fileData;
     private final BACnetClosingTag closingTag;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestAtomicWriteFileBuilderImpl(
         BACnetApplicationTagObjectIdentifier deviceIdentifier,
         BACnetOpeningTag openingTag,
         BACnetApplicationTagSignedInteger fileStartPosition,
         BACnetApplicationTagOctetString fileData,
-        BACnetClosingTag closingTag,
-        Long serviceRequestLength) {
+        BACnetClosingTag closingTag) {
       this.deviceIdentifier = deviceIdentifier;
       this.openingTag = openingTag;
       this.fileStartPosition = fileStartPosition;
       this.fileData = fileData;
       this.closingTag = closingTag;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestAtomicWriteFile build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestAtomicWriteFile build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestAtomicWriteFile bACnetConfirmedServiceRequestAtomicWriteFile =
           new BACnetConfirmedServiceRequestAtomicWriteFile(
+              serviceRequestLength,
               deviceIdentifier,
               openingTag,
               fileStartPosition,
               fileData,
-              closingTag,
-              serviceRequestLength);
+              closingTag);
       return bACnetConfirmedServiceRequestAtomicWriteFile;
     }
   }

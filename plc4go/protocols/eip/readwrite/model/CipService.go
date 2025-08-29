@@ -50,8 +50,6 @@ type CipService interface {
 
 // CipServiceContract provides a set of functions which can be overwritten by a sub struct
 type CipServiceContract interface {
-	// GetServiceLen() returns a parser argument
-	GetServiceLen() uint16
 	// IsCipService is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipService()
 	// CreateBuilder creates a CipServiceBuilder
@@ -76,16 +74,13 @@ type _CipService struct {
 		CipServiceContract
 		CipServiceRequirements
 	}
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 var _ CipServiceContract = (*_CipService)(nil)
 
 // NewCipService factory function for _CipService
-func NewCipService(serviceLen uint16) *_CipService {
-	return &_CipService{ServiceLen: serviceLen}
+func NewCipService() *_CipService {
+	return &_CipService{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +93,6 @@ type CipServiceBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CipServiceBuilder
-	// WithArgServiceLen sets a parser argument
-	WithArgServiceLen(uint16) CipServiceBuilder
 	// AsGetAttributeAllRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
 	AsGetAttributeAllRequest() GetAttributeAllRequestBuilder
 	// AsGetAttributeAllResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
@@ -182,11 +175,6 @@ type _CipServiceBuilder struct {
 var _ (CipServiceBuilder) = (*_CipServiceBuilder)(nil)
 
 func (b *_CipServiceBuilder) WithMandatoryFields() CipServiceBuilder {
-	return b
-}
-
-func (b *_CipServiceBuilder) WithArgServiceLen(serviceLen uint16) CipServiceBuilder {
-	b.ServiceLen = serviceLen
 	return b
 }
 
@@ -547,7 +535,7 @@ func CipServiceParseWithBufferProducer[T CipService](connected bool, serviceLen 
 }
 
 func CipServiceParseWithBuffer[T CipService](ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (T, error) {
-	v, err := (&_CipService{ServiceLen: serviceLen}).parse(ctx, readBuffer, connected, serviceLen)
+	v, err := (new(_CipService)).parse(ctx, readBuffer, connected, serviceLen)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -724,16 +712,6 @@ func (pm *_CipService) serializeParent(ctx context.Context, writeBuffer utils.Wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_CipService) GetServiceLen() uint16 {
-	return m.ServiceLen
-}
-
-//
-////
-
 func (m *_CipService) IsCipService() {}
 
 func (m *_CipService) DeepCopy() any {
@@ -746,7 +724,6 @@ func (m *_CipService) deepCopy() *_CipService {
 	}
 	_CipServiceCopy := &_CipService{
 		nil, // will be set by child
-		m.ServiceLen,
 	}
 	return _CipServiceCopy
 }

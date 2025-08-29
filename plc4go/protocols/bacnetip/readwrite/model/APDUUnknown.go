@@ -62,9 +62,9 @@ var _ APDUUnknown = (*_APDUUnknown)(nil)
 var _ APDURequirements = (*_APDUUnknown)(nil)
 
 // NewAPDUUnknown factory function for _APDUUnknown
-func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte, apduLength uint16) *_APDUUnknown {
+func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte) *_APDUUnknown {
 	_result := &_APDUUnknown{
-		APDUContract:    NewAPDU(apduLength),
+		APDUContract:    NewAPDU(),
 		UnknownTypeRest: unknownTypeRest,
 		UnknownBytes:    unknownBytes,
 	}

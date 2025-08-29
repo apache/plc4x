@@ -50,21 +50,13 @@ public class BACnetConstructedDataControlledVariableReference extends BACnetCons
   // Properties.
   protected final BACnetObjectPropertyReference controlledVariableReference;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataControlledVariableReference(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetObjectPropertyReference controlledVariableReference,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetObjectPropertyReference controlledVariableReference) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.controlledVariableReference = controlledVariableReference;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetObjectPropertyReference getControlledVariableReference() {
@@ -134,39 +126,24 @@ public class BACnetConstructedDataControlledVariableReference extends BACnetCons
     readBuffer.closeContext("BACnetConstructedDataControlledVariableReference");
     // Create the instance
     return new BACnetConstructedDataControlledVariableReferenceBuilderImpl(
-        controlledVariableReference, tagNumber, arrayIndexArgument);
+        controlledVariableReference);
   }
 
   public static class BACnetConstructedDataControlledVariableReferenceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetObjectPropertyReference controlledVariableReference;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataControlledVariableReferenceBuilderImpl(
-        BACnetObjectPropertyReference controlledVariableReference,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetObjectPropertyReference controlledVariableReference) {
       this.controlledVariableReference = controlledVariableReference;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataControlledVariableReference build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataControlledVariableReference
           bACnetConstructedDataControlledVariableReference =
               new BACnetConstructedDataControlledVariableReference(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  controlledVariableReference,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, controlledVariableReference);
       return bACnetConstructedDataControlledVariableReference;
     }
   }

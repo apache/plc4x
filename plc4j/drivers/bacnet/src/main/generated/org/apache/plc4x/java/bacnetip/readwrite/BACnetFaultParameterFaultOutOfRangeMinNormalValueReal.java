@@ -43,18 +43,13 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
   // Properties.
   protected final BACnetApplicationTagReal realValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetFaultParameterFaultOutOfRangeMinNormalValueReal(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal realValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetApplicationTagReal realValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.realValue = realValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetApplicationTagReal getRealValue() {
@@ -107,31 +102,25 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueReal");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilderImpl(
-        realValue, tagNumber);
+    return new BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilderImpl(realValue);
   }
 
   public static class BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilderImpl
       implements BACnetFaultParameterFaultOutOfRangeMinNormalValue
           .BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder {
     private final BACnetApplicationTagReal realValue;
-    private final Short tagNumber;
 
     public BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilderImpl(
-        BACnetApplicationTagReal realValue, Short tagNumber) {
+        BACnetApplicationTagReal realValue) {
       this.realValue = realValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetFaultParameterFaultOutOfRangeMinNormalValueReal build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
           bACnetFaultParameterFaultOutOfRangeMinNormalValueReal =
               new BACnetFaultParameterFaultOutOfRangeMinNormalValueReal(
-                  openingTag, peekedTagHeader, closingTag, realValue, tagNumber);
+                  openingTag, peekedTagHeader, closingTag, realValue);
       return bACnetFaultParameterFaultOutOfRangeMinNormalValueReal;
     }
   }

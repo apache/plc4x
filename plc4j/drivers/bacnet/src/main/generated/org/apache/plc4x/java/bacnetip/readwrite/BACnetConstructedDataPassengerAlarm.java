@@ -49,21 +49,13 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagBoolean passengerAlarm;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPassengerAlarm(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean passengerAlarm,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean passengerAlarm) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.passengerAlarm = passengerAlarm;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getPassengerAlarm() {
@@ -132,39 +124,23 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataPassengerAlarm");
     // Create the instance
-    return new BACnetConstructedDataPassengerAlarmBuilderImpl(
-        passengerAlarm, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPassengerAlarmBuilderImpl(passengerAlarm);
   }
 
   public static class BACnetConstructedDataPassengerAlarmBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean passengerAlarm;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataPassengerAlarmBuilderImpl(
-        BACnetApplicationTagBoolean passengerAlarm,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean passengerAlarm) {
       this.passengerAlarm = passengerAlarm;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPassengerAlarm build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPassengerAlarm bACnetConstructedDataPassengerAlarm =
           new BACnetConstructedDataPassengerAlarm(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              passengerAlarm,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, passengerAlarm);
       return bACnetConstructedDataPassengerAlarm;
     }
   }

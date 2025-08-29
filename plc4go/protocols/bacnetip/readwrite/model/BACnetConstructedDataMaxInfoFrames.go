@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMaxInfoFrames = (*_BACnetConstructedDataMaxInfoFrames
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxInfoFrames)(nil)
 
 // NewBACnetConstructedDataMaxInfoFrames factory function for _BACnetConstructedDataMaxInfoFrames
-func NewBACnetConstructedDataMaxInfoFrames(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxInfoFrames BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxInfoFrames {
+func NewBACnetConstructedDataMaxInfoFrames(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxInfoFrames BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataMaxInfoFrames {
 	if maxInfoFrames == nil {
 		panic("maxInfoFrames of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxInfoFrames must not be nil")
 	}
 	_result := &_BACnetConstructedDataMaxInfoFrames{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		MaxInfoFrames:                 maxInfoFrames,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

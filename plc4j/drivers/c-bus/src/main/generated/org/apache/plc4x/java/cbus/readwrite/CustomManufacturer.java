@@ -38,15 +38,17 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CustomManufacturer implements Message {
 
   // Properties.
+  protected final short numBytes;
   protected final String customString;
 
-  // Arguments.
-  protected final Short numBytes;
-
-  public CustomManufacturer(String customString, Short numBytes) {
+  public CustomManufacturer(short numBytes, String customString) {
     super();
-    this.customString = customString;
     this.numBytes = numBytes;
+    this.customString = customString;
+  }
+
+  public short getNumBytes() {
+    return numBytes;
   }
 
   public String getCustomString() {
@@ -92,7 +94,7 @@ public class CustomManufacturer implements Message {
     readBuffer.closeContext("CustomManufacturer");
     // Create the instance
     CustomManufacturer _customManufacturer;
-    _customManufacturer = new CustomManufacturer(customString, numBytes);
+    _customManufacturer = new CustomManufacturer(numBytes, customString);
     return _customManufacturer;
   }
 
@@ -105,12 +107,14 @@ public class CustomManufacturer implements Message {
       return false;
     }
     CustomManufacturer that = (CustomManufacturer) o;
-    return (getCustomString() == that.getCustomString()) && true;
+    return (getNumBytes() == that.getNumBytes())
+        && (getCustomString() == that.getCustomString())
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getCustomString());
+    return Objects.hash(getNumBytes(), getCustomString());
   }
 
   @Override

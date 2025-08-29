@@ -49,21 +49,13 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagSignedInteger utcOffset;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataUTCOffset(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagSignedInteger utcOffset,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagSignedInteger utcOffset) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.utcOffset = utcOffset;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagSignedInteger getUtcOffset() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataUTCOffset");
     // Create the instance
-    return new BACnetConstructedDataUTCOffsetBuilderImpl(utcOffset, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUTCOffsetBuilderImpl(utcOffset);
   }
 
   public static class BACnetConstructedDataUTCOffsetBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger utcOffset;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUTCOffsetBuilderImpl(
-        BACnetApplicationTagSignedInteger utcOffset,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataUTCOffsetBuilderImpl(BACnetApplicationTagSignedInteger utcOffset) {
       this.utcOffset = utcOffset;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataUTCOffset build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataUTCOffset bACnetConstructedDataUTCOffset =
-          new BACnetConstructedDataUTCOffset(
-              openingTag, peekedTagHeader, closingTag, utcOffset, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataUTCOffset(openingTag, peekedTagHeader, closingTag, utcOffset);
       return bACnetConstructedDataUTCOffset;
     }
   }

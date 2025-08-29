@@ -42,14 +42,10 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
   // Properties.
   protected final CBusPointToPointToMultiPointCommand command;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public CBusCommandPointToPointToMultiPoint(
-      CBusHeader header, CBusPointToPointToMultiPointCommand command, CBusOptions cBusOptions) {
-    super(header, cBusOptions);
+      CBusHeader header, CBusPointToPointToMultiPointCommand command) {
+    super(header);
     this.command = command;
-    this.cBusOptions = cBusOptions;
   }
 
   public CBusPointToPointToMultiPointCommand getCommand() {
@@ -102,23 +98,21 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
 
     readBuffer.closeContext("CBusCommandPointToPointToMultiPoint");
     // Create the instance
-    return new CBusCommandPointToPointToMultiPointBuilderImpl(command, cBusOptions);
+    return new CBusCommandPointToPointToMultiPointBuilderImpl(command);
   }
 
   public static class CBusCommandPointToPointToMultiPointBuilderImpl
       implements CBusCommand.CBusCommandBuilder {
     private final CBusPointToPointToMultiPointCommand command;
-    private final CBusOptions cBusOptions;
 
     public CBusCommandPointToPointToMultiPointBuilderImpl(
-        CBusPointToPointToMultiPointCommand command, CBusOptions cBusOptions) {
+        CBusPointToPointToMultiPointCommand command) {
       this.command = command;
-      this.cBusOptions = cBusOptions;
     }
 
-    public CBusCommandPointToPointToMultiPoint build(CBusHeader header, CBusOptions cBusOptions) {
+    public CBusCommandPointToPointToMultiPoint build(CBusHeader header) {
       CBusCommandPointToPointToMultiPoint cBusCommandPointToPointToMultiPoint =
-          new CBusCommandPointToPointToMultiPoint(header, command, cBusOptions);
+          new CBusCommandPointToPointToMultiPoint(header, command);
       return cBusCommandPointToPointToMultiPoint;
     }
   }

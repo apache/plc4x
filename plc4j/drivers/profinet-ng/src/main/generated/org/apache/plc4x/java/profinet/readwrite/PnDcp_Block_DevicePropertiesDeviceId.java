@@ -49,7 +49,6 @@ public class PnDcp_Block_DevicePropertiesDeviceId extends PnDcp_Block implements
   // Properties.
   protected final int vendorId;
   protected final int deviceId;
-
   // Reserved Fields
   private Integer reservedField0;
 

@@ -50,21 +50,13 @@ public class BACnetConstructedDataManualSlaveAddressBinding extends BACnetConstr
   // Properties.
   protected final List<BACnetAddressBinding> manualSlaveAddressBinding;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataManualSlaveAddressBinding(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetAddressBinding> manualSlaveAddressBinding,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetAddressBinding> manualSlaveAddressBinding) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.manualSlaveAddressBinding = manualSlaveAddressBinding;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetAddressBinding> getManualSlaveAddressBinding() {
@@ -127,40 +119,24 @@ public class BACnetConstructedDataManualSlaveAddressBinding extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataManualSlaveAddressBinding");
     // Create the instance
-    return new BACnetConstructedDataManualSlaveAddressBindingBuilderImpl(
-        manualSlaveAddressBinding, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataManualSlaveAddressBindingBuilderImpl(manualSlaveAddressBinding);
   }
 
   public static class BACnetConstructedDataManualSlaveAddressBindingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAddressBinding> manualSlaveAddressBinding;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataManualSlaveAddressBindingBuilderImpl(
-        List<BACnetAddressBinding> manualSlaveAddressBinding,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetAddressBinding> manualSlaveAddressBinding) {
       this.manualSlaveAddressBinding = manualSlaveAddressBinding;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataManualSlaveAddressBinding build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataManualSlaveAddressBinding
           bACnetConstructedDataManualSlaveAddressBinding =
               new BACnetConstructedDataManualSlaveAddressBinding(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  manualSlaveAddressBinding,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, manualSlaveAddressBinding);
       return bACnetConstructedDataManualSlaveAddressBinding;
     }
   }

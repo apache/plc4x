@@ -47,19 +47,9 @@ public class BACnetConstructedDataCredentialDataInputAll extends BACnetConstruct
     return BACnetPropertyIdentifier.ALL;
   }
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCredentialDataInputAll(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
   }
 
   @Override
@@ -104,30 +94,18 @@ public class BACnetConstructedDataCredentialDataInputAll extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataCredentialDataInputAll");
     // Create the instance
-    return new BACnetConstructedDataCredentialDataInputAllBuilderImpl(
-        tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCredentialDataInputAllBuilderImpl();
   }
 
   public static class BACnetConstructedDataCredentialDataInputAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCredentialDataInputAllBuilderImpl(
-        Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
-    }
+    public BACnetConstructedDataCredentialDataInputAllBuilderImpl() {}
 
     public BACnetConstructedDataCredentialDataInputAll build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCredentialDataInputAll bACnetConstructedDataCredentialDataInputAll =
-          new BACnetConstructedDataCredentialDataInputAll(
-              openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataCredentialDataInputAll(openingTag, peekedTagHeader, closingTag);
       return bACnetConstructedDataCredentialDataInputAll;
     }
   }

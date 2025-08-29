@@ -42,16 +42,10 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
   // Properties.
   protected final BACnetConstructedData constructedValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueConstructedValue(
-      BACnetTagHeader peekedTagHeader,
-      BACnetConstructedData constructedValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetConstructedData constructedValue) {
+    super(peekedTagHeader);
     this.constructedValue = constructedValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetConstructedData getConstructedValue() {
@@ -110,25 +104,20 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
 
     readBuffer.closeContext("BACnetPriorityValueConstructedValue");
     // Create the instance
-    return new BACnetPriorityValueConstructedValueBuilderImpl(constructedValue, objectTypeArgument);
+    return new BACnetPriorityValueConstructedValueBuilderImpl(constructedValue);
   }
 
   public static class BACnetPriorityValueConstructedValueBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetConstructedData constructedValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueConstructedValueBuilderImpl(
-        BACnetConstructedData constructedValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueConstructedValueBuilderImpl(BACnetConstructedData constructedValue) {
       this.constructedValue = constructedValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueConstructedValue build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueConstructedValue build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueConstructedValue bACnetPriorityValueConstructedValue =
-          new BACnetPriorityValueConstructedValue(
-              peekedTagHeader, constructedValue, objectTypeArgument);
+          new BACnetPriorityValueConstructedValue(peekedTagHeader, constructedValue);
       return bACnetPriorityValueConstructedValue;
     }
   }

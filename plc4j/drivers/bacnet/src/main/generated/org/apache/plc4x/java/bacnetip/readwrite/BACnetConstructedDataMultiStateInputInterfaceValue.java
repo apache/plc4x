@@ -50,21 +50,13 @@ public class BACnetConstructedDataMultiStateInputInterfaceValue extends BACnetCo
   // Properties.
   protected final BACnetOptionalBinaryPV interfaceValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMultiStateInputInterfaceValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetOptionalBinaryPV interfaceValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetOptionalBinaryPV interfaceValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.interfaceValue = interfaceValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetOptionalBinaryPV getInterfaceValue() {
@@ -131,40 +123,24 @@ public class BACnetConstructedDataMultiStateInputInterfaceValue extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateInputInterfaceValue");
     // Create the instance
-    return new BACnetConstructedDataMultiStateInputInterfaceValueBuilderImpl(
-        interfaceValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMultiStateInputInterfaceValueBuilderImpl(interfaceValue);
   }
 
   public static class BACnetConstructedDataMultiStateInputInterfaceValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetOptionalBinaryPV interfaceValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMultiStateInputInterfaceValueBuilderImpl(
-        BACnetOptionalBinaryPV interfaceValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOptionalBinaryPV interfaceValue) {
       this.interfaceValue = interfaceValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMultiStateInputInterfaceValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMultiStateInputInterfaceValue
           bACnetConstructedDataMultiStateInputInterfaceValue =
               new BACnetConstructedDataMultiStateInputInterfaceValue(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  interfaceValue,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, interfaceValue);
       return bACnetConstructedDataMultiStateInputInterfaceValue;
     }
   }

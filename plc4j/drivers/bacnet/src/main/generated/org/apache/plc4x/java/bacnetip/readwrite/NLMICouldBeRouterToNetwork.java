@@ -46,15 +46,10 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
   protected final int destinationNetworkAddress;
   protected final short performanceIndex;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMICouldBeRouterToNetwork(
-      int destinationNetworkAddress, short performanceIndex, Integer apduLength) {
-    super(apduLength);
+  public NLMICouldBeRouterToNetwork(int destinationNetworkAddress, short performanceIndex) {
+    super();
     this.destinationNetworkAddress = destinationNetworkAddress;
     this.performanceIndex = performanceIndex;
-    this.apduLength = apduLength;
   }
 
   public int getDestinationNetworkAddress() {
@@ -114,26 +109,22 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMICouldBeRouterToNetwork");
     // Create the instance
-    return new NLMICouldBeRouterToNetworkBuilderImpl(
-        destinationNetworkAddress, performanceIndex, apduLength);
+    return new NLMICouldBeRouterToNetworkBuilderImpl(destinationNetworkAddress, performanceIndex);
   }
 
   public static class NLMICouldBeRouterToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final int destinationNetworkAddress;
     private final short performanceIndex;
-    private final Integer apduLength;
 
     public NLMICouldBeRouterToNetworkBuilderImpl(
-        int destinationNetworkAddress, short performanceIndex, Integer apduLength) {
+        int destinationNetworkAddress, short performanceIndex) {
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.performanceIndex = performanceIndex;
-      this.apduLength = apduLength;
     }
 
-    public NLMICouldBeRouterToNetwork build(Integer apduLength) {
-
+    public NLMICouldBeRouterToNetwork build() {
       NLMICouldBeRouterToNetwork nLMICouldBeRouterToNetwork =
-          new NLMICouldBeRouterToNetwork(destinationNetworkAddress, performanceIndex, apduLength);
+          new NLMICouldBeRouterToNetwork(destinationNetworkAddress, performanceIndex);
       return nLMICouldBeRouterToNetwork;
     }
   }

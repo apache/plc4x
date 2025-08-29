@@ -308,7 +308,7 @@ func BACnetRouterEntryParseWithBufferProducer() func(ctx context.Context, readBu
 }
 
 func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
-	v, err := (&_BACnetRouterEntry{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetRouterEntry)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -50,23 +50,19 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
   protected final BACnetConstructedData propertyValue;
   protected final BACnetContextTagUnsignedInteger priority;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestWriteProperty(
+      long serviceRequestLength,
       BACnetContextTagObjectIdentifier objectIdentifier,
       BACnetPropertyIdentifierTagged propertyIdentifier,
       BACnetContextTagUnsignedInteger arrayIndex,
       BACnetConstructedData propertyValue,
-      BACnetContextTagUnsignedInteger priority,
-      Long serviceRequestLength) {
+      BACnetContextTagUnsignedInteger priority) {
     super(serviceRequestLength);
     this.objectIdentifier = objectIdentifier;
     this.propertyIdentifier = propertyIdentifier;
     this.arrayIndex = arrayIndex;
     this.propertyValue = propertyValue;
     this.priority = priority;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagObjectIdentifier getObjectIdentifier() {
@@ -216,12 +212,7 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     readBuffer.closeContext("BACnetConfirmedServiceRequestWriteProperty");
     // Create the instance
     return new BACnetConfirmedServiceRequestWritePropertyBuilderImpl(
-        objectIdentifier,
-        propertyIdentifier,
-        arrayIndex,
-        propertyValue,
-        priority,
-        serviceRequestLength);
+        objectIdentifier, propertyIdentifier, arrayIndex, propertyValue, priority);
   }
 
   public static class BACnetConfirmedServiceRequestWritePropertyBuilderImpl
@@ -231,33 +222,29 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     private final BACnetContextTagUnsignedInteger arrayIndex;
     private final BACnetConstructedData propertyValue;
     private final BACnetContextTagUnsignedInteger priority;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestWritePropertyBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger arrayIndex,
         BACnetConstructedData propertyValue,
-        BACnetContextTagUnsignedInteger priority,
-        Long serviceRequestLength) {
+        BACnetContextTagUnsignedInteger priority) {
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;
       this.propertyValue = propertyValue;
       this.priority = priority;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestWriteProperty build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestWriteProperty build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestWriteProperty bACnetConfirmedServiceRequestWriteProperty =
           new BACnetConfirmedServiceRequestWriteProperty(
+              serviceRequestLength,
               objectIdentifier,
               propertyIdentifier,
               arrayIndex,
               propertyValue,
-              priority,
-              serviceRequestLength);
+              priority);
       return bACnetConfirmedServiceRequestWriteProperty;
     }
   }

@@ -67,9 +67,9 @@ var _ RequestDirectCommandAccess = (*_RequestDirectCommandAccess)(nil)
 var _ RequestRequirements = (*_RequestDirectCommandAccess)(nil)
 
 // NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
-func NewRequestDirectCommandAccess(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestDirectCommandAccess {
+func NewRequestDirectCommandAccess(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha) *_RequestDirectCommandAccess {
 	_result := &_RequestDirectCommandAccess{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination),
 		CalData:         calData,
 		Alpha:           alpha,
 	}

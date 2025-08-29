@@ -49,21 +49,13 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
   // Properties.
   protected final BACnetOptionalREAL lowDiffLimit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLowDiffLimit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetOptionalREAL lowDiffLimit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetOptionalREAL lowDiffLimit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lowDiffLimit = lowDiffLimit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetOptionalREAL getLowDiffLimit() {
@@ -130,34 +122,22 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataLowDiffLimit");
     // Create the instance
-    return new BACnetConstructedDataLowDiffLimitBuilderImpl(
-        lowDiffLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLowDiffLimitBuilderImpl(lowDiffLimit);
   }
 
   public static class BACnetConstructedDataLowDiffLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetOptionalREAL lowDiffLimit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLowDiffLimitBuilderImpl(
-        BACnetOptionalREAL lowDiffLimit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLowDiffLimitBuilderImpl(BACnetOptionalREAL lowDiffLimit) {
       this.lowDiffLimit = lowDiffLimit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLowDiffLimit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLowDiffLimit bACnetConstructedDataLowDiffLimit =
           new BACnetConstructedDataLowDiffLimit(
-              openingTag, peekedTagHeader, closingTag, lowDiffLimit, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lowDiffLimit);
       return bACnetConstructedDataLowDiffLimit;
     }
   }

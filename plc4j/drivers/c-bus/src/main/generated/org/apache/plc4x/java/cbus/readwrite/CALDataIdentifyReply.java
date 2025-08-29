@@ -43,19 +43,15 @@ public class CALDataIdentifyReply extends CALData implements Message {
   protected final Attribute attribute;
   protected final IdentifyReplyCommand identifyReplyCommand;
 
-  // Arguments.
-  protected final RequestContext requestContext;
-
   public CALDataIdentifyReply(
+      RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer,
       CALData additionalData,
       Attribute attribute,
-      IdentifyReplyCommand identifyReplyCommand,
-      RequestContext requestContext) {
-    super(commandTypeContainer, additionalData, requestContext);
+      IdentifyReplyCommand identifyReplyCommand) {
+    super(requestContext, commandTypeContainer, additionalData);
     this.attribute = attribute;
     this.identifyReplyCommand = identifyReplyCommand;
-    this.requestContext = requestContext;
   }
 
   public Attribute getAttribute() {
@@ -133,34 +129,30 @@ public class CALDataIdentifyReply extends CALData implements Message {
 
     readBuffer.closeContext("CALDataIdentifyReply");
     // Create the instance
-    return new CALDataIdentifyReplyBuilderImpl(attribute, identifyReplyCommand, requestContext);
+    return new CALDataIdentifyReplyBuilderImpl(attribute, identifyReplyCommand);
   }
 
   public static class CALDataIdentifyReplyBuilderImpl implements CALData.CALDataBuilder {
     private final Attribute attribute;
     private final IdentifyReplyCommand identifyReplyCommand;
-    private final RequestContext requestContext;
 
     public CALDataIdentifyReplyBuilderImpl(
-        Attribute attribute,
-        IdentifyReplyCommand identifyReplyCommand,
-        RequestContext requestContext) {
+        Attribute attribute, IdentifyReplyCommand identifyReplyCommand) {
       this.attribute = attribute;
       this.identifyReplyCommand = identifyReplyCommand;
-      this.requestContext = requestContext;
     }
 
     public CALDataIdentifyReply build(
+        RequestContext requestContext,
         CALCommandTypeContainer commandTypeContainer,
-        CALData additionalData,
-        RequestContext requestContext) {
+        CALData additionalData) {
       CALDataIdentifyReply cALDataIdentifyReply =
           new CALDataIdentifyReply(
+              requestContext,
               commandTypeContainer,
               additionalData,
               attribute,
-              identifyReplyCommand,
-              requestContext);
+              identifyReplyCommand);
       return cALDataIdentifyReply;
     }
   }

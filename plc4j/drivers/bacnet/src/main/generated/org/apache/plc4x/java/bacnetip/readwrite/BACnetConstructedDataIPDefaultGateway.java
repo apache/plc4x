@@ -50,21 +50,13 @@ public class BACnetConstructedDataIPDefaultGateway extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagOctetString ipDefaultGateway;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPDefaultGateway(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagOctetString ipDefaultGateway,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagOctetString ipDefaultGateway) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ipDefaultGateway = ipDefaultGateway;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagOctetString getIpDefaultGateway() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataIPDefaultGateway extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataIPDefaultGateway");
     // Create the instance
-    return new BACnetConstructedDataIPDefaultGatewayBuilderImpl(
-        ipDefaultGateway, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPDefaultGatewayBuilderImpl(ipDefaultGateway);
   }
 
   public static class BACnetConstructedDataIPDefaultGatewayBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipDefaultGateway;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPDefaultGatewayBuilderImpl(
-        BACnetApplicationTagOctetString ipDefaultGateway,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagOctetString ipDefaultGateway) {
       this.ipDefaultGateway = ipDefaultGateway;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPDefaultGateway build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPDefaultGateway bACnetConstructedDataIPDefaultGateway =
           new BACnetConstructedDataIPDefaultGateway(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              ipDefaultGateway,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ipDefaultGateway);
       return bACnetConstructedDataIPDefaultGateway;
     }
   }

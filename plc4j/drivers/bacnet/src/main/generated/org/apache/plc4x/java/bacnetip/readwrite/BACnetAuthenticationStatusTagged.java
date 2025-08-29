@@ -41,20 +41,11 @@ public class BACnetAuthenticationStatusTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetAuthenticationStatus value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetAuthenticationStatusTagged(
-      BACnetTagHeader header,
-      BACnetAuthenticationStatus value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetAuthenticationStatus value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -138,8 +129,7 @@ public class BACnetAuthenticationStatusTagged implements Message {
     readBuffer.closeContext("BACnetAuthenticationStatusTagged");
     // Create the instance
     BACnetAuthenticationStatusTagged _bACnetAuthenticationStatusTagged;
-    _bACnetAuthenticationStatusTagged =
-        new BACnetAuthenticationStatusTagged(header, value, tagNumber, tagClass);
+    _bACnetAuthenticationStatusTagged = new BACnetAuthenticationStatusTagged(header, value);
     return _bACnetAuthenticationStatusTagged;
   }
 

@@ -49,21 +49,13 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
   // Properties.
   protected final BACnetLimitEnableTagged limitEnable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLimitEnable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLimitEnableTagged limitEnable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLimitEnableTagged limitEnable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.limitEnable = limitEnable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLimitEnableTagged getLimitEnable() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataLimitEnable");
     // Create the instance
-    return new BACnetConstructedDataLimitEnableBuilderImpl(
-        limitEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLimitEnableBuilderImpl(limitEnable);
   }
 
   public static class BACnetConstructedDataLimitEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLimitEnableTagged limitEnable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLimitEnableBuilderImpl(
-        BACnetLimitEnableTagged limitEnable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLimitEnableBuilderImpl(BACnetLimitEnableTagged limitEnable) {
       this.limitEnable = limitEnable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLimitEnable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLimitEnable bACnetConstructedDataLimitEnable =
           new BACnetConstructedDataLimitEnable(
-              openingTag, peekedTagHeader, closingTag, limitEnable, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, limitEnable);
       return bACnetConstructedDataLimitEnable;
     }
   }

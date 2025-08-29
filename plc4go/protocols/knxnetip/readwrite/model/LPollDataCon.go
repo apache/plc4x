@@ -54,9 +54,9 @@ var _ LPollDataCon = (*_LPollDataCon)(nil)
 var _ CEMIRequirements = (*_LPollDataCon)(nil)
 
 // NewLPollDataCon factory function for _LPollDataCon
-func NewLPollDataCon(size uint16) *_LPollDataCon {
+func NewLPollDataCon() *_LPollDataCon {
 	_result := &_LPollDataCon{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result

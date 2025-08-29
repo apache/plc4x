@@ -50,21 +50,13 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
   // Properties.
   protected final BACnetHostNPort bacnetIpGlobalAddress;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBACnetIPGlobalAddress(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetHostNPort bacnetIpGlobalAddress,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetHostNPort bacnetIpGlobalAddress) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.bacnetIpGlobalAddress = bacnetIpGlobalAddress;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetHostNPort getBacnetIpGlobalAddress() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPGlobalAddress");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPGlobalAddressBuilderImpl(
-        bacnetIpGlobalAddress, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBACnetIPGlobalAddressBuilderImpl(bacnetIpGlobalAddress);
   }
 
   public static class BACnetConstructedDataBACnetIPGlobalAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetHostNPort bacnetIpGlobalAddress;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBACnetIPGlobalAddressBuilderImpl(
-        BACnetHostNPort bacnetIpGlobalAddress,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetHostNPort bacnetIpGlobalAddress) {
       this.bacnetIpGlobalAddress = bacnetIpGlobalAddress;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBACnetIPGlobalAddress build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBACnetIPGlobalAddress bACnetConstructedDataBACnetIPGlobalAddress =
           new BACnetConstructedDataBACnetIPGlobalAddress(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              bacnetIpGlobalAddress,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, bacnetIpGlobalAddress);
       return bACnetConstructedDataBACnetIPGlobalAddress;
     }
   }

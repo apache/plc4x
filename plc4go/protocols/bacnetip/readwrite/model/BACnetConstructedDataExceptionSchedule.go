@@ -64,9 +64,9 @@ var _ BACnetConstructedDataExceptionSchedule = (*_BACnetConstructedDataException
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExceptionSchedule)(nil)
 
 // NewBACnetConstructedDataExceptionSchedule factory function for _BACnetConstructedDataExceptionSchedule
-func NewBACnetConstructedDataExceptionSchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, exceptionSchedule []BACnetSpecialEvent, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExceptionSchedule {
+func NewBACnetConstructedDataExceptionSchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, exceptionSchedule []BACnetSpecialEvent) *_BACnetConstructedDataExceptionSchedule {
 	_result := &_BACnetConstructedDataExceptionSchedule{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		ExceptionSchedule:             exceptionSchedule,
 	}

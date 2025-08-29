@@ -65,9 +65,9 @@ var _ COTPPacketConnectionRequest = (*_COTPPacketConnectionRequest)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketConnectionRequest)(nil)
 
 // NewCOTPPacketConnectionRequest factory function for _COTPPacketConnectionRequest
-func NewCOTPPacketConnectionRequest(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketConnectionRequest {
+func NewCOTPPacketConnectionRequest(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) *_COTPPacketConnectionRequest {
 	_result := &_COTPPacketConnectionRequest{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		COTPPacketContract:   NewCOTPPacket(parameters, payload),
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,

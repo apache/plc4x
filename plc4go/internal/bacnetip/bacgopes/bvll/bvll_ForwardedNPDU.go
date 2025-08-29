@@ -71,7 +71,7 @@ func (f *ForwardedNPDU) GetBvlciAddress() *Address {
 	return f.bvlciAddress
 }
 
-func (f *ForwardedNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (ip []uint8, port uint16, npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {
+func (f *ForwardedNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (ip []uint8, port uint16, npdu readWriteModel.NPDU) {
 	ip = f.bvlciAddress.AddrAddress[:4]
 	port = uint16(47808)
 	if f.bvlciAddress.AddrPort != nil {

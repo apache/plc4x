@@ -65,9 +65,9 @@ var _ COTPPacketDisconnectRequest = (*_COTPPacketDisconnectRequest)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketDisconnectRequest)(nil)
 
 // NewCOTPPacketDisconnectRequest factory function for _COTPPacketDisconnectRequest
-func NewCOTPPacketDisconnectRequest(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketDisconnectRequest {
+func NewCOTPPacketDisconnectRequest(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) *_COTPPacketDisconnectRequest {
 	_result := &_COTPPacketDisconnectRequest{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		COTPPacketContract:   NewCOTPPacket(parameters, payload),
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,

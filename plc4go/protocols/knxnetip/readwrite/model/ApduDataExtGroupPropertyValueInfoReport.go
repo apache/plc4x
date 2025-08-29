@@ -54,9 +54,9 @@ var _ ApduDataExtGroupPropertyValueInfoReport = (*_ApduDataExtGroupPropertyValue
 var _ ApduDataExtRequirements = (*_ApduDataExtGroupPropertyValueInfoReport)(nil)
 
 // NewApduDataExtGroupPropertyValueInfoReport factory function for _ApduDataExtGroupPropertyValueInfoReport
-func NewApduDataExtGroupPropertyValueInfoReport(length uint8) *_ApduDataExtGroupPropertyValueInfoReport {
+func NewApduDataExtGroupPropertyValueInfoReport() *_ApduDataExtGroupPropertyValueInfoReport {
 	_result := &_ApduDataExtGroupPropertyValueInfoReport{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataScaleFactor = (*_BACnetConstructedDataScaleFactor)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScaleFactor)(nil)
 
 // NewBACnetConstructedDataScaleFactor factory function for _BACnetConstructedDataScaleFactor
-func NewBACnetConstructedDataScaleFactor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scaleFactor BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScaleFactor {
+func NewBACnetConstructedDataScaleFactor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scaleFactor BACnetApplicationTagReal) *_BACnetConstructedDataScaleFactor {
 	if scaleFactor == nil {
 		panic("scaleFactor of type BACnetApplicationTagReal for BACnetConstructedDataScaleFactor must not be nil")
 	}
 	_result := &_BACnetConstructedDataScaleFactor{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ScaleFactor:                   scaleFactor,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

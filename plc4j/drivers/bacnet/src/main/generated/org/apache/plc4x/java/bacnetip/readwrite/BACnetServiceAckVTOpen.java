@@ -45,14 +45,10 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckVTOpen(
-      BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier, Long serviceAckLength) {
+      long serviceAckLength, BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier) {
     super(serviceAckLength);
     this.remoteVtSessionIdentifier = remoteVtSessionIdentifier;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetApplicationTagUnsignedInteger getRemoteVtSessionIdentifier() {
@@ -107,24 +103,21 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
 
     readBuffer.closeContext("BACnetServiceAckVTOpen");
     // Create the instance
-    return new BACnetServiceAckVTOpenBuilderImpl(remoteVtSessionIdentifier, serviceAckLength);
+    return new BACnetServiceAckVTOpenBuilderImpl(remoteVtSessionIdentifier);
   }
 
   public static class BACnetServiceAckVTOpenBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckVTOpenBuilderImpl(
-        BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier, Long serviceAckLength) {
+        BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier) {
       this.remoteVtSessionIdentifier = remoteVtSessionIdentifier;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckVTOpen build(Long serviceAckLength) {
-
+    public BACnetServiceAckVTOpen build(long serviceAckLength) {
       BACnetServiceAckVTOpen bACnetServiceAckVTOpen =
-          new BACnetServiceAckVTOpen(remoteVtSessionIdentifier, serviceAckLength);
+          new BACnetServiceAckVTOpen(serviceAckLength, remoteVtSessionIdentifier);
       return bACnetServiceAckVTOpen;
     }
   }

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLoggingRecord = (*_BACnetConstructedDataLoggingRecord
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoggingRecord)(nil)
 
 // NewBACnetConstructedDataLoggingRecord factory function for _BACnetConstructedDataLoggingRecord
-func NewBACnetConstructedDataLoggingRecord(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, loggingRecord BACnetAccumulatorRecord, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingRecord {
+func NewBACnetConstructedDataLoggingRecord(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, loggingRecord BACnetAccumulatorRecord) *_BACnetConstructedDataLoggingRecord {
 	if loggingRecord == nil {
 		panic("loggingRecord of type BACnetAccumulatorRecord for BACnetConstructedDataLoggingRecord must not be nil")
 	}
 	_result := &_BACnetConstructedDataLoggingRecord{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LoggingRecord:                 loggingRecord,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

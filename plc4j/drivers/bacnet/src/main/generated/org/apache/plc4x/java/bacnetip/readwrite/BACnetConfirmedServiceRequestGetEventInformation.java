@@ -46,14 +46,10 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
   // Properties.
   protected final BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestGetEventInformation(
-      BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier, Long serviceRequestLength) {
+      long serviceRequestLength, BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier) {
     super(serviceRequestLength);
     this.lastReceivedObjectIdentifier = lastReceivedObjectIdentifier;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagObjectIdentifier getLastReceivedObjectIdentifier() {
@@ -115,26 +111,23 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
     readBuffer.closeContext("BACnetConfirmedServiceRequestGetEventInformation");
     // Create the instance
     return new BACnetConfirmedServiceRequestGetEventInformationBuilderImpl(
-        lastReceivedObjectIdentifier, serviceRequestLength);
+        lastReceivedObjectIdentifier);
   }
 
   public static class BACnetConfirmedServiceRequestGetEventInformationBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestGetEventInformationBuilderImpl(
-        BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier, Long serviceRequestLength) {
+        BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier) {
       this.lastReceivedObjectIdentifier = lastReceivedObjectIdentifier;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestGetEventInformation build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestGetEventInformation build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestGetEventInformation
           bACnetConfirmedServiceRequestGetEventInformation =
               new BACnetConfirmedServiceRequestGetEventInformation(
-                  lastReceivedObjectIdentifier, serviceRequestLength);
+                  serviceRequestLength, lastReceivedObjectIdentifier);
       return bACnetConfirmedServiceRequestGetEventInformation;
     }
   }

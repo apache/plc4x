@@ -226,7 +226,7 @@ func DeviceConfigurationAckDataBlockParseWithBufferProducer() func(ctx context.C
 }
 
 func DeviceConfigurationAckDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAckDataBlock, error) {
-	v, err := (&_DeviceConfigurationAckDataBlock{}).parse(ctx, readBuffer)
+	v, err := (new(_DeviceConfigurationAckDataBlock)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

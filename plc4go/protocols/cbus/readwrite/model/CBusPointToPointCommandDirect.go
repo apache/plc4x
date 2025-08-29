@@ -61,12 +61,12 @@ var _ CBusPointToPointCommandDirect = (*_CBusPointToPointCommandDirect)(nil)
 var _ CBusPointToPointCommandRequirements = (*_CBusPointToPointCommandDirect)(nil)
 
 // NewCBusPointToPointCommandDirect factory function for _CBusPointToPointCommandDirect
-func NewCBusPointToPointCommandDirect(bridgeAddressCountPeek uint16, calData CALData, unitAddress UnitAddress, cBusOptions CBusOptions) *_CBusPointToPointCommandDirect {
+func NewCBusPointToPointCommandDirect(bridgeAddressCountPeek uint16, calData CALData, unitAddress UnitAddress) *_CBusPointToPointCommandDirect {
 	if unitAddress == nil {
 		panic("unitAddress of type UnitAddress for CBusPointToPointCommandDirect must not be nil")
 	}
 	_result := &_CBusPointToPointCommandDirect{
-		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData),
 		UnitAddress:                     unitAddress,
 	}
 	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result

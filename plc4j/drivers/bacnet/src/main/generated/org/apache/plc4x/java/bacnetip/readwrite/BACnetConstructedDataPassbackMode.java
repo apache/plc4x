@@ -49,21 +49,13 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
   // Properties.
   protected final BACnetAccessPassbackModeTagged passbackMode;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPassbackMode(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAccessPassbackModeTagged passbackMode,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAccessPassbackModeTagged passbackMode) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.passbackMode = passbackMode;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAccessPassbackModeTagged getPassbackMode() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataPassbackMode");
     // Create the instance
-    return new BACnetConstructedDataPassbackModeBuilderImpl(
-        passbackMode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPassbackModeBuilderImpl(passbackMode);
   }
 
   public static class BACnetConstructedDataPassbackModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessPassbackModeTagged passbackMode;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataPassbackModeBuilderImpl(
-        BACnetAccessPassbackModeTagged passbackMode,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetAccessPassbackModeTagged passbackMode) {
       this.passbackMode = passbackMode;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPassbackMode build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPassbackMode bACnetConstructedDataPassbackMode =
           new BACnetConstructedDataPassbackMode(
-              openingTag, peekedTagHeader, closingTag, passbackMode, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, passbackMode);
       return bACnetConstructedDataPassbackMode;
     }
   }

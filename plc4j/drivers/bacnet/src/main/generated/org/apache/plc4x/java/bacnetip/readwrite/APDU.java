@@ -40,12 +40,8 @@ public abstract class APDU implements Message {
   // Abstract accessors for discriminator values.
   public abstract ApduType getApduType();
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public APDU(Integer apduLength) {
+  public APDU() {
     super();
-    this.apduLength = apduLength;
   }
 
   protected abstract void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException;
@@ -130,13 +126,12 @@ public abstract class APDU implements Message {
 
     readBuffer.closeContext("APDU");
     // Create the instance
-    APDU _aPDU = builder.build(apduLength);
-
+    APDU _aPDU = builder.build();
     return _aPDU;
   }
 
   public interface APDUBuilder {
-    APDU build(Integer apduLength);
+    APDU build();
   }
 
   @Override

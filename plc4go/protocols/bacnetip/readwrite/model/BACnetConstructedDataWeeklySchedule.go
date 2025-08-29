@@ -64,9 +64,9 @@ var _ BACnetConstructedDataWeeklySchedule = (*_BACnetConstructedDataWeeklySchedu
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWeeklySchedule)(nil)
 
 // NewBACnetConstructedDataWeeklySchedule factory function for _BACnetConstructedDataWeeklySchedule
-func NewBACnetConstructedDataWeeklySchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, weeklySchedule []BACnetDailySchedule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWeeklySchedule {
+func NewBACnetConstructedDataWeeklySchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, weeklySchedule []BACnetDailySchedule) *_BACnetConstructedDataWeeklySchedule {
 	_result := &_BACnetConstructedDataWeeklySchedule{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		WeeklySchedule:                weeklySchedule,
 	}

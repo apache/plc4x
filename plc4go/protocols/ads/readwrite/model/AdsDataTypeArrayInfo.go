@@ -227,7 +227,7 @@ func AdsDataTypeArrayInfoParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
-	v, err := (&_AdsDataTypeArrayInfo{}).parse(ctx, readBuffer)
+	v, err := (new(_AdsDataTypeArrayInfo)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

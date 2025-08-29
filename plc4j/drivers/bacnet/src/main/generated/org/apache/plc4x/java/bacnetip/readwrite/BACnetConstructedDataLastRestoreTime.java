@@ -49,21 +49,13 @@ public class BACnetConstructedDataLastRestoreTime extends BACnetConstructedData 
   // Properties.
   protected final BACnetTimeStamp lastRestoreTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLastRestoreTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetTimeStamp lastRestoreTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetTimeStamp lastRestoreTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lastRestoreTime = lastRestoreTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetTimeStamp getLastRestoreTime() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataLastRestoreTime extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataLastRestoreTime");
     // Create the instance
-    return new BACnetConstructedDataLastRestoreTimeBuilderImpl(
-        lastRestoreTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastRestoreTimeBuilderImpl(lastRestoreTime);
   }
 
   public static class BACnetConstructedDataLastRestoreTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimeStamp lastRestoreTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastRestoreTimeBuilderImpl(
-        BACnetTimeStamp lastRestoreTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLastRestoreTimeBuilderImpl(BACnetTimeStamp lastRestoreTime) {
       this.lastRestoreTime = lastRestoreTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLastRestoreTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLastRestoreTime bACnetConstructedDataLastRestoreTime =
           new BACnetConstructedDataLastRestoreTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              lastRestoreTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lastRestoreTime);
       return bACnetConstructedDataLastRestoreTime;
     }
   }

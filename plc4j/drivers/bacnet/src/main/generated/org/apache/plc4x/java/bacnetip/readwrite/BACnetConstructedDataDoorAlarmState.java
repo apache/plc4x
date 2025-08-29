@@ -49,21 +49,13 @@ public class BACnetConstructedDataDoorAlarmState extends BACnetConstructedData i
   // Properties.
   protected final BACnetDoorAlarmStateTagged doorAlarmState;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDoorAlarmState(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDoorAlarmStateTagged doorAlarmState,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDoorAlarmStateTagged doorAlarmState) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.doorAlarmState = doorAlarmState;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDoorAlarmStateTagged getDoorAlarmState() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataDoorAlarmState extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataDoorAlarmState");
     // Create the instance
-    return new BACnetConstructedDataDoorAlarmStateBuilderImpl(
-        doorAlarmState, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoorAlarmStateBuilderImpl(doorAlarmState);
   }
 
   public static class BACnetConstructedDataDoorAlarmStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDoorAlarmStateTagged doorAlarmState;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDoorAlarmStateBuilderImpl(
-        BACnetDoorAlarmStateTagged doorAlarmState,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetDoorAlarmStateTagged doorAlarmState) {
       this.doorAlarmState = doorAlarmState;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDoorAlarmState build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDoorAlarmState bACnetConstructedDataDoorAlarmState =
           new BACnetConstructedDataDoorAlarmState(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              doorAlarmState,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, doorAlarmState);
       return bACnetConstructedDataDoorAlarmState;
     }
   }

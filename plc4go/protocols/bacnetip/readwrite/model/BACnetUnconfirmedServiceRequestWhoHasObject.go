@@ -313,7 +313,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBufferProducer[T BACnet
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer[T BACnetUnconfirmedServiceRequestWhoHasObject](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetUnconfirmedServiceRequestWhoHasObject{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetUnconfirmedServiceRequestWhoHasObject)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

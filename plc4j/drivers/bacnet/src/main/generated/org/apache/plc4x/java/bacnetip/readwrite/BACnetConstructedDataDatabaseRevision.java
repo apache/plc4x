@@ -50,21 +50,13 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger databaseRevision;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDatabaseRevision(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger databaseRevision,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger databaseRevision) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.databaseRevision = databaseRevision;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getDatabaseRevision() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataDatabaseRevision");
     // Create the instance
-    return new BACnetConstructedDataDatabaseRevisionBuilderImpl(
-        databaseRevision, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDatabaseRevisionBuilderImpl(databaseRevision);
   }
 
   public static class BACnetConstructedDataDatabaseRevisionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger databaseRevision;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDatabaseRevisionBuilderImpl(
-        BACnetApplicationTagUnsignedInteger databaseRevision,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger databaseRevision) {
       this.databaseRevision = databaseRevision;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDatabaseRevision build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDatabaseRevision bACnetConstructedDataDatabaseRevision =
           new BACnetConstructedDataDatabaseRevision(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              databaseRevision,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, databaseRevision);
       return bACnetConstructedDataDatabaseRevision;
     }
   }

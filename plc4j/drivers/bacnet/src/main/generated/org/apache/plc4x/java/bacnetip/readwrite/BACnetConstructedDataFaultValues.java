@@ -51,23 +51,15 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetLifeSafetyStateTagged> faultValues;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataFaultValues(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetLifeSafetyStateTagged> faultValues,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetLifeSafetyStateTagged> faultValues) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.faultValues = faultValues;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (faultValues)
     writeComplexTypeArrayField("faultValues", faultValues, writeBuffer);
@@ -173,43 +161,26 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataFaultValues");
     // Create the instance
-    return new BACnetConstructedDataFaultValuesBuilderImpl(
-        numberOfDataElements, faultValues, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFaultValuesBuilderImpl(numberOfDataElements, faultValues);
   }
 
   public static class BACnetConstructedDataFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLifeSafetyStateTagged> faultValues;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataFaultValuesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetLifeSafetyStateTagged> faultValues,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetLifeSafetyStateTagged> faultValues) {
       this.numberOfDataElements = numberOfDataElements;
       this.faultValues = faultValues;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataFaultValues build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataFaultValues bACnetConstructedDataFaultValues =
           new BACnetConstructedDataFaultValues(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              faultValues,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, faultValues);
       return bACnetConstructedDataFaultValues;
     }
   }

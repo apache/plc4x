@@ -61,12 +61,12 @@ var _ BACnetConstructedDataScale = (*_BACnetConstructedDataScale)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScale)(nil)
 
 // NewBACnetConstructedDataScale factory function for _BACnetConstructedDataScale
-func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scale BACnetScale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
+func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scale BACnetScale) *_BACnetConstructedDataScale {
 	if scale == nil {
 		panic("scale of type BACnetScale for BACnetConstructedDataScale must not be nil")
 	}
 	_result := &_BACnetConstructedDataScale{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Scale:                         scale,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

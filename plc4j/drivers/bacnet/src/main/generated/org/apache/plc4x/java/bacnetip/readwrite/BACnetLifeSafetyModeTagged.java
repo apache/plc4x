@@ -42,22 +42,12 @@ public class BACnetLifeSafetyModeTagged implements Message {
   protected final BACnetLifeSafetyMode value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetLifeSafetyModeTagged(
-      BACnetTagHeader header,
-      BACnetLifeSafetyMode value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetLifeSafetyMode value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetLifeSafetyModeTagged implements Message {
     readBuffer.closeContext("BACnetLifeSafetyModeTagged");
     // Create the instance
     BACnetLifeSafetyModeTagged _bACnetLifeSafetyModeTagged;
-    _bACnetLifeSafetyModeTagged =
-        new BACnetLifeSafetyModeTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetLifeSafetyModeTagged = new BACnetLifeSafetyModeTagged(header, value, proprietaryValue);
     return _bACnetLifeSafetyModeTagged;
   }
 

@@ -52,23 +52,15 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetApplicationTagCharacterString> shedLevelDescriptions;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataShedLevelDescriptions(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetApplicationTagCharacterString> shedLevelDescriptions,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagCharacterString> shedLevelDescriptions) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.shedLevelDescriptions = shedLevelDescriptions;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (shedLevelDescriptions)
     writeComplexTypeArrayField("shedLevelDescriptions", shedLevelDescriptions, writeBuffer);
@@ -175,42 +163,26 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
     readBuffer.closeContext("BACnetConstructedDataShedLevelDescriptions");
     // Create the instance
     return new BACnetConstructedDataShedLevelDescriptionsBuilderImpl(
-        numberOfDataElements, shedLevelDescriptions, tagNumber, arrayIndexArgument);
+        numberOfDataElements, shedLevelDescriptions);
   }
 
   public static class BACnetConstructedDataShedLevelDescriptionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagCharacterString> shedLevelDescriptions;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataShedLevelDescriptionsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetApplicationTagCharacterString> shedLevelDescriptions,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagCharacterString> shedLevelDescriptions) {
       this.numberOfDataElements = numberOfDataElements;
       this.shedLevelDescriptions = shedLevelDescriptions;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataShedLevelDescriptions build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataShedLevelDescriptions bACnetConstructedDataShedLevelDescriptions =
           new BACnetConstructedDataShedLevelDescriptions(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              shedLevelDescriptions,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, shedLevelDescriptions);
       return bACnetConstructedDataShedLevelDescriptions;
     }
   }

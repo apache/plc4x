@@ -42,19 +42,14 @@ public class ListOfCovNotificationsList implements Message {
   protected final List<ListOfCovNotifications> specifications;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public ListOfCovNotificationsList(
       BACnetOpeningTag openingTag,
       List<ListOfCovNotifications> specifications,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.specifications = specifications;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -144,7 +139,7 @@ public class ListOfCovNotificationsList implements Message {
     // Create the instance
     ListOfCovNotificationsList _listOfCovNotificationsList;
     _listOfCovNotificationsList =
-        new ListOfCovNotificationsList(openingTag, specifications, closingTag, tagNumber);
+        new ListOfCovNotificationsList(openingTag, specifications, closingTag);
     return _listOfCovNotificationsList;
   }
 

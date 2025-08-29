@@ -74,7 +74,7 @@ var _ BACnetNotificationParametersUnsignedOutOfRange = (*_BACnetNotificationPara
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersUnsignedOutOfRange)(nil)
 
 // NewBACnetNotificationParametersUnsignedOutOfRange factory function for _BACnetNotificationParametersUnsignedOutOfRange
-func NewBACnetNotificationParametersUnsignedOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersUnsignedOutOfRange {
+func NewBACnetNotificationParametersUnsignedOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersUnsignedOutOfRange {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersUnsignedOutOfRange must not be nil")
 	}
@@ -94,7 +94,7 @@ func NewBACnetNotificationParametersUnsignedOutOfRange(openingTag BACnetOpeningT
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersUnsignedOutOfRange must not be nil")
 	}
 	_result := &_BACnetNotificationParametersUnsignedOutOfRange{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		ExceedingValue:                       exceedingValue,
 		StatusFlags:                          statusFlags,

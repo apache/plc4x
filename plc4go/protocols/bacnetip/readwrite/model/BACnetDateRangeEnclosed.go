@@ -57,15 +57,12 @@ type _BACnetDateRangeEnclosed struct {
 	OpeningTag BACnetOpeningTag
 	DateRange  BACnetDateRange
 	ClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetDateRangeEnclosed = (*_BACnetDateRangeEnclosed)(nil)
 
 // NewBACnetDateRangeEnclosed factory function for _BACnetDateRangeEnclosed
-func NewBACnetDateRangeEnclosed(openingTag BACnetOpeningTag, dateRange BACnetDateRange, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDateRangeEnclosed {
+func NewBACnetDateRangeEnclosed(openingTag BACnetOpeningTag, dateRange BACnetDateRange, closingTag BACnetClosingTag) *_BACnetDateRangeEnclosed {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetDateRangeEnclosed must not be nil")
 	}
@@ -75,7 +72,7 @@ func NewBACnetDateRangeEnclosed(openingTag BACnetOpeningTag, dateRange BACnetDat
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetDateRangeEnclosed must not be nil")
 	}
-	return &_BACnetDateRangeEnclosed{OpeningTag: openingTag, DateRange: dateRange, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetDateRangeEnclosed{OpeningTag: openingTag, DateRange: dateRange, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,8 +97,6 @@ type BACnetDateRangeEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetDateRangeEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDateRangeEnclosedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetDateRangeEnclosedBuilder
 	// Build builds the BACnetDateRangeEnclosed or returns an error if something is wrong
 	Build() (BACnetDateRangeEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -167,11 +162,6 @@ func (b *_BACnetDateRangeEnclosedBuilder) WithClosingTagBuilder(builderSupplier 
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetDateRangeEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetDateRangeEnclosedBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -287,7 +277,7 @@ func BACnetDateRangeEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx co
 }
 
 func BACnetDateRangeEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetDateRangeEnclosed, error) {
-	v, err := (&_BACnetDateRangeEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetDateRangeEnclosed)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -363,16 +353,6 @@ func (m *_BACnetDateRangeEnclosed) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetDateRangeEnclosed) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetDateRangeEnclosed) IsBACnetDateRangeEnclosed() {}
 
 func (m *_BACnetDateRangeEnclosed) DeepCopy() any {
@@ -387,7 +367,6 @@ func (m *_BACnetDateRangeEnclosed) deepCopy() *_BACnetDateRangeEnclosed {
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetDateRange](m.DateRange),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetDateRangeEnclosedCopy
 }

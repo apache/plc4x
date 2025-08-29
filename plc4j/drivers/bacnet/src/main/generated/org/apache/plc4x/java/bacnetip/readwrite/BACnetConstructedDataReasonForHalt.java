@@ -49,21 +49,13 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
   // Properties.
   protected final BACnetProgramErrorTagged programError;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataReasonForHalt(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetProgramErrorTagged programError,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetProgramErrorTagged programError) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.programError = programError;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetProgramErrorTagged getProgramError() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataReasonForHalt");
     // Create the instance
-    return new BACnetConstructedDataReasonForHaltBuilderImpl(
-        programError, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataReasonForHaltBuilderImpl(programError);
   }
 
   public static class BACnetConstructedDataReasonForHaltBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProgramErrorTagged programError;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataReasonForHaltBuilderImpl(
-        BACnetProgramErrorTagged programError,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataReasonForHaltBuilderImpl(BACnetProgramErrorTagged programError) {
       this.programError = programError;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataReasonForHalt build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataReasonForHalt bACnetConstructedDataReasonForHalt =
           new BACnetConstructedDataReasonForHalt(
-              openingTag, peekedTagHeader, closingTag, programError, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, programError);
       return bACnetConstructedDataReasonForHalt;
     }
   }

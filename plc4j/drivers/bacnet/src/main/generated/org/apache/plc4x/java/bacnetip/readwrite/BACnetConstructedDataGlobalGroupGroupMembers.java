@@ -52,23 +52,15 @@ public class BACnetConstructedDataGlobalGroupGroupMembers extends BACnetConstruc
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetDeviceObjectPropertyReference> groupMembers;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataGlobalGroupGroupMembers(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetDeviceObjectPropertyReference> groupMembers,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDeviceObjectPropertyReference> groupMembers) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.groupMembers = groupMembers;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataGlobalGroupGroupMembers extends BACnetConstruc
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (groupMembers)
     writeComplexTypeArrayField("groupMembers", groupMembers, writeBuffer);
@@ -172,42 +160,26 @@ public class BACnetConstructedDataGlobalGroupGroupMembers extends BACnetConstruc
     readBuffer.closeContext("BACnetConstructedDataGlobalGroupGroupMembers");
     // Create the instance
     return new BACnetConstructedDataGlobalGroupGroupMembersBuilderImpl(
-        numberOfDataElements, groupMembers, tagNumber, arrayIndexArgument);
+        numberOfDataElements, groupMembers);
   }
 
   public static class BACnetConstructedDataGlobalGroupGroupMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDeviceObjectPropertyReference> groupMembers;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataGlobalGroupGroupMembersBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetDeviceObjectPropertyReference> groupMembers,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDeviceObjectPropertyReference> groupMembers) {
       this.numberOfDataElements = numberOfDataElements;
       this.groupMembers = groupMembers;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataGlobalGroupGroupMembers build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataGlobalGroupGroupMembers bACnetConstructedDataGlobalGroupGroupMembers =
           new BACnetConstructedDataGlobalGroupGroupMembers(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              groupMembers,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, groupMembers);
       return bACnetConstructedDataGlobalGroupGroupMembers;
     }
   }

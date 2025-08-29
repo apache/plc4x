@@ -63,12 +63,12 @@ var _ MultipleServiceRequest = (*_MultipleServiceRequest)(nil)
 var _ CipServiceRequirements = (*_MultipleServiceRequest)(nil)
 
 // NewMultipleServiceRequest factory function for _MultipleServiceRequest
-func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
+func NewMultipleServiceRequest(data Services) *_MultipleServiceRequest {
 	if data == nil {
 		panic("data of type Services for MultipleServiceRequest must not be nil")
 	}
 	_result := &_MultipleServiceRequest{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		Data:               data,
 	}
 	_result.CipServiceContract.(*_CipService)._SubType = _result

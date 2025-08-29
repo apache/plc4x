@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBelongsTo = (*_BACnetConstructedDataBelongsTo)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBelongsTo)(nil)
 
 // NewBACnetConstructedDataBelongsTo factory function for _BACnetConstructedDataBelongsTo
-func NewBACnetConstructedDataBelongsTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, belongsTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBelongsTo {
+func NewBACnetConstructedDataBelongsTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, belongsTo BACnetDeviceObjectReference) *_BACnetConstructedDataBelongsTo {
 	if belongsTo == nil {
 		panic("belongsTo of type BACnetDeviceObjectReference for BACnetConstructedDataBelongsTo must not be nil")
 	}
 	_result := &_BACnetConstructedDataBelongsTo{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		BelongsTo:                     belongsTo,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -39,6 +39,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BACnetTagPayloadSignedInteger implements Message {
 
   // Properties.
+  protected final long actualLength;
   protected final Byte valueInt8;
   protected final Short valueInt16;
   protected final Integer valueInt24;
@@ -48,10 +49,8 @@ public class BACnetTagPayloadSignedInteger implements Message {
   protected final Long valueInt56;
   protected final Long valueInt64;
 
-  // Arguments.
-  protected final Long actualLength;
-
   public BACnetTagPayloadSignedInteger(
+      long actualLength,
       Byte valueInt8,
       Short valueInt16,
       Integer valueInt24,
@@ -59,9 +58,9 @@ public class BACnetTagPayloadSignedInteger implements Message {
       Long valueInt40,
       Long valueInt48,
       Long valueInt56,
-      Long valueInt64,
-      Long actualLength) {
+      Long valueInt64) {
     super();
+    this.actualLength = actualLength;
     this.valueInt8 = valueInt8;
     this.valueInt16 = valueInt16;
     this.valueInt24 = valueInt24;
@@ -70,7 +69,10 @@ public class BACnetTagPayloadSignedInteger implements Message {
     this.valueInt48 = valueInt48;
     this.valueInt56 = valueInt56;
     this.valueInt64 = valueInt64;
-    this.actualLength = actualLength;
+  }
+
+  public long getActualLength() {
+    return actualLength;
   }
 
   public Byte getValueInt8() {
@@ -166,56 +168,56 @@ public class BACnetTagPayloadSignedInteger implements Message {
     writeBuffer.writeVirtual("isInt8", isInt8);
 
     // Optional Field (valueInt8) (Can be skipped, if the value is null)
-    writeOptionalField("valueInt8", valueInt8, writeSignedByte(writeBuffer, 8), getIsInt8());
+    writeOptionalField("valueInt8", valueInt8, writeSignedByte(writeBuffer, 8));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isInt16 = getIsInt16();
     writeBuffer.writeVirtual("isInt16", isInt16);
 
     // Optional Field (valueInt16) (Can be skipped, if the value is null)
-    writeOptionalField("valueInt16", valueInt16, writeSignedShort(writeBuffer, 16), getIsInt16());
+    writeOptionalField("valueInt16", valueInt16, writeSignedShort(writeBuffer, 16));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isInt24 = getIsInt24();
     writeBuffer.writeVirtual("isInt24", isInt24);
 
     // Optional Field (valueInt24) (Can be skipped, if the value is null)
-    writeOptionalField("valueInt24", valueInt24, writeSignedInt(writeBuffer, 24), getIsInt24());
+    writeOptionalField("valueInt24", valueInt24, writeSignedInt(writeBuffer, 24));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isInt32 = getIsInt32();
     writeBuffer.writeVirtual("isInt32", isInt32);
 
     // Optional Field (valueInt32) (Can be skipped, if the value is null)
-    writeOptionalField("valueInt32", valueInt32, writeSignedInt(writeBuffer, 32), getIsInt32());
+    writeOptionalField("valueInt32", valueInt32, writeSignedInt(writeBuffer, 32));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isInt40 = getIsInt40();
     writeBuffer.writeVirtual("isInt40", isInt40);
 
     // Optional Field (valueInt40) (Can be skipped, if the value is null)
-    writeOptionalField("valueInt40", valueInt40, writeSignedLong(writeBuffer, 40), getIsInt40());
+    writeOptionalField("valueInt40", valueInt40, writeSignedLong(writeBuffer, 40));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isInt48 = getIsInt48();
     writeBuffer.writeVirtual("isInt48", isInt48);
 
     // Optional Field (valueInt48) (Can be skipped, if the value is null)
-    writeOptionalField("valueInt48", valueInt48, writeSignedLong(writeBuffer, 48), getIsInt48());
+    writeOptionalField("valueInt48", valueInt48, writeSignedLong(writeBuffer, 48));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isInt56 = getIsInt56();
     writeBuffer.writeVirtual("isInt56", isInt56);
 
     // Optional Field (valueInt56) (Can be skipped, if the value is null)
-    writeOptionalField("valueInt56", valueInt56, writeSignedLong(writeBuffer, 56), getIsInt56());
+    writeOptionalField("valueInt56", valueInt56, writeSignedLong(writeBuffer, 56));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isInt64 = getIsInt64();
     writeBuffer.writeVirtual("isInt64", isInt64);
 
     // Optional Field (valueInt64) (Can be skipped, if the value is null)
-    writeOptionalField("valueInt64", valueInt64, writeSignedLong(writeBuffer, 64), getIsInt64());
+    writeOptionalField("valueInt64", valueInt64, writeSignedLong(writeBuffer, 64));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BigInteger actualValue = getActualValue();
@@ -354,6 +356,7 @@ public class BACnetTagPayloadSignedInteger implements Message {
     BACnetTagPayloadSignedInteger _bACnetTagPayloadSignedInteger;
     _bACnetTagPayloadSignedInteger =
         new BACnetTagPayloadSignedInteger(
+            actualLength,
             valueInt8,
             valueInt16,
             valueInt24,
@@ -361,8 +364,7 @@ public class BACnetTagPayloadSignedInteger implements Message {
             valueInt40,
             valueInt48,
             valueInt56,
-            valueInt64,
-            actualLength);
+            valueInt64);
     return _bACnetTagPayloadSignedInteger;
   }
 
@@ -375,7 +377,8 @@ public class BACnetTagPayloadSignedInteger implements Message {
       return false;
     }
     BACnetTagPayloadSignedInteger that = (BACnetTagPayloadSignedInteger) o;
-    return (getValueInt8() == that.getValueInt8())
+    return (getActualLength() == that.getActualLength())
+        && (getValueInt8() == that.getValueInt8())
         && (getValueInt16() == that.getValueInt16())
         && (getValueInt24() == that.getValueInt24())
         && (getValueInt32() == that.getValueInt32())
@@ -389,6 +392,7 @@ public class BACnetTagPayloadSignedInteger implements Message {
   @Override
   public int hashCode() {
     return Objects.hash(
+        getActualLength(),
         getValueInt8(),
         getValueInt16(),
         getValueInt24(),

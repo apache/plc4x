@@ -61,12 +61,12 @@ var _ BACnetConstructedDataSegmentationSupported = (*_BACnetConstructedDataSegme
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSegmentationSupported)(nil)
 
 // NewBACnetConstructedDataSegmentationSupported factory function for _BACnetConstructedDataSegmentationSupported
-func NewBACnetConstructedDataSegmentationSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, segmentationSupported BACnetSegmentationTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSegmentationSupported {
+func NewBACnetConstructedDataSegmentationSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, segmentationSupported BACnetSegmentationTagged) *_BACnetConstructedDataSegmentationSupported {
 	if segmentationSupported == nil {
 		panic("segmentationSupported of type BACnetSegmentationTagged for BACnetConstructedDataSegmentationSupported must not be nil")
 	}
 	_result := &_BACnetConstructedDataSegmentationSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		SegmentationSupported:         segmentationSupported,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

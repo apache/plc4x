@@ -49,21 +49,13 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
   // Properties.
   protected final List<BACnetRouterEntry> routingTable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataRoutingTable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetRouterEntry> routingTable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetRouterEntry> routingTable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.routingTable = routingTable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetRouterEntry> getRoutingTable() {
@@ -126,34 +118,22 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataRoutingTable");
     // Create the instance
-    return new BACnetConstructedDataRoutingTableBuilderImpl(
-        routingTable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataRoutingTableBuilderImpl(routingTable);
   }
 
   public static class BACnetConstructedDataRoutingTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRouterEntry> routingTable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRoutingTableBuilderImpl(
-        List<BACnetRouterEntry> routingTable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataRoutingTableBuilderImpl(List<BACnetRouterEntry> routingTable) {
       this.routingTable = routingTable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataRoutingTable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataRoutingTable bACnetConstructedDataRoutingTable =
           new BACnetConstructedDataRoutingTable(
-              openingTag, peekedTagHeader, closingTag, routingTable, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, routingTable);
       return bACnetConstructedDataRoutingTable;
     }
   }

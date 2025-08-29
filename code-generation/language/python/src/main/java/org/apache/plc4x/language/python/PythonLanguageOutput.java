@@ -79,6 +79,11 @@ public class PythonLanguageOutput extends FreemarkerLanguageOutput {
         return Collections.emptyList();
     }
 
+    @Override
+    protected List<Template> getConstantsTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return List.of(freemarkerConfiguration.getTemplate("templates/python/constants-template.python.ftlh"));
+    }
+
     /**
      * Returns a list of templates that are used to generate code for a complex type.
      * A complex type is a type that is composed of multiple fields.

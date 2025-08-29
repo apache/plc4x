@@ -46,14 +46,10 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
   protected final byte[] terminalLevels;
   protected final byte reStrikeDelay;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandDelays(byte[] terminalLevels, byte reStrikeDelay, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandDelays(byte[] terminalLevels, byte reStrikeDelay) {
+    super();
     this.terminalLevels = terminalLevels;
     this.reStrikeDelay = reStrikeDelay;
-    this.numBytes = numBytes;
   }
 
   public byte[] getTerminalLevels() {
@@ -115,26 +111,22 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
 
     readBuffer.closeContext("IdentifyReplyCommandDelays");
     // Create the instance
-    return new IdentifyReplyCommandDelaysBuilderImpl(terminalLevels, reStrikeDelay, numBytes);
+    return new IdentifyReplyCommandDelaysBuilderImpl(terminalLevels, reStrikeDelay);
   }
 
   public static class IdentifyReplyCommandDelaysBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] terminalLevels;
     private final byte reStrikeDelay;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandDelaysBuilderImpl(
-        byte[] terminalLevels, byte reStrikeDelay, Byte numBytes) {
+    public IdentifyReplyCommandDelaysBuilderImpl(byte[] terminalLevels, byte reStrikeDelay) {
       this.terminalLevels = terminalLevels;
       this.reStrikeDelay = reStrikeDelay;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandDelays build(Byte numBytes) {
-
+    public IdentifyReplyCommandDelays build() {
       IdentifyReplyCommandDelays identifyReplyCommandDelays =
-          new IdentifyReplyCommandDelays(terminalLevels, reStrikeDelay, numBytes);
+          new IdentifyReplyCommandDelays(terminalLevels, reStrikeDelay);
       return identifyReplyCommandDelays;
     }
   }

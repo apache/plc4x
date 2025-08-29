@@ -112,7 +112,7 @@ var _ CipConnectionManagerRequest = (*_CipConnectionManagerRequest)(nil)
 var _ CipServiceRequirements = (*_CipConnectionManagerRequest)(nil)
 
 // NewCipConnectionManagerRequest factory function for _CipConnectionManagerRequest
-func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16) *_CipConnectionManagerRequest {
+func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment) *_CipConnectionManagerRequest {
 	if classSegment == nil {
 		panic("classSegment of type PathSegment for CipConnectionManagerRequest must not be nil")
 	}
@@ -129,7 +129,7 @@ func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment Pa
 		panic("transportType of type TransportType for CipConnectionManagerRequest must not be nil")
 	}
 	_result := &_CipConnectionManagerRequest{
-		CipServiceContract:     NewCipService(serviceLen),
+		CipServiceContract:     NewCipService(),
 		ClassSegment:           classSegment,
 		InstanceSegment:        instanceSegment,
 		Priority:               priority,

@@ -51,23 +51,15 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetDeviceObjectReference> doorMembers;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDoorMembers(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetDeviceObjectReference> doorMembers,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDeviceObjectReference> doorMembers) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.doorMembers = doorMembers;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (doorMembers)
     writeComplexTypeArrayField("doorMembers", doorMembers, writeBuffer);
@@ -169,43 +157,26 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataDoorMembers");
     // Create the instance
-    return new BACnetConstructedDataDoorMembersBuilderImpl(
-        numberOfDataElements, doorMembers, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoorMembersBuilderImpl(numberOfDataElements, doorMembers);
   }
 
   public static class BACnetConstructedDataDoorMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDeviceObjectReference> doorMembers;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDoorMembersBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetDeviceObjectReference> doorMembers,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDeviceObjectReference> doorMembers) {
       this.numberOfDataElements = numberOfDataElements;
       this.doorMembers = doorMembers;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDoorMembers build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDoorMembers bACnetConstructedDataDoorMembers =
           new BACnetConstructedDataDoorMembers(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              doorMembers,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, doorMembers);
       return bACnetConstructedDataDoorMembers;
     }
   }

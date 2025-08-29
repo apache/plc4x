@@ -49,21 +49,13 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagBoolean doNotHide;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDoNotHide(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean doNotHide,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean doNotHide) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.doNotHide = doNotHide;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getDoNotHide() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataDoNotHide");
     // Create the instance
-    return new BACnetConstructedDataDoNotHideBuilderImpl(doNotHide, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoNotHideBuilderImpl(doNotHide);
   }
 
   public static class BACnetConstructedDataDoNotHideBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean doNotHide;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoNotHideBuilderImpl(
-        BACnetApplicationTagBoolean doNotHide,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataDoNotHideBuilderImpl(BACnetApplicationTagBoolean doNotHide) {
       this.doNotHide = doNotHide;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDoNotHide build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDoNotHide bACnetConstructedDataDoNotHide =
-          new BACnetConstructedDataDoNotHide(
-              openingTag, peekedTagHeader, closingTag, doNotHide, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataDoNotHide(openingTag, peekedTagHeader, closingTag, doNotHide);
       return bACnetConstructedDataDoNotHide;
     }
   }

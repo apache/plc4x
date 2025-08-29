@@ -736,7 +736,7 @@ public class ProfinetDevice implements PlcSubscriber {
                                 0x0001,
                                 record.getIndex(),
                                 record.getLength(),
-                                new UserData(ByteBuffer.allocate(4).putInt(Integer.valueOf(record.getRef().getDefaultValue())).array(), (long) record.getLength())
+                                new UserData(ByteBuffer.allocate(4).putInt(Integer.parseInt(record.getRef().getDefaultValue())).array())
                             ));
                         seqNumber += 1;
                     }
@@ -1005,8 +1005,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     // TODO: Need to specify the datatype length based on the gsd file
                     PnIoCm_DataUnitDataObject ioc = new PnIoCm_DataUnitDataObject(
                         new byte[1],
-                        new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false),
-                        1
+                        new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false)
                     );
                     ioc.serialize(buffer);
                 }
@@ -1028,7 +1027,7 @@ public class ProfinetDevice implements PlcSubscriber {
                         new Ethernet_FramePayload_PnDcp(
                             new PnDcp_Pdu_RealTimeCyclic(
                                 deviceContext.getOutputReq().getFrameId(),
-                                new PnIo_CyclicServiceDataUnit(buffer.getBytes(), (short) deviceContext.getOutputReq().getDataLength()),
+                                new PnIo_CyclicServiceDataUnit(buffer.getBytes()),
                                 elapsedTime,
                                 false,
                                 true,
@@ -1054,7 +1053,7 @@ public class ProfinetDevice implements PlcSubscriber {
                         new Ethernet_FramePayload_PnDcp(
                             new PnDcp_Pdu_RealTimeCyclic(
                                 deviceContext.getOutputReq().getFrameId(),
-                                new PnIo_CyclicServiceDataUnit(new byte[]{}, (short) 0),
+                                new PnIo_CyclicServiceDataUnit(new byte[]{}),
                                 elapsedTime,
                                 false,
                                 true,

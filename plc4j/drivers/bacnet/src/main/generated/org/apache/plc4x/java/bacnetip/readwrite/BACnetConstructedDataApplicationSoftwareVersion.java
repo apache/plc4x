@@ -50,21 +50,13 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
   // Properties.
   protected final BACnetApplicationTagCharacterString applicationSoftwareVersion;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataApplicationSoftwareVersion(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString applicationSoftwareVersion,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString applicationSoftwareVersion) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.applicationSoftwareVersion = applicationSoftwareVersion;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getApplicationSoftwareVersion() {
@@ -138,39 +130,24 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
     readBuffer.closeContext("BACnetConstructedDataApplicationSoftwareVersion");
     // Create the instance
     return new BACnetConstructedDataApplicationSoftwareVersionBuilderImpl(
-        applicationSoftwareVersion, tagNumber, arrayIndexArgument);
+        applicationSoftwareVersion);
   }
 
   public static class BACnetConstructedDataApplicationSoftwareVersionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString applicationSoftwareVersion;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataApplicationSoftwareVersionBuilderImpl(
-        BACnetApplicationTagCharacterString applicationSoftwareVersion,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString applicationSoftwareVersion) {
       this.applicationSoftwareVersion = applicationSoftwareVersion;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataApplicationSoftwareVersion build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataApplicationSoftwareVersion
           bACnetConstructedDataApplicationSoftwareVersion =
               new BACnetConstructedDataApplicationSoftwareVersion(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  applicationSoftwareVersion,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, applicationSoftwareVersion);
       return bACnetConstructedDataApplicationSoftwareVersion;
     }
   }

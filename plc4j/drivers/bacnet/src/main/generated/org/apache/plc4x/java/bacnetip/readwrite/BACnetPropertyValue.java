@@ -43,21 +43,16 @@ public class BACnetPropertyValue implements Message {
   protected final BACnetConstructedDataElement propertyValue;
   protected final BACnetContextTagUnsignedInteger priority;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPropertyValue(
       BACnetPropertyIdentifierTagged propertyIdentifier,
       BACnetContextTagUnsignedInteger propertyArrayIndex,
       BACnetConstructedDataElement propertyValue,
-      BACnetContextTagUnsignedInteger priority,
-      BACnetObjectType objectTypeArgument) {
+      BACnetContextTagUnsignedInteger priority) {
     super();
     this.propertyIdentifier = propertyIdentifier;
     this.propertyArrayIndex = propertyArrayIndex;
     this.propertyValue = propertyValue;
     this.priority = priority;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetPropertyIdentifierTagged getPropertyIdentifier() {
@@ -186,8 +181,7 @@ public class BACnetPropertyValue implements Message {
     // Create the instance
     BACnetPropertyValue _bACnetPropertyValue;
     _bACnetPropertyValue =
-        new BACnetPropertyValue(
-            propertyIdentifier, propertyArrayIndex, propertyValue, priority, objectTypeArgument);
+        new BACnetPropertyValue(propertyIdentifier, propertyArrayIndex, propertyValue, priority);
     return _bACnetPropertyValue;
   }
 

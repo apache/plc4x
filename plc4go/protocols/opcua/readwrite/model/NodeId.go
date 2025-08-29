@@ -212,7 +212,7 @@ func NodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.
 }
 
 func NodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeId, error) {
-	v, err := (&_NodeId{}).parse(ctx, readBuffer)
+	v, err := (new(_NodeId)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -64,9 +64,9 @@ var _ FirmataMessageDigitalIO = (*_FirmataMessageDigitalIO)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageDigitalIO)(nil)
 
 // NewFirmataMessageDigitalIO factory function for _FirmataMessageDigitalIO
-func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *_FirmataMessageDigitalIO {
+func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8) *_FirmataMessageDigitalIO {
 	_result := &_FirmataMessageDigitalIO{
-		FirmataMessageContract: NewFirmataMessage(response),
+		FirmataMessageContract: NewFirmataMessage(),
 		PinBlock:               pinBlock,
 		Data:                   data,
 	}

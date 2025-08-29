@@ -59,20 +59,16 @@ type _BACnetDeviceStatusTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetDeviceStatus
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetDeviceStatusTagged = (*_BACnetDeviceStatusTagged)(nil)
 
 // NewBACnetDeviceStatusTagged factory function for _BACnetDeviceStatusTagged
-func NewBACnetDeviceStatusTagged(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDeviceStatusTagged {
+func NewBACnetDeviceStatusTagged(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32) *_BACnetDeviceStatusTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetDeviceStatusTagged must not be nil")
 	}
-	return &_BACnetDeviceStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetDeviceStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetDeviceStatusTaggedBuilder interface {
 	WithValue(BACnetDeviceStatus) BACnetDeviceStatusTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetDeviceStatusTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetDeviceStatusTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetDeviceStatusTaggedBuilder
 	// Build builds the BACnetDeviceStatusTagged or returns an error if something is wrong
 	Build() (BACnetDeviceStatusTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetDeviceStatusTaggedBuilder) WithValue(value BACnetDeviceStatus) B
 
 func (b *_BACnetDeviceStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetDeviceStatusTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetDeviceStatusTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetDeviceStatusTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetDeviceStatusTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetDeviceStatusTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetDeviceStatusTaggedParseWithBufferProducer(tagNumber uint8, tagClass T
 }
 
 func BACnetDeviceStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDeviceStatusTagged, error) {
-	v, err := (&_BACnetDeviceStatusTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetDeviceStatusTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetDeviceStatusTagged) SerializeWithWriteBuffer(ctx context.Context
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetDeviceStatusTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetDeviceStatusTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetDeviceStatusTagged) IsBACnetDeviceStatusTagged() {}
 
 func (m *_BACnetDeviceStatusTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetDeviceStatusTagged) deepCopy() *_BACnetDeviceStatusTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetDeviceStatusTaggedCopy
 }

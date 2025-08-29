@@ -189,7 +189,7 @@ func SerialInterfaceAddressParseWithBufferProducer() func(ctx context.Context, r
 }
 
 func SerialInterfaceAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SerialInterfaceAddress, error) {
-	v, err := (&_SerialInterfaceAddress{}).parse(ctx, readBuffer)
+	v, err := (new(_SerialInterfaceAddress)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

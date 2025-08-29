@@ -52,8 +52,6 @@ type CBusPointToMultiPointCommand interface {
 type CBusPointToMultiPointCommandContract interface {
 	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
-	// GetCBusOptions() returns a parser argument
-	GetCBusOptions() CBusOptions
 	// IsCBusPointToMultiPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToMultiPointCommand()
 	// CreateBuilder creates a CBusPointToMultiPointCommandBuilder
@@ -75,16 +73,13 @@ type _CBusPointToMultiPointCommand struct {
 		CBusPointToMultiPointCommandRequirements
 	}
 	PeekedApplication byte
-
-	// Arguments.
-	CBusOptions CBusOptions
 }
 
 var _ CBusPointToMultiPointCommandContract = (*_CBusPointToMultiPointCommand)(nil)
 
 // NewCBusPointToMultiPointCommand factory function for _CBusPointToMultiPointCommand
-func NewCBusPointToMultiPointCommand(peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommand {
-	return &_CBusPointToMultiPointCommand{PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
+func NewCBusPointToMultiPointCommand(peekedApplication byte) *_CBusPointToMultiPointCommand {
+	return &_CBusPointToMultiPointCommand{PeekedApplication: peekedApplication}
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,8 +94,6 @@ type CBusPointToMultiPointCommandBuilder interface {
 	WithMandatoryFields(peekedApplication byte) CBusPointToMultiPointCommandBuilder
 	// WithPeekedApplication adds PeekedApplication (property field)
 	WithPeekedApplication(byte) CBusPointToMultiPointCommandBuilder
-	// WithArgCBusOptions sets a parser argument
-	WithArgCBusOptions(CBusOptions) CBusPointToMultiPointCommandBuilder
 	// AsCBusPointToMultiPointCommandStatus converts this build to a subType of CBusPointToMultiPointCommand. It is always possible to return to current builder using Done()
 	AsCBusPointToMultiPointCommandStatus() CBusPointToMultiPointCommandStatusBuilder
 	// AsCBusPointToMultiPointCommandNormal converts this build to a subType of CBusPointToMultiPointCommand. It is always possible to return to current builder using Done()
@@ -142,11 +135,6 @@ func (b *_CBusPointToMultiPointCommandBuilder) WithMandatoryFields(peekedApplica
 
 func (b *_CBusPointToMultiPointCommandBuilder) WithPeekedApplication(peekedApplication byte) CBusPointToMultiPointCommandBuilder {
 	b.PeekedApplication = peekedApplication
-	return b
-}
-
-func (b *_CBusPointToMultiPointCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusPointToMultiPointCommandBuilder {
-	b.CBusOptions = cBusOptions
 	return b
 }
 
@@ -287,7 +275,7 @@ func CBusPointToMultiPointCommandParseWithBufferProducer[T CBusPointToMultiPoint
 }
 
 func CBusPointToMultiPointCommandParseWithBuffer[T CBusPointToMultiPointCommand](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_CBusPointToMultiPointCommand{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
+	v, err := (new(_CBusPointToMultiPointCommand)).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -360,16 +348,6 @@ func (pm *_CBusPointToMultiPointCommand) serializeParent(ctx context.Context, wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_CBusPointToMultiPointCommand) GetCBusOptions() CBusOptions {
-	return m.CBusOptions
-}
-
-//
-////
-
 func (m *_CBusPointToMultiPointCommand) IsCBusPointToMultiPointCommand() {}
 
 func (m *_CBusPointToMultiPointCommand) DeepCopy() any {
@@ -383,7 +361,6 @@ func (m *_CBusPointToMultiPointCommand) deepCopy() *_CBusPointToMultiPointComman
 	_CBusPointToMultiPointCommandCopy := &_CBusPointToMultiPointCommand{
 		nil, // will be set by child
 		m.PeekedApplication,
-		m.CBusOptions,
 	}
 	return _CBusPointToMultiPointCommandCopy
 }

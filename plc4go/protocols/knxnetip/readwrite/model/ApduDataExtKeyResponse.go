@@ -54,9 +54,9 @@ var _ ApduDataExtKeyResponse = (*_ApduDataExtKeyResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtKeyResponse)(nil)
 
 // NewApduDataExtKeyResponse factory function for _ApduDataExtKeyResponse
-func NewApduDataExtKeyResponse(length uint8) *_ApduDataExtKeyResponse {
+func NewApduDataExtKeyResponse() *_ApduDataExtKeyResponse {
 	_result := &_ApduDataExtKeyResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

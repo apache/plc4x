@@ -57,15 +57,12 @@ type _BACnetAddressEnclosed struct {
 	OpeningTag BACnetOpeningTag
 	Address    BACnetAddress
 	ClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetAddressEnclosed = (*_BACnetAddressEnclosed)(nil)
 
 // NewBACnetAddressEnclosed factory function for _BACnetAddressEnclosed
-func NewBACnetAddressEnclosed(openingTag BACnetOpeningTag, address BACnetAddress, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAddressEnclosed {
+func NewBACnetAddressEnclosed(openingTag BACnetOpeningTag, address BACnetAddress, closingTag BACnetClosingTag) *_BACnetAddressEnclosed {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetAddressEnclosed must not be nil")
 	}
@@ -75,7 +72,7 @@ func NewBACnetAddressEnclosed(openingTag BACnetOpeningTag, address BACnetAddress
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetAddressEnclosed must not be nil")
 	}
-	return &_BACnetAddressEnclosed{OpeningTag: openingTag, Address: address, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetAddressEnclosed{OpeningTag: openingTag, Address: address, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,8 +97,6 @@ type BACnetAddressEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetAddressEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAddressEnclosedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetAddressEnclosedBuilder
 	// Build builds the BACnetAddressEnclosed or returns an error if something is wrong
 	Build() (BACnetAddressEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -167,11 +162,6 @@ func (b *_BACnetAddressEnclosedBuilder) WithClosingTagBuilder(builderSupplier fu
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetAddressEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAddressEnclosedBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -287,7 +277,7 @@ func BACnetAddressEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx cont
 }
 
 func BACnetAddressEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAddressEnclosed, error) {
-	v, err := (&_BACnetAddressEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetAddressEnclosed)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -363,16 +353,6 @@ func (m *_BACnetAddressEnclosed) SerializeWithWriteBuffer(ctx context.Context, w
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetAddressEnclosed) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetAddressEnclosed) IsBACnetAddressEnclosed() {}
 
 func (m *_BACnetAddressEnclosed) DeepCopy() any {
@@ -387,7 +367,6 @@ func (m *_BACnetAddressEnclosed) deepCopy() *_BACnetAddressEnclosed {
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetAddress](m.Address),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetAddressEnclosedCopy
 }

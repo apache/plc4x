@@ -47,10 +47,6 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
   protected final BACnetPropertyValues propertyValues;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersChangeOfReliability(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -59,17 +55,13 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
       BACnetReliabilityTagged reliability,
       BACnetStatusFlagsTagged statusFlags,
       BACnetPropertyValues propertyValues,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.reliability = reliability;
     this.statusFlags = statusFlags;
     this.propertyValues = propertyValues;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -200,13 +192,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
     readBuffer.closeContext("BACnetNotificationParametersChangeOfReliability");
     // Create the instance
     return new BACnetNotificationParametersChangeOfReliabilityBuilderImpl(
-        innerOpeningTag,
-        reliability,
-        statusFlags,
-        propertyValues,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerOpeningTag, reliability, statusFlags, propertyValues, innerClosingTag);
   }
 
   public static class BACnetNotificationParametersChangeOfReliabilityBuilderImpl
@@ -216,32 +202,22 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
     private final BACnetStatusFlagsTagged statusFlags;
     private final BACnetPropertyValues propertyValues;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersChangeOfReliabilityBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetReliabilityTagged reliability,
         BACnetStatusFlagsTagged statusFlags,
         BACnetPropertyValues propertyValues,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.reliability = reliability;
       this.statusFlags = statusFlags;
       this.propertyValues = propertyValues;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersChangeOfReliability build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfReliability
           bACnetNotificationParametersChangeOfReliability =
               new BACnetNotificationParametersChangeOfReliability(
@@ -252,9 +228,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
                   reliability,
                   statusFlags,
                   propertyValues,
-                  innerClosingTag,
-                  tagNumber,
-                  objectTypeArgument);
+                  innerClosingTag);
       return bACnetNotificationParametersChangeOfReliability;
     }
   }

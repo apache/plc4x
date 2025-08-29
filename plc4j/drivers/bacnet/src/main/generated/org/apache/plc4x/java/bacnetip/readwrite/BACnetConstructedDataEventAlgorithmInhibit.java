@@ -50,21 +50,13 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
   // Properties.
   protected final BACnetApplicationTagBoolean eventAlgorithmInhibit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEventAlgorithmInhibit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean eventAlgorithmInhibit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean eventAlgorithmInhibit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.eventAlgorithmInhibit = eventAlgorithmInhibit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getEventAlgorithmInhibit() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataEventAlgorithmInhibit");
     // Create the instance
-    return new BACnetConstructedDataEventAlgorithmInhibitBuilderImpl(
-        eventAlgorithmInhibit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEventAlgorithmInhibitBuilderImpl(eventAlgorithmInhibit);
   }
 
   public static class BACnetConstructedDataEventAlgorithmInhibitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean eventAlgorithmInhibit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataEventAlgorithmInhibitBuilderImpl(
-        BACnetApplicationTagBoolean eventAlgorithmInhibit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean eventAlgorithmInhibit) {
       this.eventAlgorithmInhibit = eventAlgorithmInhibit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEventAlgorithmInhibit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEventAlgorithmInhibit bACnetConstructedDataEventAlgorithmInhibit =
           new BACnetConstructedDataEventAlgorithmInhibit(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              eventAlgorithmInhibit,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, eventAlgorithmInhibit);
       return bACnetConstructedDataEventAlgorithmInhibit;
     }
   }

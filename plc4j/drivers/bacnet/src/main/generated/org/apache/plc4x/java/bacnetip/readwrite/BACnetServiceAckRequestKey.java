@@ -45,16 +45,9 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
   // Properties.
   protected final byte[] bytesOfRemovedService;
 
-  // Arguments.
-  protected final Long serviceAckPayloadLength;
-  protected final Long serviceAckLength;
-
-  public BACnetServiceAckRequestKey(
-      byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
+  public BACnetServiceAckRequestKey(long serviceAckLength, byte[] bytesOfRemovedService) {
     super(serviceAckLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceAckPayloadLength = serviceAckPayloadLength;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -106,28 +99,20 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
 
     readBuffer.closeContext("BACnetServiceAckRequestKey");
     // Create the instance
-    return new BACnetServiceAckRequestKeyBuilderImpl(
-        bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
+    return new BACnetServiceAckRequestKeyBuilderImpl(bytesOfRemovedService);
   }
 
   public static class BACnetServiceAckRequestKeyBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceAckPayloadLength;
-    private final Long serviceAckLength;
 
-    public BACnetServiceAckRequestKeyBuilderImpl(
-        byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
+    public BACnetServiceAckRequestKeyBuilderImpl(byte[] bytesOfRemovedService) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceAckPayloadLength = serviceAckPayloadLength;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckRequestKey build(Long serviceAckLength) {
-
+    public BACnetServiceAckRequestKey build(long serviceAckLength) {
       BACnetServiceAckRequestKey bACnetServiceAckRequestKey =
-          new BACnetServiceAckRequestKey(
-              bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
+          new BACnetServiceAckRequestKey(serviceAckLength, bytesOfRemovedService);
       return bACnetServiceAckRequestKey;
     }
   }

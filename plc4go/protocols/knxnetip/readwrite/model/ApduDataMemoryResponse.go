@@ -62,9 +62,9 @@ var _ ApduDataMemoryResponse = (*_ApduDataMemoryResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryResponse)(nil)
 
 // NewApduDataMemoryResponse factory function for _ApduDataMemoryResponse
-func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_ApduDataMemoryResponse {
+func NewApduDataMemoryResponse(address uint16, data []byte) *_ApduDataMemoryResponse {
 	_result := &_ApduDataMemoryResponse{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		Address:          address,
 		Data:             data,
 	}

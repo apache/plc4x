@@ -277,7 +277,7 @@ func BACnetAuthenticationPolicyParseWithBufferProducer() func(ctx context.Contex
 }
 
 func BACnetAuthenticationPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicy, error) {
-	v, err := (&_BACnetAuthenticationPolicy{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetAuthenticationPolicy)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

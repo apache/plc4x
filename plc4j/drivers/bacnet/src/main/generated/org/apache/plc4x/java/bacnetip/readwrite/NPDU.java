@@ -50,9 +50,6 @@ public class NPDU implements Message {
   protected final NLM nlm;
   protected final APDU apdu;
 
-  // Arguments.
-  protected final Integer npduLength;
-
   public NPDU(
       short protocolVersionNumber,
       NPDUControl control,
@@ -64,8 +61,7 @@ public class NPDU implements Message {
       List<Short> sourceAddress,
       Short hopCount,
       NLM nlm,
-      APDU apdu,
-      Integer npduLength) {
+      APDU apdu) {
     super();
     this.protocolVersionNumber = protocolVersionNumber;
     this.control = control;
@@ -78,7 +74,6 @@ public class NPDU implements Message {
     this.hopCount = hopCount;
     this.nlm = nlm;
     this.apdu = apdu;
-    this.npduLength = npduLength;
   }
 
   public short getProtocolVersionNumber() {
@@ -155,17 +150,10 @@ public class NPDU implements Message {
 
     // Optional Field (destinationNetworkAddress) (Can be skipped, if the value is null)
     writeOptionalField(
-        "destinationNetworkAddress",
-        destinationNetworkAddress,
-        writeUnsignedInt(writeBuffer, 16),
-        getControl().getDestinationSpecified());
+        "destinationNetworkAddress", destinationNetworkAddress, writeUnsignedInt(writeBuffer, 16));
 
     // Optional Field (destinationLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "destinationLength",
-        destinationLength,
-        writeUnsignedShort(writeBuffer, 8),
-        getControl().getDestinationSpecified());
+    writeOptionalField("destinationLength", destinationLength, writeUnsignedShort(writeBuffer, 8));
 
     // Array Field (destinationAddress)
     writeSimpleTypeArrayField(
@@ -177,17 +165,10 @@ public class NPDU implements Message {
 
     // Optional Field (sourceNetworkAddress) (Can be skipped, if the value is null)
     writeOptionalField(
-        "sourceNetworkAddress",
-        sourceNetworkAddress,
-        writeUnsignedInt(writeBuffer, 16),
-        getControl().getSourceSpecified());
+        "sourceNetworkAddress", sourceNetworkAddress, writeUnsignedInt(writeBuffer, 16));
 
     // Optional Field (sourceLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "sourceLength",
-        sourceLength,
-        writeUnsignedShort(writeBuffer, 8),
-        getControl().getSourceSpecified());
+    writeOptionalField("sourceLength", sourceLength, writeUnsignedShort(writeBuffer, 8));
 
     // Array Field (sourceAddress)
     writeSimpleTypeArrayField("sourceAddress", sourceAddress, writeUnsignedShort(writeBuffer, 8));
@@ -197,23 +178,17 @@ public class NPDU implements Message {
     writeBuffer.writeVirtual("sourceLengthAddon", sourceLengthAddon);
 
     // Optional Field (hopCount) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "hopCount",
-        hopCount,
-        writeUnsignedShort(writeBuffer, 8),
-        getControl().getDestinationSpecified());
+    writeOptionalField("hopCount", hopCount, writeUnsignedShort(writeBuffer, 8));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     int payloadSubtraction = getPayloadSubtraction();
     writeBuffer.writeVirtual("payloadSubtraction", payloadSubtraction);
 
     // Optional Field (nlm) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "nlm", nlm, writeComplex(writeBuffer), getControl().getMessageTypeFieldPresent());
+    writeOptionalField("nlm", nlm, writeComplex(writeBuffer));
 
     // Optional Field (apdu) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "apdu", apdu, writeComplex(writeBuffer), !(getControl().getMessageTypeFieldPresent()));
+    writeOptionalField("apdu", apdu, writeComplex(writeBuffer));
 
     writeBuffer.popContext("NPDU");
   }
@@ -403,8 +378,7 @@ public class NPDU implements Message {
             sourceAddress,
             hopCount,
             nlm,
-            apdu,
-            npduLength);
+            apdu);
     return _nPDU;
   }
 

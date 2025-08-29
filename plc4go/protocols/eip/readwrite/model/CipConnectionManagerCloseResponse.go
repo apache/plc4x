@@ -77,9 +77,9 @@ var _ CipConnectionManagerCloseResponse = (*_CipConnectionManagerCloseResponse)(
 var _ CipServiceRequirements = (*_CipConnectionManagerCloseResponse)(nil)
 
 // NewCipConnectionManagerCloseResponse factory function for _CipConnectionManagerCloseResponse
-func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8, serviceLen uint16) *_CipConnectionManagerCloseResponse {
+func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8) *_CipConnectionManagerCloseResponse {
 	_result := &_CipConnectionManagerCloseResponse{
-		CipServiceContract:     NewCipService(serviceLen),
+		CipServiceContract:     NewCipService(),
 		Status:                 status,
 		AdditionalStatusWords:  additionalStatusWords,
 		ConnectionSerialNumber: connectionSerialNumber,

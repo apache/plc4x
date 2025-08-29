@@ -46,18 +46,11 @@ public class BACnetContextTagBoolean extends BACnetContextTag implements Message
   protected final short value;
   protected final BACnetTagPayloadBoolean payload;
 
-  // Arguments.
-  protected final Short tagNumberArgument;
-
   public BACnetContextTagBoolean(
-      BACnetTagHeader header,
-      short value,
-      BACnetTagPayloadBoolean payload,
-      Short tagNumberArgument) {
-    super(header, tagNumberArgument);
+      BACnetTagHeader header, short value, BACnetTagPayloadBoolean payload) {
+    super(header);
     this.value = value;
     this.payload = payload;
-    this.tagNumberArgument = tagNumberArgument;
   }
 
   public short getValue() {
@@ -139,25 +132,22 @@ public class BACnetContextTagBoolean extends BACnetContextTag implements Message
 
     readBuffer.closeContext("BACnetContextTagBoolean");
     // Create the instance
-    return new BACnetContextTagBooleanBuilderImpl(value, payload, tagNumberArgument);
+    return new BACnetContextTagBooleanBuilderImpl(value, payload);
   }
 
   public static class BACnetContextTagBooleanBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final short value;
     private final BACnetTagPayloadBoolean payload;
-    private final Short tagNumberArgument;
 
-    public BACnetContextTagBooleanBuilderImpl(
-        short value, BACnetTagPayloadBoolean payload, Short tagNumberArgument) {
+    public BACnetContextTagBooleanBuilderImpl(short value, BACnetTagPayloadBoolean payload) {
       this.value = value;
       this.payload = payload;
-      this.tagNumberArgument = tagNumberArgument;
     }
 
-    public BACnetContextTagBoolean build(BACnetTagHeader header, Short tagNumberArgument) {
+    public BACnetContextTagBoolean build(BACnetTagHeader header) {
       BACnetContextTagBoolean bACnetContextTagBoolean =
-          new BACnetContextTagBoolean(header, value, payload, tagNumberArgument);
+          new BACnetContextTagBoolean(header, value, payload);
       return bACnetContextTagBoolean;
     }
   }

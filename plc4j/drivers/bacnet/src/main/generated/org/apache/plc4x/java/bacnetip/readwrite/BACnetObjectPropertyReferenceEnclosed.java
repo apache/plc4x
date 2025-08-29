@@ -42,19 +42,14 @@ public class BACnetObjectPropertyReferenceEnclosed implements Message {
   protected final BACnetObjectPropertyReference objectPropertyReference;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetObjectPropertyReferenceEnclosed(
       BACnetOpeningTag openingTag,
       BACnetObjectPropertyReference objectPropertyReference,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.objectPropertyReference = objectPropertyReference;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -136,8 +131,7 @@ public class BACnetObjectPropertyReferenceEnclosed implements Message {
     // Create the instance
     BACnetObjectPropertyReferenceEnclosed _bACnetObjectPropertyReferenceEnclosed;
     _bACnetObjectPropertyReferenceEnclosed =
-        new BACnetObjectPropertyReferenceEnclosed(
-            openingTag, objectPropertyReference, closingTag, tagNumber);
+        new BACnetObjectPropertyReferenceEnclosed(openingTag, objectPropertyReference, closingTag);
     return _bACnetObjectPropertyReferenceEnclosed;
   }
 

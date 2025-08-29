@@ -50,21 +50,13 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
   // Properties.
   protected final List<BACnetReadAccessSpecification> listOfGroupMembers;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataListOfGroupMembers(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetReadAccessSpecification> listOfGroupMembers,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetReadAccessSpecification> listOfGroupMembers) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.listOfGroupMembers = listOfGroupMembers;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetReadAccessSpecification> getListOfGroupMembers() {
@@ -127,39 +119,23 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataListOfGroupMembers");
     // Create the instance
-    return new BACnetConstructedDataListOfGroupMembersBuilderImpl(
-        listOfGroupMembers, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataListOfGroupMembersBuilderImpl(listOfGroupMembers);
   }
 
   public static class BACnetConstructedDataListOfGroupMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetReadAccessSpecification> listOfGroupMembers;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataListOfGroupMembersBuilderImpl(
-        List<BACnetReadAccessSpecification> listOfGroupMembers,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetReadAccessSpecification> listOfGroupMembers) {
       this.listOfGroupMembers = listOfGroupMembers;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataListOfGroupMembers build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataListOfGroupMembers bACnetConstructedDataListOfGroupMembers =
           new BACnetConstructedDataListOfGroupMembers(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              listOfGroupMembers,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, listOfGroupMembers);
       return bACnetConstructedDataListOfGroupMembers;
     }
   }

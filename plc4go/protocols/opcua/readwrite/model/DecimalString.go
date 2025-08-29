@@ -160,7 +160,7 @@ func DecimalStringParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func DecimalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DecimalString, error) {
-	v, err := (&_DecimalString{}).parse(ctx, readBuffer)
+	v, err := (new(_DecimalString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

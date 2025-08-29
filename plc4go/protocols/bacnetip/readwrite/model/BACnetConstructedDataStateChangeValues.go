@@ -64,9 +64,9 @@ var _ BACnetConstructedDataStateChangeValues = (*_BACnetConstructedDataStateChan
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStateChangeValues)(nil)
 
 // NewBACnetConstructedDataStateChangeValues factory function for _BACnetConstructedDataStateChangeValues
-func NewBACnetConstructedDataStateChangeValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, stateChangeValues []BACnetTimerStateChangeValue, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStateChangeValues {
+func NewBACnetConstructedDataStateChangeValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, stateChangeValues []BACnetTimerStateChangeValue) *_BACnetConstructedDataStateChangeValues {
 	_result := &_BACnetConstructedDataStateChangeValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		StateChangeValues:             stateChangeValues,
 	}

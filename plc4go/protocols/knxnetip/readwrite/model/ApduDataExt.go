@@ -50,8 +50,6 @@ type ApduDataExt interface {
 
 // ApduDataExtContract provides a set of functions which can be overwritten by a sub struct
 type ApduDataExtContract interface {
-	// GetLength() returns a parser argument
-	GetLength() uint8
 	// IsApduDataExt is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExt()
 	// CreateBuilder creates a ApduDataExtBuilder
@@ -72,16 +70,13 @@ type _ApduDataExt struct {
 		ApduDataExtContract
 		ApduDataExtRequirements
 	}
-
-	// Arguments.
-	Length uint8
 }
 
 var _ ApduDataExtContract = (*_ApduDataExt)(nil)
 
 // NewApduDataExt factory function for _ApduDataExt
-func NewApduDataExt(length uint8) *_ApduDataExt {
-	return &_ApduDataExt{Length: length}
+func NewApduDataExt() *_ApduDataExt {
+	return &_ApduDataExt{}
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,8 +89,6 @@ type ApduDataExtBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtBuilder
-	// WithArgLength sets a parser argument
-	WithArgLength(uint8) ApduDataExtBuilder
 	// AsApduDataExtOpenRoutingTableRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
 	AsApduDataExtOpenRoutingTableRequest() ApduDataExtOpenRoutingTableRequestBuilder
 	// AsApduDataExtReadRoutingTableRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
@@ -210,11 +203,6 @@ type _ApduDataExtBuilder struct {
 var _ (ApduDataExtBuilder) = (*_ApduDataExtBuilder)(nil)
 
 func (b *_ApduDataExtBuilder) WithMandatoryFields() ApduDataExtBuilder {
-	return b
-}
-
-func (b *_ApduDataExtBuilder) WithArgLength(length uint8) ApduDataExtBuilder {
-	b.Length = length
 	return b
 }
 
@@ -733,7 +721,7 @@ func ApduDataExtParseWithBufferProducer[T ApduDataExt](length uint8) func(ctx co
 }
 
 func ApduDataExtParseWithBuffer[T ApduDataExt](ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (T, error) {
-	v, err := (&_ApduDataExt{Length: length}).parse(ctx, readBuffer, length)
+	v, err := (new(_ApduDataExt)).parse(ctx, readBuffer, length)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -965,16 +953,6 @@ func (pm *_ApduDataExt) serializeParent(ctx context.Context, writeBuffer utils.W
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_ApduDataExt) GetLength() uint8 {
-	return m.Length
-}
-
-//
-////
-
 func (m *_ApduDataExt) IsApduDataExt() {}
 
 func (m *_ApduDataExt) DeepCopy() any {
@@ -987,7 +965,6 @@ func (m *_ApduDataExt) deepCopy() *_ApduDataExt {
 	}
 	_ApduDataExtCopy := &_ApduDataExt{
 		nil, // will be set by child
-		m.Length,
 	}
 	return _ApduDataExtCopy
 }

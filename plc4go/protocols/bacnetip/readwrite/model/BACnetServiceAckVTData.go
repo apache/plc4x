@@ -65,7 +65,7 @@ var _ BACnetServiceAckVTData = (*_BACnetServiceAckVTData)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckVTData)(nil)
 
 // NewBACnetServiceAckVTData factory function for _BACnetServiceAckVTData
-func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTData {
+func NewBACnetServiceAckVTData(serviceAckLength uint32, vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) *_BACnetServiceAckVTData {
 	if vtSessionIdentifier == nil {
 		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
 	}

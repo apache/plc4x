@@ -49,21 +49,13 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
   // Properties.
   protected final BACnetDateTime activationTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataActivationTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetDateTime activationTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetDateTime activationTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.activationTime = activationTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetDateTime getActivationTime() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataActivationTime");
     // Create the instance
-    return new BACnetConstructedDataActivationTimeBuilderImpl(
-        activationTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataActivationTimeBuilderImpl(activationTime);
   }
 
   public static class BACnetConstructedDataActivationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime activationTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActivationTimeBuilderImpl(
-        BACnetDateTime activationTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataActivationTimeBuilderImpl(BACnetDateTime activationTime) {
       this.activationTime = activationTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataActivationTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataActivationTime bACnetConstructedDataActivationTime =
           new BACnetConstructedDataActivationTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              activationTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, activationTime);
       return bACnetConstructedDataActivationTime;
     }
   }

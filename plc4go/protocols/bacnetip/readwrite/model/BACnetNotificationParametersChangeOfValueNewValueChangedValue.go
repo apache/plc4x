@@ -59,12 +59,12 @@ var _ BACnetNotificationParametersChangeOfValueNewValueChangedValue = (*_BACnetN
 var _ BACnetNotificationParametersChangeOfValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfValueNewValueChangedValue)(nil)
 
 // NewBACnetNotificationParametersChangeOfValueNewValueChangedValue factory function for _BACnetNotificationParametersChangeOfValueNewValueChangedValue
-func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changedValue BACnetContextTagReal, tagNumber uint8) *_BACnetNotificationParametersChangeOfValueNewValueChangedValue {
+func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changedValue BACnetContextTagReal) *_BACnetNotificationParametersChangeOfValueNewValueChangedValue {
 	if changedValue == nil {
 		panic("changedValue of type BACnetContextTagReal for BACnetNotificationParametersChangeOfValueNewValueChangedValue must not be nil")
 	}
 	_result := &_BACnetNotificationParametersChangeOfValueNewValueChangedValue{
-		BACnetNotificationParametersChangeOfValueNewValueContract: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetNotificationParametersChangeOfValueNewValueContract: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag),
 		ChangedValue: changedValue,
 	}
 	_result.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = _result

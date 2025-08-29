@@ -42,19 +42,12 @@ public class BACnetHostAddressEnclosed implements Message {
   protected final BACnetHostAddress hostAddress;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetHostAddressEnclosed(
-      BACnetOpeningTag openingTag,
-      BACnetHostAddress hostAddress,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetHostAddress hostAddress, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.hostAddress = hostAddress;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -135,8 +128,7 @@ public class BACnetHostAddressEnclosed implements Message {
     readBuffer.closeContext("BACnetHostAddressEnclosed");
     // Create the instance
     BACnetHostAddressEnclosed _bACnetHostAddressEnclosed;
-    _bACnetHostAddressEnclosed =
-        new BACnetHostAddressEnclosed(openingTag, hostAddress, closingTag, tagNumber);
+    _bACnetHostAddressEnclosed = new BACnetHostAddressEnclosed(openingTag, hostAddress, closingTag);
     return _bACnetHostAddressEnclosed;
   }
 

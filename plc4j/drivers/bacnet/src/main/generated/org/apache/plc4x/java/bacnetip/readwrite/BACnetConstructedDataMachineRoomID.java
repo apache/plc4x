@@ -49,21 +49,13 @@ public class BACnetConstructedDataMachineRoomID extends BACnetConstructedData im
   // Properties.
   protected final BACnetApplicationTagObjectIdentifier machineRoomId;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMachineRoomID(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagObjectIdentifier machineRoomId,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagObjectIdentifier machineRoomId) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.machineRoomId = machineRoomId;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagObjectIdentifier getMachineRoomId() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataMachineRoomID extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataMachineRoomID");
     // Create the instance
-    return new BACnetConstructedDataMachineRoomIDBuilderImpl(
-        machineRoomId, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMachineRoomIDBuilderImpl(machineRoomId);
   }
 
   public static class BACnetConstructedDataMachineRoomIDBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier machineRoomId;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMachineRoomIDBuilderImpl(
-        BACnetApplicationTagObjectIdentifier machineRoomId,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagObjectIdentifier machineRoomId) {
       this.machineRoomId = machineRoomId;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMachineRoomID build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMachineRoomID bACnetConstructedDataMachineRoomID =
           new BACnetConstructedDataMachineRoomID(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              machineRoomId,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, machineRoomId);
       return bACnetConstructedDataMachineRoomID;
     }
   }

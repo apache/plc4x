@@ -54,20 +54,16 @@ type BACnetNetworkNumberQualityTagged interface {
 type _BACnetNetworkNumberQualityTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetNetworkNumberQuality
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetNetworkNumberQualityTagged = (*_BACnetNetworkNumberQualityTagged)(nil)
 
 // NewBACnetNetworkNumberQualityTagged factory function for _BACnetNetworkNumberQualityTagged
-func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNetworkNumberQuality, tagNumber uint8, tagClass TagClass) *_BACnetNetworkNumberQualityTagged {
+func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNetworkNumberQuality) *_BACnetNetworkNumberQualityTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetNetworkNumberQualityTagged must not be nil")
 	}
-	return &_BACnetNetworkNumberQualityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetNetworkNumberQualityTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetNetworkNumberQualityTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNetworkNumberQualityTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetNetworkNumberQuality) BACnetNetworkNumberQualityTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetNetworkNumberQualityTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetNetworkNumberQualityTaggedBuilder
 	// Build builds the BACnetNetworkNumberQualityTagged or returns an error if something is wrong
 	Build() (BACnetNetworkNumberQualityTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithHeaderBuilder(builderSupp
 
 func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithValue(value BACnetNetworkNumberQuality) BACnetNetworkNumberQualityTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetNetworkNumberQualityTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetNetworkNumberQualityTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetNetworkNumberQualityTaggedParseWithBufferProducer(tagNumber uint8, ta
 }
 
 func BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkNumberQualityTagged, error) {
-	v, err := (&_BACnetNetworkNumberQualityTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetNetworkNumberQualityTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetNetworkNumberQualityTagged) SerializeWithWriteBuffer(ctx context
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetNetworkNumberQualityTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetNetworkNumberQualityTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetNetworkNumberQualityTagged) IsBACnetNetworkNumberQualityTagged() {}
 
 func (m *_BACnetNetworkNumberQualityTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetNetworkNumberQualityTagged) deepCopy() *_BACnetNetworkNumberQual
 	_BACnetNetworkNumberQualityTaggedCopy := &_BACnetNetworkNumberQualityTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetNetworkNumberQualityTaggedCopy
 }

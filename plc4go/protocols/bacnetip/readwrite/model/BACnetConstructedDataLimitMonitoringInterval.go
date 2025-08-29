@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLimitMonitoringInterval = (*_BACnetConstructedDataLim
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLimitMonitoringInterval)(nil)
 
 // NewBACnetConstructedDataLimitMonitoringInterval factory function for _BACnetConstructedDataLimitMonitoringInterval
-func NewBACnetConstructedDataLimitMonitoringInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitMonitoringInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
+func NewBACnetConstructedDataLimitMonitoringInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitMonitoringInterval BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
 	if limitMonitoringInterval == nil {
 		panic("limitMonitoringInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLimitMonitoringInterval must not be nil")
 	}
 	_result := &_BACnetConstructedDataLimitMonitoringInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LimitMonitoringInterval:       limitMonitoringInterval,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -422,7 +422,7 @@ func DIBDeviceInfoParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func DIBDeviceInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
-	v, err := (&_DIBDeviceInfo{}).parse(ctx, readBuffer)
+	v, err := (new(_DIBDeviceInfo)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

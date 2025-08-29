@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccessEventTag = (*_BACnetConstructedDataAccessEventT
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessEventTag)(nil)
 
 // NewBACnetConstructedDataAccessEventTag factory function for _BACnetConstructedDataAccessEventTag
-func NewBACnetConstructedDataAccessEventTag(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventTag BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTag {
+func NewBACnetConstructedDataAccessEventTag(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventTag BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAccessEventTag {
 	if accessEventTag == nil {
 		panic("accessEventTag of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccessEventTag must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccessEventTag{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AccessEventTag:                accessEventTag,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

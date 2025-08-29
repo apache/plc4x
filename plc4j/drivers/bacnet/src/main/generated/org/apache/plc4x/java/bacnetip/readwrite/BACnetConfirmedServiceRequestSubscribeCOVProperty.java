@@ -51,17 +51,14 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
   protected final BACnetPropertyReferenceEnclosed monitoredPropertyIdentifier;
   protected final BACnetContextTagReal covIncrement;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestSubscribeCOVProperty(
+      long serviceRequestLength,
       BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
       BACnetContextTagObjectIdentifier monitoredObjectIdentifier,
       BACnetContextTagBoolean issueConfirmedNotifications,
       BACnetContextTagUnsignedInteger lifetime,
       BACnetPropertyReferenceEnclosed monitoredPropertyIdentifier,
-      BACnetContextTagReal covIncrement,
-      Long serviceRequestLength) {
+      BACnetContextTagReal covIncrement) {
     super(serviceRequestLength);
     this.subscriberProcessIdentifier = subscriberProcessIdentifier;
     this.monitoredObjectIdentifier = monitoredObjectIdentifier;
@@ -69,7 +66,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
     this.lifetime = lifetime;
     this.monitoredPropertyIdentifier = monitoredPropertyIdentifier;
     this.covIncrement = covIncrement;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getSubscriberProcessIdentifier() {
@@ -244,8 +240,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
         issueConfirmedNotifications,
         lifetime,
         monitoredPropertyIdentifier,
-        covIncrement,
-        serviceRequestLength);
+        covIncrement);
   }
 
   public static class BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilderImpl
@@ -256,7 +251,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
     private final BACnetContextTagUnsignedInteger lifetime;
     private final BACnetPropertyReferenceEnclosed monitoredPropertyIdentifier;
     private final BACnetContextTagReal covIncrement;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
@@ -264,29 +258,26 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
         BACnetContextTagBoolean issueConfirmedNotifications,
         BACnetContextTagUnsignedInteger lifetime,
         BACnetPropertyReferenceEnclosed monitoredPropertyIdentifier,
-        BACnetContextTagReal covIncrement,
-        Long serviceRequestLength) {
+        BACnetContextTagReal covIncrement) {
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.monitoredObjectIdentifier = monitoredObjectIdentifier;
       this.issueConfirmedNotifications = issueConfirmedNotifications;
       this.lifetime = lifetime;
       this.monitoredPropertyIdentifier = monitoredPropertyIdentifier;
       this.covIncrement = covIncrement;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestSubscribeCOVProperty build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestSubscribeCOVProperty build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestSubscribeCOVProperty
           bACnetConfirmedServiceRequestSubscribeCOVProperty =
               new BACnetConfirmedServiceRequestSubscribeCOVProperty(
+                  serviceRequestLength,
                   subscriberProcessIdentifier,
                   monitoredObjectIdentifier,
                   issueConfirmedNotifications,
                   lifetime,
                   monitoredPropertyIdentifier,
-                  covIncrement,
-                  serviceRequestLength);
+                  covIncrement);
       return bACnetConfirmedServiceRequestSubscribeCOVProperty;
     }
   }

@@ -44,23 +44,18 @@ public class SubscribeCOVPropertyMultipleErrorFirstFailedSubscription implements
   protected final ErrorEnclosed errorType;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public SubscribeCOVPropertyMultipleErrorFirstFailedSubscription(
       BACnetOpeningTag openingTag,
       BACnetContextTagObjectIdentifier monitoredObjectIdentifier,
       BACnetPropertyReferenceEnclosed monitoredPropertyReference,
       ErrorEnclosed errorType,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.monitoredObjectIdentifier = monitoredObjectIdentifier;
     this.monitoredPropertyReference = monitoredPropertyReference;
     this.errorType = errorType;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -189,8 +184,7 @@ public class SubscribeCOVPropertyMultipleErrorFirstFailedSubscription implements
             monitoredObjectIdentifier,
             monitoredPropertyReference,
             errorType,
-            closingTag,
-            tagNumber);
+            closingTag);
     return _subscribeCOVPropertyMultipleErrorFirstFailedSubscription;
   }
 

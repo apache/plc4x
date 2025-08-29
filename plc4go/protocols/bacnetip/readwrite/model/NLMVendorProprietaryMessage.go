@@ -62,9 +62,9 @@ var _ NLMVendorProprietaryMessage = (*_NLMVendorProprietaryMessage)(nil)
 var _ NLMRequirements = (*_NLMVendorProprietaryMessage)(nil)
 
 // NewNLMVendorProprietaryMessage factory function for _NLMVendorProprietaryMessage
-func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage []byte, apduLength uint16) *_NLMVendorProprietaryMessage {
+func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage []byte) *_NLMVendorProprietaryMessage {
 	_result := &_NLMVendorProprietaryMessage{
-		NLMContract:        NewNLM(apduLength),
+		NLMContract:        NewNLM(),
 		VendorId:           vendorId,
 		ProprietaryMessage: proprietaryMessage,
 	}

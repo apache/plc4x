@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.protocol;
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId;
 import org.apache.plc4x.java.ads.discovery.readwrite.*;
+import org.apache.plc4x.java.ads.discovery.readwrite.Constants;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
 import org.apache.plc4x.java.ads.tag.AdsTag;
@@ -281,7 +282,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     new AdsDiscoveryBlockHostName(new AmsString(localAddress.getHostAddress()))));
 
             // Send the request to the PLC using a UDP socket.
-            try (DatagramSocket adsDiscoverySocket = new DatagramSocket(AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT)) {
+            try (DatagramSocket adsDiscoverySocket = new DatagramSocket(Constants.ADSDISCOVERYUDPDEFAULTPORT)) {
                 // Serialize the message.
                 WriteBufferByteBased writeBuffer = new WriteBufferByteBased(
                     addOrUpdateRouteRequest.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
@@ -294,7 +295,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 // Create the UDP packet to the broadcast address.
                 DatagramPacket discoveryRequestPacket = new DatagramPacket(
                     writeBuffer.getBytes(), writeBuffer.getBytes().length,
-                    remoteAddress, AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT);
+                    remoteAddress, Constants.ADSDISCOVERYUDPDEFAULTPORT);
                 adsDiscoverySocket.send(discoveryRequestPacket);
 
                 // The actual length would be 32, but better be prepared for a more verbose response

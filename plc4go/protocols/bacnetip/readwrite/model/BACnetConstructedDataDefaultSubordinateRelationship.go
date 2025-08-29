@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDefaultSubordinateRelationship = (*_BACnetConstructed
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultSubordinateRelationship)(nil)
 
 // NewBACnetConstructedDataDefaultSubordinateRelationship factory function for _BACnetConstructedDataDefaultSubordinateRelationship
-func NewBACnetConstructedDataDefaultSubordinateRelationship(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultSubordinateRelationship BACnetRelationshipTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultSubordinateRelationship {
+func NewBACnetConstructedDataDefaultSubordinateRelationship(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultSubordinateRelationship BACnetRelationshipTagged) *_BACnetConstructedDataDefaultSubordinateRelationship {
 	if defaultSubordinateRelationship == nil {
 		panic("defaultSubordinateRelationship of type BACnetRelationshipTagged for BACnetConstructedDataDefaultSubordinateRelationship must not be nil")
 	}
 	_result := &_BACnetConstructedDataDefaultSubordinateRelationship{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DefaultSubordinateRelationship: defaultSubordinateRelationship,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

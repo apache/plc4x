@@ -41,20 +41,11 @@ public class BACnetUnconfirmedServiceChoiceTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetUnconfirmedServiceChoice value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetUnconfirmedServiceChoiceTagged(
-      BACnetTagHeader header,
-      BACnetUnconfirmedServiceChoice value,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetUnconfirmedServiceChoice value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -138,8 +129,7 @@ public class BACnetUnconfirmedServiceChoiceTagged implements Message {
     readBuffer.closeContext("BACnetUnconfirmedServiceChoiceTagged");
     // Create the instance
     BACnetUnconfirmedServiceChoiceTagged _bACnetUnconfirmedServiceChoiceTagged;
-    _bACnetUnconfirmedServiceChoiceTagged =
-        new BACnetUnconfirmedServiceChoiceTagged(header, value, tagNumber, tagClass);
+    _bACnetUnconfirmedServiceChoiceTagged = new BACnetUnconfirmedServiceChoiceTagged(header, value);
     return _bACnetUnconfirmedServiceChoiceTagged;
   }
 

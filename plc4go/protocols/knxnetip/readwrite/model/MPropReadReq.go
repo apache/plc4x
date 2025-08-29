@@ -71,9 +71,9 @@ var _ MPropReadReq = (*_MPropReadReq)(nil)
 var _ CEMIRequirements = (*_MPropReadReq)(nil)
 
 // NewMPropReadReq factory function for _MPropReadReq
-func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, size uint16) *_MPropReadReq {
+func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16) *_MPropReadReq {
 	_result := &_MPropReadReq{
-		CEMIContract:        NewCEMI(size),
+		CEMIContract:        NewCEMI(),
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,

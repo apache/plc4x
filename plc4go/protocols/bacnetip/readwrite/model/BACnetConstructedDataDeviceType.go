@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDeviceType = (*_BACnetConstructedDataDeviceType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceType)(nil)
 
 // NewBACnetConstructedDataDeviceType factory function for _BACnetConstructedDataDeviceType
-func NewBACnetConstructedDataDeviceType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceType {
+func NewBACnetConstructedDataDeviceType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceType BACnetApplicationTagCharacterString) *_BACnetConstructedDataDeviceType {
 	if deviceType == nil {
 		panic("deviceType of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeviceType must not be nil")
 	}
 	_result := &_BACnetConstructedDataDeviceType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DeviceType:                    deviceType,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

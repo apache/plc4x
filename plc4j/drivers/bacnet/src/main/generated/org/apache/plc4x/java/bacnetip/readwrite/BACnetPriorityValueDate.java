@@ -42,16 +42,10 @@ public class BACnetPriorityValueDate extends BACnetPriorityValue implements Mess
   // Properties.
   protected final BACnetApplicationTagDate dateValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetPriorityValueDate(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagDate dateValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagDate dateValue) {
+    super(peekedTagHeader);
     this.dateValue = dateValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagDate getDateValue() {
@@ -103,24 +97,20 @@ public class BACnetPriorityValueDate extends BACnetPriorityValue implements Mess
 
     readBuffer.closeContext("BACnetPriorityValueDate");
     // Create the instance
-    return new BACnetPriorityValueDateBuilderImpl(dateValue, objectTypeArgument);
+    return new BACnetPriorityValueDateBuilderImpl(dateValue);
   }
 
   public static class BACnetPriorityValueDateBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagDate dateValue;
-    private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueDateBuilderImpl(
-        BACnetApplicationTagDate dateValue, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueDateBuilderImpl(BACnetApplicationTagDate dateValue) {
       this.dateValue = dateValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetPriorityValueDate build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetPriorityValueDate build(BACnetTagHeader peekedTagHeader) {
       BACnetPriorityValueDate bACnetPriorityValueDate =
-          new BACnetPriorityValueDate(peekedTagHeader, dateValue, objectTypeArgument);
+          new BACnetPriorityValueDate(peekedTagHeader, dateValue);
       return bACnetPriorityValueDate;
     }
   }

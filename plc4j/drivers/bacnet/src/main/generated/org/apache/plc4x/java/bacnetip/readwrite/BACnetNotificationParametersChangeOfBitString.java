@@ -46,10 +46,6 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
   protected final BACnetStatusFlagsTagged statusFlags;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersChangeOfBitString(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -57,16 +53,12 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
       BACnetOpeningTag innerOpeningTag,
       BACnetContextTagBitString changeOfBitString,
       BACnetStatusFlagsTagged statusFlags,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.changeOfBitString = changeOfBitString;
     this.statusFlags = statusFlags;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -179,12 +171,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
     readBuffer.closeContext("BACnetNotificationParametersChangeOfBitString");
     // Create the instance
     return new BACnetNotificationParametersChangeOfBitStringBuilderImpl(
-        innerOpeningTag,
-        changeOfBitString,
-        statusFlags,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerOpeningTag, changeOfBitString, statusFlags, innerClosingTag);
   }
 
   public static class BACnetNotificationParametersChangeOfBitStringBuilderImpl
@@ -193,30 +180,20 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
     private final BACnetContextTagBitString changeOfBitString;
     private final BACnetStatusFlagsTagged statusFlags;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersChangeOfBitStringBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetContextTagBitString changeOfBitString,
         BACnetStatusFlagsTagged statusFlags,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.changeOfBitString = changeOfBitString;
       this.statusFlags = statusFlags;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersChangeOfBitString build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersChangeOfBitString bACnetNotificationParametersChangeOfBitString =
           new BACnetNotificationParametersChangeOfBitString(
               openingTag,
@@ -225,9 +202,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
               innerOpeningTag,
               changeOfBitString,
               statusFlags,
-              innerClosingTag,
-              tagNumber,
-              objectTypeArgument);
+              innerClosingTag);
       return bACnetNotificationParametersChangeOfBitString;
     }
   }

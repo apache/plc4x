@@ -42,19 +42,14 @@ public class BACnetAssignedLandingCallsLandingCallsList implements Message {
   protected final List<BACnetAssignedLandingCallsLandingCallsListEntry> landingCalls;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetAssignedLandingCallsLandingCallsList(
       BACnetOpeningTag openingTag,
       List<BACnetAssignedLandingCallsLandingCallsListEntry> landingCalls,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.landingCalls = landingCalls;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -146,8 +141,7 @@ public class BACnetAssignedLandingCallsLandingCallsList implements Message {
     // Create the instance
     BACnetAssignedLandingCallsLandingCallsList _bACnetAssignedLandingCallsLandingCallsList;
     _bACnetAssignedLandingCallsLandingCallsList =
-        new BACnetAssignedLandingCallsLandingCallsList(
-            openingTag, landingCalls, closingTag, tagNumber);
+        new BACnetAssignedLandingCallsLandingCallsList(openingTag, landingCalls, closingTag);
     return _bACnetAssignedLandingCallsLandingCallsList;
   }
 

@@ -54,20 +54,16 @@ type BACnetLightingInProgressTagged interface {
 type _BACnetLightingInProgressTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetLightingInProgress
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLightingInProgressTagged = (*_BACnetLightingInProgressTagged)(nil)
 
 // NewBACnetLightingInProgressTagged factory function for _BACnetLightingInProgressTagged
-func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLightingInProgress, tagNumber uint8, tagClass TagClass) *_BACnetLightingInProgressTagged {
+func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLightingInProgress) *_BACnetLightingInProgressTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLightingInProgressTagged must not be nil")
 	}
-	return &_BACnetLightingInProgressTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLightingInProgressTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetLightingInProgressTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingInProgressTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetLightingInProgress) BACnetLightingInProgressTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLightingInProgressTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLightingInProgressTaggedBuilder
 	// Build builds the BACnetLightingInProgressTagged or returns an error if something is wrong
 	Build() (BACnetLightingInProgressTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetLightingInProgressTaggedBuilder) WithHeaderBuilder(builderSuppli
 
 func (b *_BACnetLightingInProgressTaggedBuilder) WithValue(value BACnetLightingInProgress) BACnetLightingInProgressTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetLightingInProgressTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLightingInProgressTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLightingInProgressTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLightingInProgressTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetLightingInProgressTaggedParseWithBufferProducer(tagNumber uint8, tagC
 }
 
 func BACnetLightingInProgressTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLightingInProgressTagged, error) {
-	v, err := (&_BACnetLightingInProgressTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLightingInProgressTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetLightingInProgressTagged) SerializeWithWriteBuffer(ctx context.C
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLightingInProgressTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLightingInProgressTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLightingInProgressTagged) IsBACnetLightingInProgressTagged() {}
 
 func (m *_BACnetLightingInProgressTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetLightingInProgressTagged) deepCopy() *_BACnetLightingInProgressT
 	_BACnetLightingInProgressTaggedCopy := &_BACnetLightingInProgressTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLightingInProgressTaggedCopy
 }

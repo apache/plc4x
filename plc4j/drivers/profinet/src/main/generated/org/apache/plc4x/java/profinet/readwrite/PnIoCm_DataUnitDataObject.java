@@ -41,15 +41,10 @@ public class PnIoCm_DataUnitDataObject implements Message {
   protected final byte[] dataState;
   protected final PnIoCm_DataUnitIoCs iops;
 
-  // Arguments.
-  protected final Integer dataObjectLength;
-
-  public PnIoCm_DataUnitDataObject(
-      byte[] dataState, PnIoCm_DataUnitIoCs iops, Integer dataObjectLength) {
+  public PnIoCm_DataUnitDataObject(byte[] dataState, PnIoCm_DataUnitIoCs iops) {
     super();
     this.dataState = dataState;
     this.iops = iops;
-    this.dataObjectLength = dataObjectLength;
   }
 
   public byte[] getDataState() {
@@ -122,7 +117,7 @@ public class PnIoCm_DataUnitDataObject implements Message {
     readBuffer.closeContext("PnIoCm_DataUnitDataObject");
     // Create the instance
     PnIoCm_DataUnitDataObject _pnIoCm_DataUnitDataObject;
-    _pnIoCm_DataUnitDataObject = new PnIoCm_DataUnitDataObject(dataState, iops, dataObjectLength);
+    _pnIoCm_DataUnitDataObject = new PnIoCm_DataUnitDataObject(dataState, iops);
     return _pnIoCm_DataUnitDataObject;
   }
 

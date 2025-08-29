@@ -76,7 +76,7 @@ var _ CipUnconnectedRequest = (*_CipUnconnectedRequest)(nil)
 var _ CipServiceRequirements = (*_CipUnconnectedRequest)(nil)
 
 // NewCipUnconnectedRequest factory function for _CipUnconnectedRequest
-func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
+func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8) *_CipUnconnectedRequest {
 	if classSegment == nil {
 		panic("classSegment of type PathSegment for CipUnconnectedRequest must not be nil")
 	}
@@ -87,7 +87,7 @@ func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegm
 		panic("unconnectedService of type CipService for CipUnconnectedRequest must not be nil")
 	}
 	_result := &_CipUnconnectedRequest{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		ClassSegment:       classSegment,
 		InstanceSegment:    instanceSegment,
 		UnconnectedService: unconnectedService,

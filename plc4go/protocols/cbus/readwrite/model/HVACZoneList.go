@@ -327,7 +327,7 @@ func HVACZoneListParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func HVACZoneListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACZoneList, error) {
-	v, err := (&_HVACZoneList{}).parse(ctx, readBuffer)
+	v, err := (new(_HVACZoneList)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

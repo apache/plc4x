@@ -49,21 +49,13 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
   // Properties.
   protected final BACnetApplicationTagBoolean archive;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataArchive(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean archive,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean archive) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.archive = archive;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getArchive() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataArchive");
     // Create the instance
-    return new BACnetConstructedDataArchiveBuilderImpl(archive, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataArchiveBuilderImpl(archive);
   }
 
   public static class BACnetConstructedDataArchiveBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean archive;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataArchiveBuilderImpl(
-        BACnetApplicationTagBoolean archive,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataArchiveBuilderImpl(BACnetApplicationTagBoolean archive) {
       this.archive = archive;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataArchive build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataArchive bACnetConstructedDataArchive =
-          new BACnetConstructedDataArchive(
-              openingTag, peekedTagHeader, closingTag, archive, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataArchive(openingTag, peekedTagHeader, closingTag, archive);
       return bACnetConstructedDataArchive;
     }
   }

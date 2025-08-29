@@ -49,21 +49,13 @@ public class BACnetConstructedDataLocation extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetApplicationTagCharacterString location;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLocation(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString location,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString location) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.location = location;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getLocation() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataLocation extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataLocation");
     // Create the instance
-    return new BACnetConstructedDataLocationBuilderImpl(location, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLocationBuilderImpl(location);
   }
 
   public static class BACnetConstructedDataLocationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString location;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLocationBuilderImpl(
-        BACnetApplicationTagCharacterString location,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLocationBuilderImpl(BACnetApplicationTagCharacterString location) {
       this.location = location;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLocation build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLocation bACnetConstructedDataLocation =
-          new BACnetConstructedDataLocation(
-              openingTag, peekedTagHeader, closingTag, location, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataLocation(openingTag, peekedTagHeader, closingTag, location);
       return bACnetConstructedDataLocation;
     }
   }

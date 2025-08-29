@@ -43,26 +43,10 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
   // Properties.
   protected final BACnetConstructedData propertyValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-  protected final BACnetPropertyIdentifier propertyIdentifierArgument;
-  protected final BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument;
-
   public BACnetPropertyAccessResultAccessResultPropertyValue(
-      BACnetTagHeader peekedTagHeader,
-      BACnetConstructedData propertyValue,
-      BACnetObjectType objectTypeArgument,
-      BACnetPropertyIdentifier propertyIdentifierArgument,
-      BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument) {
-    super(
-        peekedTagHeader,
-        objectTypeArgument,
-        propertyIdentifierArgument,
-        propertyArrayIndexArgument);
+      BACnetTagHeader peekedTagHeader, BACnetConstructedData propertyValue) {
+    super(peekedTagHeader);
     this.propertyValue = propertyValue;
-    this.objectTypeArgument = objectTypeArgument;
-    this.propertyIdentifierArgument = propertyIdentifierArgument;
-    this.propertyArrayIndexArgument = propertyArrayIndexArgument;
   }
 
   public BACnetConstructedData getPropertyValue() {
@@ -125,42 +109,25 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
 
     readBuffer.closeContext("BACnetPropertyAccessResultAccessResultPropertyValue");
     // Create the instance
-    return new BACnetPropertyAccessResultAccessResultPropertyValueBuilderImpl(
-        propertyValue, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument);
+    return new BACnetPropertyAccessResultAccessResultPropertyValueBuilderImpl(propertyValue);
   }
 
   public static class BACnetPropertyAccessResultAccessResultPropertyValueBuilderImpl
       implements BACnetPropertyAccessResultAccessResult
           .BACnetPropertyAccessResultAccessResultBuilder {
     private final BACnetConstructedData propertyValue;
-    private final BACnetObjectType objectTypeArgument;
-    private final BACnetPropertyIdentifier propertyIdentifierArgument;
-    private final BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument;
 
     public BACnetPropertyAccessResultAccessResultPropertyValueBuilderImpl(
-        BACnetConstructedData propertyValue,
-        BACnetObjectType objectTypeArgument,
-        BACnetPropertyIdentifier propertyIdentifierArgument,
-        BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument) {
+        BACnetConstructedData propertyValue) {
       this.propertyValue = propertyValue;
-      this.objectTypeArgument = objectTypeArgument;
-      this.propertyIdentifierArgument = propertyIdentifierArgument;
-      this.propertyArrayIndexArgument = propertyArrayIndexArgument;
     }
 
     public BACnetPropertyAccessResultAccessResultPropertyValue build(
-        BACnetTagHeader peekedTagHeader,
-        BACnetObjectType objectTypeArgument,
-        BACnetPropertyIdentifier propertyIdentifierArgument,
-        BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument) {
+        BACnetTagHeader peekedTagHeader) {
       BACnetPropertyAccessResultAccessResultPropertyValue
           bACnetPropertyAccessResultAccessResultPropertyValue =
               new BACnetPropertyAccessResultAccessResultPropertyValue(
-                  peekedTagHeader,
-                  propertyValue,
-                  objectTypeArgument,
-                  propertyIdentifierArgument,
-                  propertyArrayIndexArgument);
+                  peekedTagHeader, propertyValue);
       return bACnetPropertyAccessResultAccessResultPropertyValue;
     }
   }

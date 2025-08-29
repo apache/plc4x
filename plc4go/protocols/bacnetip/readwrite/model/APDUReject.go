@@ -64,12 +64,12 @@ var _ APDUReject = (*_APDUReject)(nil)
 var _ APDURequirements = (*_APDUReject)(nil)
 
 // NewAPDUReject factory function for _APDUReject
-func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged, apduLength uint16) *_APDUReject {
+func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged) *_APDUReject {
 	if rejectReason == nil {
 		panic("rejectReason of type BACnetRejectReasonTagged for APDUReject must not be nil")
 	}
 	_result := &_APDUReject{
-		APDUContract:     NewAPDU(apduLength),
+		APDUContract:     NewAPDU(),
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
 	}

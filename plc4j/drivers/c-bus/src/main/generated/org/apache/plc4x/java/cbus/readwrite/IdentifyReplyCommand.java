@@ -40,12 +40,8 @@ public abstract class IdentifyReplyCommand implements Message {
   // Abstract accessors for discriminator values.
   public abstract Attribute getAttribute();
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommand(Byte numBytes) {
+  public IdentifyReplyCommand() {
     super();
-    this.numBytes = numBytes;
   }
 
   protected abstract void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
@@ -170,13 +166,12 @@ public abstract class IdentifyReplyCommand implements Message {
 
     readBuffer.closeContext("IdentifyReplyCommand");
     // Create the instance
-    IdentifyReplyCommand _identifyReplyCommand = builder.build(numBytes);
-
+    IdentifyReplyCommand _identifyReplyCommand = builder.build();
     return _identifyReplyCommand;
   }
 
   public interface IdentifyReplyCommandBuilder {
-    IdentifyReplyCommand build(Byte numBytes);
+    IdentifyReplyCommand build();
   }
 
   @Override

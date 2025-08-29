@@ -43,16 +43,10 @@ public class BACnetTimerStateChangeValueUnsigned extends BACnetTimerStateChangeV
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger unsignedValue;
 
-  // Arguments.
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetTimerStateChangeValueUnsigned(
-      BACnetTagHeader peekedTagHeader,
-      BACnetApplicationTagUnsignedInteger unsignedValue,
-      BACnetObjectType objectTypeArgument) {
-    super(peekedTagHeader, objectTypeArgument);
+      BACnetTagHeader peekedTagHeader, BACnetApplicationTagUnsignedInteger unsignedValue) {
+    super(peekedTagHeader);
     this.unsignedValue = unsignedValue;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getUnsignedValue() {
@@ -106,25 +100,21 @@ public class BACnetTimerStateChangeValueUnsigned extends BACnetTimerStateChangeV
 
     readBuffer.closeContext("BACnetTimerStateChangeValueUnsigned");
     // Create the instance
-    return new BACnetTimerStateChangeValueUnsignedBuilderImpl(unsignedValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueUnsignedBuilderImpl(unsignedValue);
   }
 
   public static class BACnetTimerStateChangeValueUnsignedBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetTimerStateChangeValueUnsignedBuilderImpl(
-        BACnetApplicationTagUnsignedInteger unsignedValue, BACnetObjectType objectTypeArgument) {
+        BACnetApplicationTagUnsignedInteger unsignedValue) {
       this.unsignedValue = unsignedValue;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
-    public BACnetTimerStateChangeValueUnsigned build(
-        BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument) {
+    public BACnetTimerStateChangeValueUnsigned build(BACnetTagHeader peekedTagHeader) {
       BACnetTimerStateChangeValueUnsigned bACnetTimerStateChangeValueUnsigned =
-          new BACnetTimerStateChangeValueUnsigned(
-              peekedTagHeader, unsignedValue, objectTypeArgument);
+          new BACnetTimerStateChangeValueUnsigned(peekedTagHeader, unsignedValue);
       return bACnetTimerStateChangeValueUnsigned;
     }
   }

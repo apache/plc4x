@@ -54,9 +54,9 @@ var _ BACnetConstructedDataDateValueAll = (*_BACnetConstructedDataDateValueAll)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDateValueAll)(nil)
 
 // NewBACnetConstructedDataDateValueAll factory function for _BACnetConstructedDataDateValueAll
-func NewBACnetConstructedDataDateValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateValueAll {
+func NewBACnetConstructedDataDateValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataDateValueAll {
 	_result := &_BACnetConstructedDataDateValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

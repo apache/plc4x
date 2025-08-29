@@ -64,9 +64,9 @@ var _ BACnetConstructedDataSubordinateAnnotations = (*_BACnetConstructedDataSubo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubordinateAnnotations)(nil)
 
 // NewBACnetConstructedDataSubordinateAnnotations factory function for _BACnetConstructedDataSubordinateAnnotations
-func NewBACnetConstructedDataSubordinateAnnotations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateAnnotations []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubordinateAnnotations {
+func NewBACnetConstructedDataSubordinateAnnotations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateAnnotations []BACnetApplicationTagCharacterString) *_BACnetConstructedDataSubordinateAnnotations {
 	_result := &_BACnetConstructedDataSubordinateAnnotations{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		SubordinateAnnotations:        subordinateAnnotations,
 	}

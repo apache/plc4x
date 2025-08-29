@@ -42,22 +42,12 @@ public class BACnetSilencedStateTagged implements Message {
   protected final BACnetSilencedState value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetSilencedStateTagged(
-      BACnetTagHeader header,
-      BACnetSilencedState value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetSilencedState value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetSilencedStateTagged implements Message {
     readBuffer.closeContext("BACnetSilencedStateTagged");
     // Create the instance
     BACnetSilencedStateTagged _bACnetSilencedStateTagged;
-    _bACnetSilencedStateTagged =
-        new BACnetSilencedStateTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetSilencedStateTagged = new BACnetSilencedStateTagged(header, value, proprietaryValue);
     return _bACnetSilencedStateTagged;
   }
 

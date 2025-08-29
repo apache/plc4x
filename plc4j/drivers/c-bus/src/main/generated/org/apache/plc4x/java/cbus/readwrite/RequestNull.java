@@ -42,18 +42,13 @@ public class RequestNull extends Request implements Message {
   // Constant values.
   public static final Long NULLINDICATOR = 0x6E756C6CL;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public RequestNull(
       RequestType peekedByte,
       RequestType startingCR,
       RequestType resetMode,
       RequestType secondPeek,
-      RequestTermination termination,
-      CBusOptions cBusOptions) {
-    super(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions);
-    this.cBusOptions = cBusOptions;
+      RequestTermination termination) {
+    super(peekedByte, startingCR, resetMode, secondPeek, termination);
   }
 
   public long getNullIndicator() {
@@ -101,25 +96,21 @@ public class RequestNull extends Request implements Message {
 
     readBuffer.closeContext("RequestNull");
     // Create the instance
-    return new RequestNullBuilderImpl(cBusOptions);
+    return new RequestNullBuilderImpl();
   }
 
   public static class RequestNullBuilderImpl implements Request.RequestBuilder {
-    private final CBusOptions cBusOptions;
 
-    public RequestNullBuilderImpl(CBusOptions cBusOptions) {
-      this.cBusOptions = cBusOptions;
-    }
+    public RequestNullBuilderImpl() {}
 
     public RequestNull build(
         RequestType peekedByte,
         RequestType startingCR,
         RequestType resetMode,
         RequestType secondPeek,
-        RequestTermination termination,
-        CBusOptions cBusOptions) {
+        RequestTermination termination) {
       RequestNull requestNull =
-          new RequestNull(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions);
+          new RequestNull(peekedByte, startingCR, resetMode, secondPeek, termination);
       return requestNull;
     }
   }

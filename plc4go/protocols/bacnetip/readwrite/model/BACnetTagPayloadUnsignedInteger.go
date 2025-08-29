@@ -40,6 +40,8 @@ type BACnetTagPayloadUnsignedInteger interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
+	// GetActualLength returns ActualLength (property field)
+	GetActualLength() uint32
 	// GetValueUint8 returns ValueUint8 (property field)
 	GetValueUint8() *uint8
 	// GetValueUint16 returns ValueUint16 (property field)
@@ -82,24 +84,22 @@ type BACnetTagPayloadUnsignedInteger interface {
 
 // _BACnetTagPayloadUnsignedInteger is the data-structure of this message
 type _BACnetTagPayloadUnsignedInteger struct {
-	ValueUint8  *uint8
-	ValueUint16 *uint16
-	ValueUint24 *uint32
-	ValueUint32 *uint32
-	ValueUint40 *uint64
-	ValueUint48 *uint64
-	ValueUint56 *uint64
-	ValueUint64 *uint64
-
-	// Arguments.
 	ActualLength uint32
+	ValueUint8   *uint8
+	ValueUint16  *uint16
+	ValueUint24  *uint32
+	ValueUint32  *uint32
+	ValueUint40  *uint64
+	ValueUint48  *uint64
+	ValueUint56  *uint64
+	ValueUint64  *uint64
 }
 
 var _ BACnetTagPayloadUnsignedInteger = (*_BACnetTagPayloadUnsignedInteger)(nil)
 
 // NewBACnetTagPayloadUnsignedInteger factory function for _BACnetTagPayloadUnsignedInteger
-func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, valueUint40 *uint64, valueUint48 *uint64, valueUint56 *uint64, valueUint64 *uint64, actualLength uint32) *_BACnetTagPayloadUnsignedInteger {
-	return &_BACnetTagPayloadUnsignedInteger{ValueUint8: valueUint8, ValueUint16: valueUint16, ValueUint24: valueUint24, ValueUint32: valueUint32, ValueUint40: valueUint40, ValueUint48: valueUint48, ValueUint56: valueUint56, ValueUint64: valueUint64, ActualLength: actualLength}
+func NewBACnetTagPayloadUnsignedInteger(actualLength uint32, valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, valueUint40 *uint64, valueUint48 *uint64, valueUint56 *uint64, valueUint64 *uint64) *_BACnetTagPayloadUnsignedInteger {
+	return &_BACnetTagPayloadUnsignedInteger{ActualLength: actualLength, ValueUint8: valueUint8, ValueUint16: valueUint16, ValueUint24: valueUint24, ValueUint32: valueUint32, ValueUint40: valueUint40, ValueUint48: valueUint48, ValueUint56: valueUint56, ValueUint64: valueUint64}
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,7 +111,9 @@ func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, 
 type BACnetTagPayloadUnsignedIntegerBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields() BACnetTagPayloadUnsignedIntegerBuilder
+	WithMandatoryFields(actualLength uint32) BACnetTagPayloadUnsignedIntegerBuilder
+	// WithActualLength adds ActualLength (property field)
+	WithActualLength(uint32) BACnetTagPayloadUnsignedIntegerBuilder
 	// WithValueUint8 adds ValueUint8 (property field)
 	WithOptionalValueUint8(uint8) BACnetTagPayloadUnsignedIntegerBuilder
 	// WithValueUint16 adds ValueUint16 (property field)
@@ -128,8 +130,6 @@ type BACnetTagPayloadUnsignedIntegerBuilder interface {
 	WithOptionalValueUint56(uint64) BACnetTagPayloadUnsignedIntegerBuilder
 	// WithValueUint64 adds ValueUint64 (property field)
 	WithOptionalValueUint64(uint64) BACnetTagPayloadUnsignedIntegerBuilder
-	// WithArgActualLength sets a parser argument
-	WithArgActualLength(uint32) BACnetTagPayloadUnsignedIntegerBuilder
 	// Build builds the BACnetTagPayloadUnsignedInteger or returns an error if something is wrong
 	Build() (BACnetTagPayloadUnsignedInteger, error)
 	// MustBuild does the same as Build but panics on error
@@ -149,7 +149,12 @@ type _BACnetTagPayloadUnsignedIntegerBuilder struct {
 
 var _ (BACnetTagPayloadUnsignedIntegerBuilder) = (*_BACnetTagPayloadUnsignedIntegerBuilder)(nil)
 
-func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithMandatoryFields() BACnetTagPayloadUnsignedIntegerBuilder {
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithMandatoryFields(actualLength uint32) BACnetTagPayloadUnsignedIntegerBuilder {
+	return b.WithActualLength(actualLength)
+}
+
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithActualLength(actualLength uint32) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 
@@ -193,11 +198,6 @@ func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint64(valueU
 	return b
 }
 
-func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadUnsignedIntegerBuilder {
-	b.ActualLength = actualLength
-	return b
-}
-
 func (b *_BACnetTagPayloadUnsignedIntegerBuilder) Build() (BACnetTagPayloadUnsignedInteger, error) {
 	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
@@ -238,6 +238,10 @@ func (b *_BACnetTagPayloadUnsignedInteger) CreateBACnetTagPayloadUnsignedInteger
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_BACnetTagPayloadUnsignedInteger) GetActualLength() uint32 {
+	return m.ActualLength
+}
 
 func (m *_BACnetTagPayloadUnsignedInteger) GetValueUint8() *uint8 {
 	return m.ValueUint8
@@ -589,7 +593,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBufferProducer(actualLength uint32)
 }
 
 func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadUnsignedInteger, error) {
-	v, err := (&_BACnetTagPayloadUnsignedInteger{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
+	v, err := (new(_BACnetTagPayloadUnsignedInteger)).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}
@@ -604,6 +608,7 @@ func (m *_BACnetTagPayloadUnsignedInteger) parse(ctx context.Context, readBuffer
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	m.ActualLength = actualLength
 
 	isUint8, err := ReadVirtualField[bool](ctx, "isUint8", (*bool)(nil), bool((actualLength) == (1)))
 	if err != nil {
@@ -848,16 +853,6 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetTagPayloadUnsignedInteger) GetActualLength() uint32 {
-	return m.ActualLength
-}
-
-//
-////
-
 func (m *_BACnetTagPayloadUnsignedInteger) IsBACnetTagPayloadUnsignedInteger() {}
 
 func (m *_BACnetTagPayloadUnsignedInteger) DeepCopy() any {
@@ -869,6 +864,7 @@ func (m *_BACnetTagPayloadUnsignedInteger) deepCopy() *_BACnetTagPayloadUnsigned
 		return nil
 	}
 	_BACnetTagPayloadUnsignedIntegerCopy := &_BACnetTagPayloadUnsignedInteger{
+		m.ActualLength,
 		utils.CopyPtr[uint8](m.ValueUint8),
 		utils.CopyPtr[uint16](m.ValueUint16),
 		utils.CopyPtr[uint32](m.ValueUint24),
@@ -877,7 +873,6 @@ func (m *_BACnetTagPayloadUnsignedInteger) deepCopy() *_BACnetTagPayloadUnsigned
 		utils.CopyPtr[uint64](m.ValueUint48),
 		utils.CopyPtr[uint64](m.ValueUint56),
 		utils.CopyPtr[uint64](m.ValueUint64),
-		m.ActualLength,
 	}
 	return _BACnetTagPayloadUnsignedIntegerCopy
 }

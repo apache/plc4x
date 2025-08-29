@@ -42,19 +42,12 @@ public class BACnetRecipientEnclosed implements Message {
   protected final BACnetRecipient recipient;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetRecipientEnclosed(
-      BACnetOpeningTag openingTag,
-      BACnetRecipient recipient,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetRecipient recipient, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.recipient = recipient;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -134,8 +127,7 @@ public class BACnetRecipientEnclosed implements Message {
     readBuffer.closeContext("BACnetRecipientEnclosed");
     // Create the instance
     BACnetRecipientEnclosed _bACnetRecipientEnclosed;
-    _bACnetRecipientEnclosed =
-        new BACnetRecipientEnclosed(openingTag, recipient, closingTag, tagNumber);
+    _bACnetRecipientEnclosed = new BACnetRecipientEnclosed(openingTag, recipient, closingTag);
     return _bACnetRecipientEnclosed;
   }
 

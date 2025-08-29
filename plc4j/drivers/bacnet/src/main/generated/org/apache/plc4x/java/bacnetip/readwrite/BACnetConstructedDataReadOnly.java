@@ -49,21 +49,13 @@ public class BACnetConstructedDataReadOnly extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetApplicationTagBoolean readOnly;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataReadOnly(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean readOnly,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean readOnly) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.readOnly = readOnly;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getReadOnly() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataReadOnly extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataReadOnly");
     // Create the instance
-    return new BACnetConstructedDataReadOnlyBuilderImpl(readOnly, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataReadOnlyBuilderImpl(readOnly);
   }
 
   public static class BACnetConstructedDataReadOnlyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean readOnly;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataReadOnlyBuilderImpl(
-        BACnetApplicationTagBoolean readOnly,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataReadOnlyBuilderImpl(BACnetApplicationTagBoolean readOnly) {
       this.readOnly = readOnly;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataReadOnly build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataReadOnly bACnetConstructedDataReadOnly =
-          new BACnetConstructedDataReadOnly(
-              openingTag, peekedTagHeader, closingTag, readOnly, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataReadOnly(openingTag, peekedTagHeader, closingTag, readOnly);
       return bACnetConstructedDataReadOnly;
     }
   }

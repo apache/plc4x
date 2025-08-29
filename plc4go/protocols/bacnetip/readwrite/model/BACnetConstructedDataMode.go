@@ -61,12 +61,12 @@ var _ BACnetConstructedDataMode = (*_BACnetConstructedDataMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMode)(nil)
 
 // NewBACnetConstructedDataMode factory function for _BACnetConstructedDataMode
-func NewBACnetConstructedDataMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, mode BACnetLifeSafetyModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMode {
+func NewBACnetConstructedDataMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, mode BACnetLifeSafetyModeTagged) *_BACnetConstructedDataMode {
 	if mode == nil {
 		panic("mode of type BACnetLifeSafetyModeTagged for BACnetConstructedDataMode must not be nil")
 	}
 	_result := &_BACnetConstructedDataMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Mode:                          mode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

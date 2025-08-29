@@ -49,21 +49,13 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagCharacterString serialNumber;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSerialNumber(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagCharacterString serialNumber,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagCharacterString serialNumber) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.serialNumber = serialNumber;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagCharacterString getSerialNumber() {
@@ -134,34 +126,23 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataSerialNumber");
     // Create the instance
-    return new BACnetConstructedDataSerialNumberBuilderImpl(
-        serialNumber, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSerialNumberBuilderImpl(serialNumber);
   }
 
   public static class BACnetConstructedDataSerialNumberBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString serialNumber;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSerialNumberBuilderImpl(
-        BACnetApplicationTagCharacterString serialNumber,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagCharacterString serialNumber) {
       this.serialNumber = serialNumber;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSerialNumber build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSerialNumber bACnetConstructedDataSerialNumber =
           new BACnetConstructedDataSerialNumber(
-              openingTag, peekedTagHeader, closingTag, serialNumber, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, serialNumber);
       return bACnetConstructedDataSerialNumber;
     }
   }

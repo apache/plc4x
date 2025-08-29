@@ -52,23 +52,15 @@ public class BACnetConstructedDataSubordinateRelationships extends BACnetConstru
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetRelationshipTagged> subordinateRelationships;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSubordinateRelationships(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetRelationshipTagged> subordinateRelationships,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetRelationshipTagged> subordinateRelationships) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.subordinateRelationships = subordinateRelationships;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataSubordinateRelationships extends BACnetConstru
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (subordinateRelationships)
     writeComplexTypeArrayField("subordinateRelationships", subordinateRelationships, writeBuffer);
@@ -175,42 +163,30 @@ public class BACnetConstructedDataSubordinateRelationships extends BACnetConstru
     readBuffer.closeContext("BACnetConstructedDataSubordinateRelationships");
     // Create the instance
     return new BACnetConstructedDataSubordinateRelationshipsBuilderImpl(
-        numberOfDataElements, subordinateRelationships, tagNumber, arrayIndexArgument);
+        numberOfDataElements, subordinateRelationships);
   }
 
   public static class BACnetConstructedDataSubordinateRelationshipsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetRelationshipTagged> subordinateRelationships;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSubordinateRelationshipsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetRelationshipTagged> subordinateRelationships,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetRelationshipTagged> subordinateRelationships) {
       this.numberOfDataElements = numberOfDataElements;
       this.subordinateRelationships = subordinateRelationships;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSubordinateRelationships build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSubordinateRelationships bACnetConstructedDataSubordinateRelationships =
           new BACnetConstructedDataSubordinateRelationships(
               openingTag,
               peekedTagHeader,
               closingTag,
               numberOfDataElements,
-              subordinateRelationships,
-              tagNumber,
-              arrayIndexArgument);
+              subordinateRelationships);
       return bACnetConstructedDataSubordinateRelationships;
     }
   }

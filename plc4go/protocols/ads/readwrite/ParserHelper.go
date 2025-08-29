@@ -67,8 +67,6 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		return AmsSerialResetFrameParseWithBuffer(context.Background(), io)
 	case "AdsDataTypeTableChildEntry":
 		return AdsDataTypeTableChildEntryParseWithBuffer(context.Background(), io)
-	case "AdsConstants":
-		return AdsConstantsParseWithBuffer(context.Background(), io)
 	case "AdsNotificationSample":
 		return AdsNotificationSampleParseWithBuffer(context.Background(), io)
 	case "AdsSymbolTableEntry":

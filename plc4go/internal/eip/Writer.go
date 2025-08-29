@@ -95,7 +95,6 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			if isArray {
 				dataLength += 2
 			}
-			requestPathSize := int8(dataLength / 2)
 			data, err := encodeValue(value, eipTag.GetType(), elements)
 			if err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for eipTag %s", tagName))
@@ -106,7 +105,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding eip ansi for eipTag %s", tagName))
 				return
 			}
-			items[i] = readWriteModel.NewCipWriteRequest(ansi, eipTag.GetType(), elements, data, uint16(requestPathSize))
+			items[i] = readWriteModel.NewCipWriteRequest(ansi, eipTag.GetType(), elements, data)
 		}
 
 		/*		if len(items) == 1 {

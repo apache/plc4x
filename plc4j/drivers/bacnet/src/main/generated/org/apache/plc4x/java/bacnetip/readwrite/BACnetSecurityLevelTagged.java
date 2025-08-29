@@ -41,17 +41,10 @@ public class BACnetSecurityLevelTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetSecurityLevel value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetSecurityLevelTagged(
-      BACnetTagHeader header, BACnetSecurityLevel value, Short tagNumber, TagClass tagClass) {
+  public BACnetSecurityLevelTagged(BACnetTagHeader header, BACnetSecurityLevel value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,7 +126,7 @@ public class BACnetSecurityLevelTagged implements Message {
     readBuffer.closeContext("BACnetSecurityLevelTagged");
     // Create the instance
     BACnetSecurityLevelTagged _bACnetSecurityLevelTagged;
-    _bACnetSecurityLevelTagged = new BACnetSecurityLevelTagged(header, value, tagNumber, tagClass);
+    _bACnetSecurityLevelTagged = new BACnetSecurityLevelTagged(header, value);
     return _bACnetSecurityLevelTagged;
   }
 

@@ -49,21 +49,13 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
   // Properties.
   protected final BACnetApplicationTagBoolean powerMode;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPowerMode(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean powerMode,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean powerMode) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.powerMode = powerMode;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getPowerMode() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataPowerMode");
     // Create the instance
-    return new BACnetConstructedDataPowerModeBuilderImpl(powerMode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPowerModeBuilderImpl(powerMode);
   }
 
   public static class BACnetConstructedDataPowerModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean powerMode;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPowerModeBuilderImpl(
-        BACnetApplicationTagBoolean powerMode,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataPowerModeBuilderImpl(BACnetApplicationTagBoolean powerMode) {
       this.powerMode = powerMode;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPowerMode build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPowerMode bACnetConstructedDataPowerMode =
-          new BACnetConstructedDataPowerMode(
-              openingTag, peekedTagHeader, closingTag, powerMode, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataPowerMode(openingTag, peekedTagHeader, closingTag, powerMode);
       return bACnetConstructedDataPowerMode;
     }
   }

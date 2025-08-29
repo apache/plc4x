@@ -65,7 +65,7 @@ var _ BACnetServiceAckConfirmedPrivateTransfer = (*_BACnetServiceAckConfirmedPri
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckConfirmedPrivateTransfer)(nil)
 
 // NewBACnetServiceAckConfirmedPrivateTransfer factory function for _BACnetServiceAckConfirmedPrivateTransfer
-func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckConfirmedPrivateTransfer {
+func NewBACnetServiceAckConfirmedPrivateTransfer(serviceAckLength uint32, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData) *_BACnetServiceAckConfirmedPrivateTransfer {
 	if vendorId == nil {
 		panic("vendorId of type BACnetVendorIdTagged for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
 	}

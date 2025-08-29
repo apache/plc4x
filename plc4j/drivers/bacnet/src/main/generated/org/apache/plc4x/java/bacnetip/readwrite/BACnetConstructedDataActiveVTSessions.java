@@ -50,21 +50,13 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
   // Properties.
   protected final List<BACnetVTSession> activeVTSession;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataActiveVTSessions(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetVTSession> activeVTSession,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetVTSession> activeVTSession) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.activeVTSession = activeVTSession;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetVTSession> getActiveVTSession() {
@@ -127,39 +119,22 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataActiveVTSessions");
     // Create the instance
-    return new BACnetConstructedDataActiveVTSessionsBuilderImpl(
-        activeVTSession, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataActiveVTSessionsBuilderImpl(activeVTSession);
   }
 
   public static class BACnetConstructedDataActiveVTSessionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetVTSession> activeVTSession;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActiveVTSessionsBuilderImpl(
-        List<BACnetVTSession> activeVTSession,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataActiveVTSessionsBuilderImpl(List<BACnetVTSession> activeVTSession) {
       this.activeVTSession = activeVTSession;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataActiveVTSessions build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataActiveVTSessions bACnetConstructedDataActiveVTSessions =
           new BACnetConstructedDataActiveVTSessions(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              activeVTSession,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, activeVTSession);
       return bACnetConstructedDataActiveVTSessions;
     }
   }

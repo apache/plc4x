@@ -76,14 +76,11 @@ public class BacnetServerAdapter extends ChannelInboundHandlerAdapter {
                         (short) 0,
                         BACnetConfirmedServiceChoice.READ_PROPERTY,
                         new BACnetErrorGeneral(new Error(
-                            new ErrorClassTagged(new BACnetTagHeader((byte) 0, TagClass.APPLICATION_TAGS, (byte) 1, (short) 0, (short) 0, 0, 0L), ErrorClass.COMMUNICATION, 0, (short) 0, TagClass.APPLICATION_TAGS),
-                            new ErrorCodeTagged(new BACnetTagHeader((byte) 0, TagClass.APPLICATION_TAGS, (byte) 1, (short) 0, (short) 0, 0, 0L), ErrorCode.VENDOR_PROPRIETARY_VALUE, 0, (short) 0, TagClass.APPLICATION_TAGS)
-                        )),
-                        0
-                    ),
-                    0
-                ),
-                0
+                            new ErrorClassTagged(new BACnetTagHeader((byte) 0, TagClass.APPLICATION_TAGS, (byte) 1, (short) 0, (short) 0, 0, 0L), ErrorClass.COMMUNICATION, 0L),
+                            new ErrorCodeTagged(new BACnetTagHeader((byte) 0, TagClass.APPLICATION_TAGS, (byte) 1, (short) 0, (short) 0, 0, 0L), ErrorCode.VENDOR_PROPRIETARY_VALUE, 0L)
+                        ))
+                    )
+                )
             )).addListener((ChannelFutureListener) f -> {
                 if (!f.isSuccess()) {
                     f.cause().printStackTrace();
@@ -128,14 +125,10 @@ public class BacnetServerAdapter extends ChannelInboundHandlerAdapter {
                                 StaticHelper.createBACnetApplicationTagObjectIdentifier(BACnetObjectType.DEVICE.getValue(), DEVICE_INSTANCE),
                                 StaticHelper.createBACnetApplicationTagUnsignedInteger(1024),
                                 StaticHelper.creatBACnetSegmentationTagged(BACnetSegmentation.NO_SEGMENTATION),
-                                StaticHelper.createBACnetVendorIdApplicationTagged(BACnetVendorId.MAPPED.getVendorId()),
-                                0
-                            ),
-                            0
-                        ),
-                        0
-                    ),
-                    0
+                                StaticHelper.createBACnetVendorIdApplicationTagged(BACnetVendorId.MAPPED.getVendorId())
+                            )
+                        )
+                    )
                 );
                 System.out.println("Writing response");
                 System.out.println(response);
@@ -169,6 +162,7 @@ public class BacnetServerAdapter extends ChannelInboundHandlerAdapter {
                         null,
                         null,
                         new BACnetServiceAckReadProperty(
+                            0L,
                             StaticHelper.createBACnetContextTagObjectIdentifier((byte) 0, (short) 2, 1),
                             StaticHelper.createBACnetPropertyIdentifierTagged((byte) 1, 85),
                             null,
@@ -176,19 +170,13 @@ public class BacnetServerAdapter extends ChannelInboundHandlerAdapter {
                                 StaticHelper.createBACnetOpeningTag((short) 3),
                                 StaticHelper.createBACnetTagHeaderBalanced(true, (short) 3, 3L),
                                 StaticHelper.createBACnetClosingTag((short) 3),
-                                StaticHelper.createBACnetApplicationTagReal(101L),
-                                null,
-                                null
-                            ),
-                            0L
+                                StaticHelper.createBACnetApplicationTagReal(101L)
+                            )
                         ),
                         null,
-                        null,
-                        0
-                    ),
-                    0
-                ),
-                0
+                        null
+                    )
+                )
             );
             System.out.println("Writing response");
             System.out.println(response);

@@ -249,7 +249,7 @@ func OpenChannelMessageParseWithBufferProducer[T OpenChannelMessage](response bo
 }
 
 func OpenChannelMessageParseWithBuffer[T OpenChannelMessage](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := (&_OpenChannelMessage{}).parse(ctx, readBuffer, response)
+	v, err := (new(_OpenChannelMessage)).parse(ctx, readBuffer, response)
 	if err != nil {
 		var zero T
 		return zero, err

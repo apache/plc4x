@@ -80,7 +80,7 @@ var _ BACnetNotificationParametersAccessEvent = (*_BACnetNotificationParametersA
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersAccessEvent)(nil)
 
 // NewBACnetNotificationParametersAccessEvent factory function for _BACnetNotificationParametersAccessEvent
-func NewBACnetNotificationParametersAccessEvent(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, authenticationFactor BACnetAuthenticationFactorTypeTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersAccessEvent {
+func NewBACnetNotificationParametersAccessEvent(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, authenticationFactor BACnetAuthenticationFactorTypeTagged, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersAccessEvent {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersAccessEvent must not be nil")
 	}
@@ -103,7 +103,7 @@ func NewBACnetNotificationParametersAccessEvent(openingTag BACnetOpeningTag, pee
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersAccessEvent must not be nil")
 	}
 	_result := &_BACnetNotificationParametersAccessEvent{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		AccessEvent:                          accessEvent,
 		StatusFlags:                          statusFlags,

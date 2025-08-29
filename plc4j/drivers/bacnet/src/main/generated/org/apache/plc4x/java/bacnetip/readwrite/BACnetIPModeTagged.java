@@ -41,17 +41,10 @@ public class BACnetIPModeTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BACnetIPMode value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BACnetIPModeTagged(
-      BACnetTagHeader header, BACnetIPMode value, Short tagNumber, TagClass tagClass) {
+  public BACnetIPModeTagged(BACnetTagHeader header, BACnetIPMode value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,7 +126,7 @@ public class BACnetIPModeTagged implements Message {
     readBuffer.closeContext("BACnetIPModeTagged");
     // Create the instance
     BACnetIPModeTagged _bACnetIPModeTagged;
-    _bACnetIPModeTagged = new BACnetIPModeTagged(header, value, tagNumber, tagClass);
+    _bACnetIPModeTagged = new BACnetIPModeTagged(header, value);
     return _bACnetIPModeTagged;
   }
 

@@ -54,20 +54,16 @@ type BACnetLiftGroupModeTagged interface {
 type _BACnetLiftGroupModeTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetLiftGroupMode
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLiftGroupModeTagged = (*_BACnetLiftGroupModeTagged)(nil)
 
 // NewBACnetLiftGroupModeTagged factory function for _BACnetLiftGroupModeTagged
-func NewBACnetLiftGroupModeTagged(header BACnetTagHeader, value BACnetLiftGroupMode, tagNumber uint8, tagClass TagClass) *_BACnetLiftGroupModeTagged {
+func NewBACnetLiftGroupModeTagged(header BACnetTagHeader, value BACnetLiftGroupMode) *_BACnetLiftGroupModeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLiftGroupModeTagged must not be nil")
 	}
-	return &_BACnetLiftGroupModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLiftGroupModeTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetLiftGroupModeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftGroupModeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLiftGroupModeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLiftGroupModeTaggedBuilder
 	// Build builds the BACnetLiftGroupModeTagged or returns an error if something is wrong
 	Build() (BACnetLiftGroupModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetLiftGroupModeTaggedBuilder) WithHeaderBuilder(builderSupplier fu
 
 func (b *_BACnetLiftGroupModeTaggedBuilder) WithValue(value BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetLiftGroupModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLiftGroupModeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLiftGroupModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLiftGroupModeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetLiftGroupModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass 
 }
 
 func BACnetLiftGroupModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftGroupModeTagged, error) {
-	v, err := (&_BACnetLiftGroupModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLiftGroupModeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetLiftGroupModeTagged) SerializeWithWriteBuffer(ctx context.Contex
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLiftGroupModeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLiftGroupModeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLiftGroupModeTagged) IsBACnetLiftGroupModeTagged() {}
 
 func (m *_BACnetLiftGroupModeTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetLiftGroupModeTagged) deepCopy() *_BACnetLiftGroupModeTagged {
 	_BACnetLiftGroupModeTaggedCopy := &_BACnetLiftGroupModeTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLiftGroupModeTaggedCopy
 }

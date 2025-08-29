@@ -50,21 +50,13 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger numberOfApduRetries;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataNumberOfAPDURetries(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger numberOfApduRetries,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger numberOfApduRetries) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfApduRetries = numberOfApduRetries;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfApduRetries() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataNumberOfAPDURetries");
     // Create the instance
-    return new BACnetConstructedDataNumberOfAPDURetriesBuilderImpl(
-        numberOfApduRetries, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNumberOfAPDURetriesBuilderImpl(numberOfApduRetries);
   }
 
   public static class BACnetConstructedDataNumberOfAPDURetriesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfApduRetries;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataNumberOfAPDURetriesBuilderImpl(
-        BACnetApplicationTagUnsignedInteger numberOfApduRetries,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger numberOfApduRetries) {
       this.numberOfApduRetries = numberOfApduRetries;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataNumberOfAPDURetries build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataNumberOfAPDURetries bACnetConstructedDataNumberOfAPDURetries =
           new BACnetConstructedDataNumberOfAPDURetries(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfApduRetries,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfApduRetries);
       return bACnetConstructedDataNumberOfAPDURetries;
     }
   }

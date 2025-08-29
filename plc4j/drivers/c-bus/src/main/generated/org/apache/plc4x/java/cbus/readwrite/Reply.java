@@ -42,15 +42,9 @@ public abstract class Reply implements Message {
   // Properties.
   protected final byte peekedByte;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
-  public Reply(byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext) {
+  public Reply(byte peekedByte) {
     super();
     this.peekedByte = peekedByte;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public byte getPeekedByte() {
@@ -117,12 +111,12 @@ public abstract class Reply implements Message {
 
     readBuffer.closeContext("Reply");
     // Create the instance
-    Reply _reply = builder.build(peekedByte, cBusOptions, requestContext);
+    Reply _reply = builder.build(peekedByte);
     return _reply;
   }
 
   public interface ReplyBuilder {
-    Reply build(byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext);
+    Reply build(byte peekedByte);
   }
 
   @Override

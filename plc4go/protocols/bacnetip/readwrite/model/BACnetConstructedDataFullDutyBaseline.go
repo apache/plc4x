@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFullDutyBaseline = (*_BACnetConstructedDataFullDutyBa
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFullDutyBaseline)(nil)
 
 // NewBACnetConstructedDataFullDutyBaseline factory function for _BACnetConstructedDataFullDutyBaseline
-func NewBACnetConstructedDataFullDutyBaseline(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fullDutyBaseLine BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFullDutyBaseline {
+func NewBACnetConstructedDataFullDutyBaseline(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fullDutyBaseLine BACnetApplicationTagReal) *_BACnetConstructedDataFullDutyBaseline {
 	if fullDutyBaseLine == nil {
 		panic("fullDutyBaseLine of type BACnetApplicationTagReal for BACnetConstructedDataFullDutyBaseline must not be nil")
 	}
 	_result := &_BACnetConstructedDataFullDutyBaseline{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FullDutyBaseLine:              fullDutyBaseLine,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

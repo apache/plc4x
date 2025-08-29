@@ -42,13 +42,9 @@ public abstract class MonitoredSAL implements Message {
   // Properties.
   protected final byte salType;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
-  public MonitoredSAL(byte salType, CBusOptions cBusOptions) {
+  public MonitoredSAL(byte salType) {
     super();
     this.salType = salType;
-    this.cBusOptions = cBusOptions;
   }
 
   public byte getSalType() {
@@ -109,12 +105,12 @@ public abstract class MonitoredSAL implements Message {
 
     readBuffer.closeContext("MonitoredSAL");
     // Create the instance
-    MonitoredSAL _monitoredSAL = builder.build(salType, cBusOptions);
+    MonitoredSAL _monitoredSAL = builder.build(salType);
     return _monitoredSAL;
   }
 
   public interface MonitoredSALBuilder {
-    MonitoredSAL build(byte salType, CBusOptions cBusOptions);
+    MonitoredSAL build(byte salType);
   }
 
   @Override

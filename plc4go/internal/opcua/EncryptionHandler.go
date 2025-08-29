@@ -78,7 +78,7 @@ func (h *EncryptionHandler) encodeMessage(ctx context.Context, pdu readWriteMode
 	numberOfBlocks := preEncryptedLength / PREENCRYPTED_BLOCK_LENGTH
 	encryptedLength := numberOfBlocks*256 + positionFirstBlock
 	buf := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := readWriteModel.NewOpcuaAPU(pdu, false, true).SerializeWithWriteBuffer(ctx, buf); err != nil {
+	if err := readWriteModel.NewOpcuaAPU(pdu).SerializeWithWriteBuffer(ctx, buf); err != nil {
 		return nil, errors.Wrap(err, "error serializing")
 	}
 	paddingByte := byte(paddingSize)

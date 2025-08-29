@@ -54,9 +54,9 @@ var _ BACnetConstructedDataAccessPointAll = (*_BACnetConstructedDataAccessPointA
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessPointAll)(nil)
 
 // NewBACnetConstructedDataAccessPointAll factory function for _BACnetConstructedDataAccessPointAll
-func NewBACnetConstructedDataAccessPointAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessPointAll {
+func NewBACnetConstructedDataAccessPointAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataAccessPointAll {
 	_result := &_BACnetConstructedDataAccessPointAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

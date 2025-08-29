@@ -59,12 +59,12 @@ var _ ParameterValueCustomManufacturer = (*_ParameterValueCustomManufacturer)(ni
 var _ ParameterValueRequirements = (*_ParameterValueCustomManufacturer)(nil)
 
 // NewParameterValueCustomManufacturer factory function for _ParameterValueCustomManufacturer
-func NewParameterValueCustomManufacturer(value CustomManufacturer, numBytes uint8) *_ParameterValueCustomManufacturer {
+func NewParameterValueCustomManufacturer(value CustomManufacturer) *_ParameterValueCustomManufacturer {
 	if value == nil {
 		panic("value of type CustomManufacturer for ParameterValueCustomManufacturer must not be nil")
 	}
 	_result := &_ParameterValueCustomManufacturer{
-		ParameterValueContract: NewParameterValue(numBytes),
+		ParameterValueContract: NewParameterValue(),
 		Value:                  value,
 	}
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result

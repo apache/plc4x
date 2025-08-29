@@ -50,21 +50,13 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger backupFailureTimeout;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBackupFailureTimeout(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger backupFailureTimeout,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger backupFailureTimeout) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.backupFailureTimeout = backupFailureTimeout;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getBackupFailureTimeout() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataBackupFailureTimeout");
     // Create the instance
-    return new BACnetConstructedDataBackupFailureTimeoutBuilderImpl(
-        backupFailureTimeout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBackupFailureTimeoutBuilderImpl(backupFailureTimeout);
   }
 
   public static class BACnetConstructedDataBackupFailureTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger backupFailureTimeout;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBackupFailureTimeoutBuilderImpl(
-        BACnetApplicationTagUnsignedInteger backupFailureTimeout,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger backupFailureTimeout) {
       this.backupFailureTimeout = backupFailureTimeout;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBackupFailureTimeout build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBackupFailureTimeout bACnetConstructedDataBackupFailureTimeout =
           new BACnetConstructedDataBackupFailureTimeout(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              backupFailureTimeout,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, backupFailureTimeout);
       return bACnetConstructedDataBackupFailureTimeout;
     }
   }

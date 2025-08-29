@@ -59,12 +59,12 @@ var _ BACnetContextTagBitString = (*_BACnetContextTagBitString)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagBitString)(nil)
 
 // NewBACnetContextTagBitString factory function for _BACnetContextTagBitString
-func NewBACnetContextTagBitString(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumberArgument uint8) *_BACnetContextTagBitString {
+func NewBACnetContextTagBitString(header BACnetTagHeader, payload BACnetTagPayloadBitString) *_BACnetContextTagBitString {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadBitString for BACnetContextTagBitString must not be nil")
 	}
 	_result := &_BACnetContextTagBitString{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Payload:                  payload,
 	}
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result

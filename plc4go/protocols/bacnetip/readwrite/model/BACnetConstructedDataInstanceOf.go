@@ -61,12 +61,12 @@ var _ BACnetConstructedDataInstanceOf = (*_BACnetConstructedDataInstanceOf)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInstanceOf)(nil)
 
 // NewBACnetConstructedDataInstanceOf factory function for _BACnetConstructedDataInstanceOf
-func NewBACnetConstructedDataInstanceOf(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instanceOf BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstanceOf {
+func NewBACnetConstructedDataInstanceOf(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instanceOf BACnetApplicationTagCharacterString) *_BACnetConstructedDataInstanceOf {
 	if instanceOf == nil {
 		panic("instanceOf of type BACnetApplicationTagCharacterString for BACnetConstructedDataInstanceOf must not be nil")
 	}
 	_result := &_BACnetConstructedDataInstanceOf{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InstanceOf:                    instanceOf,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

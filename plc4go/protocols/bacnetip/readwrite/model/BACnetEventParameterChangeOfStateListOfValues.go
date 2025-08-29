@@ -57,22 +57,19 @@ type _BACnetEventParameterChangeOfStateListOfValues struct {
 	OpeningTag   BACnetOpeningTag
 	ListOfValues []BACnetPropertyStates
 	ClosingTag   BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetEventParameterChangeOfStateListOfValues = (*_BACnetEventParameterChangeOfStateListOfValues)(nil)
 
 // NewBACnetEventParameterChangeOfStateListOfValues factory function for _BACnetEventParameterChangeOfStateListOfValues
-func NewBACnetEventParameterChangeOfStateListOfValues(openingTag BACnetOpeningTag, listOfValues []BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfStateListOfValues {
+func NewBACnetEventParameterChangeOfStateListOfValues(openingTag BACnetOpeningTag, listOfValues []BACnetPropertyStates, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfStateListOfValues {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
 	}
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
 	}
-	return &_BACnetEventParameterChangeOfStateListOfValues{OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetEventParameterChangeOfStateListOfValues{OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,8 +92,6 @@ type BACnetEventParameterChangeOfStateListOfValuesBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfStateListOfValuesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfStateListOfValuesBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetEventParameterChangeOfStateListOfValuesBuilder
 	// Build builds the BACnetEventParameterChangeOfStateListOfValues or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfStateListOfValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,11 +147,6 @@ func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) WithClosingTagBu
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterChangeOfStateListOfValuesBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -273,7 +263,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParseWithBufferProducer(tagNum
 }
 
 func BACnetEventParameterChangeOfStateListOfValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfStateListOfValues, error) {
-	v, err := (&_BACnetEventParameterChangeOfStateListOfValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetEventParameterChangeOfStateListOfValues)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -349,16 +339,6 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) SerializeWithWriteBuffe
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetEventParameterChangeOfStateListOfValues) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetEventParameterChangeOfStateListOfValues) IsBACnetEventParameterChangeOfStateListOfValues() {
 }
 
@@ -374,7 +354,6 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) deepCopy() *_BACnetEven
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetPropertyStates, BACnetPropertyStates](m.ListOfValues),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetEventParameterChangeOfStateListOfValuesCopy
 }

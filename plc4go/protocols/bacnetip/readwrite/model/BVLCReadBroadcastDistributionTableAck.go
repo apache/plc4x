@@ -55,16 +55,13 @@ type BVLCReadBroadcastDistributionTableAck interface {
 type _BVLCReadBroadcastDistributionTableAck struct {
 	BVLCContract
 	Table []BVLCBroadcastDistributionTableEntry
-
-	// Arguments.
-	BvlcPayloadLength uint16
 }
 
 var _ BVLCReadBroadcastDistributionTableAck = (*_BVLCReadBroadcastDistributionTableAck)(nil)
 var _ BVLCRequirements = (*_BVLCReadBroadcastDistributionTableAck)(nil)
 
 // NewBVLCReadBroadcastDistributionTableAck factory function for _BVLCReadBroadcastDistributionTableAck
-func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCReadBroadcastDistributionTableAck {
+func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionTableEntry) *_BVLCReadBroadcastDistributionTableAck {
 	_result := &_BVLCReadBroadcastDistributionTableAck{
 		BVLCContract: NewBVLC(),
 		Table:        table,
@@ -85,8 +82,6 @@ type BVLCReadBroadcastDistributionTableAckBuilder interface {
 	WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder
 	// WithTable adds Table (property field)
 	WithTable(...BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder
-	// WithArgBvlcPayloadLength sets a parser argument
-	WithArgBvlcPayloadLength(uint16) BVLCReadBroadcastDistributionTableAckBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCReadBroadcastDistributionTableAck or returns an error if something is wrong
@@ -121,11 +116,6 @@ func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithMandatoryFields(tabl
 
 func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithTable(table ...BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder {
 	b.Table = table
-	return b
-}
-
-func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCReadBroadcastDistributionTableAckBuilder {
-	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 
@@ -294,16 +284,6 @@ func (m *_BVLCReadBroadcastDistributionTableAck) SerializeWithWriteBuffer(ctx co
 	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BVLCReadBroadcastDistributionTableAck) GetBvlcPayloadLength() uint16 {
-	return m.BvlcPayloadLength
-}
-
-//
-////
-
 func (m *_BVLCReadBroadcastDistributionTableAck) IsBVLCReadBroadcastDistributionTableAck() {}
 
 func (m *_BVLCReadBroadcastDistributionTableAck) DeepCopy() any {
@@ -317,7 +297,6 @@ func (m *_BVLCReadBroadcastDistributionTableAck) deepCopy() *_BVLCReadBroadcastD
 	_BVLCReadBroadcastDistributionTableAckCopy := &_BVLCReadBroadcastDistributionTableAck{
 		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopySlice[BVLCBroadcastDistributionTableEntry, BVLCBroadcastDistributionTableEntry](m.Table),
-		m.BvlcPayloadLength,
 	}
 	_BVLCReadBroadcastDistributionTableAckCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCReadBroadcastDistributionTableAckCopy

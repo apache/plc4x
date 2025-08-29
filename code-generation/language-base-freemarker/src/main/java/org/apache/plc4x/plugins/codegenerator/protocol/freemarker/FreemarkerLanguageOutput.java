@@ -21,6 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.*;
 import org.apache.plc4x.plugins.codegenerator.language.LanguageOutput;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ConstantsTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
@@ -31,10 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class FreemarkerLanguageOutput implements LanguageOutput {
 
@@ -53,13 +51,15 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
         freemarkerConfiguration.setTemplateLoader(classTemplateLoader);
 
         // Initialize all templates
-        List<Template> specTemplates;
+        List<Template> specTemplatesList;
+        List<Template> constantsTemplateList;
         List<Template> complexTypesTemplateList;
         List<Template> enumTypesTemplateList;
         List<Template> dataIoTemplateList;
         List<Template> miscTemplateList;
         try {
-            specTemplates = getSpecTemplates(freemarkerConfiguration);
+            specTemplatesList = getSpecTemplates(freemarkerConfiguration);
+            constantsTemplateList = getConstantsTemplates(freemarkerConfiguration);
             complexTypesTemplateList = getComplexTypeTemplates(freemarkerConfiguration);
             enumTypesTemplateList = getEnumTypeTemplates(freemarkerConfiguration);
             dataIoTemplateList = getDataIoTemplates(freemarkerConfiguration);
@@ -69,7 +69,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
         }
 
         // Generate output that's global for the entire mspec
-        if (!specTemplates.isEmpty()) {
+        if (!specTemplatesList.isEmpty()) {
             Map<String, Object> typeContext = new HashMap<>();
             typeContext.put("languageName", languageName);
             typeContext.put("protocolName", protocolName);
@@ -78,7 +78,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("tracer", Tracer.start("global"));
             typeContext.putAll(options);
 
-            for (Template template : specTemplates) {
+            for (Template template : specTemplatesList) {
                 try {
                     renderTemplate(outputDir, template, typeContext);
                 } catch (IOException | TemplateException e) {
@@ -87,8 +87,36 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             }
         }
 
+        // Generate constants types
+        Optional<TypeDefinition> constantsTypeDefinition = types.values().stream().filter(type -> type instanceof ConstantsTypeDefinition).findFirst();
+        if (!constantsTemplateList.isEmpty() && constantsTypeDefinition.isPresent()) {
+            TypeDefinition typeDefinition = constantsTypeDefinition.get();
+            Map<String, Object> typeContext = new HashMap<>();
+            typeContext.put("languageName", languageName);
+            typeContext.put("protocolName", protocolName);
+            typeContext.put("outputFlavor", outputFlavor);
+            typeContext.put("typeName", typeDefinition.getName());
+            typeContext.put("type", typeDefinition);
+            typeContext.put("helper", getHelper(typeDefinition, protocolName, outputFlavor, types, options));
+            typeContext.put("tracer", Tracer.start("global"));
+            typeContext.putAll(options);
+
+            for (Template template : constantsTemplateList) {
+                try {
+                    renderTemplate(outputDir, template, typeContext);
+                } catch (IOException | TemplateException e) {
+                    throw new GenerationException("Error generating constants.", e);
+                }
+            }
+        }
+
         // Iterate over the types and have content generated for each one
         for (Map.Entry<String, TypeDefinition> typeEntry : types.entrySet()) {
+            // "Constants" types are handled separately.
+            if (typeEntry.getValue() instanceof ConstantsTypeDefinition) {
+                continue;
+            }
+
             // Prepare a new generation context
             Map<String, Object> typeContext = new HashMap<>();
             typeContext.put("languageName", languageName);
@@ -201,6 +229,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     }
 
     protected abstract List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException;
+
+    protected abstract List<Template> getConstantsTemplates(Configuration freemarkerConfiguration) throws IOException;
 
     protected abstract List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException;
 

@@ -50,21 +50,13 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
   // Properties.
   protected final BACnetRestartReasonTagged lastRestartReason;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLastRestartReason(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetRestartReasonTagged lastRestartReason,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetRestartReasonTagged lastRestartReason) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.lastRestartReason = lastRestartReason;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetRestartReasonTagged getLastRestartReason() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataLastRestartReason");
     // Create the instance
-    return new BACnetConstructedDataLastRestartReasonBuilderImpl(
-        lastRestartReason, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLastRestartReasonBuilderImpl(lastRestartReason);
   }
 
   public static class BACnetConstructedDataLastRestartReasonBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetRestartReasonTagged lastRestartReason;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLastRestartReasonBuilderImpl(
-        BACnetRestartReasonTagged lastRestartReason,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetRestartReasonTagged lastRestartReason) {
       this.lastRestartReason = lastRestartReason;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLastRestartReason build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLastRestartReason bACnetConstructedDataLastRestartReason =
           new BACnetConstructedDataLastRestartReason(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              lastRestartReason,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, lastRestartReason);
       return bACnetConstructedDataLastRestartReason;
     }
   }

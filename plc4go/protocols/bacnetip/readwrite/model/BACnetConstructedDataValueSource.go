@@ -61,12 +61,12 @@ var _ BACnetConstructedDataValueSource = (*_BACnetConstructedDataValueSource)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSource)(nil)
 
 // NewBACnetConstructedDataValueSource factory function for _BACnetConstructedDataValueSource
-func NewBACnetConstructedDataValueSource(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueSource BACnetValueSource, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSource {
+func NewBACnetConstructedDataValueSource(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueSource BACnetValueSource) *_BACnetConstructedDataValueSource {
 	if valueSource == nil {
 		panic("valueSource of type BACnetValueSource for BACnetConstructedDataValueSource must not be nil")
 	}
 	_result := &_BACnetConstructedDataValueSource{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ValueSource:                   valueSource,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -39,6 +39,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BACnetTagPayloadUnsignedInteger implements Message {
 
   // Properties.
+  protected final long actualLength;
   protected final Short valueUint8;
   protected final Integer valueUint16;
   protected final Integer valueUint24;
@@ -48,10 +49,8 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
   protected final Long valueUint56;
   protected final BigInteger valueUint64;
 
-  // Arguments.
-  protected final Long actualLength;
-
   public BACnetTagPayloadUnsignedInteger(
+      long actualLength,
       Short valueUint8,
       Integer valueUint16,
       Integer valueUint24,
@@ -59,9 +58,9 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
       Long valueUint40,
       Long valueUint48,
       Long valueUint56,
-      BigInteger valueUint64,
-      Long actualLength) {
+      BigInteger valueUint64) {
     super();
+    this.actualLength = actualLength;
     this.valueUint8 = valueUint8;
     this.valueUint16 = valueUint16;
     this.valueUint24 = valueUint24;
@@ -70,7 +69,10 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
     this.valueUint48 = valueUint48;
     this.valueUint56 = valueUint56;
     this.valueUint64 = valueUint64;
-    this.actualLength = actualLength;
+  }
+
+  public long getActualLength() {
+    return actualLength;
   }
 
   public Short getValueUint8() {
@@ -168,63 +170,56 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
     writeBuffer.writeVirtual("isUint8", isUint8);
 
     // Optional Field (valueUint8) (Can be skipped, if the value is null)
-    writeOptionalField("valueUint8", valueUint8, writeUnsignedShort(writeBuffer, 8), getIsUint8());
+    writeOptionalField("valueUint8", valueUint8, writeUnsignedShort(writeBuffer, 8));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint16 = getIsUint16();
     writeBuffer.writeVirtual("isUint16", isUint16);
 
     // Optional Field (valueUint16) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "valueUint16", valueUint16, writeUnsignedInt(writeBuffer, 16), getIsUint16());
+    writeOptionalField("valueUint16", valueUint16, writeUnsignedInt(writeBuffer, 16));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint24 = getIsUint24();
     writeBuffer.writeVirtual("isUint24", isUint24);
 
     // Optional Field (valueUint24) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "valueUint24", valueUint24, writeUnsignedInt(writeBuffer, 24), getIsUint24());
+    writeOptionalField("valueUint24", valueUint24, writeUnsignedInt(writeBuffer, 24));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint32 = getIsUint32();
     writeBuffer.writeVirtual("isUint32", isUint32);
 
     // Optional Field (valueUint32) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "valueUint32", valueUint32, writeUnsignedLong(writeBuffer, 32), getIsUint32());
+    writeOptionalField("valueUint32", valueUint32, writeUnsignedLong(writeBuffer, 32));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint40 = getIsUint40();
     writeBuffer.writeVirtual("isUint40", isUint40);
 
     // Optional Field (valueUint40) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "valueUint40", valueUint40, writeUnsignedLong(writeBuffer, 40), getIsUint40());
+    writeOptionalField("valueUint40", valueUint40, writeUnsignedLong(writeBuffer, 40));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint48 = getIsUint48();
     writeBuffer.writeVirtual("isUint48", isUint48);
 
     // Optional Field (valueUint48) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "valueUint48", valueUint48, writeUnsignedLong(writeBuffer, 48), getIsUint48());
+    writeOptionalField("valueUint48", valueUint48, writeUnsignedLong(writeBuffer, 48));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint56 = getIsUint56();
     writeBuffer.writeVirtual("isUint56", isUint56);
 
     // Optional Field (valueUint56) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "valueUint56", valueUint56, writeUnsignedLong(writeBuffer, 56), getIsUint56());
+    writeOptionalField("valueUint56", valueUint56, writeUnsignedLong(writeBuffer, 56));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isUint64 = getIsUint64();
     writeBuffer.writeVirtual("isUint64", isUint64);
 
     // Optional Field (valueUint64) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "valueUint64", valueUint64, writeUnsignedBigInteger(writeBuffer, 64), getIsUint64());
+    writeOptionalField("valueUint64", valueUint64, writeUnsignedBigInteger(writeBuffer, 64));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BigInteger actualValue = getActualValue();
@@ -366,6 +361,7 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
     BACnetTagPayloadUnsignedInteger _bACnetTagPayloadUnsignedInteger;
     _bACnetTagPayloadUnsignedInteger =
         new BACnetTagPayloadUnsignedInteger(
+            actualLength,
             valueUint8,
             valueUint16,
             valueUint24,
@@ -373,8 +369,7 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
             valueUint40,
             valueUint48,
             valueUint56,
-            valueUint64,
-            actualLength);
+            valueUint64);
     return _bACnetTagPayloadUnsignedInteger;
   }
 
@@ -387,7 +382,8 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
       return false;
     }
     BACnetTagPayloadUnsignedInteger that = (BACnetTagPayloadUnsignedInteger) o;
-    return (getValueUint8() == that.getValueUint8())
+    return (getActualLength() == that.getActualLength())
+        && (getValueUint8() == that.getValueUint8())
         && (getValueUint16() == that.getValueUint16())
         && (getValueUint24() == that.getValueUint24())
         && (getValueUint32() == that.getValueUint32())
@@ -401,6 +397,7 @@ public class BACnetTagPayloadUnsignedInteger implements Message {
   @Override
   public int hashCode() {
     return Objects.hash(
+        getActualLength(),
         getValueUint8(),
         getValueUint16(),
         getValueUint24(),

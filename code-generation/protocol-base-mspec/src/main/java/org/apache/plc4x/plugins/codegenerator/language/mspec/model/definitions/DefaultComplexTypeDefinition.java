@@ -73,6 +73,14 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     }
 
     @Override
+    public List<StateField> getStateFields() {
+        return fields.stream()
+            .filter(StateField.class::isInstance)
+            .map(StateField.class::cast)
+            .collect(Collectors.toList());
+    }
+
+    @Override
     public List<ConstField> getConstFields() {
         return fields.stream()
             .filter(ConstField.class::isInstance)

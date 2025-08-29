@@ -59,12 +59,12 @@ var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal = (*_BACnetFaultPara
 var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal)(nil)
 
 // NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
-func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, realValue BACnetApplicationTagReal, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal {
+func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, realValue BACnetApplicationTagReal) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal {
 	if realValue == nil {
 		panic("realValue of type BACnetApplicationTagReal for BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal must not be nil")
 	}
 	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal{
-		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag),
 		RealValue: realValue,
 	}
 	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result

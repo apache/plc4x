@@ -50,21 +50,13 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
   // Properties.
   protected final BACnetSegmentationTagged segmentationSupported;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataSegmentationSupported(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetSegmentationTagged segmentationSupported,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetSegmentationTagged segmentationSupported) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.segmentationSupported = segmentationSupported;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetSegmentationTagged getSegmentationSupported() {
@@ -135,39 +127,23 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataSegmentationSupported");
     // Create the instance
-    return new BACnetConstructedDataSegmentationSupportedBuilderImpl(
-        segmentationSupported, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSegmentationSupportedBuilderImpl(segmentationSupported);
   }
 
   public static class BACnetConstructedDataSegmentationSupportedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetSegmentationTagged segmentationSupported;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataSegmentationSupportedBuilderImpl(
-        BACnetSegmentationTagged segmentationSupported,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetSegmentationTagged segmentationSupported) {
       this.segmentationSupported = segmentationSupported;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataSegmentationSupported build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataSegmentationSupported bACnetConstructedDataSegmentationSupported =
           new BACnetConstructedDataSegmentationSupported(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              segmentationSupported,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, segmentationSupported);
       return bACnetConstructedDataSegmentationSupported;
     }
   }

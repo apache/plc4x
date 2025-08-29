@@ -51,23 +51,15 @@ public class BACnetConstructedDataIPDNSServer extends BACnetConstructedData impl
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetApplicationTagOctetString> ipDnsServer;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPDNSServer(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetApplicationTagOctetString> ipDnsServer,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetApplicationTagOctetString> ipDnsServer) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.ipDnsServer = ipDnsServer;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataIPDNSServer extends BACnetConstructedData impl
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (ipDnsServer)
     writeComplexTypeArrayField("ipDnsServer", ipDnsServer, writeBuffer);
@@ -172,43 +160,26 @@ public class BACnetConstructedDataIPDNSServer extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataIPDNSServer");
     // Create the instance
-    return new BACnetConstructedDataIPDNSServerBuilderImpl(
-        numberOfDataElements, ipDnsServer, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPDNSServerBuilderImpl(numberOfDataElements, ipDnsServer);
   }
 
   public static class BACnetConstructedDataIPDNSServerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagOctetString> ipDnsServer;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPDNSServerBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetApplicationTagOctetString> ipDnsServer,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetApplicationTagOctetString> ipDnsServer) {
       this.numberOfDataElements = numberOfDataElements;
       this.ipDnsServer = ipDnsServer;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPDNSServer build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPDNSServer bACnetConstructedDataIPDNSServer =
           new BACnetConstructedDataIPDNSServer(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              ipDnsServer,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, ipDnsServer);
       return bACnetConstructedDataIPDNSServer;
     }
   }

@@ -189,7 +189,7 @@ func BridgeAddressParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func BridgeAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {
-	v, err := (&_BridgeAddress{}).parse(ctx, readBuffer)
+	v, err := (new(_BridgeAddress)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

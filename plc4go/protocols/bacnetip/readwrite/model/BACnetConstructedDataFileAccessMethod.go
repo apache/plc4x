@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFileAccessMethod = (*_BACnetConstructedDataFileAccess
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileAccessMethod)(nil)
 
 // NewBACnetConstructedDataFileAccessMethod factory function for _BACnetConstructedDataFileAccessMethod
-func NewBACnetConstructedDataFileAccessMethod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileAccessMethod BACnetFileAccessMethodTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAccessMethod {
+func NewBACnetConstructedDataFileAccessMethod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileAccessMethod BACnetFileAccessMethodTagged) *_BACnetConstructedDataFileAccessMethod {
 	if fileAccessMethod == nil {
 		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetConstructedDataFileAccessMethod must not be nil")
 	}
 	_result := &_BACnetConstructedDataFileAccessMethod{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FileAccessMethod:              fileAccessMethod,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

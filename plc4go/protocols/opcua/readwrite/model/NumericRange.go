@@ -160,7 +160,7 @@ func NumericRangeParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func NumericRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NumericRange, error) {
-	v, err := (&_NumericRange{}).parse(ctx, readBuffer)
+	v, err := (new(_NumericRange)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

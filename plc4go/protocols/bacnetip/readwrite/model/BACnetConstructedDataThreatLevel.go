@@ -61,12 +61,12 @@ var _ BACnetConstructedDataThreatLevel = (*_BACnetConstructedDataThreatLevel)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataThreatLevel)(nil)
 
 // NewBACnetConstructedDataThreatLevel factory function for _BACnetConstructedDataThreatLevel
-func NewBACnetConstructedDataThreatLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatLevel BACnetAccessThreatLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatLevel {
+func NewBACnetConstructedDataThreatLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatLevel BACnetAccessThreatLevel) *_BACnetConstructedDataThreatLevel {
 	if threatLevel == nil {
 		panic("threatLevel of type BACnetAccessThreatLevel for BACnetConstructedDataThreatLevel must not be nil")
 	}
 	_result := &_BACnetConstructedDataThreatLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ThreatLevel:                   threatLevel,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

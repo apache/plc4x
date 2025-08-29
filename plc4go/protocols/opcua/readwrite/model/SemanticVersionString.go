@@ -160,7 +160,7 @@ func SemanticVersionStringParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func SemanticVersionStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticVersionString, error) {
-	v, err := (&_SemanticVersionString{}).parse(ctx, readBuffer)
+	v, err := (new(_SemanticVersionString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

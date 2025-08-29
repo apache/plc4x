@@ -1193,8 +1193,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass, _ := TagClassByName(arguments[1])
 		return ErrorCodeTaggedParseWithBuffer(context.Background(), io, tagNumber, tagClass)
-	case "BacnetConstants":
-		return BacnetConstantsParseWithBuffer(context.Background(), io)
 	case "BACnetPolarityTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

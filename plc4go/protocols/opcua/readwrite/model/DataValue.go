@@ -417,7 +417,7 @@ func DataValueParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataValue, error) {
-	v, err := (&_DataValue{}).parse(ctx, readBuffer)
+	v, err := (new(_DataValue)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

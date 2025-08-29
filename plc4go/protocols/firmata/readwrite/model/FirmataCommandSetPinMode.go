@@ -62,9 +62,9 @@ var _ FirmataCommandSetPinMode = (*_FirmataCommandSetPinMode)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSetPinMode)(nil)
 
 // NewFirmataCommandSetPinMode factory function for _FirmataCommandSetPinMode
-func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_FirmataCommandSetPinMode {
+func NewFirmataCommandSetPinMode(pin uint8, mode PinMode) *_FirmataCommandSetPinMode {
 	_result := &_FirmataCommandSetPinMode{
-		FirmataCommandContract: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(),
 		Pin:                    pin,
 		Mode:                   mode,
 	}

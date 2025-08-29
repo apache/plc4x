@@ -56,9 +56,6 @@ public class BACnetEventParameterExtendedParameters implements Message {
   protected final BACnetDeviceObjectPropertyReferenceEnclosed reference;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterExtendedParameters(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -76,8 +73,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
       BACnetApplicationTagTime timeValue,
       BACnetApplicationTagObjectIdentifier objectIdentifier,
       BACnetDeviceObjectPropertyReferenceEnclosed reference,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.peekedTagHeader = peekedTagHeader;
@@ -96,7 +92,6 @@ public class BACnetEventParameterExtendedParameters implements Message {
     this.objectIdentifier = objectIdentifier;
     this.reference = reference;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -200,102 +195,46 @@ public class BACnetEventParameterExtendedParameters implements Message {
     writeBuffer.writeVirtual("isClosingTag", isClosingTag);
 
     // Optional Field (nullValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "nullValue",
-        nullValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x0)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("nullValue", nullValue, writeComplex(writeBuffer));
 
     // Optional Field (realValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "realValue",
-        realValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x4)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("realValue", realValue, writeComplex(writeBuffer));
 
     // Optional Field (unsignedValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "unsignedValue",
-        unsignedValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x2)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("unsignedValue", unsignedValue, writeComplex(writeBuffer));
 
     // Optional Field (booleanValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "booleanValue",
-        booleanValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x1)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("booleanValue", booleanValue, writeComplex(writeBuffer));
 
     // Optional Field (integerValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "integerValue",
-        integerValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x3)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("integerValue", integerValue, writeComplex(writeBuffer));
 
     // Optional Field (doubleValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "doubleValue",
-        doubleValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x5)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("doubleValue", doubleValue, writeComplex(writeBuffer));
 
     // Optional Field (octetStringValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "octetStringValue",
-        octetStringValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x6)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("octetStringValue", octetStringValue, writeComplex(writeBuffer));
 
     // Optional Field (characterStringValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "characterStringValue",
-        characterStringValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x7)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("characterStringValue", characterStringValue, writeComplex(writeBuffer));
 
     // Optional Field (bitStringValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "bitStringValue",
-        bitStringValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x8)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("bitStringValue", bitStringValue, writeComplex(writeBuffer));
 
     // Optional Field (enumeratedValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "enumeratedValue",
-        enumeratedValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0x9)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("enumeratedValue", enumeratedValue, writeComplex(writeBuffer));
 
     // Optional Field (dateValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "dateValue",
-        dateValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0xA)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("dateValue", dateValue, writeComplex(writeBuffer));
 
     // Optional Field (timeValue) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "timeValue",
-        timeValue,
-        writeComplex(writeBuffer),
-        (((getPeekedTagNumber()) == (0xB)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
+    writeOptionalField("timeValue", timeValue, writeComplex(writeBuffer));
 
     // Optional Field (objectIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "objectIdentifier",
-        objectIdentifier,
-        writeComplex(writeBuffer),
-        ((getPeekedTagNumber()) == (0xC)) && (!(getIsOpeningTag())));
+    writeOptionalField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (reference) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "reference",
-        reference,
-        writeComplex(writeBuffer),
-        (getIsOpeningTag()) && (!(getIsClosingTag())));
+    writeOptionalField("reference", reference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
     writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
@@ -574,8 +513,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
             timeValue,
             objectIdentifier,
             reference,
-            closingTag,
-            tagNumber);
+            closingTag);
     return _bACnetEventParameterExtendedParameters;
   }
 

@@ -49,21 +49,13 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger passbackTimeout;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPassbackTimeout(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger passbackTimeout,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger passbackTimeout) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.passbackTimeout = passbackTimeout;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getPassbackTimeout() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataPassbackTimeout");
     // Create the instance
-    return new BACnetConstructedDataPassbackTimeoutBuilderImpl(
-        passbackTimeout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPassbackTimeoutBuilderImpl(passbackTimeout);
   }
 
   public static class BACnetConstructedDataPassbackTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger passbackTimeout;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataPassbackTimeoutBuilderImpl(
-        BACnetApplicationTagUnsignedInteger passbackTimeout,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger passbackTimeout) {
       this.passbackTimeout = passbackTimeout;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPassbackTimeout build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPassbackTimeout bACnetConstructedDataPassbackTimeout =
           new BACnetConstructedDataPassbackTimeout(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              passbackTimeout,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, passbackTimeout);
       return bACnetConstructedDataPassbackTimeout;
     }
   }

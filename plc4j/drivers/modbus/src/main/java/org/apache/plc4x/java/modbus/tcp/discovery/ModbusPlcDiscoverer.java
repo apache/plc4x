@@ -104,7 +104,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
             try {
                 logger.info("Trying address: {}", possibleAddress);
                 // Try to get a connection to the given host and port.
-                Socket socket = new Socket(possibleAddress.getHostAddress(), ModbusConstants.MODBUSTCPDEFAULTPORT);
+                Socket socket = new Socket(possibleAddress.getHostAddress(), Constants.MODBUSTCPDEFAULTPORT);
 
                 logger.info("Connected: {}", possibleAddress);
 

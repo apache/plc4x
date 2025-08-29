@@ -49,21 +49,13 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
   // Properties.
   protected final BACnetEventParameter eventParameter;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataEventParameters(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetEventParameter eventParameter,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetEventParameter eventParameter) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.eventParameter = eventParameter;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetEventParameter getEventParameter() {
@@ -130,39 +122,22 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataEventParameters");
     // Create the instance
-    return new BACnetConstructedDataEventParametersBuilderImpl(
-        eventParameter, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEventParametersBuilderImpl(eventParameter);
   }
 
   public static class BACnetConstructedDataEventParametersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventParameter eventParameter;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventParametersBuilderImpl(
-        BACnetEventParameter eventParameter,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataEventParametersBuilderImpl(BACnetEventParameter eventParameter) {
       this.eventParameter = eventParameter;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataEventParameters build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataEventParameters bACnetConstructedDataEventParameters =
           new BACnetConstructedDataEventParameters(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              eventParameter,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, eventParameter);
       return bACnetConstructedDataEventParameters;
     }
   }

@@ -313,7 +313,7 @@ func BACnetOptionalBinaryPVParseWithBufferProducer[T BACnetOptionalBinaryPV]() f
 }
 
 func BACnetOptionalBinaryPVParseWithBuffer[T BACnetOptionalBinaryPV](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetOptionalBinaryPV{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetOptionalBinaryPV)).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -44,19 +44,12 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
   protected final BACnetTagHeader peekedTagHeader;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetNotificationParametersChangeOfValueNewValue(
-      BACnetOpeningTag openingTag,
-      BACnetTagHeader peekedTagHeader,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.peekedTagHeader = peekedTagHeader;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -174,16 +167,13 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
     // Create the instance
     BACnetNotificationParametersChangeOfValueNewValue
         _bACnetNotificationParametersChangeOfValueNewValue =
-            builder.build(openingTag, peekedTagHeader, closingTag, tagNumber);
+            builder.build(openingTag, peekedTagHeader, closingTag);
     return _bACnetNotificationParametersChangeOfValueNewValue;
   }
 
   public interface BACnetNotificationParametersChangeOfValueNewValueBuilder {
     BACnetNotificationParametersChangeOfValueNewValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber);
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag);
   }
 
   @Override

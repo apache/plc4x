@@ -42,19 +42,14 @@ public class BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues i
   protected final List<BACnetLifeSafetyStateTagged> listOfLifeSavetyAlarmValues;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues(
       BACnetOpeningTag openingTag,
       List<BACnetLifeSafetyStateTagged> listOfLifeSavetyAlarmValues,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfLifeSavetyAlarmValues = listOfLifeSavetyAlarmValues;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -151,7 +146,7 @@ public class BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues i
         _bACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues;
     _bACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues =
         new BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues(
-            openingTag, listOfLifeSavetyAlarmValues, closingTag, tagNumber);
+            openingTag, listOfLifeSavetyAlarmValues, closingTag);
     return _bACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues;
   }
 

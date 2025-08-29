@@ -61,12 +61,12 @@ var _ BACnetConstructedDataOperationDirection = (*_BACnetConstructedDataOperatio
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOperationDirection)(nil)
 
 // NewBACnetConstructedDataOperationDirection factory function for _BACnetConstructedDataOperationDirection
-func NewBACnetConstructedDataOperationDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, operationDirection BACnetEscalatorOperationDirectionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationDirection {
+func NewBACnetConstructedDataOperationDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, operationDirection BACnetEscalatorOperationDirectionTagged) *_BACnetConstructedDataOperationDirection {
 	if operationDirection == nil {
 		panic("operationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetConstructedDataOperationDirection must not be nil")
 	}
 	_result := &_BACnetConstructedDataOperationDirection{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		OperationDirection:            operationDirection,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataFileType = (*_BACnetConstructedDataFileType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileType)(nil)
 
 // NewBACnetConstructedDataFileType factory function for _BACnetConstructedDataFileType
-func NewBACnetConstructedDataFileType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileType {
+func NewBACnetConstructedDataFileType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileType BACnetApplicationTagCharacterString) *_BACnetConstructedDataFileType {
 	if fileType == nil {
 		panic("fileType of type BACnetApplicationTagCharacterString for BACnetConstructedDataFileType must not be nil")
 	}
 	_result := &_BACnetConstructedDataFileType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		FileType:                      fileType,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -41,7 +41,7 @@ func NewWhoIsRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*WhoI
 	}
 	ApplyAppliers(options, w)
 	options = AddLeafTypeIfAbundant(options, w)
-	options = AddNLMIfAbundant(options, model.NewNLMWhoIsRouterToNetwork(w.wirtnNetwork, 0))
+	options = AddNLMIfAbundant(options, model.NewNLMWhoIsRouterToNetwork(w.wirtnNetwork))
 	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")

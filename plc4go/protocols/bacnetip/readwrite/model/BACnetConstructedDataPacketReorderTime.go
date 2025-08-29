@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPacketReorderTime = (*_BACnetConstructedDataPacketReo
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPacketReorderTime)(nil)
 
 // NewBACnetConstructedDataPacketReorderTime factory function for _BACnetConstructedDataPacketReorderTime
-func NewBACnetConstructedDataPacketReorderTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, packetReorderTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPacketReorderTime {
+func NewBACnetConstructedDataPacketReorderTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, packetReorderTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataPacketReorderTime {
 	if packetReorderTime == nil {
 		panic("packetReorderTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPacketReorderTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataPacketReorderTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PacketReorderTime:             packetReorderTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

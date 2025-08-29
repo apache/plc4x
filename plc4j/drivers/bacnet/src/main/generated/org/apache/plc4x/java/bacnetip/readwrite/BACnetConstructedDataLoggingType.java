@@ -49,21 +49,13 @@ public class BACnetConstructedDataLoggingType extends BACnetConstructedData impl
   // Properties.
   protected final BACnetLoggingTypeTagged loggingType;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLoggingType(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLoggingTypeTagged loggingType,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLoggingTypeTagged loggingType) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.loggingType = loggingType;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLoggingTypeTagged getLoggingType() {
@@ -134,34 +126,22 @@ public class BACnetConstructedDataLoggingType extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataLoggingType");
     // Create the instance
-    return new BACnetConstructedDataLoggingTypeBuilderImpl(
-        loggingType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLoggingTypeBuilderImpl(loggingType);
   }
 
   public static class BACnetConstructedDataLoggingTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLoggingTypeTagged loggingType;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLoggingTypeBuilderImpl(
-        BACnetLoggingTypeTagged loggingType,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataLoggingTypeBuilderImpl(BACnetLoggingTypeTagged loggingType) {
       this.loggingType = loggingType;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLoggingType build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLoggingType bACnetConstructedDataLoggingType =
           new BACnetConstructedDataLoggingType(
-              openingTag, peekedTagHeader, closingTag, loggingType, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, loggingType);
       return bACnetConstructedDataLoggingType;
     }
   }

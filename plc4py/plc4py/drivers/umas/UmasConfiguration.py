@@ -16,7 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from plc4py.protocols.umas.readwrite.UmasConstants import UmasConstants
+from plc4py.protocols.umas.readwrite.Constants import Constants
 from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 
 

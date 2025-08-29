@@ -62,23 +62,19 @@ type BACnetStatusFlagsTagged interface {
 type _BACnetStatusFlagsTagged struct {
 	Header  BACnetTagHeader
 	Payload BACnetTagPayloadBitString
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetStatusFlagsTagged = (*_BACnetStatusFlagsTagged)(nil)
 
 // NewBACnetStatusFlagsTagged factory function for _BACnetStatusFlagsTagged
-func NewBACnetStatusFlagsTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetStatusFlagsTagged {
+func NewBACnetStatusFlagsTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString) *_BACnetStatusFlagsTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetStatusFlagsTagged must not be nil")
 	}
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadBitString for BACnetStatusFlagsTagged must not be nil")
 	}
-	return &_BACnetStatusFlagsTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetStatusFlagsTagged{Header: header, Payload: payload}
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,10 +95,6 @@ type BACnetStatusFlagsTaggedBuilder interface {
 	WithPayload(BACnetTagPayloadBitString) BACnetStatusFlagsTaggedBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetStatusFlagsTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetStatusFlagsTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetStatusFlagsTaggedBuilder
 	// Build builds the BACnetStatusFlagsTagged or returns an error if something is wrong
 	Build() (BACnetStatusFlagsTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -153,15 +145,6 @@ func (b *_BACnetStatusFlagsTaggedBuilder) WithPayloadBuilder(builderSupplier fun
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetStatusFlagsTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetStatusFlagsTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetStatusFlagsTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetStatusFlagsTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -308,7 +291,7 @@ func BACnetStatusFlagsTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetStatusFlagsTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetStatusFlagsTagged, error) {
-	v, err := (&_BACnetStatusFlagsTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetStatusFlagsTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -432,19 +415,6 @@ func (m *_BACnetStatusFlagsTagged) SerializeWithWriteBuffer(ctx context.Context,
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetStatusFlagsTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetStatusFlagsTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetStatusFlagsTagged) IsBACnetStatusFlagsTagged() {}
 
 func (m *_BACnetStatusFlagsTagged) DeepCopy() any {
@@ -458,8 +428,6 @@ func (m *_BACnetStatusFlagsTagged) deepCopy() *_BACnetStatusFlagsTagged {
 	_BACnetStatusFlagsTaggedCopy := &_BACnetStatusFlagsTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetStatusFlagsTaggedCopy
 }

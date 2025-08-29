@@ -1490,7 +1490,7 @@
     ['738' M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD ['799', '"Zhongshan Illus LIghting Co.,Ltd"']]
     ['739' M_HANGZHOU_KONKE_INFORMATION_TECHNOLOGY_CO___LTD_ ['800', '"Hangzhou Konke Information Technology Co., Ltd."']]
     ['740' M_SHANGHAI_FANTE_DIGITAL_TECHNOLOGY_CO___LTD ['801', '"Shanghai Fante Digital Technology Co., Ltd"']]
-    ['741' M_CONFIO ['802', '"CONFIO"']]
+    ['741' M_CONFIO_TECHNOLOGIES_PVT__LTD ['802', '"Confio Technologies Pvt. Ltd"']]
     ['742' M_SONIC_TECHNOLOGIES ['803', '"Sonic Technologies"']]
     ['743' M_SHANGHAI_INNOVATECH_INFORMATION_TECHNOLOGY_CO___LT ['804', '"Shanghai Innovatech Information Technology Co., Lt"']]
     ['744' M_ABI_SICHERHEITSSYSTEME_GMBH ['805', '"ABI Sicherheitssysteme GmbH"']]
@@ -1501,8 +1501,12 @@
     ['749' M_ROGERWELL_CONTROL_SYSTEM_LIMITED ['810', '"Rogerwell Control System Limited"']]
     ['750' M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_ ['811', '"Shanghai YUKON Automation Technologies Co., Ltd."']]
     ['751' M_TECCO_PTY_LTD ['812', '"Tecco Pty Ltd"']]
-    ['752' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['753' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['752' M_A_LAN_TECHNOLOGIE ['813', '"A-LAN Technologie"']]
+    ['753' M_VOLTAN_TECHNOLOGY ['814', '"Voltan Technology"']]
+    ['754' M_BAERWINKEL_AND_STRASSER_GMBH ['815', '"Baerwinkel & Strasser GmbH"']]
+    ['755' M_CATERLUX ['816', '"Caterlux"']]
+    ['756' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['757' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

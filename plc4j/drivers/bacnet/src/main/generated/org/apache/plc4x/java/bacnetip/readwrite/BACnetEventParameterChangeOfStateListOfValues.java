@@ -42,19 +42,14 @@ public class BACnetEventParameterChangeOfStateListOfValues implements Message {
   protected final List<BACnetPropertyStates> listOfValues;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetEventParameterChangeOfStateListOfValues(
       BACnetOpeningTag openingTag,
       List<BACnetPropertyStates> listOfValues,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfValues = listOfValues;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -144,8 +139,7 @@ public class BACnetEventParameterChangeOfStateListOfValues implements Message {
     // Create the instance
     BACnetEventParameterChangeOfStateListOfValues _bACnetEventParameterChangeOfStateListOfValues;
     _bACnetEventParameterChangeOfStateListOfValues =
-        new BACnetEventParameterChangeOfStateListOfValues(
-            openingTag, listOfValues, closingTag, tagNumber);
+        new BACnetEventParameterChangeOfStateListOfValues(openingTag, listOfValues, closingTag);
     return _bACnetEventParameterChangeOfStateListOfValues;
   }
 

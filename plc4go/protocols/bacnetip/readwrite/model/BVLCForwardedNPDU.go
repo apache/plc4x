@@ -61,16 +61,13 @@ type _BVLCForwardedNPDU struct {
 	Ip   []uint8
 	Port uint16
 	Npdu NPDU
-
-	// Arguments.
-	BvlcPayloadLength uint16
 }
 
 var _ BVLCForwardedNPDU = (*_BVLCForwardedNPDU)(nil)
 var _ BVLCRequirements = (*_BVLCForwardedNPDU)(nil)
 
 // NewBVLCForwardedNPDU factory function for _BVLCForwardedNPDU
-func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength uint16) *_BVLCForwardedNPDU {
+func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU) *_BVLCForwardedNPDU {
 	if npdu == nil {
 		panic("npdu of type NPDU for BVLCForwardedNPDU must not be nil")
 	}
@@ -102,8 +99,6 @@ type BVLCForwardedNPDUBuilder interface {
 	WithNpdu(NPDU) BVLCForwardedNPDUBuilder
 	// WithNpduBuilder adds Npdu (property field) which is build by the builder
 	WithNpduBuilder(func(NPDUBuilder) NPDUBuilder) BVLCForwardedNPDUBuilder
-	// WithArgBvlcPayloadLength sets a parser argument
-	WithArgBvlcPayloadLength(uint16) BVLCForwardedNPDUBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCForwardedNPDU or returns an error if something is wrong
@@ -158,11 +153,6 @@ func (b *_BVLCForwardedNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBui
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NPDUBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BVLCForwardedNPDUBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCForwardedNPDUBuilder {
-	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 
@@ -366,16 +356,6 @@ func (m *_BVLCForwardedNPDU) SerializeWithWriteBuffer(ctx context.Context, write
 	return m.BVLCContract.(*_BVLC).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BVLCForwardedNPDU) GetBvlcPayloadLength() uint16 {
-	return m.BvlcPayloadLength
-}
-
-//
-////
-
 func (m *_BVLCForwardedNPDU) IsBVLCForwardedNPDU() {}
 
 func (m *_BVLCForwardedNPDU) DeepCopy() any {
@@ -391,7 +371,6 @@ func (m *_BVLCForwardedNPDU) deepCopy() *_BVLCForwardedNPDU {
 		utils.DeepCopySlice[uint8, uint8](m.Ip),
 		m.Port,
 		utils.DeepCopy[NPDU](m.Npdu),
-		m.BvlcPayloadLength,
 	}
 	_BVLCForwardedNPDUCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCForwardedNPDUCopy

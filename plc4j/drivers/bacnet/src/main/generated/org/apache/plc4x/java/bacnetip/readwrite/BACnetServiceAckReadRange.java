@@ -51,18 +51,15 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
   protected final BACnetConstructedData itemData;
   protected final BACnetContextTagUnsignedInteger firstSequenceNumber;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckReadRange(
+      long serviceAckLength,
       BACnetContextTagObjectIdentifier objectIdentifier,
       BACnetPropertyIdentifierTagged propertyIdentifier,
       BACnetContextTagUnsignedInteger propertyArrayIndex,
       BACnetResultFlagsTagged resultFlags,
       BACnetContextTagUnsignedInteger itemCount,
       BACnetConstructedData itemData,
-      BACnetContextTagUnsignedInteger firstSequenceNumber,
-      Long serviceAckLength) {
+      BACnetContextTagUnsignedInteger firstSequenceNumber) {
     super(serviceAckLength);
     this.objectIdentifier = objectIdentifier;
     this.propertyIdentifier = propertyIdentifier;
@@ -71,7 +68,6 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     this.itemCount = itemCount;
     this.itemData = itemData;
     this.firstSequenceNumber = firstSequenceNumber;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetContextTagObjectIdentifier getObjectIdentifier() {
@@ -271,8 +267,7 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
         resultFlags,
         itemCount,
         itemData,
-        firstSequenceNumber,
-        serviceAckLength);
+        firstSequenceNumber);
   }
 
   public static class BACnetServiceAckReadRangeBuilderImpl
@@ -284,7 +279,6 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     private final BACnetContextTagUnsignedInteger itemCount;
     private final BACnetConstructedData itemData;
     private final BACnetContextTagUnsignedInteger firstSequenceNumber;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckReadRangeBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
@@ -293,8 +287,7 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
         BACnetResultFlagsTagged resultFlags,
         BACnetContextTagUnsignedInteger itemCount,
         BACnetConstructedData itemData,
-        BACnetContextTagUnsignedInteger firstSequenceNumber,
-        Long serviceAckLength) {
+        BACnetContextTagUnsignedInteger firstSequenceNumber) {
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.propertyArrayIndex = propertyArrayIndex;
@@ -302,21 +295,19 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
       this.itemCount = itemCount;
       this.itemData = itemData;
       this.firstSequenceNumber = firstSequenceNumber;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckReadRange build(Long serviceAckLength) {
-
+    public BACnetServiceAckReadRange build(long serviceAckLength) {
       BACnetServiceAckReadRange bACnetServiceAckReadRange =
           new BACnetServiceAckReadRange(
+              serviceAckLength,
               objectIdentifier,
               propertyIdentifier,
               propertyArrayIndex,
               resultFlags,
               itemCount,
               itemData,
-              firstSequenceNumber,
-              serviceAckLength);
+              firstSequenceNumber);
       return bACnetServiceAckReadRange;
     }
   }

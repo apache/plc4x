@@ -42,22 +42,14 @@ public class BACnetReadAccessResultListOfResults implements Message {
   protected final List<BACnetReadAccessProperty> listOfReadAccessProperty;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetReadAccessResultListOfResults(
       BACnetOpeningTag openingTag,
       List<BACnetReadAccessProperty> listOfReadAccessProperty,
-      BACnetClosingTag closingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.listOfReadAccessProperty = listOfReadAccessProperty;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -152,8 +144,7 @@ public class BACnetReadAccessResultListOfResults implements Message {
     // Create the instance
     BACnetReadAccessResultListOfResults _bACnetReadAccessResultListOfResults;
     _bACnetReadAccessResultListOfResults =
-        new BACnetReadAccessResultListOfResults(
-            openingTag, listOfReadAccessProperty, closingTag, tagNumber, objectTypeArgument);
+        new BACnetReadAccessResultListOfResults(openingTag, listOfReadAccessProperty, closingTag);
     return _bACnetReadAccessResultListOfResults;
   }
 

@@ -54,9 +54,9 @@ var _ MFuncPropCommandReq = (*_MFuncPropCommandReq)(nil)
 var _ CEMIRequirements = (*_MFuncPropCommandReq)(nil)
 
 // NewMFuncPropCommandReq factory function for _MFuncPropCommandReq
-func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
+func NewMFuncPropCommandReq() *_MFuncPropCommandReq {
 	_result := &_MFuncPropCommandReq{
-		CEMIContract: NewCEMI(size),
+		CEMIContract: NewCEMI(),
 	}
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result

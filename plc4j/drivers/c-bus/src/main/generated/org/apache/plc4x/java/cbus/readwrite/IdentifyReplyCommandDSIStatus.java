@@ -54,9 +54,6 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
   protected final UnitStatus unitStatus;
   protected final byte dimmingUCRevisionNumber;
 
-  // Arguments.
-  protected final Byte numBytes;
-
   public IdentifyReplyCommandDSIStatus(
       ChannelStatus channelStatus1,
       ChannelStatus channelStatus2,
@@ -67,9 +64,8 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
       ChannelStatus channelStatus7,
       ChannelStatus channelStatus8,
       UnitStatus unitStatus,
-      byte dimmingUCRevisionNumber,
-      Byte numBytes) {
-    super(numBytes);
+      byte dimmingUCRevisionNumber) {
+    super();
     this.channelStatus1 = channelStatus1;
     this.channelStatus2 = channelStatus2;
     this.channelStatus3 = channelStatus3;
@@ -80,7 +76,6 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
     this.channelStatus8 = channelStatus8;
     this.unitStatus = unitStatus;
     this.dimmingUCRevisionNumber = dimmingUCRevisionNumber;
-    this.numBytes = numBytes;
   }
 
   public ChannelStatus getChannelStatus1() {
@@ -326,8 +321,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         channelStatus7,
         channelStatus8,
         unitStatus,
-        dimmingUCRevisionNumber,
-        numBytes);
+        dimmingUCRevisionNumber);
   }
 
   public static class IdentifyReplyCommandDSIStatusBuilderImpl
@@ -342,7 +336,6 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
     private final ChannelStatus channelStatus8;
     private final UnitStatus unitStatus;
     private final byte dimmingUCRevisionNumber;
-    private final Byte numBytes;
 
     public IdentifyReplyCommandDSIStatusBuilderImpl(
         ChannelStatus channelStatus1,
@@ -354,8 +347,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         ChannelStatus channelStatus7,
         ChannelStatus channelStatus8,
         UnitStatus unitStatus,
-        byte dimmingUCRevisionNumber,
-        Byte numBytes) {
+        byte dimmingUCRevisionNumber) {
       this.channelStatus1 = channelStatus1;
       this.channelStatus2 = channelStatus2;
       this.channelStatus3 = channelStatus3;
@@ -366,11 +358,9 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
       this.channelStatus8 = channelStatus8;
       this.unitStatus = unitStatus;
       this.dimmingUCRevisionNumber = dimmingUCRevisionNumber;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandDSIStatus build(Byte numBytes) {
-
+    public IdentifyReplyCommandDSIStatus build() {
       IdentifyReplyCommandDSIStatus identifyReplyCommandDSIStatus =
           new IdentifyReplyCommandDSIStatus(
               channelStatus1,
@@ -382,8 +372,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
               channelStatus7,
               channelStatus8,
               unitStatus,
-              dimmingUCRevisionNumber,
-              numBytes);
+              dimmingUCRevisionNumber);
       return identifyReplyCommandDSIStatus;
     }
   }

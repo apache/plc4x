@@ -54,9 +54,9 @@ var _ GetAttributeListRequest = (*_GetAttributeListRequest)(nil)
 var _ CipServiceRequirements = (*_GetAttributeListRequest)(nil)
 
 // NewGetAttributeListRequest factory function for _GetAttributeListRequest
-func NewGetAttributeListRequest(serviceLen uint16) *_GetAttributeListRequest {
+func NewGetAttributeListRequest() *_GetAttributeListRequest {
 	_result := &_GetAttributeListRequest{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 	}
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result

@@ -45,13 +45,9 @@ public class NLMWhoIsRouterToNetwork extends NLM implements Message {
   // Properties.
   protected final Integer destinationNetworkAddress;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMWhoIsRouterToNetwork(Integer destinationNetworkAddress, Integer apduLength) {
-    super(apduLength);
+  public NLMWhoIsRouterToNetwork(Integer destinationNetworkAddress) {
+    super();
     this.destinationNetworkAddress = destinationNetworkAddress;
-    this.apduLength = apduLength;
   }
 
   public Integer getDestinationNetworkAddress() {
@@ -101,23 +97,19 @@ public class NLMWhoIsRouterToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMWhoIsRouterToNetwork");
     // Create the instance
-    return new NLMWhoIsRouterToNetworkBuilderImpl(destinationNetworkAddress, apduLength);
+    return new NLMWhoIsRouterToNetworkBuilderImpl(destinationNetworkAddress);
   }
 
   public static class NLMWhoIsRouterToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final Integer destinationNetworkAddress;
-    private final Integer apduLength;
 
-    public NLMWhoIsRouterToNetworkBuilderImpl(
-        Integer destinationNetworkAddress, Integer apduLength) {
+    public NLMWhoIsRouterToNetworkBuilderImpl(Integer destinationNetworkAddress) {
       this.destinationNetworkAddress = destinationNetworkAddress;
-      this.apduLength = apduLength;
     }
 
-    public NLMWhoIsRouterToNetwork build(Integer apduLength) {
-
+    public NLMWhoIsRouterToNetwork build() {
       NLMWhoIsRouterToNetwork nLMWhoIsRouterToNetwork =
-          new NLMWhoIsRouterToNetwork(destinationNetworkAddress, apduLength);
+          new NLMWhoIsRouterToNetwork(destinationNetworkAddress);
       return nLMWhoIsRouterToNetwork;
     }
   }

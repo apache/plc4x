@@ -61,12 +61,12 @@ var _ BACnetConstructedDataVarianceValue = (*_BACnetConstructedDataVarianceValue
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVarianceValue)(nil)
 
 // NewBACnetConstructedDataVarianceValue factory function for _BACnetConstructedDataVarianceValue
-func NewBACnetConstructedDataVarianceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, varianceValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVarianceValue {
+func NewBACnetConstructedDataVarianceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, varianceValue BACnetApplicationTagReal) *_BACnetConstructedDataVarianceValue {
 	if varianceValue == nil {
 		panic("varianceValue of type BACnetApplicationTagReal for BACnetConstructedDataVarianceValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataVarianceValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		VarianceValue:                 varianceValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

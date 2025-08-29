@@ -59,9 +59,9 @@ var _ BACnetConstructedDataReasonForDisable = (*_BACnetConstructedDataReasonForD
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForDisable)(nil)
 
 // NewBACnetConstructedDataReasonForDisable factory function for _BACnetConstructedDataReasonForDisable
-func NewBACnetConstructedDataReasonForDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reasonForDisable []BACnetAccessCredentialDisableReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForDisable {
+func NewBACnetConstructedDataReasonForDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reasonForDisable []BACnetAccessCredentialDisableReasonTagged) *_BACnetConstructedDataReasonForDisable {
 	_result := &_BACnetConstructedDataReasonForDisable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ReasonForDisable:              reasonForDisable,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

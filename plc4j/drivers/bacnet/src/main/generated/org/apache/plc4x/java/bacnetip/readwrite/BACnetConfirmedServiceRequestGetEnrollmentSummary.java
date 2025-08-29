@@ -53,18 +53,15 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
   protected final BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter priorityFilter;
   protected final BACnetContextTagUnsignedInteger notificationClassFilter;
 
-  // Arguments.
-  protected final Long serviceRequestLength;
-
   public BACnetConfirmedServiceRequestGetEnrollmentSummary(
+      long serviceRequestLength,
       BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
           acknowledgmentFilter,
       BACnetRecipientProcessEnclosed enrollmentFilter,
       BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged eventStateFilter,
       BACnetEventTypeTagged eventTypeFilter,
       BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter priorityFilter,
-      BACnetContextTagUnsignedInteger notificationClassFilter,
-      Long serviceRequestLength) {
+      BACnetContextTagUnsignedInteger notificationClassFilter) {
     super(serviceRequestLength);
     this.acknowledgmentFilter = acknowledgmentFilter;
     this.enrollmentFilter = enrollmentFilter;
@@ -72,7 +69,6 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     this.eventTypeFilter = eventTypeFilter;
     this.priorityFilter = priorityFilter;
     this.notificationClassFilter = notificationClassFilter;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
@@ -247,8 +243,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
         eventStateFilter,
         eventTypeFilter,
         priorityFilter,
-        notificationClassFilter,
-        serviceRequestLength);
+        notificationClassFilter);
   }
 
   public static class BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilderImpl
@@ -261,7 +256,6 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     private final BACnetEventTypeTagged eventTypeFilter;
     private final BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter priorityFilter;
     private final BACnetContextTagUnsignedInteger notificationClassFilter;
-    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilderImpl(
         BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
@@ -270,29 +264,26 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
         BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged eventStateFilter,
         BACnetEventTypeTagged eventTypeFilter,
         BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter priorityFilter,
-        BACnetContextTagUnsignedInteger notificationClassFilter,
-        Long serviceRequestLength) {
+        BACnetContextTagUnsignedInteger notificationClassFilter) {
       this.acknowledgmentFilter = acknowledgmentFilter;
       this.enrollmentFilter = enrollmentFilter;
       this.eventStateFilter = eventStateFilter;
       this.eventTypeFilter = eventTypeFilter;
       this.priorityFilter = priorityFilter;
       this.notificationClassFilter = notificationClassFilter;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestGetEnrollmentSummary build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestGetEnrollmentSummary build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestGetEnrollmentSummary
           bACnetConfirmedServiceRequestGetEnrollmentSummary =
               new BACnetConfirmedServiceRequestGetEnrollmentSummary(
+                  serviceRequestLength,
                   acknowledgmentFilter,
                   enrollmentFilter,
                   eventStateFilter,
                   eventTypeFilter,
                   priorityFilter,
-                  notificationClassFilter,
-                  serviceRequestLength);
+                  notificationClassFilter);
       return bACnetConfirmedServiceRequestGetEnrollmentSummary;
     }
   }

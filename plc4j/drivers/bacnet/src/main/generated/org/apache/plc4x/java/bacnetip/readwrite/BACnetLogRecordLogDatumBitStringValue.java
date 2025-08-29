@@ -43,18 +43,13 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
   // Properties.
   protected final BACnetContextTagBitString bitStringValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumBitStringValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagBitString bitStringValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagBitString bitStringValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.bitStringValue = bitStringValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagBitString getBitStringValue() {
@@ -109,28 +104,23 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
 
     readBuffer.closeContext("BACnetLogRecordLogDatumBitStringValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumBitStringValueBuilderImpl(bitStringValue, tagNumber);
+    return new BACnetLogRecordLogDatumBitStringValueBuilderImpl(bitStringValue);
   }
 
   public static class BACnetLogRecordLogDatumBitStringValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagBitString bitStringValue;
-    private final Short tagNumber;
 
     public BACnetLogRecordLogDatumBitStringValueBuilderImpl(
-        BACnetContextTagBitString bitStringValue, Short tagNumber) {
+        BACnetContextTagBitString bitStringValue) {
       this.bitStringValue = bitStringValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumBitStringValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumBitStringValue bACnetLogRecordLogDatumBitStringValue =
           new BACnetLogRecordLogDatumBitStringValue(
-              openingTag, peekedTagHeader, closingTag, bitStringValue, tagNumber);
+              openingTag, peekedTagHeader, closingTag, bitStringValue);
       return bACnetLogRecordLogDatumBitStringValue;
     }
   }

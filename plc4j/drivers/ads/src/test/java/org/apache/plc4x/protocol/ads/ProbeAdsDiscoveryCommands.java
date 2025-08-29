@@ -43,7 +43,7 @@ public class ProbeAdsDiscoveryCommands {
                 new AdsDiscoveryBlockAmsNetId(new AmsNetId((byte) 192, (byte) 168, (byte) 23, (byte) 20, (byte) 1, (byte) 1))
             ));
 
-        try (DatagramSocket adsDiscoverySocket = new DatagramSocket(AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT)) {
+        try (DatagramSocket adsDiscoverySocket = new DatagramSocket(Constants.ADSDISCOVERYUDPDEFAULTPORT)) {
             // Serialize the message.
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(discoveryRequestMessage.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
             discoveryRequestMessage.serialize(writeBuffer);
@@ -52,7 +52,7 @@ public class ProbeAdsDiscoveryCommands {
             InetAddress address = InetAddress.getByAddress(new byte[]{(byte) 192, (byte) 168, (byte) 23, (byte) 20});
 
             // Create the UDP packet to the broadcast address.
-            DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, address, AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT);
+            DatagramPacket discoveryRequestPacket = new DatagramPacket(writeBuffer.getBytes(), writeBuffer.getBytes().length, address, Constants.ADSDISCOVERYUDPDEFAULTPORT);
             adsDiscoverySocket.send(discoveryRequestPacket);
         } catch (Exception e) {
             e.printStackTrace();

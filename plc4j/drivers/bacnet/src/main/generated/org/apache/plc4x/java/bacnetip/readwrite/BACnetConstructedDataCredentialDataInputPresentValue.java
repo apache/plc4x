@@ -50,21 +50,13 @@ public class BACnetConstructedDataCredentialDataInputPresentValue extends BACnet
   // Properties.
   protected final BACnetAuthenticationFactor presentValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCredentialDataInputPresentValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetAuthenticationFactor presentValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetAuthenticationFactor presentValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.presentValue = presentValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetAuthenticationFactor getPresentValue() {
@@ -131,40 +123,24 @@ public class BACnetConstructedDataCredentialDataInputPresentValue extends BACnet
 
     readBuffer.closeContext("BACnetConstructedDataCredentialDataInputPresentValue");
     // Create the instance
-    return new BACnetConstructedDataCredentialDataInputPresentValueBuilderImpl(
-        presentValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCredentialDataInputPresentValueBuilderImpl(presentValue);
   }
 
   public static class BACnetConstructedDataCredentialDataInputPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAuthenticationFactor presentValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCredentialDataInputPresentValueBuilderImpl(
-        BACnetAuthenticationFactor presentValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetAuthenticationFactor presentValue) {
       this.presentValue = presentValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCredentialDataInputPresentValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCredentialDataInputPresentValue
           bACnetConstructedDataCredentialDataInputPresentValue =
               new BACnetConstructedDataCredentialDataInputPresentValue(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  presentValue,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, presentValue);
       return bACnetConstructedDataCredentialDataInputPresentValue;
     }
   }

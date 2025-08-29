@@ -59,20 +59,16 @@ type _BACnetRestartReasonTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetRestartReason
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetRestartReasonTagged = (*_BACnetRestartReasonTagged)(nil)
 
 // NewBACnetRestartReasonTagged factory function for _BACnetRestartReasonTagged
-func NewBACnetRestartReasonTagged(header BACnetTagHeader, value BACnetRestartReason, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetRestartReasonTagged {
+func NewBACnetRestartReasonTagged(header BACnetTagHeader, value BACnetRestartReason, proprietaryValue uint32) *_BACnetRestartReasonTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetRestartReasonTagged must not be nil")
 	}
-	return &_BACnetRestartReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetRestartReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetRestartReasonTaggedBuilder interface {
 	WithValue(BACnetRestartReason) BACnetRestartReasonTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetRestartReasonTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetRestartReasonTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetRestartReasonTaggedBuilder
 	// Build builds the BACnetRestartReasonTagged or returns an error if something is wrong
 	Build() (BACnetRestartReasonTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetRestartReasonTaggedBuilder) WithValue(value BACnetRestartReason)
 
 func (b *_BACnetRestartReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRestartReasonTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetRestartReasonTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetRestartReasonTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetRestartReasonTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetRestartReasonTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetRestartReasonTaggedParseWithBufferProducer(tagNumber uint8, tagClass 
 }
 
 func BACnetRestartReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRestartReasonTagged, error) {
-	v, err := (&_BACnetRestartReasonTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetRestartReasonTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetRestartReasonTagged) SerializeWithWriteBuffer(ctx context.Contex
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetRestartReasonTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetRestartReasonTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetRestartReasonTagged) IsBACnetRestartReasonTagged() {}
 
 func (m *_BACnetRestartReasonTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetRestartReasonTagged) deepCopy() *_BACnetRestartReasonTagged {
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetRestartReasonTaggedCopy
 }

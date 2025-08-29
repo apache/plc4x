@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDefaultRampRate = (*_BACnetConstructedDataDefaultRamp
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultRampRate)(nil)
 
 // NewBACnetConstructedDataDefaultRampRate factory function for _BACnetConstructedDataDefaultRampRate
-func NewBACnetConstructedDataDefaultRampRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultRampRate BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultRampRate {
+func NewBACnetConstructedDataDefaultRampRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultRampRate BACnetApplicationTagReal) *_BACnetConstructedDataDefaultRampRate {
 	if defaultRampRate == nil {
 		panic("defaultRampRate of type BACnetApplicationTagReal for BACnetConstructedDataDefaultRampRate must not be nil")
 	}
 	_result := &_BACnetConstructedDataDefaultRampRate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DefaultRampRate:               defaultRampRate,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

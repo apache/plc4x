@@ -206,7 +206,7 @@ func SequenceHeaderParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func SequenceHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SequenceHeader, error) {
-	v, err := (&_SequenceHeader{}).parse(ctx, readBuffer)
+	v, err := (new(_SequenceHeader)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

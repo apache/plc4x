@@ -50,21 +50,13 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
   // Properties.
   protected final BACnetApplicationTagReal controlledVariableValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataControlledVariableValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal controlledVariableValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal controlledVariableValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.controlledVariableValue = controlledVariableValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getControlledVariableValue() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataControlledVariableValue");
     // Create the instance
-    return new BACnetConstructedDataControlledVariableValueBuilderImpl(
-        controlledVariableValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataControlledVariableValueBuilderImpl(controlledVariableValue);
   }
 
   public static class BACnetConstructedDataControlledVariableValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal controlledVariableValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataControlledVariableValueBuilderImpl(
-        BACnetApplicationTagReal controlledVariableValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagReal controlledVariableValue) {
       this.controlledVariableValue = controlledVariableValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataControlledVariableValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataControlledVariableValue bACnetConstructedDataControlledVariableValue =
           new BACnetConstructedDataControlledVariableValue(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              controlledVariableValue,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, controlledVariableValue);
       return bACnetConstructedDataControlledVariableValue;
     }
   }

@@ -45,13 +45,9 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
   // Properties.
   protected final byte[] maximumLevels;
 
-  // Arguments.
-  protected final Byte numBytes;
-
-  public IdentifyReplyCommandMaximumLevels(byte[] maximumLevels, Byte numBytes) {
-    super(numBytes);
+  public IdentifyReplyCommandMaximumLevels(byte[] maximumLevels) {
+    super();
     this.maximumLevels = maximumLevels;
-    this.numBytes = numBytes;
   }
 
   public byte[] getMaximumLevels() {
@@ -100,23 +96,20 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
 
     readBuffer.closeContext("IdentifyReplyCommandMaximumLevels");
     // Create the instance
-    return new IdentifyReplyCommandMaximumLevelsBuilderImpl(maximumLevels, numBytes);
+    return new IdentifyReplyCommandMaximumLevelsBuilderImpl(maximumLevels);
   }
 
   public static class IdentifyReplyCommandMaximumLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] maximumLevels;
-    private final Byte numBytes;
 
-    public IdentifyReplyCommandMaximumLevelsBuilderImpl(byte[] maximumLevels, Byte numBytes) {
+    public IdentifyReplyCommandMaximumLevelsBuilderImpl(byte[] maximumLevels) {
       this.maximumLevels = maximumLevels;
-      this.numBytes = numBytes;
     }
 
-    public IdentifyReplyCommandMaximumLevels build(Byte numBytes) {
-
+    public IdentifyReplyCommandMaximumLevels build() {
       IdentifyReplyCommandMaximumLevels identifyReplyCommandMaximumLevels =
-          new IdentifyReplyCommandMaximumLevels(maximumLevels, numBytes);
+          new IdentifyReplyCommandMaximumLevels(maximumLevels);
       return identifyReplyCommandMaximumLevels;
     }
   }

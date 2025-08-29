@@ -59,12 +59,12 @@ var _ BACnetPriorityValueEnumerated = (*_BACnetPriorityValueEnumerated)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueEnumerated)(nil)
 
 // NewBACnetPriorityValueEnumerated factory function for _BACnetPriorityValueEnumerated
-func NewBACnetPriorityValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueEnumerated {
+func NewBACnetPriorityValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated) *_BACnetPriorityValueEnumerated {
 	if enumeratedValue == nil {
 		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetPriorityValueEnumerated must not be nil")
 	}
 	_result := &_BACnetPriorityValueEnumerated{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		EnumeratedValue:             enumeratedValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result

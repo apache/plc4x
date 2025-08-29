@@ -50,21 +50,13 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
   // Properties.
   protected final List<BACnetVMACEntry> virtualMacAddressTable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataVirtualMACAddressTable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetVMACEntry> virtualMacAddressTable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetVMACEntry> virtualMacAddressTable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.virtualMacAddressTable = virtualMacAddressTable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetVMACEntry> getVirtualMacAddressTable() {
@@ -127,39 +119,23 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataVirtualMACAddressTable");
     // Create the instance
-    return new BACnetConstructedDataVirtualMACAddressTableBuilderImpl(
-        virtualMacAddressTable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataVirtualMACAddressTableBuilderImpl(virtualMacAddressTable);
   }
 
   public static class BACnetConstructedDataVirtualMACAddressTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetVMACEntry> virtualMacAddressTable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataVirtualMACAddressTableBuilderImpl(
-        List<BACnetVMACEntry> virtualMacAddressTable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetVMACEntry> virtualMacAddressTable) {
       this.virtualMacAddressTable = virtualMacAddressTable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataVirtualMACAddressTable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataVirtualMACAddressTable bACnetConstructedDataVirtualMACAddressTable =
           new BACnetConstructedDataVirtualMACAddressTable(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              virtualMacAddressTable,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, virtualMacAddressTable);
       return bACnetConstructedDataVirtualMACAddressTable;
     }
   }

@@ -59,12 +59,12 @@ var _ ApduDataContainer = (*_ApduDataContainer)(nil)
 var _ ApduRequirements = (*_ApduDataContainer)(nil)
 
 // NewApduDataContainer factory function for _ApduDataContainer
-func NewApduDataContainer(numbered bool, counter uint8, dataApdu ApduData, dataLength uint8) *_ApduDataContainer {
+func NewApduDataContainer(numbered bool, counter uint8, dataApdu ApduData) *_ApduDataContainer {
 	if dataApdu == nil {
 		panic("dataApdu of type ApduData for ApduDataContainer must not be nil")
 	}
 	_result := &_ApduDataContainer{
-		ApduContract: NewApdu(numbered, counter, dataLength),
+		ApduContract: NewApdu(numbered, counter),
 		DataApdu:     dataApdu,
 	}
 	_result.ApduContract.(*_Apdu)._SubType = _result

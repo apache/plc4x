@@ -41,17 +41,10 @@ public class SecurityResponseCodeTagged implements Message {
   protected final BACnetTagHeader header;
   protected final SecurityResponseCode value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public SecurityResponseCodeTagged(
-      BACnetTagHeader header, SecurityResponseCode value, Short tagNumber, TagClass tagClass) {
+  public SecurityResponseCodeTagged(BACnetTagHeader header, SecurityResponseCode value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -133,8 +126,7 @@ public class SecurityResponseCodeTagged implements Message {
     readBuffer.closeContext("SecurityResponseCodeTagged");
     // Create the instance
     SecurityResponseCodeTagged _securityResponseCodeTagged;
-    _securityResponseCodeTagged =
-        new SecurityResponseCodeTagged(header, value, tagNumber, tagClass);
+    _securityResponseCodeTagged = new SecurityResponseCodeTagged(header, value);
     return _securityResponseCodeTagged;
   }
 

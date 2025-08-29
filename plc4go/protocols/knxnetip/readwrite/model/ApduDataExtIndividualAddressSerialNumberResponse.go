@@ -54,9 +54,9 @@ var _ ApduDataExtIndividualAddressSerialNumberResponse = (*_ApduDataExtIndividua
 var _ ApduDataExtRequirements = (*_ApduDataExtIndividualAddressSerialNumberResponse)(nil)
 
 // NewApduDataExtIndividualAddressSerialNumberResponse factory function for _ApduDataExtIndividualAddressSerialNumberResponse
-func NewApduDataExtIndividualAddressSerialNumberResponse(length uint8) *_ApduDataExtIndividualAddressSerialNumberResponse {
+func NewApduDataExtIndividualAddressSerialNumberResponse() *_ApduDataExtIndividualAddressSerialNumberResponse {
 	_result := &_ApduDataExtIndividualAddressSerialNumberResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

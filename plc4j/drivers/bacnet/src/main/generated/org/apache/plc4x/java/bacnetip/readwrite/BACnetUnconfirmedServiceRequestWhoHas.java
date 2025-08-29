@@ -48,19 +48,14 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
   protected final BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit;
   protected final BACnetUnconfirmedServiceRequestWhoHasObject object;
 
-  // Arguments.
-  protected final Integer serviceRequestLength;
-
   public BACnetUnconfirmedServiceRequestWhoHas(
       BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit,
       BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit,
-      BACnetUnconfirmedServiceRequestWhoHasObject object,
-      Integer serviceRequestLength) {
-    super(serviceRequestLength);
+      BACnetUnconfirmedServiceRequestWhoHasObject object) {
+    super();
     this.deviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit;
     this.deviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit;
     this.object = object;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public BACnetContextTagUnsignedInteger getDeviceInstanceRangeLowLimit() {
@@ -88,10 +83,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
 
     // Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if the value is null)
     writeOptionalField(
-        "deviceInstanceRangeHighLimit",
-        deviceInstanceRangeHighLimit,
-        writeComplex(writeBuffer),
-        (getDeviceInstanceRangeLowLimit()) != (null));
+        "deviceInstanceRangeHighLimit", deviceInstanceRangeHighLimit, writeComplex(writeBuffer));
 
     // Simple Field (object)
     writeSimpleField("object", object, writeComplex(writeBuffer));
@@ -168,7 +160,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestWhoHas");
     // Create the instance
     return new BACnetUnconfirmedServiceRequestWhoHasBuilderImpl(
-        deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit, object, serviceRequestLength);
+        deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit, object);
   }
 
   public static class BACnetUnconfirmedServiceRequestWhoHasBuilderImpl
@@ -176,27 +168,20 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     private final BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit;
     private final BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit;
     private final BACnetUnconfirmedServiceRequestWhoHasObject object;
-    private final Integer serviceRequestLength;
 
     public BACnetUnconfirmedServiceRequestWhoHasBuilderImpl(
         BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit,
         BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit,
-        BACnetUnconfirmedServiceRequestWhoHasObject object,
-        Integer serviceRequestLength) {
+        BACnetUnconfirmedServiceRequestWhoHasObject object) {
       this.deviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit;
       this.deviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit;
       this.object = object;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetUnconfirmedServiceRequestWhoHas build(Integer serviceRequestLength) {
-
+    public BACnetUnconfirmedServiceRequestWhoHas build() {
       BACnetUnconfirmedServiceRequestWhoHas bACnetUnconfirmedServiceRequestWhoHas =
           new BACnetUnconfirmedServiceRequestWhoHas(
-              deviceInstanceRangeLowLimit,
-              deviceInstanceRangeHighLimit,
-              object,
-              serviceRequestLength);
+              deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit, object);
       return bACnetUnconfirmedServiceRequestWhoHas;
     }
   }

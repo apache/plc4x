@@ -71,7 +71,7 @@ var _ BACnetNotificationParametersCommandFailure = (*_BACnetNotificationParamete
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersCommandFailure)(nil)
 
 // NewBACnetNotificationParametersCommandFailure factory function for _BACnetNotificationParametersCommandFailure
-func NewBACnetNotificationParametersCommandFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, commandValue BACnetConstructedData, statusFlags BACnetStatusFlagsTagged, feedbackValue BACnetConstructedData, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersCommandFailure {
+func NewBACnetNotificationParametersCommandFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, commandValue BACnetConstructedData, statusFlags BACnetStatusFlagsTagged, feedbackValue BACnetConstructedData, innerClosingTag BACnetClosingTag) *_BACnetNotificationParametersCommandFailure {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersCommandFailure must not be nil")
 	}
@@ -88,7 +88,7 @@ func NewBACnetNotificationParametersCommandFailure(openingTag BACnetOpeningTag, 
 		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersCommandFailure must not be nil")
 	}
 	_result := &_BACnetNotificationParametersCommandFailure{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag),
 		InnerOpeningTag:                      innerOpeningTag,
 		CommandValue:                         commandValue,
 		StatusFlags:                          statusFlags,

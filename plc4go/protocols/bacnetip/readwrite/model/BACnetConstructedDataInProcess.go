@@ -61,12 +61,12 @@ var _ BACnetConstructedDataInProcess = (*_BACnetConstructedDataInProcess)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInProcess)(nil)
 
 // NewBACnetConstructedDataInProcess factory function for _BACnetConstructedDataInProcess
-func NewBACnetConstructedDataInProcess(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inProcess BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProcess {
+func NewBACnetConstructedDataInProcess(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inProcess BACnetApplicationTagBoolean) *_BACnetConstructedDataInProcess {
 	if inProcess == nil {
 		panic("inProcess of type BACnetApplicationTagBoolean for BACnetConstructedDataInProcess must not be nil")
 	}
 	_result := &_BACnetConstructedDataInProcess{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		InProcess:                     inProcess,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

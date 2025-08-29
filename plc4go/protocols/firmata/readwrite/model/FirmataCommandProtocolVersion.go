@@ -62,9 +62,9 @@ var _ FirmataCommandProtocolVersion = (*_FirmataCommandProtocolVersion)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandProtocolVersion)(nil)
 
 // NewFirmataCommandProtocolVersion factory function for _FirmataCommandProtocolVersion
-func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, response bool) *_FirmataCommandProtocolVersion {
+func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8) *_FirmataCommandProtocolVersion {
 	_result := &_FirmataCommandProtocolVersion{
-		FirmataCommandContract: NewFirmataCommand(response),
+		FirmataCommandContract: NewFirmataCommand(),
 		MajorVersion:           majorVersion,
 		MinorVersion:           minorVersion,
 	}

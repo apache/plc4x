@@ -49,21 +49,13 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
   // Properties.
   protected final BACnetApplicationTagReal power;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPower(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagReal power,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagReal power) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.power = power;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagReal getPower() {
@@ -132,33 +124,21 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataPower");
     // Create the instance
-    return new BACnetConstructedDataPowerBuilderImpl(power, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPowerBuilderImpl(power);
   }
 
   public static class BACnetConstructedDataPowerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal power;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPowerBuilderImpl(
-        BACnetApplicationTagReal power,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataPowerBuilderImpl(BACnetApplicationTagReal power) {
       this.power = power;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPower build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPower bACnetConstructedDataPower =
-          new BACnetConstructedDataPower(
-              openingTag, peekedTagHeader, closingTag, power, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataPower(openingTag, peekedTagHeader, closingTag, power);
       return bACnetConstructedDataPower;
     }
   }

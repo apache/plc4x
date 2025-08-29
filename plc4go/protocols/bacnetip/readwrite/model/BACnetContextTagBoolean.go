@@ -64,12 +64,12 @@ var _ BACnetContextTagBoolean = (*_BACnetContextTagBoolean)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagBoolean)(nil)
 
 // NewBACnetContextTagBoolean factory function for _BACnetContextTagBoolean
-func NewBACnetContextTagBoolean(header BACnetTagHeader, value uint8, payload BACnetTagPayloadBoolean, tagNumberArgument uint8) *_BACnetContextTagBoolean {
+func NewBACnetContextTagBoolean(header BACnetTagHeader, value uint8, payload BACnetTagPayloadBoolean) *_BACnetContextTagBoolean {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadBoolean for BACnetContextTagBoolean must not be nil")
 	}
 	_result := &_BACnetContextTagBoolean{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		BACnetContextTagContract: NewBACnetContextTag(header),
 		Value:                    value,
 		Payload:                  payload,
 	}

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNotificationThreshold = (*_BACnetConstructedDataNotif
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationThreshold)(nil)
 
 // NewBACnetConstructedDataNotificationThreshold factory function for _BACnetConstructedDataNotificationThreshold
-func NewBACnetConstructedDataNotificationThreshold(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationThreshold BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationThreshold {
+func NewBACnetConstructedDataNotificationThreshold(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationThreshold BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNotificationThreshold {
 	if notificationThreshold == nil {
 		panic("notificationThreshold of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationThreshold must not be nil")
 	}
 	_result := &_BACnetConstructedDataNotificationThreshold{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NotificationThreshold:         notificationThreshold,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

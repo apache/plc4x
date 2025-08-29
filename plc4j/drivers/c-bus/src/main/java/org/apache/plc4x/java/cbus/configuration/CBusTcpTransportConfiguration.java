@@ -19,14 +19,14 @@
 
 package org.apache.plc4x.java.cbus.configuration;
 
-import org.apache.plc4x.java.cbus.readwrite.CBusConstants;
+import org.apache.plc4x.java.cbus.readwrite.Constants;
 import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
 
 public class CBusTcpTransportConfiguration extends DefaultTcpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {
-        return CBusConstants.CBUSTCPDEFAULTPORT;
+        return Constants.CBUSTCPDEFAULTPORT;
     }
 
 }

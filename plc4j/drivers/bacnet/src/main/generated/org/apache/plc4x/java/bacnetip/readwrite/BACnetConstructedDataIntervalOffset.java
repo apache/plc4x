@@ -49,21 +49,13 @@ public class BACnetConstructedDataIntervalOffset extends BACnetConstructedData i
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger intervalOffset;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIntervalOffset(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger intervalOffset,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger intervalOffset) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.intervalOffset = intervalOffset;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getIntervalOffset() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataIntervalOffset extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataIntervalOffset");
     // Create the instance
-    return new BACnetConstructedDataIntervalOffsetBuilderImpl(
-        intervalOffset, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIntervalOffsetBuilderImpl(intervalOffset);
   }
 
   public static class BACnetConstructedDataIntervalOffsetBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger intervalOffset;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIntervalOffsetBuilderImpl(
-        BACnetApplicationTagUnsignedInteger intervalOffset,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger intervalOffset) {
       this.intervalOffset = intervalOffset;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIntervalOffset build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIntervalOffset bACnetConstructedDataIntervalOffset =
           new BACnetConstructedDataIntervalOffset(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              intervalOffset,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, intervalOffset);
       return bACnetConstructedDataIntervalOffset;
     }
   }

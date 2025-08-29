@@ -54,20 +54,16 @@ type BACnetNotifyTypeTagged interface {
 type _BACnetNotifyTypeTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetNotifyType
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetNotifyTypeTagged = (*_BACnetNotifyTypeTagged)(nil)
 
 // NewBACnetNotifyTypeTagged factory function for _BACnetNotifyTypeTagged
-func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType, tagNumber uint8, tagClass TagClass) *_BACnetNotifyTypeTagged {
+func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType) *_BACnetNotifyTypeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetNotifyTypeTagged must not be nil")
 	}
-	return &_BACnetNotifyTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetNotifyTypeTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetNotifyTypeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotifyTypeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetNotifyType) BACnetNotifyTypeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetNotifyTypeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetNotifyTypeTaggedBuilder
 	// Build builds the BACnetNotifyTypeTagged or returns an error if something is wrong
 	Build() (BACnetNotifyTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetNotifyTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(
 
 func (b *_BACnetNotifyTypeTaggedBuilder) WithValue(value BACnetNotifyType) BACnetNotifyTypeTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetNotifyTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetNotifyTypeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetNotifyTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetNotifyTypeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetNotifyTypeTaggedParseWithBufferProducer(tagNumber uint8, tagClass Tag
 }
 
 func BACnetNotifyTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNotifyTypeTagged, error) {
-	v, err := (&_BACnetNotifyTypeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetNotifyTypeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetNotifyTypeTagged) SerializeWithWriteBuffer(ctx context.Context, 
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetNotifyTypeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetNotifyTypeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetNotifyTypeTagged) IsBACnetNotifyTypeTagged() {}
 
 func (m *_BACnetNotifyTypeTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetNotifyTypeTagged) deepCopy() *_BACnetNotifyTypeTagged {
 	_BACnetNotifyTypeTaggedCopy := &_BACnetNotifyTypeTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetNotifyTypeTaggedCopy
 }

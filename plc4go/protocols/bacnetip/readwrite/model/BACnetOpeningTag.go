@@ -51,19 +51,16 @@ type BACnetOpeningTag interface {
 // _BACnetOpeningTag is the data-structure of this message
 type _BACnetOpeningTag struct {
 	Header BACnetTagHeader
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 var _ BACnetOpeningTag = (*_BACnetOpeningTag)(nil)
 
 // NewBACnetOpeningTag factory function for _BACnetOpeningTag
-func NewBACnetOpeningTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetOpeningTag {
+func NewBACnetOpeningTag(header BACnetTagHeader) *_BACnetOpeningTag {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetOpeningTag must not be nil")
 	}
-	return &_BACnetOpeningTag{Header: header, TagNumberArgument: tagNumberArgument}
+	return &_BACnetOpeningTag{Header: header}
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +77,6 @@ type BACnetOpeningTagBuilder interface {
 	WithHeader(BACnetTagHeader) BACnetOpeningTagBuilder
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOpeningTagBuilder
-	// WithArgTagNumberArgument sets a parser argument
-	WithArgTagNumberArgument(uint8) BACnetOpeningTagBuilder
 	// Build builds the BACnetOpeningTag or returns an error if something is wrong
 	Build() (BACnetOpeningTag, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,11 +112,6 @@ func (b *_BACnetOpeningTagBuilder) WithHeaderBuilder(builderSupplier func(BACnet
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetOpeningTagBuilder) WithArgTagNumberArgument(tagNumberArgument uint8) BACnetOpeningTagBuilder {
-	b.TagNumberArgument = tagNumberArgument
 	return b
 }
 
@@ -217,7 +207,7 @@ func BACnetOpeningTagParseWithBufferProducer(tagNumberArgument uint8) func(ctx c
 }
 
 func BACnetOpeningTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetOpeningTag, error) {
-	v, err := (&_BACnetOpeningTag{TagNumberArgument: tagNumberArgument}).parse(ctx, readBuffer, tagNumberArgument)
+	v, err := (new(_BACnetOpeningTag)).parse(ctx, readBuffer, tagNumberArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -288,16 +278,6 @@ func (m *_BACnetOpeningTag) SerializeWithWriteBuffer(ctx context.Context, writeB
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetOpeningTag) GetTagNumberArgument() uint8 {
-	return m.TagNumberArgument
-}
-
-//
-////
-
 func (m *_BACnetOpeningTag) IsBACnetOpeningTag() {}
 
 func (m *_BACnetOpeningTag) DeepCopy() any {
@@ -310,7 +290,6 @@ func (m *_BACnetOpeningTag) deepCopy() *_BACnetOpeningTag {
 	}
 	_BACnetOpeningTagCopy := &_BACnetOpeningTag{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
-		m.TagNumberArgument,
 	}
 	return _BACnetOpeningTagCopy
 }

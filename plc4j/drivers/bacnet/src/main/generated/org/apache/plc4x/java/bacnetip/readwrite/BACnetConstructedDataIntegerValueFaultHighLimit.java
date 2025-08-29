@@ -50,21 +50,13 @@ public class BACnetConstructedDataIntegerValueFaultHighLimit extends BACnetConst
   // Properties.
   protected final BACnetApplicationTagSignedInteger faultHighLimit;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIntegerValueFaultHighLimit(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagSignedInteger faultHighLimit,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagSignedInteger faultHighLimit) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.faultHighLimit = faultHighLimit;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagSignedInteger getFaultHighLimit() {
@@ -135,40 +127,24 @@ public class BACnetConstructedDataIntegerValueFaultHighLimit extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataIntegerValueFaultHighLimit");
     // Create the instance
-    return new BACnetConstructedDataIntegerValueFaultHighLimitBuilderImpl(
-        faultHighLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIntegerValueFaultHighLimitBuilderImpl(faultHighLimit);
   }
 
   public static class BACnetConstructedDataIntegerValueFaultHighLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger faultHighLimit;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIntegerValueFaultHighLimitBuilderImpl(
-        BACnetApplicationTagSignedInteger faultHighLimit,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagSignedInteger faultHighLimit) {
       this.faultHighLimit = faultHighLimit;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIntegerValueFaultHighLimit build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIntegerValueFaultHighLimit
           bACnetConstructedDataIntegerValueFaultHighLimit =
               new BACnetConstructedDataIntegerValueFaultHighLimit(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  faultHighLimit,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, faultHighLimit);
       return bACnetConstructedDataIntegerValueFaultHighLimit;
     }
   }

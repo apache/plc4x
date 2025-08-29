@@ -42,7 +42,7 @@ func NewRejectMessageToNetwork(args Args, kwArgs KWArgs, options ...Option) (*Re
 	}
 	ApplyAppliers(options, r)
 	options = AddLeafTypeIfAbundant(options, r)
-	options = AddNLMIfAbundant(options, model.NewNLMRejectMessageToNetwork(r.rmtnRejectionReason, r.rmtnDNET, 0))
+	options = AddNLMIfAbundant(options, model.NewNLMRejectMessageToNetwork(r.rmtnRejectionReason, r.rmtnDNET))
 	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")

@@ -50,21 +50,13 @@ public class BACnetConstructedDataListOfObjectPropertyReferences extends BACnetC
   // Properties.
   protected final List<BACnetDeviceObjectPropertyReference> references;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataListOfObjectPropertyReferences(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetDeviceObjectPropertyReference> references,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDeviceObjectPropertyReference> references) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.references = references;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetDeviceObjectPropertyReference> getReferences() {
@@ -128,40 +120,24 @@ public class BACnetConstructedDataListOfObjectPropertyReferences extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataListOfObjectPropertyReferences");
     // Create the instance
-    return new BACnetConstructedDataListOfObjectPropertyReferencesBuilderImpl(
-        references, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataListOfObjectPropertyReferencesBuilderImpl(references);
   }
 
   public static class BACnetConstructedDataListOfObjectPropertyReferencesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectPropertyReference> references;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataListOfObjectPropertyReferencesBuilderImpl(
-        List<BACnetDeviceObjectPropertyReference> references,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDeviceObjectPropertyReference> references) {
       this.references = references;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataListOfObjectPropertyReferences build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataListOfObjectPropertyReferences
           bACnetConstructedDataListOfObjectPropertyReferences =
               new BACnetConstructedDataListOfObjectPropertyReferences(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  references,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, references);
       return bACnetConstructedDataListOfObjectPropertyReferences;
     }
   }

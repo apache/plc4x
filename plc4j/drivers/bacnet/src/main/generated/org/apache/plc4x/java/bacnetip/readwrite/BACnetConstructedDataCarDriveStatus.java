@@ -49,21 +49,13 @@ public class BACnetConstructedDataCarDriveStatus extends BACnetConstructedData i
   // Properties.
   protected final BACnetLiftCarDriveStatusTagged carDriveStatus;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCarDriveStatus(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetLiftCarDriveStatusTagged carDriveStatus,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetLiftCarDriveStatusTagged carDriveStatus) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.carDriveStatus = carDriveStatus;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetLiftCarDriveStatusTagged getCarDriveStatus() {
@@ -134,39 +126,23 @@ public class BACnetConstructedDataCarDriveStatus extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataCarDriveStatus");
     // Create the instance
-    return new BACnetConstructedDataCarDriveStatusBuilderImpl(
-        carDriveStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarDriveStatusBuilderImpl(carDriveStatus);
   }
 
   public static class BACnetConstructedDataCarDriveStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLiftCarDriveStatusTagged carDriveStatus;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCarDriveStatusBuilderImpl(
-        BACnetLiftCarDriveStatusTagged carDriveStatus,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetLiftCarDriveStatusTagged carDriveStatus) {
       this.carDriveStatus = carDriveStatus;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCarDriveStatus build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCarDriveStatus bACnetConstructedDataCarDriveStatus =
           new BACnetConstructedDataCarDriveStatus(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              carDriveStatus,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, carDriveStatus);
       return bACnetConstructedDataCarDriveStatus;
     }
   }

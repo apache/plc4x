@@ -59,12 +59,12 @@ var _ ApduDataOther = (*_ApduDataOther)(nil)
 var _ ApduDataRequirements = (*_ApduDataOther)(nil)
 
 // NewApduDataOther factory function for _ApduDataOther
-func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
+func NewApduDataOther(extendedApdu ApduDataExt) *_ApduDataOther {
 	if extendedApdu == nil {
 		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
 	}
 	_result := &_ApduDataOther{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 		ExtendedApdu:     extendedApdu,
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result

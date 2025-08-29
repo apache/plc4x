@@ -56,8 +56,6 @@ type CBusCommandContract interface {
 	GetIsDeviceManagement() bool
 	// GetDestinationAddressType returns DestinationAddressType (virtual field)
 	GetDestinationAddressType() DestinationAddressType
-	// GetCBusOptions() returns a parser argument
-	GetCBusOptions() CBusOptions
 	// IsCBusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommand()
 	// CreateBuilder creates a CBusCommandBuilder
@@ -81,19 +79,16 @@ type _CBusCommand struct {
 		CBusCommandRequirements
 	}
 	Header CBusHeader
-
-	// Arguments.
-	CBusOptions CBusOptions
 }
 
 var _ CBusCommandContract = (*_CBusCommand)(nil)
 
 // NewCBusCommand factory function for _CBusCommand
-func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
+func NewCBusCommand(header CBusHeader) *_CBusCommand {
 	if header == nil {
 		panic("header of type CBusHeader for CBusCommand must not be nil")
 	}
-	return &_CBusCommand{Header: header, CBusOptions: cBusOptions}
+	return &_CBusCommand{Header: header}
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,8 +105,6 @@ type CBusCommandBuilder interface {
 	WithHeader(CBusHeader) CBusCommandBuilder
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(CBusHeaderBuilder) CBusHeaderBuilder) CBusCommandBuilder
-	// WithArgCBusOptions sets a parser argument
-	WithArgCBusOptions(CBusOptions) CBusCommandBuilder
 	// AsCBusCommandDeviceManagement converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
 	AsCBusCommandDeviceManagement() CBusCommandDeviceManagementBuilder
 	// AsCBusCommandPointToPointToMultiPoint converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
@@ -167,11 +160,6 @@ func (b *_CBusCommandBuilder) WithHeaderBuilder(builderSupplier func(CBusHeaderB
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CBusHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_CBusCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusCommandBuilder {
-	b.CBusOptions = cBusOptions
 	return b
 }
 
@@ -365,7 +353,7 @@ func CBusCommandParseWithBufferProducer[T CBusCommand](cBusOptions CBusOptions) 
 }
 
 func CBusCommandParseWithBuffer[T CBusCommand](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_CBusCommand{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
+	v, err := (new(_CBusCommand)).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -474,16 +462,6 @@ func (pm *_CBusCommand) serializeParent(ctx context.Context, writeBuffer utils.W
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_CBusCommand) GetCBusOptions() CBusOptions {
-	return m.CBusOptions
-}
-
-//
-////
-
 func (m *_CBusCommand) IsCBusCommand() {}
 
 func (m *_CBusCommand) DeepCopy() any {
@@ -497,7 +475,6 @@ func (m *_CBusCommand) deepCopy() *_CBusCommand {
 	_CBusCommandCopy := &_CBusCommand{
 		nil, // will be set by child
 		utils.DeepCopy[CBusHeader](m.Header),
-		m.CBusOptions,
 	}
 	return _CBusCommandCopy
 }

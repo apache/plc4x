@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAverageValue = (*_BACnetConstructedDataAverageValue)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAverageValue)(nil)
 
 // NewBACnetConstructedDataAverageValue factory function for _BACnetConstructedDataAverageValue
-func NewBACnetConstructedDataAverageValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, averageValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAverageValue {
+func NewBACnetConstructedDataAverageValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, averageValue BACnetApplicationTagReal) *_BACnetConstructedDataAverageValue {
 	if averageValue == nil {
 		panic("averageValue of type BACnetApplicationTagReal for BACnetConstructedDataAverageValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAverageValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AverageValue:                  averageValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

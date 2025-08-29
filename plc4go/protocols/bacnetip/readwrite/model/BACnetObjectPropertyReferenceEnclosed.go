@@ -57,15 +57,12 @@ type _BACnetObjectPropertyReferenceEnclosed struct {
 	OpeningTag              BACnetOpeningTag
 	ObjectPropertyReference BACnetObjectPropertyReference
 	ClosingTag              BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetObjectPropertyReferenceEnclosed = (*_BACnetObjectPropertyReferenceEnclosed)(nil)
 
 // NewBACnetObjectPropertyReferenceEnclosed factory function for _BACnetObjectPropertyReferenceEnclosed
-func NewBACnetObjectPropertyReferenceEnclosed(openingTag BACnetOpeningTag, objectPropertyReference BACnetObjectPropertyReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetObjectPropertyReferenceEnclosed {
+func NewBACnetObjectPropertyReferenceEnclosed(openingTag BACnetOpeningTag, objectPropertyReference BACnetObjectPropertyReference, closingTag BACnetClosingTag) *_BACnetObjectPropertyReferenceEnclosed {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetObjectPropertyReferenceEnclosed must not be nil")
 	}
@@ -75,7 +72,7 @@ func NewBACnetObjectPropertyReferenceEnclosed(openingTag BACnetOpeningTag, objec
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetObjectPropertyReferenceEnclosed must not be nil")
 	}
-	return &_BACnetObjectPropertyReferenceEnclosed{OpeningTag: openingTag, ObjectPropertyReference: objectPropertyReference, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetObjectPropertyReferenceEnclosed{OpeningTag: openingTag, ObjectPropertyReference: objectPropertyReference, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,8 +97,6 @@ type BACnetObjectPropertyReferenceEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetObjectPropertyReferenceEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetObjectPropertyReferenceEnclosedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetObjectPropertyReferenceEnclosedBuilder
 	// Build builds the BACnetObjectPropertyReferenceEnclosed or returns an error if something is wrong
 	Build() (BACnetObjectPropertyReferenceEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -167,11 +162,6 @@ func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) WithClosingTagBuilder(bu
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetObjectPropertyReferenceEnclosedBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -287,7 +277,7 @@ func BACnetObjectPropertyReferenceEnclosedParseWithBufferProducer(tagNumber uint
 }
 
 func BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetObjectPropertyReferenceEnclosed, error) {
-	v, err := (&_BACnetObjectPropertyReferenceEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetObjectPropertyReferenceEnclosed)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -363,16 +353,6 @@ func (m *_BACnetObjectPropertyReferenceEnclosed) SerializeWithWriteBuffer(ctx co
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetObjectPropertyReferenceEnclosed) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetObjectPropertyReferenceEnclosed) IsBACnetObjectPropertyReferenceEnclosed() {}
 
 func (m *_BACnetObjectPropertyReferenceEnclosed) DeepCopy() any {
@@ -387,7 +367,6 @@ func (m *_BACnetObjectPropertyReferenceEnclosed) deepCopy() *_BACnetObjectProper
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetObjectPropertyReference](m.ObjectPropertyReference),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetObjectPropertyReferenceEnclosedCopy
 }

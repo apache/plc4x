@@ -40,24 +40,20 @@ public class ReplyEncodedReply extends Reply implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  protected final CBusOptions cBusOptions;
   protected final EncodedReply encodedReply;
   protected final Checksum chksum;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
   public ReplyEncodedReply(
-      byte peekedByte,
-      EncodedReply encodedReply,
-      Checksum chksum,
-      CBusOptions cBusOptions,
-      RequestContext requestContext) {
-    super(peekedByte, cBusOptions, requestContext);
+      byte peekedByte, CBusOptions cBusOptions, EncodedReply encodedReply, Checksum chksum) {
+    super(peekedByte);
+    this.cBusOptions = cBusOptions;
     this.encodedReply = encodedReply;
     this.chksum = chksum;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
+  }
+
+  public CBusOptions getCBusOptions() {
+    return cBusOptions;
   }
 
   public EncodedReply getEncodedReply() {
@@ -164,30 +160,24 @@ public class ReplyEncodedReply extends Reply implements Message {
 
     readBuffer.closeContext("ReplyEncodedReply");
     // Create the instance
-    return new ReplyEncodedReplyBuilderImpl(encodedReply, chksum, cBusOptions, requestContext);
+    return new ReplyEncodedReplyBuilderImpl(cBusOptions, encodedReply, chksum);
   }
 
   public static class ReplyEncodedReplyBuilderImpl implements Reply.ReplyBuilder {
+    private final CBusOptions cBusOptions;
     private final EncodedReply encodedReply;
     private final Checksum chksum;
-    private final CBusOptions cBusOptions;
-    private final RequestContext requestContext;
 
     public ReplyEncodedReplyBuilderImpl(
-        EncodedReply encodedReply,
-        Checksum chksum,
-        CBusOptions cBusOptions,
-        RequestContext requestContext) {
+        CBusOptions cBusOptions, EncodedReply encodedReply, Checksum chksum) {
+      this.cBusOptions = cBusOptions;
       this.encodedReply = encodedReply;
       this.chksum = chksum;
-      this.cBusOptions = cBusOptions;
-      this.requestContext = requestContext;
     }
 
-    public ReplyEncodedReply build(
-        byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext) {
+    public ReplyEncodedReply build(byte peekedByte) {
       ReplyEncodedReply replyEncodedReply =
-          new ReplyEncodedReply(peekedByte, encodedReply, chksum, cBusOptions, requestContext);
+          new ReplyEncodedReply(peekedByte, cBusOptions, encodedReply, chksum);
       return replyEncodedReply;
     }
   }
@@ -201,7 +191,8 @@ public class ReplyEncodedReply extends Reply implements Message {
       return false;
     }
     ReplyEncodedReply that = (ReplyEncodedReply) o;
-    return (getEncodedReply() == that.getEncodedReply())
+    return (getCBusOptions() == that.getCBusOptions())
+        && (getEncodedReply() == that.getEncodedReply())
         && (getChksum() == that.getChksum())
         && super.equals(that)
         && true;
@@ -209,7 +200,7 @@ public class ReplyEncodedReply extends Reply implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getEncodedReply(), getChksum());
+    return Objects.hash(super.hashCode(), getCBusOptions(), getEncodedReply(), getChksum());
   }
 
   @Override

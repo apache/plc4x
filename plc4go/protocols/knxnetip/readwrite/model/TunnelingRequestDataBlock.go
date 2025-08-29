@@ -214,7 +214,7 @@ func TunnelingRequestDataBlockParseWithBufferProducer() func(ctx context.Context
 }
 
 func TunnelingRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
-	v, err := (&_TunnelingRequestDataBlock{}).parse(ctx, readBuffer)
+	v, err := (new(_TunnelingRequestDataBlock)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

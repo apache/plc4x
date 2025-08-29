@@ -62,9 +62,9 @@ var _ BACnetUnconfirmedServiceRequestWhoIs = (*_BACnetUnconfirmedServiceRequestW
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWhoIs)(nil)
 
 // NewBACnetUnconfirmedServiceRequestWhoIs factory function for _BACnetUnconfirmedServiceRequestWhoIs
-func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoIs {
+func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger) *_BACnetUnconfirmedServiceRequestWhoIs {
 	_result := &_BACnetUnconfirmedServiceRequestWhoIs{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		DeviceInstanceRangeLowLimit:             deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:            deviceInstanceRangeHighLimit,
 	}

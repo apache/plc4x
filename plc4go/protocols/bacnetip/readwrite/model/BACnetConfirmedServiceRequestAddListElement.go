@@ -68,7 +68,7 @@ var _ BACnetConfirmedServiceRequestAddListElement = (*_BACnetConfirmedServiceReq
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAddListElement)(nil)
 
 // NewBACnetConfirmedServiceRequestAddListElement factory function for _BACnetConfirmedServiceRequestAddListElement
-func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAddListElement {
+func NewBACnetConfirmedServiceRequestAddListElement(serviceRequestLength uint32, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData) *_BACnetConfirmedServiceRequestAddListElement {
 	if objectIdentifier == nil {
 		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestAddListElement must not be nil")
 	}

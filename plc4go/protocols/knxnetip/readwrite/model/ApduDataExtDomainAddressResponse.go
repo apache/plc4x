@@ -54,9 +54,9 @@ var _ ApduDataExtDomainAddressResponse = (*_ApduDataExtDomainAddressResponse)(ni
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressResponse)(nil)
 
 // NewApduDataExtDomainAddressResponse factory function for _ApduDataExtDomainAddressResponse
-func NewApduDataExtDomainAddressResponse(length uint8) *_ApduDataExtDomainAddressResponse {
+func NewApduDataExtDomainAddressResponse() *_ApduDataExtDomainAddressResponse {
 	_result := &_ApduDataExtDomainAddressResponse{
-		ApduDataExtContract: NewApduDataExt(length),
+		ApduDataExtContract: NewApduDataExt(),
 	}
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result

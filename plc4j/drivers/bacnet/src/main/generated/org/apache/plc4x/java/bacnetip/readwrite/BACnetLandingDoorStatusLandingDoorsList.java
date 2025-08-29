@@ -42,19 +42,14 @@ public class BACnetLandingDoorStatusLandingDoorsList implements Message {
   protected final List<BACnetLandingDoorStatusLandingDoorsListEntry> landingDoors;
   protected final BACnetClosingTag closingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLandingDoorStatusLandingDoorsList(
       BACnetOpeningTag openingTag,
       List<BACnetLandingDoorStatusLandingDoorsListEntry> landingDoors,
-      BACnetClosingTag closingTag,
-      Short tagNumber) {
+      BACnetClosingTag closingTag) {
     super();
     this.openingTag = openingTag;
     this.landingDoors = landingDoors;
     this.closingTag = closingTag;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetOpeningTag getOpeningTag() {
@@ -146,8 +141,7 @@ public class BACnetLandingDoorStatusLandingDoorsList implements Message {
     // Create the instance
     BACnetLandingDoorStatusLandingDoorsList _bACnetLandingDoorStatusLandingDoorsList;
     _bACnetLandingDoorStatusLandingDoorsList =
-        new BACnetLandingDoorStatusLandingDoorsList(
-            openingTag, landingDoors, closingTag, tagNumber);
+        new BACnetLandingDoorStatusLandingDoorsList(openingTag, landingDoors, closingTag);
     return _bACnetLandingDoorStatusLandingDoorsList;
   }
 

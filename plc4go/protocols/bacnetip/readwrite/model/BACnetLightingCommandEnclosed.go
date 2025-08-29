@@ -57,15 +57,12 @@ type _BACnetLightingCommandEnclosed struct {
 	OpeningTag      BACnetOpeningTag
 	LightingCommand BACnetLightingCommand
 	ClosingTag      BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 var _ BACnetLightingCommandEnclosed = (*_BACnetLightingCommandEnclosed)(nil)
 
 // NewBACnetLightingCommandEnclosed factory function for _BACnetLightingCommandEnclosed
-func NewBACnetLightingCommandEnclosed(openingTag BACnetOpeningTag, lightingCommand BACnetLightingCommand, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLightingCommandEnclosed {
+func NewBACnetLightingCommandEnclosed(openingTag BACnetOpeningTag, lightingCommand BACnetLightingCommand, closingTag BACnetClosingTag) *_BACnetLightingCommandEnclosed {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetLightingCommandEnclosed must not be nil")
 	}
@@ -75,7 +72,7 @@ func NewBACnetLightingCommandEnclosed(openingTag BACnetOpeningTag, lightingComma
 	if closingTag == nil {
 		panic("closingTag of type BACnetClosingTag for BACnetLightingCommandEnclosed must not be nil")
 	}
-	return &_BACnetLightingCommandEnclosed{OpeningTag: openingTag, LightingCommand: lightingCommand, ClosingTag: closingTag, TagNumber: tagNumber}
+	return &_BACnetLightingCommandEnclosed{OpeningTag: openingTag, LightingCommand: lightingCommand, ClosingTag: closingTag}
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,8 +97,6 @@ type BACnetLightingCommandEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetLightingCommandEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLightingCommandEnclosedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLightingCommandEnclosedBuilder
 	// Build builds the BACnetLightingCommandEnclosed or returns an error if something is wrong
 	Build() (BACnetLightingCommandEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -167,11 +162,6 @@ func (b *_BACnetLightingCommandEnclosedBuilder) WithClosingTagBuilder(builderSup
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetLightingCommandEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLightingCommandEnclosedBuilder {
-	b.TagNumber = tagNumber
 	return b
 }
 
@@ -287,7 +277,7 @@ func BACnetLightingCommandEnclosedParseWithBufferProducer(tagNumber uint8) func(
 }
 
 func BACnetLightingCommandEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLightingCommandEnclosed, error) {
-	v, err := (&_BACnetLightingCommandEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
+	v, err := (new(_BACnetLightingCommandEnclosed)).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -363,16 +353,6 @@ func (m *_BACnetLightingCommandEnclosed) SerializeWithWriteBuffer(ctx context.Co
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLightingCommandEnclosed) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-
-//
-////
-
 func (m *_BACnetLightingCommandEnclosed) IsBACnetLightingCommandEnclosed() {}
 
 func (m *_BACnetLightingCommandEnclosed) DeepCopy() any {
@@ -387,7 +367,6 @@ func (m *_BACnetLightingCommandEnclosed) deepCopy() *_BACnetLightingCommandEnclo
 		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopy[BACnetLightingCommand](m.LightingCommand),
 		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
-		m.TagNumber,
 	}
 	return _BACnetLightingCommandEnclosedCopy
 }

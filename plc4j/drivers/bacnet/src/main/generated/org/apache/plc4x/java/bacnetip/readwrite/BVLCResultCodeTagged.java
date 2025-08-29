@@ -41,17 +41,10 @@ public class BVLCResultCodeTagged implements Message {
   protected final BACnetTagHeader header;
   protected final BVLCResultCode value;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
-  public BVLCResultCodeTagged(
-      BACnetTagHeader header, BVLCResultCode value, Short tagNumber, TagClass tagClass) {
+  public BVLCResultCodeTagged(BACnetTagHeader header, BVLCResultCode value) {
     super();
     this.header = header;
     this.value = value;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -135,7 +128,7 @@ public class BVLCResultCodeTagged implements Message {
     readBuffer.closeContext("BVLCResultCodeTagged");
     // Create the instance
     BVLCResultCodeTagged _bVLCResultCodeTagged;
-    _bVLCResultCodeTagged = new BVLCResultCodeTagged(header, value, tagNumber, tagClass);
+    _bVLCResultCodeTagged = new BVLCResultCodeTagged(header, value);
     return _bVLCResultCodeTagged;
   }
 

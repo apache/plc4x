@@ -47,10 +47,6 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
   protected final BACnetConstructedData feedbackValue;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersCommandFailure(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -59,17 +55,13 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
       BACnetConstructedData commandValue,
       BACnetStatusFlagsTagged statusFlags,
       BACnetConstructedData feedbackValue,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.commandValue = commandValue;
     this.statusFlags = statusFlags;
     this.feedbackValue = feedbackValue;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -210,13 +202,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
     readBuffer.closeContext("BACnetNotificationParametersCommandFailure");
     // Create the instance
     return new BACnetNotificationParametersCommandFailureBuilderImpl(
-        innerOpeningTag,
-        commandValue,
-        statusFlags,
-        feedbackValue,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerOpeningTag, commandValue, statusFlags, feedbackValue, innerClosingTag);
   }
 
   public static class BACnetNotificationParametersCommandFailureBuilderImpl
@@ -226,32 +212,22 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
     private final BACnetStatusFlagsTagged statusFlags;
     private final BACnetConstructedData feedbackValue;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersCommandFailureBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetConstructedData commandValue,
         BACnetStatusFlagsTagged statusFlags,
         BACnetConstructedData feedbackValue,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.commandValue = commandValue;
       this.statusFlags = statusFlags;
       this.feedbackValue = feedbackValue;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersCommandFailure build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersCommandFailure bACnetNotificationParametersCommandFailure =
           new BACnetNotificationParametersCommandFailure(
               openingTag,
@@ -261,9 +237,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
               commandValue,
               statusFlags,
               feedbackValue,
-              innerClosingTag,
-              tagNumber,
-              objectTypeArgument);
+              innerClosingTag);
       return bACnetNotificationParametersCommandFailure;
     }
   }

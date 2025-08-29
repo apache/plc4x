@@ -49,21 +49,13 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
   // Properties.
   protected final List<BACnetDeviceObjectReference> exitPoints;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataExitPoints(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetDeviceObjectReference> exitPoints,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetDeviceObjectReference> exitPoints) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.exitPoints = exitPoints;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetDeviceObjectReference> getExitPoints() {
@@ -126,34 +118,22 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataExitPoints");
     // Create the instance
-    return new BACnetConstructedDataExitPointsBuilderImpl(
-        exitPoints, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataExitPointsBuilderImpl(exitPoints);
   }
 
   public static class BACnetConstructedDataExitPointsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> exitPoints;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataExitPointsBuilderImpl(
-        List<BACnetDeviceObjectReference> exitPoints,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetDeviceObjectReference> exitPoints) {
       this.exitPoints = exitPoints;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataExitPoints build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataExitPoints bACnetConstructedDataExitPoints =
-          new BACnetConstructedDataExitPoints(
-              openingTag, peekedTagHeader, closingTag, exitPoints, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataExitPoints(openingTag, peekedTagHeader, closingTag, exitPoints);
       return bACnetConstructedDataExitPoints;
     }
   }

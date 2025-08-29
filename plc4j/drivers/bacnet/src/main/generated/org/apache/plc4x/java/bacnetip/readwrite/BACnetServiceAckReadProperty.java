@@ -48,21 +48,17 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
   protected final BACnetContextTagUnsignedInteger arrayIndex;
   protected final BACnetConstructedData values;
 
-  // Arguments.
-  protected final Long serviceAckLength;
-
   public BACnetServiceAckReadProperty(
+      long serviceAckLength,
       BACnetContextTagObjectIdentifier objectIdentifier,
       BACnetPropertyIdentifierTagged propertyIdentifier,
       BACnetContextTagUnsignedInteger arrayIndex,
-      BACnetConstructedData values,
-      Long serviceAckLength) {
+      BACnetConstructedData values) {
     super(serviceAckLength);
     this.objectIdentifier = objectIdentifier;
     this.propertyIdentifier = propertyIdentifier;
     this.arrayIndex = arrayIndex;
     this.values = values;
-    this.serviceAckLength = serviceAckLength;
   }
 
   public BACnetContextTagObjectIdentifier getObjectIdentifier() {
@@ -189,7 +185,7 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
     readBuffer.closeContext("BACnetServiceAckReadProperty");
     // Create the instance
     return new BACnetServiceAckReadPropertyBuilderImpl(
-        objectIdentifier, propertyIdentifier, arrayIndex, values, serviceAckLength);
+        objectIdentifier, propertyIdentifier, arrayIndex, values);
   }
 
   public static class BACnetServiceAckReadPropertyBuilderImpl
@@ -198,26 +194,22 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
     private final BACnetContextTagUnsignedInteger arrayIndex;
     private final BACnetConstructedData values;
-    private final Long serviceAckLength;
 
     public BACnetServiceAckReadPropertyBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger arrayIndex,
-        BACnetConstructedData values,
-        Long serviceAckLength) {
+        BACnetConstructedData values) {
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;
       this.values = values;
-      this.serviceAckLength = serviceAckLength;
     }
 
-    public BACnetServiceAckReadProperty build(Long serviceAckLength) {
-
+    public BACnetServiceAckReadProperty build(long serviceAckLength) {
       BACnetServiceAckReadProperty bACnetServiceAckReadProperty =
           new BACnetServiceAckReadProperty(
-              objectIdentifier, propertyIdentifier, arrayIndex, values, serviceAckLength);
+              serviceAckLength, objectIdentifier, propertyIdentifier, arrayIndex, values);
       return bACnetServiceAckReadProperty;
     }
   }

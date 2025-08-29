@@ -42,12 +42,8 @@ public class NLMWhatIsNetworkNumber extends NLM implements Message {
     return (short) 0x12;
   }
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMWhatIsNetworkNumber(Integer apduLength) {
-    super(apduLength);
-    this.apduLength = apduLength;
+  public NLMWhatIsNetworkNumber() {
+    super();
   }
 
   @Override
@@ -81,20 +77,15 @@ public class NLMWhatIsNetworkNumber extends NLM implements Message {
 
     readBuffer.closeContext("NLMWhatIsNetworkNumber");
     // Create the instance
-    return new NLMWhatIsNetworkNumberBuilderImpl(apduLength);
+    return new NLMWhatIsNetworkNumberBuilderImpl();
   }
 
   public static class NLMWhatIsNetworkNumberBuilderImpl implements NLM.NLMBuilder {
-    private final Integer apduLength;
 
-    public NLMWhatIsNetworkNumberBuilderImpl(Integer apduLength) {
-      this.apduLength = apduLength;
-    }
+    public NLMWhatIsNetworkNumberBuilderImpl() {}
 
-    public NLMWhatIsNetworkNumber build(Integer apduLength) {
-
-      NLMWhatIsNetworkNumber nLMWhatIsNetworkNumber = new NLMWhatIsNetworkNumber(apduLength);
-
+    public NLMWhatIsNetworkNumber build() {
+      NLMWhatIsNetworkNumber nLMWhatIsNetworkNumber = new NLMWhatIsNetworkNumber();
       return nLMWhatIsNetworkNumber;
     }
   }

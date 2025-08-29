@@ -54,9 +54,9 @@ var _ BACnetConstructedDataOptional = (*_BACnetConstructedDataOptional)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOptional)(nil)
 
 // NewBACnetConstructedDataOptional factory function for _BACnetConstructedDataOptional
-func NewBACnetConstructedDataOptional(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOptional {
+func NewBACnetConstructedDataOptional(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) *_BACnetConstructedDataOptional {
 	_result := &_BACnetConstructedDataOptional{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result

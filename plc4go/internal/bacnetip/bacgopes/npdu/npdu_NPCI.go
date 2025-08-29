@@ -501,7 +501,7 @@ func (n *_NPCI) buildNPDU(hopCount uint8, source *Address, destination *Address,
 		destinationHopCount = &hopCount
 	}
 	control := readWriteModel.NewNPDUControl(nlm != nil, destinationSpecified, sourceSpecified, expectingReply, networkPriority)
-	return readWriteModel.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nlm, apdu, 0), nil
+	return readWriteModel.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nlm, apdu), nil
 }
 
 func (n *_NPCI) deepCopy() *_NPCI {

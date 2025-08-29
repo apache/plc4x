@@ -42,22 +42,14 @@ public class BACnetAccessAuthenticationFactorDisableTagged implements Message {
   protected final BACnetAccessAuthenticationFactorDisable value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetAccessAuthenticationFactorDisableTagged(
       BACnetTagHeader header,
       BACnetAccessAuthenticationFactorDisable value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -182,8 +174,7 @@ public class BACnetAccessAuthenticationFactorDisableTagged implements Message {
     // Create the instance
     BACnetAccessAuthenticationFactorDisableTagged _bACnetAccessAuthenticationFactorDisableTagged;
     _bACnetAccessAuthenticationFactorDisableTagged =
-        new BACnetAccessAuthenticationFactorDisableTagged(
-            header, value, proprietaryValue, tagNumber, tagClass);
+        new BACnetAccessAuthenticationFactorDisableTagged(header, value, proprietaryValue);
     return _bACnetAccessAuthenticationFactorDisableTagged;
   }
 

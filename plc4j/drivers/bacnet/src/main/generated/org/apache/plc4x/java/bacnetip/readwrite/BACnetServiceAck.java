@@ -40,12 +40,16 @@ public abstract class BACnetServiceAck implements Message {
   // Abstract accessors for discriminator values.
   public abstract BACnetConfirmedServiceChoice getServiceChoice();
 
-  // Arguments.
-  protected final Long serviceAckLength;
+  // Properties.
+  protected final long serviceAckLength;
 
-  public BACnetServiceAck(Long serviceAckLength) {
+  public BACnetServiceAck(long serviceAckLength) {
     super();
     this.serviceAckLength = serviceAckLength;
+  }
+
+  public long getServiceAckLength() {
+    return serviceAckLength;
   }
 
   public long getServiceAckPayloadLength() {
@@ -198,12 +202,11 @@ public abstract class BACnetServiceAck implements Message {
     readBuffer.closeContext("BACnetServiceAck");
     // Create the instance
     BACnetServiceAck _bACnetServiceAck = builder.build(serviceAckLength);
-
     return _bACnetServiceAck;
   }
 
   public interface BACnetServiceAckBuilder {
-    BACnetServiceAck build(Long serviceAckLength);
+    BACnetServiceAck build(long serviceAckLength);
   }
 
   @Override
@@ -215,12 +218,12 @@ public abstract class BACnetServiceAck implements Message {
       return false;
     }
     BACnetServiceAck that = (BACnetServiceAck) o;
-    return true;
+    return (getServiceAckLength() == that.getServiceAckLength()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash();
+    return Objects.hash(getServiceAckLength());
   }
 
   @Override

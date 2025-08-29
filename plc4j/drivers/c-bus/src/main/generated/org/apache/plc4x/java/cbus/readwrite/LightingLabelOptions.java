@@ -40,7 +40,6 @@ public class LightingLabelOptions implements Message {
   // Properties.
   protected final LightingLabelFlavour labelFlavour;
   protected final LightingLabelType labelType;
-
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;

@@ -59,12 +59,12 @@ var _ BACnetPriorityValueNull = (*_BACnetPriorityValueNull)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueNull)(nil)
 
 // NewBACnetPriorityValueNull factory function for _BACnetPriorityValueNull
-func NewBACnetPriorityValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueNull {
+func NewBACnetPriorityValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetPriorityValueNull {
 	if nullValue == nil {
 		panic("nullValue of type BACnetApplicationTagNull for BACnetPriorityValueNull must not be nil")
 	}
 	_result := &_BACnetPriorityValueNull{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		NullValue:                   nullValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result

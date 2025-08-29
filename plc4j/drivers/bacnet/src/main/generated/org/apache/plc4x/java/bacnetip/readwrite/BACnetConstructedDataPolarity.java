@@ -49,21 +49,13 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
   // Properties.
   protected final BACnetPolarityTagged polarity;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataPolarity(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetPolarityTagged polarity,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetPolarityTagged polarity) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.polarity = polarity;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetPolarityTagged getPolarity() {
@@ -134,33 +126,21 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataPolarity");
     // Create the instance
-    return new BACnetConstructedDataPolarityBuilderImpl(polarity, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPolarityBuilderImpl(polarity);
   }
 
   public static class BACnetConstructedDataPolarityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetPolarityTagged polarity;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPolarityBuilderImpl(
-        BACnetPolarityTagged polarity,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+    public BACnetConstructedDataPolarityBuilderImpl(BACnetPolarityTagged polarity) {
       this.polarity = polarity;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataPolarity build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataPolarity bACnetConstructedDataPolarity =
-          new BACnetConstructedDataPolarity(
-              openingTag, peekedTagHeader, closingTag, polarity, tagNumber, arrayIndexArgument);
+          new BACnetConstructedDataPolarity(openingTag, peekedTagHeader, closingTag, polarity);
       return bACnetConstructedDataPolarity;
     }
   }

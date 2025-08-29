@@ -64,9 +64,9 @@ var _ BACnetConstructedDataValueSourceArray = (*_BACnetConstructedDataValueSourc
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSourceArray)(nil)
 
 // NewBACnetConstructedDataValueSourceArray factory function for _BACnetConstructedDataValueSourceArray
-func NewBACnetConstructedDataValueSourceArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, vtClassesSupported []BACnetValueSource, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSourceArray {
+func NewBACnetConstructedDataValueSourceArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, vtClassesSupported []BACnetValueSource) *_BACnetConstructedDataValueSourceArray {
 	_result := &_BACnetConstructedDataValueSourceArray{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		VtClassesSupported:            vtClassesSupported,
 	}

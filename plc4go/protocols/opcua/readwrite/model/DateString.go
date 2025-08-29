@@ -160,7 +160,7 @@ func DateStringParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func DateStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateString, error) {
-	v, err := (&_DateString{}).parse(ctx, readBuffer)
+	v, err := (new(_DateString)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

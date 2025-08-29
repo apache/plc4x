@@ -160,7 +160,7 @@ func ImageBMPParseWithBufferProducer() func(ctx context.Context, readBuffer util
 }
 
 func ImageBMPParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageBMP, error) {
-	v, err := (&_ImageBMP{}).parse(ctx, readBuffer)
+	v, err := (new(_ImageBMP)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

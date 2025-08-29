@@ -73,9 +73,9 @@ var _ MultipleServiceResponse = (*_MultipleServiceResponse)(nil)
 var _ CipServiceRequirements = (*_MultipleServiceResponse)(nil)
 
 // NewMultipleServiceResponse factory function for _MultipleServiceResponse
-func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16) *_MultipleServiceResponse {
+func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) *_MultipleServiceResponse {
 	_result := &_MultipleServiceResponse{
-		CipServiceContract: NewCipService(serviceLen),
+		CipServiceContract: NewCipService(),
 		Status:             status,
 		ExtStatus:          extStatus,
 		ServiceNb:          serviceNb,

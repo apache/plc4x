@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccessZoneAdjustValue = (*_BACnetConstructedDataAcces
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessZoneAdjustValue)(nil)
 
 // NewBACnetConstructedDataAccessZoneAdjustValue factory function for _BACnetConstructedDataAccessZoneAdjustValue
-func NewBACnetConstructedDataAccessZoneAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessZoneAdjustValue {
+func NewBACnetConstructedDataAccessZoneAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagSignedInteger) *_BACnetConstructedDataAccessZoneAdjustValue {
 	if adjustValue == nil {
 		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAccessZoneAdjustValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccessZoneAdjustValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AdjustValue:                   adjustValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -64,9 +64,9 @@ var _ BACnetConstructedDataAssignedAccessRights = (*_BACnetConstructedDataAssign
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAssignedAccessRights)(nil)
 
 // NewBACnetConstructedDataAssignedAccessRights factory function for _BACnetConstructedDataAssignedAccessRights
-func NewBACnetConstructedDataAssignedAccessRights(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedAccessRights []BACnetAssignedAccessRights, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAssignedAccessRights {
+func NewBACnetConstructedDataAssignedAccessRights(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedAccessRights []BACnetAssignedAccessRights) *_BACnetConstructedDataAssignedAccessRights {
 	_result := &_BACnetConstructedDataAssignedAccessRights{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		AssignedAccessRights:          assignedAccessRights,
 	}

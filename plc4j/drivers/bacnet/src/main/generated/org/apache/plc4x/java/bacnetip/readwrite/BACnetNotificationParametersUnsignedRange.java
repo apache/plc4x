@@ -47,10 +47,6 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
   protected final BACnetContextTagUnsignedInteger exceededLimit;
   protected final BACnetClosingTag innerClosingTag;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetObjectType objectTypeArgument;
-
   public BACnetNotificationParametersUnsignedRange(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
@@ -59,17 +55,13 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
       BACnetContextTagUnsignedInteger sequenceNumber,
       BACnetStatusFlagsTagged statusFlags,
       BACnetContextTagUnsignedInteger exceededLimit,
-      BACnetClosingTag innerClosingTag,
-      Short tagNumber,
-      BACnetObjectType objectTypeArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument);
+      BACnetClosingTag innerClosingTag) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.innerOpeningTag = innerOpeningTag;
     this.sequenceNumber = sequenceNumber;
     this.statusFlags = statusFlags;
     this.exceededLimit = exceededLimit;
     this.innerClosingTag = innerClosingTag;
-    this.tagNumber = tagNumber;
-    this.objectTypeArgument = objectTypeArgument;
   }
 
   public BACnetOpeningTag getInnerOpeningTag() {
@@ -206,13 +198,7 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
     readBuffer.closeContext("BACnetNotificationParametersUnsignedRange");
     // Create the instance
     return new BACnetNotificationParametersUnsignedRangeBuilderImpl(
-        innerOpeningTag,
-        sequenceNumber,
-        statusFlags,
-        exceededLimit,
-        innerClosingTag,
-        tagNumber,
-        objectTypeArgument);
+        innerOpeningTag, sequenceNumber, statusFlags, exceededLimit, innerClosingTag);
   }
 
   public static class BACnetNotificationParametersUnsignedRangeBuilderImpl
@@ -222,32 +208,22 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
     private final BACnetStatusFlagsTagged statusFlags;
     private final BACnetContextTagUnsignedInteger exceededLimit;
     private final BACnetClosingTag innerClosingTag;
-    private final Short tagNumber;
-    private final BACnetObjectType objectTypeArgument;
 
     public BACnetNotificationParametersUnsignedRangeBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetContextTagUnsignedInteger sequenceNumber,
         BACnetStatusFlagsTagged statusFlags,
         BACnetContextTagUnsignedInteger exceededLimit,
-        BACnetClosingTag innerClosingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetClosingTag innerClosingTag) {
       this.innerOpeningTag = innerOpeningTag;
       this.sequenceNumber = sequenceNumber;
       this.statusFlags = statusFlags;
       this.exceededLimit = exceededLimit;
       this.innerClosingTag = innerClosingTag;
-      this.tagNumber = tagNumber;
-      this.objectTypeArgument = objectTypeArgument;
     }
 
     public BACnetNotificationParametersUnsignedRange build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetObjectType objectTypeArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetNotificationParametersUnsignedRange bACnetNotificationParametersUnsignedRange =
           new BACnetNotificationParametersUnsignedRange(
               openingTag,
@@ -257,9 +233,7 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
               sequenceNumber,
               statusFlags,
               exceededLimit,
-              innerClosingTag,
-              tagNumber,
-              objectTypeArgument);
+              innerClosingTag);
       return bACnetNotificationParametersUnsignedRange;
     }
   }

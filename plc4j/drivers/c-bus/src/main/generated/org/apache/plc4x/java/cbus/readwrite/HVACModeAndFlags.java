@@ -43,7 +43,6 @@ public class HVACModeAndFlags implements Message {
   protected final boolean setback;
   protected final boolean level;
   protected final HVACModeAndFlagsMode mode;
-
   // Reserved Fields
   private Boolean reservedField0;
 

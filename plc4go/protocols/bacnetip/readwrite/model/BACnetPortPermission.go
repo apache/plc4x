@@ -238,7 +238,7 @@ func BACnetPortPermissionParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BACnetPortPermissionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {
-	v, err := (&_BACnetPortPermission{}).parse(ctx, readBuffer)
+	v, err := (new(_BACnetPortPermission)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

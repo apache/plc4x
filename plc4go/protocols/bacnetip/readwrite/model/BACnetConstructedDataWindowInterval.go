@@ -61,12 +61,12 @@ var _ BACnetConstructedDataWindowInterval = (*_BACnetConstructedDataWindowInterv
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWindowInterval)(nil)
 
 // NewBACnetConstructedDataWindowInterval factory function for _BACnetConstructedDataWindowInterval
-func NewBACnetConstructedDataWindowInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, windowInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWindowInterval {
+func NewBACnetConstructedDataWindowInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, windowInterval BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataWindowInterval {
 	if windowInterval == nil {
 		panic("windowInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataWindowInterval must not be nil")
 	}
 	_result := &_BACnetConstructedDataWindowInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		WindowInterval:                windowInterval,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

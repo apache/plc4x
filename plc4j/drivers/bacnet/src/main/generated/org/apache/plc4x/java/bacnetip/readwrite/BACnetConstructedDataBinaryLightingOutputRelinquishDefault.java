@@ -50,21 +50,13 @@ public class BACnetConstructedDataBinaryLightingOutputRelinquishDefault
   // Properties.
   protected final BACnetBinaryLightingPVTagged relinquishDefault;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataBinaryLightingOutputRelinquishDefault(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetBinaryLightingPVTagged relinquishDefault,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetBinaryLightingPVTagged relinquishDefault) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.relinquishDefault = relinquishDefault;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetBinaryLightingPVTagged getRelinquishDefault() {
@@ -136,39 +128,24 @@ public class BACnetConstructedDataBinaryLightingOutputRelinquishDefault
     readBuffer.closeContext("BACnetConstructedDataBinaryLightingOutputRelinquishDefault");
     // Create the instance
     return new BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilderImpl(
-        relinquishDefault, tagNumber, arrayIndexArgument);
+        relinquishDefault);
   }
 
   public static class BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryLightingPVTagged relinquishDefault;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilderImpl(
-        BACnetBinaryLightingPVTagged relinquishDefault,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetBinaryLightingPVTagged relinquishDefault) {
       this.relinquishDefault = relinquishDefault;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataBinaryLightingOutputRelinquishDefault build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataBinaryLightingOutputRelinquishDefault
           bACnetConstructedDataBinaryLightingOutputRelinquishDefault =
               new BACnetConstructedDataBinaryLightingOutputRelinquishDefault(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  relinquishDefault,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, relinquishDefault);
       return bACnetConstructedDataBinaryLightingOutputRelinquishDefault;
     }
   }

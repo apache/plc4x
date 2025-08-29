@@ -46,15 +46,10 @@ public class NLMVendorProprietaryMessage extends NLM implements Message {
   protected final BACnetVendorId vendorId;
   protected final byte[] proprietaryMessage;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMVendorProprietaryMessage(
-      BACnetVendorId vendorId, byte[] proprietaryMessage, Integer apduLength) {
-    super(apduLength);
+  public NLMVendorProprietaryMessage(BACnetVendorId vendorId, byte[] proprietaryMessage) {
+    super();
     this.vendorId = vendorId;
     this.proprietaryMessage = proprietaryMessage;
-    this.apduLength = apduLength;
   }
 
   public BACnetVendorId getVendorId() {
@@ -126,25 +121,22 @@ public class NLMVendorProprietaryMessage extends NLM implements Message {
 
     readBuffer.closeContext("NLMVendorProprietaryMessage");
     // Create the instance
-    return new NLMVendorProprietaryMessageBuilderImpl(vendorId, proprietaryMessage, apduLength);
+    return new NLMVendorProprietaryMessageBuilderImpl(vendorId, proprietaryMessage);
   }
 
   public static class NLMVendorProprietaryMessageBuilderImpl implements NLM.NLMBuilder {
     private final BACnetVendorId vendorId;
     private final byte[] proprietaryMessage;
-    private final Integer apduLength;
 
     public NLMVendorProprietaryMessageBuilderImpl(
-        BACnetVendorId vendorId, byte[] proprietaryMessage, Integer apduLength) {
+        BACnetVendorId vendorId, byte[] proprietaryMessage) {
       this.vendorId = vendorId;
       this.proprietaryMessage = proprietaryMessage;
-      this.apduLength = apduLength;
     }
 
-    public NLMVendorProprietaryMessage build(Integer apduLength) {
-
+    public NLMVendorProprietaryMessage build() {
       NLMVendorProprietaryMessage nLMVendorProprietaryMessage =
-          new NLMVendorProprietaryMessage(vendorId, proprietaryMessage, apduLength);
+          new NLMVendorProprietaryMessage(vendorId, proprietaryMessage);
       return nLMVendorProprietaryMessage;
     }
   }

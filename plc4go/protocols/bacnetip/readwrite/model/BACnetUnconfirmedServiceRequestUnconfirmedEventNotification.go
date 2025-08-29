@@ -95,7 +95,7 @@ var _ BACnetUnconfirmedServiceRequestUnconfirmedEventNotification = (*_BACnetUnc
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification)(nil)
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification factory function for _BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(processIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, eventObjectIdentifier BACnetContextTagObjectIdentifier, timestamp BACnetTimeStampEnclosed, notificationClass BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger, eventType BACnetEventTypeTagged, messageText BACnetContextTagCharacterString, notifyType BACnetNotifyTypeTagged, ackRequired BACnetContextTagBoolean, fromState BACnetEventStateTagged, toState BACnetEventStateTagged, eventValues BACnetNotificationParameters, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(processIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, eventObjectIdentifier BACnetContextTagObjectIdentifier, timestamp BACnetTimeStampEnclosed, notificationClass BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger, eventType BACnetEventTypeTagged, messageText BACnetContextTagCharacterString, notifyType BACnetNotifyTypeTagged, ackRequired BACnetContextTagBoolean, fromState BACnetEventStateTagged, toState BACnetEventStateTagged, eventValues BACnetNotificationParameters) *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
 	if processIdentifier == nil {
 		panic("processIdentifier of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedEventNotification must not be nil")
 	}
@@ -124,7 +124,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(processIdent
 		panic("toState of type BACnetEventStateTagged for BACnetUnconfirmedServiceRequestUnconfirmedEventNotification must not be nil")
 	}
 	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(),
 		ProcessIdentifier:                       processIdentifier,
 		InitiatingDeviceIdentifier:              initiatingDeviceIdentifier,
 		EventObjectIdentifier:                   eventObjectIdentifier,

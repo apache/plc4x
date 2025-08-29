@@ -40,14 +40,8 @@ public abstract class CBusMessage implements Message {
   // Abstract accessors for discriminator values.
   public abstract Boolean getIsResponse();
 
-  // Arguments.
-  protected final RequestContext requestContext;
-  protected final CBusOptions cBusOptions;
-
-  public CBusMessage(RequestContext requestContext, CBusOptions cBusOptions) {
+  public CBusMessage() {
     super();
-    this.requestContext = requestContext;
-    this.cBusOptions = cBusOptions;
   }
 
   protected abstract void serializeCBusMessageChild(WriteBuffer writeBuffer)
@@ -120,13 +114,12 @@ public abstract class CBusMessage implements Message {
 
     readBuffer.closeContext("CBusMessage");
     // Create the instance
-    CBusMessage _cBusMessage = builder.build(requestContext, cBusOptions);
-
+    CBusMessage _cBusMessage = builder.build();
     return _cBusMessage;
   }
 
   public interface CBusMessageBuilder {
-    CBusMessage build(RequestContext requestContext, CBusOptions cBusOptions);
+    CBusMessage build();
   }
 
   @Override

@@ -46,17 +46,11 @@ public class NLMRequestMasterKey extends NLM implements Message {
   protected final short numberOfSupportedKeyAlgorithms;
   protected final byte[] encryptionAndSignatureAlgorithms;
 
-  // Arguments.
-  protected final Integer apduLength;
-
   public NLMRequestMasterKey(
-      short numberOfSupportedKeyAlgorithms,
-      byte[] encryptionAndSignatureAlgorithms,
-      Integer apduLength) {
-    super(apduLength);
+      short numberOfSupportedKeyAlgorithms, byte[] encryptionAndSignatureAlgorithms) {
+    super();
     this.numberOfSupportedKeyAlgorithms = numberOfSupportedKeyAlgorithms;
     this.encryptionAndSignatureAlgorithms = encryptionAndSignatureAlgorithms;
-    this.apduLength = apduLength;
   }
 
   public short getNumberOfSupportedKeyAlgorithms() {
@@ -126,28 +120,22 @@ public class NLMRequestMasterKey extends NLM implements Message {
     readBuffer.closeContext("NLMRequestMasterKey");
     // Create the instance
     return new NLMRequestMasterKeyBuilderImpl(
-        numberOfSupportedKeyAlgorithms, encryptionAndSignatureAlgorithms, apduLength);
+        numberOfSupportedKeyAlgorithms, encryptionAndSignatureAlgorithms);
   }
 
   public static class NLMRequestMasterKeyBuilderImpl implements NLM.NLMBuilder {
     private final short numberOfSupportedKeyAlgorithms;
     private final byte[] encryptionAndSignatureAlgorithms;
-    private final Integer apduLength;
 
     public NLMRequestMasterKeyBuilderImpl(
-        short numberOfSupportedKeyAlgorithms,
-        byte[] encryptionAndSignatureAlgorithms,
-        Integer apduLength) {
+        short numberOfSupportedKeyAlgorithms, byte[] encryptionAndSignatureAlgorithms) {
       this.numberOfSupportedKeyAlgorithms = numberOfSupportedKeyAlgorithms;
       this.encryptionAndSignatureAlgorithms = encryptionAndSignatureAlgorithms;
-      this.apduLength = apduLength;
     }
 
-    public NLMRequestMasterKey build(Integer apduLength) {
-
+    public NLMRequestMasterKey build() {
       NLMRequestMasterKey nLMRequestMasterKey =
-          new NLMRequestMasterKey(
-              numberOfSupportedKeyAlgorithms, encryptionAndSignatureAlgorithms, apduLength);
+          new NLMRequestMasterKey(numberOfSupportedKeyAlgorithms, encryptionAndSignatureAlgorithms);
       return nLMRequestMasterKey;
     }
   }

@@ -47,15 +47,11 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
   protected final int port;
   protected final NPDU npdu;
 
-  // Arguments.
-  protected final Integer bvlcPayloadLength;
-
-  public BVLCForwardedNPDU(List<Short> ip, int port, NPDU npdu, Integer bvlcPayloadLength) {
+  public BVLCForwardedNPDU(List<Short> ip, int port, NPDU npdu) {
     super();
     this.ip = ip;
     this.port = port;
     this.npdu = npdu;
-    this.bvlcPayloadLength = bvlcPayloadLength;
   }
 
   public List<Short> getIp() {
@@ -150,26 +146,22 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCForwardedNPDU");
     // Create the instance
-    return new BVLCForwardedNPDUBuilderImpl(ip, port, npdu, bvlcPayloadLength);
+    return new BVLCForwardedNPDUBuilderImpl(ip, port, npdu);
   }
 
   public static class BVLCForwardedNPDUBuilderImpl implements BVLC.BVLCBuilder {
     private final List<Short> ip;
     private final int port;
     private final NPDU npdu;
-    private final Integer bvlcPayloadLength;
 
-    public BVLCForwardedNPDUBuilderImpl(
-        List<Short> ip, int port, NPDU npdu, Integer bvlcPayloadLength) {
+    public BVLCForwardedNPDUBuilderImpl(List<Short> ip, int port, NPDU npdu) {
       this.ip = ip;
       this.port = port;
       this.npdu = npdu;
-      this.bvlcPayloadLength = bvlcPayloadLength;
     }
 
     public BVLCForwardedNPDU build() {
-      BVLCForwardedNPDU bVLCForwardedNPDU =
-          new BVLCForwardedNPDU(ip, port, npdu, bvlcPayloadLength);
+      BVLCForwardedNPDU bVLCForwardedNPDU = new BVLCForwardedNPDU(ip, port, npdu);
       return bVLCForwardedNPDU;
     }
   }

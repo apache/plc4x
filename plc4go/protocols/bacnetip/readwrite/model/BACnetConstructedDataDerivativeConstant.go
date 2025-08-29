@@ -61,12 +61,12 @@ var _ BACnetConstructedDataDerivativeConstant = (*_BACnetConstructedDataDerivati
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDerivativeConstant)(nil)
 
 // NewBACnetConstructedDataDerivativeConstant factory function for _BACnetConstructedDataDerivativeConstant
-func NewBACnetConstructedDataDerivativeConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, derivativeConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstant {
+func NewBACnetConstructedDataDerivativeConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, derivativeConstant BACnetApplicationTagReal) *_BACnetConstructedDataDerivativeConstant {
 	if derivativeConstant == nil {
 		panic("derivativeConstant of type BACnetApplicationTagReal for BACnetConstructedDataDerivativeConstant must not be nil")
 	}
 	_result := &_BACnetConstructedDataDerivativeConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		DerivativeConstant:            derivativeConstant,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

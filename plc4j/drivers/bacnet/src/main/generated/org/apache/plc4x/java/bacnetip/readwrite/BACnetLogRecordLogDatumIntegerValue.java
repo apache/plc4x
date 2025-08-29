@@ -43,18 +43,13 @@ public class BACnetLogRecordLogDatumIntegerValue extends BACnetLogRecordLogDatum
   // Properties.
   protected final BACnetContextTagSignedInteger integerValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-
   public BACnetLogRecordLogDatumIntegerValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetContextTagSignedInteger integerValue,
-      Short tagNumber) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber);
+      BACnetContextTagSignedInteger integerValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.integerValue = integerValue;
-    this.tagNumber = tagNumber;
   }
 
   public BACnetContextTagSignedInteger getIntegerValue() {
@@ -111,28 +106,23 @@ public class BACnetLogRecordLogDatumIntegerValue extends BACnetLogRecordLogDatum
 
     readBuffer.closeContext("BACnetLogRecordLogDatumIntegerValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumIntegerValueBuilderImpl(integerValue, tagNumber);
+    return new BACnetLogRecordLogDatumIntegerValueBuilderImpl(integerValue);
   }
 
   public static class BACnetLogRecordLogDatumIntegerValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagSignedInteger integerValue;
-    private final Short tagNumber;
 
     public BACnetLogRecordLogDatumIntegerValueBuilderImpl(
-        BACnetContextTagSignedInteger integerValue, Short tagNumber) {
+        BACnetContextTagSignedInteger integerValue) {
       this.integerValue = integerValue;
-      this.tagNumber = tagNumber;
     }
 
     public BACnetLogRecordLogDatumIntegerValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetLogRecordLogDatumIntegerValue bACnetLogRecordLogDatumIntegerValue =
           new BACnetLogRecordLogDatumIntegerValue(
-              openingTag, peekedTagHeader, closingTag, integerValue, tagNumber);
+              openingTag, peekedTagHeader, closingTag, integerValue);
       return bACnetLogRecordLogDatumIntegerValue;
     }
   }

@@ -54,9 +54,9 @@ var _ ApduDataIndividualAddressWrite = (*_ApduDataIndividualAddressWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataIndividualAddressWrite)(nil)
 
 // NewApduDataIndividualAddressWrite factory function for _ApduDataIndividualAddressWrite
-func NewApduDataIndividualAddressWrite(dataLength uint8) *_ApduDataIndividualAddressWrite {
+func NewApduDataIndividualAddressWrite() *_ApduDataIndividualAddressWrite {
 	_result := &_ApduDataIndividualAddressWrite{
-		ApduDataContract: NewApduData(dataLength),
+		ApduDataContract: NewApduData(),
 	}
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result

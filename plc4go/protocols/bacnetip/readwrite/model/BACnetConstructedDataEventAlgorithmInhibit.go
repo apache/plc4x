@@ -61,12 +61,12 @@ var _ BACnetConstructedDataEventAlgorithmInhibit = (*_BACnetConstructedDataEvent
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventAlgorithmInhibit)(nil)
 
 // NewBACnetConstructedDataEventAlgorithmInhibit factory function for _BACnetConstructedDataEventAlgorithmInhibit
-func NewBACnetConstructedDataEventAlgorithmInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibit {
+func NewBACnetConstructedDataEventAlgorithmInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibit BACnetApplicationTagBoolean) *_BACnetConstructedDataEventAlgorithmInhibit {
 	if eventAlgorithmInhibit == nil {
 		panic("eventAlgorithmInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataEventAlgorithmInhibit must not be nil")
 	}
 	_result := &_BACnetConstructedDataEventAlgorithmInhibit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		EventAlgorithmInhibit:         eventAlgorithmInhibit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

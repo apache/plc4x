@@ -52,23 +52,15 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetSpecialEvent> exceptionSchedule;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataExceptionSchedule(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetSpecialEvent> exceptionSchedule,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetSpecialEvent> exceptionSchedule) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.exceptionSchedule = exceptionSchedule;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -97,11 +89,7 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (exceptionSchedule)
     writeComplexTypeArrayField("exceptionSchedule", exceptionSchedule, writeBuffer);
@@ -171,42 +159,26 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
     readBuffer.closeContext("BACnetConstructedDataExceptionSchedule");
     // Create the instance
     return new BACnetConstructedDataExceptionScheduleBuilderImpl(
-        numberOfDataElements, exceptionSchedule, tagNumber, arrayIndexArgument);
+        numberOfDataElements, exceptionSchedule);
   }
 
   public static class BACnetConstructedDataExceptionScheduleBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetSpecialEvent> exceptionSchedule;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataExceptionScheduleBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetSpecialEvent> exceptionSchedule,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetSpecialEvent> exceptionSchedule) {
       this.numberOfDataElements = numberOfDataElements;
       this.exceptionSchedule = exceptionSchedule;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataExceptionSchedule build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataExceptionSchedule bACnetConstructedDataExceptionSchedule =
           new BACnetConstructedDataExceptionSchedule(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              exceptionSchedule,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, exceptionSchedule);
       return bACnetConstructedDataExceptionSchedule;
     }
   }

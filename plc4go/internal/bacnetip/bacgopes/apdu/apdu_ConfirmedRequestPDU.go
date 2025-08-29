@@ -82,7 +82,6 @@ func (c *ConfirmedRequestPDU) buildConfirmedRequest(serviceRequest readWriteMode
 		serviceRequest,
 		nil, // TODO: where to get from
 		nil, // TODO: where to get from
-		0,
 	)
 }
 

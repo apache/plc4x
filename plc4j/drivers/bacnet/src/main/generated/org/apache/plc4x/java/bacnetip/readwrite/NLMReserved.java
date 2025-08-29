@@ -45,13 +45,9 @@ public class NLMReserved extends NLM implements Message {
   // Properties.
   protected final byte[] unknownBytes;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMReserved(byte[] unknownBytes, Integer apduLength) {
-    super(apduLength);
+  public NLMReserved(byte[] unknownBytes) {
+    super();
     this.unknownBytes = unknownBytes;
-    this.apduLength = apduLength;
   }
 
   public byte[] getUnknownBytes() {
@@ -101,21 +97,18 @@ public class NLMReserved extends NLM implements Message {
 
     readBuffer.closeContext("NLMReserved");
     // Create the instance
-    return new NLMReservedBuilderImpl(unknownBytes, apduLength);
+    return new NLMReservedBuilderImpl(unknownBytes);
   }
 
   public static class NLMReservedBuilderImpl implements NLM.NLMBuilder {
     private final byte[] unknownBytes;
-    private final Integer apduLength;
 
-    public NLMReservedBuilderImpl(byte[] unknownBytes, Integer apduLength) {
+    public NLMReservedBuilderImpl(byte[] unknownBytes) {
       this.unknownBytes = unknownBytes;
-      this.apduLength = apduLength;
     }
 
-    public NLMReserved build(Integer apduLength) {
-
-      NLMReserved nLMReserved = new NLMReserved(unknownBytes, apduLength);
+    public NLMReserved build() {
+      NLMReserved nLMReserved = new NLMReserved(unknownBytes);
       return nLMReserved;
     }
   }

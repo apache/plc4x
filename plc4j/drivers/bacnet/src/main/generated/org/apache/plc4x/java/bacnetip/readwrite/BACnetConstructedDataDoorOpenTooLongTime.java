@@ -50,21 +50,13 @@ public class BACnetConstructedDataDoorOpenTooLongTime extends BACnetConstructedD
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger doorOpenTooLongTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDoorOpenTooLongTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger doorOpenTooLongTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger doorOpenTooLongTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.doorOpenTooLongTime = doorOpenTooLongTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getDoorOpenTooLongTime() {
@@ -136,39 +128,23 @@ public class BACnetConstructedDataDoorOpenTooLongTime extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataDoorOpenTooLongTime");
     // Create the instance
-    return new BACnetConstructedDataDoorOpenTooLongTimeBuilderImpl(
-        doorOpenTooLongTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoorOpenTooLongTimeBuilderImpl(doorOpenTooLongTime);
   }
 
   public static class BACnetConstructedDataDoorOpenTooLongTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger doorOpenTooLongTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDoorOpenTooLongTimeBuilderImpl(
-        BACnetApplicationTagUnsignedInteger doorOpenTooLongTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger doorOpenTooLongTime) {
       this.doorOpenTooLongTime = doorOpenTooLongTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDoorOpenTooLongTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDoorOpenTooLongTime bACnetConstructedDataDoorOpenTooLongTime =
           new BACnetConstructedDataDoorOpenTooLongTime(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              doorOpenTooLongTime,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, doorOpenTooLongTime);
       return bACnetConstructedDataDoorOpenTooLongTime;
     }
   }

@@ -21,7 +21,7 @@
 
 // Remark: The different fields are encoded in Big-endian.
 
-[type UmasConstants
+[constants
     [const          uint 16     UmasTcpDefaultPort 502]
 ]
 

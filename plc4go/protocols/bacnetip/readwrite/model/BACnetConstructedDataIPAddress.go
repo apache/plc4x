@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPAddress = (*_BACnetConstructedDataIPAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPAddress)(nil)
 
 // NewBACnetConstructedDataIPAddress factory function for _BACnetConstructedDataIPAddress
-func NewBACnetConstructedDataIPAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPAddress {
+func NewBACnetConstructedDataIPAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipAddress BACnetApplicationTagOctetString) *_BACnetConstructedDataIPAddress {
 	if ipAddress == nil {
 		panic("ipAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataIPAddress must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpAddress:                     ipAddress,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

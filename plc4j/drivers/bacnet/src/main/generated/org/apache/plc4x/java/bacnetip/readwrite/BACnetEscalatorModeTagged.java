@@ -42,22 +42,12 @@ public class BACnetEscalatorModeTagged implements Message {
   protected final BACnetEscalatorMode value;
   protected final long proprietaryValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final TagClass tagClass;
-
   public BACnetEscalatorModeTagged(
-      BACnetTagHeader header,
-      BACnetEscalatorMode value,
-      long proprietaryValue,
-      Short tagNumber,
-      TagClass tagClass) {
+      BACnetTagHeader header, BACnetEscalatorMode value, long proprietaryValue) {
     super();
     this.header = header;
     this.value = value;
     this.proprietaryValue = proprietaryValue;
-    this.tagNumber = tagNumber;
-    this.tagClass = tagClass;
   }
 
   public BACnetTagHeader getHeader() {
@@ -180,8 +170,7 @@ public class BACnetEscalatorModeTagged implements Message {
     readBuffer.closeContext("BACnetEscalatorModeTagged");
     // Create the instance
     BACnetEscalatorModeTagged _bACnetEscalatorModeTagged;
-    _bACnetEscalatorModeTagged =
-        new BACnetEscalatorModeTagged(header, value, proprietaryValue, tagNumber, tagClass);
+    _bACnetEscalatorModeTagged = new BACnetEscalatorModeTagged(header, value, proprietaryValue);
     return _bACnetEscalatorModeTagged;
   }
 

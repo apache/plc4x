@@ -64,9 +64,9 @@ var _ BACnetConstructedDataSupportedFormats = (*_BACnetConstructedDataSupportedF
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSupportedFormats)(nil)
 
 // NewBACnetConstructedDataSupportedFormats factory function for _BACnetConstructedDataSupportedFormats
-func NewBACnetConstructedDataSupportedFormats(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, supportedFormats []BACnetAuthenticationFactorFormat, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedFormats {
+func NewBACnetConstructedDataSupportedFormats(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, supportedFormats []BACnetAuthenticationFactorFormat) *_BACnetConstructedDataSupportedFormats {
 	_result := &_BACnetConstructedDataSupportedFormats{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfDataElements:          numberOfDataElements,
 		SupportedFormats:              supportedFormats,
 	}

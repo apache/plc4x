@@ -59,9 +59,9 @@ var _ BACnetLogRecordLogDatumAnyValue = (*_BACnetLogRecordLogDatumAnyValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumAnyValue)(nil)
 
 // NewBACnetLogRecordLogDatumAnyValue factory function for _BACnetLogRecordLogDatumAnyValue
-func NewBACnetLogRecordLogDatumAnyValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, anyValue BACnetConstructedData, tagNumber uint8) *_BACnetLogRecordLogDatumAnyValue {
+func NewBACnetLogRecordLogDatumAnyValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, anyValue BACnetConstructedData) *_BACnetLogRecordLogDatumAnyValue {
 	_result := &_BACnetLogRecordLogDatumAnyValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		AnyValue:                        anyValue,
 	}
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result

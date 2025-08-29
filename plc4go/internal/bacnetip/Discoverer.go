@@ -106,12 +106,12 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 				lowLimit = driverModel.CreateBACnetContextTagUnsignedInteger(0, whoIsOptions.limits.low)
 				highLimit = driverModel.CreateBACnetContextTagUnsignedInteger(1, whoIsOptions.limits.high)
 			}
-			requestWhoIs := driverModel.NewBACnetUnconfirmedServiceRequestWhoIs(lowLimit, highLimit, 0)
-			apdu := driverModel.NewAPDUUnconfirmedRequest(requestWhoIs, 0)
+			requestWhoIs := driverModel.NewBACnetUnconfirmedServiceRequestWhoIs(lowLimit, highLimit)
+			apdu := driverModel.NewAPDUUnconfirmedRequest(requestWhoIs)
 
 			control := driverModel.NewNPDUControl(false, false, false, false, driverModel.NPDUNetworkPriority_NORMAL_MESSAGE)
-			npdu := driverModel.NewNPDU(1, control, nil, nil, nil, nil, nil, nil, nil, nil, apdu, 0)
-			bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu, 0)
+			npdu := driverModel.NewNPDU(1, control, nil, nil, nil, nil, nil, nil, nil, nil, apdu)
+			bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu)
 
 			// Send the search request.
 			theBytes, err := bvlc.Serialize()
@@ -150,12 +150,12 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 			} else {
 				panic("Invalid state")
 			}
-			requestWhoHas := driverModel.NewBACnetUnconfirmedServiceRequestWhoHas(lowLimit, highLimit, object, 0)
-			apdu := driverModel.NewAPDUUnconfirmedRequest(requestWhoHas, 0)
+			requestWhoHas := driverModel.NewBACnetUnconfirmedServiceRequestWhoHas(lowLimit, highLimit, object)
+			apdu := driverModel.NewAPDUUnconfirmedRequest(requestWhoHas)
 
 			control := driverModel.NewNPDUControl(false, false, false, false, driverModel.NPDUNetworkPriority_NORMAL_MESSAGE)
-			npdu := driverModel.NewNPDU(1, control, nil, nil, nil, nil, nil, nil, nil, nil, apdu, 0)
-			bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu, 0)
+			npdu := driverModel.NewNPDU(1, control, nil, nil, nil, nil, nil, nil, nil, nil, apdu)
+			bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu)
 
 			// Send the search request.
 			theBytes, err := bvlc.Serialize()

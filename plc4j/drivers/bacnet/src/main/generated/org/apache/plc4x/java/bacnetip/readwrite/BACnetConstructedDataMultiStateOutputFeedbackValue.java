@@ -50,21 +50,13 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
   // Properties.
   protected final BACnetApplicationTagUnsignedInteger feedbackValue;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataMultiStateOutputFeedbackValue(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagUnsignedInteger feedbackValue,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagUnsignedInteger feedbackValue) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.feedbackValue = feedbackValue;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getFeedbackValue() {
@@ -135,40 +127,24 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateOutputFeedbackValue");
     // Create the instance
-    return new BACnetConstructedDataMultiStateOutputFeedbackValueBuilderImpl(
-        feedbackValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMultiStateOutputFeedbackValueBuilderImpl(feedbackValue);
   }
 
   public static class BACnetConstructedDataMultiStateOutputFeedbackValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger feedbackValue;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataMultiStateOutputFeedbackValueBuilderImpl(
-        BACnetApplicationTagUnsignedInteger feedbackValue,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagUnsignedInteger feedbackValue) {
       this.feedbackValue = feedbackValue;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataMultiStateOutputFeedbackValue build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataMultiStateOutputFeedbackValue
           bACnetConstructedDataMultiStateOutputFeedbackValue =
               new BACnetConstructedDataMultiStateOutputFeedbackValue(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  feedbackValue,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, feedbackValue);
       return bACnetConstructedDataMultiStateOutputFeedbackValue;
     }
   }

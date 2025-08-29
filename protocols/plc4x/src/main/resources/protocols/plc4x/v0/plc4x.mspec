@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type Plc4xConstants
+[constants
     [const          uint 16     plc4xTcpDefaultPort 59837] // Hex of CAFE
 ]
 

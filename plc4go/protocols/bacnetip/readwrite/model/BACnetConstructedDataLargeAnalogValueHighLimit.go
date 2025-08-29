@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLargeAnalogValueHighLimit = (*_BACnetConstructedDataL
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueHighLimit)(nil)
 
 // NewBACnetConstructedDataLargeAnalogValueHighLimit factory function for _BACnetConstructedDataLargeAnalogValueHighLimit
-func NewBACnetConstructedDataLargeAnalogValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueHighLimit {
+func NewBACnetConstructedDataLargeAnalogValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagDouble) *_BACnetConstructedDataLargeAnalogValueHighLimit {
 	if highLimit == nil {
 		panic("highLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueHighLimit must not be nil")
 	}
 	_result := &_BACnetConstructedDataLargeAnalogValueHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		HighLimit:                     highLimit,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -59,20 +59,16 @@ type _BACnetLightingTransitionTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetLightingTransition
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetLightingTransitionTagged = (*_BACnetLightingTransitionTagged)(nil)
 
 // NewBACnetLightingTransitionTagged factory function for _BACnetLightingTransitionTagged
-func NewBACnetLightingTransitionTagged(header BACnetTagHeader, value BACnetLightingTransition, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingTransitionTagged {
+func NewBACnetLightingTransitionTagged(header BACnetTagHeader, value BACnetLightingTransition, proprietaryValue uint32) *_BACnetLightingTransitionTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetLightingTransitionTagged must not be nil")
 	}
-	return &_BACnetLightingTransitionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetLightingTransitionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetLightingTransitionTaggedBuilder interface {
 	WithValue(BACnetLightingTransition) BACnetLightingTransitionTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetLightingTransitionTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetLightingTransitionTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetLightingTransitionTaggedBuilder
 	// Build builds the BACnetLightingTransitionTagged or returns an error if something is wrong
 	Build() (BACnetLightingTransitionTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetLightingTransitionTaggedBuilder) WithValue(value BACnetLightingT
 
 func (b *_BACnetLightingTransitionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLightingTransitionTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetLightingTransitionTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLightingTransitionTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetLightingTransitionTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLightingTransitionTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetLightingTransitionTaggedParseWithBufferProducer(tagNumber uint8, tagC
 }
 
 func BACnetLightingTransitionTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLightingTransitionTagged, error) {
-	v, err := (&_BACnetLightingTransitionTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetLightingTransitionTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetLightingTransitionTagged) SerializeWithWriteBuffer(ctx context.C
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetLightingTransitionTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetLightingTransitionTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetLightingTransitionTagged) IsBACnetLightingTransitionTagged() {}
 
 func (m *_BACnetLightingTransitionTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetLightingTransitionTagged) deepCopy() *_BACnetLightingTransitionT
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetLightingTransitionTaggedCopy
 }

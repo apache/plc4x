@@ -53,16 +53,13 @@ type BACnetConfirmedServiceRequestUnknown interface {
 type _BACnetConfirmedServiceRequestUnknown struct {
 	BACnetConfirmedServiceRequestContract
 	UnknownBytes []byte
-
-	// Arguments.
-	ServiceRequestPayloadLength uint32
 }
 
 var _ BACnetConfirmedServiceRequestUnknown = (*_BACnetConfirmedServiceRequestUnknown)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestUnknown)(nil)
 
 // NewBACnetConfirmedServiceRequestUnknown factory function for _BACnetConfirmedServiceRequestUnknown
-func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestUnknown {
+func NewBACnetConfirmedServiceRequestUnknown(serviceRequestLength uint32, unknownBytes []byte) *_BACnetConfirmedServiceRequestUnknown {
 	_result := &_BACnetConfirmedServiceRequestUnknown{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		UnknownBytes:                          unknownBytes,
@@ -83,8 +80,6 @@ type BACnetConfirmedServiceRequestUnknownBuilder interface {
 	WithMandatoryFields(unknownBytes []byte) BACnetConfirmedServiceRequestUnknownBuilder
 	// WithUnknownBytes adds UnknownBytes (property field)
 	WithUnknownBytes(...byte) BACnetConfirmedServiceRequestUnknownBuilder
-	// WithArgServiceRequestPayloadLength sets a parser argument
-	WithArgServiceRequestPayloadLength(uint32) BACnetConfirmedServiceRequestUnknownBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestUnknown or returns an error if something is wrong
@@ -119,11 +114,6 @@ func (b *_BACnetConfirmedServiceRequestUnknownBuilder) WithMandatoryFields(unkno
 
 func (b *_BACnetConfirmedServiceRequestUnknownBuilder) WithUnknownBytes(unknownBytes ...byte) BACnetConfirmedServiceRequestUnknownBuilder {
 	b.UnknownBytes = unknownBytes
-	return b
-}
-
-func (b *_BACnetConfirmedServiceRequestUnknownBuilder) WithArgServiceRequestPayloadLength(serviceRequestPayloadLength uint32) BACnetConfirmedServiceRequestUnknownBuilder {
-	b.ServiceRequestPayloadLength = serviceRequestPayloadLength
 	return b
 }
 
@@ -290,16 +280,6 @@ func (m *_BACnetConfirmedServiceRequestUnknown) SerializeWithWriteBuffer(ctx con
 	return m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetConfirmedServiceRequestUnknown) GetServiceRequestPayloadLength() uint32 {
-	return m.ServiceRequestPayloadLength
-}
-
-//
-////
-
 func (m *_BACnetConfirmedServiceRequestUnknown) IsBACnetConfirmedServiceRequestUnknown() {}
 
 func (m *_BACnetConfirmedServiceRequestUnknown) DeepCopy() any {
@@ -313,7 +293,6 @@ func (m *_BACnetConfirmedServiceRequestUnknown) deepCopy() *_BACnetConfirmedServ
 	_BACnetConfirmedServiceRequestUnknownCopy := &_BACnetConfirmedServiceRequestUnknown{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
-		m.ServiceRequestPayloadLength,
 	}
 	_BACnetConfirmedServiceRequestUnknownCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestUnknownCopy

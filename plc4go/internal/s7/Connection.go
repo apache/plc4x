@@ -400,10 +400,9 @@ func (c *Connection) createIdentifyRemoteMessage() readWriteModel.TPKTPacket {
 					0x0000,
 				),
 			},
-			nil,
 		),
 	)
-	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, identifyRemoteMessage, true, 2, 0)
+	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, identifyRemoteMessage, true, 2)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }
 
@@ -428,22 +427,21 @@ func (c *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse read
 		c.driverContext.MaxAmqCaller, c.driverContext.MaxAmqCallee, c.driverContext.PduSize,
 	)
 	s7Message := readWriteModel.NewS7MessageRequest(0, s7ParameterSetupCommunication, nil)
-	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, s7Message, true, 1, 0)
+	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, s7Message, true, 1)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }
 
 func (c *Connection) createCOTPConnectionRequest() readWriteModel.COTPPacket {
 	return readWriteModel.NewCOTPPacketConnectionRequest(
 		[]readWriteModel.COTPParameter{
-			readWriteModel.NewCOTPParameterCallingTsap(c.driverContext.CallingTsapId, 0),
-			readWriteModel.NewCOTPParameterCalledTsap(c.driverContext.CalledTsapId, 0),
-			readWriteModel.NewCOTPParameterTpduSize(c.driverContext.CotpTpduSize, 0),
+			readWriteModel.NewCOTPParameterCallingTsap(c.driverContext.CallingTsapId),
+			readWriteModel.NewCOTPParameterCalledTsap(c.driverContext.CalledTsapId),
+			readWriteModel.NewCOTPParameterTpduSize(c.driverContext.CotpTpduSize),
 		},
 		nil,
 		0x0000,
 		0x000F,
 		readWriteModel.COTPProtocolClass_CLASS_0,
-		0,
 	)
 }
 

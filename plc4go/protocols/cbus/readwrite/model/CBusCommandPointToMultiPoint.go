@@ -59,12 +59,12 @@ var _ CBusCommandPointToMultiPoint = (*_CBusCommandPointToMultiPoint)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandPointToMultiPoint)(nil)
 
 // NewCBusCommandPointToMultiPoint factory function for _CBusCommandPointToMultiPoint
-func NewCBusCommandPointToMultiPoint(header CBusHeader, command CBusPointToMultiPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToMultiPoint {
+func NewCBusCommandPointToMultiPoint(header CBusHeader, command CBusPointToMultiPointCommand) *_CBusCommandPointToMultiPoint {
 	if command == nil {
 		panic("command of type CBusPointToMultiPointCommand for CBusCommandPointToMultiPoint must not be nil")
 	}
 	_result := &_CBusCommandPointToMultiPoint{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		CBusCommandContract: NewCBusCommand(header),
 		Command:             command,
 	}
 	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result

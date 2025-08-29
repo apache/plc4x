@@ -59,20 +59,16 @@ type _BACnetBinaryLightingPVTagged struct {
 	Header           BACnetTagHeader
 	Value            BACnetBinaryLightingPV
 	ProprietaryValue uint32
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetBinaryLightingPVTagged = (*_BACnetBinaryLightingPVTagged)(nil)
 
 // NewBACnetBinaryLightingPVTagged factory function for _BACnetBinaryLightingPVTagged
-func NewBACnetBinaryLightingPVTagged(header BACnetTagHeader, value BACnetBinaryLightingPV, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetBinaryLightingPVTagged {
+func NewBACnetBinaryLightingPVTagged(header BACnetTagHeader, value BACnetBinaryLightingPV, proprietaryValue uint32) *_BACnetBinaryLightingPVTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetBinaryLightingPVTagged must not be nil")
 	}
-	return &_BACnetBinaryLightingPVTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetBinaryLightingPVTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue}
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,10 +89,6 @@ type BACnetBinaryLightingPVTaggedBuilder interface {
 	WithValue(BACnetBinaryLightingPV) BACnetBinaryLightingPVTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetBinaryLightingPVTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetBinaryLightingPVTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetBinaryLightingPVTaggedBuilder
 	// Build builds the BACnetBinaryLightingPVTagged or returns an error if something is wrong
 	Build() (BACnetBinaryLightingPVTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,15 +134,6 @@ func (b *_BACnetBinaryLightingPVTaggedBuilder) WithValue(value BACnetBinaryLight
 
 func (b *_BACnetBinaryLightingPVTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetBinaryLightingPVTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
-	return b
-}
-
-func (b *_BACnetBinaryLightingPVTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetBinaryLightingPVTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetBinaryLightingPVTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetBinaryLightingPVTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -277,7 +260,7 @@ func BACnetBinaryLightingPVTaggedParseWithBufferProducer(tagNumber uint8, tagCla
 }
 
 func BACnetBinaryLightingPVTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryLightingPVTagged, error) {
-	v, err := (&_BACnetBinaryLightingPVTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetBinaryLightingPVTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -377,19 +360,6 @@ func (m *_BACnetBinaryLightingPVTagged) SerializeWithWriteBuffer(ctx context.Con
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetBinaryLightingPVTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetBinaryLightingPVTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetBinaryLightingPVTagged) IsBACnetBinaryLightingPVTagged() {}
 
 func (m *_BACnetBinaryLightingPVTagged) DeepCopy() any {
@@ -404,8 +374,6 @@ func (m *_BACnetBinaryLightingPVTagged) deepCopy() *_BACnetBinaryLightingPVTagge
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetBinaryLightingPVTaggedCopy
 }

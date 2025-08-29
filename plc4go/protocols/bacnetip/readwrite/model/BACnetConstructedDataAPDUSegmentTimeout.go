@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAPDUSegmentTimeout = (*_BACnetConstructedDataAPDUSegm
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAPDUSegmentTimeout)(nil)
 
 // NewBACnetConstructedDataAPDUSegmentTimeout factory function for _BACnetConstructedDataAPDUSegmentTimeout
-func NewBACnetConstructedDataAPDUSegmentTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduSegmentTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDUSegmentTimeout {
+func NewBACnetConstructedDataAPDUSegmentTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduSegmentTimeout BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataAPDUSegmentTimeout {
 	if apduSegmentTimeout == nil {
 		panic("apduSegmentTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDUSegmentTimeout must not be nil")
 	}
 	_result := &_BACnetConstructedDataAPDUSegmentTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		ApduSegmentTimeout:            apduSegmentTimeout,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

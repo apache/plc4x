@@ -42,16 +42,9 @@ public abstract class ReplyOrConfirmation implements Message {
   // Properties.
   protected final byte peekedByte;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-  protected final RequestContext requestContext;
-
-  public ReplyOrConfirmation(
-      byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext) {
+  public ReplyOrConfirmation(byte peekedByte) {
     super();
     this.peekedByte = peekedByte;
-    this.cBusOptions = cBusOptions;
-    this.requestContext = requestContext;
   }
 
   public byte getPeekedByte() {
@@ -140,14 +133,12 @@ public abstract class ReplyOrConfirmation implements Message {
 
     readBuffer.closeContext("ReplyOrConfirmation");
     // Create the instance
-    ReplyOrConfirmation _replyOrConfirmation =
-        builder.build(peekedByte, cBusOptions, requestContext);
+    ReplyOrConfirmation _replyOrConfirmation = builder.build(peekedByte);
     return _replyOrConfirmation;
   }
 
   public interface ReplyOrConfirmationBuilder {
-    ReplyOrConfirmation build(
-        byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext);
+    ReplyOrConfirmation build(byte peekedByte);
   }
 
   @Override

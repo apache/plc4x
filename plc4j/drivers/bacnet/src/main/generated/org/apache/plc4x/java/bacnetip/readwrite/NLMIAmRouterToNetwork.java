@@ -45,13 +45,9 @@ public class NLMIAmRouterToNetwork extends NLM implements Message {
   // Properties.
   protected final List<Integer> destinationNetworkAddresses;
 
-  // Arguments.
-  protected final Integer apduLength;
-
-  public NLMIAmRouterToNetwork(List<Integer> destinationNetworkAddresses, Integer apduLength) {
-    super(apduLength);
+  public NLMIAmRouterToNetwork(List<Integer> destinationNetworkAddresses) {
+    super();
     this.destinationNetworkAddresses = destinationNetworkAddresses;
-    this.apduLength = apduLength;
   }
 
   public List<Integer> getDestinationNetworkAddresses() {
@@ -104,23 +100,19 @@ public class NLMIAmRouterToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMIAmRouterToNetwork");
     // Create the instance
-    return new NLMIAmRouterToNetworkBuilderImpl(destinationNetworkAddresses, apduLength);
+    return new NLMIAmRouterToNetworkBuilderImpl(destinationNetworkAddresses);
   }
 
   public static class NLMIAmRouterToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final List<Integer> destinationNetworkAddresses;
-    private final Integer apduLength;
 
-    public NLMIAmRouterToNetworkBuilderImpl(
-        List<Integer> destinationNetworkAddresses, Integer apduLength) {
+    public NLMIAmRouterToNetworkBuilderImpl(List<Integer> destinationNetworkAddresses) {
       this.destinationNetworkAddresses = destinationNetworkAddresses;
-      this.apduLength = apduLength;
     }
 
-    public NLMIAmRouterToNetwork build(Integer apduLength) {
-
+    public NLMIAmRouterToNetwork build() {
       NLMIAmRouterToNetwork nLMIAmRouterToNetwork =
-          new NLMIAmRouterToNetwork(destinationNetworkAddresses, apduLength);
+          new NLMIAmRouterToNetwork(destinationNetworkAddresses);
       return nLMIAmRouterToNetwork;
     }
   }

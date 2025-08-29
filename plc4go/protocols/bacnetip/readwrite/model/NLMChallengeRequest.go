@@ -65,9 +65,9 @@ var _ NLMChallengeRequest = (*_NLMChallengeRequest)(nil)
 var _ NLMRequirements = (*_NLMChallengeRequest)(nil)
 
 // NewNLMChallengeRequest factory function for _NLMChallengeRequest
-func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32, apduLength uint16) *_NLMChallengeRequest {
+func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32) *_NLMChallengeRequest {
 	_result := &_NLMChallengeRequest{
-		NLMContract:       NewNLM(apduLength),
+		NLMContract:       NewNLM(),
 		MessageChallenge:  messageChallenge,
 		OriginalMessageId: originalMessageId,
 		OriginalTimestamp: originalTimestamp,

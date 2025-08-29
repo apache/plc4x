@@ -65,7 +65,7 @@ func (u *UnconfirmedRequestPDU) buildUnconfirmedServiceRequest(serviceRequest re
 	if serviceRequest == nil {
 		return nil
 	}
-	return readWriteModel.NewAPDUUnconfirmedRequest(serviceRequest, 0)
+	return readWriteModel.NewAPDUUnconfirmedRequest(serviceRequest)
 }
 
 func (u *UnconfirmedRequestPDU) CreateAPDUUnconfirmedRequestBuilder() readWriteModel.APDUUnconfirmedRequestBuilder {

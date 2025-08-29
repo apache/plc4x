@@ -64,12 +64,12 @@ var _ CBusPointToMultiPointCommandNormal = (*_CBusPointToMultiPointCommandNormal
 var _ CBusPointToMultiPointCommandRequirements = (*_CBusPointToMultiPointCommandNormal)(nil)
 
 // NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
-func NewCBusPointToMultiPointCommandNormal(peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandNormal {
+func NewCBusPointToMultiPointCommandNormal(peekedApplication byte, application ApplicationIdContainer, salData SALData) *_CBusPointToMultiPointCommandNormal {
 	if salData == nil {
 		panic("salData of type SALData for CBusPointToMultiPointCommandNormal must not be nil")
 	}
 	_result := &_CBusPointToMultiPointCommandNormal{
-		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
+		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication),
 		Application:                          application,
 		SalData:                              salData,
 	}

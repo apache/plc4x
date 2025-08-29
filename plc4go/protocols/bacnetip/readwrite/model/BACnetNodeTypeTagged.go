@@ -54,20 +54,16 @@ type BACnetNodeTypeTagged interface {
 type _BACnetNodeTypeTagged struct {
 	Header BACnetTagHeader
 	Value  BACnetNodeType
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetNodeTypeTagged = (*_BACnetNodeTypeTagged)(nil)
 
 // NewBACnetNodeTypeTagged factory function for _BACnetNodeTypeTagged
-func NewBACnetNodeTypeTagged(header BACnetTagHeader, value BACnetNodeType, tagNumber uint8, tagClass TagClass) *_BACnetNodeTypeTagged {
+func NewBACnetNodeTypeTagged(header BACnetTagHeader, value BACnetNodeType) *_BACnetNodeTypeTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetNodeTypeTagged must not be nil")
 	}
-	return &_BACnetNodeTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetNodeTypeTagged{Header: header, Value: value}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,10 +82,6 @@ type BACnetNodeTypeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNodeTypeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetNodeType) BACnetNodeTypeTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetNodeTypeTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetNodeTypeTaggedBuilder
 	// Build builds the BACnetNodeTypeTagged or returns an error if something is wrong
 	Build() (BACnetNodeTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,15 +122,6 @@ func (b *_BACnetNodeTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BA
 
 func (b *_BACnetNodeTypeTaggedBuilder) WithValue(value BACnetNodeType) BACnetNodeTypeTaggedBuilder {
 	b.Value = value
-	return b
-}
-
-func (b *_BACnetNodeTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetNodeTypeTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetNodeTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetNodeTypeTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -241,7 +224,7 @@ func BACnetNodeTypeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagCl
 }
 
 func BACnetNodeTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNodeTypeTagged, error) {
-	v, err := (&_BACnetNodeTypeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetNodeTypeTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -317,19 +300,6 @@ func (m *_BACnetNodeTypeTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetNodeTypeTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetNodeTypeTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetNodeTypeTagged) IsBACnetNodeTypeTagged() {}
 
 func (m *_BACnetNodeTypeTagged) DeepCopy() any {
@@ -343,8 +313,6 @@ func (m *_BACnetNodeTypeTagged) deepCopy() *_BACnetNodeTypeTagged {
 	_BACnetNodeTypeTaggedCopy := &_BACnetNodeTypeTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetNodeTypeTaggedCopy
 }

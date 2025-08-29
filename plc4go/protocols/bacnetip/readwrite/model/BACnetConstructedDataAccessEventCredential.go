@@ -61,12 +61,12 @@ var _ BACnetConstructedDataAccessEventCredential = (*_BACnetConstructedDataAcces
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessEventCredential)(nil)
 
 // NewBACnetConstructedDataAccessEventCredential factory function for _BACnetConstructedDataAccessEventCredential
-func NewBACnetConstructedDataAccessEventCredential(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventCredential BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventCredential {
+func NewBACnetConstructedDataAccessEventCredential(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventCredential BACnetDeviceObjectReference) *_BACnetConstructedDataAccessEventCredential {
 	if accessEventCredential == nil {
 		panic("accessEventCredential of type BACnetDeviceObjectReference for BACnetConstructedDataAccessEventCredential must not be nil")
 	}
 	_result := &_BACnetConstructedDataAccessEventCredential{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		AccessEventCredential:         accessEventCredential,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

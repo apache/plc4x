@@ -46,9 +46,6 @@ public class RequestDirectCommandAccess extends Request implements Message {
   protected final CALData calData;
   protected final Alpha alpha;
 
-  // Arguments.
-  protected final CBusOptions cBusOptions;
-
   public RequestDirectCommandAccess(
       RequestType peekedByte,
       RequestType startingCR,
@@ -56,12 +53,10 @@ public class RequestDirectCommandAccess extends Request implements Message {
       RequestType secondPeek,
       RequestTermination termination,
       CALData calData,
-      Alpha alpha,
-      CBusOptions cBusOptions) {
-    super(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions);
+      Alpha alpha) {
+    super(peekedByte, startingCR, resetMode, secondPeek, termination);
     this.calData = calData;
     this.alpha = alpha;
-    this.cBusOptions = cBusOptions;
   }
 
   public CALData getCalData() {
@@ -157,19 +152,16 @@ public class RequestDirectCommandAccess extends Request implements Message {
 
     readBuffer.closeContext("RequestDirectCommandAccess");
     // Create the instance
-    return new RequestDirectCommandAccessBuilderImpl(calData, alpha, cBusOptions);
+    return new RequestDirectCommandAccessBuilderImpl(calData, alpha);
   }
 
   public static class RequestDirectCommandAccessBuilderImpl implements Request.RequestBuilder {
     private final CALData calData;
     private final Alpha alpha;
-    private final CBusOptions cBusOptions;
 
-    public RequestDirectCommandAccessBuilderImpl(
-        CALData calData, Alpha alpha, CBusOptions cBusOptions) {
+    public RequestDirectCommandAccessBuilderImpl(CALData calData, Alpha alpha) {
       this.calData = calData;
       this.alpha = alpha;
-      this.cBusOptions = cBusOptions;
     }
 
     public RequestDirectCommandAccess build(
@@ -177,18 +169,10 @@ public class RequestDirectCommandAccess extends Request implements Message {
         RequestType startingCR,
         RequestType resetMode,
         RequestType secondPeek,
-        RequestTermination termination,
-        CBusOptions cBusOptions) {
+        RequestTermination termination) {
       RequestDirectCommandAccess requestDirectCommandAccess =
           new RequestDirectCommandAccess(
-              peekedByte,
-              startingCR,
-              resetMode,
-              secondPeek,
-              termination,
-              calData,
-              alpha,
-              cBusOptions);
+              peekedByte, startingCR, resetMode, secondPeek, termination, calData, alpha);
       return requestDirectCommandAccess;
     }
   }

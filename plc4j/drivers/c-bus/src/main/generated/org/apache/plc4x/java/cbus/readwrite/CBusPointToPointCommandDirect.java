@@ -41,20 +41,13 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
 
   // Properties.
   protected final UnitAddress unitAddress;
-
-  // Arguments.
-  protected final CBusOptions cBusOptions;
   // Reserved Fields
   private Short reservedField0;
 
   public CBusPointToPointCommandDirect(
-      int bridgeAddressCountPeek,
-      CALData calData,
-      UnitAddress unitAddress,
-      CBusOptions cBusOptions) {
-    super(bridgeAddressCountPeek, calData, cBusOptions);
+      int bridgeAddressCountPeek, CALData calData, UnitAddress unitAddress) {
+    super(bridgeAddressCountPeek, calData);
     this.unitAddress = unitAddress;
-    this.cBusOptions = cBusOptions;
   }
 
   public UnitAddress getUnitAddress() {
@@ -115,27 +108,22 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
 
     readBuffer.closeContext("CBusPointToPointCommandDirect");
     // Create the instance
-    return new CBusPointToPointCommandDirectBuilderImpl(unitAddress, cBusOptions, reservedField0);
+    return new CBusPointToPointCommandDirectBuilderImpl(unitAddress, reservedField0);
   }
 
   public static class CBusPointToPointCommandDirectBuilderImpl
       implements CBusPointToPointCommand.CBusPointToPointCommandBuilder {
     private final UnitAddress unitAddress;
-    private final CBusOptions cBusOptions;
     private final Short reservedField0;
 
-    public CBusPointToPointCommandDirectBuilderImpl(
-        UnitAddress unitAddress, CBusOptions cBusOptions, Short reservedField0) {
+    public CBusPointToPointCommandDirectBuilderImpl(UnitAddress unitAddress, Short reservedField0) {
       this.unitAddress = unitAddress;
-      this.cBusOptions = cBusOptions;
       this.reservedField0 = reservedField0;
     }
 
-    public CBusPointToPointCommandDirect build(
-        int bridgeAddressCountPeek, CALData calData, CBusOptions cBusOptions) {
+    public CBusPointToPointCommandDirect build(int bridgeAddressCountPeek, CALData calData) {
       CBusPointToPointCommandDirect cBusPointToPointCommandDirect =
-          new CBusPointToPointCommandDirect(
-              bridgeAddressCountPeek, calData, unitAddress, cBusOptions);
+          new CBusPointToPointCommandDirect(bridgeAddressCountPeek, calData, unitAddress);
       cBusPointToPointCommandDirect.reservedField0 = reservedField0;
       return cBusPointToPointCommandDirect;
     }

@@ -59,9 +59,9 @@ var _ NLMWhoIsRouterToNetwork = (*_NLMWhoIsRouterToNetwork)(nil)
 var _ NLMRequirements = (*_NLMWhoIsRouterToNetwork)(nil)
 
 // NewNLMWhoIsRouterToNetwork factory function for _NLMWhoIsRouterToNetwork
-func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress *uint16, apduLength uint16) *_NLMWhoIsRouterToNetwork {
+func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress *uint16) *_NLMWhoIsRouterToNetwork {
 	_result := &_NLMWhoIsRouterToNetwork{
-		NLMContract:               NewNLM(apduLength),
+		NLMContract:               NewNLM(),
 		DestinationNetworkAddress: destinationNetworkAddress,
 	}
 	_result.NLMContract.(*_NLM)._SubType = _result

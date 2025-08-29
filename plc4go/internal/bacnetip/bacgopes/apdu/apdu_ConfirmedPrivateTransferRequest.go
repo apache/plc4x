@@ -47,10 +47,10 @@ func NewConfirmedPrivateTransferRequest(args Args, kwArgs KWArgs, options ...Opt
 		},
 	}
 	options = AddRootMessageIfAbundant(options, readWriteModel.NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(
+		0,
 		readWriteModel.CreateBACnetVendorIdContextTagged(0, 0),     // TODO: get right values
 		readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: get right values
 		nil,
-		0,
 	))
 	options = AddLeafTypeIfAbundant(options, c)
 	var err error

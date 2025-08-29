@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPolarity = (*_BACnetConstructedDataPolarity)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPolarity)(nil)
 
 // NewBACnetConstructedDataPolarity factory function for _BACnetConstructedDataPolarity
-func NewBACnetConstructedDataPolarity(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, polarity BACnetPolarityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPolarity {
+func NewBACnetConstructedDataPolarity(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, polarity BACnetPolarityTagged) *_BACnetConstructedDataPolarity {
 	if polarity == nil {
 		panic("polarity of type BACnetPolarityTagged for BACnetConstructedDataPolarity must not be nil")
 	}
 	_result := &_BACnetConstructedDataPolarity{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Polarity:                      polarity,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

@@ -270,7 +270,7 @@ func NetworkConnectionParametersParseWithBufferProducer() func(ctx context.Conte
 }
 
 func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkConnectionParameters, error) {
-	v, err := (&_NetworkConnectionParameters{}).parse(ctx, readBuffer)
+	v, err := (new(_NetworkConnectionParameters)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

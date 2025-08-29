@@ -190,7 +190,7 @@ func ParameterChangeParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func ParameterChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChange, error) {
-	v, err := (&_ParameterChange{}).parse(ctx, readBuffer)
+	v, err := (new(_ParameterChange)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

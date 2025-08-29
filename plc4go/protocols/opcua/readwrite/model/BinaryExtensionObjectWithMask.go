@@ -59,12 +59,12 @@ var _ BinaryExtensionObjectWithMask = (*_BinaryExtensionObjectWithMask)(nil)
 var _ ExtensionObjectWithMaskRequirements = (*_BinaryExtensionObjectWithMask)(nil)
 
 // NewBinaryExtensionObjectWithMask factory function for _BinaryExtensionObjectWithMask
-func NewBinaryExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, body ExtensionObjectDefinition, extensionId int32, includeEncodingMask bool) *_BinaryExtensionObjectWithMask {
+func NewBinaryExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, body ExtensionObjectDefinition) *_BinaryExtensionObjectWithMask {
 	if body == nil {
 		panic("body of type ExtensionObjectDefinition for BinaryExtensionObjectWithMask must not be nil")
 	}
 	_result := &_BinaryExtensionObjectWithMask{
-		ExtensionObjectWithMaskContract: NewExtensionObjectWithMask(typeId, encodingMask, extensionId),
+		ExtensionObjectWithMaskContract: NewExtensionObjectWithMask(typeId, encodingMask),
 		Body:                            body,
 	}
 	_result.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask)._SubType = _result

@@ -87,15 +87,13 @@ public class BACnetAccessRule implements Message {
     writeSimpleField("timeRangeSpecifier", timeRangeSpecifier, writeComplex(writeBuffer));
 
     // Optional Field (timeRange) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "timeRange", timeRange, writeComplex(writeBuffer), (getTimeRangeSpecifier()) != (null));
+    writeOptionalField("timeRange", timeRange, writeComplex(writeBuffer));
 
     // Simple Field (locationSpecifier)
     writeSimpleField("locationSpecifier", locationSpecifier, writeComplex(writeBuffer));
 
     // Optional Field (location) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "location", location, writeComplex(writeBuffer), (getLocationSpecifier()) != (null));
+    writeOptionalField("location", location, writeComplex(writeBuffer));
 
     // Simple Field (enable)
     writeSimpleField("enable", enable, writeComplex(writeBuffer));

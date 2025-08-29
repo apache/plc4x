@@ -46,17 +46,11 @@ public class NLMRejectMessageToNetwork extends NLM implements Message {
   protected final NLMRejectMessageToNetworkRejectReason rejectReason;
   protected final int destinationNetworkAddress;
 
-  // Arguments.
-  protected final Integer apduLength;
-
   public NLMRejectMessageToNetwork(
-      NLMRejectMessageToNetworkRejectReason rejectReason,
-      int destinationNetworkAddress,
-      Integer apduLength) {
-    super(apduLength);
+      NLMRejectMessageToNetworkRejectReason rejectReason, int destinationNetworkAddress) {
+    super();
     this.rejectReason = rejectReason;
     this.destinationNetworkAddress = destinationNetworkAddress;
-    this.apduLength = apduLength;
   }
 
   public NLMRejectMessageToNetworkRejectReason getRejectReason() {
@@ -129,28 +123,22 @@ public class NLMRejectMessageToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMRejectMessageToNetwork");
     // Create the instance
-    return new NLMRejectMessageToNetworkBuilderImpl(
-        rejectReason, destinationNetworkAddress, apduLength);
+    return new NLMRejectMessageToNetworkBuilderImpl(rejectReason, destinationNetworkAddress);
   }
 
   public static class NLMRejectMessageToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final NLMRejectMessageToNetworkRejectReason rejectReason;
     private final int destinationNetworkAddress;
-    private final Integer apduLength;
 
     public NLMRejectMessageToNetworkBuilderImpl(
-        NLMRejectMessageToNetworkRejectReason rejectReason,
-        int destinationNetworkAddress,
-        Integer apduLength) {
+        NLMRejectMessageToNetworkRejectReason rejectReason, int destinationNetworkAddress) {
       this.rejectReason = rejectReason;
       this.destinationNetworkAddress = destinationNetworkAddress;
-      this.apduLength = apduLength;
     }
 
-    public NLMRejectMessageToNetwork build(Integer apduLength) {
-
+    public NLMRejectMessageToNetwork build() {
       NLMRejectMessageToNetwork nLMRejectMessageToNetwork =
-          new NLMRejectMessageToNetwork(rejectReason, destinationNetworkAddress, apduLength);
+          new NLMRejectMessageToNetwork(rejectReason, destinationNetworkAddress);
       return nLMRejectMessageToNetwork;
     }
   }

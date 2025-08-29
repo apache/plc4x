@@ -50,21 +50,13 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
   // Properties.
   protected final BACnetTimeStamp updateTime;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCredentialDataInputUpdateTime(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetTimeStamp updateTime,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetTimeStamp updateTime) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.updateTime = updateTime;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetTimeStamp getUpdateTime() {
@@ -130,40 +122,24 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataCredentialDataInputUpdateTime");
     // Create the instance
-    return new BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl(
-        updateTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl(updateTime);
   }
 
   public static class BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimeStamp updateTime;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl(
-        BACnetTimeStamp updateTime,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetTimeStamp updateTime) {
       this.updateTime = updateTime;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCredentialDataInputUpdateTime build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCredentialDataInputUpdateTime
           bACnetConstructedDataCredentialDataInputUpdateTime =
               new BACnetConstructedDataCredentialDataInputUpdateTime(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  updateTime,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, updateTime);
       return bACnetConstructedDataCredentialDataInputUpdateTime;
     }
   }

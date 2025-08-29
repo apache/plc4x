@@ -74,23 +74,19 @@ type BACnetServicesSupportedTagged interface {
 type _BACnetServicesSupportedTagged struct {
 	Header  BACnetTagHeader
 	Payload BACnetTagPayloadBitString
-
-	// Arguments.
-	TagNumber uint8
-	TagClass  TagClass
 }
 
 var _ BACnetServicesSupportedTagged = (*_BACnetServicesSupportedTagged)(nil)
 
 // NewBACnetServicesSupportedTagged factory function for _BACnetServicesSupportedTagged
-func NewBACnetServicesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetServicesSupportedTagged {
+func NewBACnetServicesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString) *_BACnetServicesSupportedTagged {
 	if header == nil {
 		panic("header of type BACnetTagHeader for BACnetServicesSupportedTagged must not be nil")
 	}
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadBitString for BACnetServicesSupportedTagged must not be nil")
 	}
-	return &_BACnetServicesSupportedTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+	return &_BACnetServicesSupportedTagged{Header: header, Payload: payload}
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,10 +107,6 @@ type BACnetServicesSupportedTaggedBuilder interface {
 	WithPayload(BACnetTagPayloadBitString) BACnetServicesSupportedTaggedBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetServicesSupportedTaggedBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetServicesSupportedTaggedBuilder
-	// WithArgTagClass sets a parser argument
-	WithArgTagClass(TagClass) BACnetServicesSupportedTaggedBuilder
 	// Build builds the BACnetServicesSupportedTagged or returns an error if something is wrong
 	Build() (BACnetServicesSupportedTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -165,15 +157,6 @@ func (b *_BACnetServicesSupportedTaggedBuilder) WithPayloadBuilder(builderSuppli
 	if err != nil {
 		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_BACnetServicesSupportedTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetServicesSupportedTaggedBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetServicesSupportedTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetServicesSupportedTaggedBuilder {
-	b.TagClass = tagClass
 	return b
 }
 
@@ -368,7 +351,7 @@ func BACnetServicesSupportedTaggedParseWithBufferProducer(tagNumber uint8, tagCl
 }
 
 func BACnetServicesSupportedTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetServicesSupportedTagged, error) {
-	v, err := (&_BACnetServicesSupportedTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (new(_BACnetServicesSupportedTagged)).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}
@@ -564,19 +547,6 @@ func (m *_BACnetServicesSupportedTagged) SerializeWithWriteBuffer(ctx context.Co
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetServicesSupportedTagged) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetServicesSupportedTagged) GetTagClass() TagClass {
-	return m.TagClass
-}
-
-//
-////
-
 func (m *_BACnetServicesSupportedTagged) IsBACnetServicesSupportedTagged() {}
 
 func (m *_BACnetServicesSupportedTagged) DeepCopy() any {
@@ -590,8 +560,6 @@ func (m *_BACnetServicesSupportedTagged) deepCopy() *_BACnetServicesSupportedTag
 	_BACnetServicesSupportedTaggedCopy := &_BACnetServicesSupportedTagged{
 		utils.DeepCopy[BACnetTagHeader](m.Header),
 		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
-		m.TagNumber,
-		m.TagClass,
 	}
 	return _BACnetServicesSupportedTaggedCopy
 }

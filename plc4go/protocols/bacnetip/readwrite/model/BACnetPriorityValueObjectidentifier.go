@@ -59,12 +59,12 @@ var _ BACnetPriorityValueObjectidentifier = (*_BACnetPriorityValueObjectidentifi
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueObjectidentifier)(nil)
 
 // NewBACnetPriorityValueObjectidentifier factory function for _BACnetPriorityValueObjectidentifier
-func NewBACnetPriorityValueObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueObjectidentifier {
+func NewBACnetPriorityValueObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier) *_BACnetPriorityValueObjectidentifier {
 	if objectidentifierValue == nil {
 		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetPriorityValueObjectidentifier must not be nil")
 	}
 	_result := &_BACnetPriorityValueObjectidentifier{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader),
 		ObjectidentifierValue:       objectidentifierValue,
 	}
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result

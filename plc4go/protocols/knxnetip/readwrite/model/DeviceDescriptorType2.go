@@ -414,7 +414,7 @@ func DeviceDescriptorType2ParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func DeviceDescriptorType2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
-	v, err := (&_DeviceDescriptorType2{}).parse(ctx, readBuffer)
+	v, err := (new(_DeviceDescriptorType2)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

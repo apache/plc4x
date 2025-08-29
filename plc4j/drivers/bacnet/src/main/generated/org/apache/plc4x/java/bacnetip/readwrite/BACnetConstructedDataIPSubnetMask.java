@@ -49,21 +49,13 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
   // Properties.
   protected final BACnetApplicationTagOctetString ipSubnetMask;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataIPSubnetMask(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagOctetString ipSubnetMask,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagOctetString ipSubnetMask) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.ipSubnetMask = ipSubnetMask;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagOctetString getIpSubnetMask() {
@@ -133,34 +125,23 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataIPSubnetMask");
     // Create the instance
-    return new BACnetConstructedDataIPSubnetMaskBuilderImpl(
-        ipSubnetMask, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPSubnetMaskBuilderImpl(ipSubnetMask);
   }
 
   public static class BACnetConstructedDataIPSubnetMaskBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipSubnetMask;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataIPSubnetMaskBuilderImpl(
-        BACnetApplicationTagOctetString ipSubnetMask,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagOctetString ipSubnetMask) {
       this.ipSubnetMask = ipSubnetMask;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataIPSubnetMask build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataIPSubnetMask bACnetConstructedDataIPSubnetMask =
           new BACnetConstructedDataIPSubnetMask(
-              openingTag, peekedTagHeader, closingTag, ipSubnetMask, tagNumber, arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, ipSubnetMask);
       return bACnetConstructedDataIPSubnetMask;
     }
   }

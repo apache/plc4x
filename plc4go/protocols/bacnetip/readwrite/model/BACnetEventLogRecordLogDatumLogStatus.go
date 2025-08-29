@@ -59,12 +59,12 @@ var _ BACnetEventLogRecordLogDatumLogStatus = (*_BACnetEventLogRecordLogDatumLog
 var _ BACnetEventLogRecordLogDatumRequirements = (*_BACnetEventLogRecordLogDatumLogStatus)(nil)
 
 // NewBACnetEventLogRecordLogDatumLogStatus factory function for _BACnetEventLogRecordLogDatumLogStatus
-func NewBACnetEventLogRecordLogDatumLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logStatus BACnetLogStatusTagged, tagNumber uint8) *_BACnetEventLogRecordLogDatumLogStatus {
+func NewBACnetEventLogRecordLogDatumLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logStatus BACnetLogStatusTagged) *_BACnetEventLogRecordLogDatumLogStatus {
 	if logStatus == nil {
 		panic("logStatus of type BACnetLogStatusTagged for BACnetEventLogRecordLogDatumLogStatus must not be nil")
 	}
 	_result := &_BACnetEventLogRecordLogDatumLogStatus{
-		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag),
 		LogStatus:                            logStatus,
 	}
 	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result

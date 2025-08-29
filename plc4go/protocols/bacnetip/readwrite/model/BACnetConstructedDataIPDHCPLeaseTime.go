@@ -61,12 +61,12 @@ var _ BACnetConstructedDataIPDHCPLeaseTime = (*_BACnetConstructedDataIPDHCPLease
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDHCPLeaseTime)(nil)
 
 // NewBACnetConstructedDataIPDHCPLeaseTime factory function for _BACnetConstructedDataIPDHCPLeaseTime
-func NewBACnetConstructedDataIPDHCPLeaseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTime {
+func NewBACnetConstructedDataIPDHCPLeaseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTime BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTime {
 	if ipDhcpLeaseTime == nil {
 		panic("ipDhcpLeaseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPDHCPLeaseTime must not be nil")
 	}
 	_result := &_BACnetConstructedDataIPDHCPLeaseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		IpDhcpLeaseTime:               ipDhcpLeaseTime,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

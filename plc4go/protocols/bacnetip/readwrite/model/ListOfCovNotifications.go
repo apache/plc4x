@@ -298,7 +298,7 @@ func ListOfCovNotificationsParseWithBufferProducer() func(ctx context.Context, r
 }
 
 func ListOfCovNotificationsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ListOfCovNotifications, error) {
-	v, err := (&_ListOfCovNotifications{}).parse(ctx, readBuffer)
+	v, err := (new(_ListOfCovNotifications)).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

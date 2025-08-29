@@ -51,23 +51,15 @@ public class BACnetConstructedDataCarDoorCommand extends BACnetConstructedData i
   protected final BACnetApplicationTagUnsignedInteger numberOfDataElements;
   protected final List<BACnetLiftCarDoorCommandTagged> carDoorCommand;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataCarDoorCommand(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
       BACnetApplicationTagUnsignedInteger numberOfDataElements,
-      List<BACnetLiftCarDoorCommandTagged> carDoorCommand,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetLiftCarDoorCommandTagged> carDoorCommand) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.numberOfDataElements = numberOfDataElements;
     this.carDoorCommand = carDoorCommand;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagUnsignedInteger getNumberOfDataElements() {
@@ -96,11 +88,7 @@ public class BACnetConstructedDataCarDoorCommand extends BACnetConstructedData i
     writeBuffer.writeVirtual("zero", zero);
 
     // Optional Field (numberOfDataElements) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "numberOfDataElements",
-        numberOfDataElements,
-        writeComplex(writeBuffer),
-        ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
+    writeOptionalField("numberOfDataElements", numberOfDataElements, writeComplex(writeBuffer));
 
     // Array Field (carDoorCommand)
     writeComplexTypeArrayField("carDoorCommand", carDoorCommand, writeBuffer);
@@ -173,43 +161,26 @@ public class BACnetConstructedDataCarDoorCommand extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataCarDoorCommand");
     // Create the instance
-    return new BACnetConstructedDataCarDoorCommandBuilderImpl(
-        numberOfDataElements, carDoorCommand, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarDoorCommandBuilderImpl(numberOfDataElements, carDoorCommand);
   }
 
   public static class BACnetConstructedDataCarDoorCommandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLiftCarDoorCommandTagged> carDoorCommand;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataCarDoorCommandBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
-        List<BACnetLiftCarDoorCommandTagged> carDoorCommand,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetLiftCarDoorCommandTagged> carDoorCommand) {
       this.numberOfDataElements = numberOfDataElements;
       this.carDoorCommand = carDoorCommand;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataCarDoorCommand build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataCarDoorCommand bACnetConstructedDataCarDoorCommand =
           new BACnetConstructedDataCarDoorCommand(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              numberOfDataElements,
-              carDoorCommand,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, numberOfDataElements, carDoorCommand);
       return bACnetConstructedDataCarDoorCommand;
     }
   }

@@ -92,18 +92,13 @@ type BACnetPriorityArray interface {
 type _BACnetPriorityArray struct {
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	Data                 []BACnetPriorityValue
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 var _ BACnetPriorityArray = (*_BACnetPriorityArray)(nil)
 
 // NewBACnetPriorityArray factory function for _BACnetPriorityArray
-func NewBACnetPriorityArray(numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetPriorityValue, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPriorityArray {
-	return &_BACnetPriorityArray{NumberOfDataElements: numberOfDataElements, Data: data, ObjectTypeArgument: objectTypeArgument, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}
+func NewBACnetPriorityArray(numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetPriorityValue) *_BACnetPriorityArray {
+	return &_BACnetPriorityArray{NumberOfDataElements: numberOfDataElements, Data: data}
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,12 +117,6 @@ type BACnetPriorityArrayBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetPriorityArrayBuilder
 	// WithData adds Data (property field)
 	WithData(...BACnetPriorityValue) BACnetPriorityArrayBuilder
-	// WithArgObjectTypeArgument sets a parser argument
-	WithArgObjectTypeArgument(BACnetObjectType) BACnetPriorityArrayBuilder
-	// WithArgTagNumber sets a parser argument
-	WithArgTagNumber(uint8) BACnetPriorityArrayBuilder
-	// WithArgArrayIndexArgument sets a parser argument
-	WithArgArrayIndexArgument(BACnetTagPayloadUnsignedInteger) BACnetPriorityArrayBuilder
 	// Build builds the BACnetPriorityArray or returns an error if something is wrong
 	Build() (BACnetPriorityArray, error)
 	// MustBuild does the same as Build but panics on error
@@ -168,19 +157,6 @@ func (b *_BACnetPriorityArrayBuilder) WithOptionalNumberOfDataElementsBuilder(bu
 
 func (b *_BACnetPriorityArrayBuilder) WithData(data ...BACnetPriorityValue) BACnetPriorityArrayBuilder {
 	b.Data = data
-	return b
-}
-
-func (b *_BACnetPriorityArrayBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPriorityArrayBuilder {
-	b.ObjectTypeArgument = objectTypeArgument
-	return b
-}
-func (b *_BACnetPriorityArrayBuilder) WithArgTagNumber(tagNumber uint8) BACnetPriorityArrayBuilder {
-	b.TagNumber = tagNumber
-	return b
-}
-func (b *_BACnetPriorityArrayBuilder) WithArgArrayIndexArgument(arrayIndexArgument BACnetTagPayloadUnsignedInteger) BACnetPriorityArrayBuilder {
-	b.ArrayIndexArgument = arrayIndexArgument
 	return b
 }
 
@@ -485,7 +461,7 @@ func BACnetPriorityArrayParseWithBufferProducer(objectTypeArgument BACnetObjectT
 }
 
 func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPriorityArray, error) {
-	v, err := (&_BACnetPriorityArray{ObjectTypeArgument: objectTypeArgument, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}).parse(ctx, readBuffer, objectTypeArgument, tagNumber, arrayIndexArgument)
+	v, err := (new(_BACnetPriorityArray)).parse(ctx, readBuffer, objectTypeArgument, tagNumber, arrayIndexArgument)
 	if err != nil {
 		return nil, err
 	}
@@ -788,22 +764,6 @@ func (m *_BACnetPriorityArray) SerializeWithWriteBuffer(ctx context.Context, wri
 	return nil
 }
 
-////
-// Arguments Getter
-
-func (m *_BACnetPriorityArray) GetObjectTypeArgument() BACnetObjectType {
-	return m.ObjectTypeArgument
-}
-func (m *_BACnetPriorityArray) GetTagNumber() uint8 {
-	return m.TagNumber
-}
-func (m *_BACnetPriorityArray) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
-	return m.ArrayIndexArgument
-}
-
-//
-////
-
 func (m *_BACnetPriorityArray) IsBACnetPriorityArray() {}
 
 func (m *_BACnetPriorityArray) DeepCopy() any {
@@ -817,9 +777,6 @@ func (m *_BACnetPriorityArray) deepCopy() *_BACnetPriorityArray {
 	_BACnetPriorityArrayCopy := &_BACnetPriorityArray{
 		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetPriorityValue, BACnetPriorityValue](m.Data),
-		m.ObjectTypeArgument,
-		m.TagNumber,
-		m.ArrayIndexArgument,
 	}
 	return _BACnetPriorityArrayCopy
 }

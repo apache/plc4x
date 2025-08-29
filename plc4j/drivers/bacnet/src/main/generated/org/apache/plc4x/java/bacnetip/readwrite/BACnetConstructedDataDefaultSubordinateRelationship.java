@@ -50,21 +50,13 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
   // Properties.
   protected final BACnetRelationshipTagged defaultSubordinateRelationship;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataDefaultSubordinateRelationship(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetRelationshipTagged defaultSubordinateRelationship,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetRelationshipTagged defaultSubordinateRelationship) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.defaultSubordinateRelationship = defaultSubordinateRelationship;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetRelationshipTagged getDefaultSubordinateRelationship() {
@@ -140,39 +132,24 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
     readBuffer.closeContext("BACnetConstructedDataDefaultSubordinateRelationship");
     // Create the instance
     return new BACnetConstructedDataDefaultSubordinateRelationshipBuilderImpl(
-        defaultSubordinateRelationship, tagNumber, arrayIndexArgument);
+        defaultSubordinateRelationship);
   }
 
   public static class BACnetConstructedDataDefaultSubordinateRelationshipBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetRelationshipTagged defaultSubordinateRelationship;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataDefaultSubordinateRelationshipBuilderImpl(
-        BACnetRelationshipTagged defaultSubordinateRelationship,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetRelationshipTagged defaultSubordinateRelationship) {
       this.defaultSubordinateRelationship = defaultSubordinateRelationship;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataDefaultSubordinateRelationship build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataDefaultSubordinateRelationship
           bACnetConstructedDataDefaultSubordinateRelationship =
               new BACnetConstructedDataDefaultSubordinateRelationship(
-                  openingTag,
-                  peekedTagHeader,
-                  closingTag,
-                  defaultSubordinateRelationship,
-                  tagNumber,
-                  arrayIndexArgument);
+                  openingTag, peekedTagHeader, closingTag, defaultSubordinateRelationship);
       return bACnetConstructedDataDefaultSubordinateRelationship;
     }
   }

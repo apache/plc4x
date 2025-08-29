@@ -61,12 +61,12 @@ var _ BACnetConstructedDataBACnetIPv6UDPPort = (*_BACnetConstructedDataBACnetIPv
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPv6UDPPort)(nil)
 
 // NewBACnetConstructedDataBACnetIPv6UDPPort factory function for _BACnetConstructedDataBACnetIPv6UDPPort
-func NewBACnetConstructedDataBACnetIPv6UDPPort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6UdpPort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6UDPPort {
+func NewBACnetConstructedDataBACnetIPv6UDPPort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6UdpPort BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataBACnetIPv6UDPPort {
 	if ipv6UdpPort == nil {
 		panic("ipv6UdpPort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBACnetIPv6UDPPort must not be nil")
 	}
 	_result := &_BACnetConstructedDataBACnetIPv6UDPPort{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		Ipv6UdpPort:                   ipv6UdpPort,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

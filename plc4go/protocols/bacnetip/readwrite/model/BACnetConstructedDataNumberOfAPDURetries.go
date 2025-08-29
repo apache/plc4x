@@ -61,12 +61,12 @@ var _ BACnetConstructedDataNumberOfAPDURetries = (*_BACnetConstructedDataNumberO
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfAPDURetries)(nil)
 
 // NewBACnetConstructedDataNumberOfAPDURetries factory function for _BACnetConstructedDataNumberOfAPDURetries
-func NewBACnetConstructedDataNumberOfAPDURetries(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfApduRetries BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAPDURetries {
+func NewBACnetConstructedDataNumberOfAPDURetries(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfApduRetries BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataNumberOfAPDURetries {
 	if numberOfApduRetries == nil {
 		panic("numberOfApduRetries of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAPDURetries must not be nil")
 	}
 	_result := &_BACnetConstructedDataNumberOfAPDURetries{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		NumberOfApduRetries:           numberOfApduRetries,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

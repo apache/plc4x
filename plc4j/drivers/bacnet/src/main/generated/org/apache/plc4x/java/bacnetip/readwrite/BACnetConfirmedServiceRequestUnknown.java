@@ -46,16 +46,9 @@ public class BACnetConfirmedServiceRequestUnknown extends BACnetConfirmedService
   // Properties.
   protected final byte[] unknownBytes;
 
-  // Arguments.
-  protected final Long serviceRequestPayloadLength;
-  protected final Long serviceRequestLength;
-
-  public BACnetConfirmedServiceRequestUnknown(
-      byte[] unknownBytes, Long serviceRequestPayloadLength, Long serviceRequestLength) {
+  public BACnetConfirmedServiceRequestUnknown(long serviceRequestLength, byte[] unknownBytes) {
     super(serviceRequestLength);
     this.unknownBytes = unknownBytes;
-    this.serviceRequestPayloadLength = serviceRequestPayloadLength;
-    this.serviceRequestLength = serviceRequestLength;
   }
 
   public byte[] getUnknownBytes() {
@@ -107,28 +100,20 @@ public class BACnetConfirmedServiceRequestUnknown extends BACnetConfirmedService
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestUnknown");
     // Create the instance
-    return new BACnetConfirmedServiceRequestUnknownBuilderImpl(
-        unknownBytes, serviceRequestPayloadLength, serviceRequestLength);
+    return new BACnetConfirmedServiceRequestUnknownBuilderImpl(unknownBytes);
   }
 
   public static class BACnetConfirmedServiceRequestUnknownBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final byte[] unknownBytes;
-    private final Long serviceRequestPayloadLength;
-    private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestUnknownBuilderImpl(
-        byte[] unknownBytes, Long serviceRequestPayloadLength, Long serviceRequestLength) {
+    public BACnetConfirmedServiceRequestUnknownBuilderImpl(byte[] unknownBytes) {
       this.unknownBytes = unknownBytes;
-      this.serviceRequestPayloadLength = serviceRequestPayloadLength;
-      this.serviceRequestLength = serviceRequestLength;
     }
 
-    public BACnetConfirmedServiceRequestUnknown build(Long serviceRequestLength) {
-
+    public BACnetConfirmedServiceRequestUnknown build(long serviceRequestLength) {
       BACnetConfirmedServiceRequestUnknown bACnetConfirmedServiceRequestUnknown =
-          new BACnetConfirmedServiceRequestUnknown(
-              unknownBytes, serviceRequestPayloadLength, serviceRequestLength);
+          new BACnetConfirmedServiceRequestUnknown(serviceRequestLength, unknownBytes);
       return bACnetConfirmedServiceRequestUnknown;
     }
   }

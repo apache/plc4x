@@ -59,9 +59,9 @@ var _ BACnetConstructedDataGroupPresentValue = (*_BACnetConstructedDataGroupPres
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupPresentValue)(nil)
 
 // NewBACnetConstructedDataGroupPresentValue factory function for _BACnetConstructedDataGroupPresentValue
-func NewBACnetConstructedDataGroupPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue []BACnetReadAccessResult, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupPresentValue {
+func NewBACnetConstructedDataGroupPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue []BACnetReadAccessResult) *_BACnetConstructedDataGroupPresentValue {
 	_result := &_BACnetConstructedDataGroupPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PresentValue:                  presentValue,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

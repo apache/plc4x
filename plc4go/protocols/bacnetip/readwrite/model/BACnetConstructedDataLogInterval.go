@@ -61,12 +61,12 @@ var _ BACnetConstructedDataLogInterval = (*_BACnetConstructedDataLogInterval)(ni
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLogInterval)(nil)
 
 // NewBACnetConstructedDataLogInterval factory function for _BACnetConstructedDataLogInterval
-func NewBACnetConstructedDataLogInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogInterval {
+func NewBACnetConstructedDataLogInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logInterval BACnetApplicationTagUnsignedInteger) *_BACnetConstructedDataLogInterval {
 	if logInterval == nil {
 		panic("logInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLogInterval must not be nil")
 	}
 	_result := &_BACnetConstructedDataLogInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		LogInterval:                   logInterval,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result

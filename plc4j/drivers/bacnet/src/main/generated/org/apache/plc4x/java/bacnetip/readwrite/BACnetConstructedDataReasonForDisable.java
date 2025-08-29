@@ -50,21 +50,13 @@ public class BACnetConstructedDataReasonForDisable extends BACnetConstructedData
   // Properties.
   protected final List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataReasonForDisable(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.reasonForDisable = reasonForDisable;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public List<BACnetAccessCredentialDisableReasonTagged> getReasonForDisable() {
@@ -131,39 +123,23 @@ public class BACnetConstructedDataReasonForDisable extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataReasonForDisable");
     // Create the instance
-    return new BACnetConstructedDataReasonForDisableBuilderImpl(
-        reasonForDisable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataReasonForDisableBuilderImpl(reasonForDisable);
   }
 
   public static class BACnetConstructedDataReasonForDisableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataReasonForDisableBuilderImpl(
-        List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable) {
       this.reasonForDisable = reasonForDisable;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataReasonForDisable build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataReasonForDisable bACnetConstructedDataReasonForDisable =
           new BACnetConstructedDataReasonForDisable(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              reasonForDisable,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, reasonForDisable);
       return bACnetConstructedDataReasonForDisable;
     }
   }

@@ -50,21 +50,13 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
   // Properties.
   protected final BACnetApplicationTagBoolean localForwardingOnly;
 
-  // Arguments.
-  protected final Short tagNumber;
-  protected final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
-
   public BACnetConstructedDataLocalForwardingOnly(
       BACnetOpeningTag openingTag,
       BACnetTagHeader peekedTagHeader,
       BACnetClosingTag closingTag,
-      BACnetApplicationTagBoolean localForwardingOnly,
-      Short tagNumber,
-      BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-    super(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument);
+      BACnetApplicationTagBoolean localForwardingOnly) {
+    super(openingTag, peekedTagHeader, closingTag);
     this.localForwardingOnly = localForwardingOnly;
-    this.tagNumber = tagNumber;
-    this.arrayIndexArgument = arrayIndexArgument;
   }
 
   public BACnetApplicationTagBoolean getLocalForwardingOnly() {
@@ -133,39 +125,23 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataLocalForwardingOnly");
     // Create the instance
-    return new BACnetConstructedDataLocalForwardingOnlyBuilderImpl(
-        localForwardingOnly, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLocalForwardingOnlyBuilderImpl(localForwardingOnly);
   }
 
   public static class BACnetConstructedDataLocalForwardingOnlyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean localForwardingOnly;
-    private final Short tagNumber;
-    private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
     public BACnetConstructedDataLocalForwardingOnlyBuilderImpl(
-        BACnetApplicationTagBoolean localForwardingOnly,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetApplicationTagBoolean localForwardingOnly) {
       this.localForwardingOnly = localForwardingOnly;
-      this.tagNumber = tagNumber;
-      this.arrayIndexArgument = arrayIndexArgument;
     }
 
     public BACnetConstructedDataLocalForwardingOnly build(
-        BACnetOpeningTag openingTag,
-        BACnetTagHeader peekedTagHeader,
-        BACnetClosingTag closingTag,
-        Short tagNumber,
-        BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
+        BACnetOpeningTag openingTag, BACnetTagHeader peekedTagHeader, BACnetClosingTag closingTag) {
       BACnetConstructedDataLocalForwardingOnly bACnetConstructedDataLocalForwardingOnly =
           new BACnetConstructedDataLocalForwardingOnly(
-              openingTag,
-              peekedTagHeader,
-              closingTag,
-              localForwardingOnly,
-              tagNumber,
-              arrayIndexArgument);
+              openingTag, peekedTagHeader, closingTag, localForwardingOnly);
       return bACnetConstructedDataLocalForwardingOnly;
     }
   }

@@ -61,12 +61,12 @@ var _ BACnetConstructedDataPassbackMode = (*_BACnetConstructedDataPassbackMode)(
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPassbackMode)(nil)
 
 // NewBACnetConstructedDataPassbackMode factory function for _BACnetConstructedDataPassbackMode
-func NewBACnetConstructedDataPassbackMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackMode BACnetAccessPassbackModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackMode {
+func NewBACnetConstructedDataPassbackMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackMode BACnetAccessPassbackModeTagged) *_BACnetConstructedDataPassbackMode {
 	if passbackMode == nil {
 		panic("passbackMode of type BACnetAccessPassbackModeTagged for BACnetConstructedDataPassbackMode must not be nil")
 	}
 	_result := &_BACnetConstructedDataPassbackMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
 		PassbackMode:                  passbackMode,
 	}
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
