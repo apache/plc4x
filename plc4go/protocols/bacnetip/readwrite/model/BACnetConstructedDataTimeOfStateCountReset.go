@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataTimeOfStateCountResetBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataTimeOfStateCountResetBuilder) = (*_BACnetConstructedDataTimeOfStateCountResetBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) WithTimeOfStateCoun
 	var err error
 	b.TimeOfStateCountReset, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) Build() (BACnetConstructedDataTimeOfStateCountReset, error) {
 	if b.TimeOfStateCountReset == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeOfStateCountReset' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeOfStateCountReset' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTimeOfStateCountReset.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) buildForBACnetConst
 
 func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataTimeOfStateCountResetBuilder().(*_BACnetConstructedDataTimeOfStateCountResetBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

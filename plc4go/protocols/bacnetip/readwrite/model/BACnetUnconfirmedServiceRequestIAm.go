@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -135,7 +136,7 @@ type _BACnetUnconfirmedServiceRequestIAmBuilder struct {
 
 	parentBuilder *_BACnetUnconfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetUnconfirmedServiceRequestIAmBuilder) = (*_BACnetUnconfirmedServiceRequestIAmBuilder)(nil)
@@ -159,10 +160,7 @@ func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) WithDeviceIdentifierBuilder
 	var err error
 	b.DeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -177,10 +175,7 @@ func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) WithMaximumApduLengthAccept
 	var err error
 	b.MaximumApduLengthAcceptedLength, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -195,10 +190,7 @@ func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) WithSegmentationSupportedBu
 	var err error
 	b.SegmentationSupported, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetSegmentationTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetSegmentationTaggedBuilder failed"))
 	}
 	return b
 }
@@ -213,41 +205,26 @@ func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) WithVendorIdBuilder(builder
 	var err error
 	b.VendorId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) Build() (BACnetUnconfirmedServiceRequestIAm, error) {
 	if b.DeviceIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deviceIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deviceIdentifier' not set"))
 	}
 	if b.MaximumApduLengthAcceptedLength == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'maximumApduLengthAcceptedLength' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'maximumApduLengthAcceptedLength' not set"))
 	}
 	if b.SegmentationSupported == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'segmentationSupported' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'segmentationSupported' not set"))
 	}
 	if b.VendorId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'vendorId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'vendorId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetUnconfirmedServiceRequestIAm.deepCopy(), nil
 }
@@ -273,8 +250,8 @@ func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) buildForBACnetUnconfirmedSe
 
 func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetUnconfirmedServiceRequestIAmBuilder().(*_BACnetUnconfirmedServiceRequestIAmBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

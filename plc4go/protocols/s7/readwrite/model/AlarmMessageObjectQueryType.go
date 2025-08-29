@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -160,7 +161,7 @@ func NewAlarmMessageObjectQueryTypeBuilder() AlarmMessageObjectQueryTypeBuilder 
 type _AlarmMessageObjectQueryTypeBuilder struct {
 	*_AlarmMessageObjectQueryType
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AlarmMessageObjectQueryTypeBuilder) = (*_AlarmMessageObjectQueryTypeBuilder)(nil)
@@ -184,10 +185,7 @@ func (b *_AlarmMessageObjectQueryTypeBuilder) WithEventStateBuilder(builderSuppl
 	var err error
 	b.EventState, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StateBuilder failed"))
 	}
 	return b
 }
@@ -202,10 +200,7 @@ func (b *_AlarmMessageObjectQueryTypeBuilder) WithAckStateGoingBuilder(builderSu
 	var err error
 	b.AckStateGoing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StateBuilder failed"))
 	}
 	return b
 }
@@ -220,10 +215,7 @@ func (b *_AlarmMessageObjectQueryTypeBuilder) WithAckStateComingBuilder(builderS
 	var err error
 	b.AckStateComing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StateBuilder failed"))
 	}
 	return b
 }
@@ -238,10 +230,7 @@ func (b *_AlarmMessageObjectQueryTypeBuilder) WithTimeComingBuilder(builderSuppl
 	var err error
 	b.TimeComing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DateAndTimeBuilder failed"))
 	}
 	return b
 }
@@ -256,10 +245,7 @@ func (b *_AlarmMessageObjectQueryTypeBuilder) WithValueComingBuilder(builderSupp
 	var err error
 	b.ValueComing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "AssociatedValueTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AssociatedValueTypeBuilder failed"))
 	}
 	return b
 }
@@ -274,10 +260,7 @@ func (b *_AlarmMessageObjectQueryTypeBuilder) WithTimeGoingBuilder(builderSuppli
 	var err error
 	b.TimeGoing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DateAndTimeBuilder failed"))
 	}
 	return b
 }
@@ -292,59 +275,35 @@ func (b *_AlarmMessageObjectQueryTypeBuilder) WithValueGoingBuilder(builderSuppl
 	var err error
 	b.ValueGoing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "AssociatedValueTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AssociatedValueTypeBuilder failed"))
 	}
 	return b
 }
 
 func (b *_AlarmMessageObjectQueryTypeBuilder) Build() (AlarmMessageObjectQueryType, error) {
 	if b.EventState == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'eventState' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'eventState' not set"))
 	}
 	if b.AckStateGoing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'ackStateGoing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ackStateGoing' not set"))
 	}
 	if b.AckStateComing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'ackStateComing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ackStateComing' not set"))
 	}
 	if b.TimeComing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeComing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeComing' not set"))
 	}
 	if b.ValueComing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'valueComing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'valueComing' not set"))
 	}
 	if b.TimeGoing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeGoing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeGoing' not set"))
 	}
 	if b.ValueGoing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'valueGoing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'valueGoing' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AlarmMessageObjectQueryType.deepCopy(), nil
 }
@@ -359,8 +318,8 @@ func (b *_AlarmMessageObjectQueryTypeBuilder) MustBuild() AlarmMessageObjectQuer
 
 func (b *_AlarmMessageObjectQueryTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAlarmMessageObjectQueryTypeBuilder().(*_AlarmMessageObjectQueryTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

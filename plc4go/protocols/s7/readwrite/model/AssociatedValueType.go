@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewAssociatedValueTypeBuilder() AssociatedValueTypeBuilder {
 type _AssociatedValueTypeBuilder struct {
 	*_AssociatedValueType
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AssociatedValueTypeBuilder) = (*_AssociatedValueTypeBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_AssociatedValueTypeBuilder) WithData(data ...uint8) AssociatedValueTyp
 }
 
 func (b *_AssociatedValueTypeBuilder) Build() (AssociatedValueType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AssociatedValueType.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_AssociatedValueTypeBuilder) MustBuild() AssociatedValueType {
 
 func (b *_AssociatedValueTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAssociatedValueTypeBuilder().(*_AssociatedValueTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ func NewConfirmationBuilder() ConfirmationBuilder {
 type _ConfirmationBuilder struct {
 	*_Confirmation
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ConfirmationBuilder) = (*_ConfirmationBuilder)(nil)
@@ -123,10 +124,7 @@ func (b *_ConfirmationBuilder) WithAlphaBuilder(builderSupplier func(AlphaBuilde
 	var err error
 	b.Alpha, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AlphaBuilder failed"))
 	}
 	return b
 }
@@ -141,10 +139,7 @@ func (b *_ConfirmationBuilder) WithOptionalSecondAlphaBuilder(builderSupplier fu
 	var err error
 	b.SecondAlpha, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AlphaBuilder failed"))
 	}
 	return b
 }
@@ -156,13 +151,10 @@ func (b *_ConfirmationBuilder) WithConfirmationType(confirmationType Confirmatio
 
 func (b *_ConfirmationBuilder) Build() (Confirmation, error) {
 	if b.Alpha == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'alpha' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'alpha' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Confirmation.deepCopy(), nil
 }
@@ -177,8 +169,8 @@ func (b *_ConfirmationBuilder) MustBuild() Confirmation {
 
 func (b *_ConfirmationBuilder) DeepCopy() any {
 	_copy := b.CreateConfirmationBuilder().(*_ConfirmationBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

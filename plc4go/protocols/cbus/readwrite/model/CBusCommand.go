@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -145,7 +146,7 @@ type _CBusCommandBuilder struct {
 
 	childBuilder _CBusCommandChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CBusCommandBuilder) = (*_CBusCommandBuilder)(nil)
@@ -164,10 +165,7 @@ func (b *_CBusCommandBuilder) WithHeaderBuilder(builderSupplier func(CBusHeaderB
 	var err error
 	b.Header, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "CBusHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CBusHeaderBuilder failed"))
 	}
 	return b
 }
@@ -179,13 +177,10 @@ func (b *_CBusCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusCo
 
 func (b *_CBusCommandBuilder) PartialBuild() (CBusCommandContract, error) {
 	if b.Header == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'header' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusCommand.deepCopy(), nil
 }
@@ -262,8 +257,8 @@ func (b *_CBusCommandBuilder) DeepCopy() any {
 	_copy := b.CreateCBusCommandBuilder().(*_CBusCommandBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_CBusCommandChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

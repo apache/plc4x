@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _BACnetConstructedDataDatetimepatternValueAllBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataDatetimepatternValueAllBuilder) = (*_BACnetConstructedDataDatetimepatternValueAllBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_BACnetConstructedDataDatetimepatternValueAllBuilder) WithMandatoryFiel
 }
 
 func (b *_BACnetConstructedDataDatetimepatternValueAllBuilder) Build() (BACnetConstructedDataDatetimepatternValueAll, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataDatetimepatternValueAll.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_BACnetConstructedDataDatetimepatternValueAllBuilder) buildForBACnetCon
 
 func (b *_BACnetConstructedDataDatetimepatternValueAllBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataDatetimepatternValueAllBuilder().(*_BACnetConstructedDataDatetimepatternValueAllBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

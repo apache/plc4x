@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _BACnetConstructedDataTrendLogMultipleAllBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataTrendLogMultipleAllBuilder) = (*_BACnetConstructedDataTrendLogMultipleAllBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) WithMandatoryFields()
 }
 
 func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) Build() (BACnetConstructedDataTrendLogMultipleAll, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTrendLogMultipleAll.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) buildForBACnetConstru
 
 func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataTrendLogMultipleAllBuilder().(*_BACnetConstructedDataTrendLogMultipleAllBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

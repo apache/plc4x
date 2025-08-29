@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _CALDataAcknowledgeBuilder struct {
 
 	parentBuilder *_CALDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CALDataAcknowledgeBuilder) = (*_CALDataAcknowledgeBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_CALDataAcknowledgeBuilder) WithCode(code uint8) CALDataAcknowledgeBuil
 }
 
 func (b *_CALDataAcknowledgeBuilder) Build() (CALDataAcknowledge, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CALDataAcknowledge.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_CALDataAcknowledgeBuilder) buildForCALData() (CALData, error) {
 
 func (b *_CALDataAcknowledgeBuilder) DeepCopy() any {
 	_copy := b.CreateCALDataAcknowledgeBuilder().(*_CALDataAcknowledgeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

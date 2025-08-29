@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ type _OpenSecureChannelResponseBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (OpenSecureChannelResponseBuilder) = (*_OpenSecureChannelResponseBuilder)(nil)
@@ -154,10 +155,7 @@ func (b *_OpenSecureChannelResponseBuilder) WithResponseHeaderBuilder(builderSup
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -177,10 +175,7 @@ func (b *_OpenSecureChannelResponseBuilder) WithSecurityTokenBuilder(builderSupp
 	var err error
 	b.SecurityToken, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ChannelSecurityTokenBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ChannelSecurityTokenBuilder failed"))
 	}
 	return b
 }
@@ -195,35 +190,23 @@ func (b *_OpenSecureChannelResponseBuilder) WithServerNonceBuilder(builderSuppli
 	var err error
 	b.ServerNonce, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_OpenSecureChannelResponseBuilder) Build() (OpenSecureChannelResponse, error) {
 	if b.ResponseHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'responseHeader' not set"))
 	}
 	if b.SecurityToken == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securityToken' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityToken' not set"))
 	}
 	if b.ServerNonce == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serverNonce' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serverNonce' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpenSecureChannelResponse.deepCopy(), nil
 }
@@ -249,8 +232,8 @@ func (b *_OpenSecureChannelResponseBuilder) buildForExtensionObjectDefinition() 
 
 func (b *_OpenSecureChannelResponseBuilder) DeepCopy() any {
 	_copy := b.CreateOpenSecureChannelResponseBuilder().(*_OpenSecureChannelResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

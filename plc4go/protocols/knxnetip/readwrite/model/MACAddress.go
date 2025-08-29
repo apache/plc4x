@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewMACAddressBuilder() MACAddressBuilder {
 type _MACAddressBuilder struct {
 	*_MACAddress
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MACAddressBuilder) = (*_MACAddressBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_MACAddressBuilder) WithAddr(addr ...byte) MACAddressBuilder {
 }
 
 func (b *_MACAddressBuilder) Build() (MACAddress, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MACAddress.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_MACAddressBuilder) MustBuild() MACAddress {
 
 func (b *_MACAddressBuilder) DeepCopy() any {
 	_copy := b.CreateMACAddressBuilder().(*_MACAddressBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

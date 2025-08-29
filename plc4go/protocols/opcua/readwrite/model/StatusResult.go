@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _StatusResultBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (StatusResultBuilder) = (*_StatusResultBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_StatusResultBuilder) WithStatusCodeBuilder(builderSupplier func(Status
 	var err error
 	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_StatusResultBuilder) WithDiagnosticInfoBuilder(builderSupplier func(Di
 	var err error
 	b.DiagnosticInfo, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DiagnosticInfoBuilder failed"))
 	}
 	return b
 }
 
 func (b *_StatusResultBuilder) Build() (StatusResult, error) {
 	if b.StatusCode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'statusCode' not set"))
 	}
 	if b.DiagnosticInfo == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'diagnosticInfo' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'diagnosticInfo' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._StatusResult.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_StatusResultBuilder) buildForExtensionObjectDefinition() (ExtensionObj
 
 func (b *_StatusResultBuilder) DeepCopy() any {
 	_copy := b.CreateStatusResultBuilder().(*_StatusResultBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

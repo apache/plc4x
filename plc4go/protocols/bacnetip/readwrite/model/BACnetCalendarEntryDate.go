@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetCalendarEntryDateBuilder struct {
 
 	parentBuilder *_BACnetCalendarEntryBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetCalendarEntryDateBuilder) = (*_BACnetCalendarEntryDateBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetCalendarEntryDateBuilder) WithDateValueBuilder(builderSupplier f
 	var err error
 	b.DateValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagDateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagDateBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetCalendarEntryDateBuilder) Build() (BACnetCalendarEntryDate, error) {
 	if b.DateValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dateValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dateValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetCalendarEntryDate.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetCalendarEntryDateBuilder) buildForBACnetCalendarEntry() (BACnetC
 
 func (b *_BACnetCalendarEntryDateBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetCalendarEntryDateBuilder().(*_BACnetCalendarEntryDateBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

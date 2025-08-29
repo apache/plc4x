@@ -79,6 +79,10 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
      */
     public void removeCachedConnection(String url) {
         synchronized (connectionContainers) {
+            // Make sure the connection is closed before removing it.
+            if(connectionContainers.containsKey(url)) {
+                connectionContainers.get(url).close();
+            }
             connectionContainers.remove(url);
         }
     }

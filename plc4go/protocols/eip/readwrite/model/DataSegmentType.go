@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -116,7 +117,7 @@ type _DataSegmentTypeBuilder struct {
 
 	childBuilder _DataSegmentTypeChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DataSegmentTypeBuilder) = (*_DataSegmentTypeBuilder)(nil)
@@ -126,8 +127,8 @@ func (b *_DataSegmentTypeBuilder) WithMandatoryFields() DataSegmentTypeBuilder {
 }
 
 func (b *_DataSegmentTypeBuilder) PartialBuild() (DataSegmentTypeContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DataSegmentType.deepCopy(), nil
 }
@@ -174,8 +175,8 @@ func (b *_DataSegmentTypeBuilder) DeepCopy() any {
 	_copy := b.CreateDataSegmentTypeBuilder().(*_DataSegmentTypeBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_DataSegmentTypeChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

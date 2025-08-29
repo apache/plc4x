@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -127,7 +128,7 @@ type _RelativePathElementBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RelativePathElementBuilder) = (*_RelativePathElementBuilder)(nil)
@@ -151,10 +152,7 @@ func (b *_RelativePathElementBuilder) WithReferenceTypeIdBuilder(builderSupplier
 	var err error
 	b.ReferenceTypeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -179,29 +177,20 @@ func (b *_RelativePathElementBuilder) WithTargetNameBuilder(builderSupplier func
 	var err error
 	b.TargetName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
 	return b
 }
 
 func (b *_RelativePathElementBuilder) Build() (RelativePathElement, error) {
 	if b.ReferenceTypeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'referenceTypeId' not set"))
 	}
 	if b.TargetName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'targetName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'targetName' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RelativePathElement.deepCopy(), nil
 }
@@ -227,8 +216,8 @@ func (b *_RelativePathElementBuilder) buildForExtensionObjectDefinition() (Exten
 
 func (b *_RelativePathElementBuilder) DeepCopy() any {
 	_copy := b.CreateRelativePathElementBuilder().(*_RelativePathElementBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

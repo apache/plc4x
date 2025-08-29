@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -120,7 +121,7 @@ type _DF1SymbolMessageFrameBuilder struct {
 
 	parentBuilder *_DF1SymbolBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DF1SymbolMessageFrameBuilder) = (*_DF1SymbolMessageFrameBuilder)(nil)
@@ -154,23 +155,17 @@ func (b *_DF1SymbolMessageFrameBuilder) WithCommandBuilder(builderSupplier func(
 	var err error
 	b.Command, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DF1CommandBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DF1CommandBuilder failed"))
 	}
 	return b
 }
 
 func (b *_DF1SymbolMessageFrameBuilder) Build() (DF1SymbolMessageFrame, error) {
 	if b.Command == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'command' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'command' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DF1SymbolMessageFrame.deepCopy(), nil
 }
@@ -196,8 +191,8 @@ func (b *_DF1SymbolMessageFrameBuilder) buildForDF1Symbol() (DF1Symbol, error) {
 
 func (b *_DF1SymbolMessageFrameBuilder) DeepCopy() any {
 	_copy := b.CreateDF1SymbolMessageFrameBuilder().(*_DF1SymbolMessageFrameBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

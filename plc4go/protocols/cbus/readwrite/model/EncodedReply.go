@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -137,7 +138,7 @@ type _EncodedReplyBuilder struct {
 
 	childBuilder _EncodedReplyChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EncodedReplyBuilder) = (*_EncodedReplyBuilder)(nil)
@@ -161,8 +162,8 @@ func (b *_EncodedReplyBuilder) WithArgRequestContext(requestContext RequestConte
 }
 
 func (b *_EncodedReplyBuilder) PartialBuild() (EncodedReplyContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EncodedReply.deepCopy(), nil
 }
@@ -219,8 +220,8 @@ func (b *_EncodedReplyBuilder) DeepCopy() any {
 	_copy := b.CreateEncodedReplyBuilder().(*_EncodedReplyBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_EncodedReplyChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataLightingOutputTrackingValueBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataLightingOutputTrackingValueBuilder) = (*_BACnetConstructedDataLightingOutputTrackingValueBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataLightingOutputTrackingValueBuilder) WithTrackingV
 	var err error
 	b.TrackingValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataLightingOutputTrackingValueBuilder) Build() (BACnetConstructedDataLightingOutputTrackingValue, error) {
 	if b.TrackingValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'trackingValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'trackingValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLightingOutputTrackingValue.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataLightingOutputTrackingValueBuilder) buildForBACne
 
 func (b *_BACnetConstructedDataLightingOutputTrackingValueBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataLightingOutputTrackingValueBuilder().(*_BACnetConstructedDataLightingOutputTrackingValueBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

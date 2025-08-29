@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ type _EipConnectionRequestBuilder struct {
 
 	parentBuilder *_EipPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EipConnectionRequestBuilder) = (*_EipConnectionRequestBuilder)(nil)
@@ -110,8 +111,8 @@ func (b *_EipConnectionRequestBuilder) WithMandatoryFields() EipConnectionReques
 }
 
 func (b *_EipConnectionRequestBuilder) Build() (EipConnectionRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EipConnectionRequest.deepCopy(), nil
 }
@@ -137,8 +138,8 @@ func (b *_EipConnectionRequestBuilder) buildForEipPacket() (EipPacket, error) {
 
 func (b *_EipConnectionRequestBuilder) DeepCopy() any {
 	_copy := b.CreateEipConnectionRequestBuilder().(*_EipConnectionRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

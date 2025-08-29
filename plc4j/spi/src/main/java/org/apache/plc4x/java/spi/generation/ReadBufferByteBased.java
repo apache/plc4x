@@ -144,7 +144,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned byte must contain at least 1 bit");
         }
         if (bitLength > 7) {
-            throw new ParseException("unsigned byte can only contain max 4 bits");
+            throw new ParseException("unsigned byte can only contain max 7 bits");
         }
         try {
             String encoding = extractEncoding(readerArgs).orElse("default");
@@ -177,7 +177,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned short must contain at least 1 bit");
         }
         if (bitLength > 15) {
-            throw new ParseException("unsigned short can only contain max 8 bits");
+            throw new ParseException("unsigned short can only contain max 15 bits");
         }
         try {
             String encoding = extractEncoding(readerArgs).orElse("default");
@@ -228,7 +228,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned int must contain at least 1 bit");
         }
         if (bitLength > 31) {
-            throw new ParseException("unsigned int can only contain max 16 bits");
+            throw new ParseException("unsigned int can only contain max 31 bits");
         }
         try {
             String encoding = extractEncoding(readerArgs).orElse("default");
@@ -282,7 +282,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
         if (bitLength > 63) {
-            throw new ParseException("unsigned long can only contain max 32 bits");
+            throw new ParseException("unsigned long can only contain max 63 bits");
         }
         try {
             String encoding = extractEncoding(readerArgs).orElse("default");

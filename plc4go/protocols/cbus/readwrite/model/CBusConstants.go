@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -83,7 +84,7 @@ func NewCBusConstantsBuilder() CBusConstantsBuilder {
 type _CBusConstantsBuilder struct {
 	*_CBusConstants
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CBusConstantsBuilder) = (*_CBusConstantsBuilder)(nil)
@@ -93,8 +94,8 @@ func (b *_CBusConstantsBuilder) WithMandatoryFields() CBusConstantsBuilder {
 }
 
 func (b *_CBusConstantsBuilder) Build() (CBusConstants, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusConstants.deepCopy(), nil
 }
@@ -109,8 +110,8 @@ func (b *_CBusConstantsBuilder) MustBuild() CBusConstants {
 
 func (b *_CBusConstantsBuilder) DeepCopy() any {
 	_copy := b.CreateCBusConstantsBuilder().(*_CBusConstantsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

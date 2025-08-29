@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -169,7 +170,7 @@ type _UserTokenSettingsDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (UserTokenSettingsDataTypeBuilder) = (*_UserTokenSettingsDataTypeBuilder)(nil)
@@ -193,10 +194,7 @@ func (b *_UserTokenSettingsDataTypeBuilder) WithNameBuilder(builderSupplier func
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -221,10 +219,7 @@ func (b *_UserTokenSettingsDataTypeBuilder) WithIssuedTokenTypeBuilder(builderSu
 	var err error
 	b.IssuedTokenType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -239,10 +234,7 @@ func (b *_UserTokenSettingsDataTypeBuilder) WithIssuerEndpointUrlBuilder(builder
 	var err error
 	b.IssuerEndpointUrl, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -257,10 +249,7 @@ func (b *_UserTokenSettingsDataTypeBuilder) WithSecurityPolicyUriBuilder(builder
 	var err error
 	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -275,10 +264,7 @@ func (b *_UserTokenSettingsDataTypeBuilder) WithCertificateGroupNameBuilder(buil
 	var err error
 	b.CertificateGroupName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -293,53 +279,32 @@ func (b *_UserTokenSettingsDataTypeBuilder) WithAuthorizationServiceNameBuilder(
 	var err error
 	b.AuthorizationServiceName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_UserTokenSettingsDataTypeBuilder) Build() (UserTokenSettingsDataType, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.IssuedTokenType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'issuedTokenType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'issuedTokenType' not set"))
 	}
 	if b.IssuerEndpointUrl == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'issuerEndpointUrl' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'issuerEndpointUrl' not set"))
 	}
 	if b.SecurityPolicyUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityPolicyUri' not set"))
 	}
 	if b.CertificateGroupName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'certificateGroupName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'certificateGroupName' not set"))
 	}
 	if b.AuthorizationServiceName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'authorizationServiceName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'authorizationServiceName' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._UserTokenSettingsDataType.deepCopy(), nil
 }
@@ -365,8 +330,8 @@ func (b *_UserTokenSettingsDataTypeBuilder) buildForExtensionObjectDefinition() 
 
 func (b *_UserTokenSettingsDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateUserTokenSettingsDataTypeBuilder().(*_UserTokenSettingsDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

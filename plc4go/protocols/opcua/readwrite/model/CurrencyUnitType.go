@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ type _CurrencyUnitTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CurrencyUnitTypeBuilder) = (*_CurrencyUnitTypeBuilder)(nil)
@@ -159,10 +160,7 @@ func (b *_CurrencyUnitTypeBuilder) WithAlphabeticCodeBuilder(builderSupplier fun
 	var err error
 	b.AlphabeticCode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -177,29 +175,20 @@ func (b *_CurrencyUnitTypeBuilder) WithCurrencyBuilder(builderSupplier func(Loca
 	var err error
 	b.Currency, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
 	return b
 }
 
 func (b *_CurrencyUnitTypeBuilder) Build() (CurrencyUnitType, error) {
 	if b.AlphabeticCode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'alphabeticCode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'alphabeticCode' not set"))
 	}
 	if b.Currency == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'currency' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'currency' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CurrencyUnitType.deepCopy(), nil
 }
@@ -225,8 +214,8 @@ func (b *_CurrencyUnitTypeBuilder) buildForExtensionObjectDefinition() (Extensio
 
 func (b *_CurrencyUnitTypeBuilder) DeepCopy() any {
 	_copy := b.CreateCurrencyUnitTypeBuilder().(*_CurrencyUnitTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _RangeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RangeBuilder) = (*_RangeBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_RangeBuilder) WithHigh(high float64) RangeBuilder {
 }
 
 func (b *_RangeBuilder) Build() (Range, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Range.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_RangeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefi
 
 func (b *_RangeBuilder) DeepCopy() any {
 	_copy := b.CreateRangeBuilder().(*_RangeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

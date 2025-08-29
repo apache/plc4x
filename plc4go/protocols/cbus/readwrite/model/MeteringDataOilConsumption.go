@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _MeteringDataOilConsumptionBuilder struct {
 
 	parentBuilder *_MeteringDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MeteringDataOilConsumptionBuilder) = (*_MeteringDataOilConsumptionBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_MeteringDataOilConsumptionBuilder) WithL(L uint32) MeteringDataOilCons
 }
 
 func (b *_MeteringDataOilConsumptionBuilder) Build() (MeteringDataOilConsumption, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MeteringDataOilConsumption.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_MeteringDataOilConsumptionBuilder) buildForMeteringData() (MeteringDat
 
 func (b *_MeteringDataOilConsumptionBuilder) DeepCopy() any {
 	_copy := b.CreateMeteringDataOilConsumptionBuilder().(*_MeteringDataOilConsumptionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ type _StatusRequestBuilder struct {
 
 	childBuilder _StatusRequestChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (StatusRequestBuilder) = (*_StatusRequestBuilder)(nil)
@@ -140,8 +141,8 @@ func (b *_StatusRequestBuilder) WithStatusType(statusType byte) StatusRequestBui
 }
 
 func (b *_StatusRequestBuilder) PartialBuild() (StatusRequestContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._StatusRequest.deepCopy(), nil
 }
@@ -208,8 +209,8 @@ func (b *_StatusRequestBuilder) DeepCopy() any {
 	_copy := b.CreateStatusRequestBuilder().(*_StatusRequestBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_StatusRequestChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

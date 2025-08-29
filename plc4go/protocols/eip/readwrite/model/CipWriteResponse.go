@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -105,7 +106,7 @@ type _CipWriteResponseBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CipWriteResponseBuilder) = (*_CipWriteResponseBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_CipWriteResponseBuilder) WithExtStatus(extStatus uint8) CipWriteRespon
 }
 
 func (b *_CipWriteResponseBuilder) Build() (CipWriteResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipWriteResponse.deepCopy(), nil
 }
@@ -157,8 +158,8 @@ func (b *_CipWriteResponseBuilder) buildForCipService() (CipService, error) {
 
 func (b *_CipWriteResponseBuilder) DeepCopy() any {
 	_copy := b.CreateCipWriteResponseBuilder().(*_CipWriteResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

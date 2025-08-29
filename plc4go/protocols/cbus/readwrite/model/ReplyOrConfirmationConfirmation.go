@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ type _ReplyOrConfirmationConfirmationBuilder struct {
 
 	parentBuilder *_ReplyOrConfirmationBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ReplyOrConfirmationConfirmationBuilder) = (*_ReplyOrConfirmationConfirmationBuilder)(nil)
@@ -134,10 +135,7 @@ func (b *_ReplyOrConfirmationConfirmationBuilder) WithConfirmationBuilder(builde
 	var err error
 	b.Confirmation, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ConfirmationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ConfirmationBuilder failed"))
 	}
 	return b
 }
@@ -152,23 +150,17 @@ func (b *_ReplyOrConfirmationConfirmationBuilder) WithOptionalEmbeddedReplyBuild
 	var err error
 	b.EmbeddedReply, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ReplyOrConfirmationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ReplyOrConfirmationBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ReplyOrConfirmationConfirmationBuilder) Build() (ReplyOrConfirmationConfirmation, error) {
 	if b.Confirmation == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'confirmation' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'confirmation' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ReplyOrConfirmationConfirmation.deepCopy(), nil
 }
@@ -194,8 +186,8 @@ func (b *_ReplyOrConfirmationConfirmationBuilder) buildForReplyOrConfirmation() 
 
 func (b *_ReplyOrConfirmationConfirmationBuilder) DeepCopy() any {
 	_copy := b.CreateReplyOrConfirmationConfirmationBuilder().(*_ReplyOrConfirmationConfirmationBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -94,7 +95,7 @@ func NewBACnetVMACEntryBuilder() BACnetVMACEntryBuilder {
 type _BACnetVMACEntryBuilder struct {
 	*_BACnetVMACEntry
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetVMACEntryBuilder) = (*_BACnetVMACEntryBuilder)(nil)
@@ -113,10 +114,7 @@ func (b *_BACnetVMACEntryBuilder) WithOptionalVirtualMacAddressBuilder(builderSu
 	var err error
 	b.VirtualMacAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
 	}
 	return b
 }
@@ -131,17 +129,14 @@ func (b *_BACnetVMACEntryBuilder) WithOptionalNativeMacAddressBuilder(builderSup
 	var err error
 	b.NativeMacAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetVMACEntryBuilder) Build() (BACnetVMACEntry, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetVMACEntry.deepCopy(), nil
 }
@@ -156,8 +151,8 @@ func (b *_BACnetVMACEntryBuilder) MustBuild() BACnetVMACEntry {
 
 func (b *_BACnetVMACEntryBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetVMACEntryBuilder().(*_BACnetVMACEntryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

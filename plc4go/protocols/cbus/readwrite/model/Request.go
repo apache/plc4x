@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -167,7 +168,7 @@ type _RequestBuilder struct {
 
 	childBuilder _RequestChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RequestBuilder) = (*_RequestBuilder)(nil)
@@ -206,10 +207,7 @@ func (b *_RequestBuilder) WithTerminationBuilder(builderSupplier func(RequestTer
 	var err error
 	b.Termination, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "RequestTerminationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RequestTerminationBuilder failed"))
 	}
 	return b
 }
@@ -221,13 +219,10 @@ func (b *_RequestBuilder) WithArgCBusOptions(cBusOptions CBusOptions) RequestBui
 
 func (b *_RequestBuilder) PartialBuild() (RequestContract, error) {
 	if b.Termination == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'termination' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'termination' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Request.deepCopy(), nil
 }
@@ -334,8 +329,8 @@ func (b *_RequestBuilder) DeepCopy() any {
 	_copy := b.CreateRequestBuilder().(*_RequestBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_RequestChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

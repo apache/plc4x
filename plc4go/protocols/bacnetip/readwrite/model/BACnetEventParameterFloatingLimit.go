@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -168,7 +169,7 @@ type _BACnetEventParameterFloatingLimitBuilder struct {
 
 	parentBuilder *_BACnetEventParameterBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetEventParameterFloatingLimitBuilder) = (*_BACnetEventParameterFloatingLimitBuilder)(nil)
@@ -192,10 +193,7 @@ func (b *_BACnetEventParameterFloatingLimitBuilder) WithOpeningTagBuilder(builde
 	var err error
 	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -210,10 +208,7 @@ func (b *_BACnetEventParameterFloatingLimitBuilder) WithTimeDelayBuilder(builder
 	var err error
 	b.TimeDelay, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -228,10 +223,7 @@ func (b *_BACnetEventParameterFloatingLimitBuilder) WithSetpointReferenceBuilder
 	var err error
 	b.SetpointReference, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -246,10 +238,7 @@ func (b *_BACnetEventParameterFloatingLimitBuilder) WithLowDiffLimitBuilder(buil
 	var err error
 	b.LowDiffLimit, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
 	return b
 }
@@ -264,10 +253,7 @@ func (b *_BACnetEventParameterFloatingLimitBuilder) WithHighDiffLimitBuilder(bui
 	var err error
 	b.HighDiffLimit, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
 	return b
 }
@@ -282,10 +268,7 @@ func (b *_BACnetEventParameterFloatingLimitBuilder) WithDeadbandBuilder(builderS
 	var err error
 	b.Deadband, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
 	return b
 }
@@ -300,59 +283,35 @@ func (b *_BACnetEventParameterFloatingLimitBuilder) WithClosingTagBuilder(builde
 	var err error
 	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetEventParameterFloatingLimitBuilder) Build() (BACnetEventParameterFloatingLimit, error) {
 	if b.OpeningTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'openingTag' not set"))
 	}
 	if b.TimeDelay == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timeDelay' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeDelay' not set"))
 	}
 	if b.SetpointReference == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'setpointReference' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'setpointReference' not set"))
 	}
 	if b.LowDiffLimit == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lowDiffLimit' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lowDiffLimit' not set"))
 	}
 	if b.HighDiffLimit == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'highDiffLimit' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'highDiffLimit' not set"))
 	}
 	if b.Deadband == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deadband' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deadband' not set"))
 	}
 	if b.ClosingTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetEventParameterFloatingLimit.deepCopy(), nil
 }
@@ -378,8 +337,8 @@ func (b *_BACnetEventParameterFloatingLimitBuilder) buildForBACnetEventParameter
 
 func (b *_BACnetEventParameterFloatingLimitBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetEventParameterFloatingLimitBuilder().(*_BACnetEventParameterFloatingLimitBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

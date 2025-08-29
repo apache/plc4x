@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -114,7 +115,7 @@ type _PublishedActionMethodDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PublishedActionMethodDataTypeBuilder) = (*_PublishedActionMethodDataTypeBuilder)(nil)
@@ -138,10 +139,7 @@ func (b *_PublishedActionMethodDataTypeBuilder) WithRequestDataSetMetaDataBuilde
 	var err error
 	b.RequestDataSetMetaData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DataSetMetaDataTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DataSetMetaDataTypeBuilder failed"))
 	}
 	return b
 }
@@ -158,13 +156,10 @@ func (b *_PublishedActionMethodDataTypeBuilder) WithActionMethods(actionMethods 
 
 func (b *_PublishedActionMethodDataTypeBuilder) Build() (PublishedActionMethodDataType, error) {
 	if b.RequestDataSetMetaData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'requestDataSetMetaData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'requestDataSetMetaData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PublishedActionMethodDataType.deepCopy(), nil
 }
@@ -190,8 +185,8 @@ func (b *_PublishedActionMethodDataTypeBuilder) buildForExtensionObjectDefinitio
 
 func (b *_PublishedActionMethodDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreatePublishedActionMethodDataTypeBuilder().(*_PublishedActionMethodDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

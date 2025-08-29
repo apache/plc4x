@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesLifeSafetyModeBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesLifeSafetyModeBuilder) = (*_BACnetPropertyStatesLifeSafetyModeBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesLifeSafetyModeBuilder) WithLifeSafetyModeBuilder(b
 	var err error
 	b.LifeSafetyMode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyModeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLifeSafetyModeTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesLifeSafetyModeBuilder) Build() (BACnetPropertyStatesLifeSafetyMode, error) {
 	if b.LifeSafetyMode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lifeSafetyMode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lifeSafetyMode' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesLifeSafetyMode.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesLifeSafetyModeBuilder) buildForBACnetPropertyState
 
 func (b *_BACnetPropertyStatesLifeSafetyModeBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesLifeSafetyModeBuilder().(*_BACnetPropertyStatesLifeSafetyModeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -169,7 +170,7 @@ type _CipConnectionManagerCloseRequestBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CipConnectionManagerCloseRequestBuilder) = (*_CipConnectionManagerCloseRequestBuilder)(nil)
@@ -198,10 +199,7 @@ func (b *_CipConnectionManagerCloseRequestBuilder) WithClassSegmentBuilder(build
 	var err error
 	b.ClassSegment, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PathSegmentBuilder failed"))
 	}
 	return b
 }
@@ -216,10 +214,7 @@ func (b *_CipConnectionManagerCloseRequestBuilder) WithInstanceSegmentBuilder(bu
 	var err error
 	b.InstanceSegment, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PathSegmentBuilder failed"))
 	}
 	return b
 }
@@ -266,19 +261,13 @@ func (b *_CipConnectionManagerCloseRequestBuilder) WithConnectionPaths(connectio
 
 func (b *_CipConnectionManagerCloseRequestBuilder) Build() (CipConnectionManagerCloseRequest, error) {
 	if b.ClassSegment == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'classSegment' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'classSegment' not set"))
 	}
 	if b.InstanceSegment == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'instanceSegment' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipConnectionManagerCloseRequest.deepCopy(), nil
 }
@@ -304,8 +293,8 @@ func (b *_CipConnectionManagerCloseRequestBuilder) buildForCipService() (CipServ
 
 func (b *_CipConnectionManagerCloseRequestBuilder) DeepCopy() any {
 	_copy := b.CreateCipConnectionManagerCloseRequestBuilder().(*_CipConnectionManagerCloseRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

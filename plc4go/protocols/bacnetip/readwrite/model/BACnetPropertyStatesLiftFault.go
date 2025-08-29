@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesLiftFaultBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesLiftFaultBuilder) = (*_BACnetPropertyStatesLiftFaultBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesLiftFaultBuilder) WithLiftFaultBuilder(builderSupp
 	var err error
 	b.LiftFault, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLiftFaultTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLiftFaultTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesLiftFaultBuilder) Build() (BACnetPropertyStatesLiftFault, error) {
 	if b.LiftFault == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'liftFault' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'liftFault' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesLiftFault.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesLiftFaultBuilder) buildForBACnetPropertyStates() (
 
 func (b *_BACnetPropertyStatesLiftFaultBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesLiftFaultBuilder().(*_BACnetPropertyStatesLiftFaultBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

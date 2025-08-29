@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _ApduControlContainerBuilder struct {
 
 	parentBuilder *_ApduBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduControlContainerBuilder) = (*_ApduControlContainerBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_ApduControlContainerBuilder) WithControlApduBuilder(builderSupplier fu
 	var err error
 	b.ControlApdu, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ApduControlBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ApduControlBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ApduControlContainerBuilder) Build() (ApduControlContainer, error) {
 	if b.ControlApdu == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'controlApdu' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'controlApdu' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduControlContainer.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_ApduControlContainerBuilder) buildForApdu() (Apdu, error) {
 
 func (b *_ApduControlContainerBuilder) DeepCopy() any {
 	_copy := b.CreateApduControlContainerBuilder().(*_ApduControlContainerBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

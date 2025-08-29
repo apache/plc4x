@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _SysexCommandAnalogMappingResponseBuilder struct {
 
 	parentBuilder *_SysexCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SysexCommandAnalogMappingResponseBuilder) = (*_SysexCommandAnalogMappingResponseBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_SysexCommandAnalogMappingResponseBuilder) WithMandatoryFields() SysexC
 }
 
 func (b *_SysexCommandAnalogMappingResponseBuilder) Build() (SysexCommandAnalogMappingResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SysexCommandAnalogMappingResponse.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_SysexCommandAnalogMappingResponseBuilder) buildForSysexCommand() (Syse
 
 func (b *_SysexCommandAnalogMappingResponseBuilder) DeepCopy() any {
 	_copy := b.CreateSysexCommandAnalogMappingResponseBuilder().(*_SysexCommandAnalogMappingResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBui
 
 	parentBuilder *_BACnetEventParameterChangeOfValueCivCriteriaBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) = (*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 	var err error
 	b.ReferencedPropertyIncrement, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) Build() (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement, error) {
 	if b.ReferencedPropertyIncrement == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'referencedPropertyIncrement' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'referencedPropertyIncrement' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 
 func (b *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder().(*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

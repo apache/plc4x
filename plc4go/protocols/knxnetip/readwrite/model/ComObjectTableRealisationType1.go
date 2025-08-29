@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -109,7 +110,7 @@ type _ComObjectTableRealisationType1Builder struct {
 
 	parentBuilder *_ComObjectTableBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ComObjectTableRealisationType1Builder) = (*_ComObjectTableRealisationType1Builder)(nil)
@@ -139,8 +140,8 @@ func (b *_ComObjectTableRealisationType1Builder) WithComObjectDescriptors(comObj
 }
 
 func (b *_ComObjectTableRealisationType1Builder) Build() (ComObjectTableRealisationType1, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ComObjectTableRealisationType1.deepCopy(), nil
 }
@@ -166,8 +167,8 @@ func (b *_ComObjectTableRealisationType1Builder) buildForComObjectTable() (ComOb
 
 func (b *_ComObjectTableRealisationType1Builder) DeepCopy() any {
 	_copy := b.CreateComObjectTableRealisationType1Builder().(*_ComObjectTableRealisationType1Builder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

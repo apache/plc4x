@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -90,7 +91,7 @@ func NewCustomTypesBuilder() CustomTypesBuilder {
 type _CustomTypesBuilder struct {
 	*_CustomTypes
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CustomTypesBuilder) = (*_CustomTypesBuilder)(nil)
@@ -110,8 +111,8 @@ func (b *_CustomTypesBuilder) WithArgNumBytes(numBytes uint8) CustomTypesBuilder
 }
 
 func (b *_CustomTypesBuilder) Build() (CustomTypes, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CustomTypes.deepCopy(), nil
 }
@@ -126,8 +127,8 @@ func (b *_CustomTypesBuilder) MustBuild() CustomTypes {
 
 func (b *_CustomTypesBuilder) DeepCopy() any {
 	_copy := b.CreateCustomTypesBuilder().(*_CustomTypesBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

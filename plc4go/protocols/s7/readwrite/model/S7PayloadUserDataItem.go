@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -203,7 +204,7 @@ type _S7PayloadUserDataItemBuilder struct {
 
 	childBuilder _S7PayloadUserDataItemChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadUserDataItemBuilder) = (*_S7PayloadUserDataItemBuilder)(nil)
@@ -228,8 +229,8 @@ func (b *_S7PayloadUserDataItemBuilder) WithDataLength(dataLength uint16) S7Payl
 }
 
 func (b *_S7PayloadUserDataItemBuilder) PartialBuild() (S7PayloadUserDataItemContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItem.deepCopy(), nil
 }
@@ -606,8 +607,8 @@ func (b *_S7PayloadUserDataItemBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7PayloadUserDataItemChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

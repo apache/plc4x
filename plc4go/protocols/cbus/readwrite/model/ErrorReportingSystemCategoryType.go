@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -124,7 +125,7 @@ type _ErrorReportingSystemCategoryTypeBuilder struct {
 
 	childBuilder _ErrorReportingSystemCategoryTypeChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ErrorReportingSystemCategoryTypeBuilder) = (*_ErrorReportingSystemCategoryTypeBuilder)(nil)
@@ -134,8 +135,8 @@ func (b *_ErrorReportingSystemCategoryTypeBuilder) WithMandatoryFields() ErrorRe
 }
 
 func (b *_ErrorReportingSystemCategoryTypeBuilder) PartialBuild() (ErrorReportingSystemCategoryTypeContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ErrorReportingSystemCategoryType.deepCopy(), nil
 }
@@ -232,8 +233,8 @@ func (b *_ErrorReportingSystemCategoryTypeBuilder) DeepCopy() any {
 	_copy := b.CreateErrorReportingSystemCategoryTypeBuilder().(*_ErrorReportingSystemCategoryTypeBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_ErrorReportingSystemCategoryTypeChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

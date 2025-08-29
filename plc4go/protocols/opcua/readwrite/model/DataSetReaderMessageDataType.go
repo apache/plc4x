@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _DataSetReaderMessageDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DataSetReaderMessageDataTypeBuilder) = (*_DataSetReaderMessageDataTypeBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_DataSetReaderMessageDataTypeBuilder) WithMandatoryFields() DataSetRead
 }
 
 func (b *_DataSetReaderMessageDataTypeBuilder) Build() (DataSetReaderMessageDataType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DataSetReaderMessageDataType.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_DataSetReaderMessageDataTypeBuilder) buildForExtensionObjectDefinition
 
 func (b *_DataSetReaderMessageDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateDataSetReaderMessageDataTypeBuilder().(*_DataSetReaderMessageDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

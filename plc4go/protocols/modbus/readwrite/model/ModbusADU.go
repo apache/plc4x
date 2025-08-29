@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -126,7 +127,7 @@ type _ModbusADUBuilder struct {
 
 	childBuilder _ModbusADUChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ModbusADUBuilder) = (*_ModbusADUBuilder)(nil)
@@ -141,8 +142,8 @@ func (b *_ModbusADUBuilder) WithArgResponse(response bool) ModbusADUBuilder {
 }
 
 func (b *_ModbusADUBuilder) PartialBuild() (ModbusADUContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusADU.deepCopy(), nil
 }
@@ -209,8 +210,8 @@ func (b *_ModbusADUBuilder) DeepCopy() any {
 	_copy := b.CreateModbusADUBuilder().(*_ModbusADUBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_ModbusADUChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

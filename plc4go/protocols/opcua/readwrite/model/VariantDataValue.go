@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _VariantDataValueBuilder struct {
 
 	parentBuilder *_VariantBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (VariantDataValueBuilder) = (*_VariantDataValueBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_VariantDataValueBuilder) WithValue(value ...DataValue) VariantDataValu
 }
 
 func (b *_VariantDataValueBuilder) Build() (VariantDataValue, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantDataValue.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_VariantDataValueBuilder) buildForVariant() (Variant, error) {
 
 func (b *_VariantDataValueBuilder) DeepCopy() any {
 	_copy := b.CreateVariantDataValueBuilder().(*_VariantDataValueBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

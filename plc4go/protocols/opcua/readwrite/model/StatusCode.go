@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewStatusCodeBuilder() StatusCodeBuilder {
 type _StatusCodeBuilder struct {
 	*_StatusCode
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (StatusCodeBuilder) = (*_StatusCodeBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_StatusCodeBuilder) WithStatusCode(statusCode uint32) StatusCodeBuilder
 }
 
 func (b *_StatusCodeBuilder) Build() (StatusCode, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._StatusCode.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_StatusCodeBuilder) MustBuild() StatusCode {
 
 func (b *_StatusCodeBuilder) DeepCopy() any {
 	_copy := b.CreateStatusCodeBuilder().(*_StatusCodeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

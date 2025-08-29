@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -105,7 +106,7 @@ type _ReadAtTimeDetailsBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ReadAtTimeDetailsBuilder) = (*_ReadAtTimeDetailsBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_ReadAtTimeDetailsBuilder) WithUseSimpleBounds(useSimpleBounds bool) Re
 }
 
 func (b *_ReadAtTimeDetailsBuilder) Build() (ReadAtTimeDetails, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ReadAtTimeDetails.deepCopy(), nil
 }
@@ -157,8 +158,8 @@ func (b *_ReadAtTimeDetailsBuilder) buildForExtensionObjectDefinition() (Extensi
 
 func (b *_ReadAtTimeDetailsBuilder) DeepCopy() any {
 	_copy := b.CreateReadAtTimeDetailsBuilder().(*_ReadAtTimeDetailsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ func NewBACnetFaultParameterFaultExtendedParametersBuilder() BACnetFaultParamete
 type _BACnetFaultParameterFaultExtendedParametersBuilder struct {
 	*_BACnetFaultParameterFaultExtendedParameters
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersBuilder) = (*_BACnetFaultParameterFaultExtendedParametersBuilder)(nil)
@@ -129,10 +130,7 @@ func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithOpeningTagBuil
 	var err error
 	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -152,10 +150,7 @@ func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithClosingTagBuil
 	var err error
 	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
@@ -167,19 +162,13 @@ func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithArgTagNumber(t
 
 func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) Build() (BACnetFaultParameterFaultExtendedParameters, error) {
 	if b.OpeningTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'openingTag' not set"))
 	}
 	if b.ClosingTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetFaultParameterFaultExtendedParameters.deepCopy(), nil
 }
@@ -194,8 +183,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) MustBuild() BACnet
 
 func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersBuilder().(*_BACnetFaultParameterFaultExtendedParametersBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -148,7 +149,7 @@ type _MeteringDataBuilder struct {
 
 	childBuilder _MeteringDataChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MeteringDataBuilder) = (*_MeteringDataBuilder)(nil)
@@ -168,8 +169,8 @@ func (b *_MeteringDataBuilder) WithArgument(argument byte) MeteringDataBuilder {
 }
 
 func (b *_MeteringDataBuilder) PartialBuild() (MeteringDataContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MeteringData.deepCopy(), nil
 }
@@ -306,8 +307,8 @@ func (b *_MeteringDataBuilder) DeepCopy() any {
 	_copy := b.CreateMeteringDataBuilder().(*_MeteringDataBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_MeteringDataChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

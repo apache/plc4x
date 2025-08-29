@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _ErrorReportingSystemCategoryTypeReservedBuilder struct {
 
 	parentBuilder *_ErrorReportingSystemCategoryTypeBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ErrorReportingSystemCategoryTypeReservedBuilder) = (*_ErrorReportingSystemCategoryTypeReservedBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) WithReservedValue(res
 }
 
 func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) Build() (ErrorReportingSystemCategoryTypeReserved, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ErrorReportingSystemCategoryTypeReserved.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) buildForErrorReportin
 
 func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) DeepCopy() any {
 	_copy := b.CreateErrorReportingSystemCategoryTypeReservedBuilder().(*_ErrorReportingSystemCategoryTypeReservedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

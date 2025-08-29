@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _ReceiveQosDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ReceiveQosDataTypeBuilder) = (*_ReceiveQosDataTypeBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_ReceiveQosDataTypeBuilder) WithMandatoryFields() ReceiveQosDataTypeBui
 }
 
 func (b *_ReceiveQosDataTypeBuilder) Build() (ReceiveQosDataType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ReceiveQosDataType.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_ReceiveQosDataTypeBuilder) buildForExtensionObjectDefinition() (Extens
 
 func (b *_ReceiveQosDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateReceiveQosDataTypeBuilder().(*_ReceiveQosDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

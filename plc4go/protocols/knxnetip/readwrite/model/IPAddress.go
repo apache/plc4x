@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewIPAddressBuilder() IPAddressBuilder {
 type _IPAddressBuilder struct {
 	*_IPAddress
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (IPAddressBuilder) = (*_IPAddressBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_IPAddressBuilder) WithAddr(addr ...byte) IPAddressBuilder {
 }
 
 func (b *_IPAddressBuilder) Build() (IPAddress, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._IPAddress.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_IPAddressBuilder) MustBuild() IPAddress {
 
 func (b *_IPAddressBuilder) DeepCopy() any {
 	_copy := b.CreateIPAddressBuilder().(*_IPAddressBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

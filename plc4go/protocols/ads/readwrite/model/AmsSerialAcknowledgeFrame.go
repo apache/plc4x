@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ func NewAmsSerialAcknowledgeFrameBuilder() AmsSerialAcknowledgeFrameBuilder {
 type _AmsSerialAcknowledgeFrameBuilder struct {
 	*_AmsSerialAcknowledgeFrame
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AmsSerialAcknowledgeFrameBuilder) = (*_AmsSerialAcknowledgeFrameBuilder)(nil)
@@ -150,8 +151,8 @@ func (b *_AmsSerialAcknowledgeFrameBuilder) WithCrc(crc uint16) AmsSerialAcknowl
 }
 
 func (b *_AmsSerialAcknowledgeFrameBuilder) Build() (AmsSerialAcknowledgeFrame, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AmsSerialAcknowledgeFrame.deepCopy(), nil
 }
@@ -166,8 +167,8 @@ func (b *_AmsSerialAcknowledgeFrameBuilder) MustBuild() AmsSerialAcknowledgeFram
 
 func (b *_AmsSerialAcknowledgeFrameBuilder) DeepCopy() any {
 	_copy := b.CreateAmsSerialAcknowledgeFrameBuilder().(*_AmsSerialAcknowledgeFrameBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

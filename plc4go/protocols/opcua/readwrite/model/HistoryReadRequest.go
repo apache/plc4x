@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -133,7 +134,7 @@ type _HistoryReadRequestBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (HistoryReadRequestBuilder) = (*_HistoryReadRequestBuilder)(nil)
@@ -157,10 +158,7 @@ func (b *_HistoryReadRequestBuilder) WithRequestHeaderBuilder(builderSupplier fu
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -175,10 +173,7 @@ func (b *_HistoryReadRequestBuilder) WithHistoryReadDetailsBuilder(builderSuppli
 	var err error
 	b.HistoryReadDetails, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -200,19 +195,13 @@ func (b *_HistoryReadRequestBuilder) WithNodesToRead(nodesToRead ...HistoryReadV
 
 func (b *_HistoryReadRequestBuilder) Build() (HistoryReadRequest, error) {
 	if b.RequestHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'requestHeader' not set"))
 	}
 	if b.HistoryReadDetails == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'historyReadDetails' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'historyReadDetails' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HistoryReadRequest.deepCopy(), nil
 }
@@ -238,8 +227,8 @@ func (b *_HistoryReadRequestBuilder) buildForExtensionObjectDefinition() (Extens
 
 func (b *_HistoryReadRequestBuilder) DeepCopy() any {
 	_copy := b.CreateHistoryReadRequestBuilder().(*_HistoryReadRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewAlarmMessageAckResponseTypeBuilder() AlarmMessageAckResponseTypeBuilder 
 type _AlarmMessageAckResponseTypeBuilder struct {
 	*_AlarmMessageAckResponseType
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AlarmMessageAckResponseTypeBuilder) = (*_AlarmMessageAckResponseTypeBuilder)(nil)
@@ -120,8 +121,8 @@ func (b *_AlarmMessageAckResponseTypeBuilder) WithMessageObjects(messageObjects 
 }
 
 func (b *_AlarmMessageAckResponseTypeBuilder) Build() (AlarmMessageAckResponseType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AlarmMessageAckResponseType.deepCopy(), nil
 }
@@ -136,8 +137,8 @@ func (b *_AlarmMessageAckResponseTypeBuilder) MustBuild() AlarmMessageAckRespons
 
 func (b *_AlarmMessageAckResponseTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAlarmMessageAckResponseTypeBuilder().(*_AlarmMessageAckResponseTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

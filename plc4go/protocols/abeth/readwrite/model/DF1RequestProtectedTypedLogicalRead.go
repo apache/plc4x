@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -121,7 +122,7 @@ type _DF1RequestProtectedTypedLogicalReadBuilder struct {
 
 	parentBuilder *_DF1RequestCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DF1RequestProtectedTypedLogicalReadBuilder) = (*_DF1RequestProtectedTypedLogicalReadBuilder)(nil)
@@ -161,8 +162,8 @@ func (b *_DF1RequestProtectedTypedLogicalReadBuilder) WithSubElementNumber(subEl
 }
 
 func (b *_DF1RequestProtectedTypedLogicalReadBuilder) Build() (DF1RequestProtectedTypedLogicalRead, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DF1RequestProtectedTypedLogicalRead.deepCopy(), nil
 }
@@ -188,8 +189,8 @@ func (b *_DF1RequestProtectedTypedLogicalReadBuilder) buildForDF1RequestCommand(
 
 func (b *_DF1RequestProtectedTypedLogicalReadBuilder) DeepCopy() any {
 	_copy := b.CreateDF1RequestProtectedTypedLogicalReadBuilder().(*_DF1RequestProtectedTypedLogicalReadBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

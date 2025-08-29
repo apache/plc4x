@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -135,7 +136,7 @@ type _BACnetFaultParameterFaultOutOfRangeBuilder struct {
 
 	parentBuilder *_BACnetFaultParameterBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetFaultParameterFaultOutOfRangeBuilder) = (*_BACnetFaultParameterFaultOutOfRangeBuilder)(nil)
@@ -159,10 +160,7 @@ func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithOpeningTagBuilder(buil
 	var err error
 	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -177,10 +175,7 @@ func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMinNormalValueBuilder(
 	var err error
 	b.MinNormalValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder failed"))
 	}
 	return b
 }
@@ -195,10 +190,7 @@ func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMaxNormalValueBuilder(
 	var err error
 	b.MaxNormalValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder failed"))
 	}
 	return b
 }
@@ -213,41 +205,26 @@ func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithClosingTagBuilder(buil
 	var err error
 	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) Build() (BACnetFaultParameterFaultOutOfRange, error) {
 	if b.OpeningTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'openingTag' not set"))
 	}
 	if b.MinNormalValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'minNormalValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'minNormalValue' not set"))
 	}
 	if b.MaxNormalValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'maxNormalValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'maxNormalValue' not set"))
 	}
 	if b.ClosingTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetFaultParameterFaultOutOfRange.deepCopy(), nil
 }
@@ -273,8 +250,8 @@ func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) buildForBACnetFaultParamet
 
 func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetFaultParameterFaultOutOfRangeBuilder().(*_BACnetFaultParameterFaultOutOfRangeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

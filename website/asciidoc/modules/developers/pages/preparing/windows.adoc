@@ -48,21 +48,23 @@ Checking:
 
  java --version
 
-If you get successful output, check that the version reported is at least Java 11.
-If you need to install or update Java, unfortunately this doesn't seem to be available via Chocolatey, but needs to be installed directly from a distribution.
+If you get output successfully, check that the version reported is at least Java 11.
+If you need to install or update Java.
+Unfortunately, this doesn't seem available via Chocolatey, but needs to be installed directly from a distribution.
 
 For Oracles OpenJDK 21 this would be from here: https://learn.microsoft.com/de-de/java/openjdk/download
-If you are using a Windows VM on `aarch64` (Apple M1 or M2 virtual machine), the download available from Microsoft build seem to be one of the few options you have. When installing make sure to select the option to configure the "JAVA_HOME" environment variable (deactivated per default).
+If you are using a Windows VM on `aarch64` (Apple M1 or M2 virtual machine), the download available from Microsoft build seems to be one of the few options you have.
+When installing, make sure to select the option to configure the "JAVA_HOME" environment variable (deactivated per default).
 
 == Optional and other language support
 
-Git an Java should be all you need for building the Java part of PLC4X.
+Git and Java should be all you need for building the Java part of PLC4X.
 
 === LibPCAP (For raw-ethernet support)
 
-In order to use the raw ethernet transport capabilities of PLC4X, we need to ensure the NPcap library is installed.
+To use the raw ethernet transport capabilities of PLC4X, we need to ensure the NPcap library is installed.
 
-In order to check if NPcap is installed, check the following directories:
+To check if NPcap is installed, check the following directories:
 
 64-bit versions:
 

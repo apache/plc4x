@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ type _UpdateEventDetailsBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (UpdateEventDetailsBuilder) = (*_UpdateEventDetailsBuilder)(nil)
@@ -149,10 +150,7 @@ func (b *_UpdateEventDetailsBuilder) WithNodeIdBuilder(builderSupplier func(Node
 	var err error
 	b.NodeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -172,10 +170,7 @@ func (b *_UpdateEventDetailsBuilder) WithFilterBuilder(builderSupplier func(Even
 	var err error
 	b.Filter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "EventFilterBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "EventFilterBuilder failed"))
 	}
 	return b
 }
@@ -187,19 +182,13 @@ func (b *_UpdateEventDetailsBuilder) WithEventData(eventData ...HistoryEventFiel
 
 func (b *_UpdateEventDetailsBuilder) Build() (UpdateEventDetails, error) {
 	if b.NodeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nodeId' not set"))
 	}
 	if b.Filter == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'filter' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'filter' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._UpdateEventDetails.deepCopy(), nil
 }
@@ -225,8 +214,8 @@ func (b *_UpdateEventDetailsBuilder) buildForExtensionObjectDefinition() (Extens
 
 func (b *_UpdateEventDetailsBuilder) DeepCopy() any {
 	_copy := b.CreateUpdateEventDetailsBuilder().(*_UpdateEventDetailsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

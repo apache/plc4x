@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _ClassIDBuilder struct {
 
 	parentBuilder *_LogicalSegmentTypeBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ClassIDBuilder) = (*_ClassIDBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_ClassIDBuilder) WithSegmentClass(segmentClass uint8) ClassIDBuilder {
 }
 
 func (b *_ClassIDBuilder) Build() (ClassID, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ClassID.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_ClassIDBuilder) buildForLogicalSegmentType() (LogicalSegmentType, erro
 
 func (b *_ClassIDBuilder) DeepCopy() any {
 	_copy := b.CreateClassIDBuilder().(*_ClassIDBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

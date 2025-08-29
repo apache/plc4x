@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -180,7 +181,7 @@ type _CreateSessionRequestBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CreateSessionRequestBuilder) = (*_CreateSessionRequestBuilder)(nil)
@@ -204,10 +205,7 @@ func (b *_CreateSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier 
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -222,10 +220,7 @@ func (b *_CreateSessionRequestBuilder) WithClientDescriptionBuilder(builderSuppl
 	var err error
 	b.ClientDescription, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ApplicationDescriptionBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ApplicationDescriptionBuilder failed"))
 	}
 	return b
 }
@@ -240,10 +235,7 @@ func (b *_CreateSessionRequestBuilder) WithServerUriBuilder(builderSupplier func
 	var err error
 	b.ServerUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -258,10 +250,7 @@ func (b *_CreateSessionRequestBuilder) WithEndpointUrlBuilder(builderSupplier fu
 	var err error
 	b.EndpointUrl, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -276,10 +265,7 @@ func (b *_CreateSessionRequestBuilder) WithSessionNameBuilder(builderSupplier fu
 	var err error
 	b.SessionName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -294,10 +280,7 @@ func (b *_CreateSessionRequestBuilder) WithClientNonceBuilder(builderSupplier fu
 	var err error
 	b.ClientNonce, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
@@ -312,10 +295,7 @@ func (b *_CreateSessionRequestBuilder) WithClientCertificateBuilder(builderSuppl
 	var err error
 	b.ClientCertificate, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
@@ -332,49 +312,28 @@ func (b *_CreateSessionRequestBuilder) WithMaxResponseMessageSize(maxResponseMes
 
 func (b *_CreateSessionRequestBuilder) Build() (CreateSessionRequest, error) {
 	if b.RequestHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'requestHeader' not set"))
 	}
 	if b.ClientDescription == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'clientDescription' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'clientDescription' not set"))
 	}
 	if b.ServerUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serverUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serverUri' not set"))
 	}
 	if b.EndpointUrl == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'endpointUrl' not set"))
 	}
 	if b.SessionName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sessionName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sessionName' not set"))
 	}
 	if b.ClientNonce == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'clientNonce' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'clientNonce' not set"))
 	}
 	if b.ClientCertificate == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'clientCertificate' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'clientCertificate' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CreateSessionRequest.deepCopy(), nil
 }
@@ -400,8 +359,8 @@ func (b *_CreateSessionRequestBuilder) buildForExtensionObjectDefinition() (Exte
 
 func (b *_CreateSessionRequestBuilder) DeepCopy() any {
 	_copy := b.CreateCreateSessionRequestBuilder().(*_CreateSessionRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

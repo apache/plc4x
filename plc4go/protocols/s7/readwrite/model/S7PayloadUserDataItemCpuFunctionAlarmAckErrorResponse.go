@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder struct {
 
 	parentBuilder *_S7PayloadUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) WithMand
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) buildFor
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBACnetKeyIdentifierBuilder() BACnetKeyIdentifierBuilder {
 type _BACnetKeyIdentifierBuilder struct {
 	*_BACnetKeyIdentifier
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetKeyIdentifierBuilder) = (*_BACnetKeyIdentifierBuilder)(nil)
@@ -119,10 +120,7 @@ func (b *_BACnetKeyIdentifierBuilder) WithAlgorithmBuilder(builderSupplier func(
 	var err error
 	b.Algorithm, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -137,29 +135,20 @@ func (b *_BACnetKeyIdentifierBuilder) WithKeyIdBuilder(builderSupplier func(BACn
 	var err error
 	b.KeyId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetKeyIdentifierBuilder) Build() (BACnetKeyIdentifier, error) {
 	if b.Algorithm == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'algorithm' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'algorithm' not set"))
 	}
 	if b.KeyId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'keyId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'keyId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetKeyIdentifier.deepCopy(), nil
 }
@@ -174,8 +163,8 @@ func (b *_BACnetKeyIdentifierBuilder) MustBuild() BACnetKeyIdentifier {
 
 func (b *_BACnetKeyIdentifierBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetKeyIdentifierBuilder().(*_BACnetKeyIdentifierBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataInputReferenceBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataInputReferenceBuilder) = (*_BACnetConstructedDataInputReferenceBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataInputReferenceBuilder) WithInputReferenceBuilder(
 	var err error
 	b.InputReference, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataInputReferenceBuilder) Build() (BACnetConstructedDataInputReference, error) {
 	if b.InputReference == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'inputReference' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'inputReference' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataInputReference.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataInputReferenceBuilder) buildForBACnetConstructedD
 
 func (b *_BACnetConstructedDataInputReferenceBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataInputReferenceBuilder().(*_BACnetConstructedDataInputReferenceBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

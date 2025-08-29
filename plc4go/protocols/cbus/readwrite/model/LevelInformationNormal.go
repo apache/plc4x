@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -107,7 +108,7 @@ type _LevelInformationNormalBuilder struct {
 
 	parentBuilder *_LevelInformationBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LevelInformationNormalBuilder) = (*_LevelInformationNormalBuilder)(nil)
@@ -132,8 +133,8 @@ func (b *_LevelInformationNormalBuilder) WithPair2(pair2 LevelInformationNibbleP
 }
 
 func (b *_LevelInformationNormalBuilder) Build() (LevelInformationNormal, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LevelInformationNormal.deepCopy(), nil
 }
@@ -159,8 +160,8 @@ func (b *_LevelInformationNormalBuilder) buildForLevelInformation() (LevelInform
 
 func (b *_LevelInformationNormalBuilder) DeepCopy() any {
 	_copy := b.CreateLevelInformationNormalBuilder().(*_LevelInformationNormalBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

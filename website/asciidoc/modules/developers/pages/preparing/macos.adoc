@@ -28,7 +28,7 @@ So for example the availability and version of the C compiler is only checked if
 
 Most libraries on Mac are installed using `Homebrew`.
 
-Make sure `Homebrew` ist installed in order to install most of these.
+Make sure `Homebrew` ist installed to install most of these.
 
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -41,7 +41,7 @@ Checking:
 If you get any successful output, you probably don't need to do anything.
 
 If you are running this command on a really fresh and clean system, it might be that you are asked to finish installing the XCode commandline tools.
-If this happens, just follow the process and re-try after it has finished.
+If this happens, follow the process and re-try after it has finished.
 
 If you get a response that indicates that git needs to be installed, please execute the following command:
 
@@ -91,9 +91,9 @@ If you get any successful output, you probably don't need to do anything.
 
 Microsoft is offering an installer for macOS which is available from https://dotnet.microsoft.com/download/dotnet-core/2.2[here].
 
-Alternatively you can also install it via homebrew:
+Alternatively, you can also install it via homebrew:
 
- brew install --cask dotnet-sdk
+ brew install --cask dotnet-sdk8
 
 === python (For PLC4Py)
 
@@ -103,7 +103,7 @@ Checking:
 
 If you get a version of 3.0.0 or higher reported, you probably don't need to do anything.
 
-In order to install it, please execute the following command:
+To install it, please execute the following command:
 
  brew install pyenv
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder()
 type _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder struct {
 	*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder)(nil)
@@ -144,10 +145,7 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 	var err error
 	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -162,10 +160,7 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 	var err error
 	b.MinPriority, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -180,10 +175,7 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 	var err error
 	b.MaxPriority, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -198,10 +190,7 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 	var err error
 	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
@@ -213,31 +202,19 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 
 func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
 	if b.OpeningTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'openingTag' not set"))
 	}
 	if b.MinPriority == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'minPriority' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'minPriority' not set"))
 	}
 	if b.MaxPriority == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'maxPriority' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'maxPriority' not set"))
 	}
 	if b.ClosingTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter.deepCopy(), nil
 }
@@ -252,8 +229,8 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 
 func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder().(*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

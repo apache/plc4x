@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -87,7 +88,7 @@ func NewApplicationAddress1Builder() ApplicationAddress1Builder {
 type _ApplicationAddress1Builder struct {
 	*_ApplicationAddress1
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApplicationAddress1Builder) = (*_ApplicationAddress1Builder)(nil)
@@ -102,8 +103,8 @@ func (b *_ApplicationAddress1Builder) WithAddress(address byte) ApplicationAddre
 }
 
 func (b *_ApplicationAddress1Builder) Build() (ApplicationAddress1, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApplicationAddress1.deepCopy(), nil
 }
@@ -118,8 +119,8 @@ func (b *_ApplicationAddress1Builder) MustBuild() ApplicationAddress1 {
 
 func (b *_ApplicationAddress1Builder) DeepCopy() any {
 	_copy := b.CreateApplicationAddress1Builder().(*_ApplicationAddress1Builder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -118,7 +119,7 @@ type _PortSegmentTypeBuilder struct {
 
 	childBuilder _PortSegmentTypeChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PortSegmentTypeBuilder) = (*_PortSegmentTypeBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_PortSegmentTypeBuilder) WithMandatoryFields() PortSegmentTypeBuilder {
 }
 
 func (b *_PortSegmentTypeBuilder) PartialBuild() (PortSegmentTypeContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PortSegmentType.deepCopy(), nil
 }
@@ -186,8 +187,8 @@ func (b *_PortSegmentTypeBuilder) DeepCopy() any {
 	_copy := b.CreatePortSegmentTypeBuilder().(*_PortSegmentTypeBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_PortSegmentTypeChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

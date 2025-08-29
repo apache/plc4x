@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -126,7 +127,7 @@ type _ConnectionRequestBuilder struct {
 
 	parentBuilder *_KnxNetIpMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ConnectionRequestBuilder) = (*_ConnectionRequestBuilder)(nil)
@@ -150,10 +151,7 @@ func (b *_ConnectionRequestBuilder) WithHpaiDiscoveryEndpointBuilder(builderSupp
 	var err error
 	b.HpaiDiscoveryEndpoint, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HPAIDiscoveryEndpointBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HPAIDiscoveryEndpointBuilder failed"))
 	}
 	return b
 }
@@ -168,10 +166,7 @@ func (b *_ConnectionRequestBuilder) WithHpaiDataEndpointBuilder(builderSupplier 
 	var err error
 	b.HpaiDataEndpoint, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HPAIDataEndpointBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HPAIDataEndpointBuilder failed"))
 	}
 	return b
 }
@@ -186,35 +181,23 @@ func (b *_ConnectionRequestBuilder) WithConnectionRequestInformationBuilder(buil
 	var err error
 	b.ConnectionRequestInformation, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ConnectionRequestInformationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ConnectionRequestInformationBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ConnectionRequestBuilder) Build() (ConnectionRequest, error) {
 	if b.HpaiDiscoveryEndpoint == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'hpaiDiscoveryEndpoint' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'hpaiDiscoveryEndpoint' not set"))
 	}
 	if b.HpaiDataEndpoint == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'hpaiDataEndpoint' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'hpaiDataEndpoint' not set"))
 	}
 	if b.ConnectionRequestInformation == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'connectionRequestInformation' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'connectionRequestInformation' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConnectionRequest.deepCopy(), nil
 }
@@ -240,8 +223,8 @@ func (b *_ConnectionRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, 
 
 func (b *_ConnectionRequestBuilder) DeepCopy() any {
 	_copy := b.CreateConnectionRequestBuilder().(*_ConnectionRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

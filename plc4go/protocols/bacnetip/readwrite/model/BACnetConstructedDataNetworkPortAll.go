@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _BACnetConstructedDataNetworkPortAllBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataNetworkPortAllBuilder) = (*_BACnetConstructedDataNetworkPortAllBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_BACnetConstructedDataNetworkPortAllBuilder) WithMandatoryFields() BACn
 }
 
 func (b *_BACnetConstructedDataNetworkPortAllBuilder) Build() (BACnetConstructedDataNetworkPortAll, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataNetworkPortAll.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_BACnetConstructedDataNetworkPortAllBuilder) buildForBACnetConstructedD
 
 func (b *_BACnetConstructedDataNetworkPortAllBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataNetworkPortAllBuilder().(*_BACnetConstructedDataNetworkPortAllBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

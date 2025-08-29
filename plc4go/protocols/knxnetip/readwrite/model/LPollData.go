@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -116,7 +117,7 @@ type _LPollDataBuilder struct {
 
 	parentBuilder *_LDataFrameBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LPollDataBuilder) = (*_LPollDataBuilder)(nil)
@@ -140,10 +141,7 @@ func (b *_LPollDataBuilder) WithSourceAddressBuilder(builderSupplier func(KnxAdd
 	var err error
 	b.SourceAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "KnxAddressBuilder failed"))
 	}
 	return b
 }
@@ -160,13 +158,10 @@ func (b *_LPollDataBuilder) WithNumberExpectedPollData(numberExpectedPollData ui
 
 func (b *_LPollDataBuilder) Build() (LPollData, error) {
 	if b.SourceAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sourceAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sourceAddress' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LPollData.deepCopy(), nil
 }
@@ -192,8 +187,8 @@ func (b *_LPollDataBuilder) buildForLDataFrame() (LDataFrame, error) {
 
 func (b *_LPollDataBuilder) DeepCopy() any {
 	_copy := b.CreateLPollDataBuilder().(*_LPollDataBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

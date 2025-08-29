@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _RegisterServerRequestBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RegisterServerRequestBuilder) = (*_RegisterServerRequestBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_RegisterServerRequestBuilder) WithRequestHeaderBuilder(builderSupplier
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_RegisterServerRequestBuilder) WithServerBuilder(builderSupplier func(R
 	var err error
 	b.Server, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "RegisteredServerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RegisteredServerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_RegisterServerRequestBuilder) Build() (RegisterServerRequest, error) {
 	if b.RequestHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'requestHeader' not set"))
 	}
 	if b.Server == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'server' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'server' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RegisterServerRequest.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_RegisterServerRequestBuilder) buildForExtensionObjectDefinition() (Ext
 
 func (b *_RegisterServerRequestBuilder) DeepCopy() any {
 	_copy := b.CreateRegisterServerRequestBuilder().(*_RegisterServerRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

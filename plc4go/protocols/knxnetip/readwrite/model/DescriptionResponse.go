@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -115,7 +116,7 @@ type _DescriptionResponseBuilder struct {
 
 	parentBuilder *_KnxNetIpMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DescriptionResponseBuilder) = (*_DescriptionResponseBuilder)(nil)
@@ -139,10 +140,7 @@ func (b *_DescriptionResponseBuilder) WithDibDeviceInfoBuilder(builderSupplier f
 	var err error
 	b.DibDeviceInfo, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DIBDeviceInfoBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DIBDeviceInfoBuilder failed"))
 	}
 	return b
 }
@@ -157,29 +155,20 @@ func (b *_DescriptionResponseBuilder) WithDibSuppSvcFamiliesBuilder(builderSuppl
 	var err error
 	b.DibSuppSvcFamilies, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DIBSuppSvcFamiliesBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DIBSuppSvcFamiliesBuilder failed"))
 	}
 	return b
 }
 
 func (b *_DescriptionResponseBuilder) Build() (DescriptionResponse, error) {
 	if b.DibDeviceInfo == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dibDeviceInfo' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dibDeviceInfo' not set"))
 	}
 	if b.DibSuppSvcFamilies == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dibSuppSvcFamilies' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dibSuppSvcFamilies' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DescriptionResponse.deepCopy(), nil
 }
@@ -205,8 +194,8 @@ func (b *_DescriptionResponseBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage
 
 func (b *_DescriptionResponseBuilder) DeepCopy() any {
 	_copy := b.CreateDescriptionResponseBuilder().(*_DescriptionResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

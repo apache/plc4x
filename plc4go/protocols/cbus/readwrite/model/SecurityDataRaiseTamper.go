@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _SecurityDataRaiseTamperBuilder struct {
 
 	parentBuilder *_SecurityDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SecurityDataRaiseTamperBuilder) = (*_SecurityDataRaiseTamperBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_SecurityDataRaiseTamperBuilder) WithMandatoryFields() SecurityDataRais
 }
 
 func (b *_SecurityDataRaiseTamperBuilder) Build() (SecurityDataRaiseTamper, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataRaiseTamper.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_SecurityDataRaiseTamperBuilder) buildForSecurityData() (SecurityData, 
 
 func (b *_SecurityDataRaiseTamperBuilder) DeepCopy() any {
 	_copy := b.CreateSecurityDataRaiseTamperBuilder().(*_SecurityDataRaiseTamperBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

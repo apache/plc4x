@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-transports</artifactId>
-    <version>0.13.0</version>
+    <version>0.13.1</version>
   </parent>
 
   <artifactId>plc4j-transport-virtualcan</artifactId>
@@ -32,29 +32,29 @@
   <description>Virtual CAN transport which does work without any real CAN interface.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-can</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-test</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
     </dependency>
 
     <dependency>

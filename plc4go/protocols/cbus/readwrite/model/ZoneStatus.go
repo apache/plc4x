@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewZoneStatusBuilder() ZoneStatusBuilder {
 type _ZoneStatusBuilder struct {
 	*_ZoneStatus
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ZoneStatusBuilder) = (*_ZoneStatusBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_ZoneStatusBuilder) WithValue(value ZoneStatusTemp) ZoneStatusBuilder {
 }
 
 func (b *_ZoneStatusBuilder) Build() (ZoneStatus, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ZoneStatus.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_ZoneStatusBuilder) MustBuild() ZoneStatus {
 
 func (b *_ZoneStatusBuilder) DeepCopy() any {
 	_copy := b.CreateZoneStatusBuilder().(*_ZoneStatusBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

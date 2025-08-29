@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -108,7 +109,7 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder struct {
 
 	parentBuilder *_S7PayloadUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) = (*_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder)(nil)
@@ -132,10 +133,7 @@ func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlIdBuilde
 	var err error
 	b.SzlId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "SzlIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "SzlIdBuilder failed"))
 	}
 	return b
 }
@@ -147,13 +145,10 @@ func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlIndex(sz
 
 func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
 	if b.SzlId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'szlId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'szlId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCpuFunctionReadSzlRequest.deepCopy(), nil
 }
@@ -179,8 +174,8 @@ func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) buildForS7Paylo
 
 func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ func NewBACnetConstructedDataElementBuilder() BACnetConstructedDataElementBuilde
 type _BACnetConstructedDataElementBuilder struct {
 	*_BACnetConstructedDataElement
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataElementBuilder) = (*_BACnetConstructedDataElementBuilder)(nil)
@@ -149,10 +150,7 @@ func (b *_BACnetConstructedDataElementBuilder) WithPeekedTagHeaderBuilder(builde
 	var err error
 	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
 	return b
 }
@@ -167,10 +165,7 @@ func (b *_BACnetConstructedDataElementBuilder) WithOptionalApplicationTagBuilder
 	var err error
 	b.ApplicationTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagBuilder failed"))
 	}
 	return b
 }
@@ -185,10 +180,7 @@ func (b *_BACnetConstructedDataElementBuilder) WithOptionalContextTagBuilder(bui
 	var err error
 	b.ContextTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagBuilder failed"))
 	}
 	return b
 }
@@ -203,10 +195,7 @@ func (b *_BACnetConstructedDataElementBuilder) WithOptionalConstructedDataBuilde
 	var err error
 	b.ConstructedData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
 	return b
 }
@@ -226,13 +215,10 @@ func (b *_BACnetConstructedDataElementBuilder) WithArgArrayIndexArgument(arrayIn
 
 func (b *_BACnetConstructedDataElementBuilder) Build() (BACnetConstructedDataElement, error) {
 	if b.PeekedTagHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataElement.deepCopy(), nil
 }
@@ -247,8 +233,8 @@ func (b *_BACnetConstructedDataElementBuilder) MustBuild() BACnetConstructedData
 
 func (b *_BACnetConstructedDataElementBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataElementBuilder().(*_BACnetConstructedDataElementBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

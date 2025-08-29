@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewBACnetClosingTagBuilder() BACnetClosingTagBuilder {
 type _BACnetClosingTagBuilder struct {
 	*_BACnetClosingTag
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetClosingTagBuilder) = (*_BACnetClosingTagBuilder)(nil)
@@ -114,10 +115,7 @@ func (b *_BACnetClosingTagBuilder) WithHeaderBuilder(builderSupplier func(BACnet
 	var err error
 	b.Header, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
 	return b
 }
@@ -129,13 +127,10 @@ func (b *_BACnetClosingTagBuilder) WithArgTagNumberArgument(tagNumberArgument ui
 
 func (b *_BACnetClosingTagBuilder) Build() (BACnetClosingTag, error) {
 	if b.Header == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'header' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetClosingTag.deepCopy(), nil
 }
@@ -150,8 +145,8 @@ func (b *_BACnetClosingTagBuilder) MustBuild() BACnetClosingTag {
 
 func (b *_BACnetClosingTagBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetClosingTagBuilder().(*_BACnetClosingTagBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

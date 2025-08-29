@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -121,7 +122,7 @@ type _ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder struct {
 
 	parentBuilder *_ModbusPDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) = (*_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder)(nil)
@@ -161,8 +162,8 @@ func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithValue(va
 }
 
 func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) Build() (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUReadWriteMultipleHoldingRegistersRequest.deepCopy(), nil
 }
@@ -188,8 +189,8 @@ func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) buildForModb
 
 func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) DeepCopy() any {
 	_copy := b.CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder().(*_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

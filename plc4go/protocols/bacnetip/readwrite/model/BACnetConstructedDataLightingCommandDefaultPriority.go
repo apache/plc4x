@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataLightingCommandDefaultPriorityBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataLightingCommandDefaultPriorityBuilder) = (*_BACnetConstructedDataLightingCommandDefaultPriorityBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) WithLighti
 	var err error
 	b.LightingCommandDefaultPriority, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) Build() (BACnetConstructedDataLightingCommandDefaultPriority, error) {
 	if b.LightingCommandDefaultPriority == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'lightingCommandDefaultPriority' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lightingCommandDefaultPriority' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLightingCommandDefaultPriority.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) buildForBA
 
 func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataLightingCommandDefaultPriorityBuilder().(*_BACnetConstructedDataLightingCommandDefaultPriorityBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -90,7 +91,7 @@ type _BVLCReadBroadcastDistributionTableBuilder struct {
 
 	parentBuilder *_BVLCBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BVLCReadBroadcastDistributionTableBuilder) = (*_BVLCReadBroadcastDistributionTableBuilder)(nil)
@@ -105,8 +106,8 @@ func (b *_BVLCReadBroadcastDistributionTableBuilder) WithMandatoryFields() BVLCR
 }
 
 func (b *_BVLCReadBroadcastDistributionTableBuilder) Build() (BVLCReadBroadcastDistributionTable, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCReadBroadcastDistributionTable.deepCopy(), nil
 }
@@ -132,8 +133,8 @@ func (b *_BVLCReadBroadcastDistributionTableBuilder) buildForBVLC() (BVLC, error
 
 func (b *_BVLCReadBroadcastDistributionTableBuilder) DeepCopy() any {
 	_copy := b.CreateBVLCReadBroadcastDistributionTableBuilder().(*_BVLCReadBroadcastDistributionTableBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewRelativeTimestampBuilder() RelativeTimestampBuilder {
 type _RelativeTimestampBuilder struct {
 	*_RelativeTimestamp
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RelativeTimestampBuilder) = (*_RelativeTimestampBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_RelativeTimestampBuilder) WithTimestamp(timestamp uint16) RelativeTime
 }
 
 func (b *_RelativeTimestampBuilder) Build() (RelativeTimestamp, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RelativeTimestamp.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_RelativeTimestampBuilder) MustBuild() RelativeTimestamp {
 
 func (b *_RelativeTimestampBuilder) DeepCopy() any {
 	_copy := b.CreateRelativeTimestampBuilder().(*_RelativeTimestampBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

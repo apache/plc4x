@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ func NewBACnetSpecialEventBuilder() BACnetSpecialEventBuilder {
 type _BACnetSpecialEventBuilder struct {
 	*_BACnetSpecialEvent
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetSpecialEventBuilder) = (*_BACnetSpecialEventBuilder)(nil)
@@ -129,10 +130,7 @@ func (b *_BACnetSpecialEventBuilder) WithPeriodBuilder(builderSupplier func(BACn
 	var err error
 	b.Period, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetSpecialEventPeriodBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetSpecialEventPeriodBuilder failed"))
 	}
 	return b
 }
@@ -147,10 +145,7 @@ func (b *_BACnetSpecialEventBuilder) WithListOfTimeValuesBuilder(builderSupplier
 	var err error
 	b.ListOfTimeValues, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetSpecialEventListOfTimeValuesBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetSpecialEventListOfTimeValuesBuilder failed"))
 	}
 	return b
 }
@@ -165,35 +160,23 @@ func (b *_BACnetSpecialEventBuilder) WithEventPriorityBuilder(builderSupplier fu
 	var err error
 	b.EventPriority, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetSpecialEventBuilder) Build() (BACnetSpecialEvent, error) {
 	if b.Period == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'period' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'period' not set"))
 	}
 	if b.ListOfTimeValues == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'listOfTimeValues' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'listOfTimeValues' not set"))
 	}
 	if b.EventPriority == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'eventPriority' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'eventPriority' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetSpecialEvent.deepCopy(), nil
 }
@@ -208,8 +191,8 @@ func (b *_BACnetSpecialEventBuilder) MustBuild() BACnetSpecialEvent {
 
 func (b *_BACnetSpecialEventBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetSpecialEventBuilder().(*_BACnetSpecialEventBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

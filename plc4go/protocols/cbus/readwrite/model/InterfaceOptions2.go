@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ func NewInterfaceOptions2Builder() InterfaceOptions2Builder {
 type _InterfaceOptions2Builder struct {
 	*_InterfaceOptions2
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (InterfaceOptions2Builder) = (*_InterfaceOptions2Builder)(nil)
@@ -117,8 +118,8 @@ func (b *_InterfaceOptions2Builder) WithClockGen(clockGen bool) InterfaceOptions
 }
 
 func (b *_InterfaceOptions2Builder) Build() (InterfaceOptions2, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._InterfaceOptions2.deepCopy(), nil
 }
@@ -133,8 +134,8 @@ func (b *_InterfaceOptions2Builder) MustBuild() InterfaceOptions2 {
 
 func (b *_InterfaceOptions2Builder) DeepCopy() any {
 	_copy := b.CreateInterfaceOptions2Builder().(*_InterfaceOptions2Builder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _BACnetConstructedDataFaultSignalsBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataFaultSignalsBuilder) = (*_BACnetConstructedDataFaultSignalsBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_BACnetConstructedDataFaultSignalsBuilder) WithFaultSignals(faultSignal
 }
 
 func (b *_BACnetConstructedDataFaultSignalsBuilder) Build() (BACnetConstructedDataFaultSignals, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataFaultSignals.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_BACnetConstructedDataFaultSignalsBuilder) buildForBACnetConstructedDat
 
 func (b *_BACnetConstructedDataFaultSignalsBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataFaultSignalsBuilder().(*_BACnetConstructedDataFaultSignalsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

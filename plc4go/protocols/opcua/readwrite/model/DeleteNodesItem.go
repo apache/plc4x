@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ type _DeleteNodesItemBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DeleteNodesItemBuilder) = (*_DeleteNodesItemBuilder)(nil)
@@ -134,10 +135,7 @@ func (b *_DeleteNodesItemBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdB
 	var err error
 	b.NodeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -149,13 +147,10 @@ func (b *_DeleteNodesItemBuilder) WithDeleteTargetReferences(deleteTargetReferen
 
 func (b *_DeleteNodesItemBuilder) Build() (DeleteNodesItem, error) {
 	if b.NodeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nodeId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DeleteNodesItem.deepCopy(), nil
 }
@@ -181,8 +176,8 @@ func (b *_DeleteNodesItemBuilder) buildForExtensionObjectDefinition() (Extension
 
 func (b *_DeleteNodesItemBuilder) DeepCopy() any {
 	_copy := b.CreateDeleteNodesItemBuilder().(*_DeleteNodesItemBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

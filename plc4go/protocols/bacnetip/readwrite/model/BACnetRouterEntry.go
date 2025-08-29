@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -117,7 +118,7 @@ func NewBACnetRouterEntryBuilder() BACnetRouterEntryBuilder {
 type _BACnetRouterEntryBuilder struct {
 	*_BACnetRouterEntry
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetRouterEntryBuilder) = (*_BACnetRouterEntryBuilder)(nil)
@@ -136,10 +137,7 @@ func (b *_BACnetRouterEntryBuilder) WithNetworkNumberBuilder(builderSupplier fun
 	var err error
 	b.NetworkNumber, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -154,10 +152,7 @@ func (b *_BACnetRouterEntryBuilder) WithMacAddressBuilder(builderSupplier func(B
 	var err error
 	b.MacAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
 	}
 	return b
 }
@@ -172,10 +167,7 @@ func (b *_BACnetRouterEntryBuilder) WithStatusBuilder(builderSupplier func(BACne
 	var err error
 	b.Status, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetRouterEntryStatusTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetRouterEntryStatusTaggedBuilder failed"))
 	}
 	return b
 }
@@ -190,35 +182,23 @@ func (b *_BACnetRouterEntryBuilder) WithOptionalPerformanceIndexBuilder(builderS
 	var err error
 	b.PerformanceIndex, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetRouterEntryBuilder) Build() (BACnetRouterEntry, error) {
 	if b.NetworkNumber == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'networkNumber' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'networkNumber' not set"))
 	}
 	if b.MacAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'macAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'macAddress' not set"))
 	}
 	if b.Status == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'status' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'status' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetRouterEntry.deepCopy(), nil
 }
@@ -233,8 +213,8 @@ func (b *_BACnetRouterEntryBuilder) MustBuild() BACnetRouterEntry {
 
 func (b *_BACnetRouterEntryBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetRouterEntryBuilder().(*_BACnetRouterEntryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

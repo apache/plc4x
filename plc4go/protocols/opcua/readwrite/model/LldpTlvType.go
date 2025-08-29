@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -108,7 +109,7 @@ type _LldpTlvTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LldpTlvTypeBuilder) = (*_LldpTlvTypeBuilder)(nil)
@@ -137,23 +138,17 @@ func (b *_LldpTlvTypeBuilder) WithTlvInfoBuilder(builderSupplier func(PascalByte
 	var err error
 	b.TlvInfo, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_LldpTlvTypeBuilder) Build() (LldpTlvType, error) {
 	if b.TlvInfo == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'tlvInfo' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'tlvInfo' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LldpTlvType.deepCopy(), nil
 }
@@ -179,8 +174,8 @@ func (b *_LldpTlvTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObje
 
 func (b *_LldpTlvTypeBuilder) DeepCopy() any {
 	_copy := b.CreateLldpTlvTypeBuilder().(*_LldpTlvTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -171,7 +172,7 @@ type _FieldMetaDataBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (FieldMetaDataBuilder) = (*_FieldMetaDataBuilder)(nil)
@@ -195,10 +196,7 @@ func (b *_FieldMetaDataBuilder) WithNameBuilder(builderSupplier func(PascalStrin
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -213,10 +211,7 @@ func (b *_FieldMetaDataBuilder) WithDescriptionBuilder(builderSupplier func(Loca
 	var err error
 	b.Description, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
 	return b
 }
@@ -241,10 +236,7 @@ func (b *_FieldMetaDataBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdB
 	var err error
 	b.DataType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -274,10 +266,7 @@ func (b *_FieldMetaDataBuilder) WithDataSetFieldIdBuilder(builderSupplier func(G
 	var err error
 	b.DataSetFieldId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "GuidValueBuilder failed"))
 	}
 	return b
 }
@@ -289,31 +278,19 @@ func (b *_FieldMetaDataBuilder) WithProperties(properties ...KeyValuePair) Field
 
 func (b *_FieldMetaDataBuilder) Build() (FieldMetaData, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.Description == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'description' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'description' not set"))
 	}
 	if b.DataType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataType' not set"))
 	}
 	if b.DataSetFieldId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'dataSetFieldId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dataSetFieldId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._FieldMetaData.deepCopy(), nil
 }
@@ -339,8 +316,8 @@ func (b *_FieldMetaDataBuilder) buildForExtensionObjectDefinition() (ExtensionOb
 
 func (b *_FieldMetaDataBuilder) DeepCopy() any {
 	_copy := b.CreateFieldMetaDataBuilder().(*_FieldMetaDataBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

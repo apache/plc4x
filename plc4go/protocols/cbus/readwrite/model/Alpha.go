@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewAlphaBuilder() AlphaBuilder {
 type _AlphaBuilder struct {
 	*_Alpha
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AlphaBuilder) = (*_AlphaBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_AlphaBuilder) WithCharacter(character byte) AlphaBuilder {
 }
 
 func (b *_AlphaBuilder) Build() (Alpha, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Alpha.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_AlphaBuilder) MustBuild() Alpha {
 
 func (b *_AlphaBuilder) DeepCopy() any {
 	_copy := b.CreateAlphaBuilder().(*_AlphaBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

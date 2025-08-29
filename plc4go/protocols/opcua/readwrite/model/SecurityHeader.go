@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -90,7 +91,7 @@ func NewSecurityHeaderBuilder() SecurityHeaderBuilder {
 type _SecurityHeaderBuilder struct {
 	*_SecurityHeader
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SecurityHeaderBuilder) = (*_SecurityHeaderBuilder)(nil)
@@ -110,8 +111,8 @@ func (b *_SecurityHeaderBuilder) WithSecureTokenId(secureTokenId uint32) Securit
 }
 
 func (b *_SecurityHeaderBuilder) Build() (SecurityHeader, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityHeader.deepCopy(), nil
 }
@@ -126,8 +127,8 @@ func (b *_SecurityHeaderBuilder) MustBuild() SecurityHeader {
 
 func (b *_SecurityHeaderBuilder) DeepCopy() any {
 	_copy := b.CreateSecurityHeaderBuilder().(*_SecurityHeaderBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

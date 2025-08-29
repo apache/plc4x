@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -123,7 +124,7 @@ func NewHVACModeAndFlagsBuilder() HVACModeAndFlagsBuilder {
 type _HVACModeAndFlagsBuilder struct {
 	*_HVACModeAndFlags
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (HVACModeAndFlagsBuilder) = (*_HVACModeAndFlagsBuilder)(nil)
@@ -158,8 +159,8 @@ func (b *_HVACModeAndFlagsBuilder) WithMode(mode HVACModeAndFlagsMode) HVACModeA
 }
 
 func (b *_HVACModeAndFlagsBuilder) Build() (HVACModeAndFlags, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HVACModeAndFlags.deepCopy(), nil
 }
@@ -174,8 +175,8 @@ func (b *_HVACModeAndFlagsBuilder) MustBuild() HVACModeAndFlags {
 
 func (b *_HVACModeAndFlagsBuilder) DeepCopy() any {
 	_copy := b.CreateHVACModeAndFlagsBuilder().(*_HVACModeAndFlagsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

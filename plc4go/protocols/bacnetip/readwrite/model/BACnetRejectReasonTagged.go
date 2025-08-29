@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -96,7 +97,7 @@ func NewBACnetRejectReasonTaggedBuilder() BACnetRejectReasonTaggedBuilder {
 type _BACnetRejectReasonTaggedBuilder struct {
 	*_BACnetRejectReasonTagged
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetRejectReasonTaggedBuilder) = (*_BACnetRejectReasonTaggedBuilder)(nil)
@@ -121,8 +122,8 @@ func (b *_BACnetRejectReasonTaggedBuilder) WithArgActualLength(actualLength uint
 }
 
 func (b *_BACnetRejectReasonTaggedBuilder) Build() (BACnetRejectReasonTagged, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetRejectReasonTagged.deepCopy(), nil
 }
@@ -137,8 +138,8 @@ func (b *_BACnetRejectReasonTaggedBuilder) MustBuild() BACnetRejectReasonTagged 
 
 func (b *_BACnetRejectReasonTaggedBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetRejectReasonTaggedBuilder().(*_BACnetRejectReasonTaggedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

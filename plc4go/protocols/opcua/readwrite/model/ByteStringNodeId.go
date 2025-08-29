@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewByteStringNodeIdBuilder() ByteStringNodeIdBuilder {
 type _ByteStringNodeIdBuilder struct {
 	*_ByteStringNodeId
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ByteStringNodeIdBuilder) = (*_ByteStringNodeIdBuilder)(nil)
@@ -119,23 +120,17 @@ func (b *_ByteStringNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(Pa
 	var err error
 	b.Identifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ByteStringNodeIdBuilder) Build() (ByteStringNodeId, error) {
 	if b.Identifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'identifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'identifier' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ByteStringNodeId.deepCopy(), nil
 }
@@ -150,8 +145,8 @@ func (b *_ByteStringNodeIdBuilder) MustBuild() ByteStringNodeId {
 
 func (b *_ByteStringNodeIdBuilder) DeepCopy() any {
 	_copy := b.CreateByteStringNodeIdBuilder().(*_ByteStringNodeIdBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

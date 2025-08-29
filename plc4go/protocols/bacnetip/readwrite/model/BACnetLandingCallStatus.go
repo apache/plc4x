@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -107,7 +108,7 @@ func NewBACnetLandingCallStatusBuilder() BACnetLandingCallStatusBuilder {
 type _BACnetLandingCallStatusBuilder struct {
 	*_BACnetLandingCallStatus
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetLandingCallStatusBuilder) = (*_BACnetLandingCallStatusBuilder)(nil)
@@ -126,10 +127,7 @@ func (b *_BACnetLandingCallStatusBuilder) WithFloorNumberBuilder(builderSupplier
 	var err error
 	b.FloorNumber, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -144,10 +142,7 @@ func (b *_BACnetLandingCallStatusBuilder) WithCommandBuilder(builderSupplier fun
 	var err error
 	b.Command, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLandingCallStatusCommandBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLandingCallStatusCommandBuilder failed"))
 	}
 	return b
 }
@@ -162,29 +157,20 @@ func (b *_BACnetLandingCallStatusBuilder) WithOptionalFloorTextBuilder(builderSu
 	var err error
 	b.FloorText, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetLandingCallStatusBuilder) Build() (BACnetLandingCallStatus, error) {
 	if b.FloorNumber == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'floorNumber' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'floorNumber' not set"))
 	}
 	if b.Command == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'command' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'command' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLandingCallStatus.deepCopy(), nil
 }
@@ -199,8 +185,8 @@ func (b *_BACnetLandingCallStatusBuilder) MustBuild() BACnetLandingCallStatus {
 
 func (b *_BACnetLandingCallStatusBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetLandingCallStatusBuilder().(*_BACnetLandingCallStatusBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ func NewBACnetBDTEntryBuilder() BACnetBDTEntryBuilder {
 type _BACnetBDTEntryBuilder struct {
 	*_BACnetBDTEntry
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetBDTEntryBuilder) = (*_BACnetBDTEntryBuilder)(nil)
@@ -116,10 +117,7 @@ func (b *_BACnetBDTEntryBuilder) WithBbmdAddressBuilder(builderSupplier func(BAC
 	var err error
 	b.BbmdAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetHostNPortEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetHostNPortEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -134,23 +132,17 @@ func (b *_BACnetBDTEntryBuilder) WithOptionalBroadcastMaskBuilder(builderSupplie
 	var err error
 	b.BroadcastMask, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetBDTEntryBuilder) Build() (BACnetBDTEntry, error) {
 	if b.BbmdAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'bbmdAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'bbmdAddress' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetBDTEntry.deepCopy(), nil
 }
@@ -165,8 +157,8 @@ func (b *_BACnetBDTEntryBuilder) MustBuild() BACnetBDTEntry {
 
 func (b *_BACnetBDTEntryBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetBDTEntryBuilder().(*_BACnetBDTEntryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

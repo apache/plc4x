@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _AdsDiscoveryBlockOsDataBuilder struct {
 
 	parentBuilder *_AdsDiscoveryBlockBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsDiscoveryBlockOsDataBuilder) = (*_AdsDiscoveryBlockOsDataBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_AdsDiscoveryBlockOsDataBuilder) WithOsData(osData ...byte) AdsDiscover
 }
 
 func (b *_AdsDiscoveryBlockOsDataBuilder) Build() (AdsDiscoveryBlockOsData, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDiscoveryBlockOsData.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_AdsDiscoveryBlockOsDataBuilder) buildForAdsDiscoveryBlock() (AdsDiscov
 
 func (b *_AdsDiscoveryBlockOsDataBuilder) DeepCopy() any {
 	_copy := b.CreateAdsDiscoveryBlockOsDataBuilder().(*_AdsDiscoveryBlockOsDataBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

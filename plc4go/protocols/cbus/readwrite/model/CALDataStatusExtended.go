@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ type _CALDataStatusExtendedBuilder struct {
 
 	parentBuilder *_CALDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CALDataStatusExtendedBuilder) = (*_CALDataStatusExtendedBuilder)(nil)
@@ -165,8 +166,8 @@ func (b *_CALDataStatusExtendedBuilder) WithLevelInformation(levelInformation ..
 }
 
 func (b *_CALDataStatusExtendedBuilder) Build() (CALDataStatusExtended, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CALDataStatusExtended.deepCopy(), nil
 }
@@ -192,8 +193,8 @@ func (b *_CALDataStatusExtendedBuilder) buildForCALData() (CALData, error) {
 
 func (b *_CALDataStatusExtendedBuilder) DeepCopy() any {
 	_copy := b.CreateCALDataStatusExtendedBuilder().(*_CALDataStatusExtendedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewNumericRangeBuilder() NumericRangeBuilder {
 type _NumericRangeBuilder struct {
 	*_NumericRange
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NumericRangeBuilder) = (*_NumericRangeBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_NumericRangeBuilder) WithMandatoryFields() NumericRangeBuilder {
 }
 
 func (b *_NumericRangeBuilder) Build() (NumericRange, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NumericRange.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_NumericRangeBuilder) MustBuild() NumericRange {
 
 func (b *_NumericRangeBuilder) DeepCopy() any {
 	_copy := b.CreateNumericRangeBuilder().(*_NumericRangeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

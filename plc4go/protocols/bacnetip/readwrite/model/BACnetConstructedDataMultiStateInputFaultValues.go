@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _BACnetConstructedDataMultiStateInputFaultValuesBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataMultiStateInputFaultValuesBuilder) = (*_BACnetConstructedDataMultiStateInputFaultValuesBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) WithFaultValue
 }
 
 func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) Build() (BACnetConstructedDataMultiStateInputFaultValues, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMultiStateInputFaultValues.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) buildForBACnet
 
 func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder().(*_BACnetConstructedDataMultiStateInputFaultValuesBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

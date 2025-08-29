@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesTimerTransitionBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesTimerTransitionBuilder) = (*_BACnetPropertyStatesTimerTransitionBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesTimerTransitionBuilder) WithTimerTransitionBuilder
 	var err error
 	b.TimerTransition, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTimerTransitionTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTimerTransitionTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesTimerTransitionBuilder) Build() (BACnetPropertyStatesTimerTransition, error) {
 	if b.TimerTransition == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'timerTransition' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timerTransition' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesTimerTransition.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesTimerTransitionBuilder) buildForBACnetPropertyStat
 
 func (b *_BACnetPropertyStatesTimerTransitionBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesTimerTransitionBuilder().(*_BACnetPropertyStatesTimerTransitionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

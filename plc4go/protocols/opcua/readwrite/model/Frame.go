@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _FrameBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (FrameBuilder) = (*_FrameBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_FrameBuilder) WithMandatoryFields() FrameBuilder {
 }
 
 func (b *_FrameBuilder) Build() (Frame, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Frame.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_FrameBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefi
 
 func (b *_FrameBuilder) DeepCopy() any {
 	_copy := b.CreateFrameBuilder().(*_FrameBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -123,7 +124,7 @@ func NewHVACHumidityModeAndFlagsBuilder() HVACHumidityModeAndFlagsBuilder {
 type _HVACHumidityModeAndFlagsBuilder struct {
 	*_HVACHumidityModeAndFlags
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (HVACHumidityModeAndFlagsBuilder) = (*_HVACHumidityModeAndFlagsBuilder)(nil)
@@ -158,8 +159,8 @@ func (b *_HVACHumidityModeAndFlagsBuilder) WithMode(mode HVACHumidityModeAndFlag
 }
 
 func (b *_HVACHumidityModeAndFlagsBuilder) Build() (HVACHumidityModeAndFlags, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HVACHumidityModeAndFlags.deepCopy(), nil
 }
@@ -174,8 +175,8 @@ func (b *_HVACHumidityModeAndFlagsBuilder) MustBuild() HVACHumidityModeAndFlags 
 
 func (b *_HVACHumidityModeAndFlagsBuilder) DeepCopy() any {
 	_copy := b.CreateHVACHumidityModeAndFlagsBuilder().(*_HVACHumidityModeAndFlagsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

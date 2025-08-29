@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStateActionUnknownBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStateActionUnknownBuilder) = (*_BACnetPropertyStateActionUnknownBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStateActionUnknownBuilder) WithUnknownValueBuilder(build
 	var err error
 	b.UnknownValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnknownBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnknownBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStateActionUnknownBuilder) Build() (BACnetPropertyStateActionUnknown, error) {
 	if b.UnknownValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'unknownValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'unknownValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStateActionUnknown.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStateActionUnknownBuilder) buildForBACnetPropertyStates(
 
 func (b *_BACnetPropertyStateActionUnknownBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStateActionUnknownBuilder().(*_BACnetPropertyStateActionUnknownBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuil
 type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder struct {
 	*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder)(nil)
@@ -119,10 +120,7 @@ func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBu
 	var err error
 	b.MonitoredObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -137,29 +135,20 @@ func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBu
 	var err error
 	b.ListOfCovReferences, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) Build() (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
 	if b.MonitoredObjectIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
 	}
 	if b.ListOfCovReferences == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'listOfCovReferences' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'listOfCovReferences' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry.deepCopy(), nil
 }
@@ -174,8 +163,8 @@ func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBu
 
 func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder().(*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

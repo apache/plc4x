@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _MeteringDataMeasureGasBuilder struct {
 
 	parentBuilder *_MeteringDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MeteringDataMeasureGasBuilder) = (*_MeteringDataMeasureGasBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_MeteringDataMeasureGasBuilder) WithMandatoryFields() MeteringDataMeasu
 }
 
 func (b *_MeteringDataMeasureGasBuilder) Build() (MeteringDataMeasureGas, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MeteringDataMeasureGas.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_MeteringDataMeasureGasBuilder) buildForMeteringData() (MeteringData, e
 
 func (b *_MeteringDataMeasureGasBuilder) DeepCopy() any {
 	_copy := b.CreateMeteringDataMeasureGasBuilder().(*_MeteringDataMeasureGasBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

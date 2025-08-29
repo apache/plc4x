@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -136,7 +137,7 @@ type _CipConnectionManagerResponseBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CipConnectionManagerResponseBuilder) = (*_CipConnectionManagerResponseBuilder)(nil)
@@ -186,8 +187,8 @@ func (b *_CipConnectionManagerResponseBuilder) WithToApi(toApi uint32) CipConnec
 }
 
 func (b *_CipConnectionManagerResponseBuilder) Build() (CipConnectionManagerResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipConnectionManagerResponse.deepCopy(), nil
 }
@@ -213,8 +214,8 @@ func (b *_CipConnectionManagerResponseBuilder) buildForCipService() (CipService,
 
 func (b *_CipConnectionManagerResponseBuilder) DeepCopy() any {
 	_copy := b.CreateCipConnectionManagerResponseBuilder().(*_CipConnectionManagerResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

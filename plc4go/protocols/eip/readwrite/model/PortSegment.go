@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _PortSegmentBuilder struct {
 
 	parentBuilder *_PathSegmentBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PortSegmentBuilder) = (*_PortSegmentBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_PortSegmentBuilder) WithSegmentTypeBuilder(builderSupplier func(PortSe
 	var err error
 	b.SegmentType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PortSegmentTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PortSegmentTypeBuilder failed"))
 	}
 	return b
 }
 
 func (b *_PortSegmentBuilder) Build() (PortSegment, error) {
 	if b.SegmentType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'segmentType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'segmentType' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PortSegment.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_PortSegmentBuilder) buildForPathSegment() (PathSegment, error) {
 
 func (b *_PortSegmentBuilder) DeepCopy() any {
 	_copy := b.CreatePortSegmentBuilder().(*_PortSegmentBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewDurationStringBuilder() DurationStringBuilder {
 type _DurationStringBuilder struct {
 	*_DurationString
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DurationStringBuilder) = (*_DurationStringBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_DurationStringBuilder) WithMandatoryFields() DurationStringBuilder {
 }
 
 func (b *_DurationStringBuilder) Build() (DurationString, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DurationString.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_DurationStringBuilder) MustBuild() DurationString {
 
 func (b *_DurationStringBuilder) DeepCopy() any {
 	_copy := b.CreateDurationStringBuilder().(*_DurationStringBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

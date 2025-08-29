@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewAdsStampHeaderBuilder() AdsStampHeaderBuilder {
 type _AdsStampHeaderBuilder struct {
 	*_AdsStampHeader
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsStampHeaderBuilder) = (*_AdsStampHeaderBuilder)(nil)
@@ -120,8 +121,8 @@ func (b *_AdsStampHeaderBuilder) WithAdsNotificationSamples(adsNotificationSampl
 }
 
 func (b *_AdsStampHeaderBuilder) Build() (AdsStampHeader, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsStampHeader.deepCopy(), nil
 }
@@ -136,8 +137,8 @@ func (b *_AdsStampHeaderBuilder) MustBuild() AdsStampHeader {
 
 func (b *_AdsStampHeaderBuilder) DeepCopy() any {
 	_copy := b.CreateAdsStampHeaderBuilder().(*_AdsStampHeaderBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

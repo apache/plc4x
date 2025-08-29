@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -90,7 +91,7 @@ func NewBACnetLandingDoorStatusBuilder() BACnetLandingDoorStatusBuilder {
 type _BACnetLandingDoorStatusBuilder struct {
 	*_BACnetLandingDoorStatus
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetLandingDoorStatusBuilder) = (*_BACnetLandingDoorStatusBuilder)(nil)
@@ -109,23 +110,17 @@ func (b *_BACnetLandingDoorStatusBuilder) WithLandingDoorsBuilder(builderSupplie
 	var err error
 	b.LandingDoors, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLandingDoorStatusLandingDoorsListBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLandingDoorStatusLandingDoorsListBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetLandingDoorStatusBuilder) Build() (BACnetLandingDoorStatus, error) {
 	if b.LandingDoors == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'landingDoors' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'landingDoors' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLandingDoorStatus.deepCopy(), nil
 }
@@ -140,8 +135,8 @@ func (b *_BACnetLandingDoorStatusBuilder) MustBuild() BACnetLandingDoorStatus {
 
 func (b *_BACnetLandingDoorStatusBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetLandingDoorStatusBuilder().(*_BACnetLandingDoorStatusBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

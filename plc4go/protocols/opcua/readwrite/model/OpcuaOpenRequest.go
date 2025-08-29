@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -118,7 +119,7 @@ type _OpcuaOpenRequestBuilder struct {
 
 	parentBuilder *_MessagePDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (OpcuaOpenRequestBuilder) = (*_OpcuaOpenRequestBuilder)(nil)
@@ -142,10 +143,7 @@ func (b *_OpcuaOpenRequestBuilder) WithOpenRequestBuilder(builderSupplier func(O
 	var err error
 	b.OpenRequest, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "OpenChannelMessageBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "OpenChannelMessageBuilder failed"))
 	}
 	return b
 }
@@ -160,10 +158,7 @@ func (b *_OpcuaOpenRequestBuilder) WithMessageBuilder(builderSupplier func(Paylo
 	var err error
 	b.Message, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PayloadBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PayloadBuilder failed"))
 	}
 	return b
 }
@@ -175,19 +170,13 @@ func (b *_OpcuaOpenRequestBuilder) WithArgTotalLength(totalLength uint32) OpcuaO
 
 func (b *_OpcuaOpenRequestBuilder) Build() (OpcuaOpenRequest, error) {
 	if b.OpenRequest == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'openRequest' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'openRequest' not set"))
 	}
 	if b.Message == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'message' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'message' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpcuaOpenRequest.deepCopy(), nil
 }
@@ -213,8 +202,8 @@ func (b *_OpcuaOpenRequestBuilder) buildForMessagePDU() (MessagePDU, error) {
 
 func (b *_OpcuaOpenRequestBuilder) DeepCopy() any {
 	_copy := b.CreateOpcuaOpenRequestBuilder().(*_OpcuaOpenRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -109,7 +110,7 @@ func NewBACnetReadAccessPropertyBuilder() BACnetReadAccessPropertyBuilder {
 type _BACnetReadAccessPropertyBuilder struct {
 	*_BACnetReadAccessProperty
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetReadAccessPropertyBuilder) = (*_BACnetReadAccessPropertyBuilder)(nil)
@@ -128,10 +129,7 @@ func (b *_BACnetReadAccessPropertyBuilder) WithPropertyIdentifierBuilder(builder
 	var err error
 	b.PropertyIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
 	}
 	return b
 }
@@ -146,10 +144,7 @@ func (b *_BACnetReadAccessPropertyBuilder) WithOptionalArrayIndexBuilder(builder
 	var err error
 	b.ArrayIndex, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -164,10 +159,7 @@ func (b *_BACnetReadAccessPropertyBuilder) WithOptionalReadResultBuilder(builder
 	var err error
 	b.ReadResult, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetReadAccessPropertyReadResultBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetReadAccessPropertyReadResultBuilder failed"))
 	}
 	return b
 }
@@ -179,13 +171,10 @@ func (b *_BACnetReadAccessPropertyBuilder) WithArgObjectTypeArgument(objectTypeA
 
 func (b *_BACnetReadAccessPropertyBuilder) Build() (BACnetReadAccessProperty, error) {
 	if b.PropertyIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'propertyIdentifier' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetReadAccessProperty.deepCopy(), nil
 }
@@ -200,8 +189,8 @@ func (b *_BACnetReadAccessPropertyBuilder) MustBuild() BACnetReadAccessProperty 
 
 func (b *_BACnetReadAccessPropertyBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetReadAccessPropertyBuilder().(*_BACnetReadAccessPropertyBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

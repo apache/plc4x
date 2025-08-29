@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesLiftCarDriveStatusBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesLiftCarDriveStatusBuilder) = (*_BACnetPropertyStatesLiftCarDriveStatusBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) WithLiftCarDriveStatusB
 	var err error
 	b.LiftCarDriveStatus, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLiftCarDriveStatusTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLiftCarDriveStatusTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) Build() (BACnetPropertyStatesLiftCarDriveStatus, error) {
 	if b.LiftCarDriveStatus == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'liftCarDriveStatus' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'liftCarDriveStatus' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesLiftCarDriveStatus.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) buildForBACnetPropertyS
 
 func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesLiftCarDriveStatusBuilder().(*_BACnetPropertyStatesLiftCarDriveStatusBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

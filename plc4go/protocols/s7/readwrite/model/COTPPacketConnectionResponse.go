@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -109,7 +110,7 @@ type _COTPPacketConnectionResponseBuilder struct {
 
 	parentBuilder *_COTPPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (COTPPacketConnectionResponseBuilder) = (*_COTPPacketConnectionResponseBuilder)(nil)
@@ -139,8 +140,8 @@ func (b *_COTPPacketConnectionResponseBuilder) WithProtocolClass(protocolClass C
 }
 
 func (b *_COTPPacketConnectionResponseBuilder) Build() (COTPPacketConnectionResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._COTPPacketConnectionResponse.deepCopy(), nil
 }
@@ -166,8 +167,8 @@ func (b *_COTPPacketConnectionResponseBuilder) buildForCOTPPacket() (COTPPacket,
 
 func (b *_COTPPacketConnectionResponseBuilder) DeepCopy() any {
 	_copy := b.CreateCOTPPacketConnectionResponseBuilder().(*_COTPPacketConnectionResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

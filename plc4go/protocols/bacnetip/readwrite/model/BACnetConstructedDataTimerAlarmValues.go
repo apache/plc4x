@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _BACnetConstructedDataTimerAlarmValuesBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataTimerAlarmValuesBuilder) = (*_BACnetConstructedDataTimerAlarmValuesBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) WithAlarmValues(alarmVal
 }
 
 func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) Build() (BACnetConstructedDataTimerAlarmValues, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTimerAlarmValues.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) buildForBACnetConstructe
 
 func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataTimerAlarmValuesBuilder().(*_BACnetConstructedDataTimerAlarmValuesBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

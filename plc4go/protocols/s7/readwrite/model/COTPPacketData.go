@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _COTPPacketDataBuilder struct {
 
 	parentBuilder *_COTPPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (COTPPacketDataBuilder) = (*_COTPPacketDataBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_COTPPacketDataBuilder) WithTpduRef(tpduRef uint8) COTPPacketDataBuilde
 }
 
 func (b *_COTPPacketDataBuilder) Build() (COTPPacketData, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._COTPPacketData.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_COTPPacketDataBuilder) buildForCOTPPacket() (COTPPacket, error) {
 
 func (b *_COTPPacketDataBuilder) DeepCopy() any {
 	_copy := b.CreateCOTPPacketDataBuilder().(*_COTPPacketDataBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

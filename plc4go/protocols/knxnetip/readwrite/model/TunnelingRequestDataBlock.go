@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -92,7 +93,7 @@ func NewTunnelingRequestDataBlockBuilder() TunnelingRequestDataBlockBuilder {
 type _TunnelingRequestDataBlockBuilder struct {
 	*_TunnelingRequestDataBlock
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TunnelingRequestDataBlockBuilder) = (*_TunnelingRequestDataBlockBuilder)(nil)
@@ -112,8 +113,8 @@ func (b *_TunnelingRequestDataBlockBuilder) WithSequenceCounter(sequenceCounter 
 }
 
 func (b *_TunnelingRequestDataBlockBuilder) Build() (TunnelingRequestDataBlock, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TunnelingRequestDataBlock.deepCopy(), nil
 }
@@ -128,8 +129,8 @@ func (b *_TunnelingRequestDataBlockBuilder) MustBuild() TunnelingRequestDataBloc
 
 func (b *_TunnelingRequestDataBlockBuilder) DeepCopy() any {
 	_copy := b.CreateTunnelingRequestDataBlockBuilder().(*_TunnelingRequestDataBlockBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

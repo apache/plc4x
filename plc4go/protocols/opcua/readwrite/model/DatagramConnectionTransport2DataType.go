@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -131,7 +132,7 @@ type _DatagramConnectionTransport2DataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DatagramConnectionTransport2DataTypeBuilder) = (*_DatagramConnectionTransport2DataTypeBuilder)(nil)
@@ -155,10 +156,7 @@ func (b *_DatagramConnectionTransport2DataTypeBuilder) WithDiscoveryAddressBuild
 	var err error
 	b.DiscoveryAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -183,10 +181,7 @@ func (b *_DatagramConnectionTransport2DataTypeBuilder) WithQosCategoryBuilder(bu
 	var err error
 	b.QosCategory, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -198,19 +193,13 @@ func (b *_DatagramConnectionTransport2DataTypeBuilder) WithDatagramQos(datagramQ
 
 func (b *_DatagramConnectionTransport2DataTypeBuilder) Build() (DatagramConnectionTransport2DataType, error) {
 	if b.DiscoveryAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'discoveryAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'discoveryAddress' not set"))
 	}
 	if b.QosCategory == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'qosCategory' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'qosCategory' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DatagramConnectionTransport2DataType.deepCopy(), nil
 }
@@ -236,8 +225,8 @@ func (b *_DatagramConnectionTransport2DataTypeBuilder) buildForExtensionObjectDe
 
 func (b *_DatagramConnectionTransport2DataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateDatagramConnectionTransport2DataTypeBuilder().(*_DatagramConnectionTransport2DataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

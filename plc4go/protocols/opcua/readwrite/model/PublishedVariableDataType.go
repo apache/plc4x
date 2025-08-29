@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -154,7 +155,7 @@ type _PublishedVariableDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PublishedVariableDataTypeBuilder) = (*_PublishedVariableDataTypeBuilder)(nil)
@@ -178,10 +179,7 @@ func (b *_PublishedVariableDataTypeBuilder) WithPublishedVariableBuilder(builder
 	var err error
 	b.PublishedVariable, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -216,10 +214,7 @@ func (b *_PublishedVariableDataTypeBuilder) WithIndexRangeBuilder(builderSupplie
 	var err error
 	b.IndexRange, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -234,10 +229,7 @@ func (b *_PublishedVariableDataTypeBuilder) WithSubstituteValueBuilder(builderSu
 	var err error
 	b.SubstituteValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "VariantBuilder failed"))
 	}
 	return b
 }
@@ -249,25 +241,16 @@ func (b *_PublishedVariableDataTypeBuilder) WithMetaDataProperties(metaDataPrope
 
 func (b *_PublishedVariableDataTypeBuilder) Build() (PublishedVariableDataType, error) {
 	if b.PublishedVariable == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'publishedVariable' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'publishedVariable' not set"))
 	}
 	if b.IndexRange == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'indexRange' not set"))
 	}
 	if b.SubstituteValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'substituteValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'substituteValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PublishedVariableDataType.deepCopy(), nil
 }
@@ -293,8 +276,8 @@ func (b *_PublishedVariableDataTypeBuilder) buildForExtensionObjectDefinition() 
 
 func (b *_PublishedVariableDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreatePublishedVariableDataTypeBuilder().(*_PublishedVariableDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

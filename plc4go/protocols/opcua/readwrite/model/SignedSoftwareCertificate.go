@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _SignedSoftwareCertificateBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SignedSoftwareCertificateBuilder) = (*_SignedSoftwareCertificateBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_SignedSoftwareCertificateBuilder) WithCertificateDataBuilder(builderSu
 	var err error
 	b.CertificateData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_SignedSoftwareCertificateBuilder) WithSignatureBuilder(builderSupplier
 	var err error
 	b.Signature, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_SignedSoftwareCertificateBuilder) Build() (SignedSoftwareCertificate, error) {
 	if b.CertificateData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'certificateData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'certificateData' not set"))
 	}
 	if b.Signature == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'signature' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'signature' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SignedSoftwareCertificate.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_SignedSoftwareCertificateBuilder) buildForExtensionObjectDefinition() 
 
 func (b *_SignedSoftwareCertificateBuilder) DeepCopy() any {
 	_copy := b.CreateSignedSoftwareCertificateBuilder().(*_SignedSoftwareCertificateBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

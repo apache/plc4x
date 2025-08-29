@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -131,7 +132,7 @@ type _MeasurementDataChannelMeasurementDataBuilder struct {
 
 	parentBuilder *_MeasurementDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MeasurementDataChannelMeasurementDataBuilder) = (*_MeasurementDataChannelMeasurementDataBuilder)(nil)
@@ -176,8 +177,8 @@ func (b *_MeasurementDataChannelMeasurementDataBuilder) WithLsb(lsb uint8) Measu
 }
 
 func (b *_MeasurementDataChannelMeasurementDataBuilder) Build() (MeasurementDataChannelMeasurementData, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MeasurementDataChannelMeasurementData.deepCopy(), nil
 }
@@ -203,8 +204,8 @@ func (b *_MeasurementDataChannelMeasurementDataBuilder) buildForMeasurementData(
 
 func (b *_MeasurementDataChannelMeasurementDataBuilder) DeepCopy() any {
 	_copy := b.CreateMeasurementDataChannelMeasurementDataBuilder().(*_MeasurementDataChannelMeasurementDataBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

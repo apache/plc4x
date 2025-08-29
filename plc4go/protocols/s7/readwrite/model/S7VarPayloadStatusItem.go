@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -85,7 +86,7 @@ func NewS7VarPayloadStatusItemBuilder() S7VarPayloadStatusItemBuilder {
 type _S7VarPayloadStatusItemBuilder struct {
 	*_S7VarPayloadStatusItem
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7VarPayloadStatusItemBuilder) = (*_S7VarPayloadStatusItemBuilder)(nil)
@@ -100,8 +101,8 @@ func (b *_S7VarPayloadStatusItemBuilder) WithReturnCode(returnCode DataTransport
 }
 
 func (b *_S7VarPayloadStatusItemBuilder) Build() (S7VarPayloadStatusItem, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7VarPayloadStatusItem.deepCopy(), nil
 }
@@ -116,8 +117,8 @@ func (b *_S7VarPayloadStatusItemBuilder) MustBuild() S7VarPayloadStatusItem {
 
 func (b *_S7VarPayloadStatusItemBuilder) DeepCopy() any {
 	_copy := b.CreateS7VarPayloadStatusItemBuilder().(*_S7VarPayloadStatusItemBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

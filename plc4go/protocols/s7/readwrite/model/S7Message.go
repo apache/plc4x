@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -146,7 +147,7 @@ type _S7MessageBuilder struct {
 
 	childBuilder _S7MessageChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7MessageBuilder) = (*_S7MessageBuilder)(nil)
@@ -170,10 +171,7 @@ func (b *_S7MessageBuilder) WithOptionalParameterBuilder(builderSupplier func(S7
 	var err error
 	b.Parameter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "S7ParameterBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "S7ParameterBuilder failed"))
 	}
 	return b
 }
@@ -188,17 +186,14 @@ func (b *_S7MessageBuilder) WithOptionalPayloadBuilder(builderSupplier func(S7Pa
 	var err error
 	b.Payload, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "S7PayloadBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "S7PayloadBuilder failed"))
 	}
 	return b
 }
 
 func (b *_S7MessageBuilder) PartialBuild() (S7MessageContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7Message.deepCopy(), nil
 }
@@ -275,8 +270,8 @@ func (b *_S7MessageBuilder) DeepCopy() any {
 	_copy := b.CreateS7MessageBuilder().(*_S7MessageBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7MessageChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

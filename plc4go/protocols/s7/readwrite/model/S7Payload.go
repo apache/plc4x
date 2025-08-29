@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -129,7 +130,7 @@ type _S7PayloadBuilder struct {
 
 	childBuilder _S7PayloadChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadBuilder) = (*_S7PayloadBuilder)(nil)
@@ -144,8 +145,8 @@ func (b *_S7PayloadBuilder) WithArgParameter(parameter S7Parameter) S7PayloadBui
 }
 
 func (b *_S7PayloadBuilder) PartialBuild() (S7PayloadContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7Payload.deepCopy(), nil
 }
@@ -222,8 +223,8 @@ func (b *_S7PayloadBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadBuilder().(*_S7PayloadBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7PayloadChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

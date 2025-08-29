@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -128,7 +129,7 @@ type _CBusMessageBuilder struct {
 
 	childBuilder _CBusMessageChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CBusMessageBuilder) = (*_CBusMessageBuilder)(nil)
@@ -147,8 +148,8 @@ func (b *_CBusMessageBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusMe
 }
 
 func (b *_CBusMessageBuilder) PartialBuild() (CBusMessageContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusMessage.deepCopy(), nil
 }
@@ -205,8 +206,8 @@ func (b *_CBusMessageBuilder) DeepCopy() any {
 	_copy := b.CreateCBusMessageBuilder().(*_CBusMessageBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_CBusMessageChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func NewContinuationPointBuilder() ContinuationPointBuilder {
 type _ContinuationPointBuilder struct {
 	*_ContinuationPoint
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ContinuationPointBuilder) = (*_ContinuationPointBuilder)(nil)
@@ -88,8 +89,8 @@ func (b *_ContinuationPointBuilder) WithMandatoryFields() ContinuationPointBuild
 }
 
 func (b *_ContinuationPointBuilder) Build() (ContinuationPoint, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ContinuationPoint.deepCopy(), nil
 }
@@ -104,8 +105,8 @@ func (b *_ContinuationPointBuilder) MustBuild() ContinuationPoint {
 
 func (b *_ContinuationPointBuilder) DeepCopy() any {
 	_copy := b.CreateContinuationPointBuilder().(*_ContinuationPointBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

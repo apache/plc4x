@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -109,7 +110,7 @@ type _NLMChallengeRequestBuilder struct {
 
 	parentBuilder *_NLMBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NLMChallengeRequestBuilder) = (*_NLMChallengeRequestBuilder)(nil)
@@ -139,8 +140,8 @@ func (b *_NLMChallengeRequestBuilder) WithOriginalTimestamp(originalTimestamp ui
 }
 
 func (b *_NLMChallengeRequestBuilder) Build() (NLMChallengeRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMChallengeRequest.deepCopy(), nil
 }
@@ -166,8 +167,8 @@ func (b *_NLMChallengeRequestBuilder) buildForNLM() (NLM, error) {
 
 func (b *_NLMChallengeRequestBuilder) DeepCopy() any {
 	_copy := b.CreateNLMChallengeRequestBuilder().(*_NLMChallengeRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

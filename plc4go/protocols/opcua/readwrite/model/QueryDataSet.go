@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -119,7 +120,7 @@ type _QueryDataSetBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (QueryDataSetBuilder) = (*_QueryDataSetBuilder)(nil)
@@ -143,10 +144,7 @@ func (b *_QueryDataSetBuilder) WithNodeIdBuilder(builderSupplier func(ExpandedNo
 	var err error
 	b.NodeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
 	return b
 }
@@ -161,10 +159,7 @@ func (b *_QueryDataSetBuilder) WithTypeDefinitionNodeBuilder(builderSupplier fun
 	var err error
 	b.TypeDefinitionNode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
 	return b
 }
@@ -176,19 +171,13 @@ func (b *_QueryDataSetBuilder) WithValues(values ...Variant) QueryDataSetBuilder
 
 func (b *_QueryDataSetBuilder) Build() (QueryDataSet, error) {
 	if b.NodeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nodeId' not set"))
 	}
 	if b.TypeDefinitionNode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'typeDefinitionNode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'typeDefinitionNode' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._QueryDataSet.deepCopy(), nil
 }
@@ -214,8 +203,8 @@ func (b *_QueryDataSetBuilder) buildForExtensionObjectDefinition() (ExtensionObj
 
 func (b *_QueryDataSetBuilder) DeepCopy() any {
 	_copy := b.CreateQueryDataSetBuilder().(*_QueryDataSetBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewInstanceSegmentBuilder() InstanceSegmentBuilder {
 type _InstanceSegmentBuilder struct {
 	*_InstanceSegment
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (InstanceSegmentBuilder) = (*_InstanceSegmentBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_InstanceSegmentBuilder) WithInstance(instance uint8) InstanceSegmentBu
 }
 
 func (b *_InstanceSegmentBuilder) Build() (InstanceSegment, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._InstanceSegment.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_InstanceSegmentBuilder) MustBuild() InstanceSegment {
 
 func (b *_InstanceSegmentBuilder) DeepCopy() any {
 	_copy := b.CreateInstanceSegmentBuilder().(*_InstanceSegmentBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

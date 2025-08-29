@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -120,7 +121,7 @@ func NewStateBuilder() StateBuilder {
 type _StateBuilder struct {
 	*_State
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (StateBuilder) = (*_StateBuilder)(nil)
@@ -170,8 +171,8 @@ func (b *_StateBuilder) WithSIG_1(SIG_1 bool) StateBuilder {
 }
 
 func (b *_StateBuilder) Build() (State, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._State.deepCopy(), nil
 }
@@ -186,8 +187,8 @@ func (b *_StateBuilder) MustBuild() State {
 
 func (b *_StateBuilder) DeepCopy() any {
 	_copy := b.CreateStateBuilder().(*_StateBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

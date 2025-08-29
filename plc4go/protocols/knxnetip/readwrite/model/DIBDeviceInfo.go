@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -150,7 +151,7 @@ func NewDIBDeviceInfoBuilder() DIBDeviceInfoBuilder {
 type _DIBDeviceInfoBuilder struct {
 	*_DIBDeviceInfo
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DIBDeviceInfoBuilder) = (*_DIBDeviceInfoBuilder)(nil)
@@ -179,10 +180,7 @@ func (b *_DIBDeviceInfoBuilder) WithDeviceStatusBuilder(builderSupplier func(Dev
 	var err error
 	b.DeviceStatus, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "DeviceStatusBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "DeviceStatusBuilder failed"))
 	}
 	return b
 }
@@ -197,10 +195,7 @@ func (b *_DIBDeviceInfoBuilder) WithKnxAddressBuilder(builderSupplier func(KnxAd
 	var err error
 	b.KnxAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "KnxAddressBuilder failed"))
 	}
 	return b
 }
@@ -215,10 +210,7 @@ func (b *_DIBDeviceInfoBuilder) WithProjectInstallationIdentifierBuilder(builder
 	var err error
 	b.ProjectInstallationIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ProjectInstallationIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ProjectInstallationIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -238,10 +230,7 @@ func (b *_DIBDeviceInfoBuilder) WithKnxNetIpDeviceMulticastAddressBuilder(builde
 	var err error
 	b.KnxNetIpDeviceMulticastAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "IPAddressBuilder failed"))
 	}
 	return b
 }
@@ -256,10 +245,7 @@ func (b *_DIBDeviceInfoBuilder) WithKnxNetIpDeviceMacAddressBuilder(builderSuppl
 	var err error
 	b.KnxNetIpDeviceMacAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "MACAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "MACAddressBuilder failed"))
 	}
 	return b
 }
@@ -271,37 +257,22 @@ func (b *_DIBDeviceInfoBuilder) WithDeviceFriendlyName(deviceFriendlyName ...byt
 
 func (b *_DIBDeviceInfoBuilder) Build() (DIBDeviceInfo, error) {
 	if b.DeviceStatus == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'deviceStatus' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'deviceStatus' not set"))
 	}
 	if b.KnxAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'knxAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'knxAddress' not set"))
 	}
 	if b.ProjectInstallationIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'projectInstallationIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'projectInstallationIdentifier' not set"))
 	}
 	if b.KnxNetIpDeviceMulticastAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'knxNetIpDeviceMulticastAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'knxNetIpDeviceMulticastAddress' not set"))
 	}
 	if b.KnxNetIpDeviceMacAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'knxNetIpDeviceMacAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'knxNetIpDeviceMacAddress' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DIBDeviceInfo.deepCopy(), nil
 }
@@ -316,8 +287,8 @@ func (b *_DIBDeviceInfoBuilder) MustBuild() DIBDeviceInfo {
 
 func (b *_DIBDeviceInfoBuilder) DeepCopy() any {
 	_copy := b.CreateDIBDeviceInfoBuilder().(*_DIBDeviceInfoBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

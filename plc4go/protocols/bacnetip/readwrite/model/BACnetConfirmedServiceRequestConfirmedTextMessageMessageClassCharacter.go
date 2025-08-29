@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuil
 
 	parentBuilder *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 	var err error
 	b.CharacterValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
 	if b.CharacterValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'characterValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'characterValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

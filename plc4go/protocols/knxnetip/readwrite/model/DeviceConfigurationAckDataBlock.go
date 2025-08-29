@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewDeviceConfigurationAckDataBlockBuilder() DeviceConfigurationAckDataBlock
 type _DeviceConfigurationAckDataBlockBuilder struct {
 	*_DeviceConfigurationAckDataBlock
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DeviceConfigurationAckDataBlockBuilder) = (*_DeviceConfigurationAckDataBlockBuilder)(nil)
@@ -120,8 +121,8 @@ func (b *_DeviceConfigurationAckDataBlockBuilder) WithStatus(status Status) Devi
 }
 
 func (b *_DeviceConfigurationAckDataBlockBuilder) Build() (DeviceConfigurationAckDataBlock, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DeviceConfigurationAckDataBlock.deepCopy(), nil
 }
@@ -136,8 +137,8 @@ func (b *_DeviceConfigurationAckDataBlockBuilder) MustBuild() DeviceConfiguratio
 
 func (b *_DeviceConfigurationAckDataBlockBuilder) DeepCopy() any {
 	_copy := b.CreateDeviceConfigurationAckDataBlockBuilder().(*_DeviceConfigurationAckDataBlockBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

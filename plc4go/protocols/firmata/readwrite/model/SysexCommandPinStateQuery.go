@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _SysexCommandPinStateQueryBuilder struct {
 
 	parentBuilder *_SysexCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SysexCommandPinStateQueryBuilder) = (*_SysexCommandPinStateQueryBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_SysexCommandPinStateQueryBuilder) WithPin(pin uint8) SysexCommandPinSt
 }
 
 func (b *_SysexCommandPinStateQueryBuilder) Build() (SysexCommandPinStateQuery, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SysexCommandPinStateQuery.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_SysexCommandPinStateQueryBuilder) buildForSysexCommand() (SysexCommand
 
 func (b *_SysexCommandPinStateQueryBuilder) DeepCopy() any {
 	_copy := b.CreateSysexCommandPinStateQueryBuilder().(*_SysexCommandPinStateQueryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

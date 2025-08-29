@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _NLMEstablishConnectionToNetworkBuilder struct {
 
 	parentBuilder *_NLMBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NLMEstablishConnectionToNetworkBuilder) = (*_NLMEstablishConnectionToNetworkBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_NLMEstablishConnectionToNetworkBuilder) WithTerminationTime(terminatio
 }
 
 func (b *_NLMEstablishConnectionToNetworkBuilder) Build() (NLMEstablishConnectionToNetwork, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMEstablishConnectionToNetwork.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_NLMEstablishConnectionToNetworkBuilder) buildForNLM() (NLM, error) {
 
 func (b *_NLMEstablishConnectionToNetworkBuilder) DeepCopy() any {
 	_copy := b.CreateNLMEstablishConnectionToNetworkBuilder().(*_NLMEstablishConnectionToNetworkBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -123,7 +124,7 @@ type _APDUSegmentAckBuilder struct {
 
 	parentBuilder *_APDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (APDUSegmentAckBuilder) = (*_APDUSegmentAckBuilder)(nil)
@@ -163,8 +164,8 @@ func (b *_APDUSegmentAckBuilder) WithActualWindowSize(actualWindowSize uint8) AP
 }
 
 func (b *_APDUSegmentAckBuilder) Build() (APDUSegmentAck, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._APDUSegmentAck.deepCopy(), nil
 }
@@ -190,8 +191,8 @@ func (b *_APDUSegmentAckBuilder) buildForAPDU() (APDU, error) {
 
 func (b *_APDUSegmentAckBuilder) DeepCopy() any {
 	_copy := b.CreateAPDUSegmentAckBuilder().(*_APDUSegmentAckBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

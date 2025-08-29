@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _LPollDataReqBuilder struct {
 
 	parentBuilder *_CEMIBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LPollDataReqBuilder) = (*_LPollDataReqBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_LPollDataReqBuilder) WithMandatoryFields() LPollDataReqBuilder {
 }
 
 func (b *_LPollDataReqBuilder) Build() (LPollDataReq, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LPollDataReq.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_LPollDataReqBuilder) buildForCEMI() (CEMI, error) {
 
 func (b *_LPollDataReqBuilder) DeepCopy() any {
 	_copy := b.CreateLPollDataReqBuilder().(*_LPollDataReqBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

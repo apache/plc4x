@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -117,7 +118,7 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder struct {
 
 	parentBuilder *_S7PayloadUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder)(nil)
@@ -152,8 +153,8 @@ func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) WithOpt
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest.deepCopy(), nil
 }
@@ -179,8 +180,8 @@ func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) buildFo
 
 func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

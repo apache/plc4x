@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _LightingDataOffBuilder struct {
 
 	parentBuilder *_LightingDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LightingDataOffBuilder) = (*_LightingDataOffBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_LightingDataOffBuilder) WithGroup(group byte) LightingDataOffBuilder {
 }
 
 func (b *_LightingDataOffBuilder) Build() (LightingDataOff, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LightingDataOff.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_LightingDataOffBuilder) buildForLightingData() (LightingData, error) {
 
 func (b *_LightingDataOffBuilder) DeepCopy() any {
 	_copy := b.CreateLightingDataOffBuilder().(*_LightingDataOffBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

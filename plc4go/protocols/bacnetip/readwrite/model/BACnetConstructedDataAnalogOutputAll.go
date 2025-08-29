@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _BACnetConstructedDataAnalogOutputAllBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataAnalogOutputAllBuilder) = (*_BACnetConstructedDataAnalogOutputAllBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_BACnetConstructedDataAnalogOutputAllBuilder) WithMandatoryFields() BAC
 }
 
 func (b *_BACnetConstructedDataAnalogOutputAllBuilder) Build() (BACnetConstructedDataAnalogOutputAll, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataAnalogOutputAll.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_BACnetConstructedDataAnalogOutputAllBuilder) buildForBACnetConstructed
 
 func (b *_BACnetConstructedDataAnalogOutputAllBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataAnalogOutputAllBuilder().(*_BACnetConstructedDataAnalogOutputAllBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

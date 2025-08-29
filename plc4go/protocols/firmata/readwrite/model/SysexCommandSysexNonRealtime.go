@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _SysexCommandSysexNonRealtimeBuilder struct {
 
 	parentBuilder *_SysexCommandBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SysexCommandSysexNonRealtimeBuilder) = (*_SysexCommandSysexNonRealtimeBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_SysexCommandSysexNonRealtimeBuilder) WithMandatoryFields() SysexComman
 }
 
 func (b *_SysexCommandSysexNonRealtimeBuilder) Build() (SysexCommandSysexNonRealtime, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SysexCommandSysexNonRealtime.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_SysexCommandSysexNonRealtimeBuilder) buildForSysexCommand() (SysexComm
 
 func (b *_SysexCommandSysexNonRealtimeBuilder) DeepCopy() any {
 	_copy := b.CreateSysexCommandSysexNonRealtimeBuilder().(*_SysexCommandSysexNonRealtimeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

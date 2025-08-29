@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ func NewAlarm8MessageQueryTypeBuilder() Alarm8MessageQueryTypeBuilder {
 type _Alarm8MessageQueryTypeBuilder struct {
 	*_Alarm8MessageQueryType
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (Alarm8MessageQueryTypeBuilder) = (*_Alarm8MessageQueryTypeBuilder)(nil)
@@ -150,8 +151,8 @@ func (b *_Alarm8MessageQueryTypeBuilder) WithMessageObjects(messageObjects ...Al
 }
 
 func (b *_Alarm8MessageQueryTypeBuilder) Build() (Alarm8MessageQueryType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Alarm8MessageQueryType.deepCopy(), nil
 }
@@ -166,8 +167,8 @@ func (b *_Alarm8MessageQueryTypeBuilder) MustBuild() Alarm8MessageQueryType {
 
 func (b *_Alarm8MessageQueryTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAlarm8MessageQueryTypeBuilder().(*_Alarm8MessageQueryTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesLiftGroupModeBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesLiftGroupModeBuilder) = (*_BACnetPropertyStatesLiftGroupModeBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesLiftGroupModeBuilder) WithLiftGroupModeBuilder(bui
 	var err error
 	b.LiftGroupMode, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetLiftGroupModeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetLiftGroupModeTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesLiftGroupModeBuilder) Build() (BACnetPropertyStatesLiftGroupMode, error) {
 	if b.LiftGroupMode == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'liftGroupMode' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'liftGroupMode' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesLiftGroupMode.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesLiftGroupModeBuilder) buildForBACnetPropertyStates
 
 func (b *_BACnetPropertyStatesLiftGroupModeBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesLiftGroupModeBuilder().(*_BACnetPropertyStatesLiftGroupModeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

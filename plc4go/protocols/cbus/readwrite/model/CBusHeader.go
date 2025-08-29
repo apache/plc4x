@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewCBusHeaderBuilder() CBusHeaderBuilder {
 type _CBusHeaderBuilder struct {
 	*_CBusHeader
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CBusHeaderBuilder) = (*_CBusHeaderBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_CBusHeaderBuilder) WithDestinationAddressType(destinationAddressType D
 }
 
 func (b *_CBusHeaderBuilder) Build() (CBusHeader, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusHeader.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_CBusHeaderBuilder) MustBuild() CBusHeader {
 
 func (b *_CBusHeaderBuilder) DeepCopy() any {
 	_copy := b.CreateCBusHeaderBuilder().(*_CBusHeaderBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

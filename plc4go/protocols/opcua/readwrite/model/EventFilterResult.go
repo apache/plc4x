@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -114,7 +115,7 @@ type _EventFilterResultBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EventFilterResultBuilder) = (*_EventFilterResultBuilder)(nil)
@@ -148,23 +149,17 @@ func (b *_EventFilterResultBuilder) WithWhereClauseResultBuilder(builderSupplier
 	var err error
 	b.WhereClauseResult, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ContentFilterResultBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ContentFilterResultBuilder failed"))
 	}
 	return b
 }
 
 func (b *_EventFilterResultBuilder) Build() (EventFilterResult, error) {
 	if b.WhereClauseResult == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'whereClauseResult' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'whereClauseResult' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EventFilterResult.deepCopy(), nil
 }
@@ -190,8 +185,8 @@ func (b *_EventFilterResultBuilder) buildForExtensionObjectDefinition() (Extensi
 
 func (b *_EventFilterResultBuilder) DeepCopy() any {
 	_copy := b.CreateEventFilterResultBuilder().(*_EventFilterResultBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

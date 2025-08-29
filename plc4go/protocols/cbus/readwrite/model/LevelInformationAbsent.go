@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -93,7 +94,7 @@ type _LevelInformationAbsentBuilder struct {
 
 	parentBuilder *_LevelInformationBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LevelInformationAbsentBuilder) = (*_LevelInformationAbsentBuilder)(nil)
@@ -108,8 +109,8 @@ func (b *_LevelInformationAbsentBuilder) WithMandatoryFields() LevelInformationA
 }
 
 func (b *_LevelInformationAbsentBuilder) Build() (LevelInformationAbsent, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LevelInformationAbsent.deepCopy(), nil
 }
@@ -135,8 +136,8 @@ func (b *_LevelInformationAbsentBuilder) buildForLevelInformation() (LevelInform
 
 func (b *_LevelInformationAbsentBuilder) DeepCopy() any {
 	_copy := b.CreateLevelInformationAbsentBuilder().(*_LevelInformationAbsentBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

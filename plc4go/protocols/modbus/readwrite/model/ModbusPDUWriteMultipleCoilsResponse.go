@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _ModbusPDUWriteMultipleCoilsResponseBuilder struct {
 
 	parentBuilder *_ModbusPDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ModbusPDUWriteMultipleCoilsResponseBuilder) = (*_ModbusPDUWriteMultipleCoilsResponseBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithQuantity(quantity uint
 }
 
 func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) Build() (ModbusPDUWriteMultipleCoilsResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUWriteMultipleCoilsResponse.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) buildForModbusPDU() (Modbu
 
 func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) DeepCopy() any {
 	_copy := b.CreateModbusPDUWriteMultipleCoilsResponseBuilder().(*_ModbusPDUWriteMultipleCoilsResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -122,7 +123,7 @@ func NewGroupObjectDescriptorRealisationType1Builder() GroupObjectDescriptorReal
 type _GroupObjectDescriptorRealisationType1Builder struct {
 	*_GroupObjectDescriptorRealisationType1
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (GroupObjectDescriptorRealisationType1Builder) = (*_GroupObjectDescriptorRealisationType1Builder)(nil)
@@ -172,8 +173,8 @@ func (b *_GroupObjectDescriptorRealisationType1Builder) WithValueType(valueType 
 }
 
 func (b *_GroupObjectDescriptorRealisationType1Builder) Build() (GroupObjectDescriptorRealisationType1, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._GroupObjectDescriptorRealisationType1.deepCopy(), nil
 }
@@ -188,8 +189,8 @@ func (b *_GroupObjectDescriptorRealisationType1Builder) MustBuild() GroupObjectD
 
 func (b *_GroupObjectDescriptorRealisationType1Builder) DeepCopy() any {
 	_copy := b.CreateGroupObjectDescriptorRealisationType1Builder().(*_GroupObjectDescriptorRealisationType1Builder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

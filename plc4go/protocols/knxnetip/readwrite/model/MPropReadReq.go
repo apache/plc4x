@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -121,7 +122,7 @@ type _MPropReadReqBuilder struct {
 
 	parentBuilder *_CEMIBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MPropReadReqBuilder) = (*_MPropReadReqBuilder)(nil)
@@ -161,8 +162,8 @@ func (b *_MPropReadReqBuilder) WithStartIndex(startIndex uint16) MPropReadReqBui
 }
 
 func (b *_MPropReadReqBuilder) Build() (MPropReadReq, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MPropReadReq.deepCopy(), nil
 }
@@ -188,8 +189,8 @@ func (b *_MPropReadReqBuilder) buildForCEMI() (CEMI, error) {
 
 func (b *_MPropReadReqBuilder) DeepCopy() any {
 	_copy := b.CreateMPropReadReqBuilder().(*_MPropReadReqBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

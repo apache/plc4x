@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyStatesSecurityLevelBuilder struct {
 
 	parentBuilder *_BACnetPropertyStatesBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyStatesSecurityLevelBuilder) = (*_BACnetPropertyStatesSecurityLevelBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyStatesSecurityLevelBuilder) WithSecurityLevelBuilder(bui
 	var err error
 	b.SecurityLevel, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetSecurityLevelTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetSecurityLevelTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyStatesSecurityLevelBuilder) Build() (BACnetPropertyStatesSecurityLevel, error) {
 	if b.SecurityLevel == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securityLevel' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityLevel' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesSecurityLevel.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyStatesSecurityLevelBuilder) buildForBACnetPropertyStates
 
 func (b *_BACnetPropertyStatesSecurityLevelBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyStatesSecurityLevelBuilder().(*_BACnetPropertyStatesSecurityLevelBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

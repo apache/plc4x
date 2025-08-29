@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -153,7 +154,7 @@ type _PubSubConfiguration2DataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PubSubConfiguration2DataTypeBuilder) = (*_PubSubConfiguration2DataTypeBuilder)(nil)
@@ -218,8 +219,8 @@ func (b *_PubSubConfiguration2DataTypeBuilder) WithConfigurationProperties(confi
 }
 
 func (b *_PubSubConfiguration2DataTypeBuilder) Build() (PubSubConfiguration2DataType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PubSubConfiguration2DataType.deepCopy(), nil
 }
@@ -245,8 +246,8 @@ func (b *_PubSubConfiguration2DataTypeBuilder) buildForExtensionObjectDefinition
 
 func (b *_PubSubConfiguration2DataTypeBuilder) DeepCopy() any {
 	_copy := b.CreatePubSubConfiguration2DataTypeBuilder().(*_PubSubConfiguration2DataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

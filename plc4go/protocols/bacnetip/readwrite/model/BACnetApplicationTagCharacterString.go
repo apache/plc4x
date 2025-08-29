@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetApplicationTagCharacterStringBuilder struct {
 
 	parentBuilder *_BACnetApplicationTagBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetApplicationTagCharacterStringBuilder) = (*_BACnetApplicationTagCharacterStringBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetApplicationTagCharacterStringBuilder) WithPayloadBuilder(builder
 	var err error
 	b.Payload, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTagPayloadCharacterStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagPayloadCharacterStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetApplicationTagCharacterStringBuilder) Build() (BACnetApplicationTagCharacterString, error) {
 	if b.Payload == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'payload' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetApplicationTagCharacterString.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetApplicationTagCharacterStringBuilder) buildForBACnetApplicationT
 
 func (b *_BACnetApplicationTagCharacterStringBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetApplicationTagCharacterStringBuilder().(*_BACnetApplicationTagCharacterStringBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

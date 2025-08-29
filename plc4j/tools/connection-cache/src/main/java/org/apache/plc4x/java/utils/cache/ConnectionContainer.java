@@ -71,6 +71,12 @@ class ConnectionContainer {
         // Clear the queue.
         queue.clear();
 
+        // Stop the idle timer.
+        if(idleTimer != null) {
+            idleTimer.cancel();
+            idleTimer.purge();
+        }
+
         // If the connection is currently used, close it.
         if(leasedConnection != null) {
             try {

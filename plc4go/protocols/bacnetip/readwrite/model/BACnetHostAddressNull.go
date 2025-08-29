@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetHostAddressNullBuilder struct {
 
 	parentBuilder *_BACnetHostAddressBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetHostAddressNullBuilder) = (*_BACnetHostAddressNullBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetHostAddressNullBuilder) WithNoneBuilder(builderSupplier func(BAC
 	var err error
 	b.None, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetHostAddressNullBuilder) Build() (BACnetHostAddressNull, error) {
 	if b.None == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'none' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'none' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetHostAddressNull.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetHostAddressNullBuilder) buildForBACnetHostAddress() (BACnetHostA
 
 func (b *_BACnetHostAddressNullBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetHostAddressNullBuilder().(*_BACnetHostAddressNullBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

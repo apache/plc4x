@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -136,7 +137,7 @@ type _AxisInformationBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AxisInformationBuilder) = (*_AxisInformationBuilder)(nil)
@@ -160,10 +161,7 @@ func (b *_AxisInformationBuilder) WithEngineeringUnitsBuilder(builderSupplier fu
 	var err error
 	b.EngineeringUnits, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "EUInformationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "EUInformationBuilder failed"))
 	}
 	return b
 }
@@ -178,10 +176,7 @@ func (b *_AxisInformationBuilder) WithEURangeBuilder(builderSupplier func(RangeB
 	var err error
 	b.EURange, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "RangeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RangeBuilder failed"))
 	}
 	return b
 }
@@ -196,10 +191,7 @@ func (b *_AxisInformationBuilder) WithTitleBuilder(builderSupplier func(Localize
 	var err error
 	b.Title, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
 	return b
 }
@@ -216,25 +208,16 @@ func (b *_AxisInformationBuilder) WithAxisSteps(axisSteps ...float64) AxisInform
 
 func (b *_AxisInformationBuilder) Build() (AxisInformation, error) {
 	if b.EngineeringUnits == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'engineeringUnits' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'engineeringUnits' not set"))
 	}
 	if b.EURange == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'eURange' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'eURange' not set"))
 	}
 	if b.Title == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'title' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'title' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AxisInformation.deepCopy(), nil
 }
@@ -260,8 +243,8 @@ func (b *_AxisInformationBuilder) buildForExtensionObjectDefinition() (Extension
 
 func (b *_AxisInformationBuilder) DeepCopy() any {
 	_copy := b.CreateAxisInformationBuilder().(*_AxisInformationBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

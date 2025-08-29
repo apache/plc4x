@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _BACnetConstructedDataAlertEnrollmentAllBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataAlertEnrollmentAllBuilder) = (*_BACnetConstructedDataAlertEnrollmentAllBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) WithMandatoryFields() 
 }
 
 func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) Build() (BACnetConstructedDataAlertEnrollmentAll, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataAlertEnrollmentAll.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) buildForBACnetConstruc
 
 func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataAlertEnrollmentAllBuilder().(*_BACnetConstructedDataAlertEnrollmentAllBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

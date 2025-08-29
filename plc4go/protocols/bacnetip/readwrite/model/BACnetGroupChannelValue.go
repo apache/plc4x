@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -107,7 +108,7 @@ func NewBACnetGroupChannelValueBuilder() BACnetGroupChannelValueBuilder {
 type _BACnetGroupChannelValueBuilder struct {
 	*_BACnetGroupChannelValue
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetGroupChannelValueBuilder) = (*_BACnetGroupChannelValueBuilder)(nil)
@@ -126,10 +127,7 @@ func (b *_BACnetGroupChannelValueBuilder) WithChannelBuilder(builderSupplier fun
 	var err error
 	b.Channel, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -144,10 +142,7 @@ func (b *_BACnetGroupChannelValueBuilder) WithOptionalOverridingPriorityBuilder(
 	var err error
 	b.OverridingPriority, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -162,29 +157,20 @@ func (b *_BACnetGroupChannelValueBuilder) WithValueBuilder(builderSupplier func(
 	var err error
 	b.Value, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetChannelValueBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetChannelValueBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetGroupChannelValueBuilder) Build() (BACnetGroupChannelValue, error) {
 	if b.Channel == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'channel' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'channel' not set"))
 	}
 	if b.Value == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'value' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'value' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetGroupChannelValue.deepCopy(), nil
 }
@@ -199,8 +185,8 @@ func (b *_BACnetGroupChannelValueBuilder) MustBuild() BACnetGroupChannelValue {
 
 func (b *_BACnetGroupChannelValueBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetGroupChannelValueBuilder().(*_BACnetGroupChannelValueBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

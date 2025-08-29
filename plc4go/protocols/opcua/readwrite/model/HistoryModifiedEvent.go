@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _HistoryModifiedEventBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (HistoryModifiedEventBuilder) = (*_HistoryModifiedEventBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_HistoryModifiedEventBuilder) WithModificationInfos(modificationInfos .
 }
 
 func (b *_HistoryModifiedEventBuilder) Build() (HistoryModifiedEvent, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HistoryModifiedEvent.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_HistoryModifiedEventBuilder) buildForExtensionObjectDefinition() (Exte
 
 func (b *_HistoryModifiedEventBuilder) DeepCopy() any {
 	_copy := b.CreateHistoryModifiedEventBuilder().(*_HistoryModifiedEventBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

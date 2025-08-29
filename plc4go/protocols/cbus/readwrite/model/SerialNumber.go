@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewSerialNumberBuilder() SerialNumberBuilder {
 type _SerialNumberBuilder struct {
 	*_SerialNumber
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SerialNumberBuilder) = (*_SerialNumberBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_SerialNumberBuilder) WithOctet4(octet4 byte) SerialNumberBuilder {
 }
 
 func (b *_SerialNumberBuilder) Build() (SerialNumber, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SerialNumber.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_SerialNumberBuilder) MustBuild() SerialNumber {
 
 func (b *_SerialNumberBuilder) DeepCopy() any {
 	_copy := b.CreateSerialNumberBuilder().(*_SerialNumberBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

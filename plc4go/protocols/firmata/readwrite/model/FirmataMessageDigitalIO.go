@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -105,7 +106,7 @@ type _FirmataMessageDigitalIOBuilder struct {
 
 	parentBuilder *_FirmataMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (FirmataMessageDigitalIOBuilder) = (*_FirmataMessageDigitalIOBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_FirmataMessageDigitalIOBuilder) WithData(data ...int8) FirmataMessageD
 }
 
 func (b *_FirmataMessageDigitalIOBuilder) Build() (FirmataMessageDigitalIO, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._FirmataMessageDigitalIO.deepCopy(), nil
 }
@@ -157,8 +158,8 @@ func (b *_FirmataMessageDigitalIOBuilder) buildForFirmataMessage() (FirmataMessa
 
 func (b *_FirmataMessageDigitalIOBuilder) DeepCopy() any {
 	_copy := b.CreateFirmataMessageDigitalIOBuilder().(*_FirmataMessageDigitalIOBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

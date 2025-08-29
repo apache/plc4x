@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -101,7 +102,7 @@ type _MediaTransportControlDataNextPreviousCategoryBuilder struct {
 
 	parentBuilder *_MediaTransportControlDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MediaTransportControlDataNextPreviousCategoryBuilder) = (*_MediaTransportControlDataNextPreviousCategoryBuilder)(nil)
@@ -121,8 +122,8 @@ func (b *_MediaTransportControlDataNextPreviousCategoryBuilder) WithOperation(op
 }
 
 func (b *_MediaTransportControlDataNextPreviousCategoryBuilder) Build() (MediaTransportControlDataNextPreviousCategory, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MediaTransportControlDataNextPreviousCategory.deepCopy(), nil
 }
@@ -148,8 +149,8 @@ func (b *_MediaTransportControlDataNextPreviousCategoryBuilder) buildForMediaTra
 
 func (b *_MediaTransportControlDataNextPreviousCategoryBuilder) DeepCopy() any {
 	_copy := b.CreateMediaTransportControlDataNextPreviousCategoryBuilder().(*_MediaTransportControlDataNextPreviousCategoryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _DescriptionRequestBuilder struct {
 
 	parentBuilder *_KnxNetIpMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DescriptionRequestBuilder) = (*_DescriptionRequestBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_DescriptionRequestBuilder) WithHpaiControlEndpointBuilder(builderSuppl
 	var err error
 	b.HpaiControlEndpoint, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HPAIControlEndpointBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HPAIControlEndpointBuilder failed"))
 	}
 	return b
 }
 
 func (b *_DescriptionRequestBuilder) Build() (DescriptionRequest, error) {
 	if b.HpaiControlEndpoint == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'hpaiControlEndpoint' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'hpaiControlEndpoint' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DescriptionRequest.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_DescriptionRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage,
 
 func (b *_DescriptionRequestBuilder) DeepCopy() any {
 	_copy := b.CreateDescriptionRequestBuilder().(*_DescriptionRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

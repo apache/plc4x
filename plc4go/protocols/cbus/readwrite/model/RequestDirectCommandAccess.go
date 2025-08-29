@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -112,7 +113,7 @@ type _RequestDirectCommandAccessBuilder struct {
 
 	parentBuilder *_RequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RequestDirectCommandAccessBuilder) = (*_RequestDirectCommandAccessBuilder)(nil)
@@ -136,10 +137,7 @@ func (b *_RequestDirectCommandAccessBuilder) WithCalDataBuilder(builderSupplier 
 	var err error
 	b.CalData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CALDataBuilder failed"))
 	}
 	return b
 }
@@ -154,23 +152,17 @@ func (b *_RequestDirectCommandAccessBuilder) WithOptionalAlphaBuilder(builderSup
 	var err error
 	b.Alpha, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AlphaBuilder failed"))
 	}
 	return b
 }
 
 func (b *_RequestDirectCommandAccessBuilder) Build() (RequestDirectCommandAccess, error) {
 	if b.CalData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'calData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'calData' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RequestDirectCommandAccess.deepCopy(), nil
 }
@@ -196,8 +188,8 @@ func (b *_RequestDirectCommandAccessBuilder) buildForRequest() (Request, error) 
 
 func (b *_RequestDirectCommandAccessBuilder) DeepCopy() any {
 	_copy := b.CreateRequestDirectCommandAccessBuilder().(*_RequestDirectCommandAccessBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

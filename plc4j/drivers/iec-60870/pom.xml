@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.13.0</version>
+    <version>0.13.1</version>
   </parent>
 
   <artifactId>plc4j-driver-iec-60870</artifactId>
@@ -32,7 +32,7 @@
   <description>Implementation of a PLC4X driver for the IEC 60870-5-104 protocol.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -91,18 +91,18 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
     </dependency>
 
     <dependency>
@@ -121,7 +121,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -133,7 +133,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-iec-60870</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -171,7 +171,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>0.13.0</version>
+          <version>0.13.1</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -179,7 +179,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-iec-60870</artifactId>
-          <version>0.13.0</version>
+          <version>0.13.1</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

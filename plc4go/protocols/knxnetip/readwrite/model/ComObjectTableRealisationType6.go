@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _ComObjectTableRealisationType6Builder struct {
 
 	parentBuilder *_ComObjectTableBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ComObjectTableRealisationType6Builder) = (*_ComObjectTableRealisationType6Builder)(nil)
@@ -126,23 +127,17 @@ func (b *_ComObjectTableRealisationType6Builder) WithComObjectDescriptorsBuilder
 	var err error
 	b.ComObjectDescriptors, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "GroupObjectDescriptorRealisationType6Builder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "GroupObjectDescriptorRealisationType6Builder failed"))
 	}
 	return b
 }
 
 func (b *_ComObjectTableRealisationType6Builder) Build() (ComObjectTableRealisationType6, error) {
 	if b.ComObjectDescriptors == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'comObjectDescriptors' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'comObjectDescriptors' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ComObjectTableRealisationType6.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_ComObjectTableRealisationType6Builder) buildForComObjectTable() (ComOb
 
 func (b *_ComObjectTableRealisationType6Builder) DeepCopy() any {
 	_copy := b.CreateComObjectTableRealisationType6Builder().(*_ComObjectTableRealisationType6Builder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

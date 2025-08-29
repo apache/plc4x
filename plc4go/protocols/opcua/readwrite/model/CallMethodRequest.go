@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -119,7 +120,7 @@ type _CallMethodRequestBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CallMethodRequestBuilder) = (*_CallMethodRequestBuilder)(nil)
@@ -143,10 +144,7 @@ func (b *_CallMethodRequestBuilder) WithObjectIdBuilder(builderSupplier func(Nod
 	var err error
 	b.ObjectId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -161,10 +159,7 @@ func (b *_CallMethodRequestBuilder) WithMethodIdBuilder(builderSupplier func(Nod
 	var err error
 	b.MethodId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -176,19 +171,13 @@ func (b *_CallMethodRequestBuilder) WithInputArguments(inputArguments ...Variant
 
 func (b *_CallMethodRequestBuilder) Build() (CallMethodRequest, error) {
 	if b.ObjectId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'objectId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'objectId' not set"))
 	}
 	if b.MethodId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'methodId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'methodId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CallMethodRequest.deepCopy(), nil
 }
@@ -214,8 +203,8 @@ func (b *_CallMethodRequestBuilder) buildForExtensionObjectDefinition() (Extensi
 
 func (b *_CallMethodRequestBuilder) DeepCopy() any {
 	_copy := b.CreateCallMethodRequestBuilder().(*_CallMethodRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

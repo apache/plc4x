@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder struct {
 
 	parentBuilder *_S7PayloadUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) = (*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) WithManda
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) buildForS
 
 func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

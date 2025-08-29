@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -87,7 +88,7 @@ func NewDeviceStatusBuilder() DeviceStatusBuilder {
 type _DeviceStatusBuilder struct {
 	*_DeviceStatus
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DeviceStatusBuilder) = (*_DeviceStatusBuilder)(nil)
@@ -102,8 +103,8 @@ func (b *_DeviceStatusBuilder) WithProgramMode(programMode bool) DeviceStatusBui
 }
 
 func (b *_DeviceStatusBuilder) Build() (DeviceStatus, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DeviceStatus.deepCopy(), nil
 }
@@ -118,8 +119,8 @@ func (b *_DeviceStatusBuilder) MustBuild() DeviceStatus {
 
 func (b *_DeviceStatusBuilder) DeepCopy() any {
 	_copy := b.CreateDeviceStatusBuilder().(*_DeviceStatusBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

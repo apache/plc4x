@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _TelephonyDataClearDiversionBuilder struct {
 
 	parentBuilder *_TelephonyDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TelephonyDataClearDiversionBuilder) = (*_TelephonyDataClearDiversionBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_TelephonyDataClearDiversionBuilder) WithMandatoryFields() TelephonyDat
 }
 
 func (b *_TelephonyDataClearDiversionBuilder) Build() (TelephonyDataClearDiversion, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TelephonyDataClearDiversion.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_TelephonyDataClearDiversionBuilder) buildForTelephonyData() (Telephony
 
 func (b *_TelephonyDataClearDiversionBuilder) DeepCopy() any {
 	_copy := b.CreateTelephonyDataClearDiversionBuilder().(*_TelephonyDataClearDiversionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

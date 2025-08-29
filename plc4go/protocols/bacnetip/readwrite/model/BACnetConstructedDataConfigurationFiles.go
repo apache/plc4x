@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -107,7 +108,7 @@ type _BACnetConstructedDataConfigurationFilesBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataConfigurationFilesBuilder) = (*_BACnetConstructedDataConfigurationFilesBuilder)(nil)
@@ -131,10 +132,7 @@ func (b *_BACnetConstructedDataConfigurationFilesBuilder) WithOptionalNumberOfDa
 	var err error
 	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -145,8 +143,8 @@ func (b *_BACnetConstructedDataConfigurationFilesBuilder) WithConfigurationFiles
 }
 
 func (b *_BACnetConstructedDataConfigurationFilesBuilder) Build() (BACnetConstructedDataConfigurationFiles, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataConfigurationFiles.deepCopy(), nil
 }
@@ -172,8 +170,8 @@ func (b *_BACnetConstructedDataConfigurationFilesBuilder) buildForBACnetConstruc
 
 func (b *_BACnetConstructedDataConfigurationFilesBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataConfigurationFilesBuilder().(*_BACnetConstructedDataConfigurationFilesBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _NullCommandRequestBuilder struct {
 
 	parentBuilder *_EipPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NullCommandRequestBuilder) = (*_NullCommandRequestBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_NullCommandRequestBuilder) WithMandatoryFields() NullCommandRequestBui
 }
 
 func (b *_NullCommandRequestBuilder) Build() (NullCommandRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NullCommandRequest.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_NullCommandRequestBuilder) buildForEipPacket() (EipPacket, error) {
 
 func (b *_NullCommandRequestBuilder) DeepCopy() any {
 	_copy := b.CreateNullCommandRequestBuilder().(*_NullCommandRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

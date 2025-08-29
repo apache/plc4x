@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -118,7 +119,7 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder struct {
 
 	parentBuilder *_S7PayloadUserDataItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder)(nil)
@@ -148,8 +149,8 @@ func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) WithAlarmTyp
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmQueryRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCpuFunctionAlarmQueryRequest.deepCopy(), nil
 }
@@ -175,8 +176,8 @@ func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) buildForS7Pa
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) DeepCopy() any {
 	_copy := b.CreateS7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

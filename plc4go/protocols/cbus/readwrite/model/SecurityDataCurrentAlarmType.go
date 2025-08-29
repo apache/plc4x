@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _SecurityDataCurrentAlarmTypeBuilder struct {
 
 	parentBuilder *_SecurityDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SecurityDataCurrentAlarmTypeBuilder) = (*_SecurityDataCurrentAlarmTypeBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_SecurityDataCurrentAlarmTypeBuilder) WithMandatoryFields() SecurityDat
 }
 
 func (b *_SecurityDataCurrentAlarmTypeBuilder) Build() (SecurityDataCurrentAlarmType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataCurrentAlarmType.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_SecurityDataCurrentAlarmTypeBuilder) buildForSecurityData() (SecurityD
 
 func (b *_SecurityDataCurrentAlarmTypeBuilder) DeepCopy() any {
 	_copy := b.CreateSecurityDataCurrentAlarmTypeBuilder().(*_SecurityDataCurrentAlarmTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

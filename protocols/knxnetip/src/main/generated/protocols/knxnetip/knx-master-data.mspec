@@ -1499,8 +1499,11 @@
     ['747' M_ALZINGERANDVOGEL_SOFTWAREENTWICKLUNGS_GMBH ['808', '"Alzinger&Vogel Softwareentwicklungs GmbH"']]
     ['748' M_GIANFRANCO_SMART_SOLUTIONS_LTD ['809', '"Gianfranco Smart Solutions Ltd"']]
     ['749' M_ROGERWELL_CONTROL_SYSTEM_LIMITED ['810', '"Rogerwell Control System Limited"']]
-    ['750' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['751' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['750' M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_ ['811', '"Shanghai YUKON Automation Technologies Co., Ltd."']]
+    ['751' M_TECCO_PTY_LTD ['812', '"Tecco Pty Ltd"']]
+    ['752' M_A_LAN_TECHNOLOGIE ['813', '"A-LAN Technologie"']]
+    ['753' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['754' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

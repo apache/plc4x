@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -141,7 +142,7 @@ type _ReplyOrConfirmationBuilder struct {
 
 	childBuilder _ReplyOrConfirmationChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ReplyOrConfirmationBuilder) = (*_ReplyOrConfirmationBuilder)(nil)
@@ -165,8 +166,8 @@ func (b *_ReplyOrConfirmationBuilder) WithArgRequestContext(requestContext Reque
 }
 
 func (b *_ReplyOrConfirmationBuilder) PartialBuild() (ReplyOrConfirmationContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ReplyOrConfirmation.deepCopy(), nil
 }
@@ -233,8 +234,8 @@ func (b *_ReplyOrConfirmationBuilder) DeepCopy() any {
 	_copy := b.CreateReplyOrConfirmationBuilder().(*_ReplyOrConfirmationBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_ReplyOrConfirmationChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

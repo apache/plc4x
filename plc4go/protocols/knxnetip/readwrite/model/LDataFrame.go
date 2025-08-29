@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -147,7 +148,7 @@ type _LDataFrameBuilder struct {
 
 	childBuilder _LDataFrameChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (LDataFrameBuilder) = (*_LDataFrameBuilder)(nil)
@@ -182,8 +183,8 @@ func (b *_LDataFrameBuilder) WithErrorFlag(errorFlag bool) LDataFrameBuilder {
 }
 
 func (b *_LDataFrameBuilder) PartialBuild() (LDataFrameContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LDataFrame.deepCopy(), nil
 }
@@ -250,8 +251,8 @@ func (b *_LDataFrameBuilder) DeepCopy() any {
 	_copy := b.CreateLDataFrameBuilder().(*_LDataFrameBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_LDataFrameChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _TDataConnectedReqBuilder struct {
 
 	parentBuilder *_CEMIBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TDataConnectedReqBuilder) = (*_TDataConnectedReqBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_TDataConnectedReqBuilder) WithMandatoryFields() TDataConnectedReqBuild
 }
 
 func (b *_TDataConnectedReqBuilder) Build() (TDataConnectedReq, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TDataConnectedReq.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_TDataConnectedReqBuilder) buildForCEMI() (CEMI, error) {
 
 func (b *_TDataConnectedReqBuilder) DeepCopy() any {
 	_copy := b.CreateTDataConnectedReqBuilder().(*_TDataConnectedReqBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

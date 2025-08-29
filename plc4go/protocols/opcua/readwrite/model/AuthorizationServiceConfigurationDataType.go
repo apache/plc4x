@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -136,7 +137,7 @@ type _AuthorizationServiceConfigurationDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AuthorizationServiceConfigurationDataTypeBuilder) = (*_AuthorizationServiceConfigurationDataTypeBuilder)(nil)
@@ -160,10 +161,7 @@ func (b *_AuthorizationServiceConfigurationDataTypeBuilder) WithNameBuilder(buil
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -183,10 +181,7 @@ func (b *_AuthorizationServiceConfigurationDataTypeBuilder) WithServiceUriBuilde
 	var err error
 	b.ServiceUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -206,35 +201,23 @@ func (b *_AuthorizationServiceConfigurationDataTypeBuilder) WithIssuerEndpointSe
 	var err error
 	b.IssuerEndpointSettings, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_AuthorizationServiceConfigurationDataTypeBuilder) Build() (AuthorizationServiceConfigurationDataType, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.ServiceUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serviceUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serviceUri' not set"))
 	}
 	if b.IssuerEndpointSettings == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'issuerEndpointSettings' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'issuerEndpointSettings' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AuthorizationServiceConfigurationDataType.deepCopy(), nil
 }
@@ -260,8 +243,8 @@ func (b *_AuthorizationServiceConfigurationDataTypeBuilder) buildForExtensionObj
 
 func (b *_AuthorizationServiceConfigurationDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAuthorizationServiceConfigurationDataTypeBuilder().(*_AuthorizationServiceConfigurationDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

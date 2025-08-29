@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -158,7 +159,7 @@ type _ApplicationDescriptionBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApplicationDescriptionBuilder) = (*_ApplicationDescriptionBuilder)(nil)
@@ -182,10 +183,7 @@ func (b *_ApplicationDescriptionBuilder) WithApplicationUriBuilder(builderSuppli
 	var err error
 	b.ApplicationUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -200,10 +198,7 @@ func (b *_ApplicationDescriptionBuilder) WithProductUriBuilder(builderSupplier f
 	var err error
 	b.ProductUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -218,10 +213,7 @@ func (b *_ApplicationDescriptionBuilder) WithApplicationNameBuilder(builderSuppl
 	var err error
 	b.ApplicationName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
 	return b
 }
@@ -241,10 +233,7 @@ func (b *_ApplicationDescriptionBuilder) WithGatewayServerUriBuilder(builderSupp
 	var err error
 	b.GatewayServerUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -259,10 +248,7 @@ func (b *_ApplicationDescriptionBuilder) WithDiscoveryProfileUriBuilder(builderS
 	var err error
 	b.DiscoveryProfileUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -274,37 +260,22 @@ func (b *_ApplicationDescriptionBuilder) WithDiscoveryUrls(discoveryUrls ...Pasc
 
 func (b *_ApplicationDescriptionBuilder) Build() (ApplicationDescription, error) {
 	if b.ApplicationUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'applicationUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'applicationUri' not set"))
 	}
 	if b.ProductUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'productUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'productUri' not set"))
 	}
 	if b.ApplicationName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'applicationName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'applicationName' not set"))
 	}
 	if b.GatewayServerUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'gatewayServerUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'gatewayServerUri' not set"))
 	}
 	if b.DiscoveryProfileUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'discoveryProfileUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'discoveryProfileUri' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApplicationDescription.deepCopy(), nil
 }
@@ -330,8 +301,8 @@ func (b *_ApplicationDescriptionBuilder) buildForExtensionObjectDefinition() (Ex
 
 func (b *_ApplicationDescriptionBuilder) DeepCopy() any {
 	_copy := b.CreateApplicationDescriptionBuilder().(*_ApplicationDescriptionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

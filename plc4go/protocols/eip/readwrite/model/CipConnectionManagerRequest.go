@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -226,7 +227,7 @@ type _CipConnectionManagerRequestBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CipConnectionManagerRequestBuilder) = (*_CipConnectionManagerRequestBuilder)(nil)
@@ -250,10 +251,7 @@ func (b *_CipConnectionManagerRequestBuilder) WithClassSegmentBuilder(builderSup
 	var err error
 	b.ClassSegment, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PathSegmentBuilder failed"))
 	}
 	return b
 }
@@ -268,10 +266,7 @@ func (b *_CipConnectionManagerRequestBuilder) WithInstanceSegmentBuilder(builder
 	var err error
 	b.InstanceSegment, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PathSegmentBuilder failed"))
 	}
 	return b
 }
@@ -336,10 +331,7 @@ func (b *_CipConnectionManagerRequestBuilder) WithOtConnectionParametersBuilder(
 	var err error
 	b.OtConnectionParameters, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NetworkConnectionParametersBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NetworkConnectionParametersBuilder failed"))
 	}
 	return b
 }
@@ -359,10 +351,7 @@ func (b *_CipConnectionManagerRequestBuilder) WithToConnectionParametersBuilder(
 	var err error
 	b.ToConnectionParameters, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NetworkConnectionParametersBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NetworkConnectionParametersBuilder failed"))
 	}
 	return b
 }
@@ -377,10 +366,7 @@ func (b *_CipConnectionManagerRequestBuilder) WithTransportTypeBuilder(builderSu
 	var err error
 	b.TransportType, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "TransportTypeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "TransportTypeBuilder failed"))
 	}
 	return b
 }
@@ -397,37 +383,22 @@ func (b *_CipConnectionManagerRequestBuilder) WithConnectionPaths(connectionPath
 
 func (b *_CipConnectionManagerRequestBuilder) Build() (CipConnectionManagerRequest, error) {
 	if b.ClassSegment == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'classSegment' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'classSegment' not set"))
 	}
 	if b.InstanceSegment == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'instanceSegment' not set"))
 	}
 	if b.OtConnectionParameters == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'otConnectionParameters' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'otConnectionParameters' not set"))
 	}
 	if b.ToConnectionParameters == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'toConnectionParameters' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'toConnectionParameters' not set"))
 	}
 	if b.TransportType == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transportType' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transportType' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipConnectionManagerRequest.deepCopy(), nil
 }
@@ -453,8 +424,8 @@ func (b *_CipConnectionManagerRequestBuilder) buildForCipService() (CipService, 
 
 func (b *_CipConnectionManagerRequestBuilder) DeepCopy() any {
 	_copy := b.CreateCipConnectionManagerRequestBuilder().(*_CipConnectionManagerRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

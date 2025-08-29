@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -120,7 +121,7 @@ type _TunnelingRequestBuilder struct {
 
 	parentBuilder *_KnxNetIpMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TunnelingRequestBuilder) = (*_TunnelingRequestBuilder)(nil)
@@ -144,10 +145,7 @@ func (b *_TunnelingRequestBuilder) WithTunnelingRequestDataBlockBuilder(builderS
 	var err error
 	b.TunnelingRequestDataBlock, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "TunnelingRequestDataBlockBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "TunnelingRequestDataBlockBuilder failed"))
 	}
 	return b
 }
@@ -162,10 +160,7 @@ func (b *_TunnelingRequestBuilder) WithCemiBuilder(builderSupplier func(CEMIBuil
 	var err error
 	b.Cemi, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "CEMIBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CEMIBuilder failed"))
 	}
 	return b
 }
@@ -177,19 +172,13 @@ func (b *_TunnelingRequestBuilder) WithArgTotalLength(totalLength uint16) Tunnel
 
 func (b *_TunnelingRequestBuilder) Build() (TunnelingRequest, error) {
 	if b.TunnelingRequestDataBlock == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'tunnelingRequestDataBlock' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'tunnelingRequestDataBlock' not set"))
 	}
 	if b.Cemi == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'cemi' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'cemi' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TunnelingRequest.deepCopy(), nil
 }
@@ -215,8 +204,8 @@ func (b *_TunnelingRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, e
 
 func (b *_TunnelingRequestBuilder) DeepCopy() any {
 	_copy := b.CreateTunnelingRequestBuilder().(*_TunnelingRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -148,7 +149,7 @@ func NewAlarmMessageObjectPushTypeBuilder() AlarmMessageObjectPushTypeBuilder {
 type _AlarmMessageObjectPushTypeBuilder struct {
 	*_AlarmMessageObjectPushType
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AlarmMessageObjectPushTypeBuilder) = (*_AlarmMessageObjectPushTypeBuilder)(nil)
@@ -187,10 +188,7 @@ func (b *_AlarmMessageObjectPushTypeBuilder) WithEventStateBuilder(builderSuppli
 	var err error
 	b.EventState, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StateBuilder failed"))
 	}
 	return b
 }
@@ -205,10 +203,7 @@ func (b *_AlarmMessageObjectPushTypeBuilder) WithLocalStateBuilder(builderSuppli
 	var err error
 	b.LocalState, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StateBuilder failed"))
 	}
 	return b
 }
@@ -223,10 +218,7 @@ func (b *_AlarmMessageObjectPushTypeBuilder) WithAckStateGoingBuilder(builderSup
 	var err error
 	b.AckStateGoing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StateBuilder failed"))
 	}
 	return b
 }
@@ -241,10 +233,7 @@ func (b *_AlarmMessageObjectPushTypeBuilder) WithAckStateComingBuilder(builderSu
 	var err error
 	b.AckStateComing, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "StateBuilder failed"))
 	}
 	return b
 }
@@ -256,31 +245,19 @@ func (b *_AlarmMessageObjectPushTypeBuilder) WithAssociatedValues(AssociatedValu
 
 func (b *_AlarmMessageObjectPushTypeBuilder) Build() (AlarmMessageObjectPushType, error) {
 	if b.EventState == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'eventState' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'eventState' not set"))
 	}
 	if b.LocalState == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'localState' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'localState' not set"))
 	}
 	if b.AckStateGoing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'ackStateGoing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ackStateGoing' not set"))
 	}
 	if b.AckStateComing == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'ackStateComing' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ackStateComing' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AlarmMessageObjectPushType.deepCopy(), nil
 }
@@ -295,8 +272,8 @@ func (b *_AlarmMessageObjectPushTypeBuilder) MustBuild() AlarmMessageObjectPushT
 
 func (b *_AlarmMessageObjectPushTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAlarmMessageObjectPushTypeBuilder().(*_AlarmMessageObjectPushTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

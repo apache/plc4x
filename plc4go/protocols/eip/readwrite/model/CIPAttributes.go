@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -105,7 +106,7 @@ func NewCIPAttributesBuilder() CIPAttributesBuilder {
 type _CIPAttributesBuilder struct {
 	*_CIPAttributes
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (CIPAttributesBuilder) = (*_CIPAttributesBuilder)(nil)
@@ -140,8 +141,8 @@ func (b *_CIPAttributesBuilder) WithArgPacketLength(packetLength uint16) CIPAttr
 }
 
 func (b *_CIPAttributesBuilder) Build() (CIPAttributes, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CIPAttributes.deepCopy(), nil
 }
@@ -156,8 +157,8 @@ func (b *_CIPAttributesBuilder) MustBuild() CIPAttributes {
 
 func (b *_CIPAttributesBuilder) DeepCopy() any {
 	_copy := b.CreateCIPAttributesBuilder().(*_CIPAttributesBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

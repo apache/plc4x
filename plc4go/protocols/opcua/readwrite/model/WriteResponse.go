@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -114,7 +115,7 @@ type _WriteResponseBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (WriteResponseBuilder) = (*_WriteResponseBuilder)(nil)
@@ -138,10 +139,7 @@ func (b *_WriteResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(R
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -158,13 +156,10 @@ func (b *_WriteResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...Diagnosti
 
 func (b *_WriteResponseBuilder) Build() (WriteResponse, error) {
 	if b.ResponseHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'responseHeader' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._WriteResponse.deepCopy(), nil
 }
@@ -190,8 +185,8 @@ func (b *_WriteResponseBuilder) buildForExtensionObjectDefinition() (ExtensionOb
 
 func (b *_WriteResponseBuilder) DeepCopy() any {
 	_copy := b.CreateWriteResponseBuilder().(*_WriteResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

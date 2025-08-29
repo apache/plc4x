@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -120,7 +121,7 @@ type _PathSegmentBuilder struct {
 
 	childBuilder _PathSegmentChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PathSegmentBuilder) = (*_PathSegmentBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_PathSegmentBuilder) WithMandatoryFields() PathSegmentBuilder {
 }
 
 func (b *_PathSegmentBuilder) PartialBuild() (PathSegmentContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PathSegment.deepCopy(), nil
 }
@@ -198,8 +199,8 @@ func (b *_PathSegmentBuilder) DeepCopy() any {
 	_copy := b.CreatePathSegmentBuilder().(*_PathSegmentBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_PathSegmentChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

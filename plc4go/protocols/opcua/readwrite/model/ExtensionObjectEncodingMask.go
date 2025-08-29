@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ func NewExtensionObjectEncodingMaskBuilder() ExtensionObjectEncodingMaskBuilder 
 type _ExtensionObjectEncodingMaskBuilder struct {
 	*_ExtensionObjectEncodingMask
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ExtensionObjectEncodingMaskBuilder) = (*_ExtensionObjectEncodingMaskBuilder)(nil)
@@ -122,8 +123,8 @@ func (b *_ExtensionObjectEncodingMaskBuilder) WithBinaryBody(binaryBody bool) Ex
 }
 
 func (b *_ExtensionObjectEncodingMaskBuilder) Build() (ExtensionObjectEncodingMask, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ExtensionObjectEncodingMask.deepCopy(), nil
 }
@@ -138,8 +139,8 @@ func (b *_ExtensionObjectEncodingMaskBuilder) MustBuild() ExtensionObjectEncodin
 
 func (b *_ExtensionObjectEncodingMaskBuilder) DeepCopy() any {
 	_copy := b.CreateExtensionObjectEncodingMaskBuilder().(*_ExtensionObjectEncodingMaskBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

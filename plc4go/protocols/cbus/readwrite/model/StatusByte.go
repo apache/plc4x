@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewStatusByteBuilder() StatusByteBuilder {
 type _StatusByteBuilder struct {
 	*_StatusByte
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (StatusByteBuilder) = (*_StatusByteBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_StatusByteBuilder) WithGav0(gav0 GAVState) StatusByteBuilder {
 }
 
 func (b *_StatusByteBuilder) Build() (StatusByte, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._StatusByte.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_StatusByteBuilder) MustBuild() StatusByte {
 
 func (b *_StatusByteBuilder) DeepCopy() any {
 	_copy := b.CreateStatusByteBuilder().(*_StatusByteBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

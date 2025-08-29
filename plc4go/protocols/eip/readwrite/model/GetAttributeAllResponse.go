@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _GetAttributeAllResponseBuilder struct {
 
 	parentBuilder *_CipServiceBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (GetAttributeAllResponseBuilder) = (*_GetAttributeAllResponseBuilder)(nil)
@@ -147,17 +148,14 @@ func (b *_GetAttributeAllResponseBuilder) WithOptionalAttributesBuilder(builderS
 	var err error
 	b.Attributes, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "CIPAttributesBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "CIPAttributesBuilder failed"))
 	}
 	return b
 }
 
 func (b *_GetAttributeAllResponseBuilder) Build() (GetAttributeAllResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._GetAttributeAllResponse.deepCopy(), nil
 }
@@ -183,8 +181,8 @@ func (b *_GetAttributeAllResponseBuilder) buildForCipService() (CipService, erro
 
 func (b *_GetAttributeAllResponseBuilder) DeepCopy() any {
 	_copy := b.CreateGetAttributeAllResponseBuilder().(*_GetAttributeAllResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

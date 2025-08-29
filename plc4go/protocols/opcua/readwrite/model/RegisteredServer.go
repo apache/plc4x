@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -161,7 +162,7 @@ type _RegisteredServerBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RegisteredServerBuilder) = (*_RegisteredServerBuilder)(nil)
@@ -185,10 +186,7 @@ func (b *_RegisteredServerBuilder) WithServerUriBuilder(builderSupplier func(Pas
 	var err error
 	b.ServerUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -203,10 +201,7 @@ func (b *_RegisteredServerBuilder) WithProductUriBuilder(builderSupplier func(Pa
 	var err error
 	b.ProductUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -231,10 +226,7 @@ func (b *_RegisteredServerBuilder) WithGatewayServerUriBuilder(builderSupplier f
 	var err error
 	b.GatewayServerUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -254,10 +246,7 @@ func (b *_RegisteredServerBuilder) WithSemaphoreFilePathBuilder(builderSupplier 
 	var err error
 	b.SemaphoreFilePath, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -269,31 +258,19 @@ func (b *_RegisteredServerBuilder) WithIsOnline(isOnline bool) RegisteredServerB
 
 func (b *_RegisteredServerBuilder) Build() (RegisteredServer, error) {
 	if b.ServerUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'serverUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serverUri' not set"))
 	}
 	if b.ProductUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'productUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'productUri' not set"))
 	}
 	if b.GatewayServerUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'gatewayServerUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'gatewayServerUri' not set"))
 	}
 	if b.SemaphoreFilePath == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'semaphoreFilePath' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'semaphoreFilePath' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RegisteredServer.deepCopy(), nil
 }
@@ -319,8 +296,8 @@ func (b *_RegisteredServerBuilder) buildForExtensionObjectDefinition() (Extensio
 
 func (b *_RegisteredServerBuilder) DeepCopy() any {
 	_copy := b.CreateRegisteredServerBuilder().(*_RegisteredServerBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

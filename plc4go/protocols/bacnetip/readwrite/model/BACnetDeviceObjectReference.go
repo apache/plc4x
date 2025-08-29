@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ func NewBACnetDeviceObjectReferenceBuilder() BACnetDeviceObjectReferenceBuilder 
 type _BACnetDeviceObjectReferenceBuilder struct {
 	*_BACnetDeviceObjectReference
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetDeviceObjectReferenceBuilder) = (*_BACnetDeviceObjectReferenceBuilder)(nil)
@@ -116,10 +117,7 @@ func (b *_BACnetDeviceObjectReferenceBuilder) WithOptionalDeviceIdentifierBuilde
 	var err error
 	b.DeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
@@ -134,23 +132,17 @@ func (b *_BACnetDeviceObjectReferenceBuilder) WithObjectIdentifierBuilder(builde
 	var err error
 	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetDeviceObjectReferenceBuilder) Build() (BACnetDeviceObjectReference, error) {
 	if b.ObjectIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'objectIdentifier' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetDeviceObjectReference.deepCopy(), nil
 }
@@ -165,8 +157,8 @@ func (b *_BACnetDeviceObjectReferenceBuilder) MustBuild() BACnetDeviceObjectRefe
 
 func (b *_BACnetDeviceObjectReferenceBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetDeviceObjectReferenceBuilder().(*_BACnetDeviceObjectReferenceBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

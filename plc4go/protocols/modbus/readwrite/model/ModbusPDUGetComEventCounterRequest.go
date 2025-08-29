@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _ModbusPDUGetComEventCounterRequestBuilder struct {
 
 	parentBuilder *_ModbusPDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ModbusPDUGetComEventCounterRequestBuilder) = (*_ModbusPDUGetComEventCounterRequestBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_ModbusPDUGetComEventCounterRequestBuilder) WithMandatoryFields() Modbu
 }
 
 func (b *_ModbusPDUGetComEventCounterRequestBuilder) Build() (ModbusPDUGetComEventCounterRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUGetComEventCounterRequest.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_ModbusPDUGetComEventCounterRequestBuilder) buildForModbusPDU() (Modbus
 
 func (b *_ModbusPDUGetComEventCounterRequestBuilder) DeepCopy() any {
 	_copy := b.CreateModbusPDUGetComEventCounterRequestBuilder().(*_ModbusPDUGetComEventCounterRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

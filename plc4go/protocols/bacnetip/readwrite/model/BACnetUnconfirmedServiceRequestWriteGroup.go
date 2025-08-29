@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -132,7 +133,7 @@ type _BACnetUnconfirmedServiceRequestWriteGroupBuilder struct {
 
 	parentBuilder *_BACnetUnconfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetUnconfirmedServiceRequestWriteGroupBuilder) = (*_BACnetUnconfirmedServiceRequestWriteGroupBuilder)(nil)
@@ -156,10 +157,7 @@ func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) WithGroupNumberBuild
 	var err error
 	b.GroupNumber, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -174,10 +172,7 @@ func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) WithWritePriorityBui
 	var err error
 	b.WritePriority, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -192,10 +187,7 @@ func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) WithChangeListBuilde
 	var err error
 	b.ChangeList, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetGroupChannelValueListBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetGroupChannelValueListBuilder failed"))
 	}
 	return b
 }
@@ -210,35 +202,23 @@ func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) WithOptionalInhibitD
 	var err error
 	b.InhibitDelay, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) Build() (BACnetUnconfirmedServiceRequestWriteGroup, error) {
 	if b.GroupNumber == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'groupNumber' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'groupNumber' not set"))
 	}
 	if b.WritePriority == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'writePriority' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'writePriority' not set"))
 	}
 	if b.ChangeList == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'changeList' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'changeList' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetUnconfirmedServiceRequestWriteGroup.deepCopy(), nil
 }
@@ -264,8 +244,8 @@ func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) buildForBACnetUnconf
 
 func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetUnconfirmedServiceRequestWriteGroupBuilder().(*_BACnetUnconfirmedServiceRequestWriteGroupBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -124,7 +125,7 @@ type _AnnotationDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AnnotationDataTypeBuilder) = (*_AnnotationDataTypeBuilder)(nil)
@@ -148,10 +149,7 @@ func (b *_AnnotationDataTypeBuilder) WithAnnotationBuilder(builderSupplier func(
 	var err error
 	b.Annotation, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -166,10 +164,7 @@ func (b *_AnnotationDataTypeBuilder) WithDisciplineBuilder(builderSupplier func(
 	var err error
 	b.Discipline, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -184,35 +179,23 @@ func (b *_AnnotationDataTypeBuilder) WithUriBuilder(builderSupplier func(PascalS
 	var err error
 	b.Uri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_AnnotationDataTypeBuilder) Build() (AnnotationDataType, error) {
 	if b.Annotation == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'annotation' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'annotation' not set"))
 	}
 	if b.Discipline == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'discipline' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'discipline' not set"))
 	}
 	if b.Uri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'uri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'uri' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AnnotationDataType.deepCopy(), nil
 }
@@ -238,8 +221,8 @@ func (b *_AnnotationDataTypeBuilder) buildForExtensionObjectDefinition() (Extens
 
 func (b *_AnnotationDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateAnnotationDataTypeBuilder().(*_AnnotationDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

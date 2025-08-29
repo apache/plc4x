@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ type _OpenChannelMessageResponseBuilder struct {
 
 	parentBuilder *_OpenChannelMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (OpenChannelMessageResponseBuilder) = (*_OpenChannelMessageResponseBuilder)(nil)
@@ -159,10 +160,7 @@ func (b *_OpenChannelMessageResponseBuilder) WithSecurityPolicyUriBuilder(builde
 	var err error
 	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -177,10 +175,7 @@ func (b *_OpenChannelMessageResponseBuilder) WithSenderCertificateBuilder(builde
 	var err error
 	b.SenderCertificate, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
@@ -195,35 +190,23 @@ func (b *_OpenChannelMessageResponseBuilder) WithReceiverCertificateThumbprintBu
 	var err error
 	b.ReceiverCertificateThumbprint, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_OpenChannelMessageResponseBuilder) Build() (OpenChannelMessageResponse, error) {
 	if b.SecurityPolicyUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityPolicyUri' not set"))
 	}
 	if b.SenderCertificate == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'senderCertificate' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'senderCertificate' not set"))
 	}
 	if b.ReceiverCertificateThumbprint == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'receiverCertificateThumbprint' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'receiverCertificateThumbprint' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpenChannelMessageResponse.deepCopy(), nil
 }
@@ -249,8 +232,8 @@ func (b *_OpenChannelMessageResponseBuilder) buildForOpenChannelMessage() (OpenC
 
 func (b *_OpenChannelMessageResponseBuilder) DeepCopy() any {
 	_copy := b.CreateOpenChannelMessageResponseBuilder().(*_OpenChannelMessageResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

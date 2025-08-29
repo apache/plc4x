@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -101,7 +102,7 @@ type _MediaTransportControlDataPauseResumeBuilder struct {
 
 	parentBuilder *_MediaTransportControlDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MediaTransportControlDataPauseResumeBuilder) = (*_MediaTransportControlDataPauseResumeBuilder)(nil)
@@ -121,8 +122,8 @@ func (b *_MediaTransportControlDataPauseResumeBuilder) WithOperation(operation b
 }
 
 func (b *_MediaTransportControlDataPauseResumeBuilder) Build() (MediaTransportControlDataPauseResume, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MediaTransportControlDataPauseResume.deepCopy(), nil
 }
@@ -148,8 +149,8 @@ func (b *_MediaTransportControlDataPauseResumeBuilder) buildForMediaTransportCon
 
 func (b *_MediaTransportControlDataPauseResumeBuilder) DeepCopy() any {
 	_copy := b.CreateMediaTransportControlDataPauseResumeBuilder().(*_MediaTransportControlDataPauseResumeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

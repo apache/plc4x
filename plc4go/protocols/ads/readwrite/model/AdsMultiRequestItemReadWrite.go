@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -115,7 +116,7 @@ type _AdsMultiRequestItemReadWriteBuilder struct {
 
 	parentBuilder *_AdsMultiRequestItemBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsMultiRequestItemReadWriteBuilder) = (*_AdsMultiRequestItemReadWriteBuilder)(nil)
@@ -150,8 +151,8 @@ func (b *_AdsMultiRequestItemReadWriteBuilder) WithItemWriteLength(itemWriteLeng
 }
 
 func (b *_AdsMultiRequestItemReadWriteBuilder) Build() (AdsMultiRequestItemReadWrite, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsMultiRequestItemReadWrite.deepCopy(), nil
 }
@@ -177,8 +178,8 @@ func (b *_AdsMultiRequestItemReadWriteBuilder) buildForAdsMultiRequestItem() (Ad
 
 func (b *_AdsMultiRequestItemReadWriteBuilder) DeepCopy() any {
 	_copy := b.CreateAdsMultiRequestItemReadWriteBuilder().(*_AdsMultiRequestItemReadWriteBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder struct {
 
 	parentBuilder *_BACnetFaultParameterFaultExtendedParametersEntryBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) Wit
 	var err error
 	b.EnumeratedValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error) {
 	if b.EnumeratedValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'enumeratedValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetFaultParameterFaultExtendedParametersEntryEnumerated.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) bui
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -2060,6 +2060,25 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             if((tag.getDataType() == TransportSize.BYTE) && (tag.getNumberOfElements() > 1)) {
                 byteBuffer = ByteBuffer.allocate(tag.getNumberOfElements());
                 byteBuffer.put(plcValue.getRaw());
+            } else if((tag.getDataType() == TransportSize.BOOL) && (tag.getNumberOfElements() > 1)) {
+                if(!(plcValue instanceof PlcList)) {
+                    throw new PlcRuntimeException(String.format("Expected a PlcList with %d PlcBOOL elements", tag.getNumberOfElements()));
+                }
+                PlcList plcList = (PlcList) plcValue;
+                int numBytes = (tag.getNumberOfElements() + 7) / 8;
+                byteBuffer = ByteBuffer.allocate(numBytes);
+                for (int i = 0; i < tag.getNumberOfElements(); i++) {
+                    if(!(plcList.getIndex(i) instanceof PlcBOOL)) {
+                        throw new PlcRuntimeException(String.format("Expected a PlcList with %d PlcBOOL elements", tag.getNumberOfElements()));
+                    }
+                    PlcBOOL plcBOOL = (PlcBOOL) plcList.getIndex(i);
+                    if(plcBOOL.getBoolean()) {
+                        int curByte = i / 8;
+                        int curBit = i % 8;
+                        byteBuffer.put(curByte, (byte) (1 << curBit | byteBuffer.get(curByte)));
+                    }
+                }
+                transportSize = DataTransportSize.BYTE_WORD_DWORD;
             } else {
                 for (int i = 0; i < tag.getNumberOfElements(); i++) {
                     int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
@@ -2104,6 +2123,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 // probably expecting to process the read raw data.
                 if(tag.getDataType() == TransportSize.BYTE) {
                     return new PlcRawByteArray(data);
+                } else if(tag.getDataType() == TransportSize.BOOL) {
+                    final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
+                        int bitOffset = i;
+                        int byteOffset = bitOffset / 8;
+                        bitOffset = bitOffset % 8;
+                        boolean bitValue = ((data[byteOffset] >> bitOffset) & 0x01) != 0;
+                        return PlcBOOL.of(bitValue);
+                    }).toArray(PlcValue[]::new);
+                    return DefaultPlcValueHandler.of(tag, resultItems);
                 } else {
                     // Fetch all
                     final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
@@ -2202,6 +2230,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             transportSize = TransportSize.CHAR;
             int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
+        } else if ((transportSize == TransportSize.BOOL) && (s7Tag.getNumberOfElements() > 1)) {
+            numElements = (s7Tag.getNumberOfElements() + 7) / 8;
+            transportSize = TransportSize.BYTE;
         }
         if (transportSize.getCode() == 0x00) {
             numElements = numElements * transportSize.getSizeInBytes();

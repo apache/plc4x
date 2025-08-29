@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -119,7 +120,7 @@ type _AnnotationBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AnnotationBuilder) = (*_AnnotationBuilder)(nil)
@@ -143,10 +144,7 @@ func (b *_AnnotationBuilder) WithMessageBuilder(builderSupplier func(PascalStrin
 	var err error
 	b.Message, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -161,10 +159,7 @@ func (b *_AnnotationBuilder) WithUserNameBuilder(builderSupplier func(PascalStri
 	var err error
 	b.UserName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -176,19 +171,13 @@ func (b *_AnnotationBuilder) WithAnnotationTime(annotationTime int64) Annotation
 
 func (b *_AnnotationBuilder) Build() (Annotation, error) {
 	if b.Message == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'message' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'message' not set"))
 	}
 	if b.UserName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'userName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'userName' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Annotation.deepCopy(), nil
 }
@@ -214,8 +203,8 @@ func (b *_AnnotationBuilder) buildForExtensionObjectDefinition() (ExtensionObjec
 
 func (b *_AnnotationBuilder) DeepCopy() any {
 	_copy := b.CreateAnnotationBuilder().(*_AnnotationBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

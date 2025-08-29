@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _ParameterChangeReplyBuilder struct {
 
 	parentBuilder *_ReplyBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ParameterChangeReplyBuilder) = (*_ParameterChangeReplyBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_ParameterChangeReplyBuilder) WithParameterChangeBuilder(builderSupplie
 	var err error
 	b.ParameterChange, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ParameterChangeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ParameterChangeBuilder failed"))
 	}
 	return b
 }
 
 func (b *_ParameterChangeReplyBuilder) Build() (ParameterChangeReply, error) {
 	if b.ParameterChange == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'parameterChange' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'parameterChange' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ParameterChangeReply.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_ParameterChangeReplyBuilder) buildForReply() (Reply, error) {
 
 func (b *_ParameterChangeReplyBuilder) DeepCopy() any {
 	_copy := b.CreateParameterChangeReplyBuilder().(*_ParameterChangeReplyBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

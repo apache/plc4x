@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -104,7 +105,7 @@ type _BACnetConstructedDataProcessIdentifierFilterBuilder struct {
 
 	parentBuilder *_BACnetConstructedDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConstructedDataProcessIdentifierFilterBuilder) = (*_BACnetConstructedDataProcessIdentifierFilterBuilder)(nil)
@@ -128,23 +129,17 @@ func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) WithProcessIdenti
 	var err error
 	b.ProcessIdentifierFilter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetProcessIdSelectionBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetProcessIdSelectionBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) Build() (BACnetConstructedDataProcessIdentifierFilter, error) {
 	if b.ProcessIdentifierFilter == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'processIdentifierFilter' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'processIdentifierFilter' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataProcessIdentifierFilter.deepCopy(), nil
 }
@@ -170,8 +165,8 @@ func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) buildForBACnetCon
 
 func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConstructedDataProcessIdentifierFilterBuilder().(*_BACnetConstructedDataProcessIdentifierFilterBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

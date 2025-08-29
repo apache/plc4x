@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -214,7 +215,7 @@ type _WriterGroupDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (WriterGroupDataTypeBuilder) = (*_WriterGroupDataTypeBuilder)(nil)
@@ -238,10 +239,7 @@ func (b *_WriterGroupDataTypeBuilder) WithNameBuilder(builderSupplier func(Pasca
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -266,10 +264,7 @@ func (b *_WriterGroupDataTypeBuilder) WithSecurityGroupIdBuilder(builderSupplier
 	var err error
 	b.SecurityGroupId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -324,10 +319,7 @@ func (b *_WriterGroupDataTypeBuilder) WithHeaderLayoutUriBuilder(builderSupplier
 	var err error
 	b.HeaderLayoutUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -342,10 +334,7 @@ func (b *_WriterGroupDataTypeBuilder) WithTransportSettingsBuilder(builderSuppli
 	var err error
 	b.TransportSettings, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -360,10 +349,7 @@ func (b *_WriterGroupDataTypeBuilder) WithMessageSettingsBuilder(builderSupplier
 	var err error
 	b.MessageSettings, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -375,37 +361,22 @@ func (b *_WriterGroupDataTypeBuilder) WithDataSetWriters(dataSetWriters ...DataS
 
 func (b *_WriterGroupDataTypeBuilder) Build() (WriterGroupDataType, error) {
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
 	if b.SecurityGroupId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'securityGroupId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityGroupId' not set"))
 	}
 	if b.HeaderLayoutUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'headerLayoutUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'headerLayoutUri' not set"))
 	}
 	if b.TransportSettings == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transportSettings' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transportSettings' not set"))
 	}
 	if b.MessageSettings == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'messageSettings' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'messageSettings' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._WriterGroupDataType.deepCopy(), nil
 }
@@ -431,8 +402,8 @@ func (b *_WriterGroupDataTypeBuilder) buildForExtensionObjectDefinition() (Exten
 
 func (b *_WriterGroupDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateWriterGroupDataTypeBuilder().(*_WriterGroupDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

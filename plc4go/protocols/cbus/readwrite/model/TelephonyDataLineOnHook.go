@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _TelephonyDataLineOnHookBuilder struct {
 
 	parentBuilder *_TelephonyDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TelephonyDataLineOnHookBuilder) = (*_TelephonyDataLineOnHookBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_TelephonyDataLineOnHookBuilder) WithMandatoryFields() TelephonyDataLin
 }
 
 func (b *_TelephonyDataLineOnHookBuilder) Build() (TelephonyDataLineOnHook, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TelephonyDataLineOnHook.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_TelephonyDataLineOnHookBuilder) buildForTelephonyData() (TelephonyData
 
 func (b *_TelephonyDataLineOnHookBuilder) DeepCopy() any {
 	_copy := b.CreateTelephonyDataLineOnHookBuilder().(*_TelephonyDataLineOnHookBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

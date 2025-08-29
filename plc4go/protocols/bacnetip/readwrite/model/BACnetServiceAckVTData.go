@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -124,7 +125,7 @@ type _BACnetServiceAckVTDataBuilder struct {
 
 	parentBuilder *_BACnetServiceAckBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetServiceAckVTDataBuilder) = (*_BACnetServiceAckVTDataBuilder)(nil)
@@ -148,10 +149,7 @@ func (b *_BACnetServiceAckVTDataBuilder) WithVtSessionIdentifierBuilder(builderS
 	var err error
 	b.VtSessionIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -166,10 +164,7 @@ func (b *_BACnetServiceAckVTDataBuilder) WithVtNewDataBuilder(builderSupplier fu
 	var err error
 	b.VtNewData, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
 	return b
 }
@@ -184,35 +179,23 @@ func (b *_BACnetServiceAckVTDataBuilder) WithVtDataFlagBuilder(builderSupplier f
 	var err error
 	b.VtDataFlag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetServiceAckVTDataBuilder) Build() (BACnetServiceAckVTData, error) {
 	if b.VtSessionIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'vtSessionIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'vtSessionIdentifier' not set"))
 	}
 	if b.VtNewData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'vtNewData' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'vtNewData' not set"))
 	}
 	if b.VtDataFlag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'vtDataFlag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'vtDataFlag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetServiceAckVTData.deepCopy(), nil
 }
@@ -238,8 +221,8 @@ func (b *_BACnetServiceAckVTDataBuilder) buildForBACnetServiceAck() (BACnetServi
 
 func (b *_BACnetServiceAckVTDataBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetServiceAckVTDataBuilder().(*_BACnetServiceAckVTDataBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

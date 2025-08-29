@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -100,7 +101,7 @@ func NewBACnetHostNPortBuilder() BACnetHostNPortBuilder {
 type _BACnetHostNPortBuilder struct {
 	*_BACnetHostNPort
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetHostNPortBuilder) = (*_BACnetHostNPortBuilder)(nil)
@@ -119,10 +120,7 @@ func (b *_BACnetHostNPortBuilder) WithHostBuilder(builderSupplier func(BACnetHos
 	var err error
 	b.Host, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetHostAddressEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetHostAddressEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -137,29 +135,20 @@ func (b *_BACnetHostNPortBuilder) WithPortBuilder(builderSupplier func(BACnetCon
 	var err error
 	b.Port, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetHostNPortBuilder) Build() (BACnetHostNPort, error) {
 	if b.Host == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'host' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'host' not set"))
 	}
 	if b.Port == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'port' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'port' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetHostNPort.deepCopy(), nil
 }
@@ -174,8 +163,8 @@ func (b *_BACnetHostNPortBuilder) MustBuild() BACnetHostNPort {
 
 func (b *_BACnetHostNPortBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetHostNPortBuilder().(*_BACnetHostNPortBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

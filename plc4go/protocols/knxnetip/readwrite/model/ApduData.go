@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -153,7 +154,7 @@ type _ApduDataBuilder struct {
 
 	childBuilder _ApduDataChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ApduDataBuilder) = (*_ApduDataBuilder)(nil)
@@ -168,8 +169,8 @@ func (b *_ApduDataBuilder) WithArgDataLength(dataLength uint8) ApduDataBuilder {
 }
 
 func (b *_ApduDataBuilder) PartialBuild() (ApduDataContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduData.deepCopy(), nil
 }
@@ -366,8 +367,8 @@ func (b *_ApduDataBuilder) DeepCopy() any {
 	_copy := b.CreateApduDataBuilder().(*_ApduDataBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_ApduDataChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

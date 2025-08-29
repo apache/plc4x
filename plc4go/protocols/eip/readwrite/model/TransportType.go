@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewTransportTypeBuilder() TransportTypeBuilder {
 type _TransportTypeBuilder struct {
 	*_TransportType
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (TransportTypeBuilder) = (*_TransportTypeBuilder)(nil)
@@ -120,8 +121,8 @@ func (b *_TransportTypeBuilder) WithClassTransport(classTransport uint8) Transpo
 }
 
 func (b *_TransportTypeBuilder) Build() (TransportType, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TransportType.deepCopy(), nil
 }
@@ -136,8 +137,8 @@ func (b *_TransportTypeBuilder) MustBuild() TransportType {
 
 func (b *_TransportTypeBuilder) DeepCopy() any {
 	_copy := b.CreateTransportTypeBuilder().(*_TransportTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -130,7 +131,7 @@ type _DatagramDataSetReaderTransportDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DatagramDataSetReaderTransportDataTypeBuilder) = (*_DatagramDataSetReaderTransportDataTypeBuilder)(nil)
@@ -154,10 +155,7 @@ func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithAddressBuilder(buil
 	var err error
 	b.Address, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -172,10 +170,7 @@ func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithQosCategoryBuilder(
 	var err error
 	b.QosCategory, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -195,35 +190,23 @@ func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithTopicBuilder(builde
 	var err error
 	b.Topic, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_DatagramDataSetReaderTransportDataTypeBuilder) Build() (DatagramDataSetReaderTransportDataType, error) {
 	if b.Address == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'address' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'address' not set"))
 	}
 	if b.QosCategory == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'qosCategory' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'qosCategory' not set"))
 	}
 	if b.Topic == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'topic' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'topic' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DatagramDataSetReaderTransportDataType.deepCopy(), nil
 }
@@ -249,8 +232,8 @@ func (b *_DatagramDataSetReaderTransportDataTypeBuilder) buildForExtensionObject
 
 func (b *_DatagramDataSetReaderTransportDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateDatagramDataSetReaderTransportDataTypeBuilder().(*_DatagramDataSetReaderTransportDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

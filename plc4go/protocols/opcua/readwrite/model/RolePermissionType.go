@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -108,7 +109,7 @@ type _RolePermissionTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RolePermissionTypeBuilder) = (*_RolePermissionTypeBuilder)(nil)
@@ -132,10 +133,7 @@ func (b *_RolePermissionTypeBuilder) WithRoleIdBuilder(builderSupplier func(Node
 	var err error
 	b.RoleId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -147,13 +145,10 @@ func (b *_RolePermissionTypeBuilder) WithPermissions(permissions PermissionType)
 
 func (b *_RolePermissionTypeBuilder) Build() (RolePermissionType, error) {
 	if b.RoleId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'roleId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'roleId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RolePermissionType.deepCopy(), nil
 }
@@ -179,8 +174,8 @@ func (b *_RolePermissionTypeBuilder) buildForExtensionObjectDefinition() (Extens
 
 func (b *_RolePermissionTypeBuilder) DeepCopy() any {
 	_copy := b.CreateRolePermissionTypeBuilder().(*_RolePermissionTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

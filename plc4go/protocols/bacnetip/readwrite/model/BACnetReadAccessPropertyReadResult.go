@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -117,7 +118,7 @@ func NewBACnetReadAccessPropertyReadResultBuilder() BACnetReadAccessPropertyRead
 type _BACnetReadAccessPropertyReadResultBuilder struct {
 	*_BACnetReadAccessPropertyReadResult
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetReadAccessPropertyReadResultBuilder) = (*_BACnetReadAccessPropertyReadResultBuilder)(nil)
@@ -136,10 +137,7 @@ func (b *_BACnetReadAccessPropertyReadResultBuilder) WithPeekedTagHeaderBuilder(
 	var err error
 	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
 	return b
 }
@@ -154,10 +152,7 @@ func (b *_BACnetReadAccessPropertyReadResultBuilder) WithOptionalPropertyValueBu
 	var err error
 	b.PropertyValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
 	return b
 }
@@ -172,10 +167,7 @@ func (b *_BACnetReadAccessPropertyReadResultBuilder) WithOptionalPropertyAccessE
 	var err error
 	b.PropertyAccessError, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -195,13 +187,10 @@ func (b *_BACnetReadAccessPropertyReadResultBuilder) WithArgArrayIndexArgument(a
 
 func (b *_BACnetReadAccessPropertyReadResultBuilder) Build() (BACnetReadAccessPropertyReadResult, error) {
 	if b.PeekedTagHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetReadAccessPropertyReadResult.deepCopy(), nil
 }
@@ -216,8 +205,8 @@ func (b *_BACnetReadAccessPropertyReadResultBuilder) MustBuild() BACnetReadAcces
 
 func (b *_BACnetReadAccessPropertyReadResultBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetReadAccessPropertyReadResultBuilder().(*_BACnetReadAccessPropertyReadResultBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

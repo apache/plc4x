@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _KnxNetIpRoutingBuilder struct {
 
 	parentBuilder *_ServiceIdBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (KnxNetIpRoutingBuilder) = (*_KnxNetIpRoutingBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_KnxNetIpRoutingBuilder) WithVersion(version uint8) KnxNetIpRoutingBuil
 }
 
 func (b *_KnxNetIpRoutingBuilder) Build() (KnxNetIpRouting, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._KnxNetIpRouting.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_KnxNetIpRoutingBuilder) buildForServiceId() (ServiceId, error) {
 
 func (b *_KnxNetIpRoutingBuilder) DeepCopy() any {
 	_copy := b.CreateKnxNetIpRoutingBuilder().(*_KnxNetIpRoutingBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

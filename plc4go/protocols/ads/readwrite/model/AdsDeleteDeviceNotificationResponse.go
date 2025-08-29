@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _AdsDeleteDeviceNotificationResponseBuilder struct {
 
 	parentBuilder *_AmsPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsDeleteDeviceNotificationResponseBuilder) = (*_AdsDeleteDeviceNotificationResponseBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_AdsDeleteDeviceNotificationResponseBuilder) WithResult(result ReturnCo
 }
 
 func (b *_AdsDeleteDeviceNotificationResponseBuilder) Build() (AdsDeleteDeviceNotificationResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDeleteDeviceNotificationResponse.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_AdsDeleteDeviceNotificationResponseBuilder) buildForAmsPacket() (AmsPa
 
 func (b *_AdsDeleteDeviceNotificationResponseBuilder) DeepCopy() any {
 	_copy := b.CreateAdsDeleteDeviceNotificationResponseBuilder().(*_AdsDeleteDeviceNotificationResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

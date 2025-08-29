@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -150,7 +151,7 @@ func NewBACnetDestinationBuilder() BACnetDestinationBuilder {
 type _BACnetDestinationBuilder struct {
 	*_BACnetDestination
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetDestinationBuilder) = (*_BACnetDestinationBuilder)(nil)
@@ -169,10 +170,7 @@ func (b *_BACnetDestinationBuilder) WithValidDaysBuilder(builderSupplier func(BA
 	var err error
 	b.ValidDays, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetDaysOfWeekTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetDaysOfWeekTaggedBuilder failed"))
 	}
 	return b
 }
@@ -187,10 +185,7 @@ func (b *_BACnetDestinationBuilder) WithFromTimeBuilder(builderSupplier func(BAC
 	var err error
 	b.FromTime, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
 	return b
 }
@@ -205,10 +200,7 @@ func (b *_BACnetDestinationBuilder) WithToTimeBuilder(builderSupplier func(BACne
 	var err error
 	b.ToTime, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
 	return b
 }
@@ -223,10 +215,7 @@ func (b *_BACnetDestinationBuilder) WithRecipientBuilder(builderSupplier func(BA
 	var err error
 	b.Recipient, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetRecipientBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetRecipientBuilder failed"))
 	}
 	return b
 }
@@ -241,10 +230,7 @@ func (b *_BACnetDestinationBuilder) WithProcessIdentifierBuilder(builderSupplier
 	var err error
 	b.ProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -259,10 +245,7 @@ func (b *_BACnetDestinationBuilder) WithIssueConfirmedNotificationsBuilder(build
 	var err error
 	b.IssueConfirmedNotifications, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
 	return b
 }
@@ -277,59 +260,35 @@ func (b *_BACnetDestinationBuilder) WithTransitionsBuilder(builderSupplier func(
 	var err error
 	b.Transitions, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetDestinationBuilder) Build() (BACnetDestination, error) {
 	if b.ValidDays == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'validDays' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'validDays' not set"))
 	}
 	if b.FromTime == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'fromTime' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'fromTime' not set"))
 	}
 	if b.ToTime == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'toTime' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'toTime' not set"))
 	}
 	if b.Recipient == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'recipient' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'recipient' not set"))
 	}
 	if b.ProcessIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'processIdentifier' not set"))
 	}
 	if b.IssueConfirmedNotifications == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'issueConfirmedNotifications' not set"))
 	}
 	if b.Transitions == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'transitions' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'transitions' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetDestination.deepCopy(), nil
 }
@@ -344,8 +303,8 @@ func (b *_BACnetDestinationBuilder) MustBuild() BACnetDestination {
 
 func (b *_BACnetDestinationBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetDestinationBuilder().(*_BACnetDestinationBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

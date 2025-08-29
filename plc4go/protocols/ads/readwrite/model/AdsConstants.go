@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -83,7 +84,7 @@ func NewAdsConstantsBuilder() AdsConstantsBuilder {
 type _AdsConstantsBuilder struct {
 	*_AdsConstants
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AdsConstantsBuilder) = (*_AdsConstantsBuilder)(nil)
@@ -93,8 +94,8 @@ func (b *_AdsConstantsBuilder) WithMandatoryFields() AdsConstantsBuilder {
 }
 
 func (b *_AdsConstantsBuilder) Build() (AdsConstants, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsConstants.deepCopy(), nil
 }
@@ -109,8 +110,8 @@ func (b *_AdsConstantsBuilder) MustBuild() AdsConstants {
 
 func (b *_AdsConstantsBuilder) DeepCopy() any {
 	_copy := b.CreateAdsConstantsBuilder().(*_AdsConstantsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

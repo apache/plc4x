@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -105,7 +106,7 @@ type _DisconnectResponseBuilder struct {
 
 	parentBuilder *_KnxNetIpMessageBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DisconnectResponseBuilder) = (*_DisconnectResponseBuilder)(nil)
@@ -130,8 +131,8 @@ func (b *_DisconnectResponseBuilder) WithStatus(status Status) DisconnectRespons
 }
 
 func (b *_DisconnectResponseBuilder) Build() (DisconnectResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DisconnectResponse.deepCopy(), nil
 }
@@ -157,8 +158,8 @@ func (b *_DisconnectResponseBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage,
 
 func (b *_DisconnectResponseBuilder) DeepCopy() any {
 	_copy := b.CreateDisconnectResponseBuilder().(*_DisconnectResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

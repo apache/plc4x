@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _ErrorResponseBuilder struct {
 
 	parentBuilder *_AmsPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ErrorResponseBuilder) = (*_ErrorResponseBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_ErrorResponseBuilder) WithMandatoryFields() ErrorResponseBuilder {
 }
 
 func (b *_ErrorResponseBuilder) Build() (ErrorResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ErrorResponse.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_ErrorResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
 
 func (b *_ErrorResponseBuilder) DeepCopy() any {
 	_copy := b.CreateErrorResponseBuilder().(*_ErrorResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

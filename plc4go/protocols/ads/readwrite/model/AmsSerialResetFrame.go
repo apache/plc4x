@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -110,7 +111,7 @@ func NewAmsSerialResetFrameBuilder() AmsSerialResetFrameBuilder {
 type _AmsSerialResetFrameBuilder struct {
 	*_AmsSerialResetFrame
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AmsSerialResetFrameBuilder) = (*_AmsSerialResetFrameBuilder)(nil)
@@ -150,8 +151,8 @@ func (b *_AmsSerialResetFrameBuilder) WithCrc(crc uint16) AmsSerialResetFrameBui
 }
 
 func (b *_AmsSerialResetFrameBuilder) Build() (AmsSerialResetFrame, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AmsSerialResetFrame.deepCopy(), nil
 }
@@ -166,8 +167,8 @@ func (b *_AmsSerialResetFrameBuilder) MustBuild() AmsSerialResetFrame {
 
 func (b *_AmsSerialResetFrameBuilder) DeepCopy() any {
 	_copy := b.CreateAmsSerialResetFrameBuilder().(*_AmsSerialResetFrameBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

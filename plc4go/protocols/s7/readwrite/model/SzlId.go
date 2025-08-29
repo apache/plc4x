@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewSzlIdBuilder() SzlIdBuilder {
 type _SzlIdBuilder struct {
 	*_SzlId
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (SzlIdBuilder) = (*_SzlIdBuilder)(nil)
@@ -120,8 +121,8 @@ func (b *_SzlIdBuilder) WithSublistList(sublistList SzlSublist) SzlIdBuilder {
 }
 
 func (b *_SzlIdBuilder) Build() (SzlId, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SzlId.deepCopy(), nil
 }
@@ -136,8 +137,8 @@ func (b *_SzlIdBuilder) MustBuild() SzlId {
 
 func (b *_SzlIdBuilder) DeepCopy() any {
 	_copy := b.CreateSzlIdBuilder().(*_SzlIdBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

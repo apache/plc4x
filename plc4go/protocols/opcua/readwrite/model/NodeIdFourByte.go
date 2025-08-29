@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -107,7 +108,7 @@ type _NodeIdFourByteBuilder struct {
 
 	parentBuilder *_NodeIdTypeDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NodeIdFourByteBuilder) = (*_NodeIdFourByteBuilder)(nil)
@@ -132,8 +133,8 @@ func (b *_NodeIdFourByteBuilder) WithId(id uint16) NodeIdFourByteBuilder {
 }
 
 func (b *_NodeIdFourByteBuilder) Build() (NodeIdFourByte, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NodeIdFourByte.deepCopy(), nil
 }
@@ -159,8 +160,8 @@ func (b *_NodeIdFourByteBuilder) buildForNodeIdTypeDefinition() (NodeIdTypeDefin
 
 func (b *_NodeIdFourByteBuilder) DeepCopy() any {
 	_copy := b.CreateNodeIdFourByteBuilder().(*_NodeIdFourByteBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

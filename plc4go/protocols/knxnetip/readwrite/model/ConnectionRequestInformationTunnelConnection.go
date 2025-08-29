@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -99,7 +100,7 @@ type _ConnectionRequestInformationTunnelConnectionBuilder struct {
 
 	parentBuilder *_ConnectionRequestInformationBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ConnectionRequestInformationTunnelConnectionBuilder) = (*_ConnectionRequestInformationTunnelConnectionBuilder)(nil)
@@ -119,8 +120,8 @@ func (b *_ConnectionRequestInformationTunnelConnectionBuilder) WithKnxLayer(knxL
 }
 
 func (b *_ConnectionRequestInformationTunnelConnectionBuilder) Build() (ConnectionRequestInformationTunnelConnection, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConnectionRequestInformationTunnelConnection.deepCopy(), nil
 }
@@ -146,8 +147,8 @@ func (b *_ConnectionRequestInformationTunnelConnectionBuilder) buildForConnectio
 
 func (b *_ConnectionRequestInformationTunnelConnectionBuilder) DeepCopy() any {
 	_copy := b.CreateConnectionRequestInformationTunnelConnectionBuilder().(*_ConnectionRequestInformationTunnelConnectionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

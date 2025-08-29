@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ type _BrowseRequestBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BrowseRequestBuilder) = (*_BrowseRequestBuilder)(nil)
@@ -149,10 +150,7 @@ func (b *_BrowseRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(Re
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -167,10 +165,7 @@ func (b *_BrowseRequestBuilder) WithViewBuilder(builderSupplier func(ViewDescrip
 	var err error
 	b.View, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ViewDescriptionBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ViewDescriptionBuilder failed"))
 	}
 	return b
 }
@@ -187,19 +182,13 @@ func (b *_BrowseRequestBuilder) WithNodesToBrowse(nodesToBrowse ...BrowseDescrip
 
 func (b *_BrowseRequestBuilder) Build() (BrowseRequest, error) {
 	if b.RequestHeader == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'requestHeader' not set"))
 	}
 	if b.View == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'view' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'view' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BrowseRequest.deepCopy(), nil
 }
@@ -225,8 +214,8 @@ func (b *_BrowseRequestBuilder) buildForExtensionObjectDefinition() (ExtensionOb
 
 func (b *_BrowseRequestBuilder) DeepCopy() any {
 	_copy := b.CreateBrowseRequestBuilder().(*_BrowseRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

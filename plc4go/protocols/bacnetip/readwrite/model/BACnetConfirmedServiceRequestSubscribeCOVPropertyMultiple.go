@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -137,7 +138,7 @@ type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder struct {
 
 	parentBuilder *_BACnetConfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder)(nil)
@@ -161,10 +162,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) With
 	var err error
 	b.SubscriberProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -179,10 +177,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) With
 	var err error
 	b.IssueConfirmedNotifications, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
 	return b
 }
@@ -197,10 +192,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) With
 	var err error
 	b.Lifetime, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -215,10 +207,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) With
 	var err error
 	b.MaxNotificationDelay, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
@@ -233,29 +222,20 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) With
 	var err error
 	b.ListOfCovSubscriptionSpecifications, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) Build() (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
 	if b.SubscriberProcessIdentifier == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
 	}
 	if b.ListOfCovSubscriptionSpecifications == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'listOfCovSubscriptionSpecifications' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'listOfCovSubscriptionSpecifications' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple.deepCopy(), nil
 }
@@ -281,8 +261,8 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) buil
 
 func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder().(*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

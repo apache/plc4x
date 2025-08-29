@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _ModbusPDUWriteFileRecordRequestBuilder struct {
 
 	parentBuilder *_ModbusPDUBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ModbusPDUWriteFileRecordRequestBuilder) = (*_ModbusPDUWriteFileRecordRequestBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_ModbusPDUWriteFileRecordRequestBuilder) WithItems(items ...ModbusPDUWr
 }
 
 func (b *_ModbusPDUWriteFileRecordRequestBuilder) Build() (ModbusPDUWriteFileRecordRequest, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUWriteFileRecordRequest.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_ModbusPDUWriteFileRecordRequestBuilder) buildForModbusPDU() (ModbusPDU
 
 func (b *_ModbusPDUWriteFileRecordRequestBuilder) DeepCopy() any {
 	_copy := b.CreateModbusPDUWriteFileRecordRequestBuilder().(*_ModbusPDUWriteFileRecordRequestBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

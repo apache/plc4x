@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -87,7 +88,7 @@ func NewHVACRawLevelsBuilder() HVACRawLevelsBuilder {
 type _HVACRawLevelsBuilder struct {
 	*_HVACRawLevels
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (HVACRawLevelsBuilder) = (*_HVACRawLevelsBuilder)(nil)
@@ -102,8 +103,8 @@ func (b *_HVACRawLevelsBuilder) WithRawValue(rawValue int16) HVACRawLevelsBuilde
 }
 
 func (b *_HVACRawLevelsBuilder) Build() (HVACRawLevels, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HVACRawLevels.deepCopy(), nil
 }
@@ -118,8 +119,8 @@ func (b *_HVACRawLevelsBuilder) MustBuild() HVACRawLevels {
 
 func (b *_HVACRawLevelsBuilder) DeepCopy() any {
 	_copy := b.CreateHVACRawLevelsBuilder().(*_HVACRawLevelsBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

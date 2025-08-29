@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -92,7 +93,7 @@ func NewDeviceConfigurationRequestDataBlockBuilder() DeviceConfigurationRequestD
 type _DeviceConfigurationRequestDataBlockBuilder struct {
 	*_DeviceConfigurationRequestDataBlock
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (DeviceConfigurationRequestDataBlockBuilder) = (*_DeviceConfigurationRequestDataBlockBuilder)(nil)
@@ -112,8 +113,8 @@ func (b *_DeviceConfigurationRequestDataBlockBuilder) WithSequenceCounter(sequen
 }
 
 func (b *_DeviceConfigurationRequestDataBlockBuilder) Build() (DeviceConfigurationRequestDataBlock, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DeviceConfigurationRequestDataBlock.deepCopy(), nil
 }
@@ -128,8 +129,8 @@ func (b *_DeviceConfigurationRequestDataBlockBuilder) MustBuild() DeviceConfigur
 
 func (b *_DeviceConfigurationRequestDataBlockBuilder) DeepCopy() any {
 	_copy := b.CreateDeviceConfigurationRequestDataBlockBuilder().(*_DeviceConfigurationRequestDataBlockBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

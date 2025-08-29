@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -141,7 +142,7 @@ type _BrokerDataSetReaderTransportDataTypeBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BrokerDataSetReaderTransportDataTypeBuilder) = (*_BrokerDataSetReaderTransportDataTypeBuilder)(nil)
@@ -165,10 +166,7 @@ func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithQueueNameBuilder(buil
 	var err error
 	b.QueueName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -183,10 +181,7 @@ func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithResourceUriBuilder(bu
 	var err error
 	b.ResourceUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -201,10 +196,7 @@ func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithAuthenticationProfile
 	var err error
 	b.AuthenticationProfileUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -224,41 +216,26 @@ func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithMetaDataQueueNameBuil
 	var err error
 	b.MetaDataQueueName, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BrokerDataSetReaderTransportDataTypeBuilder) Build() (BrokerDataSetReaderTransportDataType, error) {
 	if b.QueueName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'queueName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'queueName' not set"))
 	}
 	if b.ResourceUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'resourceUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'resourceUri' not set"))
 	}
 	if b.AuthenticationProfileUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'authenticationProfileUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'authenticationProfileUri' not set"))
 	}
 	if b.MetaDataQueueName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'metaDataQueueName' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'metaDataQueueName' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BrokerDataSetReaderTransportDataType.deepCopy(), nil
 }
@@ -284,8 +261,8 @@ func (b *_BrokerDataSetReaderTransportDataTypeBuilder) buildForExtensionObjectDe
 
 func (b *_BrokerDataSetReaderTransportDataTypeBuilder) DeepCopy() any {
 	_copy := b.CreateBrokerDataSetReaderTransportDataTypeBuilder().(*_BrokerDataSetReaderTransportDataTypeBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-protocols</artifactId>
-    <version>0.13.0</version>
+    <version>0.13.1</version>
   </parent>
 
   <artifactId>plc4x-protocols-plc4x-api</artifactId>
@@ -33,14 +33,14 @@
   <description>General purpose API types</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:58:13Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-24T18:14:38Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.13.0</version>
+      <version>0.13.1</version>
     </dependency>
 
     <dependency>

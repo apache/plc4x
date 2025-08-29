@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -103,7 +104,7 @@ type _RationalNumberBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (RationalNumberBuilder) = (*_RationalNumberBuilder)(nil)
@@ -128,8 +129,8 @@ func (b *_RationalNumberBuilder) WithDenominator(denominator uint32) RationalNum
 }
 
 func (b *_RationalNumberBuilder) Build() (RationalNumber, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RationalNumber.deepCopy(), nil
 }
@@ -155,8 +156,8 @@ func (b *_RationalNumberBuilder) buildForExtensionObjectDefinition() (ExtensionO
 
 func (b *_RationalNumberBuilder) DeepCopy() any {
 	_copy := b.CreateRationalNumberBuilder().(*_RationalNumberBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

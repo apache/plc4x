@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -164,7 +165,7 @@ type _EipPacketBuilder struct {
 
 	childBuilder _EipPacketChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EipPacketBuilder) = (*_EipPacketBuilder)(nil)
@@ -194,8 +195,8 @@ func (b *_EipPacketBuilder) WithOptions(options uint32) EipPacketBuilder {
 }
 
 func (b *_EipPacketBuilder) PartialBuild() (EipPacketContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EipPacket.deepCopy(), nil
 }
@@ -362,8 +363,8 @@ func (b *_EipPacketBuilder) DeepCopy() any {
 	_copy := b.CreateEipPacketBuilder().(*_EipPacketBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_EipPacketChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _KnxNetRemoteLoggingBuilder struct {
 
 	parentBuilder *_ServiceIdBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (KnxNetRemoteLoggingBuilder) = (*_KnxNetRemoteLoggingBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_KnxNetRemoteLoggingBuilder) WithVersion(version uint8) KnxNetRemoteLog
 }
 
 func (b *_KnxNetRemoteLoggingBuilder) Build() (KnxNetRemoteLogging, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._KnxNetRemoteLogging.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_KnxNetRemoteLoggingBuilder) buildForServiceId() (ServiceId, error) {
 
 func (b *_KnxNetRemoteLoggingBuilder) DeepCopy() any {
 	_copy := b.CreateKnxNetRemoteLoggingBuilder().(*_KnxNetRemoteLoggingBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

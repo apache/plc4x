@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -90,7 +91,7 @@ func NewBACnetAccessThreatLevelBuilder() BACnetAccessThreatLevelBuilder {
 type _BACnetAccessThreatLevelBuilder struct {
 	*_BACnetAccessThreatLevel
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetAccessThreatLevelBuilder) = (*_BACnetAccessThreatLevelBuilder)(nil)
@@ -109,23 +110,17 @@ func (b *_BACnetAccessThreatLevelBuilder) WithThreatLevelBuilder(builderSupplier
 	var err error
 	b.ThreatLevel, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetAccessThreatLevelBuilder) Build() (BACnetAccessThreatLevel, error) {
 	if b.ThreatLevel == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'threatLevel' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'threatLevel' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetAccessThreatLevel.deepCopy(), nil
 }
@@ -140,8 +135,8 @@ func (b *_BACnetAccessThreatLevelBuilder) MustBuild() BACnetAccessThreatLevel {
 
 func (b *_BACnetAccessThreatLevelBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetAccessThreatLevelBuilder().(*_BACnetAccessThreatLevelBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

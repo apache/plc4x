@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ type _MeteringDataElectricityConsumptionBuilder struct {
 
 	parentBuilder *_MeteringDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (MeteringDataElectricityConsumptionBuilder) = (*_MeteringDataElectricityConsumptionBuilder)(nil)
@@ -117,8 +118,8 @@ func (b *_MeteringDataElectricityConsumptionBuilder) WithKWhr(kWhr uint32) Meter
 }
 
 func (b *_MeteringDataElectricityConsumptionBuilder) Build() (MeteringDataElectricityConsumption, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MeteringDataElectricityConsumption.deepCopy(), nil
 }
@@ -144,8 +145,8 @@ func (b *_MeteringDataElectricityConsumptionBuilder) buildForMeteringData() (Met
 
 func (b *_MeteringDataElectricityConsumptionBuilder) DeepCopy() any {
 	_copy := b.CreateMeteringDataElectricityConsumptionBuilder().(*_MeteringDataElectricityConsumptionBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

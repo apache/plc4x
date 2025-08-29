@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -113,7 +114,7 @@ type _PortableQualifiedNameBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (PortableQualifiedNameBuilder) = (*_PortableQualifiedNameBuilder)(nil)
@@ -137,10 +138,7 @@ func (b *_PortableQualifiedNameBuilder) WithNamespaceUriBuilder(builderSupplier 
 	var err error
 	b.NamespaceUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -155,29 +153,20 @@ func (b *_PortableQualifiedNameBuilder) WithNameBuilder(builderSupplier func(Pas
 	var err error
 	b.Name, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
 
 func (b *_PortableQualifiedNameBuilder) Build() (PortableQualifiedName, error) {
 	if b.NamespaceUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'namespaceUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'namespaceUri' not set"))
 	}
 	if b.Name == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'name' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PortableQualifiedName.deepCopy(), nil
 }
@@ -203,8 +192,8 @@ func (b *_PortableQualifiedNameBuilder) buildForExtensionObjectDefinition() (Ext
 
 func (b *_PortableQualifiedNameBuilder) DeepCopy() any {
 	_copy := b.CreatePortableQualifiedNameBuilder().(*_PortableQualifiedNameBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

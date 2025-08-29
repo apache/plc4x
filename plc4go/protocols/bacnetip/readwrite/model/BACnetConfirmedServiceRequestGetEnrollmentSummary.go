@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -142,7 +143,7 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder struct {
 
 	parentBuilder *_BACnetConfirmedServiceRequestBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder)(nil)
@@ -166,10 +167,7 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithAcknowle
 	var err error
 	b.AcknowledgmentFilter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder failed"))
 	}
 	return b
 }
@@ -184,10 +182,7 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptional
 	var err error
 	b.EnrollmentFilter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
 	}
 	return b
 }
@@ -202,10 +197,7 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptional
 	var err error
 	b.EventStateFilter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder failed"))
 	}
 	return b
 }
@@ -220,10 +212,7 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptional
 	var err error
 	b.EventTypeFilter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
 	}
 	return b
 }
@@ -238,10 +227,7 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptional
 	var err error
 	b.PriorityFilter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder failed"))
 	}
 	return b
 }
@@ -256,23 +242,17 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptional
 	var err error
 	b.NotificationClassFilter, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) Build() (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
 	if b.AcknowledgmentFilter == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'acknowledgmentFilter' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'acknowledgmentFilter' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestGetEnrollmentSummary.deepCopy(), nil
 }
@@ -298,8 +278,8 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) buildForBACn
 
 func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder().(*_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

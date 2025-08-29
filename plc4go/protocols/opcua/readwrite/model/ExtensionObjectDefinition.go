@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -810,7 +811,7 @@ type _ExtensionObjectDefinitionBuilder struct {
 
 	childBuilder _ExtensionObjectDefinitionChildBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (ExtensionObjectDefinitionBuilder) = (*_ExtensionObjectDefinitionBuilder)(nil)
@@ -820,8 +821,8 @@ func (b *_ExtensionObjectDefinitionBuilder) WithMandatoryFields() ExtensionObjec
 }
 
 func (b *_ExtensionObjectDefinitionBuilder) PartialBuild() (ExtensionObjectDefinitionContract, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ExtensionObjectDefinition.deepCopy(), nil
 }
@@ -4348,8 +4349,8 @@ func (b *_ExtensionObjectDefinitionBuilder) DeepCopy() any {
 	_copy := b.CreateExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
 	_copy.childBuilder = b.childBuilder.DeepCopy().(_ExtensionObjectDefinitionChildBuilder)
 	_copy.childBuilder.setParent(_copy)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

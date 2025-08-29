@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -95,7 +96,7 @@ func NewNetworkRouteBuilder() NetworkRouteBuilder {
 type _NetworkRouteBuilder struct {
 	*_NetworkRoute
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NetworkRouteBuilder) = (*_NetworkRouteBuilder)(nil)
@@ -114,10 +115,7 @@ func (b *_NetworkRouteBuilder) WithNetworkPCIBuilder(builderSupplier func(Networ
 	var err error
 	b.NetworkPCI, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NetworkProtocolControlInformationBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NetworkProtocolControlInformationBuilder failed"))
 	}
 	return b
 }
@@ -129,13 +127,10 @@ func (b *_NetworkRouteBuilder) WithAdditionalBridgeAddresses(additionalBridgeAdd
 
 func (b *_NetworkRouteBuilder) Build() (NetworkRoute, error) {
 	if b.NetworkPCI == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'networkPCI' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'networkPCI' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NetworkRoute.deepCopy(), nil
 }
@@ -150,8 +145,8 @@ func (b *_NetworkRouteBuilder) MustBuild() NetworkRoute {
 
 func (b *_NetworkRouteBuilder) DeepCopy() any {
 	_copy := b.CreateNetworkRouteBuilder().(*_NetworkRouteBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

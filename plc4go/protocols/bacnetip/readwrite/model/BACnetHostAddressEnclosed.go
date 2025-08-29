@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -115,7 +116,7 @@ func NewBACnetHostAddressEnclosedBuilder() BACnetHostAddressEnclosedBuilder {
 type _BACnetHostAddressEnclosedBuilder struct {
 	*_BACnetHostAddressEnclosed
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetHostAddressEnclosedBuilder) = (*_BACnetHostAddressEnclosedBuilder)(nil)
@@ -134,10 +135,7 @@ func (b *_BACnetHostAddressEnclosedBuilder) WithOpeningTagBuilder(builderSupplie
 	var err error
 	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
 	return b
 }
@@ -152,10 +150,7 @@ func (b *_BACnetHostAddressEnclosedBuilder) WithHostAddressBuilder(builderSuppli
 	var err error
 	b.HostAddress, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetHostAddressBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetHostAddressBuilder failed"))
 	}
 	return b
 }
@@ -170,10 +165,7 @@ func (b *_BACnetHostAddressEnclosedBuilder) WithClosingTagBuilder(builderSupplie
 	var err error
 	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
 	return b
 }
@@ -185,25 +177,16 @@ func (b *_BACnetHostAddressEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BA
 
 func (b *_BACnetHostAddressEnclosedBuilder) Build() (BACnetHostAddressEnclosed, error) {
 	if b.OpeningTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'openingTag' not set"))
 	}
 	if b.HostAddress == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'hostAddress' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'hostAddress' not set"))
 	}
 	if b.ClosingTag == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetHostAddressEnclosed.deepCopy(), nil
 }
@@ -218,8 +201,8 @@ func (b *_BACnetHostAddressEnclosedBuilder) MustBuild() BACnetHostAddressEnclose
 
 func (b *_BACnetHostAddressEnclosedBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetHostAddressEnclosedBuilder().(*_BACnetHostAddressEnclosedBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

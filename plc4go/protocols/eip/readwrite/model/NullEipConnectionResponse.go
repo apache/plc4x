@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -89,7 +90,7 @@ type _NullEipConnectionResponseBuilder struct {
 
 	parentBuilder *_EipPacketBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (NullEipConnectionResponseBuilder) = (*_NullEipConnectionResponseBuilder)(nil)
@@ -104,8 +105,8 @@ func (b *_NullEipConnectionResponseBuilder) WithMandatoryFields() NullEipConnect
 }
 
 func (b *_NullEipConnectionResponseBuilder) Build() (NullEipConnectionResponse, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NullEipConnectionResponse.deepCopy(), nil
 }
@@ -131,8 +132,8 @@ func (b *_NullEipConnectionResponseBuilder) buildForEipPacket() (EipPacket, erro
 
 func (b *_NullEipConnectionResponseBuilder) DeepCopy() any {
 	_copy := b.CreateNullEipConnectionResponseBuilder().(*_NullEipConnectionResponseBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

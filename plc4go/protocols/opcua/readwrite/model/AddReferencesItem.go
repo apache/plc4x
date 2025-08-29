@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -149,7 +150,7 @@ type _AddReferencesItemBuilder struct {
 
 	parentBuilder *_ExtensionObjectDefinitionBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AddReferencesItemBuilder) = (*_AddReferencesItemBuilder)(nil)
@@ -173,10 +174,7 @@ func (b *_AddReferencesItemBuilder) WithSourceNodeIdBuilder(builderSupplier func
 	var err error
 	b.SourceNodeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -191,10 +189,7 @@ func (b *_AddReferencesItemBuilder) WithReferenceTypeIdBuilder(builderSupplier f
 	var err error
 	b.ReferenceTypeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "NodeIdBuilder failed"))
 	}
 	return b
 }
@@ -214,10 +209,7 @@ func (b *_AddReferencesItemBuilder) WithTargetServerUriBuilder(builderSupplier f
 	var err error
 	b.TargetServerUri, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PascalStringBuilder failed"))
 	}
 	return b
 }
@@ -232,10 +224,7 @@ func (b *_AddReferencesItemBuilder) WithTargetNodeIdBuilder(builderSupplier func
 	var err error
 	b.TargetNodeId, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
 	return b
 }
@@ -247,31 +236,19 @@ func (b *_AddReferencesItemBuilder) WithTargetNodeClass(targetNodeClass NodeClas
 
 func (b *_AddReferencesItemBuilder) Build() (AddReferencesItem, error) {
 	if b.SourceNodeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'sourceNodeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sourceNodeId' not set"))
 	}
 	if b.ReferenceTypeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'referenceTypeId' not set"))
 	}
 	if b.TargetServerUri == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'targetServerUri' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'targetServerUri' not set"))
 	}
 	if b.TargetNodeId == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'targetNodeId' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'targetNodeId' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AddReferencesItem.deepCopy(), nil
 }
@@ -297,8 +274,8 @@ func (b *_AddReferencesItemBuilder) buildForExtensionObjectDefinition() (Extensi
 
 func (b *_AddReferencesItemBuilder) DeepCopy() any {
 	_copy := b.CreateAddReferencesItemBuilder().(*_AddReferencesItemBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 	"math"
 
@@ -96,7 +97,7 @@ func NewS7VarPayloadDataItemBuilder() S7VarPayloadDataItemBuilder {
 type _S7VarPayloadDataItemBuilder struct {
 	*_S7VarPayloadDataItem
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (S7VarPayloadDataItemBuilder) = (*_S7VarPayloadDataItemBuilder)(nil)
@@ -121,8 +122,8 @@ func (b *_S7VarPayloadDataItemBuilder) WithData(data ...byte) S7VarPayloadDataIt
 }
 
 func (b *_S7VarPayloadDataItemBuilder) Build() (S7VarPayloadDataItem, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7VarPayloadDataItem.deepCopy(), nil
 }
@@ -137,8 +138,8 @@ func (b *_S7VarPayloadDataItemBuilder) MustBuild() S7VarPayloadDataItem {
 
 func (b *_S7VarPayloadDataItemBuilder) DeepCopy() any {
 	_copy := b.CreateS7VarPayloadDataItemBuilder().(*_S7VarPayloadDataItemBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

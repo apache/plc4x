@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -97,7 +98,7 @@ func NewEnableControlDataBuilder() EnableControlDataBuilder {
 type _EnableControlDataBuilder struct {
 	*_EnableControlData
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (EnableControlDataBuilder) = (*_EnableControlDataBuilder)(nil)
@@ -122,8 +123,8 @@ func (b *_EnableControlDataBuilder) WithValue(value byte) EnableControlDataBuild
 }
 
 func (b *_EnableControlDataBuilder) Build() (EnableControlData, error) {
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EnableControlData.deepCopy(), nil
 }
@@ -138,8 +139,8 @@ func (b *_EnableControlDataBuilder) MustBuild() EnableControlData {
 
 func (b *_EnableControlDataBuilder) DeepCopy() any {
 	_copy := b.CreateEnableControlDataBuilder().(*_EnableControlDataBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

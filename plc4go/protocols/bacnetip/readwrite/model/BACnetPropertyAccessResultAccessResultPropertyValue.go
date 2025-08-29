@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -102,7 +103,7 @@ type _BACnetPropertyAccessResultAccessResultPropertyValueBuilder struct {
 
 	parentBuilder *_BACnetPropertyAccessResultAccessResultBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (BACnetPropertyAccessResultAccessResultPropertyValueBuilder) = (*_BACnetPropertyAccessResultAccessResultPropertyValueBuilder)(nil)
@@ -126,23 +127,17 @@ func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) WithProper
 	var err error
 	b.PropertyValue, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) Build() (BACnetPropertyAccessResultAccessResultPropertyValue, error) {
 	if b.PropertyValue == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'propertyValue' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'propertyValue' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyAccessResultAccessResultPropertyValue.deepCopy(), nil
 }
@@ -168,8 +163,8 @@ func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) buildForBA
 
 func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) DeepCopy() any {
 	_copy := b.CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder().(*_BACnetPropertyAccessResultAccessResultPropertyValueBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }

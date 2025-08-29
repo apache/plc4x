@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -125,7 +126,7 @@ type _AirConditioningDataZoneHumidityBuilder struct {
 
 	parentBuilder *_AirConditioningDataBuilder
 
-	err *utils.MultiError
+	collectedErr []error
 }
 
 var _ (AirConditioningDataZoneHumidityBuilder) = (*_AirConditioningDataZoneHumidityBuilder)(nil)
@@ -154,10 +155,7 @@ func (b *_AirConditioningDataZoneHumidityBuilder) WithZoneListBuilder(builderSup
 	var err error
 	b.ZoneList, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HVACZoneListBuilder failed"))
 	}
 	return b
 }
@@ -172,10 +170,7 @@ func (b *_AirConditioningDataZoneHumidityBuilder) WithHumidityBuilder(builderSup
 	var err error
 	b.Humidity, err = builder.Build()
 	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "HVACHumidityBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "HVACHumidityBuilder failed"))
 	}
 	return b
 }
@@ -187,19 +182,13 @@ func (b *_AirConditioningDataZoneHumidityBuilder) WithSensorStatus(sensorStatus 
 
 func (b *_AirConditioningDataZoneHumidityBuilder) Build() (AirConditioningDataZoneHumidity, error) {
 	if b.ZoneList == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'zoneList' not set"))
 	}
 	if b.Humidity == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'humidity' not set"))
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'humidity' not set"))
 	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
+		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AirConditioningDataZoneHumidity.deepCopy(), nil
 }
@@ -225,8 +214,8 @@ func (b *_AirConditioningDataZoneHumidityBuilder) buildForAirConditioningData() 
 
 func (b *_AirConditioningDataZoneHumidityBuilder) DeepCopy() any {
 	_copy := b.CreateAirConditioningDataZoneHumidityBuilder().(*_AirConditioningDataZoneHumidityBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	if b.collectedErr != nil {
+		copy(_copy.collectedErr, b.collectedErr)
 	}
 	return _copy
 }
