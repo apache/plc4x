@@ -12,6 +12,30 @@ Bug Fixes
 ---------
 
 ==============================================================
+Apache PLC4X 0.13.1
+==============================================================
+
+New Features
+------------
+
+- Extended the PlcRawByteArray to provide access to a List of
+  USINT objects.
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+- When reading an array of bits, the old s7 driver seems to hang.
+- The s7 driver causes issues when writing arrays of bits.
+- The block optimizer used in s7-light causes errors, if a tag
+  references the same byte multiple times.
+- When using the new block-optimizer in the s7-light driver,
+  when reading multiple BOOL values located in the same byte
+  produces errors
+
+==============================================================
 Apache PLC4X 0.13.0
 ==============================================================
 
