@@ -198,7 +198,7 @@
       </plugin>
 
       <!--
-        As our libraries should be consumable on Java 11, downgrade the compiler settings.
+        As our libraries should be consumable on Java 21, downgrade the compiler settings.
       -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

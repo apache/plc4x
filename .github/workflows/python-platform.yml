@@ -72,7 +72,7 @@ jobs:
         with:
           distribution: 'adopt'
           java-package: jdk
-          java-version: 17
+          java-version: 21
 
       - name: Set Platform options
         id: platform_opts

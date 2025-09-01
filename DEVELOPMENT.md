@@ -21,7 +21,7 @@
 ## Requirements
 
 - Maven >= 3.3.1 
-- Java >= 8
+- Java >= 21
 
 ## General
 
@@ -31,7 +31,7 @@
 
 ## Java Specific
 
-- Development should be done in Java >=9
+- Development should be done in Java >=21
 - Providing Java 7 compatible versions should be possible by using the retrolambda plugin
   - Usage of default implementations does cause more problems than it solves in this case. 
 
