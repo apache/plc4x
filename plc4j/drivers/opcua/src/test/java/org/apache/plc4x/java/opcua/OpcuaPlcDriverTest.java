@@ -70,6 +70,7 @@ import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+@Disabled("Even if running locally, this test causes continuous issues on Jenkins. Disabling until someone can have a look at it.")
 @Testcontainers(disabledWithoutDocker = true)
 public class OpcuaPlcDriverTest {
 
