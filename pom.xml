@@ -127,12 +127,13 @@
     <dom4j.version>2.2.0</dom4j.version>
     <equalsverifier.version>4.0.9</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
-    <groovy.version>4.0.28</groovy.version>
+    <groovy.version>5.0.0</groovy.version>
     <guava.version>33.4.8-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <jackson.version>2.19.2</jackson.version>
+    <jackson.version>2.20.0</jackson.version>
+    <jackson.broken.version>2.20</jackson.broken.version>
     <woodstox-core.version>7.1.1</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.4</jaxb.version>
@@ -355,7 +356,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.version}</version>
+        <version>${jackson.broken.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>

@@ -19,23 +19,17 @@
 package org.apache.plc4x.test.generator
 
 import org.opentest4j.TestAbortedException
-import spock.lang.Ignore
 
 import java.nio.file.FileSystems
 import org.apache.commons.io.FileUtils
 
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo
-import static spock.util.matcher.HamcrestSupport.*
-import spock.lang.Specification
-
 
 import java.nio.file.Files
 
-// TODO: Fix this test, so it can also run on M-Macs.
-@Ignore
 // TODO: find out how to access surefire groups...
 //@IgnoreIf({ env["ENABLE_ALL_TESTS"] == null || env["ENABLE_ALL_TESTS"] == "false" })
-class ParserSerializerTestsuiteGeneratorSpec extends Specification {
+class ParserSerializerTestsuiteGeneratorTest {
     def "Test main with an example pcap"() {
         given:
         try {
@@ -79,14 +73,14 @@ class ParserSerializerTestsuiteGeneratorSpec extends Specification {
         then:
         assert Files.exists(testSuitePath)
         expect:
-        def expected = ParserSerializerTestsuiteGeneratorSpec.getResource("/ParserSerializerTestSuite.xml").text
+        def expected = ParserSerializerTestsuiteGeneratorTest.getResource("/ParserSerializerTestSuite.xml").text
         def actual = testSuitePath.toFile().text
         that actual, isIdenticalTo(expected).ignoreComments().ignoreWhitespace()
     }
 
     private String DownloadAndCache(String file) throws IOException {
         def tempDirectory = FileUtils.getTempDirectoryPath()
-        def pcapFile = FileSystems.getDefault().getPath(tempDirectory, ParserSerializerTestsuiteGeneratorSpec.class.getSimpleName(), file).toFile()
+        def pcapFile = FileSystems.getDefault().getPath(tempDirectory, ParserSerializerTestsuiteGeneratorTest.class.getSimpleName(), file).toFile()
         FileUtils.createParentDirectories(pcapFile);
         if (!pcapFile.exists()) {
             URL source = new URL("https://kargs.net/captures/" + file)

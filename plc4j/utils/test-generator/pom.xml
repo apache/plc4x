@@ -34,6 +34,7 @@
 
   <properties>
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <skipBytecodeCheck>true</skipBytecodeCheck>
   </properties>
 
   <build>
@@ -85,18 +86,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.spockframework</groupId>
-        <artifactId>spock-bom</artifactId>
-        <version>2.3-groovy-4.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -158,11 +147,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.spockframework</groupId>
-      <artifactId>spock-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
