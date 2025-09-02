@@ -320,4 +320,9 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
         return BitSet.valueOf(bitSetData);
     }
 
+    @Override
+    public void channelInactive(ConversationContext<FirmataMessage> context) {
+        connected.set(false);
+    }
+
 }

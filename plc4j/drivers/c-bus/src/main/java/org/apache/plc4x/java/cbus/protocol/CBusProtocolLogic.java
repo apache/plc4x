@@ -78,4 +78,9 @@ public class CBusProtocolLogic extends Plc4xProtocolBase<CBusCommand> {
     protected void decode(ConversationContext<CBusCommand> context, CBusCommand msg) throws Exception {
     }
 
+    @Override
+    public void channelInactive(ConversationContext<CBusCommand> context) {
+        tm.shutdown();
+    }
+
 }

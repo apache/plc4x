@@ -214,4 +214,9 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
         return PlcResponseCode.NOT_FOUND;
     }
 
+    @Override
+    public void channelInactive(ConversationContext<CIPEncapsulationPacket> context) {
+        tm.shutdown();
+    }
+
 }

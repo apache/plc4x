@@ -80,4 +80,8 @@ public class OpenProtocolProtocolLogic extends Plc4xProtocolBase<OpenProtocolMes
     public void unregister(PlcConsumerRegistration plcConsumerRegistration) {
     }
 
+    @Override
+    public void channelInactive(ConversationContext<OpenProtocolMessage> context) {
+    }
+
 }

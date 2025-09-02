@@ -67,6 +67,11 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
     }
 
     @Override
+    public void channelInactive(ConversationContext<ModbusTcpADU> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
         CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
 

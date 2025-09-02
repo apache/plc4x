@@ -901,4 +901,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         }
     }
 
+    @Override
+    public void channelInactive(ConversationContext<OpcuaAPU> context) {
+        tm.shutdown();
+    }
 }

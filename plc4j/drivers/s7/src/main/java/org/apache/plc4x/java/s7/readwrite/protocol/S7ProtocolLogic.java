@@ -2494,4 +2494,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     }
 
+    @Override
+    public void channelInactive(ConversationContext<TPKTPacket> context) {
+        tm.shutdown();
+    }
 }

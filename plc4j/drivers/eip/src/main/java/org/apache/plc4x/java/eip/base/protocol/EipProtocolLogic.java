@@ -1355,4 +1355,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         }
     }
 
+    @Override
+    public void channelInactive(ConversationContext<EipPacket> context) {
+        tm.shutdown();
+    }
+
 }

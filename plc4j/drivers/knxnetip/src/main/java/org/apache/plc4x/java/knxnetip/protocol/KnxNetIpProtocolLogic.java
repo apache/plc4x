@@ -640,4 +640,9 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         throw new PlcRuntimeException("Unsupported Group Address Type " + groupAddress.getClass().getName());
     }
 
+    @Override
+    public void channelInactive(ConversationContext<KnxNetIpMessage> context) {
+        tm.shutdown();
+    }
+
 }

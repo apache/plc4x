@@ -905,4 +905,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         throw new PlcRuntimeException("Length undefined");
     }
 
+    @Override
+    public void channelInactive(ConversationContext<Ethernet_Frame> context) {
+        context.getChannel().close();
+    }
+
 }

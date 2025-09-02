@@ -57,4 +57,9 @@ public class TestProtocol extends Plc4xProtocolBase<TestMessage> {
         context.getChannel().close();
     }
 
+    @Override
+    public void channelInactive(ConversationContext<TestMessage> context) {
+        context.getChannel().close();
+    }
+
 }

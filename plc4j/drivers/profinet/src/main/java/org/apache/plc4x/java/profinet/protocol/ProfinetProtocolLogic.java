@@ -271,4 +271,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     protected void decode(ConversationContext<Ethernet_Frame> context, Ethernet_Frame msg) throws Exception {
         super.decode(context, msg);
     }
+
+    @Override
+    public void channelInactive(ConversationContext<Ethernet_Frame> context) {
+        // TODO:- Do something here
+    }
 }

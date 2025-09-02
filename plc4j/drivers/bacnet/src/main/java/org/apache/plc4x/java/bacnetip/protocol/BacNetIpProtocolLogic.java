@@ -288,4 +288,9 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
         return tag.getDeviceIdentifier() + "/" + tag.getObjectType() + "/" + tag.getObjectInstance();
     }
 
+    @Override
+    public void channelInactive(ConversationContext<BVLC> context) {
+        // Nothing to do here ...
+    }
+
 }

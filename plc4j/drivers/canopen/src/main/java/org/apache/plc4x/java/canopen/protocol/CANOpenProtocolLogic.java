@@ -453,4 +453,9 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
         }
     }
 
+    @Override
+    public void channelInactive(ConversationContext<CANOpenFrame> context) {
+        tm.shutdown();
+    }
+
 }

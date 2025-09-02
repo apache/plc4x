@@ -200,4 +200,9 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
         super.decode(context, msg);
     }
 
+    @Override
+    public void channelInactive(ConversationContext<Plc4xMessage> context) {
+        tm.shutdown();
+    }
+
 }

@@ -101,4 +101,6 @@ public abstract class Plc4xProtocolBase<T> {
 
     public abstract void close(ConversationContext<T> context);
 
+    public abstract void channelInactive(ConversationContext<T> context);
+
 }

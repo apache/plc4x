@@ -41,13 +41,14 @@ class DefaultNettyPlcConnectionTest {
     final GateKeeper connect = new GateKeeper("connect");
     final GateKeeper disconnect = new GateKeeper("disconnect");
     final GateKeeper close = new GateKeeper("close");
+    final GateKeeper channelInactive = new GateKeeper("channelInactive");
 
     @Test
     void checkInitializationSequence() throws Exception {
         ChannelFactory channelFactory = new TestChannelFactory();
 
         ProtocolStackConfigurer<Message> stackConfigurer = (configuration, pipeline, authentication, passive, listeners) -> {
-            TestProtocolBase base = new TestProtocolBase(discovery, connect, disconnect, close);
+            TestProtocolBase base = new TestProtocolBase(discovery, connect, disconnect, close, channelInactive);
             Plc4xNettyWrapper<Message> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, base, authentication, Message.class);
             pipeline.addLast(context);
             return base;
@@ -153,12 +154,14 @@ class DefaultNettyPlcConnectionTest {
         private final GateKeeper connect;
         private final GateKeeper close;
         private final GateKeeper disconnect;
+        private final GateKeeper channelInactive;
 
-        public TestProtocolBase(GateKeeper discover, GateKeeper connect, GateKeeper disconnect, GateKeeper close) {
+        public TestProtocolBase(GateKeeper discover, GateKeeper connect, GateKeeper disconnect, GateKeeper close, GateKeeper channelInactive) {
             this.discover = discover;
             this.connect = connect;
             this.close = close;
             this.disconnect = disconnect;
+            this.channelInactive =channelInactive;
         }
 
         @Override
@@ -210,6 +213,13 @@ class DefaultNettyPlcConnectionTest {
                 throw new RuntimeException(e);
             }
         }
-    }
 
+        @Override
+        public void channelInactive(ConversationContext<Message> context) {
+            logger.info("On ChannelInactive");
+            channelInactive.permitEntry();
+            awaitIn(channelInactive);
+            channelInactive.reportExit();
+        }
+    }
 }

@@ -89,6 +89,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     @Override
+    public void channelInactive(ConversationContext<TPKTPacket> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         // Only the TCP transport supports login.
         logger.info("S7 Driver running in ACTIVE mode.");
@@ -1099,5 +1104,4 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         }
 
     }
-
 }

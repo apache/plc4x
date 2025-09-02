@@ -235,4 +235,9 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
         }
     }
 
+    @Override
+    public void channelInactive(ConversationContext<APDU> context) {
+        tm.shutdown();
+    }
+
 }

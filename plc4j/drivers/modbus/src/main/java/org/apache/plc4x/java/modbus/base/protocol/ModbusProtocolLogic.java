@@ -64,6 +64,11 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     }
 
     @Override
+    public void channelInactive(ConversationContext<T> context) {
+        // Nothing to do here ...
+    }
+
+    @Override
     protected void decode(ConversationContext<T> context, T msg) throws Exception {
         super.decode(context, msg);
     }
@@ -417,5 +422,4 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
         }
         return out;
     }
-
 }
