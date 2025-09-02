@@ -413,7 +413,7 @@ if (os == "windows") {
 // profiles.
 /////////////////////////////////////////////////////
 
-checkJavaVersion("11", null)
+checkJavaVersion("21", null)
 
 if (dotnetEnabled) {
     checkDotnet()
