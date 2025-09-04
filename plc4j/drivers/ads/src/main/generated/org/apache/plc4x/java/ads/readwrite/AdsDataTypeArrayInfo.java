@@ -78,7 +78,7 @@ public class AdsDataTypeArrayInfo implements Message {
         writeUnsignedLong(writeBuffer, 32),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     long upperBound = getUpperBound();
     writeBuffer.writeVirtual("upperBound", upperBound);
 

@@ -76,7 +76,7 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
     // Simple Field (fDBBMDAddress)
     writeSimpleField("fDBBMDAddress", fDBBMDAddress, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetHostNPort actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

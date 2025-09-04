@@ -76,7 +76,7 @@ public class BACnetConstructedDataLastStateChange extends BACnetConstructedData 
     // Simple Field (lastStateChange)
     writeSimpleField("lastStateChange", lastStateChange, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetTimerTransitionTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

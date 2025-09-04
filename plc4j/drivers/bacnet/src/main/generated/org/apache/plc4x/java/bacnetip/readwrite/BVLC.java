@@ -85,7 +85,7 @@ public abstract class BVLC implements Message {
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int bvlcPayloadLength = getBvlcPayloadLength();
     writeBuffer.writeVirtual("bvlcPayloadLength", bvlcPayloadLength);
 

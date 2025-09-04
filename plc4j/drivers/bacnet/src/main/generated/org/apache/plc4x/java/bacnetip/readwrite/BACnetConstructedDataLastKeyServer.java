@@ -76,7 +76,7 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
     // Simple Field (lastKeyServer)
     writeSimpleField("lastKeyServer", lastKeyServer, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetAddressBinding actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

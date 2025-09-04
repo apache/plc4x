@@ -87,19 +87,19 @@ public class SocketCANFrame implements Message {
         writeSignedInt(writeBuffer, 32),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int identifier = getIdentifier();
     writeBuffer.writeVirtual("identifier", identifier);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean extended = getExtended();
     writeBuffer.writeVirtual("extended", extended);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean remote = getRemote();
     writeBuffer.writeVirtual("remote", remote);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean error = getError();
     writeBuffer.writeVirtual("error", error);
 

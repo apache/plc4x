@@ -100,35 +100,35 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
     // Simple Field (operation)
     writeSimpleField("operation", operation, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isCeaseRewind = getIsCeaseRewind();
     writeBuffer.writeVirtual("isCeaseRewind", isCeaseRewind);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean is2x = getIs2x();
     writeBuffer.writeVirtual("is2x", is2x);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean is4x = getIs4x();
     writeBuffer.writeVirtual("is4x", is4x);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean is8x = getIs8x();
     writeBuffer.writeVirtual("is8x", is8x);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean is16x = getIs16x();
     writeBuffer.writeVirtual("is16x", is16x);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean is32x = getIs32x();
     writeBuffer.writeVirtual("is32x", is32x);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean is64x = getIs64x();
     writeBuffer.writeVirtual("is64x", is64x);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isReserved = getIsReserved();
     writeBuffer.writeVirtual("isReserved", isReserved);
 

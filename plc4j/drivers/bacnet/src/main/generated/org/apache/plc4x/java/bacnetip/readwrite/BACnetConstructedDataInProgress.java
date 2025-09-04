@@ -76,7 +76,7 @@ public class BACnetConstructedDataInProgress extends BACnetConstructedData imple
     // Simple Field (inProgress)
     writeSimpleField("inProgress", inProgress, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetLightingInProgressTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

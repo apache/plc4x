@@ -77,7 +77,7 @@ public class BACnetConstructedDataMemberStatusFlags extends BACnetConstructedDat
     // Simple Field (statusFlags)
     writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetStatusFlagsTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

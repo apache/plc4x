@@ -70,7 +70,7 @@ public class PascalString16BitLength implements Message {
         stringValue,
         writeString(writeBuffer, (((sLength) == (-(1))) ? 0 : (sLength) * (8))));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short stringLength = getStringLength();
     writeBuffer.writeVirtual("stringLength", stringLength);
 

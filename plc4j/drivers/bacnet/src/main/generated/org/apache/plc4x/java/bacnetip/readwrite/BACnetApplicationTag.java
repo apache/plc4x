@@ -70,11 +70,11 @@ public abstract class BACnetApplicationTag implements Message {
     // Simple Field (header)
     writeSimpleField("header", header, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short actualTagNumber = getActualTagNumber();
     writeBuffer.writeVirtual("actualTagNumber", actualTagNumber);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     long actualLength = getActualLength();
     writeBuffer.writeVirtual("actualLength", actualLength);
 

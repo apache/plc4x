@@ -125,11 +125,11 @@ public class HVACHumidityStatusFlags implements Message {
     // Simple Field (damperState)
     writeSimpleField("damperState", damperState, writeBoolean(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isDamperStateClosed = getIsDamperStateClosed();
     writeBuffer.writeVirtual("isDamperStateClosed", isDamperStateClosed);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isDamperStateOpen = getIsDamperStateOpen();
     writeBuffer.writeVirtual("isDamperStateOpen", isDamperStateOpen);
 

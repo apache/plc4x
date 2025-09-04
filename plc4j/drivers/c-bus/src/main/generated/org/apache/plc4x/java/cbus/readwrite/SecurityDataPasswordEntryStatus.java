@@ -81,23 +81,23 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
     // Simple Field (code)
     writeSimpleField("code", code, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isPasswordEntrySucceeded = getIsPasswordEntrySucceeded();
     writeBuffer.writeVirtual("isPasswordEntrySucceeded", isPasswordEntrySucceeded);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isPasswordEntryFailed = getIsPasswordEntryFailed();
     writeBuffer.writeVirtual("isPasswordEntryFailed", isPasswordEntryFailed);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isPasswordEntryDisabled = getIsPasswordEntryDisabled();
     writeBuffer.writeVirtual("isPasswordEntryDisabled", isPasswordEntryDisabled);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isPasswordEntryEnabledAgain = getIsPasswordEntryEnabledAgain();
     writeBuffer.writeVirtual("isPasswordEntryEnabledAgain", isPasswordEntryEnabledAgain);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isReserved = getIsReserved();
     writeBuffer.writeVirtual("isReserved", isReserved);
 

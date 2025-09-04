@@ -107,7 +107,7 @@ public class CALReplyLong extends CALReply implements Message {
         reservedField0 != null ? reservedField0 : (byte) 0x86,
         writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isUnitAddress = getIsUnitAddress();
     writeBuffer.writeVirtual("isUnitAddress", isUnitAddress);
 

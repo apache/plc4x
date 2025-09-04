@@ -87,27 +87,27 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
     // Simple Field (armMode)
     writeSimpleField("armMode", armMode, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isReserved = getIsReserved();
     writeBuffer.writeVirtual("isReserved", isReserved);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isArmToAwayMode = getIsArmToAwayMode();
     writeBuffer.writeVirtual("isArmToAwayMode", isArmToAwayMode);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isArmToNightMode = getIsArmToNightMode();
     writeBuffer.writeVirtual("isArmToNightMode", isArmToNightMode);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isArmToDayMode = getIsArmToDayMode();
     writeBuffer.writeVirtual("isArmToDayMode", isArmToDayMode);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isArmToVacationMode = getIsArmToVacationMode();
     writeBuffer.writeVirtual("isArmToVacationMode", isArmToVacationMode);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isArmToHighestLevelOfProtection = getIsArmToHighestLevelOfProtection();
     writeBuffer.writeVirtual("isArmToHighestLevelOfProtection", isArmToHighestLevelOfProtection);
 

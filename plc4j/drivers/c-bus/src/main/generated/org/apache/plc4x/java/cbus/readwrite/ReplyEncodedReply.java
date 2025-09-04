@@ -86,7 +86,7 @@ public class ReplyEncodedReply extends Reply implements Message {
                 writeBuffer, encodedReply),
         writeBuffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     EncodedReply encodedReplyDecoded = getEncodedReplyDecoded();
     writeBuffer.writeVirtual("encodedReplyDecoded", encodedReplyDecoded);
 
@@ -98,7 +98,7 @@ public class ReplyEncodedReply extends Reply implements Message {
                 writeBuffer, encodedReply, cBusOptions.getSrchk()),
         writeBuffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     Checksum chksumDecoded = getChksumDecoded();
     writeBuffer.writeVirtual("chksumDecoded", chksumDecoded);
 

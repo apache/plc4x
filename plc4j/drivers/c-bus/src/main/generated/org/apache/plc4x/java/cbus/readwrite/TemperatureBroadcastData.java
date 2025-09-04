@@ -87,7 +87,7 @@ public class TemperatureBroadcastData implements Message {
             TemperatureBroadcastCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     TemperatureBroadcastCommandType commandType = getCommandType();
     writeBuffer.writeVirtual("commandType", commandType);
 
@@ -97,7 +97,7 @@ public class TemperatureBroadcastData implements Message {
     // Simple Field (temperatureByte)
     writeSimpleField("temperatureByte", temperatureByte, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     float temperatureInCelsius = getTemperatureInCelsius();
     writeBuffer.writeVirtual("temperatureInCelsius", temperatureInCelsius);
 

@@ -76,7 +76,7 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
     // Simple Field (ackRequired)
     writeSimpleField("ackRequired", ackRequired, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetEventTransitionBitsTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

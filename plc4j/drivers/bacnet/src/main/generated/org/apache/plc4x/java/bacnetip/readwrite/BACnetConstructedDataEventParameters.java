@@ -76,7 +76,7 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
     // Simple Field (eventParameter)
     writeSimpleField("eventParameter", eventParameter, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetEventParameter actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

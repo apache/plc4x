@@ -83,7 +83,7 @@ public class PortSegmentExtended extends PortSegmentType implements Message {
     // Simple Field (linkAddressSize)
     writeSimpleField("linkAddressSize", linkAddressSize, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short paddingByte = getPaddingByte();
     writeBuffer.writeVirtual("paddingByte", paddingByte);
 

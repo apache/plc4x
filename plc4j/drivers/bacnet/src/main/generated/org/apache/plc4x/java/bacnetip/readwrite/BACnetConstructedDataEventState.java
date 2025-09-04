@@ -76,7 +76,7 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
     // Simple Field (eventState)
     writeSimpleField("eventState", eventState, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetEventStateTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

@@ -76,7 +76,7 @@ public class BACnetConstructedDataReliability extends BACnetConstructedData impl
     // Simple Field (reliability)
     writeSimpleField("reliability", reliability, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetReliabilityTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

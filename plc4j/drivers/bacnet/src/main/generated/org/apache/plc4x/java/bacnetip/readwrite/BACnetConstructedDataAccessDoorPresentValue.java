@@ -77,7 +77,7 @@ public class BACnetConstructedDataAccessDoorPresentValue extends BACnetConstruct
     // Simple Field (presentValue)
     writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetDoorValueTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

@@ -140,7 +140,7 @@ public class BACnetPriorityArray implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetPriorityArray");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BigInteger zero = getZero();
     writeBuffer.writeVirtual("zero", zero);
 
@@ -150,75 +150,75 @@ public class BACnetPriorityArray implements Message {
     // Array Field (data)
     writeComplexTypeArrayField("data", data, writeBuffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue01 = getPriorityValue01();
     writeBuffer.writeVirtual("priorityValue01", priorityValue01);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue02 = getPriorityValue02();
     writeBuffer.writeVirtual("priorityValue02", priorityValue02);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue03 = getPriorityValue03();
     writeBuffer.writeVirtual("priorityValue03", priorityValue03);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue04 = getPriorityValue04();
     writeBuffer.writeVirtual("priorityValue04", priorityValue04);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue05 = getPriorityValue05();
     writeBuffer.writeVirtual("priorityValue05", priorityValue05);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue06 = getPriorityValue06();
     writeBuffer.writeVirtual("priorityValue06", priorityValue06);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue07 = getPriorityValue07();
     writeBuffer.writeVirtual("priorityValue07", priorityValue07);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue08 = getPriorityValue08();
     writeBuffer.writeVirtual("priorityValue08", priorityValue08);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue09 = getPriorityValue09();
     writeBuffer.writeVirtual("priorityValue09", priorityValue09);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue10 = getPriorityValue10();
     writeBuffer.writeVirtual("priorityValue10", priorityValue10);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue11 = getPriorityValue11();
     writeBuffer.writeVirtual("priorityValue11", priorityValue11);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue12 = getPriorityValue12();
     writeBuffer.writeVirtual("priorityValue12", priorityValue12);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue13 = getPriorityValue13();
     writeBuffer.writeVirtual("priorityValue13", priorityValue13);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue14 = getPriorityValue14();
     writeBuffer.writeVirtual("priorityValue14", priorityValue14);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue15 = getPriorityValue15();
     writeBuffer.writeVirtual("priorityValue15", priorityValue15);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue priorityValue16 = getPriorityValue16();
     writeBuffer.writeVirtual("priorityValue16", priorityValue16);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isIndexedAccess = getIsIndexedAccess();
     writeBuffer.writeVirtual("isIndexedAccess", isIndexedAccess);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityValue indexEntry = getIndexEntry();
     writeBuffer.writeVirtual("indexEntry", indexEntry);
 

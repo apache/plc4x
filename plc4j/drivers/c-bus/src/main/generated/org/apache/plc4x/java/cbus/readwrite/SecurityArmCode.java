@@ -77,23 +77,23 @@ public class SecurityArmCode implements Message {
     // Simple Field (code)
     writeSimpleField("code", code, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isDisarmed = getIsDisarmed();
     writeBuffer.writeVirtual("isDisarmed", isDisarmed);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isFullyArmed = getIsFullyArmed();
     writeBuffer.writeVirtual("isFullyArmed", isFullyArmed);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isPartiallyArmed = getIsPartiallyArmed();
     writeBuffer.writeVirtual("isPartiallyArmed", isPartiallyArmed);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isArmSubtype = getIsArmSubtype();
     writeBuffer.writeVirtual("isArmSubtype", isArmSubtype);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isReserved = getIsReserved();
     writeBuffer.writeVirtual("isReserved", isReserved);
 

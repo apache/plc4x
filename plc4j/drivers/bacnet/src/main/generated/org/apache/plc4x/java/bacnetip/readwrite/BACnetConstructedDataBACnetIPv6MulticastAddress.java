@@ -77,7 +77,7 @@ public class BACnetConstructedDataBACnetIPv6MulticastAddress extends BACnetConst
     // Simple Field (ipv6MulticastAddress)
     writeSimpleField("ipv6MulticastAddress", ipv6MulticastAddress, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

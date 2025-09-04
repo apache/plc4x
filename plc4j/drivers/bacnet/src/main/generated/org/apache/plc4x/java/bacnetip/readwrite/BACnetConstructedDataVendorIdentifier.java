@@ -77,7 +77,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
     // Simple Field (vendorIdentifier)
     writeSimpleField("vendorIdentifier", vendorIdentifier, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetVendorIdTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

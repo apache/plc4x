@@ -77,7 +77,7 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
     // Simple Field (timeOfDeviceRestart)
     writeSimpleField("timeOfDeviceRestart", timeOfDeviceRestart, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetTimeStamp actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

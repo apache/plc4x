@@ -93,11 +93,11 @@ public abstract class CALData implements Message {
             CALCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     CALCommandType commandType = getCommandType();
     writeBuffer.writeVirtual("commandType", commandType);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean sendIdentifyRequestBefore = getSendIdentifyRequestBefore();
     writeBuffer.writeVirtual("sendIdentifyRequestBefore", sendIdentifyRequestBefore);
 

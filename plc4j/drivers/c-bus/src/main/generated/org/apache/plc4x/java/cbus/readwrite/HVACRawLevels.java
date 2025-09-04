@@ -61,7 +61,7 @@ public class HVACRawLevels implements Message {
     // Simple Field (rawValue)
     writeSimpleField("rawValue", rawValue, writeSignedShort(writeBuffer, 16));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     float valueInPercent = getValueInPercent();
     writeBuffer.writeVirtual("valueInPercent", valueInPercent);
 

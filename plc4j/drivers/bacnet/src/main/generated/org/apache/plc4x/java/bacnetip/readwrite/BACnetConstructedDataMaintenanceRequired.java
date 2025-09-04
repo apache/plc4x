@@ -77,7 +77,7 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
     // Simple Field (maintenanceRequired)
     writeSimpleField("maintenanceRequired", maintenanceRequired, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetMaintenanceTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

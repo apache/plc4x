@@ -81,7 +81,7 @@ public class BACnetTagPayloadCharacterString implements Message {
             BACnetCharacterEncoding::name,
             writeByte(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int actualLengthInBit = getActualLengthInBit();
     writeBuffer.writeVirtual("actualLengthInBit", actualLengthInBit);
 

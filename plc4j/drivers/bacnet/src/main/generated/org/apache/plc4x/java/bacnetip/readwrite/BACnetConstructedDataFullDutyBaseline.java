@@ -77,7 +77,7 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
     // Simple Field (fullDutyBaseLine)
     writeSimpleField("fullDutyBaseLine", fullDutyBaseLine, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

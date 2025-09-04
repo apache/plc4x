@@ -77,7 +77,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
     // Simple Field (propertyReference)
     writeSimpleField("propertyReference", propertyReference, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetDeviceObjectPropertyReference actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

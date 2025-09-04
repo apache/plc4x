@@ -76,7 +76,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
     // Simple Field (prescale)
     writeSimpleField("prescale", prescale, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPrescale actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

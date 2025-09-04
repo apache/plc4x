@@ -163,63 +163,63 @@ public class BACnetTagPayloadSignedInteger implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetTagPayloadSignedInteger");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isInt8 = getIsInt8();
     writeBuffer.writeVirtual("isInt8", isInt8);
 
     // Optional Field (valueInt8) (Can be skipped, if the value is null)
     writeOptionalField("valueInt8", valueInt8, writeSignedByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isInt16 = getIsInt16();
     writeBuffer.writeVirtual("isInt16", isInt16);
 
     // Optional Field (valueInt16) (Can be skipped, if the value is null)
     writeOptionalField("valueInt16", valueInt16, writeSignedShort(writeBuffer, 16));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isInt24 = getIsInt24();
     writeBuffer.writeVirtual("isInt24", isInt24);
 
     // Optional Field (valueInt24) (Can be skipped, if the value is null)
     writeOptionalField("valueInt24", valueInt24, writeSignedInt(writeBuffer, 24));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isInt32 = getIsInt32();
     writeBuffer.writeVirtual("isInt32", isInt32);
 
     // Optional Field (valueInt32) (Can be skipped, if the value is null)
     writeOptionalField("valueInt32", valueInt32, writeSignedInt(writeBuffer, 32));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isInt40 = getIsInt40();
     writeBuffer.writeVirtual("isInt40", isInt40);
 
     // Optional Field (valueInt40) (Can be skipped, if the value is null)
     writeOptionalField("valueInt40", valueInt40, writeSignedLong(writeBuffer, 40));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isInt48 = getIsInt48();
     writeBuffer.writeVirtual("isInt48", isInt48);
 
     // Optional Field (valueInt48) (Can be skipped, if the value is null)
     writeOptionalField("valueInt48", valueInt48, writeSignedLong(writeBuffer, 48));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isInt56 = getIsInt56();
     writeBuffer.writeVirtual("isInt56", isInt56);
 
     // Optional Field (valueInt56) (Can be skipped, if the value is null)
     writeOptionalField("valueInt56", valueInt56, writeSignedLong(writeBuffer, 56));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isInt64 = getIsInt64();
     writeBuffer.writeVirtual("isInt64", isInt64);
 
     // Optional Field (valueInt64) (Can be skipped, if the value is null)
     writeOptionalField("valueInt64", valueInt64, writeSignedLong(writeBuffer, 64));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BigInteger actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

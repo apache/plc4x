@@ -76,7 +76,7 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
     // Simple Field (dhcpServer)
     writeSimpleField("dhcpServer", dhcpServer, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

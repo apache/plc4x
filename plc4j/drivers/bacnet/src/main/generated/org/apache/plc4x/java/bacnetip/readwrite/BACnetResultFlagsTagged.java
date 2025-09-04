@@ -81,15 +81,15 @@ public class BACnetResultFlagsTagged implements Message {
     // Simple Field (payload)
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean firstItem = getFirstItem();
     writeBuffer.writeVirtual("firstItem", firstItem);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean lastItem = getLastItem();
     writeBuffer.writeVirtual("lastItem", lastItem);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean moreItems = getMoreItems();
     writeBuffer.writeVirtual("moreItems", moreItems);
 

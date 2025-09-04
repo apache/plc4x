@@ -76,7 +76,7 @@ public class BACnetConstructedDataBACnetIPMode extends BACnetConstructedData imp
     // Simple Field (bacnetIpMode)
     writeSimpleField("bacnetIpMode", bacnetIpMode, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetIPModeTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

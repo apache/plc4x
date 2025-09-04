@@ -80,7 +80,7 @@ public abstract class MediaTransportControlData implements Message {
             MediaTransportControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     MediaTransportControlCommandType commandType = getCommandType();
     writeBuffer.writeVirtual("commandType", commandType);
 

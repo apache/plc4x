@@ -76,7 +76,7 @@ public class BACnetConstructedDataMinimumValue extends BACnetConstructedData imp
     // Simple Field (minimumValue)
     writeSimpleField("minimumValue", minimumValue, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

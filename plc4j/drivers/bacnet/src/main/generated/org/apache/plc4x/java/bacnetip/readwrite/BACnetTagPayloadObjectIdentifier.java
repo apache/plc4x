@@ -87,7 +87,7 @@ public class BACnetTagPayloadObjectIdentifier implements Message {
                 writeBuffer, objectType, proprietaryValue),
         writeBuffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isProprietary = getIsProprietary();
     writeBuffer.writeVirtual("isProprietary", isProprietary);
 

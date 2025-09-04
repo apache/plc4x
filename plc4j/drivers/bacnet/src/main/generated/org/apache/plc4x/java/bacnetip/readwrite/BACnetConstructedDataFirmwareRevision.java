@@ -77,7 +77,7 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
     // Simple Field (firmwareRevision)
     writeSimpleField("firmwareRevision", firmwareRevision, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

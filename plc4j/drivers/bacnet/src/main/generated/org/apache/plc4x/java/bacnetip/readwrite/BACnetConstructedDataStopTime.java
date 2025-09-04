@@ -76,7 +76,7 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
     // Simple Field (stopTime)
     writeSimpleField("stopTime", stopTime, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

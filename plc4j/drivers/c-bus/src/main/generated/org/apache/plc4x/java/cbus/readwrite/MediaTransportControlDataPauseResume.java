@@ -73,11 +73,11 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
     // Simple Field (operation)
     writeSimpleField("operation", operation, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isPause = getIsPause();
     writeBuffer.writeVirtual("isPause", isPause);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isResume = getIsResume();
     writeBuffer.writeVirtual("isResume", isResume);
 

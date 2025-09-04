@@ -77,7 +77,7 @@ public class BACnetConstructedDataRequestedShedLevel extends BACnetConstructedDa
     // Simple Field (requestedShedLevel)
     writeSimpleField("requestedShedLevel", requestedShedLevel, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetShedLevel actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

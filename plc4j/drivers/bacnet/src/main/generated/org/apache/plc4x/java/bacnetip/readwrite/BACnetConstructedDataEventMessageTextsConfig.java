@@ -105,7 +105,7 @@ public class BACnetConstructedDataEventMessageTextsConfig extends BACnetConstruc
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetConstructedDataEventMessageTextsConfig");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BigInteger zero = getZero();
     writeBuffer.writeVirtual("zero", zero);
 
@@ -115,15 +115,15 @@ public class BACnetConstructedDataEventMessageTextsConfig extends BACnetConstruc
     // Array Field (eventMessageTextsConfig)
     writeComplexTypeArrayField("eventMessageTextsConfig", eventMessageTextsConfig, writeBuffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetOptionalCharacterString toOffnormalTextConfig = getToOffnormalTextConfig();
     writeBuffer.writeVirtual("toOffnormalTextConfig", toOffnormalTextConfig);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetOptionalCharacterString toFaultTextConfig = getToFaultTextConfig();
     writeBuffer.writeVirtual("toFaultTextConfig", toFaultTextConfig);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetOptionalCharacterString toNormalTextConfig = getToNormalTextConfig();
     writeBuffer.writeVirtual("toNormalTextConfig", toNormalTextConfig);
 

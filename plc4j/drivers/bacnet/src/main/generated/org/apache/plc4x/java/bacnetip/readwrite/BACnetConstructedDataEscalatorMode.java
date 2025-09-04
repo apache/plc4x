@@ -76,7 +76,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
     // Simple Field (escalatorMode)
     writeSimpleField("escalatorMode", escalatorMode, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetEscalatorModeTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

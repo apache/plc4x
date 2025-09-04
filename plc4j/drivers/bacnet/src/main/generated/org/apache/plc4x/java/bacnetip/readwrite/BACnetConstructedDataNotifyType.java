@@ -76,7 +76,7 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
     // Simple Field (notifyType)
     writeSimpleField("notifyType", notifyType, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetNotifyTypeTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

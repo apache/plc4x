@@ -73,11 +73,11 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
     // Simple Field (state)
     writeSimpleField("state", state, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isOff = getIsOff();
     writeBuffer.writeVirtual("isOff", isOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isOn = getIsOn();
     writeBuffer.writeVirtual("isOn", isOn);
 

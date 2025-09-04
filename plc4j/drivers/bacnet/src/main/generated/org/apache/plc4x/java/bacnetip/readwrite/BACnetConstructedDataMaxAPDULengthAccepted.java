@@ -77,7 +77,7 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
     // Simple Field (maxApduLengthAccepted)
     writeSimpleField("maxApduLengthAccepted", maxApduLengthAccepted, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

@@ -62,7 +62,7 @@ public class BACnetTagPayloadEnumerated implements Message {
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     long actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

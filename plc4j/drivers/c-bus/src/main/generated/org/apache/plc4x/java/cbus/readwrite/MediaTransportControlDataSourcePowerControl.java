@@ -73,11 +73,11 @@ public class MediaTransportControlDataSourcePowerControl extends MediaTransportC
     // Simple Field (state)
     writeSimpleField("state", state, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isShouldPowerOn = getIsShouldPowerOn();
     writeBuffer.writeVirtual("isShouldPowerOn", isShouldPowerOn);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isShouldPowerOff = getIsShouldPowerOff();
     writeBuffer.writeVirtual("isShouldPowerOff", isShouldPowerOff);
 

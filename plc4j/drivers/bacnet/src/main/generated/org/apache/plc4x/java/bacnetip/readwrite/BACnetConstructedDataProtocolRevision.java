@@ -77,7 +77,7 @@ public class BACnetConstructedDataProtocolRevision extends BACnetConstructedData
     // Simple Field (protocolRevision)
     writeSimpleField("protocolRevision", protocolRevision, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

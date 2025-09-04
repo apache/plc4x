@@ -63,7 +63,7 @@ public abstract class BACnetProcessIdSelection implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetProcessIdSelection");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
     writeBuffer.writeVirtual("peekedTagNumber", peekedTagNumber);
 

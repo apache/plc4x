@@ -140,19 +140,19 @@ public class BACnetTagHeader implements Message {
     // Optional Field (extTagNumber) (Can be skipped, if the value is null)
     writeOptionalField("extTagNumber", extTagNumber, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short actualTagNumber = getActualTagNumber();
     writeBuffer.writeVirtual("actualTagNumber", actualTagNumber);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isBoolean = getIsBoolean();
     writeBuffer.writeVirtual("isBoolean", isBoolean);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isConstructed = getIsConstructed();
     writeBuffer.writeVirtual("isConstructed", isConstructed);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isPrimitiveAndNotBoolean = getIsPrimitiveAndNotBoolean();
     writeBuffer.writeVirtual("isPrimitiveAndNotBoolean", isPrimitiveAndNotBoolean);
 
@@ -165,7 +165,7 @@ public class BACnetTagHeader implements Message {
     // Optional Field (extExtExtLength) (Can be skipped, if the value is null)
     writeOptionalField("extExtExtLength", extExtExtLength, writeUnsignedLong(writeBuffer, 32));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     long actualLength = getActualLength();
     writeBuffer.writeVirtual("actualLength", actualLength);
 

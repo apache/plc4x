@@ -66,15 +66,15 @@ public class BACnetTagPayloadBoolean implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetTagPayloadBoolean");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean value = getValue();
     writeBuffer.writeVirtual("value", value);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isTrue = getIsTrue();
     writeBuffer.writeVirtual("isTrue", isTrue);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isFalse = getIsFalse();
     writeBuffer.writeVirtual("isFalse", isFalse);
 

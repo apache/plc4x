@@ -77,7 +77,7 @@ public class BACnetConstructedDataDerivativeConstant extends BACnetConstructedDa
     // Simple Field (derivativeConstant)
     writeSimpleField("derivativeConstant", derivativeConstant, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

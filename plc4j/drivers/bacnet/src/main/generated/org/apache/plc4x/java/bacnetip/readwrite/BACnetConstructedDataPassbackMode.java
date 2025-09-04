@@ -76,7 +76,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
     // Simple Field (passbackMode)
     writeSimpleField("passbackMode", passbackMode, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetAccessPassbackModeTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

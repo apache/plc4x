@@ -72,11 +72,11 @@ public class TelephonyDataRecallLastNumberRequest extends TelephonyData implemen
     // Simple Field (recallLastNumberType)
     writeSimpleField("recallLastNumberType", recallLastNumberType, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isNumberOfLastOutgoingCall = getIsNumberOfLastOutgoingCall();
     writeBuffer.writeVirtual("isNumberOfLastOutgoingCall", isNumberOfLastOutgoingCall);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isNumberOfLastIncomingCall = getIsNumberOfLastIncomingCall();
     writeBuffer.writeVirtual("isNumberOfLastIncomingCall", isNumberOfLastIncomingCall);
 

@@ -76,7 +76,7 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
     // Simple Field (programError)
     writeSimpleField("programError", programError, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetProgramErrorTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

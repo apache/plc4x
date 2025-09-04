@@ -61,7 +61,7 @@ public class HVACHumidity implements Message {
     // Simple Field (humidityValue)
     writeSimpleField("humidityValue", humidityValue, writeUnsignedInt(writeBuffer, 16));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     float humidityInPercent = getHumidityInPercent();
     writeBuffer.writeVirtual("humidityInPercent", humidityInPercent);
 

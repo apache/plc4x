@@ -76,7 +76,7 @@ public class BACnetConstructedDataSecuredStatus extends BACnetConstructedData im
     // Simple Field (securedStatus)
     writeSimpleField("securedStatus", securedStatus, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetDoorSecuredStatusTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

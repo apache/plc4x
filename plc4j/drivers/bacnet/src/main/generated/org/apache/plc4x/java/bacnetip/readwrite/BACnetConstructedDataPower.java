@@ -76,7 +76,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
     // Simple Field (power)
     writeSimpleField("power", power, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

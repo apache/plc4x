@@ -61,7 +61,7 @@ public class ApplicationAddress2 implements Message {
     // Simple Field (address)
     writeSimpleField("address", address, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isWildcard = getIsWildcard();
     writeBuffer.writeVirtual("isWildcard", isWildcard);
 

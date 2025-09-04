@@ -77,7 +77,7 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
     // Simple Field (allowGroupDelayInhibit)
     writeSimpleField("allowGroupDelayInhibit", allowGroupDelayInhibit, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

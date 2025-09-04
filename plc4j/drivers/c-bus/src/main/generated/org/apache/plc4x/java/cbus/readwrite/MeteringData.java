@@ -79,7 +79,7 @@ public abstract class MeteringData implements Message {
             MeteringCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     MeteringCommandType commandType = getCommandType();
     writeBuffer.writeVirtual("commandType", commandType);
 

@@ -77,15 +77,15 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
     // Simple Field (repeatType)
     writeSimpleField("repeatType", repeatType, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isOff = getIsOff();
     writeBuffer.writeVirtual("isOff", isOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isRepeatCurrent = getIsRepeatCurrent();
     writeBuffer.writeVirtual("isRepeatCurrent", isRepeatCurrent);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isRepeatTracks = getIsRepeatTracks();
     writeBuffer.writeVirtual("isRepeatTracks", isRepeatTracks);
 

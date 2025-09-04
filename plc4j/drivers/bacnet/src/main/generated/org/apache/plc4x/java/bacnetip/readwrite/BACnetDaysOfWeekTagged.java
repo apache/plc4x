@@ -101,31 +101,31 @@ public class BACnetDaysOfWeekTagged implements Message {
     // Simple Field (payload)
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean monday = getMonday();
     writeBuffer.writeVirtual("monday", monday);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tuesday = getTuesday();
     writeBuffer.writeVirtual("tuesday", tuesday);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean wednesday = getWednesday();
     writeBuffer.writeVirtual("wednesday", wednesday);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean thursday = getThursday();
     writeBuffer.writeVirtual("thursday", thursday);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean friday = getFriday();
     writeBuffer.writeVirtual("friday", friday);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean saturday = getSaturday();
     writeBuffer.writeVirtual("saturday", saturday);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean sunday = getSunday();
     writeBuffer.writeVirtual("sunday", sunday);
 

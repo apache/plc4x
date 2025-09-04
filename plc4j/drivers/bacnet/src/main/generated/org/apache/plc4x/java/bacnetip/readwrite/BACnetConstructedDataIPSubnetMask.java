@@ -76,7 +76,7 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
     // Simple Field (ipSubnetMask)
     writeSimpleField("ipSubnetMask", ipSubnetMask, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

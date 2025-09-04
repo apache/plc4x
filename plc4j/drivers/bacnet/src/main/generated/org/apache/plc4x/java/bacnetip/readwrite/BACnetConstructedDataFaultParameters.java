@@ -76,7 +76,7 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
     // Simple Field (faultParameters)
     writeSimpleField("faultParameters", faultParameters, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetFaultParameter actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

@@ -69,11 +69,11 @@ public class SecurityDataLowBatteryCharging extends SecurityData implements Mess
     // Simple Field (startStop)
     writeSimpleField("startStop", startStop, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean chargeStopped = getChargeStopped();
     writeBuffer.writeVirtual("chargeStopped", chargeStopped);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean chargeStarted = getChargeStarted();
     writeBuffer.writeVirtual("chargeStarted", chargeStarted);
 

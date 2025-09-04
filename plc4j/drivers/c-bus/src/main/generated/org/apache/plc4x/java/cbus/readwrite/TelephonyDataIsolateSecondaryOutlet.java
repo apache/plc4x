@@ -70,11 +70,11 @@ public class TelephonyDataIsolateSecondaryOutlet extends TelephonyData implement
     // Simple Field (isolateStatus)
     writeSimpleField("isolateStatus", isolateStatus, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isBehaveNormal = getIsBehaveNormal();
     writeBuffer.writeVirtual("isBehaveNormal", isBehaveNormal);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isToBeIsolated = getIsToBeIsolated();
     writeBuffer.writeVirtual("isToBeIsolated", isToBeIsolated);
 

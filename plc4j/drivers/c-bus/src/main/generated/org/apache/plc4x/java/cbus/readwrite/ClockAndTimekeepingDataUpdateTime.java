@@ -110,19 +110,19 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
     // Simple Field (daylightSaving)
     writeSimpleField("daylightSaving", daylightSaving, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isNoDaylightSavings = getIsNoDaylightSavings();
     writeBuffer.writeVirtual("isNoDaylightSavings", isNoDaylightSavings);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isAdvancedBy1Hour = getIsAdvancedBy1Hour();
     writeBuffer.writeVirtual("isAdvancedBy1Hour", isAdvancedBy1Hour);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isReserved = getIsReserved();
     writeBuffer.writeVirtual("isReserved", isReserved);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isUnknown = getIsUnknown();
     writeBuffer.writeVirtual("isUnknown", isUnknown);
 

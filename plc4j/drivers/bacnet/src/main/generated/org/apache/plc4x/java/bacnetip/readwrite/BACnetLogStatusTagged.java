@@ -81,15 +81,15 @@ public class BACnetLogStatusTagged implements Message {
     // Simple Field (payload)
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean logDisabled = getLogDisabled();
     writeBuffer.writeVirtual("logDisabled", logDisabled);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean bufferPurged = getBufferPurged();
     writeBuffer.writeVirtual("bufferPurged", bufferPurged);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean logInterrupted = getLogInterrupted();
     writeBuffer.writeVirtual("logInterrupted", logInterrupted);
 

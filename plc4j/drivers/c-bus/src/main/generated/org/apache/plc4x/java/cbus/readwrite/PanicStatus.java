@@ -69,15 +69,15 @@ public class PanicStatus implements Message {
     // Simple Field (status)
     writeSimpleField("status", status, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isNoPanic = getIsNoPanic();
     writeBuffer.writeVirtual("isNoPanic", isNoPanic);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isReserved = getIsReserved();
     writeBuffer.writeVirtual("isReserved", isReserved);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isPanicCurrentlyActive = getIsPanicCurrentlyActive();
     writeBuffer.writeVirtual("isPanicCurrentlyActive", isPanicCurrentlyActive);
 

@@ -77,7 +77,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
     // Simple Field (segmentationSupported)
     writeSimpleField("segmentationSupported", segmentationSupported, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetSegmentationTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

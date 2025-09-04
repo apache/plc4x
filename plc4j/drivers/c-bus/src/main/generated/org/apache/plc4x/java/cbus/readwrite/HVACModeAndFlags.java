@@ -126,44 +126,44 @@ public class HVACModeAndFlags implements Message {
     // Simple Field (auxiliaryLevel)
     writeSimpleField("auxiliaryLevel", auxiliaryLevel, writeBoolean(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isAuxLevelUnused = getIsAuxLevelUnused();
     writeBuffer.writeVirtual("isAuxLevelUnused", isAuxLevelUnused);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isAuxLevelUsed = getIsAuxLevelUsed();
     writeBuffer.writeVirtual("isAuxLevelUsed", isAuxLevelUsed);
 
     // Simple Field (guard)
     writeSimpleField("guard", guard, writeBoolean(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isGuardDisabled = getIsGuardDisabled();
     writeBuffer.writeVirtual("isGuardDisabled", isGuardDisabled);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isGuardEnabled = getIsGuardEnabled();
     writeBuffer.writeVirtual("isGuardEnabled", isGuardEnabled);
 
     // Simple Field (setback)
     writeSimpleField("setback", setback, writeBoolean(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isSetbackDisabled = getIsSetbackDisabled();
     writeBuffer.writeVirtual("isSetbackDisabled", isSetbackDisabled);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isSetbackEnabled = getIsSetbackEnabled();
     writeBuffer.writeVirtual("isSetbackEnabled", isSetbackEnabled);
 
     // Simple Field (level)
     writeSimpleField("level", level, writeBoolean(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isLevelTemperature = getIsLevelTemperature();
     writeBuffer.writeVirtual("isLevelTemperature", isLevelTemperature);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isLevelRaw = getIsLevelRaw();
     writeBuffer.writeVirtual("isLevelRaw", isLevelRaw);
 

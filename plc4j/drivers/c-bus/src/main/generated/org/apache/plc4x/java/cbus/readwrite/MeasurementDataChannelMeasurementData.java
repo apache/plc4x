@@ -128,11 +128,11 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
     // Simple Field (lsb)
     writeSimpleField("lsb", lsb, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int rawValue = getRawValue();
     writeBuffer.writeVirtual("rawValue", rawValue);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     double value = getValue();
     writeBuffer.writeVirtual("value", value);
 

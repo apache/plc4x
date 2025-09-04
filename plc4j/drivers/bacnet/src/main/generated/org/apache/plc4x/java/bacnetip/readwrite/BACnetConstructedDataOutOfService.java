@@ -76,7 +76,7 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
     // Simple Field (outOfService)
     writeSimpleField("outOfService", outOfService, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

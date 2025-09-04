@@ -86,7 +86,7 @@ public abstract class AccessControlData implements Message {
             AccessControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     AccessControlCommandType commandType = getCommandType();
     writeBuffer.writeVirtual("commandType", commandType);
 

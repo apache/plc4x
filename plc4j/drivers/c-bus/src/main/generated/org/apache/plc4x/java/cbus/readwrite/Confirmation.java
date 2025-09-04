@@ -83,7 +83,7 @@ public class Confirmation implements Message {
         confirmationType,
         writeEnum(ConfirmationType::getValue, ConfirmationType::name, writeByte(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isSuccess = getIsSuccess();
     writeBuffer.writeVirtual("isSuccess", isSuccess);
 

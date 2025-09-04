@@ -77,7 +77,7 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
     // Simple Field (userExternalIdentifier)
     writeSimpleField("userExternalIdentifier", userExternalIdentifier, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

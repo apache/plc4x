@@ -81,11 +81,11 @@ public class NodeIdGuid extends NodeIdTypeDefinition implements Message {
     // Array Field (id)
     writeByteArrayField("id", id, writeByteArray(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     String identifier = getIdentifier();
     writeBuffer.writeVirtual("identifier", identifier);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short namespace = getNamespace();
     writeBuffer.writeVirtual("namespace", namespace);
 

@@ -116,59 +116,59 @@ public class BACnetTagPayloadDate implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetTagPayloadDate");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short wildcard = getWildcard();
     writeBuffer.writeVirtual("wildcard", wildcard);
 
     // Simple Field (yearMinus1900)
     writeSimpleField("yearMinus1900", yearMinus1900, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean yearIsWildcard = getYearIsWildcard();
     writeBuffer.writeVirtual("yearIsWildcard", yearIsWildcard);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int year = getYear();
     writeBuffer.writeVirtual("year", year);
 
     // Simple Field (month)
     writeSimpleField("month", month, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean monthIsWildcard = getMonthIsWildcard();
     writeBuffer.writeVirtual("monthIsWildcard", monthIsWildcard);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean oddMonthWildcard = getOddMonthWildcard();
     writeBuffer.writeVirtual("oddMonthWildcard", oddMonthWildcard);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean evenMonthWildcard = getEvenMonthWildcard();
     writeBuffer.writeVirtual("evenMonthWildcard", evenMonthWildcard);
 
     // Simple Field (dayOfMonth)
     writeSimpleField("dayOfMonth", dayOfMonth, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean dayOfMonthIsWildcard = getDayOfMonthIsWildcard();
     writeBuffer.writeVirtual("dayOfMonthIsWildcard", dayOfMonthIsWildcard);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean lastDayOfMonthWildcard = getLastDayOfMonthWildcard();
     writeBuffer.writeVirtual("lastDayOfMonthWildcard", lastDayOfMonthWildcard);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean oddDayOfMonthWildcard = getOddDayOfMonthWildcard();
     writeBuffer.writeVirtual("oddDayOfMonthWildcard", oddDayOfMonthWildcard);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean evenDayOfMonthWildcard = getEvenDayOfMonthWildcard();
     writeBuffer.writeVirtual("evenDayOfMonthWildcard", evenDayOfMonthWildcard);
 
     // Simple Field (dayOfWeek)
     writeSimpleField("dayOfWeek", dayOfWeek, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean dayOfWeekIsWildcard = getDayOfWeekIsWildcard();
     writeBuffer.writeVirtual("dayOfWeekIsWildcard", dayOfWeekIsWildcard);
 

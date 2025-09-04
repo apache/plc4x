@@ -145,7 +145,7 @@ public class APDUComplexAck extends APDU implements Message {
     writeOptionalField(
         "proposedWindowSize", proposedWindowSize, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int apduHeaderReduction = getApduHeaderReduction();
     writeBuffer.writeVirtual("apduHeaderReduction", apduHeaderReduction);
 
@@ -163,7 +163,7 @@ public class APDUComplexAck extends APDU implements Message {
             writeUnsignedShort(writeBuffer, 8)),
         (getSegmentedMessage()) && ((getSequenceNumber()) != (0)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int segmentReduction = getSegmentReduction();
     writeBuffer.writeVirtual("segmentReduction", segmentReduction);
 

@@ -70,11 +70,11 @@ public abstract class CBusCommand implements Message {
     // Simple Field (header)
     writeSimpleField("header", header, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isDeviceManagement = getIsDeviceManagement();
     writeBuffer.writeVirtual("isDeviceManagement", isDeviceManagement);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     DestinationAddressType destinationAddressType = getDestinationAddressType();
     writeBuffer.writeVirtual("destinationAddressType", destinationAddressType);
 

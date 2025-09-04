@@ -73,11 +73,11 @@ public class MediaTransportControlDataNextPreviousSelection extends MediaTranspo
     // Simple Field (operation)
     writeSimpleField("operation", operation, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isSetThePreviousSelection = getIsSetThePreviousSelection();
     writeBuffer.writeVirtual("isSetThePreviousSelection", isSetThePreviousSelection);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isSetTheNextSelection = getIsSetTheNextSelection();
     writeBuffer.writeVirtual("isSetTheNextSelection", isSetTheNextSelection);
 

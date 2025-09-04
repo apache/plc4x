@@ -73,11 +73,11 @@ public class MediaTransportControlDataNextPreviousTrack extends MediaTransportCo
     // Simple Field (operation)
     writeSimpleField("operation", operation, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isSetThePreviousTrack = getIsSetThePreviousTrack();
     writeBuffer.writeVirtual("isSetThePreviousTrack", isSetThePreviousTrack);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isSetTheNextTrack = getIsSetTheNextTrack();
     writeBuffer.writeVirtual("isSetTheNextTrack", isSetTheNextTrack);
 

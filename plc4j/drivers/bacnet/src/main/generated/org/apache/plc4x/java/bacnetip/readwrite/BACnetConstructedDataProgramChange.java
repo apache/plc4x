@@ -76,7 +76,7 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
     // Simple Field (programChange)
     writeSimpleField("programChange", programChange, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetProgramRequestTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

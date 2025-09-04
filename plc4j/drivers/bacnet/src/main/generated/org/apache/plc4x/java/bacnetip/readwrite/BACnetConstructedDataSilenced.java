@@ -76,7 +76,7 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
     // Simple Field (silenced)
     writeSimpleField("silenced", silenced, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetSilencedStateTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

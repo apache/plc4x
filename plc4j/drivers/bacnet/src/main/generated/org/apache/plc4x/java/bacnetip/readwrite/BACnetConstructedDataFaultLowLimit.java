@@ -76,7 +76,7 @@ public class BACnetConstructedDataFaultLowLimit extends BACnetConstructedData im
     // Simple Field (faultLowLimit)
     writeSimpleField("faultLowLimit", faultLowLimit, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

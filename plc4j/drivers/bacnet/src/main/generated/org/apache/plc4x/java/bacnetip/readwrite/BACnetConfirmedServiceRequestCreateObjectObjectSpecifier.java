@@ -96,18 +96,18 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
     // Optional Field (rawObjectType) (Can be skipped, if the value is null)
     writeOptionalField("rawObjectType", rawObjectType, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isObjectType = getIsObjectType();
     writeBuffer.writeVirtual("isObjectType", isObjectType);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetObjectType objectType = getObjectType();
     writeBuffer.writeVirtual("objectType", objectType);
 
     // Optional Field (objectIdentifier) (Can be skipped, if the value is null)
     writeOptionalField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isObjectIdentifier = getIsObjectIdentifier();
     writeBuffer.writeVirtual("isObjectIdentifier", isObjectIdentifier);
 

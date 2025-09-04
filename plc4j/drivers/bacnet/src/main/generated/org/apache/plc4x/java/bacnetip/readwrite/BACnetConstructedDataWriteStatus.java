@@ -76,7 +76,7 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
     // Simple Field (writeStatus)
     writeSimpleField("writeStatus", writeStatus, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetWriteStatusTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

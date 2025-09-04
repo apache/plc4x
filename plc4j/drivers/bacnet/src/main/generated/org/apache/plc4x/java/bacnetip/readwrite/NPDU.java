@@ -159,7 +159,7 @@ public class NPDU implements Message {
     writeSimpleTypeArrayField(
         "destinationAddress", destinationAddress, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int destinationLengthAddon = getDestinationLengthAddon();
     writeBuffer.writeVirtual("destinationLengthAddon", destinationLengthAddon);
 
@@ -173,14 +173,14 @@ public class NPDU implements Message {
     // Array Field (sourceAddress)
     writeSimpleTypeArrayField("sourceAddress", sourceAddress, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int sourceLengthAddon = getSourceLengthAddon();
     writeBuffer.writeVirtual("sourceLengthAddon", sourceLengthAddon);
 
     // Optional Field (hopCount) (Can be skipped, if the value is null)
     writeOptionalField("hopCount", hopCount, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int payloadSubtraction = getPayloadSubtraction();
     writeBuffer.writeVirtual("payloadSubtraction", payloadSubtraction);
 

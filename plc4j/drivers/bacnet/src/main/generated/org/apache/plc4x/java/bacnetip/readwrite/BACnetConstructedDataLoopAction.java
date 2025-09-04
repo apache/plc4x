@@ -76,7 +76,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
     // Simple Field (action)
     writeSimpleField("action", action, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetActionTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

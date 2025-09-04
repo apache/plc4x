@@ -77,7 +77,7 @@ public class BACnetConstructedDataNextStoppingFloor extends BACnetConstructedDat
     // Simple Field (nextStoppingFloor)
     writeSimpleField("nextStoppingFloor", nextStoppingFloor, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

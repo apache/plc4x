@@ -76,7 +76,7 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
     // Simple Field (changesPending)
     writeSimpleField("changesPending", changesPending, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

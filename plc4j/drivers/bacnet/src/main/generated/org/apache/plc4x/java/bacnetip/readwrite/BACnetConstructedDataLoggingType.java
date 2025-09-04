@@ -76,7 +76,7 @@ public class BACnetConstructedDataLoggingType extends BACnetConstructedData impl
     // Simple Field (loggingType)
     writeSimpleField("loggingType", loggingType, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetLoggingTypeTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

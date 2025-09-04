@@ -61,7 +61,7 @@ public class HVACTemperature implements Message {
     // Simple Field (temperatureValue)
     writeSimpleField("temperatureValue", temperatureValue, writeSignedShort(writeBuffer, 16));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     float temperatureInCelcius = getTemperatureInCelcius();
     writeBuffer.writeVirtual("temperatureInCelcius", temperatureInCelcius);
 

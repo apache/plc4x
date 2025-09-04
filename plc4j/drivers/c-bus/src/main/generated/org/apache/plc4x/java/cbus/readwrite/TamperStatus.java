@@ -69,15 +69,15 @@ public class TamperStatus implements Message {
     // Simple Field (status)
     writeSimpleField("status", status, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isNoTamper = getIsNoTamper();
     writeBuffer.writeVirtual("isNoTamper", isNoTamper);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isReserved = getIsReserved();
     writeBuffer.writeVirtual("isReserved", isReserved);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isTamperActive = getIsTamperActive();
     writeBuffer.writeVirtual("isTamperActive", isTamperActive);
 

@@ -135,68 +135,68 @@ public class BACnetWeekNDayTagged implements Message {
     // Simple Field (month)
     writeSimpleField("month", month, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean oddMonths = getOddMonths();
     writeBuffer.writeVirtual("oddMonths", oddMonths);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean evenMonths = getEvenMonths();
     writeBuffer.writeVirtual("evenMonths", evenMonths);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean anyMonth = getAnyMonth();
     writeBuffer.writeVirtual("anyMonth", anyMonth);
 
     // Simple Field (weekOfMonth)
     writeSimpleField("weekOfMonth", weekOfMonth, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean days1to7 = getDays1to7();
     writeBuffer.writeVirtual("days1to7", days1to7);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean days8to14 = getDays8to14();
     writeBuffer.writeVirtual("days8to14", days8to14);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean days15to21 = getDays15to21();
     writeBuffer.writeVirtual("days15to21", days15to21);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean days22to28 = getDays22to28();
     writeBuffer.writeVirtual("days22to28", days22to28);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean days29to31 = getDays29to31();
     writeBuffer.writeVirtual("days29to31", days29to31);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean last7DaysOfThisMonth = getLast7DaysOfThisMonth();
     writeBuffer.writeVirtual("last7DaysOfThisMonth", last7DaysOfThisMonth);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean any7DaysPriorToLast7DaysOfThisMonth = getAny7DaysPriorToLast7DaysOfThisMonth();
     writeBuffer.writeVirtual(
         "any7DaysPriorToLast7DaysOfThisMonth", any7DaysPriorToLast7DaysOfThisMonth);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean any7DaysPriorToLast14DaysOfThisMonth = getAny7DaysPriorToLast14DaysOfThisMonth();
     writeBuffer.writeVirtual(
         "any7DaysPriorToLast14DaysOfThisMonth", any7DaysPriorToLast14DaysOfThisMonth);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean any7DaysPriorToLast21DaysOfThisMonth = getAny7DaysPriorToLast21DaysOfThisMonth();
     writeBuffer.writeVirtual(
         "any7DaysPriorToLast21DaysOfThisMonth", any7DaysPriorToLast21DaysOfThisMonth);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean anyWeekOfthisMonth = getAnyWeekOfthisMonth();
     writeBuffer.writeVirtual("anyWeekOfthisMonth", anyWeekOfthisMonth);
 
     // Simple Field (dayOfWeek)
     writeSimpleField("dayOfWeek", dayOfWeek, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean anyDayOfWeek = getAnyDayOfWeek();
     writeBuffer.writeVirtual("anyDayOfWeek", anyDayOfWeek);
 

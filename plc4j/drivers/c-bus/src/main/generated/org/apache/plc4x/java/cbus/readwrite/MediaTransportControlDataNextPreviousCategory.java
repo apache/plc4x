@@ -73,11 +73,11 @@ public class MediaTransportControlDataNextPreviousCategory extends MediaTranspor
     // Simple Field (operation)
     writeSimpleField("operation", operation, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isSetThePreviousCategory = getIsSetThePreviousCategory();
     writeBuffer.writeVirtual("isSetThePreviousCategory", isSetThePreviousCategory);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isSetTheNextCategory = getIsSetTheNextCategory();
     writeBuffer.writeVirtual("isSetTheNextCategory", isSetTheNextCategory);
 

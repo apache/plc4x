@@ -82,15 +82,15 @@ public class BACnetEventTransitionBitsTagged implements Message {
     // Simple Field (payload)
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean toOffnormal = getToOffnormal();
     writeBuffer.writeVirtual("toOffnormal", toOffnormal);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean toFault = getToFault();
     writeBuffer.writeVirtual("toFault", toFault);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean toNormal = getToNormal();
     writeBuffer.writeVirtual("toNormal", toNormal);
 

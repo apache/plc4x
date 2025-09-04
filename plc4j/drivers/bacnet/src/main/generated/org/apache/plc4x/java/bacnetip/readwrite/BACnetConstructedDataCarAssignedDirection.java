@@ -77,7 +77,7 @@ public class BACnetConstructedDataCarAssignedDirection extends BACnetConstructed
     // Simple Field (assignedDirection)
     writeSimpleField("assignedDirection", assignedDirection, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetLiftCarDirectionTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

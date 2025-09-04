@@ -93,11 +93,11 @@ public class LevelInformationNormal extends LevelInformation implements Message 
             LevelInformationNibblePair::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short actualLevel = getActualLevel();
     writeBuffer.writeVirtual("actualLevel", actualLevel);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     float actualLevelInPercent = getActualLevelInPercent();
     writeBuffer.writeVirtual("actualLevelInPercent", actualLevelInPercent);
 

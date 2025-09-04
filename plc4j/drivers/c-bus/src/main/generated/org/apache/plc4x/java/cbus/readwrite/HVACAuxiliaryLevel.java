@@ -87,22 +87,22 @@ public class HVACAuxiliaryLevel implements Message {
     // Simple Field (fanMode)
     writeSimpleField("fanMode", fanMode, writeBoolean(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isFanModeAutomatic = getIsFanModeAutomatic();
     writeBuffer.writeVirtual("isFanModeAutomatic", isFanModeAutomatic);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isFanModeContinuous = getIsFanModeContinuous();
     writeBuffer.writeVirtual("isFanModeContinuous", isFanModeContinuous);
 
     // Simple Field (mode)
     writeSimpleField("mode", mode, writeUnsignedByte(writeBuffer, 6));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isFanSpeedAtDefaultSpeed = getIsFanSpeedAtDefaultSpeed();
     writeBuffer.writeVirtual("isFanSpeedAtDefaultSpeed", isFanSpeedAtDefaultSpeed);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     byte speedSettings = getSpeedSettings();
     writeBuffer.writeVirtual("speedSettings", speedSettings);
 

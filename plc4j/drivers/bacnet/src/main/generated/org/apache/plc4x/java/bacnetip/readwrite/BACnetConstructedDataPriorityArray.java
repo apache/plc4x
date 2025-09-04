@@ -76,7 +76,7 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
     // Simple Field (priorityArray)
     writeSimpleField("priorityArray", priorityArray, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetPriorityArray actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

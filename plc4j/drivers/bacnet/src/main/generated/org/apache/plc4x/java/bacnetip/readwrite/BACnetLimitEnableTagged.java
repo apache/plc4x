@@ -76,11 +76,11 @@ public class BACnetLimitEnableTagged implements Message {
     // Simple Field (payload)
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean lowLimitEnable = getLowLimitEnable();
     writeBuffer.writeVirtual("lowLimitEnable", lowLimitEnable);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean highLimitEnable = getHighLimitEnable();
     writeBuffer.writeVirtual("highLimitEnable", highLimitEnable);
 

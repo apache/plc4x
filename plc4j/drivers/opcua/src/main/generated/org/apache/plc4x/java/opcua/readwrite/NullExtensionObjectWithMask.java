@@ -62,7 +62,7 @@ public class NullExtensionObjectWithMask extends ExtensionObjectWithMask impleme
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("NullExtensionObjectWithMask");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     ExtensionObjectDefinition body = getBody();
     writeBuffer.writeVirtual("body", body);
 

@@ -77,7 +77,7 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
     // Simple Field (ipv6DefaultGateway)
     writeSimpleField("ipv6DefaultGateway", ipv6DefaultGateway, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

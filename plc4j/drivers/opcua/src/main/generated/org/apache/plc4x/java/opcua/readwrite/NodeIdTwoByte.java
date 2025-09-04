@@ -72,11 +72,11 @@ public class NodeIdTwoByte extends NodeIdTypeDefinition implements Message {
     // Simple Field (id)
     writeSimpleField("id", id, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     String identifier = getIdentifier();
     writeBuffer.writeVirtual("identifier", identifier);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short namespace = getNamespace();
     writeBuffer.writeVirtual("namespace", namespace);
 

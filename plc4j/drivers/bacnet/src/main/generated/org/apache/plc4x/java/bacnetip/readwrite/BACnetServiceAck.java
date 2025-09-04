@@ -74,7 +74,7 @@ public abstract class BACnetServiceAck implements Message {
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     long serviceAckPayloadLength = getServiceAckPayloadLength();
     writeBuffer.writeVirtual("serviceAckPayloadLength", serviceAckPayloadLength);
 

@@ -77,7 +77,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
     // Simple Field (allWritesSuccessful)
     writeSimpleField("allWritesSuccessful", allWritesSuccessful, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

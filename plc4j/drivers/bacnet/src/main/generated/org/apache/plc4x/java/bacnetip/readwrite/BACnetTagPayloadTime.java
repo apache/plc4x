@@ -92,35 +92,35 @@ public class BACnetTagPayloadTime implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetTagPayloadTime");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short wildcard = getWildcard();
     writeBuffer.writeVirtual("wildcard", wildcard);
 
     // Simple Field (hour)
     writeSimpleField("hour", hour, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean hourIsWildcard = getHourIsWildcard();
     writeBuffer.writeVirtual("hourIsWildcard", hourIsWildcard);
 
     // Simple Field (minute)
     writeSimpleField("minute", minute, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean minuteIsWildcard = getMinuteIsWildcard();
     writeBuffer.writeVirtual("minuteIsWildcard", minuteIsWildcard);
 
     // Simple Field (second)
     writeSimpleField("second", second, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean secondIsWildcard = getSecondIsWildcard();
     writeBuffer.writeVirtual("secondIsWildcard", secondIsWildcard);
 
     // Simple Field (fractional)
     writeSimpleField("fractional", fractional, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean fractionalIsWildcard = getFractionalIsWildcard();
     writeBuffer.writeVirtual("fractionalIsWildcard", fractionalIsWildcard);
 

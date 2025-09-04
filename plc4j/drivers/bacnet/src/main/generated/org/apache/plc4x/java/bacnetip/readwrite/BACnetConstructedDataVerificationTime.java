@@ -77,7 +77,7 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
     // Simple Field (verificationTime)
     writeSimpleField("verificationTime", verificationTime, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

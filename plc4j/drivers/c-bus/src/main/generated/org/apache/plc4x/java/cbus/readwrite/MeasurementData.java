@@ -73,7 +73,7 @@ public abstract class MeasurementData implements Message {
             MeasurementCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     MeasurementCommandType commandType = getCommandType();
     writeBuffer.writeVirtual("commandType", commandType);
 

@@ -69,7 +69,7 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
     // Simple Field (payload)
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     String value = getValue();
     writeBuffer.writeVirtual("value", value);
 

@@ -386,7 +386,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                 promise.setSuccess();
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClosedChannelException | NoSuchFieldException e) {
                 logger.warn("Exception caught", e);
-                throw new NotImplementedException("Should register channel to event loop!!!");
+                throw new NotImplementedException("Should register channel to event loop!!!", e);
             }
         }
 

@@ -78,23 +78,23 @@ public class HVACStartTime implements Message {
     writeSimpleField(
         "minutesSinceSunday12AM", minutesSinceSunday12AM, writeUnsignedInt(writeBuffer, 16));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     float hoursSinceSunday12AM = getHoursSinceSunday12AM();
     writeBuffer.writeVirtual("hoursSinceSunday12AM", hoursSinceSunday12AM);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     float daysSinceSunday12AM = getDaysSinceSunday12AM();
     writeBuffer.writeVirtual("daysSinceSunday12AM", daysSinceSunday12AM);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short dayOfWeek = getDayOfWeek();
     writeBuffer.writeVirtual("dayOfWeek", dayOfWeek);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short hour = getHour();
     writeBuffer.writeVirtual("hour", hour);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short minute = getMinute();
     writeBuffer.writeVirtual("minute", minute);
 

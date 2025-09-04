@@ -76,7 +76,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
     // Simple Field (valueSource)
     writeSimpleField("valueSource", valueSource, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetValueSource actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

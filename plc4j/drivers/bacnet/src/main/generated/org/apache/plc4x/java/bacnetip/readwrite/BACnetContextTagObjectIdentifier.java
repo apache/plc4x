@@ -73,11 +73,11 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
     // Simple Field (payload)
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetObjectType objectType = getObjectType();
     writeBuffer.writeVirtual("objectType", objectType);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int instanceNumber = getInstanceNumber();
     writeBuffer.writeVirtual("instanceNumber", instanceNumber);
 

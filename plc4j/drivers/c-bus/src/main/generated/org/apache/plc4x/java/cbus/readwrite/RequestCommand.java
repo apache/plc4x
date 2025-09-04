@@ -110,7 +110,7 @@ public class RequestCommand extends Request implements Message {
                 writeBuffer, cbusCommand),
         writeBuffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     CBusCommand cbusCommandDecoded = getCbusCommandDecoded();
     writeBuffer.writeVirtual("cbusCommandDecoded", cbusCommandDecoded);
 
@@ -122,7 +122,7 @@ public class RequestCommand extends Request implements Message {
                 writeBuffer, cbusCommand, cBusOptions.getSrchk()),
         writeBuffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     Checksum chksumDecoded = getChksumDecoded();
     writeBuffer.writeVirtual("chksumDecoded", chksumDecoded);
 

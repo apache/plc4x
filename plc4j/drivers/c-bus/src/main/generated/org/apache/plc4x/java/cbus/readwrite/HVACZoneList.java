@@ -132,7 +132,7 @@ public class HVACZoneList implements Message {
     // Simple Field (zone0)
     writeSimpleField("zone0", zone0, writeBoolean(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean unswitchedZone = getUnswitchedZone();
     writeBuffer.writeVirtual("unswitchedZone", unswitchedZone);
 

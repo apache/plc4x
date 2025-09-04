@@ -77,7 +77,7 @@ public class BACnetConstructedDataIntegerValueMinPresValue extends BACnetConstru
     // Simple Field (minPresValue)
     writeSimpleField("minPresValue", minPresValue, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

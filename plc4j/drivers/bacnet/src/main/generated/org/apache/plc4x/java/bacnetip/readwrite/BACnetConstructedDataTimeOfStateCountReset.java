@@ -77,7 +77,7 @@ public class BACnetConstructedDataTimeOfStateCountReset extends BACnetConstructe
     // Simple Field (timeOfStateCountReset)
     writeSimpleField("timeOfStateCountReset", timeOfStateCountReset, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

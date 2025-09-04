@@ -117,43 +117,43 @@ public class BACnetObjectTypesSupportedTagged implements Message {
     // Simple Field (payload)
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean timeValue = getTimeValue();
     writeBuffer.writeVirtual("timeValue", timeValue);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean notificationForwarder = getNotificationForwarder();
     writeBuffer.writeVirtual("notificationForwarder", notificationForwarder);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean alertEnrollment = getAlertEnrollment();
     writeBuffer.writeVirtual("alertEnrollment", alertEnrollment);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean channel = getChannel();
     writeBuffer.writeVirtual("channel", channel);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean lightingOutput = getLightingOutput();
     writeBuffer.writeVirtual("lightingOutput", lightingOutput);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean binaryLightingOutput = getBinaryLightingOutput();
     writeBuffer.writeVirtual("binaryLightingOutput", binaryLightingOutput);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean networkPort = getNetworkPort();
     writeBuffer.writeVirtual("networkPort", networkPort);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean elevatorGroup = getElevatorGroup();
     writeBuffer.writeVirtual("elevatorGroup", elevatorGroup);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean escalator = getEscalator();
     writeBuffer.writeVirtual("escalator", escalator);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean lift = getLift();
     writeBuffer.writeVirtual("lift", lift);
 

@@ -72,7 +72,7 @@ public abstract class ExtensionObject implements Message {
     // Simple Field (typeId)
     writeSimpleField("typeId", typeId, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int extensionId = getExtensionId();
     writeBuffer.writeVirtual("extensionId", extensionId);
 

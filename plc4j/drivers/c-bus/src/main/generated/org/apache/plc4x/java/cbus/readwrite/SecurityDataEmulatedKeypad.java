@@ -105,47 +105,47 @@ public class SecurityDataEmulatedKeypad extends SecurityData implements Message 
     // Simple Field (key)
     writeSimpleField("key", key, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isAscii = getIsAscii();
     writeBuffer.writeVirtual("isAscii", isAscii);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isCustom = getIsCustom();
     writeBuffer.writeVirtual("isCustom", isCustom);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isEnter = getIsEnter();
     writeBuffer.writeVirtual("isEnter", isEnter);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isShift = getIsShift();
     writeBuffer.writeVirtual("isShift", isShift);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isPanic = getIsPanic();
     writeBuffer.writeVirtual("isPanic", isPanic);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isFire = getIsFire();
     writeBuffer.writeVirtual("isFire", isFire);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isARM = getIsARM();
     writeBuffer.writeVirtual("isARM", isARM);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isAway = getIsAway();
     writeBuffer.writeVirtual("isAway", isAway);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isNight = getIsNight();
     writeBuffer.writeVirtual("isNight", isNight);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isDay = getIsDay();
     writeBuffer.writeVirtual("isDay", isDay);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isVacation = getIsVacation();
     writeBuffer.writeVirtual("isVacation", isVacation);
 

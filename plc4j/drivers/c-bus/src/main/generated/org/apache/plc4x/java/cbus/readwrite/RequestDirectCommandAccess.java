@@ -92,7 +92,7 @@ public class RequestDirectCommandAccess extends Request implements Message {
                 writeBuffer, calData),
         writeBuffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     CALData calDataDecoded = getCalDataDecoded();
     writeBuffer.writeVirtual("calDataDecoded", calDataDecoded);
 

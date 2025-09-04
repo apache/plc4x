@@ -182,15 +182,15 @@ public class BACnetEventParameterExtendedParameters implements Message {
     // Simple Field (openingTag)
     writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
     writeBuffer.writeVirtual("peekedTagNumber", peekedTagNumber);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isOpeningTag = getIsOpeningTag();
     writeBuffer.writeVirtual("isOpeningTag", isOpeningTag);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isClosingTag = getIsClosingTag();
     writeBuffer.writeVirtual("isClosingTag", isClosingTag);
 

@@ -77,7 +77,7 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
     // Simple Field (fileAccessMethod)
     writeSimpleField("fileAccessMethod", fileAccessMethod, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetFileAccessMethodTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

@@ -113,7 +113,7 @@ public abstract class Request implements Message {
         writeEnum(RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
         (getPeekedByte()) == (RequestType.RESET));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     RequestType actualPeek = getActualPeek();
     writeBuffer.writeVirtual("actualPeek", actualPeek);
 

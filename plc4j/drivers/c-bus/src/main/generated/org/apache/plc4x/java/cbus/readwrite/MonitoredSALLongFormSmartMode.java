@@ -113,7 +113,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
         reservedField0 != null ? reservedField0 : (byte) 0x05,
         writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isUnitAddress = getIsUnitAddress();
     writeBuffer.writeVirtual("isUnitAddress", isUnitAddress);
 

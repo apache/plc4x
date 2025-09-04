@@ -84,14 +84,14 @@ public abstract class TriggerControlData implements Message {
             TriggerControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     TriggerControlCommandType commandType = getCommandType();
     writeBuffer.writeVirtual("commandType", commandType);
 
     // Simple Field (triggerGroup)
     writeSimpleField("triggerGroup", triggerGroup, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isUnused = getIsUnused();
     writeBuffer.writeVirtual("isUnused", isUnused);
 

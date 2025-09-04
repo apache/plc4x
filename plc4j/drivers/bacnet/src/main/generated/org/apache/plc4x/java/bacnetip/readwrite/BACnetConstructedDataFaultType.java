@@ -76,7 +76,7 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
     // Simple Field (faultType)
     writeSimpleField("faultType", faultType, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetFaultTypeTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

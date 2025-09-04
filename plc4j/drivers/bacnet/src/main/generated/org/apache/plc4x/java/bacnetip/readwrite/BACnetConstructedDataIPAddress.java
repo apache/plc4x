@@ -76,7 +76,7 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
     // Simple Field (ipAddress)
     writeSimpleField("ipAddress", ipAddress, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

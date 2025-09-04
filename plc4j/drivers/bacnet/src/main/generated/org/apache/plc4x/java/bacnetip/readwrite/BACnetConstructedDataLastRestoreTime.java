@@ -76,7 +76,7 @@ public class BACnetConstructedDataLastRestoreTime extends BACnetConstructedData 
     // Simple Field (lastRestoreTime)
     writeSimpleField("lastRestoreTime", lastRestoreTime, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetTimeStamp actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

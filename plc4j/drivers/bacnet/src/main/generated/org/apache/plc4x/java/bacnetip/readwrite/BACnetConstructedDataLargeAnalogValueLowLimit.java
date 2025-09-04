@@ -77,7 +77,7 @@ public class BACnetConstructedDataLargeAnalogValueLowLimit extends BACnetConstru
     // Simple Field (lowLimit)
     writeSimpleField("lowLimit", lowLimit, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

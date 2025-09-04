@@ -76,7 +76,7 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
     // Simple Field (programState)
     writeSimpleField("programState", programState, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetProgramStateTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

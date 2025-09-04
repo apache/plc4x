@@ -76,7 +76,7 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
     // Simple Field (command)
     writeSimpleField("command", command, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetNetworkPortCommandTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

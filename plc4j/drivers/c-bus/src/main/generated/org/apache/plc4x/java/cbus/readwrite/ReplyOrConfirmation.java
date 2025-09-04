@@ -63,7 +63,7 @@ public abstract class ReplyOrConfirmation implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("ReplyOrConfirmation");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isAlpha = getIsAlpha();
     writeBuffer.writeVirtual("isAlpha", isAlpha);
 

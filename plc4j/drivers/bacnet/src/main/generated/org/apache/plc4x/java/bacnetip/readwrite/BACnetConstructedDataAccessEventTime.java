@@ -76,7 +76,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
     // Simple Field (accessEventTime)
     writeSimpleField("accessEventTime", accessEventTime, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetTimeStamp actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

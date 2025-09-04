@@ -76,7 +76,7 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
     // Simple Field (loggingObject)
     writeSimpleField("loggingObject", loggingObject, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagObjectIdentifier actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

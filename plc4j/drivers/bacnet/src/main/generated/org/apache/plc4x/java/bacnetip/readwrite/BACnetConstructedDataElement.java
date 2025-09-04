@@ -93,19 +93,19 @@ public class BACnetConstructedDataElement implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetConstructedDataElement");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
     writeBuffer.writeVirtual("peekedTagNumber", peekedTagNumber);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isApplicationTag = getIsApplicationTag();
     writeBuffer.writeVirtual("isApplicationTag", isApplicationTag);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isConstructedData = getIsConstructedData();
     writeBuffer.writeVirtual("isConstructedData", isConstructedData);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isContextTag = getIsContextTag();
     writeBuffer.writeVirtual("isContextTag", isContextTag);
 

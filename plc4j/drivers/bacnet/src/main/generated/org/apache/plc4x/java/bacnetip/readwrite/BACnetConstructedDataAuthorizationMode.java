@@ -77,7 +77,7 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
     // Simple Field (authorizationMode)
     writeSimpleField("authorizationMode", authorizationMode, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetAuthorizationModeTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

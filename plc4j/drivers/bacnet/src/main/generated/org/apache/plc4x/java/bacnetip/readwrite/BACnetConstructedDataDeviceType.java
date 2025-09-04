@@ -76,7 +76,7 @@ public class BACnetConstructedDataDeviceType extends BACnetConstructedData imple
     // Simple Field (deviceType)
     writeSimpleField("deviceType", deviceType, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

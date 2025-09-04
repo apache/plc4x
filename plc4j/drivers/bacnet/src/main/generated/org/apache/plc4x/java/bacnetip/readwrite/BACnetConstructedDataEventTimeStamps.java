@@ -98,7 +98,7 @@ public class BACnetConstructedDataEventTimeStamps extends BACnetConstructedData 
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("BACnetConstructedDataEventTimeStamps");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BigInteger zero = getZero();
     writeBuffer.writeVirtual("zero", zero);
 
@@ -108,15 +108,15 @@ public class BACnetConstructedDataEventTimeStamps extends BACnetConstructedData 
     // Array Field (eventTimeStamps)
     writeComplexTypeArrayField("eventTimeStamps", eventTimeStamps, writeBuffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetTimeStamp toOffnormal = getToOffnormal();
     writeBuffer.writeVirtual("toOffnormal", toOffnormal);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetTimeStamp toFault = getToFault();
     writeBuffer.writeVirtual("toFault", toFault);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetTimeStamp toNormal = getToNormal();
     writeBuffer.writeVirtual("toNormal", toNormal);
 

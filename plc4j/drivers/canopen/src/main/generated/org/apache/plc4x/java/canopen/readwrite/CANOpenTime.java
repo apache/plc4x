@@ -67,7 +67,7 @@ public class CANOpenTime implements Message {
     // Simple Field (millis)
     writeSimpleField("millis", millis, writeUnsignedLong(writeBuffer, 32));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int cleanMillis = getCleanMillis();
     writeBuffer.writeVirtual("cleanMillis", cleanMillis);
 

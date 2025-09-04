@@ -80,18 +80,18 @@ public class BACnetAddress implements Message {
     // Simple Field (networkNumber)
     writeSimpleField("networkNumber", networkNumber, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BigInteger zero = getZero();
     writeBuffer.writeVirtual("zero", zero);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isLocalNetwork = getIsLocalNetwork();
     writeBuffer.writeVirtual("isLocalNetwork", isLocalNetwork);
 
     // Simple Field (macAddress)
     writeSimpleField("macAddress", macAddress, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isBroadcast = getIsBroadcast();
     writeBuffer.writeVirtual("isBroadcast", isBroadcast);
 

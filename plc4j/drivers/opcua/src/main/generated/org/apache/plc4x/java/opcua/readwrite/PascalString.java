@@ -69,7 +69,7 @@ public class PascalString implements Message {
                 getStringValue()));
     writeImplicitField("sLength", sLength, writeSignedInt(writeBuffer, 32));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     int stringLength = getStringLength();
     writeBuffer.writeVirtual("stringLength", stringLength);
 

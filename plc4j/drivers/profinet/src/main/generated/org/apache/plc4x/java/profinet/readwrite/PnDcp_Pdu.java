@@ -71,7 +71,7 @@ public abstract class PnDcp_Pdu implements Message {
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     PnDcp_FrameId frameId = getFrameId();
     writeBuffer.writeVirtual("frameId", frameId);
 

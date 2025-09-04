@@ -77,7 +77,7 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
     // Simple Field (covIncrement)
     writeSimpleField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

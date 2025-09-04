@@ -76,7 +76,7 @@ public class BACnetConstructedDataCountChangeTime extends BACnetConstructedData 
     // Simple Field (countChangeTime)
     writeSimpleField("countChangeTime", countChangeTime, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

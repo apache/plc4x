@@ -76,7 +76,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
     // Simple Field (limitEnable)
     writeSimpleField("limitEnable", limitEnable, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetLimitEnableTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

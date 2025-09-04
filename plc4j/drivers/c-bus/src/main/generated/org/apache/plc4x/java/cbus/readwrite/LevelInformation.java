@@ -111,35 +111,35 @@ public abstract class LevelInformation implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("LevelInformation");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     byte nibble1 = getNibble1();
     writeBuffer.writeVirtual("nibble1", nibble1);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     byte nibble2 = getNibble2();
     writeBuffer.writeVirtual("nibble2", nibble2);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     byte nibble3 = getNibble3();
     writeBuffer.writeVirtual("nibble3", nibble3);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     byte nibble4 = getNibble4();
     writeBuffer.writeVirtual("nibble4", nibble4);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isAbsent = getIsAbsent();
     writeBuffer.writeVirtual("isAbsent", isAbsent);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isCorruptedByNoise = getIsCorruptedByNoise();
     writeBuffer.writeVirtual("isCorruptedByNoise", isCorruptedByNoise);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isCorruptedByNoiseOrLevelsDiffer = getIsCorruptedByNoiseOrLevelsDiffer();
     writeBuffer.writeVirtual("isCorruptedByNoiseOrLevelsDiffer", isCorruptedByNoiseOrLevelsDiffer);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isCorrupted = getIsCorrupted();
     writeBuffer.writeVirtual("isCorrupted", isCorrupted);
 

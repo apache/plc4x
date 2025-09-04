@@ -76,7 +76,7 @@ public class BACnetConstructedDataCarMode extends BACnetConstructedData implemen
     // Simple Field (carMode)
     writeSimpleField("carMode", carMode, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetLiftCarModeTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

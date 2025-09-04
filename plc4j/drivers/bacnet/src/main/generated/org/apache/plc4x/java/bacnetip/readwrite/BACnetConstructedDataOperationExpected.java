@@ -77,7 +77,7 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
     // Simple Field (lifeSafetyOperations)
     writeSimpleField("lifeSafetyOperations", lifeSafetyOperations, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetLifeSafetyOperationTagged actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

@@ -76,7 +76,7 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
     // Simple Field (maxActualValue)
     writeSimpleField("maxActualValue", maxActualValue, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

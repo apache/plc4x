@@ -58,7 +58,7 @@ public abstract class NLM implements Message {
     // Discriminator Field (messageType) (Used as input to a switch field)
     writeDiscriminatorField("messageType", getMessageType(), writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isVendorProprietaryMessage = getIsVendorProprietaryMessage();
     writeBuffer.writeVirtual("isVendorProprietaryMessage", isVendorProprietaryMessage);
 

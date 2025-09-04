@@ -967,47 +967,47 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         writeUnsignedLong(writeBuffer, 32),
         WithOption.WithEncoding("ASCII"));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionRbwMonitoring = getStrategyOptionRbwMonitoring();
     writeBuffer.writeVirtual("strategyOptionRbwMonitoring", strategyOptionRbwMonitoring);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionClickWrench = getStrategyOptionClickWrench();
     writeBuffer.writeVirtual("strategyOptionClickWrench", strategyOptionClickWrench);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionDsControl = getStrategyOptionDsControl();
     writeBuffer.writeVirtual("strategyOptionDsControl", strategyOptionDsControl);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionCm = getStrategyOptionCm();
     writeBuffer.writeVirtual("strategyOptionCm", strategyOptionCm);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionRundown = getStrategyOptionRundown();
     writeBuffer.writeVirtual("strategyOptionRundown", strategyOptionRundown);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionSelfTap = getStrategyOptionSelfTap();
     writeBuffer.writeVirtual("strategyOptionSelfTap", strategyOptionSelfTap);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionPvtCompensate = getStrategyOptionPvtCompensate();
     writeBuffer.writeVirtual("strategyOptionPvtCompensate", strategyOptionPvtCompensate);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionPvtMonitoring = getStrategyOptionPvtMonitoring();
     writeBuffer.writeVirtual("strategyOptionPvtMonitoring", strategyOptionPvtMonitoring);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionBatch = getStrategyOptionBatch();
     writeBuffer.writeVirtual("strategyOptionBatch", strategyOptionBatch);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionAngle = getStrategyOptionAngle();
     writeBuffer.writeVirtual("strategyOptionAngle", strategyOptionAngle);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean strategyOptionTorque = getStrategyOptionTorque();
     writeBuffer.writeVirtual("strategyOptionTorque", strategyOptionTorque);
 
@@ -1188,185 +1188,185 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         writeString(writeBuffer, 80),
         WithOption.WithEncoding("ASCII"));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusRundownAngleMaxShutOff =
         getTighteningErrorStatusRundownAngleMaxShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusRundownAngleMaxShutOff", tighteningErrorStatusRundownAngleMaxShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusRundownAngleMinShutOff =
         getTighteningErrorStatusRundownAngleMinShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusRundownAngleMinShutOff", tighteningErrorStatusRundownAngleMinShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusTorqueMaxShutOff = getTighteningErrorStatusTorqueMaxShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusTorqueMaxShutOff", tighteningErrorStatusTorqueMaxShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusAngleMaxShutOff = getTighteningErrorStatusAngleMaxShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusAngleMaxShutOff", tighteningErrorStatusAngleMaxShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusSelfTapTorqueMaxShutOff =
         getTighteningErrorStatusSelfTapTorqueMaxShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusSelfTapTorqueMaxShutOff",
         tighteningErrorStatusSelfTapTorqueMaxShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusSelfTapTorqueMinShutOff =
         getTighteningErrorStatusSelfTapTorqueMinShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusSelfTapTorqueMinShutOff",
         tighteningErrorStatusSelfTapTorqueMinShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusPrevailTorqueMaxShutOff =
         getTighteningErrorStatusPrevailTorqueMaxShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusPrevailTorqueMaxShutOff",
         tighteningErrorStatusPrevailTorqueMaxShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusPrevailTorqueMinShutOff =
         getTighteningErrorStatusPrevailTorqueMinShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusPrevailTorqueMinShutOff",
         tighteningErrorStatusPrevailTorqueMinShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusPrevailTorqueCompensateOverflow =
         getTighteningErrorStatusPrevailTorqueCompensateOverflow();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusPrevailTorqueCompensateOverflow",
         tighteningErrorStatusPrevailTorqueCompensateOverflow);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusCurrentMonitoringMaxShutOff =
         getTighteningErrorStatusCurrentMonitoringMaxShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusCurrentMonitoringMaxShutOff",
         tighteningErrorStatusCurrentMonitoringMaxShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusPostViewTorqueMinTorqueShutOff =
         getTighteningErrorStatusPostViewTorqueMinTorqueShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusPostViewTorqueMinTorqueShutOff",
         tighteningErrorStatusPostViewTorqueMinTorqueShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusPostViewTorqueMaxTorqueShutOff =
         getTighteningErrorStatusPostViewTorqueMaxTorqueShutOff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusPostViewTorqueMaxTorqueShutOff",
         tighteningErrorStatusPostViewTorqueMaxTorqueShutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusPortViewTorqueAngleTooSmall =
         getTighteningErrorStatusPortViewTorqueAngleTooSmall();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusPortViewTorqueAngleTooSmall",
         tighteningErrorStatusPortViewTorqueAngleTooSmall);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusTriggerLost = getTighteningErrorStatusTriggerLost();
     writeBuffer.writeVirtual("tighteningErrorStatusTriggerLost", tighteningErrorStatusTriggerLost);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusTorqueLessThanTarget =
         getTighteningErrorStatusTorqueLessThanTarget();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusTorqueLessThanTarget", tighteningErrorStatusTorqueLessThanTarget);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusToolHot = getTighteningErrorStatusToolHot();
     writeBuffer.writeVirtual("tighteningErrorStatusToolHot", tighteningErrorStatusToolHot);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusMultistageAbort = getTighteningErrorStatusMultistageAbort();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusMultistageAbort", tighteningErrorStatusMultistageAbort);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusRehit = getTighteningErrorStatusRehit();
     writeBuffer.writeVirtual("tighteningErrorStatusRehit", tighteningErrorStatusRehit);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusDsMeasureFailed = getTighteningErrorStatusDsMeasureFailed();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusDsMeasureFailed", tighteningErrorStatusDsMeasureFailed);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusCurrentLimitReached =
         getTighteningErrorStatusCurrentLimitReached();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusCurrentLimitReached", tighteningErrorStatusCurrentLimitReached);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusEndTimeOutShutoff = getTighteningErrorStatusEndTimeOutShutoff();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusEndTimeOutShutoff", tighteningErrorStatusEndTimeOutShutoff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusRemoveFastenerLimitExceeded =
         getTighteningErrorStatusRemoveFastenerLimitExceeded();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusRemoveFastenerLimitExceeded",
         tighteningErrorStatusRemoveFastenerLimitExceeded);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusDisableDrive = getTighteningErrorStatusDisableDrive();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusDisableDrive", tighteningErrorStatusDisableDrive);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusTransducerLost = getTighteningErrorStatusTransducerLost();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusTransducerLost", tighteningErrorStatusTransducerLost);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusTransducerShorted = getTighteningErrorStatusTransducerShorted();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusTransducerShorted", tighteningErrorStatusTransducerShorted);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusTransducerCorrupt = getTighteningErrorStatusTransducerCorrupt();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusTransducerCorrupt", tighteningErrorStatusTransducerCorrupt);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusSyncTimeout = getTighteningErrorStatusSyncTimeout();
     writeBuffer.writeVirtual("tighteningErrorStatusSyncTimeout", tighteningErrorStatusSyncTimeout);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusDynamicCurrentMonitoringMin =
         getTighteningErrorStatusDynamicCurrentMonitoringMin();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusDynamicCurrentMonitoringMin",
         tighteningErrorStatusDynamicCurrentMonitoringMin);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusDynamicCurrentMonitoringMax =
         getTighteningErrorStatusDynamicCurrentMonitoringMax();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusDynamicCurrentMonitoringMax",
         tighteningErrorStatusDynamicCurrentMonitoringMax);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusAngleMaxMonitor = getTighteningErrorStatusAngleMaxMonitor();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusAngleMaxMonitor", tighteningErrorStatusAngleMaxMonitor);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusYieldNutOff = getTighteningErrorStatusYieldNutOff();
     writeBuffer.writeVirtual("tighteningErrorStatusYieldNutOff", tighteningErrorStatusYieldNutOff);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean tighteningErrorStatusYieldTooFewSamples = getTighteningErrorStatusYieldTooFewSamples();
     writeBuffer.writeVirtual(
         "tighteningErrorStatusYieldTooFewSamples", tighteningErrorStatusYieldTooFewSamples);

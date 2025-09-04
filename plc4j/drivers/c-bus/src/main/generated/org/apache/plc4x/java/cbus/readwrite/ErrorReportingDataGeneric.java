@@ -133,15 +133,15 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     // Simple Field (mostSevere)
     writeSimpleField("mostSevere", mostSevere, writeBoolean(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isMostSevereError = getIsMostSevereError();
     writeBuffer.writeVirtual("isMostSevereError", isMostSevereError);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isMostRecentError = getIsMostRecentError();
     writeBuffer.writeVirtual("isMostRecentError", isMostRecentError);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isMostRecentAndMostSevere = getIsMostRecentAndMostSevere();
     writeBuffer.writeVirtual("isMostRecentAndMostSevere", isMostRecentAndMostSevere);
 

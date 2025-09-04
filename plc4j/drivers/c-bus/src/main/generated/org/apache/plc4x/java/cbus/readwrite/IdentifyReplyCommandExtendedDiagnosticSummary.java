@@ -229,7 +229,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
     // Simple Field (networkVoltage)
     writeSimpleField("networkVoltage", networkVoltage, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     float networkVoltageInVolts = getNetworkVoltageInVolts();
     writeBuffer.writeVirtual("networkVoltageInVolts", networkVoltageInVolts);
 

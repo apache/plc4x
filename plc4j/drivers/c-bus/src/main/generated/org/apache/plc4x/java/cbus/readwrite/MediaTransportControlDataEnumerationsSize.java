@@ -96,19 +96,19 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
     // Simple Field (sizeType)
     writeSimpleField("sizeType", sizeType, writeByte(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isListCategories = getIsListCategories();
     writeBuffer.writeVirtual("isListCategories", isListCategories);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isListSelections = getIsListSelections();
     writeBuffer.writeVirtual("isListSelections", isListSelections);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isListTracks = getIsListTracks();
     writeBuffer.writeVirtual("isListTracks", isListTracks);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isReserved = getIsReserved();
     writeBuffer.writeVirtual("isReserved", isReserved);
 

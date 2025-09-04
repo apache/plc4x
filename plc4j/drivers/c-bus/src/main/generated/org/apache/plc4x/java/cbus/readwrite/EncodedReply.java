@@ -72,7 +72,7 @@ public abstract class EncodedReply implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("EncodedReply");
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean isMonitoredSAL = getIsMonitoredSAL();
     writeBuffer.writeVirtual("isMonitoredSAL", isMonitoredSAL);
 

@@ -77,7 +77,7 @@ public class BACnetConstructedDataMultiStateInputInterfaceValue extends BACnetCo
     // Simple Field (interfaceValue)
     writeSimpleField("interfaceValue", interfaceValue, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     BACnetOptionalBinaryPV actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 

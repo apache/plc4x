@@ -125,11 +125,11 @@ public class CALDataStatusExtended extends CALData implements Message {
     // Simple Field (blockStart)
     writeSimpleField("blockStart", blockStart, writeUnsignedShort(writeBuffer, 8));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     byte numberOfStatusBytes = getNumberOfStatusBytes();
     writeBuffer.writeVirtual("numberOfStatusBytes", numberOfStatusBytes);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     byte numberOfLevelInformation = getNumberOfLevelInformation();
     writeBuffer.writeVirtual("numberOfLevelInformation", numberOfLevelInformation);
 

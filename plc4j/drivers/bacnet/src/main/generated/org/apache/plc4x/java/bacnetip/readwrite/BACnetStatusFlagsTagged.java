@@ -86,19 +86,19 @@ public class BACnetStatusFlagsTagged implements Message {
     // Simple Field (payload)
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean inAlarm = getInAlarm();
     writeBuffer.writeVirtual("inAlarm", inAlarm);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean fault = getFault();
     writeBuffer.writeVirtual("fault", fault);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean overridden = getOverridden();
     writeBuffer.writeVirtual("overridden", overridden);
 
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    // Virtual field (doesn't serialize anything, just makes the value available)
     boolean outOfService = getOutOfService();
     writeBuffer.writeVirtual("outOfService", outOfService);
 
