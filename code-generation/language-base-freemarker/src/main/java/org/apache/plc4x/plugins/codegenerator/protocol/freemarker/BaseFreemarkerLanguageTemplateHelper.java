@@ -24,7 +24,6 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.D
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultBooleanTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultUndefinedTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
@@ -32,6 +31,7 @@ import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.BooleanLiteral;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
+import org.apache.plc4x.plugins.codegenerator.types.terms.WildcardTerm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -355,8 +355,6 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             .orElse(null);
     }
 
-
-    // TODO: replace that with term.isWildcard() (once the referenced wildcard term from build utils is used)
     public boolean isWildcard(Term term) {
         return term instanceof WildcardTerm;
     }

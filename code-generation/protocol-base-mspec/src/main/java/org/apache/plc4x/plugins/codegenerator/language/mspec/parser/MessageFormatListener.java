@@ -29,7 +29,6 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultVariableLiteral;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
@@ -38,10 +37,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
-import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
-import org.apache.plc4x.plugins.codegenerator.types.terms.NumericLiteral;
-import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
-import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
+import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
