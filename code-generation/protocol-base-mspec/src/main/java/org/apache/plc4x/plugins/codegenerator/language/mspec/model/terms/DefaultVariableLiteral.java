@@ -54,7 +54,6 @@ public class DefaultVariableLiteral implements VariableLiteral {
         return typeReference;
     }
 
-
     public void setTypeReference(TypeReference typeReference) {
         Objects.requireNonNull(typeReference);
         this.typeReference = typeReference;
