@@ -3580,7 +3580,7 @@ public class RandomPackagesTest {
                                     .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagSignedInteger.class))
                                     .extracting(BACnetApplicationTagSignedInteger::getPayload)
                                     .extracting(BACnetTagPayloadSignedInteger::getActualValue)
-                                    .isEqualTo(BigInteger.valueOf(0));
+                                    .isEqualTo(0L);
                                 assertThat(baCnetConfirmedServiceRequestAtomicReadFileStream)
                                     .extracting(BACnetConfirmedServiceRequestAtomicReadFileStream::getRequestOctetCount)
                                     .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
@@ -4235,7 +4235,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTagSignedInteger value = ((BACnetConstructedDataUTCOffset) baCnetServiceAckReadProperty.getValues()).getUtcOffset();
-                    assertEquals(0, value.getPayload().getActualValue().longValue());
+                    assertEquals(0, value.getPayload().getActualValue());
                 }),
             DynamicTest.dynamicTest("No. 47 - Confirmed-REQ   readProperty[ 47] device,201 daylights-savings-status",
                 () -> {
@@ -5013,7 +5013,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTagSignedInteger value = ((BACnetConstructedDataUTCOffset) baCnetServiceAckReadProperty.getValues()).getUtcOffset();
-                    assertEquals(BigInteger.valueOf(-300), value.getPayload().getActualValue());
+                    assertEquals(-300L, value.getPayload().getActualValue());
                 }),
             DynamicTest.dynamicTest("No. 103 - Confirmed-REQ   readProperty[ 75] device,61 daylights-savings-status",
                 () -> {

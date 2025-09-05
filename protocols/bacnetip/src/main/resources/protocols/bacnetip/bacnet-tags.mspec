@@ -55,7 +55,7 @@
         ['0x3' *SignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadSignedInteger('header.actualLength')
                                 payload                                                                                 ]
-            [virtual    uint 64    actualValue   'payload.actualValue'                                                  ]
+            [virtual    int 64  actualValue   'payload.actualValue'                                                     ]
         ]
         ['0x4' *Real
             [simple BACnetTagPayloadReal
@@ -134,7 +134,7 @@
         ['SIGNED_INTEGER' *SignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadSignedInteger('header.actualLength')
                                 payload                                                                                 ]
-            [virtual    uint 64     actualValue 'payload.actualValue'                                                   ]
+            [virtual    int 64  actualValue 'payload.actualValue'                                                       ]
         ]
         ['REAL' *Real
             [simple BACnetTagPayloadReal
@@ -249,7 +249,7 @@
     [virtual    bit         isInt64         'actualLength == 8'  ]
     [optional   int 64      valueInt64      'isInt64'            ]
     [validation 'isInt8 || isInt16 || isInt24 || isInt32 || isInt40 || isInt48 || isInt56 || isInt64' "unmapped integer length"]
-    [virtual    uint 64     actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:valueInt64))))))']
+    [virtual    int 64      actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:valueInt64))))))']
 ]
 
 [type BACnetTagPayloadReal

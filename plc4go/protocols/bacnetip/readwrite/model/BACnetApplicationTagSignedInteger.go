@@ -44,7 +44,7 @@ type BACnetApplicationTagSignedInteger interface {
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
-	GetActualValue() uint64
+	GetActualValue() int64
 	// IsBACnetApplicationTagSignedInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTagSignedInteger()
 	// CreateBuilder creates a BACnetApplicationTagSignedIntegerBuilder
@@ -216,10 +216,10 @@ func (m *_BACnetApplicationTagSignedInteger) GetPayload() BACnetTagPayloadSigned
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetApplicationTagSignedInteger) GetActualValue() uint64 {
+func (m *_BACnetApplicationTagSignedInteger) GetActualValue() int64 {
 	ctx := context.Background()
 	_ = ctx
-	return uint64(m.GetPayload().GetActualValue())
+	return int64(m.GetPayload().GetActualValue())
 }
 
 ///////////////////////
@@ -274,7 +274,7 @@ func (m *_BACnetApplicationTagSignedInteger) parse(ctx context.Context, readBuff
 	}
 	m.Payload = payload
 
-	actualValue, err := ReadVirtualField[uint64](ctx, "actualValue", (*uint64)(nil), payload.GetActualValue())
+	actualValue, err := ReadVirtualField[int64](ctx, "actualValue", (*int64)(nil), payload.GetActualValue())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
 	}

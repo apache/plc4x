@@ -75,7 +75,7 @@ type BACnetTagPayloadSignedInteger interface {
 	// GetIsInt64 returns IsInt64 (virtual field)
 	GetIsInt64() bool
 	// GetActualValue returns ActualValue (virtual field)
-	GetActualValue() uint64
+	GetActualValue() int64
 	// IsBACnetTagPayloadSignedInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadSignedInteger()
 	// CreateBuilder creates a BACnetTagPayloadSignedIntegerBuilder
@@ -460,7 +460,7 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt64() bool {
 	return bool(bool((m.GetActualLength()) == (8)))
 }
 
-func (m *_BACnetTagPayloadSignedInteger) GetActualValue() uint64 {
+func (m *_BACnetTagPayloadSignedInteger) GetActualValue() int64 {
 	ctx := context.Background()
 	_ = ctx
 	valueInt8 := m.GetValueInt8()
@@ -479,19 +479,19 @@ func (m *_BACnetTagPayloadSignedInteger) GetActualValue() uint64 {
 	_ = valueInt56
 	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
-	return uint64(utils.InlineIf(m.GetIsInt8(), func() any { return uint64((*m.GetValueInt8())) }, func() any {
-		return uint64((utils.InlineIf(m.GetIsInt16(), func() any { return uint64((*m.GetValueInt16())) }, func() any {
-			return uint64((utils.InlineIf(m.GetIsInt24(), func() any { return uint64((*m.GetValueInt24())) }, func() any {
-				return uint64((utils.InlineIf(m.GetIsInt32(), func() any { return uint64((*m.GetValueInt32())) }, func() any {
-					return uint64((utils.InlineIf(m.GetIsInt40(), func() any { return uint64((*m.GetValueInt40())) }, func() any {
-						return uint64((utils.InlineIf(m.GetIsInt48(), func() any { return uint64((*m.GetValueInt48())) }, func() any {
-							return uint64((utils.InlineIf(m.GetIsInt56(), func() any { return uint64((*m.GetValueInt56())) }, func() any { return uint64((*m.GetValueInt64())) }).(uint64)))
-						}).(uint64)))
-					}).(uint64)))
-				}).(uint64)))
-			}).(uint64)))
-		}).(uint64)))
-	}).(uint64))
+	return int64(utils.InlineIf(m.GetIsInt8(), func() any { return int64((*m.GetValueInt8())) }, func() any {
+		return int64((utils.InlineIf(m.GetIsInt16(), func() any { return int64((*m.GetValueInt16())) }, func() any {
+			return int64((utils.InlineIf(m.GetIsInt24(), func() any { return int64((*m.GetValueInt24())) }, func() any {
+				return int64((utils.InlineIf(m.GetIsInt32(), func() any { return int64((*m.GetValueInt32())) }, func() any {
+					return int64((utils.InlineIf(m.GetIsInt40(), func() any { return int64((*m.GetValueInt40())) }, func() any {
+						return int64((utils.InlineIf(m.GetIsInt48(), func() any { return int64((*m.GetValueInt48())) }, func() any {
+							return int64((utils.InlineIf(m.GetIsInt56(), func() any { return int64((*m.GetValueInt56())) }, func() any { return int64((*m.GetValueInt64())) }).(int64)))
+						}).(int64)))
+					}).(int64)))
+				}).(int64)))
+			}).(int64)))
+		}).(int64)))
+	}).(int64))
 }
 
 ///////////////////////
@@ -719,19 +719,19 @@ func (m *_BACnetTagPayloadSignedInteger) parse(ctx context.Context, readBuffer u
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "unmapped integer length"})
 	}
 
-	actualValue, err := ReadVirtualField[uint64](ctx, "actualValue", (*uint64)(nil), utils.InlineIf(isInt8, func() any { return uint64((*valueInt8)) }, func() any {
-		return uint64((utils.InlineIf(isInt16, func() any { return uint64((*valueInt16)) }, func() any {
-			return uint64((utils.InlineIf(isInt24, func() any { return uint64((*valueInt24)) }, func() any {
-				return uint64((utils.InlineIf(isInt32, func() any { return uint64((*valueInt32)) }, func() any {
-					return uint64((utils.InlineIf(isInt40, func() any { return uint64((*valueInt40)) }, func() any {
-						return uint64((utils.InlineIf(isInt48, func() any { return uint64((*valueInt48)) }, func() any {
-							return uint64((utils.InlineIf(isInt56, func() any { return uint64((*valueInt56)) }, func() any { return uint64((*valueInt64)) }).(uint64)))
-						}).(uint64)))
-					}).(uint64)))
-				}).(uint64)))
-			}).(uint64)))
-		}).(uint64)))
-	}).(uint64))
+	actualValue, err := ReadVirtualField[int64](ctx, "actualValue", (*int64)(nil), utils.InlineIf(isInt8, func() any { return int64((*valueInt8)) }, func() any {
+		return int64((utils.InlineIf(isInt16, func() any { return int64((*valueInt16)) }, func() any {
+			return int64((utils.InlineIf(isInt24, func() any { return int64((*valueInt24)) }, func() any {
+				return int64((utils.InlineIf(isInt32, func() any { return int64((*valueInt32)) }, func() any {
+					return int64((utils.InlineIf(isInt40, func() any { return int64((*valueInt40)) }, func() any {
+						return int64((utils.InlineIf(isInt48, func() any { return int64((*valueInt48)) }, func() any {
+							return int64((utils.InlineIf(isInt56, func() any { return int64((*valueInt56)) }, func() any { return int64((*valueInt64)) }).(int64)))
+						}).(int64)))
+					}).(int64)))
+				}).(int64)))
+			}).(int64)))
+		}).(int64)))
+	}).(int64))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
 	}

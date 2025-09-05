@@ -24,7 +24,6 @@ import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -56,10 +55,8 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
     return payload;
   }
 
-  public BigInteger getActualValue() {
-    Object o = getPayload().getActualValue();
-    if (o instanceof BigInteger) return (BigInteger) o;
-    return BigInteger.valueOf(((Number) o).longValue());
+  public long getActualValue() {
+    return (long) (getPayload().getActualValue());
   }
 
   @Override
@@ -73,7 +70,7 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
     writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't serialize anything, just makes the value available)
-    BigInteger actualValue = getActualValue();
+    long actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 
     writeBuffer.popContext("BACnetContextTagSignedInteger");
@@ -116,8 +113,7 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
                     BACnetTagPayloadSignedInteger.staticParse(
                         readBuffer, (long) (header.getActualLength())),
                 readBuffer));
-    BigInteger actualValue =
-        readVirtualField("actualValue", BigInteger.class, payload.getActualValue());
+    long actualValue = readVirtualField("actualValue", long.class, payload.getActualValue());
 
     readBuffer.closeContext("BACnetContextTagSignedInteger");
     // Create the instance

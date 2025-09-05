@@ -24,7 +24,6 @@ import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -139,9 +138,9 @@ public class BACnetTagPayloadSignedInteger implements Message {
     return (boolean) ((actualLength) == (8));
   }
 
-  public BigInteger getActualValue() {
-    Object o =
-        ((getIsInt8())
+  public long getActualValue() {
+    return (long)
+        (((getIsInt8())
             ? getValueInt8()
             : (((getIsInt16())
                 ? getValueInt16()
@@ -153,9 +152,9 @@ public class BACnetTagPayloadSignedInteger implements Message {
                             ? getValueInt40()
                             : (((getIsInt48())
                                 ? getValueInt48()
-                                : (((getIsInt56()) ? getValueInt56() : getValueInt64())))))))))))));
-    if (o instanceof BigInteger) return (BigInteger) o;
-    return BigInteger.valueOf(((Number) o).longValue());
+                                : (((getIsInt56())
+                                    ? getValueInt56()
+                                    : getValueInt64()))))))))))))));
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -220,7 +219,7 @@ public class BACnetTagPayloadSignedInteger implements Message {
     writeOptionalField("valueInt64", valueInt64, writeSignedLong(writeBuffer, 64));
 
     // Virtual field (doesn't serialize anything, just makes the value available)
-    BigInteger actualValue = getActualValue();
+    long actualValue = getActualValue();
     writeBuffer.writeVirtual("actualValue", actualValue);
 
     writeBuffer.popContext("BACnetTagPayloadSignedInteger");
@@ -333,10 +332,10 @@ public class BACnetTagPayloadSignedInteger implements Message {
         || (isInt64))) {
       throw new ParseValidationException("unmapped integer length");
     }
-    BigInteger actualValue =
+    long actualValue =
         readVirtualField(
             "actualValue",
-            BigInteger.class,
+            long.class,
             ((isInt8)
                 ? valueInt8
                 : (((isInt16)
