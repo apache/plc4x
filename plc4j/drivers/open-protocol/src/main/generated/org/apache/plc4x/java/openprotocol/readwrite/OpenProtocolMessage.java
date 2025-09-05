@@ -184,7 +184,8 @@ public abstract class OpenProtocolMessage implements Message {
     serializeOpenProtocolMessageChild(writeBuffer);
 
     // Const Field (end)
-    writeConstField("end", END, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "end", END, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessage");
   }
@@ -478,7 +479,12 @@ public abstract class OpenProtocolMessage implements Message {
           "Unsupported case for discriminated type" + " parameters [" + "mid=" + mid + "]");
     }
 
-    short end = readConstField("end", readUnsignedShort(readBuffer, 8), OpenProtocolMessage.END);
+    short end =
+        readConstField(
+            "end",
+            readUnsignedShort(readBuffer, 8),
+            OpenProtocolMessage.END,
+            WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessage");
     // Create the instance

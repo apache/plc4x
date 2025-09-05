@@ -61,18 +61,11 @@ public class StageResult implements Message {
     writeBuffer.pushContext("StageResult");
 
     // Simple Field (stageTorqueValue)
-    writeSimpleField(
-        "stageTorqueValue",
-        stageTorqueValue,
-        writeUnsignedLong(writeBuffer, 48),
-        WithOption.WithEncoding("ASCII"));
+    writeSimpleField("stageTorqueValue", stageTorqueValue, writeUnsignedLong(writeBuffer, 48));
 
     // Simple Field (stageTurningAngleValue)
     writeSimpleField(
-        "stageTurningAngleValue",
-        stageTurningAngleValue,
-        writeUnsignedLong(writeBuffer, 40),
-        WithOption.WithEncoding("ASCII"));
+        "stageTurningAngleValue", stageTurningAngleValue, writeUnsignedLong(writeBuffer, 40));
 
     writeBuffer.popContext("StageResult");
   }
@@ -102,15 +95,10 @@ public class StageResult implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long stageTorqueValue =
-        readSimpleField(
-            "stageTorqueValue", readUnsignedLong(readBuffer, 48), WithOption.WithEncoding("ASCII"));
+    long stageTorqueValue = readSimpleField("stageTorqueValue", readUnsignedLong(readBuffer, 48));
 
     long stageTurningAngleValue =
-        readSimpleField(
-            "stageTurningAngleValue",
-            readUnsignedLong(readBuffer, 40),
-            WithOption.WithEncoding("ASCII"));
+        readSimpleField("stageTurningAngleValue", readUnsignedLong(readBuffer, 40));
 
     readBuffer.closeContext("StageResult");
     // Create the instance

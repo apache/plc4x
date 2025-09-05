@@ -80,36 +80,24 @@ public class VariableDataField implements Message {
     writeBuffer.pushContext("VariableDataField");
 
     // Simple Field (parameterId)
-    writeSimpleField(
-        "parameterId",
-        parameterId,
-        writeUnsignedLong(writeBuffer, 40),
-        WithOption.WithEncoding("ASCII"));
+    writeSimpleField("parameterId", parameterId, writeUnsignedLong(writeBuffer, 40));
 
     // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int length = (int) (COUNT(getDataValue()));
-    writeImplicitField(
-        "length", length, writeUnsignedInt(writeBuffer, 24), WithOption.WithEncoding("ASCII"));
+    writeImplicitField("length", length, writeUnsignedInt(writeBuffer, 24));
 
     // Simple Field (dataType)
-    writeSimpleField(
-        "dataType", dataType, writeUnsignedInt(writeBuffer, 16), WithOption.WithEncoding("ASCII"));
+    writeSimpleField("dataType", dataType, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (unit)
-    writeSimpleField(
-        "unit", unit, writeUnsignedInt(writeBuffer, 24), WithOption.WithEncoding("ASCII"));
+    writeSimpleField("unit", unit, writeUnsignedInt(writeBuffer, 24));
 
     // Simple Field (stepNumber)
-    writeSimpleField(
-        "stepNumber",
-        stepNumber,
-        writeUnsignedInt(writeBuffer, 24),
-        WithOption.WithEncoding("ASCII"));
+    writeSimpleField("stepNumber", stepNumber, writeUnsignedInt(writeBuffer, 24));
 
     // Array Field (dataValue)
-    writeByteArrayField(
-        "dataValue", dataValue, writeByteArray(writeBuffer, 8), WithOption.WithEncoding("ASCII"));
+    writeByteArrayField("dataValue", dataValue, writeByteArray(writeBuffer, 8));
 
     writeBuffer.popContext("VariableDataField");
   }
@@ -153,28 +141,17 @@ public class VariableDataField implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long parameterId =
-        readSimpleField(
-            "parameterId", readUnsignedLong(readBuffer, 40), WithOption.WithEncoding("ASCII"));
+    long parameterId = readSimpleField("parameterId", readUnsignedLong(readBuffer, 40));
 
-    int length =
-        readImplicitField(
-            "length", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+    int length = readImplicitField("length", readUnsignedInt(readBuffer, 24));
 
-    int dataType =
-        readSimpleField(
-            "dataType", readUnsignedInt(readBuffer, 16), WithOption.WithEncoding("ASCII"));
+    int dataType = readSimpleField("dataType", readUnsignedInt(readBuffer, 16));
 
-    int unit =
-        readSimpleField("unit", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+    int unit = readSimpleField("unit", readUnsignedInt(readBuffer, 24));
 
-    int stepNumber =
-        readSimpleField(
-            "stepNumber", readUnsignedInt(readBuffer, 24), WithOption.WithEncoding("ASCII"));
+    int stepNumber = readSimpleField("stepNumber", readUnsignedInt(readBuffer, 24));
 
-    byte[] dataValue =
-        readBuffer.readByteArray(
-            "dataValue", Math.toIntExact(length), WithOption.WithEncoding("ASCII"));
+    byte[] dataValue = readBuffer.readByteArray("dataValue", Math.toIntExact(length));
 
     readBuffer.closeContext("VariableDataField");
     // Create the instance

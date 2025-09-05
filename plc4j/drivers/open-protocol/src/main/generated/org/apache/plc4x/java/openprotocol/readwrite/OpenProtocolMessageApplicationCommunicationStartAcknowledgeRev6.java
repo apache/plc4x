@@ -417,10 +417,18 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev6
         WithOption.WithEncoding("ASCII"));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
+    writeReservedField(
+        "reserved",
+        (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 7),
+        WithOption.WithEncoding("ASCII"));
 
     // Simple Field (sequenceNumberSupport)
-    writeSimpleField("sequenceNumberSupport", sequenceNumberSupport, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "sequenceNumberSupport",
+        sequenceNumberSupport,
+        writeBoolean(writeBuffer),
+        WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdLinkingHandlingSupport)
     writeConstField(
@@ -430,10 +438,18 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev6
         WithOption.WithEncoding("ASCII"));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
+    writeReservedField(
+        "reserved",
+        (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 7),
+        WithOption.WithEncoding("ASCII"));
 
     // Simple Field (linkingHandlingSupport)
-    writeSimpleField("linkingHandlingSupport", linkingHandlingSupport, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "linkingHandlingSupport",
+        linkingHandlingSupport,
+        writeBoolean(writeBuffer),
+        WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdStationId)
     writeConstField(
@@ -731,10 +747,15 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev6
             WithOption.WithEncoding("ASCII"));
 
     Byte reservedField0 =
-        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 7),
+            (byte) 0x00,
+            WithOption.WithEncoding("ASCII"));
 
     boolean sequenceNumberSupport =
-        readSimpleField("sequenceNumberSupport", readBoolean(readBuffer));
+        readSimpleField(
+            "sequenceNumberSupport", readBoolean(readBuffer), WithOption.WithEncoding("ASCII"));
 
     int blockIdLinkingHandlingSupport =
         readConstField(
@@ -745,10 +766,15 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev6
             WithOption.WithEncoding("ASCII"));
 
     Byte reservedField1 =
-        readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 7),
+            (byte) 0x00,
+            WithOption.WithEncoding("ASCII"));
 
     boolean linkingHandlingSupport =
-        readSimpleField("linkingHandlingSupport", readBoolean(readBuffer));
+        readSimpleField(
+            "linkingHandlingSupport", readBoolean(readBuffer), WithOption.WithEncoding("ASCII"));
 
     int blockIdStationId =
         readConstField(

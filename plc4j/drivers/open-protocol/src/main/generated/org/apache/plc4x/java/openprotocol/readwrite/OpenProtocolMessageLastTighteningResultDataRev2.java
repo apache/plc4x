@@ -958,7 +958,11 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         WithOption.WithEncoding("ASCII"));
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x30, writeUnsignedShort(writeBuffer, 8));
+    writeReservedField(
+        "reserved",
+        (short) 0x30,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithEncoding("ASCII"));
 
     // Simple Field (strategyOptions)
     writeSimpleField(
@@ -2198,7 +2202,11 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
             WithOption.WithEncoding("ASCII"));
 
     Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x30);
+        readReservedField(
+            "reserved",
+            readUnsignedShort(readBuffer, 8),
+            (short) 0x30,
+            WithOption.WithEncoding("ASCII"));
 
     long strategyOptions =
         readSimpleField(
@@ -2207,43 +2215,68 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         readVirtualField(
             "strategyOptionRbwMonitoring",
             boolean.class,
-            (((strategyOptions) & (0x0001))) == (0x0001));
+            (((strategyOptions) & (0x0001))) == (0x0001),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionClickWrench =
         readVirtualField(
             "strategyOptionClickWrench",
             boolean.class,
-            (((strategyOptions) & (0x0002))) == (0x0002));
+            (((strategyOptions) & (0x0002))) == (0x0002),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionDsControl =
         readVirtualField(
-            "strategyOptionDsControl", boolean.class, (((strategyOptions) & (0x0004))) == (0x0004));
+            "strategyOptionDsControl",
+            boolean.class,
+            (((strategyOptions) & (0x0004))) == (0x0004),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionCm =
         readVirtualField(
-            "strategyOptionCm", boolean.class, (((strategyOptions) & (0x0008))) == (0x0008));
+            "strategyOptionCm",
+            boolean.class,
+            (((strategyOptions) & (0x0008))) == (0x0008),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionRundown =
         readVirtualField(
-            "strategyOptionRundown", boolean.class, (((strategyOptions) & (0x0010))) == (0x0010));
+            "strategyOptionRundown",
+            boolean.class,
+            (((strategyOptions) & (0x0010))) == (0x0010),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionSelfTap =
         readVirtualField(
-            "strategyOptionSelfTap", boolean.class, (((strategyOptions) & (0x0020))) == (0x0020));
+            "strategyOptionSelfTap",
+            boolean.class,
+            (((strategyOptions) & (0x0020))) == (0x0020),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionPvtCompensate =
         readVirtualField(
             "strategyOptionPvtCompensate",
             boolean.class,
-            (((strategyOptions) & (0x0040))) == (0x0040));
+            (((strategyOptions) & (0x0040))) == (0x0040),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionPvtMonitoring =
         readVirtualField(
             "strategyOptionPvtMonitoring",
             boolean.class,
-            (((strategyOptions) & (0x0080))) == (0x0080));
+            (((strategyOptions) & (0x0080))) == (0x0080),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionBatch =
         readVirtualField(
-            "strategyOptionBatch", boolean.class, (((strategyOptions) & (0x0100))) == (0x0100));
+            "strategyOptionBatch",
+            boolean.class,
+            (((strategyOptions) & (0x0100))) == (0x0100),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionAngle =
         readVirtualField(
-            "strategyOptionAngle", boolean.class, (((strategyOptions) & (0x0200))) == (0x0200));
+            "strategyOptionAngle",
+            boolean.class,
+            (((strategyOptions) & (0x0200))) == (0x0200),
+            WithOption.WithEncoding("ASCII"));
     boolean strategyOptionTorque =
         readVirtualField(
-            "strategyOptionTorque", boolean.class, (((strategyOptions) & (0x0400))) == (0x0400));
+            "strategyOptionTorque",
+            boolean.class,
+            (((strategyOptions) & (0x0400))) == (0x0400),
+            WithOption.WithEncoding("ASCII"));
 
     int blockIdBatchSize =
         readConstField(
@@ -2408,193 +2441,225 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
             "tighteningErrorStatusRundownAngleMaxShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 1));
+                tighteningErrorStatus, 1),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusRundownAngleMinShutOff =
         readVirtualField(
             "tighteningErrorStatusRundownAngleMinShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 2));
+                tighteningErrorStatus, 2),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusTorqueMaxShutOff =
         readVirtualField(
             "tighteningErrorStatusTorqueMaxShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 3));
+                tighteningErrorStatus, 3),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusAngleMaxShutOff =
         readVirtualField(
             "tighteningErrorStatusAngleMaxShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 4));
+                tighteningErrorStatus, 4),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusSelfTapTorqueMaxShutOff =
         readVirtualField(
             "tighteningErrorStatusSelfTapTorqueMaxShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 5));
+                tighteningErrorStatus, 5),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusSelfTapTorqueMinShutOff =
         readVirtualField(
             "tighteningErrorStatusSelfTapTorqueMinShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 6));
+                tighteningErrorStatus, 6),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusPrevailTorqueMaxShutOff =
         readVirtualField(
             "tighteningErrorStatusPrevailTorqueMaxShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 7));
+                tighteningErrorStatus, 7),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusPrevailTorqueMinShutOff =
         readVirtualField(
             "tighteningErrorStatusPrevailTorqueMinShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 8));
+                tighteningErrorStatus, 8),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusPrevailTorqueCompensateOverflow =
         readVirtualField(
             "tighteningErrorStatusPrevailTorqueCompensateOverflow",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 9));
+                tighteningErrorStatus, 9),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusCurrentMonitoringMaxShutOff =
         readVirtualField(
             "tighteningErrorStatusCurrentMonitoringMaxShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 10));
+                tighteningErrorStatus, 10),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusPostViewTorqueMinTorqueShutOff =
         readVirtualField(
             "tighteningErrorStatusPostViewTorqueMinTorqueShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 11));
+                tighteningErrorStatus, 11),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusPostViewTorqueMaxTorqueShutOff =
         readVirtualField(
             "tighteningErrorStatusPostViewTorqueMaxTorqueShutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 12));
+                tighteningErrorStatus, 12),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusPortViewTorqueAngleTooSmall =
         readVirtualField(
             "tighteningErrorStatusPortViewTorqueAngleTooSmall",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 13));
+                tighteningErrorStatus, 13),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusTriggerLost =
         readVirtualField(
             "tighteningErrorStatusTriggerLost",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 14));
+                tighteningErrorStatus, 14),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusTorqueLessThanTarget =
         readVirtualField(
             "tighteningErrorStatusTorqueLessThanTarget",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 15));
+                tighteningErrorStatus, 15),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusToolHot =
         readVirtualField(
             "tighteningErrorStatusToolHot",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 16));
+                tighteningErrorStatus, 16),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusMultistageAbort =
         readVirtualField(
             "tighteningErrorStatusMultistageAbort",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 17));
+                tighteningErrorStatus, 17),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusRehit =
         readVirtualField(
             "tighteningErrorStatusRehit",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 18));
+                tighteningErrorStatus, 18),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusDsMeasureFailed =
         readVirtualField(
             "tighteningErrorStatusDsMeasureFailed",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 19));
+                tighteningErrorStatus, 19),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusCurrentLimitReached =
         readVirtualField(
             "tighteningErrorStatusCurrentLimitReached",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 20));
+                tighteningErrorStatus, 20),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusEndTimeOutShutoff =
         readVirtualField(
             "tighteningErrorStatusEndTimeOutShutoff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 21));
+                tighteningErrorStatus, 21),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusRemoveFastenerLimitExceeded =
         readVirtualField(
             "tighteningErrorStatusRemoveFastenerLimitExceeded",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 22));
+                tighteningErrorStatus, 22),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusDisableDrive =
         readVirtualField(
             "tighteningErrorStatusDisableDrive",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 23));
+                tighteningErrorStatus, 23),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusTransducerLost =
         readVirtualField(
             "tighteningErrorStatusTransducerLost",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 24));
+                tighteningErrorStatus, 24),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusTransducerShorted =
         readVirtualField(
             "tighteningErrorStatusTransducerShorted",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 25));
+                tighteningErrorStatus, 25),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusTransducerCorrupt =
         readVirtualField(
             "tighteningErrorStatusTransducerCorrupt",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 26));
+                tighteningErrorStatus, 26),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusSyncTimeout =
         readVirtualField(
             "tighteningErrorStatusSyncTimeout",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 27));
+                tighteningErrorStatus, 27),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusDynamicCurrentMonitoringMin =
         readVirtualField(
             "tighteningErrorStatusDynamicCurrentMonitoringMin",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 28));
+                tighteningErrorStatus, 28),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusDynamicCurrentMonitoringMax =
         readVirtualField(
             "tighteningErrorStatusDynamicCurrentMonitoringMax",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 29));
+                tighteningErrorStatus, 29),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusAngleMaxMonitor =
         readVirtualField(
             "tighteningErrorStatusAngleMaxMonitor",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 30));
+                tighteningErrorStatus, 30),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusYieldNutOff =
         readVirtualField(
             "tighteningErrorStatusYieldNutOff",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 31));
+                tighteningErrorStatus, 31),
+            WithOption.WithEncoding("ASCII"));
     boolean tighteningErrorStatusYieldTooFewSamples =
         readVirtualField(
             "tighteningErrorStatusYieldTooFewSamples",
             boolean.class,
             org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
-                tighteningErrorStatus, 32));
+                tighteningErrorStatus, 32),
+            WithOption.WithEncoding("ASCII"));
 
     int blockIdTorqueMinLimit =
         readConstField(

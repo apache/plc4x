@@ -116,7 +116,8 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
         WithOption.WithEncoding("ASCII"));
 
     // Array Field (extraData)
-    writeByteArrayField("extraData", extraData, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "extraData", extraData, writeByteArray(writeBuffer, 8), WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageApplicationGenericDataRequestRev1");
   }
@@ -171,7 +172,9 @@ public class OpenProtocolMessageApplicationGenericDataRequestRev1
         readImplicitField(
             "extraDataLength", readUnsignedInt(readBuffer, 16), WithOption.WithEncoding("ASCII"));
 
-    byte[] extraData = readBuffer.readByteArray("extraData", Math.toIntExact(extraDataLength));
+    byte[] extraData =
+        readBuffer.readByteArray(
+            "extraData", Math.toIntExact(extraDataLength), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageApplicationGenericDataRequestRev1");
     // Create the instance
