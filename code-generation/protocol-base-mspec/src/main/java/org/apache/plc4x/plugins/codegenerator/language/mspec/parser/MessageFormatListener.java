@@ -103,7 +103,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         List<Token> hiddenToLeft = tokenStream.getHiddenTokensToLeft(tokenIndex);
         if (hiddenToLeft != null) {
             hiddenToLeft.reversed().stream()
-                .takeWhile(token -> frontComments.isEmpty() || (token.getType() != MSpecLexer.WS))
+                .takeWhile(token -> frontComments.isEmpty() || (token.getType() != MSpecLexer.EmptyLine))
                 .filter(token -> token.getType() == MSpecLexer.LINE_COMMENT || token.getType() == MSpecLexer.BLOCK_COMMENT)
                 .forEach(frontComments::add);
         }

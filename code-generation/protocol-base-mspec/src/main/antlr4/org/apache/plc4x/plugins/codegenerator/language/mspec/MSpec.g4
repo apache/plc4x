@@ -415,13 +415,21 @@ STRING_CHARACTER
  ;
 
 LINE_COMMENT
- : ('//' ~[\r\n]*)+ -> channel(HIDDEN)
+ : (('//' ~[\r\n]*)+) -> channel(HIDDEN)
  ;
 
 BLOCK_COMMENT
  : '/*' .*? '*/' -> channel(HIDDEN)
  ;
 
+EmptyLine
+ : {getCharPositionInLine() == 0}? [ \t]* '\r'? '\n' -> channel(HIDDEN)
+ ;
+
+NEWLINE
+ : '\r'? '\n' -> channel(HIDDEN)
+ ;
+
 WS
- : [ \t\r\n\u000C]+ -> channel(HIDDEN)
+ : [ \t\u000C]+ -> channel(HIDDEN)
  ;
