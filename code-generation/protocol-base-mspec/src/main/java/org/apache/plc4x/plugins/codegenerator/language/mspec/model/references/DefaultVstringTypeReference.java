@@ -40,8 +40,8 @@ public class DefaultVstringTypeReference extends AbstractSimpleTypeReference imp
     @Override
     public String toString() {
         return "DefaultStringTypeReference{" +
-                "lengthExpression=" + lengthExpression +
-                "} " + super.toString();
+            "lengthExpression=" + lengthExpression +
+            "} " + super.toString();
     }
 
     @Override

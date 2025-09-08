@@ -25,25 +25,32 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+
 public abstract class DefaultField {
 
-    protected TypeDefinition owner;
     protected final Map<String, Term> attributes;
+    protected final String comment;
+    protected TypeDefinition owner;
 
-    protected DefaultField(Map<String, Term> attributes) {
+    protected DefaultField(Map<String, Term> attributes, String comment) {
         this.attributes = Objects.requireNonNull(attributes);
+        this.comment = comment;
     }
 
-    public void setOwner(TypeDefinition owner) {
-        this.owner = owner;
+    public Optional<String> getComment() {
+        return Optional.ofNullable(comment);
     }
 
     public TypeDefinition getOwner() {
         return owner;
     }
 
+    public void setOwner(TypeDefinition owner) {
+        this.owner = owner;
+    }
+
     public Optional<Term> getAttribute(String attributeName) {
-        if(attributes.containsKey(attributeName)) {
+        if (attributes.containsKey(attributeName)) {
             return Optional.of(attributes.get(attributeName));
         }
         return Optional.empty();
@@ -53,6 +60,7 @@ public abstract class DefaultField {
     public String toString() {
         return "DefaultField{" +
             "attributes=" + attributes +
+            ", comment='" + comment + '\'' +
             '}';
     }
 
@@ -61,11 +69,11 @@ public abstract class DefaultField {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DefaultField that = (DefaultField) o;
-        return Objects.equals(attributes, that.attributes);
+        return Objects.equals(attributes, that.attributes) && comment.equals(that.comment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attributes);
+        return Objects.hash(attributes, comment);
     }
 }

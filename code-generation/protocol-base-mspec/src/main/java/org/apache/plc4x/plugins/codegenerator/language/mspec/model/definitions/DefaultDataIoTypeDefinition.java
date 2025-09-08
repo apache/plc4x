@@ -34,19 +34,20 @@ public class DefaultDataIoTypeDefinition extends DefaultComplexTypeDefinition im
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataIoTypeDefinition.class);
     private final SwitchField switchField;
     private TypeReference type;
-    public DefaultDataIoTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, SwitchField switchField) {
-        super(name, attributes, parserArguments, false, List.of(switchField));
+
+    public DefaultDataIoTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, SwitchField switchField, String comment) {
+        super(name, attributes, parserArguments, false, List.of(switchField), comment);
         this.switchField = Objects.requireNonNull(switchField);
-        if (parserArguments.size() < 1) {
+        if (parserArguments.isEmpty()) {
             throw new IllegalStateException();
         }
-        ((DefaultArgument) parserArguments.get(0)).getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
+        ((DefaultArgument) parserArguments.getFirst()).getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.debug("Error setting type for {}", parserArguments.get(0), throwable);
+                LOGGER.debug("Error setting type for {}", parserArguments.getFirst(), throwable);
                 return;
             }
-            this.type = Objects.requireNonNull(parserArguments.get(0).getType());
+            this.type = Objects.requireNonNull(parserArguments.getFirst().getType());
         });
     }
 

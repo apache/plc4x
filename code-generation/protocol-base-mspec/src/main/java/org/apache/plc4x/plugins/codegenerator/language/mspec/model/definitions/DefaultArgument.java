@@ -27,11 +27,9 @@ import java.util.concurrent.CompletionStage;
 
 public class DefaultArgument implements Argument {
 
-    private final String name;
-
-    private TypeReference type;
-
     protected final CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
+    private final String name;
+    private TypeReference type;
 
     public DefaultArgument(String name) {
         this.name = Objects.requireNonNull(name);

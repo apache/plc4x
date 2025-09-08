@@ -1,3 +1,4 @@
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,14 +22,15 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 import org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 
 public class DefaultVirtualField extends DefaultTypedNamedField implements VirtualField {
 
     private final Term valueExpression;
 
-    public DefaultVirtualField(Map<String, Term> attributes, String name, Term valueExpression) {
-        super(attributes, name);
+    public DefaultVirtualField(Map<String, Term> attributes, String name, Term valueExpression, String comment) {
+        super(attributes, name, comment);
         this.valueExpression = Objects.requireNonNull(valueExpression);
     }
 

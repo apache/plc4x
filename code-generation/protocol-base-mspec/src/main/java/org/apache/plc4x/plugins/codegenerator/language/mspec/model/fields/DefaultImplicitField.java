@@ -22,14 +22,15 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 
 public class DefaultImplicitField extends DefaultTypedNamedField implements ImplicitField {
 
     private final Term serializeExpression;
 
-    public DefaultImplicitField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term serializeExpression) {
-        super(attributes, name);
+    public DefaultImplicitField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term serializeExpression, String comment) {
+        super(attributes, name, comment);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
         this.type = type;
     }

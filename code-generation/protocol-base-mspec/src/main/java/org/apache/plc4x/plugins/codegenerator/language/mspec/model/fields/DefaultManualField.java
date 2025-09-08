@@ -30,8 +30,8 @@ public class DefaultManualField extends DefaultTypedNamedField implements Manual
     private final Term serializeExpression;
     private final Term lengthExpression;
 
-    public DefaultManualField(Map<String, Term> attributes, String name, Term parseExpression, Term serializeExpression, Term lengthExpression) {
-        super(attributes, name);
+    public DefaultManualField(Map<String, Term> attributes, String name, Term parseExpression, Term serializeExpression, Term lengthExpression, String comment) {
+        super(attributes, name, comment);
         this.parseExpression = Objects.requireNonNull(parseExpression);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
         this.lengthExpression = Objects.requireNonNull(lengthExpression);

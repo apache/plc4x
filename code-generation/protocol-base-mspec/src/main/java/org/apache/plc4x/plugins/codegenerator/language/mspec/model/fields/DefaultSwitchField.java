@@ -31,8 +31,8 @@ public class DefaultSwitchField extends DefaultField implements SwitchField {
     private final List<VariableLiteral> variableLiterals;
     private final List<DiscriminatedComplexTypeDefinition> cases;
 
-    public DefaultSwitchField(Map<String, Term> attributes, List<VariableLiteral> variableLiterals) {
-        super(attributes);
+    public DefaultSwitchField(Map<String, Term> attributes, List<VariableLiteral> variableLiterals, String comment) {
+        super(attributes, comment);
         this.variableLiterals = Objects.requireNonNull(variableLiterals);
         this.cases = new LinkedList<>();
     }

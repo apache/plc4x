@@ -42,8 +42,8 @@ public class DefaultBooleanLiteral implements BooleanLiteral {
     @Override
     public String toString() {
         return "DefaultBooleanLiteral{" +
-                "value=" + value +
-                '}';
+            "value=" + value +
+            '}';
     }
 
     @Override

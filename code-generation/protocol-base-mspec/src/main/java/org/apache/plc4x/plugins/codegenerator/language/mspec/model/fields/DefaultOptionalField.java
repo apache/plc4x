@@ -29,8 +29,8 @@ public class DefaultOptionalField extends DefaultTypedNamedField implements Opti
 
     private final Term conditionExpression;
 
-    public DefaultOptionalField(Map<String, Term> attributes, String name, Term conditionExpression) {
-        super(attributes, name);
+    public DefaultOptionalField(Map<String, Term> attributes, String name, Term conditionExpression, String comment) {
+        super(attributes, name, comment);
         this.conditionExpression = conditionExpression;
     }
 

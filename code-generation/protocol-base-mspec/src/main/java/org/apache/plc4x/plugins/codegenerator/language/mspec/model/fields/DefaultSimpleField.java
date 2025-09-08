@@ -25,8 +25,8 @@ import java.util.Map;
 
 public class DefaultSimpleField extends DefaultTypedNamedField implements SimpleField {
 
-    public DefaultSimpleField(Map<String, Term> attributes, String name) {
-        super(attributes, name);
+    public DefaultSimpleField(Map<String, Term> attributes, String name, String comment) {
+        super(attributes, name, comment);
     }
 
     @Override

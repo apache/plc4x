@@ -22,12 +22,12 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.UnknownField;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.*;
+import java.util.Map;
 
 public class DefaultUnknownField extends DefaultTypedField implements UnknownField {
 
-    public DefaultUnknownField(Map<String, Term> attributes, SimpleTypeReference type) {
-        super(attributes);
+    public DefaultUnknownField(Map<String, Term> attributes, SimpleTypeReference type, String comment) {
+        super(attributes, comment);
         this.type = type;
     }
 

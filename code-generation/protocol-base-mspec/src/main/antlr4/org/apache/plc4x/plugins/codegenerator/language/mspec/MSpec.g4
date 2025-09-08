@@ -414,10 +414,8 @@ STRING_CHARACTER
  : ~["\\\r\n]
  ;
 
-// Stuff we just want to ignore
-
 LINE_COMMENT
- : '//' ~[\r\n]* -> channel(HIDDEN)
+ : ('//' ~[\r\n]*)+ -> channel(HIDDEN)
  ;
 
 BLOCK_COMMENT

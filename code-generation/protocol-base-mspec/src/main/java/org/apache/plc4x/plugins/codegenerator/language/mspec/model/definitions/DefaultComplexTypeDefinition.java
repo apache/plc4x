@@ -32,8 +32,8 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     private final List<Field> fields;
     protected ComplexTypeDefinition parentType;
 
-    public DefaultComplexTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, boolean isAbstract, List<Field> fields) {
-        super(name, attributes, parserArguments);
+    public DefaultComplexTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, boolean isAbstract, List<Field> fields, String comment) {
+        super(name, attributes, parserArguments, comment);
         this.isAbstract = isAbstract;
         this.fields = Objects.requireNonNull(fields);
     }
@@ -48,7 +48,7 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
 
     public Optional<List<Argument>> getAllParserArguments() {
         List<Argument> allArguments = new ArrayList<>(getParserArguments().orElse(Collections.emptyList()));
-        if(getParentType().isPresent()) {
+        if (getParentType().isPresent()) {
             ComplexTypeDefinition parent = getParentType().get();
             allArguments.addAll(parent.getAllParserArguments().orElse(Collections.emptyList()));
         }

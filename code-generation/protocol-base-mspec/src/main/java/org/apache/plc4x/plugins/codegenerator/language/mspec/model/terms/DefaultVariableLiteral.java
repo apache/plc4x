@@ -29,10 +29,10 @@ import java.util.Optional;
 public class DefaultVariableLiteral implements VariableLiteral {
 
     private final String name;
-    private TypeReference typeReference;
     private final List<Term> args;
     private final Integer index;
     private final VariableLiteral child;
+    private TypeReference typeReference;
 
     public DefaultVariableLiteral(String name, List<Term> args, Integer index, VariableLiteral child) {
         this.name = Objects.requireNonNull(name);

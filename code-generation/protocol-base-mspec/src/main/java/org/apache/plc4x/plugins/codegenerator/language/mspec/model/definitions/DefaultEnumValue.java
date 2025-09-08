@@ -29,11 +29,13 @@ public class DefaultEnumValue implements EnumValue {
     private final String value;
     private final String name;
     private final Map<String, String> constants;
+    private final String comment;
 
-    public DefaultEnumValue(String value, String name, Map<String, String> constants) {
+    public DefaultEnumValue(String value, String name, Map<String, String> constants, String comment) {
         this.value = Objects.requireNonNull(value);
         this.name = Objects.requireNonNull(name);
         this.constants = constants;
+        this.comment = comment;
     }
 
     @Override
@@ -52,6 +54,11 @@ public class DefaultEnumValue implements EnumValue {
             return Optional.empty();
         }
         return Optional.ofNullable(constants.get(name));
+    }
+
+    @Override
+    public Optional<String> getComment() {
+        return Optional.ofNullable(comment);
     }
 
     @Override

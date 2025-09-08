@@ -27,8 +27,8 @@ public class DefaultTypedNamedField extends DefaultTypedField {
 
     protected final String name;
 
-    public DefaultTypedNamedField(Map<String, Term> attributes, String name) {
-        super(attributes);
+    public DefaultTypedNamedField(Map<String, Term> attributes, String name, String comment) {
+        super(attributes, comment);
         this.name = name;
     }
 

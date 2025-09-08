@@ -34,8 +34,8 @@ public class DefaultManualArrayField extends DefaultTypedNamedField implements M
     private final Term serializeExpression;
     private final Term lengthExpression;
 
-    public DefaultManualArrayField(Map<String, Term> attributes, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression) {
-        super(attributes, name);
+    public DefaultManualArrayField(Map<String, Term> attributes, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, String comment) {
+        super(attributes, name, comment);
         this.loopType = Objects.requireNonNull(loopType);
         this.loopExpression = Objects.requireNonNull(loopExpression);
         this.parseExpression = Objects.requireNonNull(parseExpression);
@@ -64,16 +64,16 @@ public class DefaultManualArrayField extends DefaultTypedNamedField implements M
     }
 
     @Override
-    public void setType(TypeReference typeReference) {
-        if(!(typeReference instanceof ArrayTypeReference)) {
-            throw new IllegalArgumentException("Manual array fields can only have ArrayTypeReferences");
-        }
-        super.setType(typeReference);
+    public ArrayTypeReference getType() {
+        return (ArrayTypeReference) super.getType();
     }
 
     @Override
-    public ArrayTypeReference getType() {
-        return (ArrayTypeReference) super.getType();
+    public void setType(TypeReference typeReference) {
+        if (!(typeReference instanceof ArrayTypeReference)) {
+            throw new IllegalArgumentException("Manual array fields can only have ArrayTypeReferences");
+        }
+        super.setType(typeReference);
     }
 
     @Override

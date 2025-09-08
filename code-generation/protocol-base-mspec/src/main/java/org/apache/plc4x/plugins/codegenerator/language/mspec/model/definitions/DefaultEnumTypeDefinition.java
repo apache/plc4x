@@ -40,8 +40,8 @@ public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements 
     private final Map<String, TypeReference> constants;
 
     public DefaultEnumTypeDefinition(String name, SimpleTypeReference type, Map<String, Term> attributes, List<EnumValue> enumValues,
-                                     List<Argument> parserArgument) {
-        super(name, attributes, parserArgument);
+                                     List<Argument> parserArgument, String comment) {
+        super(name, attributes, parserArgument, comment);
         this.type = Objects.requireNonNull(type);
         this.enumValues = Objects.requireNonNull(enumValues);
         this.constants = new HashMap<>();

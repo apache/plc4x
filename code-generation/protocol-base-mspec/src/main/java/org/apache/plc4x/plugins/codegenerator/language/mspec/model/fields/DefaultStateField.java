@@ -28,8 +28,8 @@ public class DefaultStateField extends DefaultTypedNamedField implements StateFi
 
     private final Term valueExpression;
 
-    public DefaultStateField(Map<String, Term> attributes, String name, Term valueExpression) {
-        super(attributes, name);
+    public DefaultStateField(Map<String, Term> attributes, String name, Term valueExpression, String comment) {
+        super(attributes, name, comment);
         this.valueExpression = Objects.requireNonNull(valueExpression);
     }
 

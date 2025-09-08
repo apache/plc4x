@@ -28,12 +28,11 @@ import java.util.concurrent.CompletionStage;
 
 public abstract class DefaultTypedField extends DefaultField {
 
+    protected final CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
     protected TypeReference type;
 
-    protected final CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
-
-    public DefaultTypedField(Map<String, Term> attributes) {
-        super(attributes);
+    public DefaultTypedField(Map<String, Term> attributes, String comment) {
+        super(attributes, comment);
     }
 
     public TypeReference getType() {

@@ -28,8 +28,8 @@ public class DefaultAssertField extends DefaultTypedNamedField implements Assert
 
     private final Term conditionExpression;
 
-    public DefaultAssertField(Map<String, Term> attributes, String name, Term conditionExpression) {
-        super(attributes, name);
+    public DefaultAssertField(Map<String, Term> attributes, String name, Term conditionExpression, String comment) {
+        super(attributes, name, comment);
         this.conditionExpression = Objects.requireNonNull(conditionExpression);
     }
 

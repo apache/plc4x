@@ -55,10 +55,10 @@ public class DefaultBinaryTerm implements BinaryTerm {
     @Override
     public String toString() {
         return "DefaultBinaryTerm{" +
-                "a=" + a +
-                ", b=" + b +
-                ", operation='" + operation + '\'' +
-                '}';
+            "a=" + a +
+            ", b=" + b +
+            ", operation='" + operation + '\'' +
+            '}';
     }
 
     @Override

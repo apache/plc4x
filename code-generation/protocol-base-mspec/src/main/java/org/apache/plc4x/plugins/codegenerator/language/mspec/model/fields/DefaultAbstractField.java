@@ -25,8 +25,8 @@ import java.util.Map;
 
 public class DefaultAbstractField extends DefaultTypedNamedField implements AbstractField {
 
-    public DefaultAbstractField(Map<String, Term> attributes, String name) {
-        super(attributes, name);
+    public DefaultAbstractField(Map<String, Term> attributes, String name, String comment) {
+        super(attributes, name, comment);
     }
 
     @Override

@@ -29,8 +29,8 @@ public class DefaultPeekField extends DefaultTypedNamedField implements PeekFiel
 
     private final Term offsetExpression;
 
-    public DefaultPeekField(Map<String, Term> attributes, String name, Term offsetExpression) {
-        super(attributes, name);
+    public DefaultPeekField(Map<String, Term> attributes, String name, Term offsetExpression, String comment) {
+        super(attributes, name, comment);
         this.offsetExpression = offsetExpression;
     }
 
@@ -47,9 +47,12 @@ public class DefaultPeekField extends DefaultTypedNamedField implements PeekFiel
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
         DefaultPeekField that = (DefaultPeekField) o;
         return Objects.equals(offsetExpression, that.offsetExpression);
     }

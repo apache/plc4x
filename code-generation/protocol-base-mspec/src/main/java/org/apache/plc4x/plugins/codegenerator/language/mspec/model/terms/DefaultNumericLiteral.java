@@ -42,8 +42,8 @@ public class DefaultNumericLiteral implements NumericLiteral {
     @Override
     public String toString() {
         return "DefaultNumericLiteral{" +
-                "number=" + number +
-                '}';
+            "number=" + number +
+            '}';
     }
 
     @Override

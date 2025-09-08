@@ -27,13 +27,15 @@ import java.util.*;
 public abstract class DefaultTypeDefinition {
 
     protected final String name;
-    private final Map<String, Term> attributes;
     protected final List<Argument> parserArguments;
+    protected final String comment;
+    private final Map<String, Term> attributes;
 
-    public DefaultTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments) {
+    public DefaultTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, String comment) {
         this.name = Objects.requireNonNull(name);
         this.attributes = attributes;
         this.parserArguments = parserArguments;
+        this.comment = comment;
     }
 
     public String getName() {
@@ -59,12 +61,17 @@ public abstract class DefaultTypeDefinition {
         return Optional.of(allArguments);
     }
 
+    public Optional<String> getComment() {
+        return Optional.ofNullable(comment);
+    }
+
     @Override
     public String toString() {
         return "DefaultTypeDefinition{" +
             "name='" + name + '\'' +
             ", attributes=" + attributes +
             ", parserArguments=" + parserArguments +
+            ", comment='" + comment + '\'' +
             '}';
     }
 
@@ -73,11 +80,14 @@ public abstract class DefaultTypeDefinition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DefaultTypeDefinition that = (DefaultTypeDefinition) o;
-        return name.equals(that.name) && Objects.equals(attributes, that.attributes) && Objects.equals(parserArguments, that.parserArguments);
+        return name.equals(that.name) &&
+            Objects.equals(attributes, that.attributes) &&
+            Objects.equals(parserArguments, that.parserArguments) &&
+            comment.equals(that.comment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, attributes, parserArguments);
+        return Objects.hash(name, attributes, parserArguments, comment);
     }
 }

@@ -29,8 +29,8 @@ public class DefaultEnumField extends DefaultTypedNamedField implements EnumFiel
 
     private final String fieldName;
 
-    public DefaultEnumField(Map<String, Term> attributes, EnumTypeReference type, String name, String fieldName) {
-        super(attributes, name);
+    public DefaultEnumField(Map<String, Term> attributes, EnumTypeReference type, String name, String fieldName, String comment) {
+        super(attributes, name, comment);
         this.fieldName = Objects.requireNonNull(fieldName);
         this.type = type;
     }

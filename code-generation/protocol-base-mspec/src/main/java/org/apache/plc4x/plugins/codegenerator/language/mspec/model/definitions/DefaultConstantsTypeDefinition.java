@@ -18,24 +18,22 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
-import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ConstantsTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ConstField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField;
-import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DefaultConstantsTypeDefinition extends DefaultTypeDefinition implements ConstantsTypeDefinition {
 
     private final List<Field> fields;
 
-    public DefaultConstantsTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, List<Field> fields) {
-        super(name, attributes, parserArguments);
+    public DefaultConstantsTypeDefinition(String name, List<Field> fields, String comment) {
+        super(name, Collections.emptyMap(), Collections.emptyList(), comment);
         this.fields = fields;
     }
 
