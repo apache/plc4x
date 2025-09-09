@@ -16,4 +16,4 @@
   specific language governing permissions and limitations
   under the License.
   -->
-Contribution guidelines can be found here: [https://plc4x.apache.org/developers/contributing.html](https://plc4x.apache.org/developers/contributing.html)
+Contribution guidelines can be found here: [https://plc4x.apache.org/plc4x/latest/developers/contributing.html](https://plc4x.apache.org/developers/contributing.html)
