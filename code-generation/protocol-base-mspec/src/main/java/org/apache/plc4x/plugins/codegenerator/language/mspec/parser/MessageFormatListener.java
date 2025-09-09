@@ -96,8 +96,11 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     // Helper: Attach comment if directly above or on the same line
     private String consumePendingComment(ParserRuleContext ctx) {
-        ctx = ctx.getParent(); // TODO: this is because of the stupid bracket which is considered a previous token... figure out a smart way
         Token startToken = ctx.getStart();
+        while (startToken.getType() != MSpecLexer.LBRACKET) { // Bit hacky workaround to assume start is always the bracket but should work
+            ctx = ctx.getParent();          // Switch to parent context...
+            startToken = ctx.getStart();    // ...and use this as start
+        }
 
         List<Token> frontComments = new LinkedList<>();
         int tokenIndex = startToken.getTokenIndex();
