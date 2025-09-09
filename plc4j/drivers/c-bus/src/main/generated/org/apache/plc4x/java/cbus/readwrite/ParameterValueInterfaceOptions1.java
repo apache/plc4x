@@ -44,6 +44,8 @@ public class ParameterValueInterfaceOptions1 extends ParameterValue implements M
 
   // Properties.
   protected final InterfaceOptions1 value;
+
+  /** TODO: find out what additional bytes mean here... */
   protected final byte[] data;
 
   public ParameterValueInterfaceOptions1(InterfaceOptions1 value, byte[] data) {
@@ -56,6 +58,7 @@ public class ParameterValueInterfaceOptions1 extends ParameterValue implements M
     return value;
   }
 
+  /** TODO: find out what additional bytes mean here... */
   public byte[] getData() {
     return data;
   }

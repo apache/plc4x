@@ -40,7 +40,9 @@ public class CALDataWrite extends CALData implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  /** Request */
   protected final Parameter paramNo;
+
   protected final byte code;
   protected final ParameterValue parameterValue;
 
@@ -57,6 +59,7 @@ public class CALDataWrite extends CALData implements Message {
     this.parameterValue = parameterValue;
   }
 
+  /** Request */
   public Parameter getParamNo() {
     return paramNo;
   }

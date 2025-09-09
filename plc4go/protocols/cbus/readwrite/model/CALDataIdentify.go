@@ -42,6 +42,7 @@ type CALDataIdentify interface {
 	utils.Copyable
 	CALData
 	// GetAttribute returns Attribute (property field)
+	// Request
 	GetAttribute() Attribute
 	// IsCALDataIdentify is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataIdentify()

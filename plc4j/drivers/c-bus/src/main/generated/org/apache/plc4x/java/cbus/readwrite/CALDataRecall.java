@@ -40,7 +40,9 @@ public class CALDataRecall extends CALData implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  /** Request */
   protected final Parameter paramNo;
+
   protected final short count;
 
   public CALDataRecall(
@@ -54,6 +56,7 @@ public class CALDataRecall extends CALData implements Message {
     this.count = count;
   }
 
+  /** Request */
   public Parameter getParamNo() {
     return paramNo;
   }

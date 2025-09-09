@@ -52,6 +52,7 @@ public abstract class BACnetServiceAck implements Message {
     return serviceAckLength;
   }
 
+  /** we subtract serviceChoice from our payload */
   public long getServiceAckPayloadLength() {
     return (long) (((((serviceAckLength) > (0))) ? ((serviceAckLength) - (1L)) : 0L));
   }

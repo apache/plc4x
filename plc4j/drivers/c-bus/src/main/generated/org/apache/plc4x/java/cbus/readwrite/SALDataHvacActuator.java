@@ -43,6 +43,7 @@ public class SALDataHvacActuator extends SALData implements Message {
   }
 
   // Properties.
+  /** Note: the documentation states that the data for hvac actuator uses LightingData */
   protected final LightingData hvacActuatorData;
 
   public SALDataHvacActuator(SALData salData, LightingData hvacActuatorData) {
@@ -50,6 +51,7 @@ public class SALDataHvacActuator extends SALData implements Message {
     this.hvacActuatorData = hvacActuatorData;
   }
 
+  /** Note: the documentation states that the data for hvac actuator uses LightingData */
   public LightingData getHvacActuatorData() {
     return hvacActuatorData;
   }

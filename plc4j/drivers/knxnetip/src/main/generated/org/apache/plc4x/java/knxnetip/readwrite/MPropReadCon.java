@@ -48,6 +48,11 @@ public class MPropReadCon extends CEMI implements Message {
   protected final short propertyId;
   protected final byte numberOfElements;
   protected final short startIndex;
+
+  /**
+   * TODO: See chapter 4.1.7.3.1 ... this is actually a var length array of elements
+   * ('numberOfElements') with the type specified by 'interfaceObjectType'.
+   */
   protected final int data;
 
   public MPropReadCon(
@@ -86,6 +91,10 @@ public class MPropReadCon extends CEMI implements Message {
     return startIndex;
   }
 
+  /**
+   * TODO: See chapter 4.1.7.3.1 ... this is actually a var length array of elements
+   * ('numberOfElements') with the type specified by 'interfaceObjectType'.
+   */
   public int getData() {
     return data;
   }

@@ -70,6 +70,7 @@ public class BACnetConstructedDataTags extends BACnetConstructedData implements 
     return tags;
   }
 
+  /** TODO: uint 64 ---> big int in java == boom */
   public BigInteger getZero() {
     Object o = 0L;
     if (o instanceof BigInteger) return (BigInteger) o;

@@ -55,6 +55,7 @@ type EncodedReplyContract interface {
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetIsMonitoredSAL returns IsMonitoredSAL (virtual field)
+	// TODO: if we reliable can detect this with the mask we don't need the request context anymore
 	GetIsMonitoredSAL() bool
 	// IsEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedReply()

@@ -38,7 +38,9 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CustomTypes implements Message {
 
   // Properties.
+  /** Note 9 */
   protected final short numBytes;
+
   protected final String customString;
 
   public CustomTypes(short numBytes, String customString) {
@@ -47,6 +49,7 @@ public class CustomTypes implements Message {
     this.customString = customString;
   }
 
+  /** Note 9 */
   public short getNumBytes() {
     return numBytes;
   }

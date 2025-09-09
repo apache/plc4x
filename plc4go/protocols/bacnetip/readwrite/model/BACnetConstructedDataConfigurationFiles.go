@@ -46,6 +46,7 @@ type BACnetConstructedDataConfigurationFiles interface {
 	// GetConfigurationFiles returns ConfigurationFiles (property field)
 	GetConfigurationFiles() []BACnetApplicationTagObjectIdentifier
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataConfigurationFiles is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataConfigurationFiles()

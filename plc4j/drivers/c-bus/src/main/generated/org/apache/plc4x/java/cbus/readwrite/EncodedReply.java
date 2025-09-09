@@ -57,6 +57,9 @@ public abstract class EncodedReply implements Message {
     return peekedByte;
   }
 
+  /**
+   * TODO: if we reliable can detect this with the mask we don't need the request context anymore
+   */
   public boolean getIsMonitoredSAL() {
     return (boolean)
         ((((((((getPeekedByte()) & (0x3F))) == (0x05)) || ((getPeekedByte()) == (0x00)))

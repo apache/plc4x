@@ -41,6 +41,7 @@ type QualifiedName interface {
 	utils.Serializable
 	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
+	// A string qualified with a namespace index.
 	GetNamespaceIndex() uint16
 	// GetName returns Name (property field)
 	GetName() PascalString

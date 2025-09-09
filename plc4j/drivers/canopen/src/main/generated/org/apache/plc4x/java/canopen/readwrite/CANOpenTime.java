@@ -38,7 +38,9 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CANOpenTime implements Message {
 
   // Properties.
+  /** CiA 301 - section 7.1.6.5 and 7.1.6.6 */
   protected final long millis;
+
   protected final int days;
 
   public CANOpenTime(long millis, int days) {
@@ -47,6 +49,7 @@ public class CANOpenTime implements Message {
     this.days = days;
   }
 
+  /** CiA 301 - section 7.1.6.5 and 7.1.6.6 */
   public long getMillis() {
     return millis;
   }

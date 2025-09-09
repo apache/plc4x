@@ -43,6 +43,7 @@ type Confirmation interface {
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
 	// GetSecondAlpha returns SecondAlpha (property field)
+	// TODO: seem like sometimes there are two alphas in a confirmation... check that
 	GetSecondAlpha() Alpha
 	// GetConfirmationType returns ConfirmationType (property field)
 	GetConfirmationType() ConfirmationType

@@ -42,7 +42,13 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
 
   // Properties.
   protected final BACnetOpeningTag innerOpeningTag;
+
+  /**
+   * TODO this below slurps to much because of the service choice... :( find workaround we might
+   * need fragments for that...
+   */
   protected final ConfirmedEventNotificationRequest notification;
+
   protected final BACnetClosingTag innerClosingTag;
 
   public BACnetEventLogRecordLogDatumNotification(
@@ -62,6 +68,10 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     return innerOpeningTag;
   }
 
+  /**
+   * TODO this below slurps to much because of the service choice... :( find workaround we might
+   * need fragments for that...
+   */
   public ConfirmedEventNotificationRequest getNotification() {
     return notification;
   }

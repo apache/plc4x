@@ -1394,13 +1394,13 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public String getExternalTypeImports() {
         StringBuilder imports = new StringBuilder();
-        if(options.containsKey("externalTypes")) {
+        if (options.containsKey("externalTypes")) {
             Object externalTypes = options.get("externalTypes");
-            if(externalTypes instanceof Map) {
+            if (externalTypes instanceof Map) {
                 Map<String, Object> externalTypesMap = (Map<String, Object>) externalTypes;
                 for (String mspecTypeName : externalTypesMap.keySet()) {
                     Object obj = externalTypesMap.get(mspecTypeName);
-                    if(obj instanceof String) {
+                    if (obj instanceof String) {
                         imports.append("import ").append(obj).append(";\n");
                     } else {
                         throw new IllegalArgumentException("Type definition for " + mspecTypeName + " is invalid");
@@ -1427,6 +1427,27 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return encodingName.equalsIgnoreCase("VARDINT");
         }
         return false;
+    }
+
+    public String toJDoc(String comment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("/**\n");
+        for (String line : StringUtils.split(comment, "\n")) {
+            switch (line) {
+                case "/**":
+                case "/*":
+                case "*/":
+                    continue;
+            }
+            line = StringUtils.removeStart(line, "*");
+            line = StringUtils.removeStart(line, " *");
+            line = StringUtils.removeStart(line, "//");
+            line = StringUtils.removeStart(line, "/*");
+            line = StringUtils.removeEnd(line, "*/");
+            sb.append(" * ").append(line).append("\n");
+        }
+        sb.append(" */\n");
+        return sb.toString();
     }
 
 }

@@ -39,6 +39,8 @@ public class PowerUp implements Message {
 
   // Constant values.
   public static final Byte POWERUPINDICATOR1 = 0x2B;
+
+  /** "+" */
   public static final Byte POWERUPINDICATOR2 = 0x2B;
 
   public PowerUp() {
@@ -49,6 +51,7 @@ public class PowerUp implements Message {
     return POWERUPINDICATOR1;
   }
 
+  /** "+" */
   public byte getPowerUpIndicator2() {
     return POWERUPINDICATOR2;
   }

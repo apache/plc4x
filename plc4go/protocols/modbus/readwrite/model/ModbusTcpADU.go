@@ -47,10 +47,17 @@ type ModbusTcpADU interface {
 	utils.Copyable
 	ModbusADU
 	// GetTransactionIdentifier returns TransactionIdentifier (property field)
+	// It is used for transaction pairing, the MODBUS server copies in the response the transaction
+	// identifier of the request.
 	GetTransactionIdentifier() uint16
 	// GetUnitIdentifier returns UnitIdentifier (property field)
+	// This field is used for intra-system routing purpose. It is typically used to communicate to
+	// a MODBUS+ or a MODBUS serial line slave through a gateway between an Ethernet TCP-IP network
+	// and a MODBUS serial line. This field is set by the MODBUS Client in the request and must be
+	// returned with the same value in the response by the server.
 	GetUnitIdentifier() uint8
 	// GetPdu returns Pdu (property field)
+	// The actual modbus payload
 	GetPdu() ModbusPDU
 	// IsModbusTcpADU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusTcpADU()

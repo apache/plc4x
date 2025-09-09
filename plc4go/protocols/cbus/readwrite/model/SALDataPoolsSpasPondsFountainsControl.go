@@ -42,6 +42,7 @@ type SALDataPoolsSpasPondsFountainsControl interface {
 	utils.Copyable
 	SALData
 	// GetPoolsSpaPondsFountainsData returns PoolsSpaPondsFountainsData (property field)
+	// Note: the documentation states that the data for pools spas ponds fountains uses LightingData
 	GetPoolsSpaPondsFountainsData() LightingData
 	// IsSALDataPoolsSpasPondsFountainsControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataPoolsSpasPondsFountainsControl()

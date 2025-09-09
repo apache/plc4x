@@ -41,6 +41,7 @@ const S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_VARIABLESPEC uint8 = 0x1
 const S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_LENGTH uint8 = 0x08
 
 // S7PayloadUserDataItemCpuFunctionAlarmQueryRequest is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
+// ALARM_QUERY Request for alarms stored in the controller
 type S7PayloadUserDataItemCpuFunctionAlarmQueryRequest interface {
 	fmt.Stringer
 	utils.LengthAware

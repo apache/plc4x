@@ -39,6 +39,8 @@ public class SocketCANFrame implements Message {
 
   // Properties.
   protected final int rawId;
+
+  /** padding 2 */
   protected final byte[] data;
 
   public SocketCANFrame(int rawId, byte[] data) {
@@ -51,6 +53,7 @@ public class SocketCANFrame implements Message {
     return rawId;
   }
 
+  /** padding 2 */
   public byte[] getData() {
     return data;
   }

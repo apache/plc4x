@@ -43,6 +43,7 @@ public class SALDataVentilation extends SALData implements Message {
   }
 
   // Properties.
+  /** Note: the documentation states that the data for ventilation uses LightingData */
   protected final LightingData ventilationData;
 
   public SALDataVentilation(SALData salData, LightingData ventilationData) {
@@ -50,6 +51,7 @@ public class SALDataVentilation extends SALData implements Message {
     this.ventilationData = ventilationData;
   }
 
+  /** Note: the documentation states that the data for ventilation uses LightingData */
   public LightingData getVentilationData() {
     return ventilationData;
   }

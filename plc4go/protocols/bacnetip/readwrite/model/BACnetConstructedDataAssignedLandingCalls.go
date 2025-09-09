@@ -46,6 +46,7 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 	// GetAssignedLandingCalls returns AssignedLandingCalls (property field)
 	GetAssignedLandingCalls() []BACnetAssignedLandingCalls
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataAssignedLandingCalls is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAssignedLandingCalls()

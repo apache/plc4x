@@ -41,6 +41,7 @@ type CustomTypes interface {
 	utils.Serializable
 	utils.Copyable
 	// GetNumBytes returns NumBytes (property field)
+	// Note 9
 	GetNumBytes() uint8
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string

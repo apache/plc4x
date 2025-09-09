@@ -41,6 +41,7 @@ type HVACTemperature interface {
 	utils.Serializable
 	utils.Copyable
 	// GetTemperatureValue returns TemperatureValue (property field)
+	// TODO: check values from Air Conditioning Application 25.5.1
 	GetTemperatureValue() int16
 	// GetTemperatureInCelcius returns TemperatureInCelcius (virtual field)
 	GetTemperatureInCelcius() float32

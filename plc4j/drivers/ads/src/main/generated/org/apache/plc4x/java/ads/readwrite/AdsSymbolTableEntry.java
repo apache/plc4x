@@ -48,7 +48,14 @@ public class AdsSymbolTableEntry implements Message {
   protected final long offset;
   protected final long size;
   protected final long dataType;
+
+  /**
+   * Start: Flags https://github.com/jisotalo/ads-server/blob/master/src/ads-commons.ts#L631 Order
+   * of the bits if read Little-Endian and then accessing the bit flags 7 6 5 4 3 2 1 0 | 15 14 13
+   * 12 11 10 9 8 | 23 22 21 20 19 18 17 16 | 31 30 29 28 27 26 25 24
+   */
   protected final boolean flagMethodDeref;
+
   protected final boolean flagItfMethodAccess;
   protected final boolean flagReadOnly;
   protected final boolean flagTComInterfacePointer;
@@ -64,6 +71,13 @@ public class AdsSymbolTableEntry implements Message {
   protected final String name;
   protected final String dataTypeName;
   protected final String comment;
+
+  /**
+   * Gobbling up the rest, but it seems there is content in here, when looking at the data in
+   * wireshark, it seems to be related to the flags field. Will have to continue searching for more
+   * details on how to decode this. I would assume that we'll have some "optional" fields here which
+   * depend on values in the flags section.
+   */
   protected final byte[] rest;
 
   public AdsSymbolTableEntry(
@@ -134,6 +148,11 @@ public class AdsSymbolTableEntry implements Message {
     return dataType;
   }
 
+  /**
+   * Start: Flags https://github.com/jisotalo/ads-server/blob/master/src/ads-commons.ts#L631 Order
+   * of the bits if read Little-Endian and then accessing the bit flags 7 6 5 4 3 2 1 0 | 15 14 13
+   * 12 11 10 9 8 | 23 22 21 20 19 18 17 16 | 31 30 29 28 27 26 25 24
+   */
   public boolean getFlagMethodDeref() {
     return flagMethodDeref;
   }
@@ -198,6 +217,12 @@ public class AdsSymbolTableEntry implements Message {
     return comment;
   }
 
+  /**
+   * Gobbling up the rest, but it seems there is content in here, when looking at the data in
+   * wireshark, it seems to be related to the flags field. Will have to continue searching for more
+   * details on how to decode this. I would assume that we'll have some "optional" fields here which
+   * depend on values in the flags section.
+   */
   public byte[] getRest() {
     return rest;
   }

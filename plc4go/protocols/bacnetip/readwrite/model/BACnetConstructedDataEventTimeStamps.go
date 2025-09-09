@@ -46,6 +46,7 @@ type BACnetConstructedDataEventTimeStamps interface {
 	// GetEventTimeStamps returns EventTimeStamps (property field)
 	GetEventTimeStamps() []BACnetTimeStamp
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// GetToOffnormal returns ToOffnormal (virtual field)
 	GetToOffnormal() BACnetTimeStamp

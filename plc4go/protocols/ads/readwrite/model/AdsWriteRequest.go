@@ -42,10 +42,13 @@ type AdsWriteRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
+	// 4 bytes	Index Group of the data which should be written.
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset (property field)
+	// 4 bytes	Index Offset of the data which should be written.
 	GetIndexOffset() uint32
 	// GetData returns Data (property field)
+	// n bytes	Data which are written in the ADS device.
 	GetData() []byte
 	// IsAdsWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsWriteRequest()

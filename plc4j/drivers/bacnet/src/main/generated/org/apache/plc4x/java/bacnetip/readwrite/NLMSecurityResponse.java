@@ -46,6 +46,8 @@ public class NLMSecurityResponse extends NLM implements Message {
   protected final SecurityResponseCode responseCode;
   protected final long originalMessageId;
   protected final long originalTimestamp;
+
+  /** TODO: type out variable parameters */
   protected final byte[] variableParameters;
 
   public NLMSecurityResponse(
@@ -72,6 +74,7 @@ public class NLMSecurityResponse extends NLM implements Message {
     return originalTimestamp;
   }
 
+  /** TODO: type out variable parameters */
   public byte[] getVariableParameters() {
     return variableParameters;
   }

@@ -46,6 +46,7 @@ type BACnetConstructedDataSubordinateRelationships interface {
 	// GetSubordinateRelationships returns SubordinateRelationships (property field)
 	GetSubordinateRelationships() []BACnetRelationshipTagged
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataSubordinateRelationships is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSubordinateRelationships()

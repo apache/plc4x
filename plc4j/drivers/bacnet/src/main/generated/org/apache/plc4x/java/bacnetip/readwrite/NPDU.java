@@ -120,15 +120,21 @@ public class NPDU implements Message {
     return apdu;
   }
 
+  /** (destinationNetworkAddress(16bit) + destinationLength(8bit) + destinationLength)? */
   public int getDestinationLengthAddon() {
     return (int)
         (((getControl().getDestinationSpecified()) ? ((3) + (getDestinationLength())) : 0));
   }
 
+  /** (sourceNetworkAddress(16bit) + sourceLength(8bit) + sourceLength)? */
   public int getSourceLengthAddon() {
     return (int) (((getControl().getSourceSpecified()) ? ((3) + (getSourceLength())) : 0));
   }
 
+  /**
+   * protocolVersionNumber(8bit) + control(8bit) + sourceLengthAddon + destinationLengthAddon +
+   * hopcount
+   */
   public int getPayloadSubtraction() {
     return (int)
         ((2)

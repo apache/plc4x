@@ -47,7 +47,10 @@ public class AdsReadWriteResponse extends AmsPacket implements Message {
   }
 
   // Properties.
+  /** 4 bytes ADS error number */
   protected final ReturnCode result;
+
+  /** n bytes Additional data which are sent to the ADS device */
   protected final byte[] data;
 
   public AdsReadWriteResponse(
@@ -64,10 +67,12 @@ public class AdsReadWriteResponse extends AmsPacket implements Message {
     this.data = data;
   }
 
+  /** 4 bytes ADS error number */
   public ReturnCode getResult() {
     return result;
   }
 
+  /** n bytes Additional data which are sent to the ADS device */
   public byte[] getData() {
     return data;
   }

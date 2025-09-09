@@ -51,12 +51,20 @@ public class CipConnectionManagerResponse extends CipService implements Message 
   }
 
   // Properties.
+  /** ot = Originator (Client) Target (Server) */
   protected final long otConnectionId;
+
+  /** to = Target (Server) Originator (Client) */
   protected final long toConnectionId;
+
   protected final int connectionSerialNumber;
   protected final int originatorVendorId;
   protected final long originatorSerialNumber;
+
+  /** ot = Originator (Client) Target (Server) */
   protected final long otApi;
+
+  /** to = Target (Server) Originator (Client) */
   protected final long toApi;
 
   public CipConnectionManagerResponse(
@@ -77,10 +85,12 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     this.toApi = toApi;
   }
 
+  /** ot = Originator (Client) Target (Server) */
   public long getOtConnectionId() {
     return otConnectionId;
   }
 
+  /** to = Target (Server) Originator (Client) */
   public long getToConnectionId() {
     return toConnectionId;
   }
@@ -97,10 +107,12 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     return originatorSerialNumber;
   }
 
+  /** ot = Originator (Client) Target (Server) */
   public long getOtApi() {
     return otApi;
   }
 
+  /** to = Target (Server) Originator (Client) */
   public long getToApi() {
     return toApi;
   }

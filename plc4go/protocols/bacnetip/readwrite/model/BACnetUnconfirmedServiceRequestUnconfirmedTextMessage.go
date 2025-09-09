@@ -46,8 +46,10 @@ type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
 	// GetMessageClass returns MessageClass (property field)
 	GetMessageClass() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetMessagePriority returns MessagePriority (property field)
+	// Note we reuse the once from confirmed here
 	GetMessagePriority() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	// GetMessage returns Message (property field)
+	// Note we reuse the once from confirmed here
 	GetMessage() BACnetContextTagCharacterString
 	// IsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage()

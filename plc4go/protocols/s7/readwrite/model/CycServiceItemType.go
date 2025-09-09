@@ -38,6 +38,10 @@ import (
 const CycServiceItemType_FUNCTIONID uint8 = 0x12
 
 // CycServiceItemType is the corresponding interface of CycServiceItemType
+// //////////////////////////////////////////////////////////////
+// Cycle service Payloads
+// //////////////////////////////////////////////////////////////
+// Under test
 type CycServiceItemType interface {
 	CycServiceItemTypeContract
 	CycServiceItemTypeRequirements

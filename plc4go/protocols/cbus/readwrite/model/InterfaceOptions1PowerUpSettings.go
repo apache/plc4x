@@ -41,6 +41,7 @@ type InterfaceOptions1PowerUpSettings interface {
 	utils.Serializable
 	utils.Copyable
 	// GetInterfaceOptions1 returns InterfaceOptions1 (property field)
+	// Note 5
 	GetInterfaceOptions1() InterfaceOptions1
 	// IsInterfaceOptions1PowerUpSettings is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsInterfaceOptions1PowerUpSettings()

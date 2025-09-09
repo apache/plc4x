@@ -56,7 +56,10 @@ public class CipUnconnectedRequest extends CipService implements Message {
   // Properties.
   protected final PathSegment classSegment;
   protected final PathSegment instanceSegment;
+
+  /** subtract above and routing */
   protected final CipService unconnectedService;
+
   protected final byte backPlane;
   protected final byte slot;
 
@@ -82,6 +85,7 @@ public class CipUnconnectedRequest extends CipService implements Message {
     return instanceSegment;
   }
 
+  /** subtract above and routing */
   public CipService getUnconnectedService() {
     return unconnectedService;
   }

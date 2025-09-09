@@ -55,6 +55,10 @@ public abstract class CBusCommand implements Message {
     return (boolean) (getHeader().getDp());
   }
 
+  /**
+   * TODO: header.destinationAddressType could be used directly but for this we need source type
+   * resolving to work (WIP)
+   */
   public DestinationAddressType getDestinationAddressType() {
     return (DestinationAddressType) (getHeader().getDestinationAddressType());
   }

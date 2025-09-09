@@ -42,6 +42,9 @@ const AdsDataTypeTableChildEntry_DATATYPENAMETERMINATOR uint8 = 0x00
 const AdsDataTypeTableChildEntry_COMMENTTERMINATOR uint8 = 0x00
 
 // AdsDataTypeTableChildEntry is the corresponding interface of AdsDataTypeTableChildEntry
+// In data-type child entries, the name seems to be used by the property name and the data-type name seems to contain
+// what in the parent case the "name" attribute seems to use.
+// TODO: In general only the propertyName, dataTypeName and offset are interesting here. The rest is mostly not fully initialized
 type AdsDataTypeTableChildEntry interface {
 	fmt.Stringer
 	utils.LengthAware
@@ -78,6 +81,11 @@ type AdsDataTypeTableChildEntry interface {
 	// GetChildren returns Children (property field)
 	GetChildren() []AdsDataTypeTableEntry
 	// GetRest returns Rest (property field)
+	// Gobbling up the rest, but it seems there is content in here, when looking
+	// at the data in wireshark, it seems to be related to the flags field.
+	// Will have to continue searching for more details on how to decode this.
+	// I would assume that we'll have some "optional" fields here which depend
+	// on values in the flags section.
 	GetRest() []byte
 	// IsAdsDataTypeTableChildEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDataTypeTableChildEntry()

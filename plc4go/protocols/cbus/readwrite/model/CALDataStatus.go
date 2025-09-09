@@ -42,6 +42,7 @@ type CALDataStatus interface {
 	utils.Copyable
 	CALData
 	// GetApplication returns Application (property field)
+	// Reply
 	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8

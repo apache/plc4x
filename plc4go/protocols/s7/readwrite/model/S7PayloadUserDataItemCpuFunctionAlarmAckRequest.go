@@ -38,6 +38,7 @@ import (
 const S7PayloadUserDataItemCpuFunctionAlarmAckRequest_FUNCTIONID uint8 = 0x09
 
 // S7PayloadUserDataItemCpuFunctionAlarmAckRequest is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmAckRequest
+// ALARM_ACK Acknowledgment of alarms
 type S7PayloadUserDataItemCpuFunctionAlarmAckRequest interface {
 	fmt.Stringer
 	utils.LengthAware

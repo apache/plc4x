@@ -55,6 +55,7 @@ type CBusCommandContract interface {
 	// GetIsDeviceManagement returns IsDeviceManagement (virtual field)
 	GetIsDeviceManagement() bool
 	// GetDestinationAddressType returns DestinationAddressType (virtual field)
+	// TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
 	GetDestinationAddressType() DestinationAddressType
 	// IsCBusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommand()

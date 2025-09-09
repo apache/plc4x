@@ -42,6 +42,7 @@ type SALDataVentilation interface {
 	utils.Copyable
 	SALData
 	// GetVentilationData returns VentilationData (property field)
+	// Note: the documentation states that the data for ventilation uses LightingData
 	GetVentilationData() LightingData
 	// IsSALDataVentilation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataVentilation()

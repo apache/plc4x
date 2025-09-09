@@ -46,6 +46,7 @@ type BACnetConstructedDataNetworkAccessSecurityPolicies interface {
 	// GetNetworkAccessSecurityPolicies returns NetworkAccessSecurityPolicies (property field)
 	GetNetworkAccessSecurityPolicies() []BACnetNetworkSecurityPolicy
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataNetworkAccessSecurityPolicies is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNetworkAccessSecurityPolicies()

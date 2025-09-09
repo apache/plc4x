@@ -46,6 +46,7 @@ type BACnetConstructedDataMakingCarCall interface {
 	// GetMakingCarCall returns MakingCarCall (property field)
 	GetMakingCarCall() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataMakingCarCall is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMakingCarCall()

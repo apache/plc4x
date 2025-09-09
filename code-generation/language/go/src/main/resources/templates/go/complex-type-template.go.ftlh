@@ -84,7 +84,7 @@ const ${type.name}_${field.name?upper_case} ${helper.getLanguageTypeNameForField
 </#if>
 
 // ${type.name} is the corresponding interface of ${type.name?cap_first}
-type ${type.name} interface {
+<#if type.comment.isPresent()>${type.comment.get()+"\n"}</#if>type ${type.name} interface {
 <#if type.isDiscriminatedParentTypeDefinition()>
 	${type.name}Contract
 	${type.name}Requirements
@@ -103,17 +103,17 @@ type ${type.name} interface {
 	<#list type.propertyFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
 	// Get${field.name?cap_first} returns ${field.name?cap_first} (property field)
-	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	<#if field.comment.isPresent()>${field.comment.get()+"\n"}</#if>Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 	</#list>
 	<#list type.virtualFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
 	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
-	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+		<#if field.comment.isPresent()>${field.comment.get()+"\n"}</#if>Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 	</#list>
 	<#list type.abstractFields as field>
 		<#assign namedField=field.asNamedField().orElseThrow()>
 	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
-	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
+	<#if field.comment.isPresent()>${field.comment.get()+"\n"}</#if>Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
 	</#list>
 </#if>
 	// Is${type.name} is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -131,17 +131,17 @@ type ${type.name}Contract interface {
 	<#list type.propertyFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
 	// Get${field.name?cap_first} returns ${field.name?cap_first} (property field)
-	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	<#if field.comment.isPresent()>${field.comment.get()+"\n"}</#if>Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 	</#list>
 	<#list type.virtualFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
 	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
-	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	<#if field.comment.isPresent()>${field.comment.get()+"\n"}</#if>Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 	</#list>
 	<#list type.abstractFields as field>
 		<#assign namedField=field.asNamedField().orElseThrow()>
 	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
-	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
+	<#if field.comment.isPresent()>${field.comment.get()+"\n"}</#if>Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
 	</#list>
 	<#if type.isDiscriminatedChildTypeDefinition()>
 		<#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
@@ -177,7 +177,7 @@ type ${type.name}Requirements interface {
 	<#list type.abstractFields as field>
 		<#assign namedField=field.asNamedField().orElseThrow()>
 	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
-	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
+	<#if field.comment.isPresent()>${field.comment.get()+"\n"}</#if>Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
 	</#list>
 }
 </#if>

@@ -41,6 +41,7 @@ type SerialNumber interface {
 	utils.Serializable
 	utils.Copyable
 	// GetOctet1 returns Octet1 (property field)
+	// Note 8
 	GetOctet1() byte
 	// GetOctet2 returns Octet2 (property field)
 	GetOctet2() byte

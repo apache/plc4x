@@ -48,11 +48,27 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
   }
 
   // Properties.
+  /** 4 bytes Index Group of the data, which should be sent per notification. */
   protected final long indexGroup;
+
+  /** 4 bytes Index Offset of the data, which should be sent per notification. */
   protected final long indexOffset;
+
+  /**
+   * 4 bytes Index Offset of the data, which should be sent per notification. 4 bytes Length of data
+   * in bytes, which should be sent per notification.
+   */
   protected final long length;
+
+  /** 4 bytes The type of subscription. */
   protected final AdsTransMode transmissionMode;
+
+  /**
+   * 4 bytes At the latest after this time, the ADS Device Notification is called. The unit is 1ms.
+   */
   protected final long maxDelayInMs;
+
+  /** 4 bytes The ADS server checks if the value changes in this time slice. The unit is 1ms */
   protected final long cycleTimeInMs;
 
   public AdsAddDeviceNotificationRequest(
@@ -77,26 +93,37 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
     this.cycleTimeInMs = cycleTimeInMs;
   }
 
+  /** 4 bytes Index Group of the data, which should be sent per notification. */
   public long getIndexGroup() {
     return indexGroup;
   }
 
+  /** 4 bytes Index Offset of the data, which should be sent per notification. */
   public long getIndexOffset() {
     return indexOffset;
   }
 
+  /**
+   * 4 bytes Index Offset of the data, which should be sent per notification. 4 bytes Length of data
+   * in bytes, which should be sent per notification.
+   */
   public long getLength() {
     return length;
   }
 
+  /** 4 bytes The type of subscription. */
   public AdsTransMode getTransmissionMode() {
     return transmissionMode;
   }
 
+  /**
+   * 4 bytes At the latest after this time, the ADS Device Notification is called. The unit is 1ms.
+   */
   public long getMaxDelayInMs() {
     return maxDelayInMs;
   }
 
+  /** 4 bytes The ADS server checks if the value changes in this time slice. The unit is 1ms */
   public long getCycleTimeInMs() {
     return cycleTimeInMs;
   }

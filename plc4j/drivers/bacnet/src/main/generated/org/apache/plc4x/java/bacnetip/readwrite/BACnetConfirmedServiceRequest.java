@@ -41,6 +41,7 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
   public abstract BACnetConfirmedServiceChoice getServiceChoice();
 
   // Properties.
+  /** we subtract serviceChoice from our payload */
   protected final long serviceRequestLength;
 
   public BACnetConfirmedServiceRequest(long serviceRequestLength) {
@@ -48,6 +49,7 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
     this.serviceRequestLength = serviceRequestLength;
   }
 
+  /** we subtract serviceChoice from our payload */
   public long getServiceRequestLength() {
     return serviceRequestLength;
   }

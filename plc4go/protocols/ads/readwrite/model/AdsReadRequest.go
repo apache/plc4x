@@ -42,10 +42,13 @@ type AdsReadRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
+	// 4 bytes	Index Group of the data which should be read.
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset (property field)
+	// 4 bytes	Index Offset of the data which should be read.
 	GetIndexOffset() uint32
 	// GetLength returns Length (property field)
+	// 4 bytes	Length of the data (in bytes) which should be read.
 	GetLength() uint32
 	// IsAdsReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadRequest()

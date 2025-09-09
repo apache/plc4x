@@ -47,6 +47,7 @@ type CBusCommandDeviceManagement interface {
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
 	// GetParameterValue returns ParameterValue (property field)
+	// TODO: check if this is one byte or many bytes
 	GetParameterValue() byte
 	// IsCBusCommandDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommandDeviceManagement()

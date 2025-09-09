@@ -38,34 +38,78 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DceRpc_Packet implements Message {
 
   // Constant values.
+  /** RPC Header { RPCVersion 4.10.3.2.1 */
   public static final Short VERSION = 0x04;
+
   public static final Boolean BROADCAST = false;
   public static final Boolean MAYBE = false;
   public static final Boolean FRAGMENT = false;
   public static final Boolean CANCELWASPENDING = false;
+
+  /** RPCSerialHigh 4.10.3.2.6 */
   public static final Short SERIALHIGH = 0x00;
+
+  /** RPCInterfaceVersion 4.10.3.2.12 */
   public static final Long INTERFACEVER = 0x00000001L;
+
+  /** RPCInterfaceHint 4.10.3.2.15 */
   public static final Integer INTERFACEHINT = 0xFFFF;
+
+  /** RPCActivityHint 4.10.3.2.16 */
   public static final Integer ACTIVITYHINT = 0xFFFF;
+
+  /**
+   * RPCFragmentNmb 4.10.3.2.18 (Setting this to 0 as we will probably never have anything but 0
+   * here
+   */
   public static final Integer FRAGMENTNUM = 0x0000;
+
+  /** RPCAuthenticationProtocol 4.10.3.2.19 */
   public static final Short AUTHPROTO = 0x00;
 
   // Properties.
+  /** RPCPacketType 4.10.3.2.2 (8 bit) */
   protected final DceRpc_PacketType packetType;
+
   protected final boolean idempotent;
   protected final boolean noFragmentAcknowledgeRequested;
   protected final boolean lastFragment;
+
+  /** RPCDRep 4.10.3.2.5 (4 bit & 4 bit) */
   protected final IntegerEncoding integerEncoding;
+
   protected final CharacterEncoding characterEncoding;
+
+  /** RPCDRep2 4.10.3.2.5 (8 bit) */
   protected final FloatingPointEncoding floatingPointEncoding;
+
+  /** RPCObjectUUID 4.10.3.2.8 RPCObjectUUID 4.10.3.2.8 */
   protected final DceRpc_ObjectUuid objectUuid;
+
+  /** RPCInterfaceUUID 4.10.3.2.9 */
   protected final DceRpc_InterfaceUuid interfaceUuid;
+
+  /** RPCActivityUUID 4.10.3.2.10 */
   protected final DceRpc_ActivityUuid activityUuid;
+
+  /** RPCServerBootTime 4.10.3.2.11 */
   protected final long serverBootTime;
+
+  /** RPCSequenceNmb 4.10.3.2.13 */
   protected final long sequenceNumber;
+
+  /** RPCOperationNmb 4.10.3.2.14 */
   protected final DceRpc_Operation operation;
+
+  /**
+   * RPCSerialLow 4.10.3.2.7 REMARK: In general this would be a constant value of 0, but it seems
+   * that the PN device sends back PING packets which have non 0 values.
+   */
   protected final short serialLow;
+
+  /** RPC Header } RPC Payload { */
   protected final PnIoCm_Packet payload;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;
@@ -107,6 +151,7 @@ public class DceRpc_Packet implements Message {
     this.payload = payload;
   }
 
+  /** RPCPacketType 4.10.3.2.2 (8 bit) */
   public DceRpc_PacketType getPacketType() {
     return packetType;
   }
@@ -123,6 +168,7 @@ public class DceRpc_Packet implements Message {
     return lastFragment;
   }
 
+  /** RPCDRep 4.10.3.2.5 (4 bit & 4 bit) */
   public IntegerEncoding getIntegerEncoding() {
     return integerEncoding;
   }
@@ -131,42 +177,55 @@ public class DceRpc_Packet implements Message {
     return characterEncoding;
   }
 
+  /** RPCDRep2 4.10.3.2.5 (8 bit) */
   public FloatingPointEncoding getFloatingPointEncoding() {
     return floatingPointEncoding;
   }
 
+  /** RPCObjectUUID 4.10.3.2.8 RPCObjectUUID 4.10.3.2.8 */
   public DceRpc_ObjectUuid getObjectUuid() {
     return objectUuid;
   }
 
+  /** RPCInterfaceUUID 4.10.3.2.9 */
   public DceRpc_InterfaceUuid getInterfaceUuid() {
     return interfaceUuid;
   }
 
+  /** RPCActivityUUID 4.10.3.2.10 */
   public DceRpc_ActivityUuid getActivityUuid() {
     return activityUuid;
   }
 
+  /** RPCServerBootTime 4.10.3.2.11 */
   public long getServerBootTime() {
     return serverBootTime;
   }
 
+  /** RPCSequenceNmb 4.10.3.2.13 */
   public long getSequenceNumber() {
     return sequenceNumber;
   }
 
+  /** RPCOperationNmb 4.10.3.2.14 */
   public DceRpc_Operation getOperation() {
     return operation;
   }
 
+  /**
+   * RPCSerialLow 4.10.3.2.7 REMARK: In general this would be a constant value of 0, but it seems
+   * that the PN device sends back PING packets which have non 0 values.
+   */
   public short getSerialLow() {
     return serialLow;
   }
 
+  /** RPC Header } RPC Payload { */
   public PnIoCm_Packet getPayload() {
     return payload;
   }
 
+  /** RPC Header { RPCVersion 4.10.3.2.1 */
   public short getVersion() {
     return VERSION;
   }
@@ -187,26 +246,35 @@ public class DceRpc_Packet implements Message {
     return CANCELWASPENDING;
   }
 
+  /** RPCSerialHigh 4.10.3.2.6 */
   public short getSerialHigh() {
     return SERIALHIGH;
   }
 
+  /** RPCInterfaceVersion 4.10.3.2.12 */
   public long getInterfaceVer() {
     return INTERFACEVER;
   }
 
+  /** RPCInterfaceHint 4.10.3.2.15 */
   public int getInterfaceHint() {
     return INTERFACEHINT;
   }
 
+  /** RPCActivityHint 4.10.3.2.16 */
   public int getActivityHint() {
     return ACTIVITYHINT;
   }
 
+  /**
+   * RPCFragmentNmb 4.10.3.2.18 (Setting this to 0 as we will probably never have anything but 0
+   * here
+   */
   public int getFragmentNum() {
     return FRAGMENTNUM;
   }
 
+  /** RPCAuthenticationProtocol 4.10.3.2.19 */
   public short getAuthProto() {
     return AUTHPROTO;
   }

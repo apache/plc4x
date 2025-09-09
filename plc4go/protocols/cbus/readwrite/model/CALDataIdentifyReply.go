@@ -42,6 +42,7 @@ type CALDataIdentifyReply interface {
 	utils.Copyable
 	CALData
 	// GetAttribute returns Attribute (property field)
+	// Reply
 	GetAttribute() Attribute
 	// GetIdentifyReplyCommand returns IdentifyReplyCommand (property field)
 	GetIdentifyReplyCommand() IdentifyReplyCommand

@@ -52,8 +52,10 @@ type CipConnectionManagerRequest interface {
 	// GetTimeoutTicks returns TimeoutTicks (property field)
 	GetTimeoutTicks() uint8
 	// GetOtConnectionId returns OtConnectionId (property field)
+	// ot = Originator (Client) Target (Server)
 	GetOtConnectionId() uint32
 	// GetToConnectionId returns ToConnectionId (property field)
+	// to = Target (Server) Originator (Client)
 	GetToConnectionId() uint32
 	// GetConnectionSerialNumber returns ConnectionSerialNumber (property field)
 	GetConnectionSerialNumber() uint16
@@ -64,10 +66,12 @@ type CipConnectionManagerRequest interface {
 	// GetTimeoutMultiplier returns TimeoutMultiplier (property field)
 	GetTimeoutMultiplier() uint8
 	// GetOtRpi returns OtRpi (property field)
+	// ot = Originator (Client) Target (Server)
 	GetOtRpi() uint32
 	// GetOtConnectionParameters returns OtConnectionParameters (property field)
 	GetOtConnectionParameters() NetworkConnectionParameters
 	// GetToRpi returns ToRpi (property field)
+	// to = Target (Server) Originator (Client)
 	GetToRpi() uint32
 	// GetToConnectionParameters returns ToConnectionParameters (property field)
 	GetToConnectionParameters() NetworkConnectionParameters

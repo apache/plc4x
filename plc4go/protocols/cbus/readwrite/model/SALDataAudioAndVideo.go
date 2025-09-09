@@ -42,6 +42,7 @@ type SALDataAudioAndVideo interface {
 	utils.Copyable
 	SALData
 	// GetAudioVideoData returns AudioVideoData (property field)
+	// Note: the documentation states that the data for audio video data uses LightingData
 	GetAudioVideoData() LightingData
 	// IsSALDataAudioAndVideo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataAudioAndVideo()

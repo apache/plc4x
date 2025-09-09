@@ -47,6 +47,7 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
   }
 
   // Properties.
+  /** 4 bytes ADS error number */
   protected final ReturnCode result;
 
   public AdsDeleteDeviceNotificationResponse(
@@ -61,6 +62,7 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
     this.result = result;
   }
 
+  /** 4 bytes ADS error number */
   public ReturnCode getResult() {
     return result;
   }

@@ -39,7 +39,10 @@ public class NetworkProtocolControlInformation implements Message {
 
   // Properties.
   protected final byte stackCounter;
+
+  /** Number of bridges required to transmit information from source to destination */
   protected final byte stackDepth;
+
   // Reserved Fields
   private Byte reservedField0;
 
@@ -53,6 +56,7 @@ public class NetworkProtocolControlInformation implements Message {
     return stackCounter;
   }
 
+  /** Number of bridges required to transmit information from source to destination */
   public byte getStackDepth() {
     return stackDepth;
   }

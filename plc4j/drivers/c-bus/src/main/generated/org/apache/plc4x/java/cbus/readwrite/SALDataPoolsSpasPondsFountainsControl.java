@@ -43,6 +43,9 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
   }
 
   // Properties.
+  /**
+   * Note: the documentation states that the data for pools spas ponds fountains uses LightingData
+   */
   protected final LightingData poolsSpaPondsFountainsData;
 
   public SALDataPoolsSpasPondsFountainsControl(
@@ -51,6 +54,9 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
     this.poolsSpaPondsFountainsData = poolsSpaPondsFountainsData;
   }
 
+  /**
+   * Note: the documentation states that the data for pools spas ponds fountains uses LightingData
+   */
   public LightingData getPoolsSpaPondsFountainsData() {
     return poolsSpaPondsFountainsData;
   }

@@ -42,6 +42,7 @@ type ParameterChangeReply interface {
 	utils.Copyable
 	Reply
 	// GetParameterChange returns ParameterChange (property field)
+	// is a =
 	GetParameterChange() ParameterChange
 	// IsParameterChangeReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterChangeReply()

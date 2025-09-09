@@ -46,6 +46,7 @@ type BACnetConstructedDataEventMessageTextsConfig interface {
 	// GetEventMessageTextsConfig returns EventMessageTextsConfig (property field)
 	GetEventMessageTextsConfig() []BACnetOptionalCharacterString
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// GetToOffnormalTextConfig returns ToOffnormalTextConfig (virtual field)
 	GetToOffnormalTextConfig() BACnetOptionalCharacterString

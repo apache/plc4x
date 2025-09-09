@@ -47,7 +47,10 @@ public class AdsAddDeviceNotificationResponse extends AmsPacket implements Messa
   }
 
   // Properties.
+  /** 4 bytes ADS error number */
   protected final ReturnCode result;
+
+  /** 4 bytes Handle of notification */
   protected final long notificationHandle;
 
   public AdsAddDeviceNotificationResponse(
@@ -64,10 +67,12 @@ public class AdsAddDeviceNotificationResponse extends AmsPacket implements Messa
     this.notificationHandle = notificationHandle;
   }
 
+  /** 4 bytes ADS error number */
   public ReturnCode getResult() {
     return result;
   }
 
+  /** 4 bytes Handle of notification */
   public long getNotificationHandle() {
     return notificationHandle;
   }

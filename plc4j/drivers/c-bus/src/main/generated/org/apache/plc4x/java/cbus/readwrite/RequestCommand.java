@@ -44,7 +44,10 @@ public class RequestCommand extends Request implements Message {
 
   // Properties.
   protected final CBusOptions cBusOptions;
+
+  /** 0x5C == "\" */
   protected final CBusCommand cbusCommand;
+
   protected final Checksum chksum;
   protected final Alpha alpha;
 
@@ -69,6 +72,7 @@ public class RequestCommand extends Request implements Message {
     return cBusOptions;
   }
 
+  /** 0x5C == "\" */
   public CBusCommand getCbusCommand() {
     return cbusCommand;
   }

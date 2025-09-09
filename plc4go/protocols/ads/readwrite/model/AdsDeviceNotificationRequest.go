@@ -42,10 +42,13 @@ type AdsDeviceNotificationRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetLength returns Length (property field)
+	// 4 bytes	Size of data in byte.
 	GetLength() uint32
 	// GetStamps returns Stamps (property field)
+	// 4 bytes	Number of elements of type AdsStampHeader.
 	GetStamps() uint32
 	// GetAdsStampHeaders returns AdsStampHeaders (property field)
+	// n bytes	Array with elements of type AdsStampHeader.
 	GetAdsStampHeaders() []AdsStampHeader
 	// IsAdsDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDeviceNotificationRequest()

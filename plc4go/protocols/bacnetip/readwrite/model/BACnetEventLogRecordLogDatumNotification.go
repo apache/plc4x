@@ -44,6 +44,7 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
 	// GetNotification returns Notification (property field)
+	//TODO this below slurps to much because of the service choice... :( find workaround we might need fragments for that...
 	GetNotification() ConfirmedEventNotificationRequest
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag

@@ -38,7 +38,9 @@ import org.apache.plc4x.java.spi.generation.*;
 public class QualifiedName implements Message {
 
   // Properties.
+  /** A string qualified with a namespace index. */
   protected final int namespaceIndex;
+
   protected final PascalString name;
 
   public QualifiedName(int namespaceIndex, PascalString name) {
@@ -47,6 +49,7 @@ public class QualifiedName implements Message {
     this.name = name;
   }
 
+  /** A string qualified with a namespace index. */
   public int getNamespaceIndex() {
     return namespaceIndex;
   }

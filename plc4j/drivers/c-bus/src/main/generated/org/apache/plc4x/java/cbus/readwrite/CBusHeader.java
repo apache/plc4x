@@ -40,7 +40,11 @@ public class CBusHeader implements Message {
   // Properties.
   protected final PriorityClass priorityClass;
   protected final boolean dp;
+
+  /** Reserved for internal C-Bus management purposes (Referred to as special packet attribute) */
   protected final byte rc;
+
+  /** Reserved for internal C-Bus management purposes (Referred to as special packet attribute) */
   protected final DestinationAddressType destinationAddressType;
 
   public CBusHeader(
@@ -63,10 +67,12 @@ public class CBusHeader implements Message {
     return dp;
   }
 
+  /** Reserved for internal C-Bus management purposes (Referred to as special packet attribute) */
   public byte getRc() {
     return rc;
   }
 
+  /** Reserved for internal C-Bus management purposes (Referred to as special packet attribute) */
   public DestinationAddressType getDestinationAddressType() {
     return destinationAddressType;
   }

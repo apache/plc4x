@@ -54,6 +54,7 @@ type APDUComplexAck interface {
 	// GetServiceAck returns ServiceAck (property field)
 	GetServiceAck() BACnetServiceAck
 	// GetSegmentServiceChoice returns SegmentServiceChoice (property field)
+	// When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
 	GetSegmentServiceChoice() *BACnetConfirmedServiceChoice
 	// GetSegment returns Segment (property field)
 	GetSegment() []byte

@@ -40,6 +40,7 @@ public class ParameterChangeReply extends Reply implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  /** is a = */
   protected final ParameterChange parameterChange;
 
   public ParameterChangeReply(byte peekedByte, ParameterChange parameterChange) {
@@ -47,6 +48,7 @@ public class ParameterChangeReply extends Reply implements Message {
     this.parameterChange = parameterChange;
   }
 
+  /** is a = */
   public ParameterChange getParameterChange() {
     return parameterChange;
   }

@@ -47,10 +47,22 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
   }
 
   // Properties.
+  /** 4 bytes Index Group of the data which should be written. */
   protected final long indexGroup;
+
+  /** 4 bytes Index Offset of the data which should be written. */
   protected final long indexOffset;
+
+  /** 4 bytes Length of data in bytes, which should be read. */
   protected final long readLength;
+
+  /**
+   * Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of
+   * elements. (ADSIGRP_MULTIPLE_READ, ADSIGRP_MULTIPLE_WRITE, ADSIGRP_MULTIPLE_READ_WRITE)
+   */
   protected final List<AdsMultiRequestItem> items;
+
+  /** n bytes Data which are written in the ADS device. */
   protected final byte[] data;
 
   public AdsReadWriteRequest(
@@ -73,22 +85,30 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
     this.data = data;
   }
 
+  /** 4 bytes Index Group of the data which should be written. */
   public long getIndexGroup() {
     return indexGroup;
   }
 
+  /** 4 bytes Index Offset of the data which should be written. */
   public long getIndexOffset() {
     return indexOffset;
   }
 
+  /** 4 bytes Length of data in bytes, which should be read. */
   public long getReadLength() {
     return readLength;
   }
 
+  /**
+   * Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of
+   * elements. (ADSIGRP_MULTIPLE_READ, ADSIGRP_MULTIPLE_WRITE, ADSIGRP_MULTIPLE_READ_WRITE)
+   */
   public List<AdsMultiRequestItem> getItems() {
     return items;
   }
 
+  /** n bytes Data which are written in the ADS device. */
   public byte[] getData() {
     return data;
   }

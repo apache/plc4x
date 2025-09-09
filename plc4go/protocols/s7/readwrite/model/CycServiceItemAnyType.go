@@ -42,6 +42,7 @@ type CycServiceItemAnyType interface {
 	utils.Copyable
 	CycServiceItemType
 	// GetTransportSize returns TransportSize (property field)
+	//[simple  TransportSize   transportSize]
 	GetTransportSize() TransportSize
 	// GetLength returns Length (property field)
 	GetLength() uint16

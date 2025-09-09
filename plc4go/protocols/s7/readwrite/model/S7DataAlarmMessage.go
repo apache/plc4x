@@ -39,6 +39,7 @@ const S7DataAlarmMessage_FUNCTIONID uint8 = 0x00
 const S7DataAlarmMessage_NUMBERMESSAGEOBJ uint8 = 0x01
 
 // S7DataAlarmMessage is the corresponding interface of S7DataAlarmMessage
+// Under test
 type S7DataAlarmMessage interface {
 	S7DataAlarmMessageContract
 	S7DataAlarmMessageRequirements

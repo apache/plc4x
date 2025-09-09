@@ -71,6 +71,7 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
     return structuredObjectList;
   }
 
+  /** TODO: uint 64 ---> big int in java == boom */
   public BigInteger getZero() {
     Object o = 0L;
     if (o instanceof BigInteger) return (BigInteger) o;

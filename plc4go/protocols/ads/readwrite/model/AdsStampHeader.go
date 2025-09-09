@@ -41,10 +41,13 @@ type AdsStampHeader interface {
 	utils.Serializable
 	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
+	// 8 bytes	The timestamp is coded after the Windows FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
 	GetTimestamp() uint64
 	// GetSamples returns Samples (property field)
+	// 4 bytes	Number of elements of type AdsNotificationSample.
 	GetSamples() uint32
 	// GetAdsNotificationSamples returns AdsNotificationSamples (property field)
+	// n bytes	Array with elements of type AdsNotificationSample.
 	GetAdsNotificationSamples() []AdsNotificationSample
 	// IsAdsStampHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsStampHeader()

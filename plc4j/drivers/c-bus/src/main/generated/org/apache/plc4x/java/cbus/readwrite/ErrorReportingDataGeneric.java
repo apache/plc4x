@@ -46,7 +46,10 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
   protected final boolean mostSevere;
   protected final ErrorReportingSeverity severity;
   protected final short deviceId;
+
+  /** TODO: maybe split them up according to appendix A */
   protected final short errorData1;
+
   protected final short errorData2;
 
   public ErrorReportingDataGeneric(
@@ -94,6 +97,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     return deviceId;
   }
 
+  /** TODO: maybe split them up according to appendix A */
   public short getErrorData1() {
     return errorData1;
   }

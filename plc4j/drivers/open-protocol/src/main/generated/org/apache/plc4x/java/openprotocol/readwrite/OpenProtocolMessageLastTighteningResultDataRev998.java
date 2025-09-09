@@ -52,7 +52,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev998
   public static final Integer BLOCKIDPARAMETERSETNUMBER = 6;
   public static final Integer BLOCKIDSTRATEGY = 7;
   public static final Integer BLOCKIDSTRATEGYOPTIONS = 8;
+
+  /** TODO: Find out how to extract the 10 bits from a 5 byte large value */
   public static final Integer BLOCKIDBATCHSIZE = 9;
+
   public static final Integer BLOCKIDBATCHCOUNTER = 10;
   public static final Integer BLOCKIDTIGHTENINGSTATUS = 11;
   public static final Integer BLOCKIDBATCHSTATUS = 12;
@@ -64,7 +67,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev998
   public static final Integer BLOCKIDPREVAILTORQUEMONITORINGSTATUS = 18;
   public static final Integer BLOCKIDPREVAILTORQUECOMPENSATESTATUS = 19;
   public static final Integer BLOCKIDTIGHTENINGERRORSTATUS = 20;
+
+  /** TODO: Find out how to extract the 32 bits from a 10 byte large value */
   public static final Integer BLOCKIDTORQUEMINLIMIT = 21;
+
   public static final Integer BLOCKIDTORQUEMAXLIMIT = 22;
   public static final Integer BLOCKIDTORQUEFINALTARGET = 23;
   public static final Integer BLOCKIDTORQUE = 24;
@@ -99,7 +105,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev998
   public static final Integer BLOCKIDCUSTOMERTIGHTENINGERROR = 53;
   public static final Integer BLOCKIDPREVAILTORQUECOMPENSATEVALUE = 54;
   public static final Integer BLOCKIDTIGHTENINGERRORSTATUS2 = 55;
+
+  /** TODO: Find out how to extract the 32 bits from a 10 byte large value */
   public static final Integer BLOCKIDNUMBEROFSTAGESINMULTISTAGE = 56;
+
   public static final Integer BLOCKIDNUMBEROFSTAGERESULTS = 57;
   public static final Integer BLOCKIDSTAGERESULTS = 58;
 
@@ -533,6 +542,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev998
     return BLOCKIDSTRATEGYOPTIONS;
   }
 
+  /** TODO: Find out how to extract the 10 bits from a 5 byte large value */
   public int getBlockIdBatchSize() {
     return BLOCKIDBATCHSIZE;
   }
@@ -581,6 +591,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev998
     return BLOCKIDTIGHTENINGERRORSTATUS;
   }
 
+  /** TODO: Find out how to extract the 32 bits from a 10 byte large value */
   public int getBlockIdTorqueMinLimit() {
     return BLOCKIDTORQUEMINLIMIT;
   }
@@ -721,6 +732,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev998
     return BLOCKIDTIGHTENINGERRORSTATUS2;
   }
 
+  /** TODO: Find out how to extract the 32 bits from a 10 byte large value */
   public int getBlockIdNumberOfStagesInMultistage() {
     return BLOCKIDNUMBEROFSTAGESINMULTISTAGE;
   }

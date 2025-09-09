@@ -42,8 +42,10 @@ type CipConnectionManagerResponse interface {
 	utils.Copyable
 	CipService
 	// GetOtConnectionId returns OtConnectionId (property field)
+	// ot = Originator (Client) Target (Server)
 	GetOtConnectionId() uint32
 	// GetToConnectionId returns ToConnectionId (property field)
+	// to = Target (Server) Originator (Client)
 	GetToConnectionId() uint32
 	// GetConnectionSerialNumber returns ConnectionSerialNumber (property field)
 	GetConnectionSerialNumber() uint16
@@ -52,8 +54,10 @@ type CipConnectionManagerResponse interface {
 	// GetOriginatorSerialNumber returns OriginatorSerialNumber (property field)
 	GetOriginatorSerialNumber() uint32
 	// GetOtApi returns OtApi (property field)
+	// ot = Originator (Client) Target (Server)
 	GetOtApi() uint32
 	// GetToApi returns ToApi (property field)
+	// to = Target (Server) Originator (Client)
 	GetToApi() uint32
 	// IsCipConnectionManagerResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipConnectionManagerResponse()

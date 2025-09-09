@@ -43,7 +43,11 @@ public abstract class AmsPacket implements Message {
   public abstract Boolean getResponse();
 
   // Constant values.
+  /**
+   * 2 bytes. (I set these as constants in order to minimize the input needed for creating requests)
+   */
   public static final Boolean INITCOMMAND = false;
+
   public static final Boolean UPDCOMMAND = false;
   public static final Boolean TIMESTAMPADDED = false;
   public static final Boolean HIGHPRIORITYCOMMAND = false;
@@ -53,11 +57,30 @@ public abstract class AmsPacket implements Message {
   public static final Boolean BROADCAST = false;
 
   // Properties.
+  /**
+   * AMS Header 32 bytes The AMS/TCP-Header contains the addresses of the transmitter and receiver.
+   * In addition the AMS error code , the ADS command Id and some other information. This is the
+   * AmsNetId of the station, for which the packet is intended. Remarks see below.
+   */
   protected final AmsNetId targetAmsNetId;
+
+  /** This is the AmsPort of the station, for which the packet is intended. */
   protected final int targetAmsPort;
+
+  /** This contains the AmsNetId of the station, from which the packet was sent. */
   protected final AmsNetId sourceAmsNetId;
+
+  /** This contains the AmsPort of the station, from which the packet was sent. */
   protected final int sourceAmsPort;
+
+  /** 4 bytes AMS error number. See ADS Return Codes. */
   protected final long errorCode;
+
+  /**
+   * free usable field of 4 bytes 4 bytes Free usable 32 bit array. Usually this array serves to
+   * send an Id. This Id makes is possible to assign a received response to a request, which was
+   * sent before.
+   */
   protected final long invokeId;
 
   public AmsPacket(
@@ -76,30 +99,47 @@ public abstract class AmsPacket implements Message {
     this.invokeId = invokeId;
   }
 
+  /**
+   * AMS Header 32 bytes The AMS/TCP-Header contains the addresses of the transmitter and receiver.
+   * In addition the AMS error code , the ADS command Id and some other information. This is the
+   * AmsNetId of the station, for which the packet is intended. Remarks see below.
+   */
   public AmsNetId getTargetAmsNetId() {
     return targetAmsNetId;
   }
 
+  /** This is the AmsPort of the station, for which the packet is intended. */
   public int getTargetAmsPort() {
     return targetAmsPort;
   }
 
+  /** This contains the AmsNetId of the station, from which the packet was sent. */
   public AmsNetId getSourceAmsNetId() {
     return sourceAmsNetId;
   }
 
+  /** This contains the AmsPort of the station, from which the packet was sent. */
   public int getSourceAmsPort() {
     return sourceAmsPort;
   }
 
+  /** 4 bytes AMS error number. See ADS Return Codes. */
   public long getErrorCode() {
     return errorCode;
   }
 
+  /**
+   * free usable field of 4 bytes 4 bytes Free usable 32 bit array. Usually this array serves to
+   * send an Id. This Id makes is possible to assign a received response to a request, which was
+   * sent before.
+   */
   public long getInvokeId() {
     return invokeId;
   }
 
+  /**
+   * 2 bytes. (I set these as constants in order to minimize the input needed for creating requests)
+   */
   public boolean getInitCommand() {
     return INITCOMMAND;
   }

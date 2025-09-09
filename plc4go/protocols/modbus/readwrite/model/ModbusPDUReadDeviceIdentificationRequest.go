@@ -38,6 +38,9 @@ import (
 const ModbusPDUReadDeviceIdentificationRequest_MEITYPE uint8 = 0x0E
 
 // ModbusPDUReadDeviceIdentificationRequest is the corresponding interface of ModbusPDUReadDeviceIdentificationRequest
+// Remark: Even if the Modbus spec states that supporting this type of request is mandatory
+// I have not come across a single device that really supported it. Some devices just reacted
+// with an error.
 type ModbusPDUReadDeviceIdentificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware

@@ -38,7 +38,9 @@ import org.apache.plc4x.java.spi.generation.*;
 public class Ethernet_Frame implements Message {
 
   // Properties.
+  /** When sending to the mac address prefix of 01:0e:cf are multicast packets */
   protected final MacAddress destination;
+
   protected final MacAddress source;
   protected final Ethernet_FramePayload payload;
 
@@ -49,6 +51,7 @@ public class Ethernet_Frame implements Message {
     this.payload = payload;
   }
 
+  /** When sending to the mac address prefix of 01:0e:cf are multicast packets */
   public MacAddress getDestination() {
     return destination;
   }

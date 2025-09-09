@@ -47,8 +47,13 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
   }
 
   // Properties.
+  /** 4 bytes Size of data in byte. */
   protected final long length;
+
+  /** 4 bytes Number of elements of type AdsStampHeader. */
   protected final long stamps;
+
+  /** n bytes Array with elements of type AdsStampHeader. */
   protected final List<AdsStampHeader> adsStampHeaders;
 
   public AdsDeviceNotificationRequest(
@@ -67,14 +72,17 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
     this.adsStampHeaders = adsStampHeaders;
   }
 
+  /** 4 bytes Size of data in byte. */
   public long getLength() {
     return length;
   }
 
+  /** 4 bytes Number of elements of type AdsStampHeader. */
   public long getStamps() {
     return stamps;
   }
 
+  /** n bytes Array with elements of type AdsStampHeader. */
   public List<AdsStampHeader> getAdsStampHeaders() {
     return adsStampHeaders;
   }

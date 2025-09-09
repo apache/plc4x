@@ -38,6 +38,10 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RequestContext implements Message {
 
   // Properties.
+  /**
+   * Useful for response parsing: Set this to true if you send a identify request before. This will
+   * change the way the response will be parsed
+   */
   protected final boolean sendIdentifyRequestBefore;
 
   public RequestContext(boolean sendIdentifyRequestBefore) {
@@ -45,6 +49,10 @@ public class RequestContext implements Message {
     this.sendIdentifyRequestBefore = sendIdentifyRequestBefore;
   }
 
+  /**
+   * Useful for response parsing: Set this to true if you send a identify request before. This will
+   * change the way the response will be parsed
+   */
   public boolean getSendIdentifyRequestBefore() {
     return sendIdentifyRequestBefore;
   }

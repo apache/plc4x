@@ -40,12 +40,14 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
   // Accessors for discriminator values.
 
   // Constant values.
+  /** is a ! */
   public static final Byte ERRORMARKER = 0x21;
 
   public ServerErrorReply(byte peekedByte) {
     super(peekedByte);
   }
 
+  /** is a ! */
   public byte getErrorMarker() {
     return ERRORMARKER;
   }

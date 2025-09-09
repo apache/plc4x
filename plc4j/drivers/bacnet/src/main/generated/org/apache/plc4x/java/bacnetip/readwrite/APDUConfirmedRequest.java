@@ -52,7 +52,13 @@ public class APDUConfirmedRequest extends APDU implements Message {
   protected final Short sequenceNumber;
   protected final Short proposedWindowSize;
   protected final BACnetConfirmedServiceRequest serviceRequest;
+
+  /**
+   * When we read the first segment we want the service choice to be part of the bytes so we only
+   * read it > 0
+   */
   protected final BACnetConfirmedServiceChoice segmentServiceChoice;
+
   protected final byte[] segment;
   // Reserved Fields
   private Byte reservedField0;
@@ -119,6 +125,10 @@ public class APDUConfirmedRequest extends APDU implements Message {
     return serviceRequest;
   }
 
+  /**
+   * When we read the first segment we want the service choice to be part of the bytes so we only
+   * read it > 0
+   */
   public BACnetConfirmedServiceChoice getSegmentServiceChoice() {
     return segmentServiceChoice;
   }

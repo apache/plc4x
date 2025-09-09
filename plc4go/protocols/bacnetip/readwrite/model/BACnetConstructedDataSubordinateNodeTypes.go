@@ -46,6 +46,7 @@ type BACnetConstructedDataSubordinateNodeTypes interface {
 	// GetSubordinateNodeTypes returns SubordinateNodeTypes (property field)
 	GetSubordinateNodeTypes() []BACnetNodeTypeTagged
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataSubordinateNodeTypes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSubordinateNodeTypes()

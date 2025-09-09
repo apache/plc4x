@@ -46,6 +46,7 @@ type BACnetConstructedDataStateText interface {
 	// GetStateText returns StateText (property field)
 	GetStateText() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataStateText is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataStateText()

@@ -44,6 +44,8 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
 
   // Properties.
   protected final BaudRateSelector value;
+
+  /** TODO: find out what additional bytes mean here... */
   protected final byte[] data;
 
   public ParameterValueBaudRateSelector(BaudRateSelector value, byte[] data) {
@@ -56,6 +58,7 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
     return value;
   }
 
+  /** TODO: find out what additional bytes mean here... */
   public byte[] getData() {
     return data;
   }

@@ -41,6 +41,7 @@ type HVACRawLevels interface {
 	utils.Serializable
 	utils.Copyable
 	// GetRawValue returns RawValue (property field)
+	// TODO: check values from Air Conditioning Application 25.5.3
 	GetRawValue() int16
 	// GetValueInPercent returns ValueInPercent (virtual field)
 	GetValueInPercent() float32

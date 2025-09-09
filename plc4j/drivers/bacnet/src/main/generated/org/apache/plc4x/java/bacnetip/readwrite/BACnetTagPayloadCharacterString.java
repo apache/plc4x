@@ -40,6 +40,8 @@ public class BACnetTagPayloadCharacterString implements Message {
   // Properties.
   protected final long actualLength;
   protected final BACnetCharacterEncoding encoding;
+
+  /** TODO: call to string on encoding or add type conversion so we can use the enum above */
   protected final String value;
 
   public BACnetTagPayloadCharacterString(
@@ -58,10 +60,15 @@ public class BACnetTagPayloadCharacterString implements Message {
     return encoding;
   }
 
+  /** TODO: call to string on encoding or add type conversion so we can use the enum above */
   public String getValue() {
     return value;
   }
 
+  /**
+   * TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily
+   * overflow...
+   */
   public int getActualLengthInBit() {
     return (int) (((actualLength) * (8)) - (8));
   }

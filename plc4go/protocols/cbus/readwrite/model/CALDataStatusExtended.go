@@ -42,6 +42,7 @@ type CALDataStatusExtended interface {
 	utils.Copyable
 	CALData
 	// GetCoding returns Coding (property field)
+	// Reply
 	GetCoding() StatusCoding
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer

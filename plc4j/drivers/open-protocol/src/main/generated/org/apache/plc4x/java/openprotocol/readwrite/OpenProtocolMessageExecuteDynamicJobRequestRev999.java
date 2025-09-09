@@ -47,8 +47,13 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
   public static final Integer BLOCKIDJOBID = 1;
   public static final Integer BLOCKIDJOBNAME = 2;
   public static final Integer BLOCKIDNUMBEROFPARAMETERSETS = 3;
+
+  /** [implicit uint 16 numberOfParameterSets 'COUNT(jobList)' ] */
   public static final Integer BLOCKIDJOBLIST = 4;
+
+  /** TODO [array ParameterSetRev999 jobList count 'numberOfParameterSets' ] */
   public static final Integer BLOCKIDFORCEDORDER = 5;
+
   public static final Integer BLOCKIDLOCKATJOBDONE = 6;
   public static final Integer BLOCKIDTOOLLOOSENING = 7;
   public static final Integer BLOCKIDREPEATJOB = 8;
@@ -215,10 +220,12 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
     return BLOCKIDNUMBEROFPARAMETERSETS;
   }
 
+  /** [implicit uint 16 numberOfParameterSets 'COUNT(jobList)' ] */
   public int getBlockIdJobList() {
     return BLOCKIDJOBLIST;
   }
 
+  /** TODO [array ParameterSetRev999 jobList count 'numberOfParameterSets' ] */
   public int getBlockIdForcedOrder() {
     return BLOCKIDFORCEDORDER;
   }

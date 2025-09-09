@@ -38,7 +38,9 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SerialNumber implements Message {
 
   // Properties.
+  /** Note 8 */
   protected final byte octet1;
+
   protected final byte octet2;
   protected final byte octet3;
   protected final byte octet4;
@@ -51,6 +53,7 @@ public class SerialNumber implements Message {
     this.octet4 = octet4;
   }
 
+  /** Note 8 */
   public byte getOctet1() {
     return octet1;
   }

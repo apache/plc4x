@@ -46,8 +46,12 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
   // Properties.
   protected final BACnetContextTagObjectIdentifier textMessageSourceDevice;
   protected final BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass;
+
+  /** Note we reuse the once from confirmed here */
   protected final BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
       messagePriority;
+
+  /** Note we reuse the once from confirmed here */
   protected final BACnetContextTagCharacterString message;
 
   public BACnetUnconfirmedServiceRequestUnconfirmedTextMessage(
@@ -70,11 +74,13 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
     return messageClass;
   }
 
+  /** Note we reuse the once from confirmed here */
   public BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
       getMessagePriority() {
     return messagePriority;
   }
 
+  /** Note we reuse the once from confirmed here */
   public BACnetContextTagCharacterString getMessage() {
     return message;
   }

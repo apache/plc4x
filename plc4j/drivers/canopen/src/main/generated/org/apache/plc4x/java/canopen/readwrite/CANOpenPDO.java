@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CANOpenPDO implements Message {
 
   // Properties.
+  /** (uint 2 index, bit receive) */
   protected final byte[] data;
 
   public CANOpenPDO(byte[] data) {
@@ -45,6 +46,7 @@ public class CANOpenPDO implements Message {
     this.data = data;
   }
 
+  /** (uint 2 index, bit receive) */
   public byte[] getData() {
     return data;
   }

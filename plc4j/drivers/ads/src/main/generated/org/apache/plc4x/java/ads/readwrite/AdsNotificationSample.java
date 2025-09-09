@@ -38,8 +38,13 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AdsNotificationSample implements Message {
 
   // Properties.
+  /** 4 bytes Handle of notification */
   protected final long notificationHandle;
+
+  /** 4 Bytes Size of data range in bytes. */
   protected final long sampleSize;
+
+  /** n Bytes Data */
   protected final byte[] data;
 
   public AdsNotificationSample(long notificationHandle, long sampleSize, byte[] data) {
@@ -49,14 +54,17 @@ public class AdsNotificationSample implements Message {
     this.data = data;
   }
 
+  /** 4 bytes Handle of notification */
   public long getNotificationHandle() {
     return notificationHandle;
   }
 
+  /** 4 Bytes Size of data range in bytes. */
   public long getSampleSize() {
     return sampleSize;
   }
 
+  /** n Bytes Data */
   public byte[] getData() {
     return data;
   }

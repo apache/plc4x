@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class HVACTemperature implements Message {
 
   // Properties.
+  /** TODO: check values from Air Conditioning Application 25.5.1 */
   protected final short temperatureValue;
 
   public HVACTemperature(short temperatureValue) {
@@ -45,6 +46,7 @@ public class HVACTemperature implements Message {
     this.temperatureValue = temperatureValue;
   }
 
+  /** TODO: check values from Air Conditioning Application 25.5.1 */
   public short getTemperatureValue() {
     return temperatureValue;
   }

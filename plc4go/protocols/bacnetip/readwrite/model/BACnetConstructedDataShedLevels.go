@@ -46,6 +46,7 @@ type BACnetConstructedDataShedLevels interface {
 	// GetShedLevels returns ShedLevels (property field)
 	GetShedLevels() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataShedLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataShedLevels()

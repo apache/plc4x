@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class HVACHumidity implements Message {
 
   // Properties.
+  /** TODO: check values from Air Conditioning Application 25.5.2 */
   protected final int humidityValue;
 
   public HVACHumidity(int humidityValue) {
@@ -45,6 +46,7 @@ public class HVACHumidity implements Message {
     this.humidityValue = humidityValue;
   }
 
+  /** TODO: check values from Air Conditioning Application 25.5.2 */
   public int getHumidityValue() {
     return humidityValue;
   }

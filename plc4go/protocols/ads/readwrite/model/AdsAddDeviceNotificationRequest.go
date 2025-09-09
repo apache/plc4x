@@ -42,16 +42,23 @@ type AdsAddDeviceNotificationRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
+	// 4 bytes	Index Group of the data, which should be sent per notification.
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset (property field)
+	// 4 bytes	Index Offset of the data, which should be sent per notification.
 	GetIndexOffset() uint32
 	// GetLength returns Length (property field)
+	// 4 bytes	Index Offset of the data, which should be sent per notification.
+	// 4 bytes	Length of data in bytes, which should be sent per notification.
 	GetLength() uint32
 	// GetTransmissionMode returns TransmissionMode (property field)
+	// 4 bytes	The type of subscription.
 	GetTransmissionMode() AdsTransMode
 	// GetMaxDelayInMs returns MaxDelayInMs (property field)
+	// 4 bytes	At the latest after this time, the ADS Device Notification is called. The unit is 1ms.
 	GetMaxDelayInMs() uint32
 	// GetCycleTimeInMs returns CycleTimeInMs (property field)
+	// 4 bytes	The ADS server checks if the value changes in this time slice. The unit is 1ms
 	GetCycleTimeInMs() uint32
 	// IsAdsAddDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsAddDeviceNotificationRequest()

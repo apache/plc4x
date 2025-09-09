@@ -44,6 +44,8 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
 
   // Properties.
   protected final Parameter paramNo;
+
+  /** TODO: check if this is one byte or many bytes */
   protected final byte parameterValue;
 
   public CBusCommandDeviceManagement(CBusHeader header, Parameter paramNo, byte parameterValue) {
@@ -56,6 +58,7 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
     return paramNo;
   }
 
+  /** TODO: check if this is one byte or many bytes */
   public byte getParameterValue() {
     return parameterValue;
   }

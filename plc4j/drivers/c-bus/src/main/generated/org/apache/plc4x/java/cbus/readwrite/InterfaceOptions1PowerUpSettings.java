@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class InterfaceOptions1PowerUpSettings implements Message {
 
   // Properties.
+  /** Note 5 */
   protected final InterfaceOptions1 interfaceOptions1;
 
   public InterfaceOptions1PowerUpSettings(InterfaceOptions1 interfaceOptions1) {
@@ -45,6 +46,7 @@ public class InterfaceOptions1PowerUpSettings implements Message {
     this.interfaceOptions1 = interfaceOptions1;
   }
 
+  /** Note 5 */
   public InterfaceOptions1 getInterfaceOptions1() {
     return interfaceOptions1;
   }

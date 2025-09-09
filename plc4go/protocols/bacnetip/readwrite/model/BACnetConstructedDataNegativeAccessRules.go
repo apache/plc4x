@@ -46,6 +46,7 @@ type BACnetConstructedDataNegativeAccessRules interface {
 	// GetNegativeAccessRules returns NegativeAccessRules (property field)
 	GetNegativeAccessRules() []BACnetAccessRule
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataNegativeAccessRules is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNegativeAccessRules()

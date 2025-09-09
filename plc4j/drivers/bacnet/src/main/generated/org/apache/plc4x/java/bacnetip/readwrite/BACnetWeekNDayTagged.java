@@ -39,8 +39,19 @@ public class BACnetWeekNDayTagged implements Message {
 
   // Properties.
   protected final BACnetTagHeader header;
+
+  /**
+   * TODO: once we progress in codegen var enough that we can detect the source for array access we
+   * can use that again ... at the moment in java this produces a .get(0) call and this doesn't work
+   * with byte arrays [simple BACnetTagPayloadOctetString payload ] TODO see comment above [virtual
+   * uint 8 month 'payload.octets[0]' ] TODO: temporary
+   */
   protected final short month;
+
+  /** TODO see comment above [virtual uint 8 weekOfMonth 'payload.octets[1]' ] TODO: temporary */
   protected final short weekOfMonth;
+
+  /** TODO see comment above [virtual uint 8 dayOfWeek 'payload.octets[2]' ] TODO: temporary */
   protected final short dayOfWeek;
 
   public BACnetWeekNDayTagged(
@@ -56,14 +67,22 @@ public class BACnetWeekNDayTagged implements Message {
     return header;
   }
 
+  /**
+   * TODO: once we progress in codegen var enough that we can detect the source for array access we
+   * can use that again ... at the moment in java this produces a .get(0) call and this doesn't work
+   * with byte arrays [simple BACnetTagPayloadOctetString payload ] TODO see comment above [virtual
+   * uint 8 month 'payload.octets[0]' ] TODO: temporary
+   */
   public short getMonth() {
     return month;
   }
 
+  /** TODO see comment above [virtual uint 8 weekOfMonth 'payload.octets[1]' ] TODO: temporary */
   public short getWeekOfMonth() {
     return weekOfMonth;
   }
 
+  /** TODO see comment above [virtual uint 8 dayOfWeek 'payload.octets[2]' ] TODO: temporary */
   public short getDayOfWeek() {
     return dayOfWeek;
   }

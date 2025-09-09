@@ -42,10 +42,13 @@ type AdsWriteControlRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetAdsState returns AdsState (property field)
+	// 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState (property field)
+	// 2 bytes	New device status.
 	GetDeviceState() uint16
 	// GetData returns Data (property field)
+	// n bytes	Additional data which are sent to the ADS device
 	GetData() []byte
 	// IsAdsWriteControlRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsWriteControlRequest()

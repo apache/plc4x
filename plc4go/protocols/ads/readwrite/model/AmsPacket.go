@@ -61,16 +61,24 @@ type AmsPacket interface {
 // AmsPacketContract provides a set of functions which can be overwritten by a sub struct
 type AmsPacketContract interface {
 	// GetTargetAmsNetId returns TargetAmsNetId (property field)
+	// AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
+	// This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
 	GetTargetAmsNetId() AmsNetId
 	// GetTargetAmsPort returns TargetAmsPort (property field)
+	// This is the AmsPort of the station, for which the packet is intended.
 	GetTargetAmsPort() uint16
 	// GetSourceAmsNetId returns SourceAmsNetId (property field)
+	// This contains the AmsNetId of the station, from which the packet was sent.
 	GetSourceAmsNetId() AmsNetId
 	// GetSourceAmsPort returns SourceAmsPort (property field)
+	// This contains the AmsPort of the station, from which the packet was sent.
 	GetSourceAmsPort() uint16
 	// GetErrorCode returns ErrorCode (property field)
+	// 4 bytes	AMS error number. See ADS Return Codes.
 	GetErrorCode() uint32
 	// GetInvokeId returns InvokeId (property field)
+	// free usable field of 4 bytes
+	// 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
 	GetInvokeId() uint32
 	// IsAmsPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsPacket()

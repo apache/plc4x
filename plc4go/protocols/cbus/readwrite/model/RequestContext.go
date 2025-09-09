@@ -41,6 +41,7 @@ type RequestContext interface {
 	utils.Serializable
 	utils.Copyable
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (property field)
+	// Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
 	GetSendIdentifyRequestBefore() bool
 	// IsRequestContext is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestContext()

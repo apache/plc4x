@@ -47,8 +47,13 @@ public class AdsReadStateResponse extends AmsPacket implements Message {
   }
 
   // Properties.
+  /** 4 bytes ADS error number */
   protected final ReturnCode result;
+
+  /** 2 bytes New ADS status (see data type ADSSTATE of the ADS-DLL). */
   protected final int adsState;
+
+  /** 2 bytes New device status. */
   protected final int deviceState;
 
   public AdsReadStateResponse(
@@ -67,14 +72,17 @@ public class AdsReadStateResponse extends AmsPacket implements Message {
     this.deviceState = deviceState;
   }
 
+  /** 4 bytes ADS error number */
   public ReturnCode getResult() {
     return result;
   }
 
+  /** 2 bytes New ADS status (see data type ADSSTATE of the ADS-DLL). */
   public int getAdsState() {
     return adsState;
   }
 
+  /** 2 bytes New device status. */
   public int getDeviceState() {
     return deviceState;
   }

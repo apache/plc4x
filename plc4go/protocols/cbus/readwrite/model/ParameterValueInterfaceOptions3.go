@@ -44,6 +44,7 @@ type ParameterValueInterfaceOptions3 interface {
 	// GetValue returns Value (property field)
 	GetValue() InterfaceOptions3
 	// GetData returns Data (property field)
+	// TODO: find out what additional bytes mean here...
 	GetData() []byte
 	// IsParameterValueInterfaceOptions3 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueInterfaceOptions3()

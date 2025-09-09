@@ -42,6 +42,7 @@ type PowerUpReply interface {
 	utils.Copyable
 	Reply
 	// GetPowerUpIndicator returns PowerUpIndicator (property field)
+	// is a +
 	GetPowerUpIndicator() PowerUp
 	// IsPowerUpReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPowerUpReply()

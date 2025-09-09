@@ -46,6 +46,7 @@ type BACnetConstructedDataAccessDoors interface {
 	// GetAccessDoors returns AccessDoors (property field)
 	GetAccessDoors() []BACnetDeviceObjectReference
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataAccessDoors is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessDoors()

@@ -40,6 +40,8 @@ public class BACnetVendorIdTagged implements Message {
   // Properties.
   protected final BACnetTagHeader header;
   protected final BACnetVendorId value;
+
+  /** TODO: change to uint32 once cast is inserted */
   protected final long unknownId;
 
   public BACnetVendorIdTagged(BACnetTagHeader header, BACnetVendorId value, long unknownId) {
@@ -57,6 +59,7 @@ public class BACnetVendorIdTagged implements Message {
     return value;
   }
 
+  /** TODO: change to uint32 once cast is inserted */
   public long getUnknownId() {
     return unknownId;
   }

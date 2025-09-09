@@ -45,6 +45,7 @@ type BACnetVendorIdTagged interface {
 	// GetValue returns Value (property field)
 	GetValue() BACnetVendorId
 	// GetUnknownId returns UnknownId (property field)
+	//TODO: change to uint32 once cast is inserted
 	GetUnknownId() uint32
 	// GetIsUnknownId returns IsUnknownId (virtual field)
 	GetIsUnknownId() bool

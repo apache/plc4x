@@ -42,6 +42,7 @@ type AdsWriteResponse interface {
 	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
+	// 4 bytes	ADS error number
 	GetResult() ReturnCode
 	// IsAdsWriteResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsWriteResponse()

@@ -52,6 +52,7 @@ type MPropReadCon interface {
 	// GetStartIndex returns StartIndex (property field)
 	GetStartIndex() uint16
 	// GetData returns Data (property field)
+	// TODO: See chapter 4.1.7.3.1 ... this is actually a var length array of elements ('numberOfElements') with the type specified by 'interfaceObjectType'.
 	GetData() uint16
 	// IsMPropReadCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropReadCon()

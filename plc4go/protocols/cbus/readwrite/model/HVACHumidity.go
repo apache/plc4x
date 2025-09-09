@@ -41,6 +41,7 @@ type HVACHumidity interface {
 	utils.Serializable
 	utils.Copyable
 	// GetHumidityValue returns HumidityValue (property field)
+	// TODO: check values from Air Conditioning Application 25.5.2
 	GetHumidityValue() uint16
 	// GetHumidityInPercent returns HumidityInPercent (virtual field)
 	GetHumidityInPercent() float32

@@ -45,8 +45,10 @@ type CBusHeader interface {
 	// GetDp returns Dp (property field)
 	GetDp() bool
 	// GetRc returns Rc (property field)
+	// Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
 	GetRc() uint8
 	// GetDestinationAddressType returns DestinationAddressType (property field)
+	// Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
 	GetDestinationAddressType() DestinationAddressType
 	// IsCBusHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusHeader()

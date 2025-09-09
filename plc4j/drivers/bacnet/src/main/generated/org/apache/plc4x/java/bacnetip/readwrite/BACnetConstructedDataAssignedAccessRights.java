@@ -71,6 +71,7 @@ public class BACnetConstructedDataAssignedAccessRights extends BACnetConstructed
     return assignedAccessRights;
   }
 
+  /** TODO: uint 64 ---> big int in java == boom */
   public BigInteger getZero() {
     Object o = 0L;
     if (o instanceof BigInteger) return (BigInteger) o;

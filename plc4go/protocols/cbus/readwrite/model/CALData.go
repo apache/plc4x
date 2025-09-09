@@ -55,6 +55,7 @@ type CALDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() CALCommandTypeContainer
 	// GetAdditionalData returns AdditionalData (property field)
+	// Note: we omit the request context as it is only useful for the first element
 	GetAdditionalData() CALData
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() CALCommandType

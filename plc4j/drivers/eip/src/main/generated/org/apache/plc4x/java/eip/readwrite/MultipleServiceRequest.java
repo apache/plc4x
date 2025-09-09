@@ -55,6 +55,7 @@ public class MultipleServiceRequest extends CipService implements Message {
   public static final Long REQUESTPATH = 0x01240220L;
 
   // Properties.
+  /** Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router) */
   protected final Services data;
 
   public MultipleServiceRequest(Services data) {
@@ -62,6 +63,7 @@ public class MultipleServiceRequest extends CipService implements Message {
     this.data = data;
   }
 
+  /** Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router) */
   public Services getData() {
     return data;
   }

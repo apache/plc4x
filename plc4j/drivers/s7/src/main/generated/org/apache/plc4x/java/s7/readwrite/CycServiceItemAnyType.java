@@ -40,7 +40,9 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
   // Accessors for discriminator values.
 
   // Properties.
+  /** [simple TransportSize transportSize] */
   protected final TransportSize transportSize;
+
   protected final int length;
   protected final int dbNumber;
   protected final MemoryArea memoryArea;
@@ -62,6 +64,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
     this.address = address;
   }
 
+  /** [simple TransportSize transportSize] */
   public TransportSize getTransportSize() {
     return transportSize;
   }

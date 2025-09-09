@@ -46,6 +46,7 @@ type BACnetConstructedDataGlobalGroupPresentValue interface {
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() []BACnetPropertyAccessResult
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataGlobalGroupPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGlobalGroupPresentValue()

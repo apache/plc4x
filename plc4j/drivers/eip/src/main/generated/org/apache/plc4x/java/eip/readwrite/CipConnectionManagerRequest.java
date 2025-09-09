@@ -56,15 +56,26 @@ public class CipConnectionManagerRequest extends CipService implements Message {
   protected final byte priority;
   protected final byte tickTime;
   protected final short timeoutTicks;
+
+  /** ot = Originator (Client) Target (Server) */
   protected final long otConnectionId;
+
+  /** to = Target (Server) Originator (Client) */
   protected final long toConnectionId;
+
   protected final int connectionSerialNumber;
   protected final int originatorVendorId;
   protected final long originatorSerialNumber;
   protected final short timeoutMultiplier;
+
+  /** ot = Originator (Client) Target (Server) */
   protected final long otRpi;
+
   protected final NetworkConnectionParameters otConnectionParameters;
+
+  /** to = Target (Server) Originator (Client) */
   protected final long toRpi;
+
   protected final NetworkConnectionParameters toConnectionParameters;
   protected final TransportType transportType;
   protected final short connectionPathSize;
@@ -130,10 +141,12 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     return timeoutTicks;
   }
 
+  /** ot = Originator (Client) Target (Server) */
   public long getOtConnectionId() {
     return otConnectionId;
   }
 
+  /** to = Target (Server) Originator (Client) */
   public long getToConnectionId() {
     return toConnectionId;
   }
@@ -154,6 +167,7 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     return timeoutMultiplier;
   }
 
+  /** ot = Originator (Client) Target (Server) */
   public long getOtRpi() {
     return otRpi;
   }
@@ -162,6 +176,7 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     return otConnectionParameters;
   }
 
+  /** to = Target (Server) Originator (Client) */
   public long getToRpi() {
     return toRpi;
   }

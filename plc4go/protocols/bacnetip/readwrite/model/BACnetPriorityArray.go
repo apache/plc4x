@@ -45,6 +45,7 @@ type BACnetPriorityArray interface {
 	// GetData returns Data (property field)
 	GetData() []BACnetPriorityValue
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// GetPriorityValue01 returns PriorityValue01 (virtual field)
 	GetPriorityValue01() BACnetPriorityValue

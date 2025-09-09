@@ -38,14 +38,40 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CBusOptions implements Message {
 
   // Properties.
+  /** Defines that SAL messages can occur at any time */
   protected final boolean connect;
+
+  /**
+   * Disable echo of characters. When used with connect SAL have a long option. Select long from of
+   * most CAL replies
+   */
   protected final boolean smart;
+
+  /** only works with smart. Select long form of CAL messages */
   protected final boolean idmon;
+
+  /**
+   * useful with smart. Select long form, extended format for all monitored and initiated status
+   * requests
+   */
   protected final boolean exstat;
+
+  /**
+   * monitors all traffic for status requests. Status requests will be returned as CAL. Replies are
+   * modified by exstat. Usually used in conjunction with connect.
+   */
   protected final boolean monitor;
+
+  /** Same as connect. In addition it will return remote network SAL */
   protected final boolean monall;
+
+  /** Serial interface will emit a power up notification */
   protected final boolean pun;
+
+  /** causes parameter change notifications to be emitted. */
   protected final boolean pcn;
+
+  /** enabled the checksum checks */
   protected final boolean srchk;
 
   public CBusOptions(
@@ -70,38 +96,56 @@ public class CBusOptions implements Message {
     this.srchk = srchk;
   }
 
+  /** Defines that SAL messages can occur at any time */
   public boolean getConnect() {
     return connect;
   }
 
+  /**
+   * Disable echo of characters. When used with connect SAL have a long option. Select long from of
+   * most CAL replies
+   */
   public boolean getSmart() {
     return smart;
   }
 
+  /** only works with smart. Select long form of CAL messages */
   public boolean getIdmon() {
     return idmon;
   }
 
+  /**
+   * useful with smart. Select long form, extended format for all monitored and initiated status
+   * requests
+   */
   public boolean getExstat() {
     return exstat;
   }
 
+  /**
+   * monitors all traffic for status requests. Status requests will be returned as CAL. Replies are
+   * modified by exstat. Usually used in conjunction with connect.
+   */
   public boolean getMonitor() {
     return monitor;
   }
 
+  /** Same as connect. In addition it will return remote network SAL */
   public boolean getMonall() {
     return monall;
   }
 
+  /** Serial interface will emit a power up notification */
   public boolean getPun() {
     return pun;
   }
 
+  /** causes parameter change notifications to be emitted. */
   public boolean getPcn() {
     return pcn;
   }
 
+  /** enabled the checksum checks */
   public boolean getSrchk() {
     return srchk;
   }

@@ -47,6 +47,7 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
   }
 
   // Properties.
+  /** 4 bytes ADS error number */
   protected final ReturnCode result;
 
   public AdsWriteControlResponse(
@@ -61,6 +62,7 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
     this.result = result;
   }
 
+  /** 4 bytes ADS error number */
   public ReturnCode getResult() {
     return result;
   }

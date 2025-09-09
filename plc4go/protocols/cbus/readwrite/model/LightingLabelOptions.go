@@ -41,8 +41,10 @@ type LightingLabelOptions interface {
 	utils.Serializable
 	utils.Copyable
 	// GetLabelFlavour returns LabelFlavour (property field)
+	// only for dynamic icon loading can switch to 1
 	GetLabelFlavour() LightingLabelFlavour
 	// GetLabelType returns LabelType (property field)
+	// For Lighting, this bit must be 0
 	GetLabelType() LightingLabelType
 	// IsLightingLabelOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingLabelOptions()

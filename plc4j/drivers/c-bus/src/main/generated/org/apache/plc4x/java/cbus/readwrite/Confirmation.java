@@ -39,7 +39,10 @@ public class Confirmation implements Message {
 
   // Properties.
   protected final Alpha alpha;
+
+  /** TODO: seem like sometimes there are two alphas in a confirmation... check that */
   protected final Alpha secondAlpha;
+
   protected final ConfirmationType confirmationType;
 
   public Confirmation(Alpha alpha, Alpha secondAlpha, ConfirmationType confirmationType) {
@@ -53,6 +56,7 @@ public class Confirmation implements Message {
     return alpha;
   }
 
+  /** TODO: seem like sometimes there are two alphas in a confirmation... check that */
   public Alpha getSecondAlpha() {
     return secondAlpha;
   }

@@ -43,6 +43,7 @@ public class SALDataHeating extends SALData implements Message {
   }
 
   // Properties.
+  /** Note: the documentation states that the data for heating uses LightingData */
   protected final LightingData heatingData;
 
   public SALDataHeating(SALData salData, LightingData heatingData) {
@@ -50,6 +51,7 @@ public class SALDataHeating extends SALData implements Message {
     this.heatingData = heatingData;
   }
 
+  /** Note: the documentation states that the data for heating uses LightingData */
   public LightingData getHeatingData() {
     return heatingData;
   }

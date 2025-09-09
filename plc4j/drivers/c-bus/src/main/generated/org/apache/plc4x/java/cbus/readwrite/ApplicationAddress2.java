@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ApplicationAddress2 implements Message {
 
   // Properties.
+  /** Note 1 */
   protected final byte address;
 
   public ApplicationAddress2(byte address) {
@@ -45,6 +46,7 @@ public class ApplicationAddress2 implements Message {
     this.address = address;
   }
 
+  /** Note 1 */
   public byte getAddress() {
     return address;
   }

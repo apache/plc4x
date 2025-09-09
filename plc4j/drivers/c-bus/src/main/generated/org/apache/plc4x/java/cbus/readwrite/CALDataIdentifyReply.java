@@ -40,7 +40,9 @@ public class CALDataIdentifyReply extends CALData implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  /** Reply */
   protected final Attribute attribute;
+
   protected final IdentifyReplyCommand identifyReplyCommand;
 
   public CALDataIdentifyReply(
@@ -54,6 +56,7 @@ public class CALDataIdentifyReply extends CALData implements Message {
     this.identifyReplyCommand = identifyReplyCommand;
   }
 
+  /** Reply */
   public Attribute getAttribute() {
     return attribute;
   }

@@ -50,6 +50,7 @@ type MonitoredSALShortFormBasicMode interface {
 	// GetNoCounts returns NoCounts (property field)
 	GetNoCounts() *byte
 	// GetApplication returns Application (property field)
+	// TODO: add validation that this is 0x00 when no bridge and network number are set
 	GetApplication() ApplicationIdContainer
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData

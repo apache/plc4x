@@ -47,6 +47,11 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
   protected final BACnetContextTagObjectIdentifier objectIdentifier;
   protected final BACnetPropertyIdentifierTagged propertyIdentifier;
   protected final BACnetContextTagUnsignedInteger propertyArrayIndex;
+
+  /**
+   * TODO: this attribute should be named range but this is a keyword in golang (so at this point we
+   * should build a language translator which makes keywords safe)
+   */
   protected final BACnetConfirmedServiceRequestReadRangeRange readRange;
 
   public BACnetConfirmedServiceRequestReadRange(
@@ -74,6 +79,10 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     return propertyArrayIndex;
   }
 
+  /**
+   * TODO: this attribute should be named range but this is a keyword in golang (so at this point we
+   * should build a language translator which makes keywords safe)
+   */
   public BACnetConfirmedServiceRequestReadRangeRange getReadRange() {
     return readRange;
   }

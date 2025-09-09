@@ -47,6 +47,7 @@ type RequestCommand interface {
 	// GetCBusOptions returns CBusOptions (property field)
 	GetCBusOptions() CBusOptions
 	// GetCbusCommand returns CbusCommand (property field)
+	// 0x5C == "\"
 	GetCbusCommand() CBusCommand
 	// GetChksum returns Chksum (property field)
 	GetChksum() Checksum

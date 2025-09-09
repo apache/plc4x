@@ -42,6 +42,7 @@ type SALDataIrrigationControl interface {
 	utils.Copyable
 	SALData
 	// GetIrrigationControlData returns IrrigationControlData (property field)
+	// Note: the documentation states that the data for irrigation control uses LightingData
 	GetIrrigationControlData() LightingData
 	// IsSALDataIrrigationControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataIrrigationControl()

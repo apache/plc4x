@@ -42,6 +42,7 @@ type SALDataHeating interface {
 	utils.Copyable
 	SALData
 	// GetHeatingData returns HeatingData (property field)
+	// Note: the documentation states that the data for heating uses LightingData
 	GetHeatingData() LightingData
 	// IsSALDataHeating is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataHeating()

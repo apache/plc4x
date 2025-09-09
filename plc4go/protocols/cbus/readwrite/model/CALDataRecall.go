@@ -42,6 +42,7 @@ type CALDataRecall interface {
 	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
+	// Request
 	GetParamNo() Parameter
 	// GetCount returns Count (property field)
 	GetCount() uint8

@@ -46,6 +46,7 @@ type BACnetConstructedDataLinkSpeeds interface {
 	// GetLinkSpeeds returns LinkSpeeds (property field)
 	GetLinkSpeeds() []BACnetApplicationTagReal
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataLinkSpeeds is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLinkSpeeds()

@@ -46,6 +46,7 @@ type MultipleServiceRequest interface {
 	utils.Copyable
 	CipService
 	// GetData returns Data (property field)
+	//Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
 	GetData() Services
 	// IsMultipleServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMultipleServiceRequest()

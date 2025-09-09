@@ -47,8 +47,13 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
   }
 
   // Properties.
+  /** 2 bytes New ADS status (see data type ADSSTATE of the ADS-DLL). */
   protected final int adsState;
+
+  /** 2 bytes New device status. */
   protected final int deviceState;
+
+  /** n bytes Additional data which are sent to the ADS device */
   protected final byte[] data;
 
   public AdsWriteControlRequest(
@@ -67,14 +72,17 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
     this.data = data;
   }
 
+  /** 2 bytes New ADS status (see data type ADSSTATE of the ADS-DLL). */
   public int getAdsState() {
     return adsState;
   }
 
+  /** 2 bytes New device status. */
   public int getDeviceState() {
     return deviceState;
   }
 
+  /** n bytes Additional data which are sent to the ADS device */
   public byte[] getData() {
     return data;
   }

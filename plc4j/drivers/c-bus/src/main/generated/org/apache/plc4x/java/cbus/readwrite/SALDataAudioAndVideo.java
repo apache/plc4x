@@ -43,6 +43,7 @@ public class SALDataAudioAndVideo extends SALData implements Message {
   }
 
   // Properties.
+  /** Note: the documentation states that the data for audio video data uses LightingData */
   protected final LightingData audioVideoData;
 
   public SALDataAudioAndVideo(SALData salData, LightingData audioVideoData) {
@@ -50,6 +51,7 @@ public class SALDataAudioAndVideo extends SALData implements Message {
     this.audioVideoData = audioVideoData;
   }
 
+  /** Note: the documentation states that the data for audio video data uses LightingData */
   public LightingData getAudioVideoData() {
     return audioVideoData;
   }

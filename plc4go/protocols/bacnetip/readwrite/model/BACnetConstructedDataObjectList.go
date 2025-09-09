@@ -46,6 +46,7 @@ type BACnetConstructedDataObjectList interface {
 	// GetObjectList returns ObjectList (property field)
 	GetObjectList() []BACnetApplicationTagObjectIdentifier
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataObjectList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataObjectList()

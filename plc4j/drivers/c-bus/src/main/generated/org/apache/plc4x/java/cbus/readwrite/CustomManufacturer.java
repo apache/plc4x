@@ -38,7 +38,9 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CustomManufacturer implements Message {
 
   // Properties.
+  /** Note 7 */
   protected final short numBytes;
+
   protected final String customString;
 
   public CustomManufacturer(short numBytes, String customString) {
@@ -47,6 +49,7 @@ public class CustomManufacturer implements Message {
     this.customString = customString;
   }
 
+  /** Note 7 */
   public short getNumBytes() {
     return numBytes;
   }

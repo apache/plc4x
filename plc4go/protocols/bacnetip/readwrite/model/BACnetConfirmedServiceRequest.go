@@ -51,6 +51,7 @@ type BACnetConfirmedServiceRequest interface {
 // BACnetConfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
 type BACnetConfirmedServiceRequestContract interface {
 	// GetServiceRequestLength returns ServiceRequestLength (property field)
+	// we subtract serviceChoice from our payload
 	GetServiceRequestLength() uint32
 	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
 	GetServiceRequestPayloadLength() uint32

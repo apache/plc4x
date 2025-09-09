@@ -58,6 +58,10 @@ type AdsSymbolTableEntry interface {
 	// GetDataType returns DataType (property field)
 	GetDataType() uint32
 	// GetFlagMethodDeref returns FlagMethodDeref (property field)
+	// Start: Flags
+	// https://github.com/jisotalo/ads-server/blob/master/src/ads-commons.ts#L631
+	// Order of the bits if read Little-Endian and then accessing the bit flags
+	// 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8  |  23 22 21 20 19 18 17 16 | 31 30 29 28 27 26 25 24
 	GetFlagMethodDeref() bool
 	// GetFlagItfMethodAccess returns FlagItfMethodAccess (property field)
 	GetFlagItfMethodAccess() bool
@@ -90,6 +94,11 @@ type AdsSymbolTableEntry interface {
 	// GetComment returns Comment (property field)
 	GetComment() string
 	// GetRest returns Rest (property field)
+	// Gobbling up the rest, but it seems there is content in here, when looking
+	// at the data in wireshark, it seems to be related to the flags field.
+	// Will have to continue searching for more details on how to decode this.
+	// I would assume that we'll have some "optional" fields here which depend
+	// on values in the flags section.
 	GetRest() []byte
 	// IsAdsSymbolTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsSymbolTableEntry()

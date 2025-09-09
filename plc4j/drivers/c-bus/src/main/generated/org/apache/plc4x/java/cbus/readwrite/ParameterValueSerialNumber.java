@@ -44,6 +44,8 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
 
   // Properties.
   protected final SerialNumber value;
+
+  /** TODO: find out what additional bytes mean here... */
   protected final byte[] data;
 
   public ParameterValueSerialNumber(SerialNumber value, byte[] data) {
@@ -56,6 +58,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
     return value;
   }
 
+  /** TODO: find out what additional bytes mean here... */
   public byte[] getData() {
     return data;
   }

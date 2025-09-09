@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AmsTCPPacket implements Message {
 
   // Properties.
+  /** The AMS packet to be sent. */
   protected final AmsPacket userdata;
 
   public AmsTCPPacket(AmsPacket userdata) {
@@ -45,6 +46,7 @@ public class AmsTCPPacket implements Message {
     this.userdata = userdata;
   }
 
+  /** The AMS packet to be sent. */
   public AmsPacket getUserdata() {
     return userdata;
   }

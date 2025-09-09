@@ -47,8 +47,13 @@ public class AdsWriteRequest extends AmsPacket implements Message {
   }
 
   // Properties.
+  /** 4 bytes Index Group of the data which should be written. */
   protected final long indexGroup;
+
+  /** 4 bytes Index Offset of the data which should be written. */
   protected final long indexOffset;
+
+  /** n bytes Data which are written in the ADS device. */
   protected final byte[] data;
 
   public AdsWriteRequest(
@@ -67,14 +72,17 @@ public class AdsWriteRequest extends AmsPacket implements Message {
     this.data = data;
   }
 
+  /** 4 bytes Index Group of the data which should be written. */
   public long getIndexGroup() {
     return indexGroup;
   }
 
+  /** 4 bytes Index Offset of the data which should be written. */
   public long getIndexOffset() {
     return indexOffset;
   }
 
+  /** n bytes Data which are written in the ADS device. */
   public byte[] getData() {
     return data;
   }

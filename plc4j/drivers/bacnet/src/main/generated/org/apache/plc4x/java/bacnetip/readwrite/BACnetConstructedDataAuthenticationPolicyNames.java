@@ -71,6 +71,7 @@ public class BACnetConstructedDataAuthenticationPolicyNames extends BACnetConstr
     return authenticationPolicyNames;
   }
 
+  /** TODO: uint 64 ---> big int in java == boom */
   public BigInteger getZero() {
     Object o = 0L;
     if (o instanceof BigInteger) return (BigInteger) o;

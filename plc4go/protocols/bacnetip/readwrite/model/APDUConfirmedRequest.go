@@ -60,6 +60,7 @@ type APDUConfirmedRequest interface {
 	// GetServiceRequest returns ServiceRequest (property field)
 	GetServiceRequest() BACnetConfirmedServiceRequest
 	// GetSegmentServiceChoice returns SegmentServiceChoice (property field)
+	// When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
 	GetSegmentServiceChoice() *BACnetConfirmedServiceChoice
 	// GetSegment returns Segment (property field)
 	GetSegment() []byte

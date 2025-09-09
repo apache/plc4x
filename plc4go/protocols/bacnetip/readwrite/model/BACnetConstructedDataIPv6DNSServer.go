@@ -46,6 +46,7 @@ type BACnetConstructedDataIPv6DNSServer interface {
 	// GetIpv6DnsServer returns Ipv6DnsServer (property field)
 	GetIpv6DnsServer() []BACnetApplicationTagOctetString
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataIPv6DNSServer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPv6DNSServer()

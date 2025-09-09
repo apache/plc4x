@@ -39,6 +39,8 @@ public class ParameterChange implements Message {
 
   // Constant values.
   public static final Byte SPECIALCHAR1 = 0x3D;
+
+  /** "=" */
   public static final Byte SPECIALCHAR2 = 0x3D;
 
   public ParameterChange() {
@@ -49,6 +51,7 @@ public class ParameterChange implements Message {
     return SPECIALCHAR1;
   }
 
+  /** "=" */
   public byte getSpecialChar2() {
     return SPECIALCHAR2;
   }

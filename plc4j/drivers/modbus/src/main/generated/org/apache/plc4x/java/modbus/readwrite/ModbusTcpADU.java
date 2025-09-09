@@ -43,11 +43,25 @@ public class ModbusTcpADU extends ModbusADU implements Message {
   }
 
   // Constant values.
+  /** It is used for intra-system multiplexing. The MODBUS protocol is identified by the value 0. */
   public static final Integer PROTOCOLIDENTIFIER = 0x0000;
 
   // Properties.
+  /**
+   * It is used for transaction pairing, the MODBUS server copies in the response the transaction
+   * identifier of the request.
+   */
   protected final int transactionIdentifier;
+
+  /**
+   * This field is used for intra-system routing purpose. It is typically used to communicate to a
+   * MODBUS+ or a MODBUS serial line slave through a gateway between an Ethernet TCP-IP network and
+   * a MODBUS serial line. This field is set by the MODBUS Client in the request and must be
+   * returned with the same value in the response by the server.
+   */
   protected final short unitIdentifier;
+
+  /** The actual modbus payload */
   protected final ModbusPDU pdu;
 
   public ModbusTcpADU(int transactionIdentifier, short unitIdentifier, ModbusPDU pdu) {
@@ -57,18 +71,30 @@ public class ModbusTcpADU extends ModbusADU implements Message {
     this.pdu = pdu;
   }
 
+  /**
+   * It is used for transaction pairing, the MODBUS server copies in the response the transaction
+   * identifier of the request.
+   */
   public int getTransactionIdentifier() {
     return transactionIdentifier;
   }
 
+  /**
+   * This field is used for intra-system routing purpose. It is typically used to communicate to a
+   * MODBUS+ or a MODBUS serial line slave through a gateway between an Ethernet TCP-IP network and
+   * a MODBUS serial line. This field is set by the MODBUS Client in the request and must be
+   * returned with the same value in the response by the server.
+   */
   public short getUnitIdentifier() {
     return unitIdentifier;
   }
 
+  /** The actual modbus payload */
   public ModbusPDU getPdu() {
     return pdu;
   }
 
+  /** It is used for intra-system multiplexing. The MODBUS protocol is identified by the value 0. */
   public int getProtocolIdentifier() {
     return PROTOCOLIDENTIFIER;
   }

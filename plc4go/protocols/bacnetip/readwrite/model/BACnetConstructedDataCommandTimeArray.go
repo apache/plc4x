@@ -46,6 +46,7 @@ type BACnetConstructedDataCommandTimeArray interface {
 	// GetCommandTimeArray returns CommandTimeArray (property field)
 	GetCommandTimeArray() []BACnetTimeStamp
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataCommandTimeArray is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCommandTimeArray()

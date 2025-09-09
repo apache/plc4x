@@ -46,8 +46,10 @@ type BACnetTagPayloadCharacterString interface {
 	// GetEncoding returns Encoding (property field)
 	GetEncoding() BACnetCharacterEncoding
 	// GetValue returns Value (property field)
+	// TODO: call to string on encoding or add type conversion so we can use the enum above
 	GetValue() string
 	// GetActualLengthInBit returns ActualLengthInBit (virtual field)
+	// TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
 	GetActualLengthInBit() uint16
 	// IsBACnetTagPayloadCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadCharacterString()

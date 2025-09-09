@@ -46,6 +46,7 @@ type BACnetConstructedDataAction interface {
 	// GetActionLists returns ActionLists (property field)
 	GetActionLists() []BACnetActionList
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataAction is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAction()

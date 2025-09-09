@@ -111,7 +111,14 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
   protected final Status selfTapStatus;
   protected final Status prevailTorqueMonitoringStatus;
   protected final Status prevailTorqueCompensateStatus;
+
+  /**
+   * Unfortunately we can only parse unsigned ints up to 64 bits, in this case we need to do a
+   * little detour and parse it as a string, and then use a StaticHelper to parse the string and
+   * check if a bit is set.
+   */
   protected final String tighteningErrorStatus;
+
   protected final long torqueMinLimit;
   protected final long torqueMaxLimit;
   protected final long torqueFinalTarget;
@@ -325,6 +332,11 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     return prevailTorqueCompensateStatus;
   }
 
+  /**
+   * Unfortunately we can only parse unsigned ints up to 64 bits, in this case we need to do a
+   * little detour and parse it as a string, and then use a StaticHelper to parse the string and
+   * check if a bit is set.
+   */
   public String getTighteningErrorStatus() {
     return tighteningErrorStatus;
   }

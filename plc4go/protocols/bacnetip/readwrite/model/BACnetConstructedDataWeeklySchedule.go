@@ -46,6 +46,7 @@ type BACnetConstructedDataWeeklySchedule interface {
 	// GetWeeklySchedule returns WeeklySchedule (property field)
 	GetWeeklySchedule() []BACnetDailySchedule
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataWeeklySchedule is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataWeeklySchedule()

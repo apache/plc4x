@@ -42,6 +42,7 @@ type CALDataAcknowledge interface {
 	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
+	// Reply
 	GetParamNo() Parameter
 	// GetCode returns Code (property field)
 	GetCode() uint8

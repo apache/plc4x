@@ -42,10 +42,13 @@ type AdsReadStateResponse interface {
 	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
+	// 4 bytes	ADS error number
 	GetResult() ReturnCode
 	// GetAdsState returns AdsState (property field)
+	// 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState (property field)
+	// 2 bytes	New device status.
 	GetDeviceState() uint16
 	// IsAdsReadStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadStateResponse()

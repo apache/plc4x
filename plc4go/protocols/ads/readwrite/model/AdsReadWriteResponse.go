@@ -42,8 +42,10 @@ type AdsReadWriteResponse interface {
 	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
+	// 4 bytes	ADS error number
 	GetResult() ReturnCode
 	// GetData returns Data (property field)
+	// n bytes Additional data which are sent to the ADS device
 	GetData() []byte
 	// IsAdsReadWriteResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadWriteResponse()

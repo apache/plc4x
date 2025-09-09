@@ -69,7 +69,7 @@ ${helper.getExternalTypeImports()}
 
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.allParserArguments.orElseThrow()></#if>
-public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if><#if type.parentType.isPresent()> extends ${type.parentType.orElseThrow().name}</#if> implements Message {
+<#if type.comment.isPresent()>${helper.toJDoc(type.comment.get())+"\n"}</#if>public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if><#if type.parentType.isPresent()> extends ${type.parentType.orElseThrow().name}</#if> implements Message {
 
 <#--
     If this is a discriminated child type, we need to generate methods for accessing it's discriminator
@@ -116,7 +116,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Constant values.
     <#list type.constFields as field>
-    public static final ${helper.getLanguageTypeNameForTypeReference(field.type)} ${field.name?upper_case} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)};
+    <#if field.comment.isPresent()>${helper.toJDoc(field.comment.get())+"\n"}</#if>public static final ${helper.getLanguageTypeNameForTypeReference(field.type)} ${field.name?upper_case} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)};
     </#list>
 </#if>
 <#-- Property fields are fields that require a property in the pojo -->
@@ -124,7 +124,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Properties.
     <#list type.propertyFields as field>
-    protected final ${helper.getLanguageTypeNameForTypeReference(field.type, !field.isOptionalField())} ${field.name};
+    <#if field.comment.isPresent()>${helper.toJDoc(field.comment.get())+"\n"}</#if>protected final ${helper.getLanguageTypeNameForTypeReference(field.type, !field.isOptionalField())} ${field.name};
     </#list>
 </#if>
 <#-- This list contains a list of parser arguments, that are not being used as variables for discriminator expressions in typeSwitches -->
@@ -207,17 +207,17 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     }
 
 <#list type.abstractFields as field>
-    public abstract ${helper.getLanguageTypeNameForField(field)} get${field.asNamedField().orElseThrow().name?cap_first}();
+    <#if field.comment.isPresent()>${helper.toJDoc(field.comment.get())+"\n"}</#if>public abstract ${helper.getLanguageTypeNameForField(field)} get${field.asNamedField().orElseThrow().name?cap_first}();
 
 </#list>
 <#list type.propertyFields as field>
-    public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
+    <#if field.comment.isPresent()>${helper.toJDoc(field.comment.get())+"\n"}</#if>public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
         return ${field.name};
     }
 
 </#list>
 <#list type.virtualFields as field>
-    public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
+    <#if field.comment.isPresent()>${helper.toJDoc(field.comment.get())+"\n"}</#if>public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
         <#if helper.getLanguageTypeNameForField(field) = 'String'>
         return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
         <#--elseif helper.getLanguageTypeNameForField(field) = 'BigInteger' && !helper.isBigIntegerSource(field.valueExpression)-->
@@ -233,7 +233,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
 </#list>
 <#list type.constFields as field>
-    public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
+    <#if field.comment.isPresent()>${helper.toJDoc(field.comment.get())+"\n"}</#if>public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
         return ${field.name?upper_case};
     }
 

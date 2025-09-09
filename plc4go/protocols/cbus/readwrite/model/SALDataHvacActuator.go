@@ -42,6 +42,7 @@ type SALDataHvacActuator interface {
 	utils.Copyable
 	SALData
 	// GetHvacActuatorData returns HvacActuatorData (property field)
+	// Note: the documentation states that the data for hvac actuator uses LightingData
 	GetHvacActuatorData() LightingData
 	// IsSALDataHvacActuator is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataHvacActuator()

@@ -40,6 +40,7 @@ public class CALDataIdentify extends CALData implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  /** Request */
   protected final Attribute attribute;
 
   public CALDataIdentify(
@@ -51,6 +52,7 @@ public class CALDataIdentify extends CALData implements Message {
     this.attribute = attribute;
   }
 
+  /** Request */
   public Attribute getAttribute() {
     return attribute;
   }

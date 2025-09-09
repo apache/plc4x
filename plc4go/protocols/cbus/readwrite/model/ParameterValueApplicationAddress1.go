@@ -44,6 +44,7 @@ type ParameterValueApplicationAddress1 interface {
 	// GetValue returns Value (property field)
 	GetValue() ApplicationAddress1
 	// GetData returns Data (property field)
+	// TODO: find out what additional bytes mean here... would that be application address 2 then?
 	GetData() []byte
 	// IsParameterValueApplicationAddress1 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueApplicationAddress1()

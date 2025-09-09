@@ -44,10 +44,15 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
   // Constant values.
   public static final Byte VERSION = 0x4;
+
+  /** 5 = 5 x 32bit = 5 x 4byte = 20byte */
   public static final Byte HEADERLENGTH = 0x5;
+
   public static final Byte DIFFERENTIATEDSERVICESCODEPOINT = 0x00;
   public static final Byte EXPLICITCONGESTIONNOTIFICATION = 0x0;
   public static final Short FRAGMENTOFFSET = 0x00;
+
+  /** Protocol: UDP */
   public static final Short PROTOCOL = 0x11;
 
   // Properties.
@@ -57,7 +62,10 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
   protected final short timeToLive;
   protected final IpAddress sourceAddress;
   protected final IpAddress destinationAddress;
+
+  /** Begin of the UDP packet part */
   protected final int sourcePort;
+
   protected final int destinationPort;
   protected final DceRpc_Packet payload;
   // Reserved Fields
@@ -109,6 +117,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     return destinationAddress;
   }
 
+  /** Begin of the UDP packet part */
   public int getSourcePort() {
     return sourcePort;
   }
@@ -125,6 +134,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     return VERSION;
   }
 
+  /** 5 = 5 x 32bit = 5 x 4byte = 20byte */
   public byte getHeaderLength() {
     return HEADERLENGTH;
   }
@@ -141,6 +151,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     return FRAGMENTOFFSET;
   }
 
+  /** Protocol: UDP */
   public short getProtocol() {
     return PROTOCOL;
   }

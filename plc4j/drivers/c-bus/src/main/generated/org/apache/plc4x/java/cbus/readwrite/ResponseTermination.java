@@ -39,6 +39,8 @@ public class ResponseTermination implements Message {
 
   // Constant values.
   public static final Byte CR = 0x0D;
+
+  /** 0xD == "<cr>" */
   public static final Byte LF = 0x0A;
 
   public ResponseTermination() {
@@ -49,6 +51,7 @@ public class ResponseTermination implements Message {
     return CR;
   }
 
+  /** 0xD == "<cr>" */
   public byte getLf() {
     return LF;
   }

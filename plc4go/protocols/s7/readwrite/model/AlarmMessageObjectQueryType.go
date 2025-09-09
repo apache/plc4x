@@ -38,6 +38,7 @@ import (
 const AlarmMessageObjectQueryType_VARIABLESPEC uint8 = 0x12
 
 // AlarmMessageObjectQueryType is the corresponding interface of AlarmMessageObjectQueryType
+// TODO: Check for Alarm_8
 type AlarmMessageObjectQueryType interface {
 	fmt.Stringer
 	utils.LengthAware

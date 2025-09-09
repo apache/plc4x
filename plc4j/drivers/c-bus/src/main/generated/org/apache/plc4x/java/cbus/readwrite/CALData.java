@@ -42,6 +42,8 @@ public abstract class CALData implements Message {
   // Properties.
   protected final RequestContext requestContext;
   protected final CALCommandTypeContainer commandTypeContainer;
+
+  /** Note: we omit the request context as it is only useful for the first element */
   protected final CALData additionalData;
 
   public CALData(
@@ -62,6 +64,7 @@ public abstract class CALData implements Message {
     return commandTypeContainer;
   }
 
+  /** Note: we omit the request context as it is only useful for the first element */
   public CALData getAdditionalData() {
     return additionalData;
   }

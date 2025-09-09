@@ -63,10 +63,13 @@ type NPDU interface {
 	// GetApdu returns Apdu (property field)
 	GetApdu() APDU
 	// GetDestinationLengthAddon returns DestinationLengthAddon (virtual field)
+	// (destinationNetworkAddress(16bit) + destinationLength(8bit) + destinationLength)?
 	GetDestinationLengthAddon() uint16
 	// GetSourceLengthAddon returns SourceLengthAddon (virtual field)
+	// (sourceNetworkAddress(16bit) + sourceLength(8bit) + sourceLength)?
 	GetSourceLengthAddon() uint16
 	// GetPayloadSubtraction returns PayloadSubtraction (virtual field)
+	// protocolVersionNumber(8bit) + control(8bit) + sourceLengthAddon + destinationLengthAddon + hopcount
 	GetPayloadSubtraction() uint16
 	// IsNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNPDU()

@@ -40,7 +40,9 @@ public class CALDataReply extends CALData implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  /** Reply */
   protected final Parameter paramNo;
+
   protected final ParameterValue parameterValue;
 
   public CALDataReply(
@@ -54,6 +56,7 @@ public class CALDataReply extends CALData implements Message {
     this.parameterValue = parameterValue;
   }
 
+  /** Reply */
   public Parameter getParamNo() {
     return paramNo;
   }

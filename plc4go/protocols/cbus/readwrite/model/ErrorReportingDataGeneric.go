@@ -54,6 +54,7 @@ type ErrorReportingDataGeneric interface {
 	// GetDeviceId returns DeviceId (property field)
 	GetDeviceId() uint8
 	// GetErrorData1 returns ErrorData1 (property field)
+	// TODO: maybe split them up according to appendix A
 	GetErrorData1() uint8
 	// GetErrorData2 returns ErrorData2 (property field)
 	GetErrorData2() uint8

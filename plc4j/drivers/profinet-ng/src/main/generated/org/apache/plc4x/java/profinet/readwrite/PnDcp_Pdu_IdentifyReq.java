@@ -45,8 +45,12 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
   public static final Boolean RESPONSE = false;
 
   // Properties.
+  /** ServiceType End 4.3.1.3.3 (Page 95) */
   protected final long xid;
+
+  /** 4.3.1.3.5 (Page 95ff) */
   protected final int responseDelay;
+
   protected final List<PnDcp_Block> blocks;
   // Reserved Fields
   private Byte reservedField0;
@@ -60,10 +64,12 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
     this.blocks = blocks;
   }
 
+  /** ServiceType End 4.3.1.3.3 (Page 95) */
   public long getXid() {
     return xid;
   }
 
+  /** 4.3.1.3.5 (Page 95ff) */
   public int getResponseDelay() {
     return responseDelay;
   }

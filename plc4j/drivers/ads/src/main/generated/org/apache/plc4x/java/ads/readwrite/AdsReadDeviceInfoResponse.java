@@ -47,10 +47,19 @@ public class AdsReadDeviceInfoResponse extends AmsPacket implements Message {
   }
 
   // Properties.
+  /** 4 bytes ADS error number. */
   protected final ReturnCode result;
+
+  /** Version 1 byte Major version number */
   protected final short majorVersion;
+
+  /** Version 1 byte Minor version number */
   protected final short minorVersion;
+
+  /** Build 2 bytes Build number */
   protected final int version;
+
+  /** Name 16 bytes Name of ADS device */
   protected final byte[] device;
 
   public AdsReadDeviceInfoResponse(
@@ -73,22 +82,27 @@ public class AdsReadDeviceInfoResponse extends AmsPacket implements Message {
     this.device = device;
   }
 
+  /** 4 bytes ADS error number. */
   public ReturnCode getResult() {
     return result;
   }
 
+  /** Version 1 byte Major version number */
   public short getMajorVersion() {
     return majorVersion;
   }
 
+  /** Version 1 byte Minor version number */
   public short getMinorVersion() {
     return minorVersion;
   }
 
+  /** Build 2 bytes Build number */
   public int getVersion() {
     return version;
   }
 
+  /** Name 16 bytes Name of ADS device */
   public byte[] getDevice() {
     return device;
   }

@@ -43,6 +43,7 @@ type AmsTCPPacket interface {
 	utils.Serializable
 	utils.Copyable
 	// GetUserdata returns Userdata (property field)
+	// The AMS packet to be sent.
 	GetUserdata() AmsPacket
 	// IsAmsTCPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsTCPPacket()

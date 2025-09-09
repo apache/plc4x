@@ -41,10 +41,13 @@ type AdsNotificationSample interface {
 	utils.Serializable
 	utils.Copyable
 	// GetNotificationHandle returns NotificationHandle (property field)
+	// 4 bytes	Handle of notification
 	GetNotificationHandle() uint32
 	// GetSampleSize returns SampleSize (property field)
+	// 4 Bytes	Size of data range in bytes.
 	GetSampleSize() uint32
 	// GetData returns Data (property field)
+	// n Bytes	Data
 	GetData() []byte
 	// IsAdsNotificationSample is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsNotificationSample()

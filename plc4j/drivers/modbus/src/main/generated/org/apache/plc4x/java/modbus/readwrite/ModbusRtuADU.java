@@ -44,6 +44,8 @@ public class ModbusRtuADU extends ModbusADU implements Message {
 
   // Properties.
   protected final short address;
+
+  /** The actual modbus payload */
   protected final ModbusPDU pdu;
 
   public ModbusRtuADU(short address, ModbusPDU pdu) {
@@ -56,6 +58,7 @@ public class ModbusRtuADU extends ModbusADU implements Message {
     return address;
   }
 
+  /** The actual modbus payload */
   public ModbusPDU getPdu() {
     return pdu;
   }

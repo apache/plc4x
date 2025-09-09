@@ -46,6 +46,7 @@ type BACnetConstructedDataExecutionDelay interface {
 	// GetExecutionDelay returns ExecutionDelay (property field)
 	GetExecutionDelay() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
+	// TODO: uint 64 ---> big int in java == boom
 	GetZero() uint64
 	// IsBACnetConstructedDataExecutionDelay is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataExecutionDelay()

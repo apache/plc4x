@@ -47,8 +47,13 @@ public class AdsReadRequest extends AmsPacket implements Message {
   }
 
   // Properties.
+  /** 4 bytes Index Group of the data which should be read. */
   protected final long indexGroup;
+
+  /** 4 bytes Index Offset of the data which should be read. */
   protected final long indexOffset;
+
+  /** 4 bytes Length of the data (in bytes) which should be read. */
   protected final long length;
 
   public AdsReadRequest(
@@ -67,14 +72,17 @@ public class AdsReadRequest extends AmsPacket implements Message {
     this.length = length;
   }
 
+  /** 4 bytes Index Group of the data which should be read. */
   public long getIndexGroup() {
     return indexGroup;
   }
 
+  /** 4 bytes Index Offset of the data which should be read. */
   public long getIndexOffset() {
     return indexOffset;
   }
 
+  /** 4 bytes Length of the data (in bytes) which should be read. */
   public long getLength() {
     return length;
   }

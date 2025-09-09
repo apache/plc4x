@@ -39,8 +39,17 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AdsStampHeader implements Message {
 
   // Properties.
+  /**
+   * 8 bytes The timestamp is coded after the Windows FILETIME format. I.e. the value contains the
+   * number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is
+   * not considered. Thus the time stamp is present as universal Coordinated time (UTC).
+   */
   protected final BigInteger timestamp;
+
+  /** 4 bytes Number of elements of type AdsNotificationSample. */
   protected final long samples;
+
+  /** n bytes Array with elements of type AdsNotificationSample. */
   protected final List<AdsNotificationSample> adsNotificationSamples;
 
   public AdsStampHeader(
@@ -51,14 +60,21 @@ public class AdsStampHeader implements Message {
     this.adsNotificationSamples = adsNotificationSamples;
   }
 
+  /**
+   * 8 bytes The timestamp is coded after the Windows FILETIME format. I.e. the value contains the
+   * number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is
+   * not considered. Thus the time stamp is present as universal Coordinated time (UTC).
+   */
   public BigInteger getTimestamp() {
     return timestamp;
   }
 
+  /** 4 bytes Number of elements of type AdsNotificationSample. */
   public long getSamples() {
     return samples;
   }
 
+  /** n bytes Array with elements of type AdsNotificationSample. */
   public List<AdsNotificationSample> getAdsNotificationSamples() {
     return adsNotificationSamples;
   }

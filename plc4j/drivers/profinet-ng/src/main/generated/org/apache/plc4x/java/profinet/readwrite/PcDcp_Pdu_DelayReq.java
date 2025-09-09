@@ -40,14 +40,22 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
   // Accessors for discriminator values.
 
   // Constant values.
+  /**
+   * Delay Parameter Start TODO: This seems to usually be an array of parameters terminated by an
+   * End-Parameter which is indicated by type and length being 0
+   */
   public static final Byte PARAMETERTYPE = 6;
+
   public static final Short PARAMETERLENGTH = 6;
   public static final Byte ENDTYPE = 0;
   public static final Short ENDLENGTH = 0;
 
   // Properties.
   protected final int sequenceId;
+
+  /** Header End */
   protected final long delayInNs;
+
   protected final MacAddress portMacAddress;
   // Reserved Fields
   private Long reservedField0;
@@ -67,6 +75,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     return sequenceId;
   }
 
+  /** Header End */
   public long getDelayInNs() {
     return delayInNs;
   }
@@ -75,6 +84,10 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     return portMacAddress;
   }
 
+  /**
+   * Delay Parameter Start TODO: This seems to usually be an array of parameters terminated by an
+   * End-Parameter which is indicated by type and length being 0
+   */
   public byte getParameterType() {
     return PARAMETERTYPE;
   }

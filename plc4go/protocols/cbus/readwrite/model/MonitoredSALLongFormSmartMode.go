@@ -56,6 +56,7 @@ type MonitoredSALLongFormSmartMode interface {
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
+	// TODO: this should be subSub type but mspec doesn't support that yet directly
 	GetIsUnitAddress() bool
 	// IsMonitoredSALLongFormSmartMode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSALLongFormSmartMode()

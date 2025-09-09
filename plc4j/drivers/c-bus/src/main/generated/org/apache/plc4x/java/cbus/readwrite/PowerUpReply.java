@@ -40,6 +40,7 @@ public class PowerUpReply extends Reply implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  /** is a + */
   protected final PowerUp powerUpIndicator;
 
   public PowerUpReply(byte peekedByte, PowerUp powerUpIndicator) {
@@ -47,6 +48,7 @@ public class PowerUpReply extends Reply implements Message {
     this.powerUpIndicator = powerUpIndicator;
   }
 
+  /** is a + */
   public PowerUp getPowerUpIndicator() {
     return powerUpIndicator;
   }

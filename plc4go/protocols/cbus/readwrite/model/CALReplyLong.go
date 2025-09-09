@@ -54,6 +54,7 @@ type CALReplyLong interface {
 	// GetReplyNetwork returns ReplyNetwork (property field)
 	GetReplyNetwork() ReplyNetwork
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
+	// TODO: this should be subSub type but mspec doesn't support that yet directly
 	GetIsUnitAddress() bool
 	// IsCALReplyLong is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReplyLong()

@@ -41,6 +41,7 @@ type CustomManufacturer interface {
 	utils.Serializable
 	utils.Copyable
 	// GetNumBytes returns NumBytes (property field)
+	// Note 7
 	GetNumBytes() uint8
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string

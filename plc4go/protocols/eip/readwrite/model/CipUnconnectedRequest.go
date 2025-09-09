@@ -49,6 +49,7 @@ type CipUnconnectedRequest interface {
 	// GetInstanceSegment returns InstanceSegment (property field)
 	GetInstanceSegment() PathSegment
 	// GetUnconnectedService returns UnconnectedService (property field)
+	//subtract above and routing
 	GetUnconnectedService() CipService
 	// GetBackPlane returns BackPlane (property field)
 	GetBackPlane() int8

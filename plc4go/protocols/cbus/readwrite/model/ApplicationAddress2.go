@@ -41,6 +41,7 @@ type ApplicationAddress2 interface {
 	utils.Serializable
 	utils.Copyable
 	// GetAddress returns Address (property field)
+	// Note 1
 	GetAddress() byte
 	// GetIsWildcard returns IsWildcard (virtual field)
 	GetIsWildcard() bool

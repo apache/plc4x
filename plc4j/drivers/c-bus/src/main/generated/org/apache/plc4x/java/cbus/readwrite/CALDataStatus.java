@@ -40,7 +40,9 @@ public class CALDataStatus extends CALData implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  /** Reply */
   protected final ApplicationIdContainer application;
+
   protected final short blockStart;
   protected final List<StatusByte> statusBytes;
 
@@ -57,6 +59,7 @@ public class CALDataStatus extends CALData implements Message {
     this.statusBytes = statusBytes;
   }
 
+  /** Reply */
   public ApplicationIdContainer getApplication() {
     return application;
   }

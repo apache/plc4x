@@ -42,14 +42,19 @@ type AdsReadDeviceInfoResponse interface {
 	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
+	// 4 bytes	ADS error number.
 	GetResult() ReturnCode
 	// GetMajorVersion returns MajorVersion (property field)
+	// Version	1 byte	Major version number
 	GetMajorVersion() uint8
 	// GetMinorVersion returns MinorVersion (property field)
+	// Version	1 byte	Minor version number
 	GetMinorVersion() uint8
 	// GetVersion returns Version (property field)
+	// Build	2 bytes	Build number
 	GetVersion() uint16
 	// GetDevice returns Device (property field)
+	// Name	16 bytes	Name of ADS device
 	GetDevice() []byte
 	// IsAdsReadDeviceInfoResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadDeviceInfoResponse()

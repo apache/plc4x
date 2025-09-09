@@ -53,6 +53,7 @@ type BACnetServiceAckContract interface {
 	// GetServiceAckLength returns ServiceAckLength (property field)
 	GetServiceAckLength() uint32
 	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
+	// we subtract serviceChoice from our payload
 	GetServiceAckPayloadLength() uint32
 	// IsBACnetServiceAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAck()

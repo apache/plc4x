@@ -38,8 +38,12 @@ import org.apache.plc4x.java.spi.generation.*;
 public class LightingLabelOptions implements Message {
 
   // Properties.
+  /** only for dynamic icon loading can switch to 1 */
   protected final LightingLabelFlavour labelFlavour;
+
+  /** For Lighting, this bit must be 0 */
   protected final LightingLabelType labelType;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;
@@ -52,10 +56,12 @@ public class LightingLabelOptions implements Message {
     this.labelType = labelType;
   }
 
+  /** only for dynamic icon loading can switch to 1 */
   public LightingLabelFlavour getLabelFlavour() {
     return labelFlavour;
   }
 
+  /** For Lighting, this bit must be 0 */
   public LightingLabelType getLabelType() {
     return labelType;
   }

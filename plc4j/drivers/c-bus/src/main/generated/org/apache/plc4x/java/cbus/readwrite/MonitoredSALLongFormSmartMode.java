@@ -97,6 +97,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     return salData;
   }
 
+  /** TODO: this should be subSub type but mspec doesn't support that yet directly */
   public boolean getIsUnitAddress() {
     return (boolean) ((((getTerminatingByte()) & (0xff))) == (0x00));
   }

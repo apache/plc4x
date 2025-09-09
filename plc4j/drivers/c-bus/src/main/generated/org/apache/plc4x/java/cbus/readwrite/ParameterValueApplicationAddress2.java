@@ -44,6 +44,8 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
 
   // Properties.
   protected final ApplicationAddress2 value;
+
+  /** TODO: find out what additional bytes mean here... */
   protected final byte[] data;
 
   public ParameterValueApplicationAddress2(ApplicationAddress2 value, byte[] data) {
@@ -56,6 +58,7 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
     return value;
   }
 
+  /** TODO: find out what additional bytes mean here... */
   public byte[] getData() {
     return data;
   }

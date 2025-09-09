@@ -48,6 +48,7 @@ type BACnetConfirmedServiceRequestReadRange interface {
 	// GetPropertyArrayIndex returns PropertyArrayIndex (property field)
 	GetPropertyArrayIndex() BACnetContextTagUnsignedInteger
 	// GetReadRange returns ReadRange (property field)
+	// TODO: this attribute should be named range but this is a keyword in golang (so at this point we should build a language translator which makes keywords safe)
 	GetReadRange() BACnetConfirmedServiceRequestReadRangeRange
 	// IsBACnetConfirmedServiceRequestReadRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadRange()

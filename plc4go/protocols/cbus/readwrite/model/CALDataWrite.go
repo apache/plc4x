@@ -42,6 +42,7 @@ type CALDataWrite interface {
 	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
+	// Request
 	GetParamNo() Parameter
 	// GetCode returns Code (property field)
 	GetCode() byte

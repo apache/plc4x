@@ -42,6 +42,7 @@ type AdsDeleteDeviceNotificationRequest interface {
 	utils.Copyable
 	AmsPacket
 	// GetNotificationHandle returns NotificationHandle (property field)
+	// 4 bytes	Handle of notification
 	GetNotificationHandle() uint32
 	// IsAdsDeleteDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDeleteDeviceNotificationRequest()

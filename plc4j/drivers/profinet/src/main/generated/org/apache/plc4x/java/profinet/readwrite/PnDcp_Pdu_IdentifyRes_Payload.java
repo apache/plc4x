@@ -44,7 +44,11 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
 
   // Properties.
   protected final PnDcp_ServiceType serviceType;
+
+  /** 4.3.1.3.3 (Page 95) */
   protected final long xid;
+
+  /** 4.3.1.3.5 (Page 95ff) */
   protected final int responseDelayFactorOrPadding;
 
   public PnDcp_Pdu_IdentifyRes_Payload(
@@ -59,10 +63,12 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     return serviceType;
   }
 
+  /** 4.3.1.3.3 (Page 95) */
   public long getXid() {
     return xid;
   }
 
+  /** 4.3.1.3.5 (Page 95ff) */
   public int getResponseDelayFactorOrPadding() {
     return responseDelayFactorOrPadding;
   }

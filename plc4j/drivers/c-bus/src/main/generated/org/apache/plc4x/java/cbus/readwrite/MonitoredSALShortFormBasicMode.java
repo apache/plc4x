@@ -44,7 +44,10 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
   protected final Short bridgeCount;
   protected final Short networkNumber;
   protected final Byte noCounts;
+
+  /** TODO: add validation that this is 0x00 when no bridge and network number are set */
   protected final ApplicationIdContainer application;
+
   protected final SALData salData;
 
   public MonitoredSALShortFormBasicMode(
@@ -80,6 +83,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     return noCounts;
   }
 
+  /** TODO: add validation that this is 0x00 when no bridge and network number are set */
   public ApplicationIdContainer getApplication() {
     return application;
   }

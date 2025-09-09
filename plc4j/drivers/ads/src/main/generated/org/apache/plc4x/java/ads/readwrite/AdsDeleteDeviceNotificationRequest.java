@@ -47,6 +47,7 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
   }
 
   // Properties.
+  /** 4 bytes Handle of notification */
   protected final long notificationHandle;
 
   public AdsDeleteDeviceNotificationRequest(
@@ -61,6 +62,7 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
     this.notificationHandle = notificationHandle;
   }
 
+  /** 4 bytes Handle of notification */
   public long getNotificationHandle() {
     return notificationHandle;
   }

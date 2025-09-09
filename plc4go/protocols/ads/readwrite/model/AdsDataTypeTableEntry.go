@@ -42,6 +42,7 @@ const AdsDataTypeTableEntry_SIMPLETYPENAMETERMINATOR uint8 = 0x00
 const AdsDataTypeTableEntry_COMMENTTERMINATOR uint8 = 0x00
 
 // AdsDataTypeTableEntry is the corresponding interface of AdsDataTypeTableEntry
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L15
 type AdsDataTypeTableEntry interface {
 	fmt.Stringer
 	utils.LengthAware
@@ -78,6 +79,11 @@ type AdsDataTypeTableEntry interface {
 	// GetChildren returns Children (property field)
 	GetChildren() []AdsDataTypeTableChildEntry
 	// GetRest returns Rest (property field)
+	// Gobbling up the rest, but it seems there is content in here, when looking
+	// at the data in wireshark, it seems to be related to the flags field.
+	// Will have to continue searching for more details on how to decode this.
+	// I would assume that we'll have some "optional" fields here which depend
+	// on values in the flags section.
 	GetRest() []byte
 	// IsAdsDataTypeTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDataTypeTableEntry()

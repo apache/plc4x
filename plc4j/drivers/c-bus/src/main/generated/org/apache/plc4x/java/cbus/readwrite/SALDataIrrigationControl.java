@@ -43,6 +43,7 @@ public class SALDataIrrigationControl extends SALData implements Message {
   }
 
   // Properties.
+  /** Note: the documentation states that the data for irrigation control uses LightingData */
   protected final LightingData irrigationControlData;
 
   public SALDataIrrigationControl(SALData salData, LightingData irrigationControlData) {
@@ -50,6 +51,7 @@ public class SALDataIrrigationControl extends SALData implements Message {
     this.irrigationControlData = irrigationControlData;
   }
 
+  /** Note: the documentation states that the data for irrigation control uses LightingData */
   public LightingData getIrrigationControlData() {
     return irrigationControlData;
   }

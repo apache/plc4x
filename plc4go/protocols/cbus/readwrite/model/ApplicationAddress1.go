@@ -41,8 +41,10 @@ type ApplicationAddress1 interface {
 	utils.Serializable
 	utils.Copyable
 	// GetAddress returns Address (property field)
+	// Note 1
 	GetAddress() byte
 	// GetIsWildcard returns IsWildcard (virtual field)
+	// if wildcard is set address 2 should set to wildcard as well
 	GetIsWildcard() bool
 	// IsApplicationAddress1 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApplicationAddress1()
