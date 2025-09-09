@@ -23,6 +23,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecBaseListener;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecLexer;
@@ -120,7 +121,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
         var defLine = startToken.getLine();
         if (!frontComments.isEmpty() && frontComments.getFirst().getLine() == defLine - 1) {
-            frontComments.reversed().forEach(token -> comment.append(token.getText()));
+            frontComments.reversed().stream().map(Token::getText).forEach(tokenText -> comment.append(tokenText).append('\n'));
         }
 
         if (eolComment != null && eolComment.getLine() == defLine) {
@@ -130,7 +131,12 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         if (comment.isEmpty()) {
             return null;
         }
-        return comment.toString();
+        String commentString = comment.toString();
+        if (StringUtils.isBlank(commentString)) {
+            return null;
+        }
+        commentString = StringUtils.stripEnd(commentString, "\n");
+        return commentString;
     }
 
     @Override
