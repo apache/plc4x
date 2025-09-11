@@ -59,7 +59,7 @@ test: compile
 
 ## test: Runs gotestsum.
 test-readable: compile
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) gotestsum ./...
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool gotestsum ./...
 
 test-readable-mvn: compile
 	$(MVNBIN) mvn-golang-wrapper:custom@readable-test
