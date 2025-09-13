@@ -22,32 +22,34 @@ import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
 
+import java.io.File;
+
 public class BacNetIpConfiguration implements PlcConnectionConfiguration {
 
     // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")
     @Description("Path to the location of a single EDE file, that contains the descriptor for the target device.")
-    private String edeFilePath;
+    private File edeFile;
 
     // Path to a directory containing many EDE files.
     @ConfigurationParameter("ede-directory-path")
     @Description("Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.")
-    private String edeDirectoryPath;
+    private File edeDirectory;
 
-    public String getEdeFilePath() {
-        return edeFilePath;
+    public File getEdeFile() {
+        return edeFile;
     }
 
-    public void setEdeFilePath(String edeFilePath) {
-        this.edeFilePath = edeFilePath;
+    public void setEdeFile(File edeFile) {
+        this.edeFile = edeFile;
     }
 
-    public String getEdeDirectoryPath() {
-        return edeDirectoryPath;
+    public File getEdeDirectory() {
+        return edeDirectory;
     }
 
-    public void setEdeDirectoryPath(String edeDirectoryPath) {
-        this.edeDirectoryPath = edeDirectoryPath;
+    public void setEdeDirectory(File edeDirectory) {
+        this.edeDirectory = edeDirectory;
     }
 
 }

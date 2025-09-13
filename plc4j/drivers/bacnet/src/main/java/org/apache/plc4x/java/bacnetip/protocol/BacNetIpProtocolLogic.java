@@ -68,20 +68,20 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
 
     @Override
     public void setConfiguration(BacNetIpConfiguration configuration) {
-        if (configuration.getEdeFilePath() != null) {
-            File edeFile = new File(configuration.getEdeFilePath());
+        if (configuration.getEdeFile() != null) {
+            File edeFile = configuration.getEdeFile();
             if (!edeFile.exists() || !edeFile.isFile()) {
                 throw new PlcRuntimeException(String.format(
                     "File specified with 'ede-file-path' does not exist or is not a file: '%s'",
-                    configuration.getEdeFilePath()));
+                    configuration.getEdeFile()));
             }
             edeModel = new EdeParser().parseFile(edeFile);
-        } else if (configuration.getEdeDirectoryPath() != null) {
-            File edeDirectory = new File(configuration.getEdeDirectoryPath());
+        } else if (configuration.getEdeDirectory() != null) {
+            File edeDirectory = configuration.getEdeDirectory();
             if (!edeDirectory.exists() || !edeDirectory.isDirectory()) {
                 throw new PlcRuntimeException(String.format(
                     "File specified with 'ede-directory-path' does not exist or is not a directory: '%s'",
-                    configuration.getEdeDirectoryPath()));
+                    configuration.getEdeDirectory()));
             }
             edeModel = new EdeParser().parseDirectory(edeDirectory);
         }

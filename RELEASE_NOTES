@@ -5,8 +5,14 @@
 New Features
 ------------
 
+- Java Configurations of drivers now support a "FILE" type
+  of configuration parameter.
+
 Incompatible changes
 --------------------
+
+- Dropped support for Java 11, new baseline Java version is
+  Java 21.
 
 Bug Fixes
 ---------

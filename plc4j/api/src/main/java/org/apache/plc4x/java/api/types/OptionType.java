@@ -26,5 +26,6 @@ public enum OptionType {
     FLOAT,
     DOUBLE,
     STRING,
+    FILE,
     STRUCT
 }

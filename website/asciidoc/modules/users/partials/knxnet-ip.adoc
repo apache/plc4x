@@ -38,7 +38,7 @@
  - `pcap`
  - `raw`
 5+|Config options:
-|`knxproj-file-path` |STRING | | |Path to the `knxproj` file. The default KNXnet/IP protocol doesn't provide all the information needed to be able to fully decode the messages.
+|`knxproj-file-path` |FILE | | |Path to the `knxproj` file. The default KNXnet/IP protocol doesn't provide all the information needed to be able to fully decode the messages.
 |`knxproj-password` |STRING | | |Optional password needed to read the knxproj file.
 |`group-address-num-levels` |INT |3| |KNX Addresses can be encoded in multiple ways. Which encoding is used, is too not provided by the protocol itself so it has to be provided externally: +
  +

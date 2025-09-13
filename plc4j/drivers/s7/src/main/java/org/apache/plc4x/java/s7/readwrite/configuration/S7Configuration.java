@@ -103,7 +103,7 @@ public class S7Configuration implements PlcConnectionConfiguration {
     public int maxAmqCallee = 8;
 
     @ConfigurationParameter("controller-type")
-    @Description("As part of the connection process, usually the PLC4X S7 driver would try to identify the remote device. However some devices seem to have problems with this and hang up or cause other problems. In such a case, providing the controller-type will skip the identification process and hereby avoid this type of problem. Possible values are:/n- S7_300\n- S7_400\n- S7_1200\n- S7-1500\n- LOGO")
+    @Description("As part of the connection process, usually the PLC4X S7 driver would try to identify the remote device. However some devices seem to have problems with this and hang up or cause other problems. In such a case, providing the controller-type will skip the identification process and hereby avoid this type of problem. Possible values are:/n- S7_200\n- S7_300\n- S7_400\n- S7_1200\n- S7-1500\n- LOGO")
     public String controllerType;
 
     @ConfigurationParameter("read-timeout")

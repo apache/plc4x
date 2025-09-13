@@ -30,6 +30,7 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -269,6 +270,9 @@ public class ConfigurationFactory {
         }
         if ((field.getType() == double.class) || (field.getType() == Double.class)) {
             return Double.parseDouble(valueString);
+        }
+        if (field.getType() == File.class) {
+            return new File(valueString);
         }
         if (field.getType().isEnum()) {
             return parseEnumValue(field, valueString);

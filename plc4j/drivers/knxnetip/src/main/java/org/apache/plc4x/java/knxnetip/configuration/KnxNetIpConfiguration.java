@@ -26,11 +26,13 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultVa
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.spi.configuration.exceptions.ConfigurationException;
 
+import java.io.File;
+
 public class KnxNetIpConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("knxproj-file-path")
     @Description("Path to the `knxproj` file. The default KNXnet/IP protocol doesn't provide all the information needed to be able to fully decode the messages.")
-    public String knxprojFilePath;
+    public File knxprojFile;
 
     @ConfigurationParameter("knxproj-password")
     @Description("Optional password needed to read the knxproj file.")
@@ -56,12 +58,12 @@ public class KnxNetIpConfiguration implements PlcConnectionConfiguration {
         "- 'BUSMONITOR': The client operates as a busmonitor where he can't actively participate on the bus. Only one 'BUSMONITOR' connection is allowed at the same time on a KNXnet/IP gateway.")
     public String connectionType = "LINK_LAYER";
 
-    public String getKnxprojFilePath() {
-        return knxprojFilePath;
+    public File getKnxprojFile() {
+        return knxprojFile;
     }
 
-    public void setKnxprojFilePath(String knxprojFilePath) {
-        this.knxprojFilePath = knxprojFilePath;
+    public void setKnxprojFile(File knxprojFile) {
+        this.knxprojFile = knxprojFile;
     }
 
     public String getKnxprojPassword() {
@@ -98,7 +100,7 @@ public class KnxNetIpConfiguration implements PlcConnectionConfiguration {
     @Override
     public String toString() {
         return "Configuration{" +
-            "knxprojFilePath=" + knxprojFilePath + ", " +
+            "knxprojFile=" + knxprojFile + ", " +
             "groupAddressNumLevels=" + groupAddressNumLevels +
             '}';
     }

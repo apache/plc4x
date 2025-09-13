@@ -38,8 +38,8 @@
  - `tcp`
  - `pcap`
 5+|Config options:
-|`ede-file-path` |STRING | | |Path to the location of a single EDE file, that contains the descriptor for the target device.
-|`ede-directory-path` |STRING | | |Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.
+|`ede-file-path` |FILE | | |Path to the location of a single EDE file, that contains the descriptor for the target device.
+|`ede-directory-path` |FILE | | |Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.
 5+|Transport config options:
 5+|
 +++

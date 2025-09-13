@@ -28,8 +28,6 @@ import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 
-import java.io.File;
-
 public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<KnxNetIpConfiguration> {
 
     private boolean passiveMode = false;
@@ -45,16 +43,15 @@ public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<Kn
 
     @Override
     public void setConfiguration(KnxNetIpConfiguration configuration) {
-        if (configuration.knxprojFilePath != null) {
-            File knxprojFile = new File(configuration.knxprojFilePath);
-            if (knxprojFile.exists() && knxprojFile.isFile()) {
+        if (configuration.knxprojFile != null) {
+            if (configuration.knxprojFile.exists() && configuration.knxprojFile.isFile()) {
                 final EtsParser parser = new EtsParser();
-                etsModel = parser.parse(knxprojFile, configuration.knxprojPassword);
+                etsModel = parser.parse(configuration.knxprojFile, configuration.knxprojPassword);
                 groupAddressType = etsModel.getGroupAddressType();
             } else {
                 throw new PlcRuntimeException(String.format(
                     "File specified with 'knxproj-file-path' does not exist or is not a file: '%s'",
-                    configuration.knxprojFilePath));
+                    configuration.knxprojFile));
             }
         } else {
             groupAddressType = (byte) configuration.groupAddressNumLevels;

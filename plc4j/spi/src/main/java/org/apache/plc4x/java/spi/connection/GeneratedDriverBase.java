@@ -189,6 +189,9 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                     case "String":
                         type = OptionType.STRING;
                         break;
+                    case "File":
+                        type = OptionType.FILE;
+                        break;
                     default:
                         // If there's a property-converter, use "STRING" as type.
                         var parameterConverterAnnotation = field.getAnnotation(ParameterConverter.class);
