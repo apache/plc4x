@@ -64,6 +64,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private final Logger logger = LoggerFactory.getLogger(OpcuaSubscriptionHandle.class);
     private final Set<Consumer<PlcSubscriptionEvent>> consumers;
+    private final Map<String, Consumer<PlcSubscriptionEvent>> tagConsumers;
     private final List<String> tagNames;
     private final Conversation conversation;
     private final PlcSubscriptionRequest subscriptionRequest;
@@ -83,6 +84,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         super(plcSubscriber);
         this.tm = tm;
         this.consumers = new HashSet<>();
+        this.tagConsumers = new HashMap<>();
         this.subscriptionRequest = subscriptionRequest;
         this.tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
         this.conversation = conversation;
@@ -292,8 +294,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         Map<String, PlcTag> tagMap = new LinkedHashMap<>();
         for (MonitoredItemNotification value : values) {
             String tagName = tagNames.get((int) value.getClientHandle() - 1);
-            tagMap.put(tagName, subscriptionRequest.getTag(tagName).getTag());
+            PlcTag tag = subscriptionRequest.getTag(tagName).getTag();
+            tagMap.put(tagName, tag);
             dataValues.add(value.getValue());
+            Consumer<PlcSubscriptionEvent> tagConsumer = tagConsumers.get(tagName);
+            if (tagConsumer != null) {
+                Entry<Map<String, Metadata>, Map<String, PlcResponseItem<PlcValue>>> mappedResponse = plcSubscriber.readResponse(Map.of(tagName, tag), List.of(value.getValue()), responseMetadata);
+                PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(receiveTs), mappedResponse.getValue(), mappedResponse.getKey());
+                tagConsumer.accept(event);
+            }
         }
 
         Entry<Map<String, Metadata>, Map<String, PlcResponseItem<PlcValue>>> mappedResponse = plcSubscriber.readResponse(tagMap, dataValues, responseMetadata);
@@ -343,6 +352,12 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
         logger.info("Registering a new OPCUA subscription consumer");
         consumers.add(consumer);
+        return new DefaultPlcConsumerRegistration(plcSubscriber, consumer, this);
+    }
+
+    public PlcConsumerRegistration registerTagConsumer(String tagName, Consumer<PlcSubscriptionEvent> consumer) {
+        logger.info("Registering a new OPCUA subscription consumer for tag with name " + tagName);
+        tagConsumers.put(tagName, consumer);
         return new DefaultPlcConsumerRegistration(plcSubscriber, consumer, this);
     }
 
