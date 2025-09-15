@@ -811,6 +811,15 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 long subscriptionId = response.getSubscriptionId();
                 OpcuaSubscriptionHandle handle = new OpcuaSubscriptionHandle(this, tm,
                     conversation, subscriptionRequest, subscriptionId, cycleTime);
+                if (subscriptionRequest.getConsumer() != null) {
+                    handle.register(subscriptionRequest.getConsumer());
+                }
+                subscriptionRequest.getTagNames().forEach(tagName -> {
+                    Consumer<PlcSubscriptionEvent> tagConsumer = subscriptionRequest.getTagConsumer(tagName);
+                    if (tagConsumer != null) {
+                        handle.registerTagConsumer(tagName, tagConsumer);
+                    }
+                });
                 subscriptions.put(handle.getSubscriptionId(), handle);
                 return handle;
             })
