@@ -1108,7 +1108,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <!-- Had to move the rat plugin execution to a phase before the shade plugin is executed to avoid errors -->
-          <version>3.6.0</version>
+          <version>3.6.1</version>
           <configuration>
             <outputFile>
               ${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.${project.packaging}
