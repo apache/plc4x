@@ -69,7 +69,7 @@ public abstract class DefaultField {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DefaultField that = (DefaultField) o;
-        return Objects.equals(attributes, that.attributes) && comment.equals(that.comment);
+        return Objects.equals(attributes, that.attributes) && Objects.equals(comment, that.comment);
     }
 
     @Override
