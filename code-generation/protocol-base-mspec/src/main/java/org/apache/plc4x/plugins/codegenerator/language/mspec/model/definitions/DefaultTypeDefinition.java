@@ -42,6 +42,10 @@ public abstract class DefaultTypeDefinition {
         return name;
     }
 
+    public Set<String> getAttributeNames() {
+        return attributes.keySet();
+    }
+
     public Optional<Term> getAttribute(String attributeName) {
         if (attributes.containsKey(attributeName)) {
             return Optional.of(attributes.get(attributeName));
