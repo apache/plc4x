@@ -44,5 +44,4 @@ public interface AliasRegistry {
      * This means that the same alias could be resolved to different Addresses for different connections.
      */
     String resolve(String connection, String alias);
-
 }
