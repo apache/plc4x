@@ -25,7 +25,7 @@ package org.apache.plc4x.java.opm;
 public interface AliasRegistry {
 
     /**
-     * Checks if this registry can resolve this alias
+     * Checks if this registry can resolve this alias.
      */
     boolean canResolve(String alias);
 
