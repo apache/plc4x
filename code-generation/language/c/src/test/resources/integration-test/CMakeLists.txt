@@ -17,7 +17,7 @@
   under the License.
 ]]
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 
 # Set the name of this project
 project(PLC4C)
@@ -32,7 +32,7 @@ set(PLC4C_ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(BUILD_PHASE test-compile CACHE STRING "Phase of the Maven build we are executing cmake")
 
 # Access the Unity version the maven build is providing us with.
-set(UNITY_VERSION 2.5.0 CACHE STRING "Version of the used Unity test framework")
+set(UNITY_VERSION 2.5.2 CACHE STRING "Version of the used Unity test framework")
 
 # Depending on the phase of the build we are currently running, initialize
 # The test system.

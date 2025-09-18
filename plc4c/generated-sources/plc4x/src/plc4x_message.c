@@ -60,7 +60,7 @@ plc4c_plc4x_read_write_plc4x_message plc4c_plc4x_read_write_plc4x_message_null()
 
 // Constant values.
 static const uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION_const = 0x01;
-uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION() {
+const uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION() {
   return PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION_const;
 }
 

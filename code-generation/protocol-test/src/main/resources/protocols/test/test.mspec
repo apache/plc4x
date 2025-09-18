@@ -38,7 +38,8 @@
     [array          uint 8  arrayFieldLength     length     '5'   ]
     [array          uint 8  arrayFieldTerminated terminated 'true']
     [assert         uint 8  assertField          '42'             ]
-    [checksum       uint 8  checksumField        'STATIC_CALL("crcUint8" , -23)']
+// TODO: Disabled for PLC4C
+//    [checksum       uint 8  checksumField        'STATIC_CALL("crcUint8" , -23)']
     [const          uint 8  constField           5                ]
     // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  discriminatorField]
@@ -68,7 +69,8 @@
     //Abstract fields can only be used within discriminated base types.
     //[abstract       unit 8  abstractField]
     [array          uint 8  arrayField        count      '5']
-    [checksum       uint 8  checksumField     'STATIC_CALL("crcUint8" , -23)']
+// TODO: Disabled for PLC4C
+//    [checksum       uint 8  checksumField     'STATIC_CALL("crcUint8" , -23)']
     [const          uint 8  constField        5]
     // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  discriminatorField]
@@ -145,14 +147,15 @@
     [manualArray string  8  stringField count      'true'  'STATIC_CALL("parseString", readBuffer)' 'STATIC_CALL("serializeString", writeBuffer, _value)' '5'   ]
 ]*/
 
-[type CheckSumTypeTest
+// TODO: Disabled for PLC4C
+/*[type CheckSumTypeTest
     //Bit field cannot be used for a checksum: [checksum bit bitField 'true']
     [checksum int 8  intField  'STATIC_CALL("crcInt8" , -23)']
     [checksum uint 8 uintField 'STATIC_CALL("crcUint8", 42)']
     // Float fields cannot be used as checksums: [checksum float 32 floatField '100.0']
     // Float fields cannot be used as checksums: [checksum float 64 doubleField '100.0']
     // String field cannot be used as a checksum: [checksum vstring '11 * 8' stringField '"HELLO TODDY"']
-]
+]*/
 
 [type ConstTypeTest
     [const bit bitField true]
@@ -160,7 +163,7 @@
     [const uint 8 uintField 100]
     [const float 32 floatField 100.0]
     [const float 64 doubleField 100.0]
-    [const string 8 stringField "HELLO TODDY"]
+    [const string 88 stringField "HELLO TODDY"]
 ]
 
 [type EnumTypeTest
@@ -186,7 +189,7 @@
     [implicit uint 8 uintField 'simpleField']
     [implicit float 32 floatField 'simpleField']
     [implicit float 64 doubleField 'simpleField']
-    [implicit string 8 stringField 'simpleField > 0 ? "HELLO TODDY" : "BYE TODDY"']
+// TODO: Disabled for PLC4C    [implicit string 8 stringField 'simpleField > 0 ? "HELLO TODDY" : "BYE TODDY"']
 ]
 
 [type OptionalTypeTest

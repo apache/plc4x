@@ -56,7 +56,7 @@ typedef enum plc4c_plc4x_read_write_plc4x_message_type plc4c_plc4x_read_write_pl
 plc4c_plc4x_read_write_plc4x_message_discriminator plc4c_plc4x_read_write_plc4x_message_get_discriminator(plc4c_plc4x_read_write_plc4x_message_type type);
 
 // Constant values.
-uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION();
+const uint8_t PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION();
 
 struct plc4c_plc4x_read_write_plc4x_message {
   /* This is an abstract type so this property saves the type of this typed union */

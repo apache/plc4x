@@ -49,7 +49,7 @@ typedef enum plc4c_s7_read_write_cyc_service_item_type_type plc4c_s7_read_write_
 plc4c_s7_read_write_cyc_service_item_type_discriminator plc4c_s7_read_write_cyc_service_item_type_get_discriminator(plc4c_s7_read_write_cyc_service_item_type_type type);
 
 // Constant values.
-uint8_t PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID();
+const uint8_t PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID();
 
 struct plc4c_s7_read_write_cyc_service_item_type {
   /* This is an abstract type so this property saves the type of this typed union */

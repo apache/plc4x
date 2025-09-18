@@ -94,8 +94,8 @@ typedef enum plc4c_modbus_read_write_modbus_pdu_type plc4c_modbus_read_write_mod
 plc4c_modbus_read_write_modbus_pdu_discriminator plc4c_modbus_read_write_modbus_pdu_get_discriminator(plc4c_modbus_read_write_modbus_pdu_type type);
 
 // Constant values.
-uint8_t PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_REQUEST_MEI_TYPE();
-uint8_t PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_MEI_TYPE();
+const uint8_t PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_REQUEST_MEI_TYPE();
+const uint8_t PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_MEI_TYPE();
 
 struct plc4c_modbus_read_write_modbus_pdu {
   /* This is an abstract type so this property saves the type of this typed union */

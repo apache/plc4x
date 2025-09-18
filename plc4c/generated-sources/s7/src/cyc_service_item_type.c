@@ -52,7 +52,7 @@ plc4c_s7_read_write_cyc_service_item_type plc4c_s7_read_write_cyc_service_item_t
 
 // Constant values.
 static const uint8_t PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID_const = 0x12;
-uint8_t PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID() {
+const uint8_t PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID() {
   return PLC4C_S7_READ_WRITE_CYC_SERVICE_ITEM_TYPE_FUNCTION_ID_const;
 }
 

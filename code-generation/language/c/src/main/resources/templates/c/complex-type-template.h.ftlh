@@ -123,7 +123,7 @@ ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)
     <#list helper.getAllConstFields() as entry>
         <#assign constField=entry.key>
         <#assign parentTypeName=entry.value>
-${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentTypeName)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}();
+const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentTypeName)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}();
     </#list>
 </#if>
 

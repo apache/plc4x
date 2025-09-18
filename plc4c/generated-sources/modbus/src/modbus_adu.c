@@ -54,7 +54,7 @@ plc4c_modbus_read_write_modbus_adu plc4c_modbus_read_write_modbus_adu_null() {
 
 // Constant values.
 static const uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER_const = 0x0000;
-uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER() {
+const uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER() {
   return PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER_const;
 }
 

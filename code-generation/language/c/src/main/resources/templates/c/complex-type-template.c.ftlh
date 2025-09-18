@@ -100,7 +100,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
         <#assign constField=entry.key>
         <#assign parentTypeName=entry.value>
 static const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentTypeName)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}_const = ${helper.toParseExpression(type, constField, constField.referenceValue, parserArguments)};
-${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentTypeName)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}() {
+const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentTypeName)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}() {
   return ${helper.getCTypeName(parentTypeName)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}_const;
 }
     </#list>

@@ -33,7 +33,7 @@
   <name>PLC4J: Driver: C Mspec Test</name>
 
   <properties>
-    <unity.version>2.5.0</unity.version>
+    <unity.version>2.5.2</unity.version>
     <!-- Tell Sonar where to find the c++ sources -->
     <sonar.sources/>
     <option.with-proxies>OFF</option.with-proxies>
