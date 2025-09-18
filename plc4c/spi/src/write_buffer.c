@@ -320,7 +320,8 @@ plc4c_return_code plc4c_spi_write_unsigned_short(plc4c_spi_write_buffer* buf,
     return OUT_OF_RANGE;
   }
   // Write the bits.
-  return plc4c_spi_write_unsigned_bits_internal(buf, num_bits, &value);
+  return plc4c_spi_write_unsigned_bits_internal(buf, num_bits,
+                                                (const uint8_t*)&value);
 }
 
 plc4c_return_code plc4c_spi_write_unsigned_int(plc4c_spi_write_buffer* buf,
@@ -331,7 +332,8 @@ plc4c_return_code plc4c_spi_write_unsigned_int(plc4c_spi_write_buffer* buf,
     return OUT_OF_RANGE;
   }
   // Write the bits.
-  return plc4c_spi_write_unsigned_bits_internal(buf, num_bits, &value);
+  return plc4c_spi_write_unsigned_bits_internal(buf, num_bits,
+                                                (const uint8_t*)&value);
 }
 
 plc4c_return_code plc4c_spi_write_unsigned_long(plc4c_spi_write_buffer* buf,
@@ -342,7 +344,8 @@ plc4c_return_code plc4c_spi_write_unsigned_long(plc4c_spi_write_buffer* buf,
     return OUT_OF_RANGE;
   }
   // Write the bits.
-  return plc4c_spi_write_unsigned_bits_internal(buf, num_bits, &value);
+  return plc4c_spi_write_unsigned_bits_internal(buf, num_bits,
+                                                (const uint8_t*)&value);
 }
 
 // TODO: Not sure which type to use in this case ...
