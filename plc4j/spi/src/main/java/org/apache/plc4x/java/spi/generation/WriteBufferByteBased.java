@@ -105,7 +105,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("unsigned byte can only contain max 8 bits");
         }
         try {
-            String encoding = extractEncoding(writerArgs).orElse("default");
+            String encoding = extractEncoding(writerArgs).orElse("unsigned-binary");
             switch (encoding) {
                 case "BCD":
                     if(bitLength % 4 != 0) {
@@ -116,7 +116,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     bo.writeByte(true, bitLength, value);
                     break;
-                case "default":
+                case "unsigned-binary":
                     bo.writeByte(true, bitLength, value);
                     break;
                 default:
@@ -136,7 +136,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("unsigned short can only contain max 16 bits");
         }
         try {
-            String encoding = extractEncoding(writerArgs).orElse("default");
+            String encoding = extractEncoding(writerArgs).orElse("unsigned-binary");
             switch (encoding) {
                 case "ASCII": {
                     // AsciiUint can only decode values that have a multiple of 8 length.
@@ -171,7 +171,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     break;
                 }
-                case "default":
+                case "unsigned-binary":
                     bo.writeShort(true, bitLength, value);
                     break;
                 default:
@@ -191,7 +191,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("unsigned int can only contain max 32 bits");
         }
         try {
-            String encoding = extractEncoding(writerArgs).orElse("default");
+            String encoding = extractEncoding(writerArgs).orElse("unsigned-binary");
             switch (encoding) {
                 case "ASCII": {
                     // AsciiUint can only decode values that have a multiple of 8 length.
@@ -226,7 +226,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     break;
                 }
-                case "default":
+                case "unsigned-binary":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         value = Integer.reverseBytes(value) >> (32 - bitLength);
                     }
@@ -249,7 +249,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("unsigned long can only contain max 63 bits");
         }
         try {
-            String encoding = extractEncoding(writerArgs).orElse("default");
+            String encoding = extractEncoding(writerArgs).orElse("unsigned-binary");
             switch (encoding) {
                 case "ASCII": {
                     // AsciiUint can only decode values that have a multiple of 8 length.
@@ -316,7 +316,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     break;
                 }
-                case "default":
+                case "unsigned-binary":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         value = Long.reverseBytes(value) >> 32;
                     }
@@ -333,7 +333,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
     @Override
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         try {
-            String encoding = extractEncoding(writerArgs).orElse("default");
+            String encoding = extractEncoding(writerArgs).orElse("unsigned-binary");
             switch (encoding) {
                 case "ASCII":
                     // AsciiUint can only decode values that have a multiple of 8 length.
@@ -386,7 +386,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                         writeByte((byte) b);
                     }
                     return;
-                case "default":
+                case "unsigned-binary":
                     if (bitLength == 64) {
                         if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                             if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
@@ -456,7 +456,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("int can only contain max 32 bits");
         }
         try {
-            String encoding = extractEncoding(writerArgs).orElse("default");
+            String encoding = extractEncoding(writerArgs).orElse("twos-complement");
             switch (encoding) {
                 // https://en.wikipedia.org/wiki/Variable-length_quantity
                 // The first byte of a var-length signed integer contains only 6 bits (the last 6)
@@ -485,7 +485,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     break;
                 }
-                case "default":
+                case "twos-complement":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         value = Integer.reverseBytes(value);
                     }
@@ -509,9 +509,9 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("long can only contain max 64 bits");
         }
         try {
-            String encoding = extractEncoding(writerArgs).orElse("default");
+            String encoding = extractEncoding(writerArgs).orElse("twos-complement");
             switch (encoding) {
-                case "default":
+                case "twos-complement":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         value = Long.reverseBytes(value);
                     }

@@ -26,7 +26,7 @@ public class StaticHelper {
 
     // 8 Bit checksum, (byte) transported as 2 characters
     public static short asciiLrcCheck(short address, ModbusPDU pdu) {
-        final WriteBufferByteBased writeBufferByteBased = new WriteBufferByteBased(pdu.getLengthInBytes() + 2);
+        final WriteBufferByteBased writeBufferByteBased = new WriteBufferByteBased(pdu.getLengthInBytes() + 1);
         try {
             writeBufferByteBased.writeUnsignedShort(8, address);
             pdu.serialize(writeBufferByteBased);
@@ -53,7 +53,7 @@ public class StaticHelper {
 
     // Using the algorithm from PI_MBUS_300.pdf page 121
     public static int rtuCrcCheck(short address, ModbusPDU pdu) {
-        final WriteBufferByteBased writeBufferByteBased = new WriteBufferByteBased(pdu.getLengthInBytes() + 2);
+        final WriteBufferByteBased writeBufferByteBased = new WriteBufferByteBased(pdu.getLengthInBytes() + 1);
         try {
             writeBufferByteBased.writeUnsignedShort(8, address);
             pdu.serialize(writeBufferByteBased);

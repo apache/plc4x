@@ -185,7 +185,7 @@ public abstract class OpenProtocolMessage implements Message {
 
     // Const Field (end)
     writeConstField(
-        "end", END, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("ASCII"));
+        "end", END, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("unsigned-binary"));
 
     writeBuffer.popContext("OpenProtocolMessage");
   }
@@ -484,7 +484,7 @@ public abstract class OpenProtocolMessage implements Message {
             "end",
             readUnsignedShort(readBuffer, 8),
             OpenProtocolMessage.END,
-            WithOption.WithEncoding("ASCII"));
+            WithOption.WithEncoding("unsigned-binary"));
 
     readBuffer.closeContext("OpenProtocolMessage");
     // Create the instance

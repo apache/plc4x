@@ -147,9 +147,9 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned byte can only contain max 4 bits");
         }
         try {
-            String encoding = extractEncoding(readerArgs).orElse("default");
+            String encoding = extractEncoding(readerArgs).orElse("unsigned-binary");
             switch (encoding) {
-                case "default":
+                case "unsigned-binary":
                     return bi.readByte(true, bitLength);
                 // BCD = Binary Encoded Decimal (A decimal number is represented by a sequence of 4 bit hexadecimal values from 0-9.
                 // https://www.elektronik-kompendium.de/sites/dig/1010311.htm
@@ -180,7 +180,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned short can only contain max 8 bits");
         }
         try {
-            String encoding = extractEncoding(readerArgs).orElse("default");
+            String encoding = extractEncoding(readerArgs).orElse("unsigned-binary");
             switch (encoding) {
                 case "ASCII":
                     // AsciiUint can only decode values that have a multiple of 8 length.
@@ -194,6 +194,9 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
+                    if(stringValue.isEmpty()) {
+                        return 0;
+                    }
                     return Short.parseShort(stringValue);
                 case "BCD":
                     if (bitLength % 4 != 0) {
@@ -210,7 +213,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                         value += (short) (digit * Math.pow(10, i));
                     }
                     return value;
-                case "default":
+                case "unsigned-binary":
                     // No need to flip here as we're only reading one byte.
                     return bi.readShort(true, bitLength);
                 default:
@@ -231,7 +234,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned int can only contain max 16 bits");
         }
         try {
-            String encoding = extractEncoding(readerArgs).orElse("default");
+            String encoding = extractEncoding(readerArgs).orElse("unsigned-binary");
             switch (encoding) {
                 case "ASCII":
                     // AsciiUint can only decode values that have a multiple of 8 length.
@@ -245,6 +248,9 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
+                    if(stringValue.isEmpty()) {
+                        return 0;
+                    }
                     return Integer.parseInt(stringValue);
                 case "BCD":
                     if (bitLength % 4 != 0) {
@@ -261,7 +267,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                         value += (int) (digit * Math.pow(10, i));
                     }
                     return value;
-                case "default":
+                case "unsigned-binary":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final int longValue = bi.readInt(true, bitLength);
                         return Integer.reverseBytes(longValue) >>> (32 - bitLength);
@@ -285,7 +291,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned long can only contain max 32 bits");
         }
         try {
-            String encoding = extractEncoding(readerArgs).orElse("default");
+            String encoding = extractEncoding(readerArgs).orElse("unsigned-binary");
             switch (encoding) {
                 case "ASCII":
                     // AsciiUint can only decode values that have a multiple of 8 length.
@@ -299,6 +305,9 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
+                    if(stringValue.isEmpty()) {
+                        return 0L;
+                    }
                     return Long.parseLong(stringValue);
                 case "BCD":
                     if (bitLength % 4 != 0) {
@@ -335,7 +344,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     return result;
                 }
-                case "default":
+                case "unsigned-binary":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final long longValue = bi.readLong(true, bitLength);
                         return Long.reverseBytes(longValue) >>> 32;
@@ -357,7 +366,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
         try {
-            String encoding = extractEncoding(readerArgs).orElse("default");
+            String encoding = extractEncoding(readerArgs).orElse("unsigned-binary");
             switch (encoding) {
                 case "ASCII":
                     // AsciiUint can only decode values that have a multiple of 8 length.
@@ -371,6 +380,9 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
+                    if(stringValue.isEmpty()) {
+                        return BigInteger.ZERO;
+                    }
                     return new BigInteger(stringValue);
                 case "BCD":
                     if (bitLength % 4 != 0) {
@@ -408,7 +420,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     return BigInteger.valueOf(result);
                 }
-                case "default":
+                case "unsigned-binary":
                     // Read as signed value
                     long val = bi.readLong(false, bitLength);
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
@@ -473,7 +485,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
-            String encoding = extractEncoding(readerArgs).orElse("default");
+            String encoding = extractEncoding(readerArgs).orElse("twos-complement");
             switch (encoding) {
                 case "VARDINT": {
                     int result = 0;
@@ -496,7 +508,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     return result;
                 }
-                case "default":
+                case "twos-complement":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         return Integer.reverseBytes(bi.readInt(false, bitLength));
                     }
@@ -520,9 +532,9 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            String encoding = extractEncoding(readerArgs).orElse("default");
+            String encoding = extractEncoding(readerArgs).orElse("twos-complement");
             switch (encoding) {
-                case "default":
+                case "twos-complement":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         return Long.reverseBytes(bi.readLong(false, bitLength));
                     }

@@ -1531,7 +1531,7 @@
             ]
         ]
     ]
-    [const         uint 8  end                  0x00                                                                   ]
+    [const         uint 8  end                  0x00                                       encoding='"unsigned-binary"']
 ]
 
 [type VariableDataField
@@ -1767,7 +1767,7 @@
     ['9999' KeepAliveOpenProtocolCommunication                                                                         ] // OK *
 ]
 
-[enum uint 16 ApplicationCommunicationError 
+[enum uint 16 ApplicationCommunicationError
     ['0'  NoError                                                                                                      ]
     ['1'  InvalidData                                                                                                  ]
     ['2'  ParameterSetIdNotPresent                                                                                     ]
@@ -1863,7 +1863,7 @@
     ['99' UnknownMid                                                                                                   ]
 ]
 
-[enum uint 32 LinkLevelNegativeAcknowledgeError 
+[enum uint 32 LinkLevelNegativeAcknowledgeError
    ['0' NoError                                                                                                        ]
    ['1' InvalidLength                                                                                                  ]
    ['2' InvalidRevision                                                                                                ]
@@ -1871,40 +1871,40 @@
    ['4' InconsistencyOfNumberOfMessages                                                                                ]
 ]
 
-[enum uint 8 RotationDirection 
+[enum uint 8 RotationDirection
     ['0' Undefined                                                                                                     ]
     ['1' Clockwise                                                                                                     ]
     ['2' CounterClockwise                                                                                              ]
 ]
 
-[enum uint 8 NokOk 
+[enum uint 8 NokOk
     ['0' NOK                                                                                                           ]
     ['1' OK                                                                                                            ]
 ]
 
-[enum uint 8 OkNok 
+[enum uint 8 OkNok
     ['0' OK                                                                                                            ]
     ['1' NOK                                                                                                           ]
 ]
 
-[enum uint 8 NoYes 
+[enum uint 8 NoYes
     ['0' No                                                                                                            ]
     ['1' Yes                                                                                                           ]
 ]
 
-[enum uint 8 Status 
+[enum uint 8 Status
     ['0' Low                                                                                                           ]
     ['1' OK                                                                                                            ]
     ['2' High                                                                                                          ]
 ]
 
-[enum uint 8 BatchStatus 
+[enum uint 8 BatchStatus
     ['0' NOK                                                                                                           ]
     ['1' OK                                                                                                            ]
     ['2' Unused                                                                                                        ]
 ]
 
-[enum uint 16 Strategy 
+[enum uint 16 Strategy
     ['1'  TorqueControl                                                                                                ]
     ['2'  TorqueControlAngleMonitoring                                                                                 ]
     ['3'  TorqueControlAngleControlAnd                                                                                 ]
@@ -1934,7 +1934,7 @@
     ['99' NoStrategy                                                                                                   ]
 ]
 
-[enum uint 8 Unit 
+[enum uint 8 Unit
     ['1' Nm                                                                                                            ]
     ['2' LbfFt                                                                                                         ]
     ['3' LbfIn                                                                                                         ]
@@ -1945,7 +1945,7 @@
     ['8' Ncm                                                                                                           ]
 ]
 
-[enum uint 8 ResultType 
+[enum uint 8 ResultType
     ['1' Tightening                                                                                                    ]
     ['2' Loosening                                                                                                     ]
     ['3' BatchIncrement                                                                                                ]
@@ -1956,7 +1956,7 @@
     ['8' ReferenceSetup                                                                                                ]
 ]
 
-[enum uint 24 TraceType 
+[enum uint 24 TraceType
     ['1'   AngleTrace                                                                                                  ]
     ['2'   TorqueTrace                                                                                                 ]
     ['3'   CurrentTrace                                                                                                ]
@@ -1966,29 +1966,29 @@
     ['999' UnsubscribeOnAll                                                                                            ]
 ]
 
-[enum uint 8 AlarmActiveStatus 
+[enum uint 8 AlarmActiveStatus
     ['0'   NoAlarmIsActive                                                                                             ]
     ['1'   AlarmIsActive                                                                                               ]
 ]
 
-[enum uint 8 ForcedOrder 
+[enum uint 8 ForcedOrder
     ['0'   FreeOrder                                                                                                   ]
     ['1'   ForcedOrder                                                                                                 ]
     ['2'   FreeAndForced                                                                                               ]
 ]
 
-[enum uint 8 ToolLoosening 
+[enum uint 8 ToolLoosening
     ['0'   Enable                                                                                                      ]
     ['1'   Disable                                                                                                     ]
     ['2'   EnableOnlyOnNokTightening                                                                                   ]
 ]
 
-[enum uint 8 JobBatchMode 
+[enum uint 8 JobBatchMode
     ['0'   OnlyOkTighteningsAreCounted                                                                                 ]
     ['1'   BothOkAndNokTighteningsAreCounted                                                                           ]
 ]
 
-[enum uint 8 IdentifierResult 
+[enum uint 8 IdentifierResult
     ['0'   JobVinNumber                                                                                                ]
     ['1'   Other                                                                                                       ]
 ]
