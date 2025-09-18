@@ -857,12 +857,12 @@ void test_plc4c_spi_write_double(void) {
 }
 
 void test_plc4c_spi_write_string_args(char* message,
-                                     plc4c_spi_write_buffer* write_buffer, uint8_t num_bits, char* encoding,
-                                     plc4c_return_code expected_return_code, char* value) {
+                                     plc4c_spi_write_buffer* write_buffer, uint8_t num_bits, const char* encoding,
+                                     plc4c_return_code expected_return_code, const uint8_t* bytes) {
   printf("Running write_buffer write_string test: %s", message);
 
   plc4c_return_code result =
-      plc4c_spi_write_string(write_buffer, num_bits, encoding, value);
+      plc4c_spi_write_string(write_buffer, num_bits, encoding, bytes);
 
   TEST_ASSERT_EQUAL_INT(expected_return_code, result);
 
@@ -873,7 +873,7 @@ void test_plc4c_spi_write_string(void) {
   // Prepare input data
   plc4c_spi_write_buffer* write_buffer;
   plc4c_spi_write_buffer_create(32, &write_buffer);
-  test_plc4c_spi_write_string_args("Simple 32 bit string (4 chars)", write_buffer, 32, "UTF-8", OK, "Hurz");
+  test_plc4c_spi_write_string_args("Simple 32 bit string (4 chars)", write_buffer, 32, "UTF-8", OK, (const uint8_t*) "Hurz");
   uint8_t expected_data[] = {0x48, 0x75, 0x72, 0x7a};
   internal_write_buffer_assert_arrays_equal((uint8_t*) &expected_data, write_buffer, 4);
   plc4c_spi_write_buffer_destroy(write_buffer);

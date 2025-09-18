@@ -1550,6 +1550,7 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_
     if (strcmp(value, "S7_S5TIME") == 0) {
         return plc4c_s7_read_write_transport_size_S5TIME;
     }
+    return (plc4c_s7_read_write_transport_size) 0;
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_type(plc4c_s7_read_write_transport_size value) {

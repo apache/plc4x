@@ -324,7 +324,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx,
     _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, optionalField.name, optionalField)};
         <#else>
             <#assign nonSimpleTypeReference = optionalField.type.asNonSimpleTypeReference().orElseThrow()>
-    _res = ${helper.getCTypeName(nonSimpleTypeReference.name)}_parse(ctx, readBuffer<#if optionalField.type.isNonSimpleTypeReference() && optionalField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, &${optionalField.name});
+    _res = ${helper.getCTypeName(nonSimpleTypeReference.name)}_parse(ctx, readBuffer<#if optionalField.type.isNonSimpleTypeReference() && optionalField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, <#if !optionalField.type.isEnumTypeReference()>&</#if>${optionalField.name});
         </#if>
     if(_res != OK) {
       return _res;
@@ -560,7 +560,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4x_spi_context 
             <#if optionalField.type.isSimpleTypeReference()>
     _res = ${helper.getWriteBufferWriteMethodCall(optionalField.type.asSimpleTypeReference().orElseThrow(), "*_message->" + helper.getFieldName(baseType, optionalField), optionalField)};
             <#else>
-    _res = ${helper.getCTypeName(optionalField.type.asNonSimpleTypeReference().orElseThrow().name)}_serialize(ctx, writeBuffer<#if optionalField.type.isDataIoTypeReference() && optionalField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toSerializationExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, <#if optionalField.type.isEnumTypeReference() || optionalField.type.isDataIoTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=optionalField/>);
+    _res = ${helper.getCTypeName(optionalField.type.asNonSimpleTypeReference().orElseThrow().name)}_serialize(ctx, writeBuffer<#if optionalField.type.isDataIoTypeReference() && optionalField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toSerializationExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, <#if optionalField.type.isDataIoTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=optionalField/>);
             </#if>
     if(_res != OK) {
       return _res;

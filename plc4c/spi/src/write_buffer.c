@@ -62,7 +62,7 @@ void plc4c_spi_write_put_byte_internal(plc4c_spi_write_buffer* buf,
 }
 
 plc4c_return_code plc4c_spi_write_unsigned_bits_internal(
-    plc4c_spi_write_buffer* buf, uint8_t num_bits, uint8_t* value) {
+    plc4c_spi_write_buffer* buf, uint8_t num_bits, const uint8_t* value) {
   if (buf == NULL) {
     return NULL_VALUE;
   }
@@ -421,16 +421,16 @@ plc4c_return_code plc4c_spi_write_double(plc4c_spi_write_buffer* buf,
  * } */
 
 plc4c_return_code plc4c_spi_write_string(plc4c_spi_write_buffer* buf,
-                                         uint8_t num_bits, char* encoding,
-                                         char* value) {
+                                         uint8_t num_bits, const char* encoding,
+                                         const uint8_t* bytes) {
   // Right now we only support utf-8 and utf-16.
   if((strcmp(encoding,"UTF-8") != 0) && (strcmp(encoding,"UTF-16") != 0)) {
     return INVALID_ARGUMENT;
   }
   // Simply output the bytes to the buffer.
   for(int i = 0; (i < (num_bits / 8)); i++) {
-    plc4c_spi_write_unsigned_byte(buf, 8, *((uint8_t*) value));
-    value++;
+    plc4c_spi_write_unsigned_byte(buf, 8, *((uint8_t*) bytes));
+    bytes++;
   }
   return OK;
 }

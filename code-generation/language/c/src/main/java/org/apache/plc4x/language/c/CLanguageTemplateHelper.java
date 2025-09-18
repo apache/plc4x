@@ -573,7 +573,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "plc4c_spi_write_string(writeBuffer, " + length + ", \"" +
-                    encoding + "\", (char*) " + fieldName + ")";
+                    encoding + "\", (const uint8_t*) " + fieldName + ")";
             }
             case VSTRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
@@ -584,7 +584,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 // Here we need to use the serialized expression of the length instead.
                 String lengthExpression = toSerializationExpression(thisType, field, simpleTypeReference.asVstringTypeReference().orElseThrow().getLengthExpression(), null);
                 return "plc4c_spi_write_string(writeBuffer, " + lengthExpression + ", \"" +
-                    encoding + "\", " + fieldName + ")";
+                    encoding + "\", (const uint8_t*) " + fieldName + ")";
             }
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());

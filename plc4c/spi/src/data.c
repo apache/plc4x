@@ -526,7 +526,7 @@ void plc4c_data_printf(plc4c_data *data) {
       printf("%s", data->data.string_value);
       break;
     case PLC4C_WSTRING:
-      printf("%ws", data->data.wstring_value);
+      printf("%ls", data->data.wstring_value);
       break;
 
     case PLC4C_LIST:

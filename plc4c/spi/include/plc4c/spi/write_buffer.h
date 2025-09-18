@@ -84,6 +84,6 @@ plc4c_return_code plc4c_spi_write_double(plc4c_spi_write_buffer* buf, uint8_t nu
 // TODO: Not sure which type to use in this case ...
 //plc4c_return_code plc4c_spi_write_big_decimal(plc4c_spi_write_buffer* buf, uint8_t num_bits, doubledouble value);
 
-plc4c_return_code plc4c_spi_write_string(plc4c_spi_write_buffer* buf, uint8_t num_bits, char* encoding, char* value);
+plc4c_return_code plc4c_spi_write_string(plc4c_spi_write_buffer* buf, uint8_t num_bits, const char* encoding, const uint8_t* bytes);
 
 #endif  // PLC4C_WRITE_BUFFER_H_

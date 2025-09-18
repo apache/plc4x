@@ -162,6 +162,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_en
         return ${helper.getCTypeName(type.name)}_${enumValue.name};
     }
         </#list>
+    return (${helper.getCTypeName(type.name)}) 0;
     <#elseif constantType.isBooleanTypeReference()>
         if (!value) {
         <#assign enumValue=uniqueEnumValues[0]>

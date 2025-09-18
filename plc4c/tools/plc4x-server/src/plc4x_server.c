@@ -70,7 +70,11 @@ void connection_func(unsigned int connFd) {
 }
 
 int main(int argc, char** argv) {
+#ifndef _WIN32
+  socklen_t len;
+#else
   int len;
+#endif
   unsigned int sockFd, connFd;
   struct sockaddr_in serverAddress, cli;
 

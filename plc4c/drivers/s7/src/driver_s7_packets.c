@@ -331,6 +331,9 @@ void plc4c_driver_s7_destroy_receive_packet(
           // TODO: something
           //just num of items so nothing to do
           break;
+        default:
+          // No specific cleanup required for other parameter types at this time
+          break;
       }
       free(s7_param);
     }
@@ -976,6 +979,9 @@ void plc4c_driver_s7_time_transport_size(plc4c_s7_read_write_transport_size *tra
       break;
     case plc4c_s7_read_write_transport_size_TIME_OF_DAY:
       *transport_size = plc4c_s7_read_write_transport_size_UDINT;
+      break;
+    default:
+      // For all other transport sizes, no adjustment is required
       break;
   }
 }
