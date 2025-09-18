@@ -828,7 +828,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_serialize(plc4x_spi_context 
         } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_CHAR) && (numberOfValues == 1)) { /* CHAR */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (const uint8_t*) (*data_item)->data.char_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (const uint8_t*) &(*data_item)->data.char_value);
                     if(_res != OK) {
                         return _res;
                     }
@@ -838,7 +838,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_serialize(plc4x_spi_context 
         } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_WCHAR) && (numberOfValues == 1)) { /* WCHAR */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (const uint8_t*) (*data_item)->data.wchar_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (const uint8_t*) &(*data_item)->data.wchar_value);
                     if(_res != OK) {
                         return _res;
                     }

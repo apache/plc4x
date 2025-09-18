@@ -157,38 +157,33 @@ ${helper.getLanguageTypeNameForTypeReference(constantType)} ${helper.getCTypeNam
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_enum_for_field_${helper.camelCaseToSnakeCase(constantName)}(${helper.getLanguageTypeNameForTypeReference(constantType)} value) {
     <#assign uniqueEnumValues=helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName)>
     <#if constantType.isStringTypeReference() || constantType.isVstringTypeReference()>
-        <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
+        <#list uniqueEnumValues?values as enumValue>
     if (strcmp(value, ${helper.escapeEnumValue(constantType, enumValue.getConstant(constantName).orElseThrow())?no_esc}) == 0) {
         return ${helper.getCTypeName(type.name)}_${enumValue.name};
     }
         </#list>
     return (${helper.getCTypeName(type.name)}) 0;
     <#elseif constantType.isBooleanTypeReference()>
-        if (!value) {
-        <#assign enumValue=uniqueEnumValues[0]>
-            return ${helper.getCTypeName(type.name)}_${enumValue.name};
-        } else {
-        <#if uniqueEnumValues?size &gt; 1>
-        <#assign enumValue=uniqueEnumValues[1]>
-            return ${helper.getCTypeName(type.name)}_${enumValue.name};
-        <#else>
-            return -1;
-        </#if>
-        }
+        <#list uniqueEnumValues as enumKey, enumValue>
+    if (value == ${enumKey}) {
+      return ${helper.getCTypeName(type.name)}_${enumValue.name};
+    }
+        </#list>
+    return -1;
     <#else>
     switch(value) {
-        <#list uniqueEnumValues as enumValue>
+        <#list uniqueEnumValues as enumKey, enumValue>
             <#if constantType.isSimpleTypeReference()>
-        case ${helper.escapeEnumValue(constantType, enumValue.getConstant(constantName).orElseThrow())?no_esc}: {
+      case ${helper.escapeEnumValue(constantType, enumValue.getConstant(constantName).orElseThrow())?no_esc}: {
             <#elseif constantType.isEnumTypeReference()>
-        case ${helper.getCTypeName(type.name)}_${enumValue.name}: /* '${enumValue.value}' */{
+      case ${helper.getLanguageTypeNameForTypeReference(constantType)}_${enumKey}: {
             </#if>
-            return ${helper.getCTypeName(type.name)}_${enumValue.name};
-        }
+        return ${helper.getCTypeName(type.name)}_${enumValue.name};
+      }
         </#list>
-        default: {
-            return -1;
-        }
+      default: {
+        return -1;
+      }
     }
     </#if>
 }

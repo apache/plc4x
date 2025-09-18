@@ -888,7 +888,7 @@
     ['0x0B' UDINT          ['0x07'     , 'D'             , '4'               , 'INT'                 , 'INTEGER'                          , 'IEC61131_UDINT'          , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
     ['0x0C' LINT           ['0x00'     , 'X'             , '8'               , 'INT'                 , 'BYTE_WORD_DWORD'                  , 'IEC61131_LINT'           , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
     ['0x0D' ULINT          ['0x00'     , 'X'             , '8'               , 'INT'                 , 'BYTE_WORD_DWORD'                  , 'IEC61131_ULINT'          , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
-    ['0x1C' COUNTER        ['0x1C'     , 'X'             , '2'               , 'null'                , 'OCTET_STRING'                  , 'IEC61131_INT'           , 'true'              , 'true'              , 'true'               , 'true'               , 'false'             ]]
+    ['0x1C' COUNTER        ['0x1C'     , 'X'             , '2'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_INT'            , 'true'              , 'true'              , 'true'               , 'true'               , 'false'             ]]
 
     // Floating point values
     ['0x0E' REAL           ['0x08'     , 'D'             , '4'               , 'null'                , 'REAL'                             , 'IEC61131_REAL'           , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]

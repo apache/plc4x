@@ -572,8 +572,16 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
+                int numChars;
+                if("UTF-8".equalsIgnoreCase(encoding)) {
+                    numChars = simpleTypeReference.getSizeInBits() / 8;
+                } else if("UTF-16".equalsIgnoreCase(encoding)) {
+                    numChars = simpleTypeReference.getSizeInBits() / 16;
+                } else {
+                    throw new FreemarkerException("Unsupported encoding " + encoding);
+                }
                 return "plc4c_spi_write_string(writeBuffer, " + length + ", \"" +
-                    encoding + "\", (const uint8_t*) " + fieldName + ")";
+                    encoding + "\", (const uint8_t*) " + (numChars == 1 ? "&" : "") + fieldName + ")";
             }
             case VSTRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));

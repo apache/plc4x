@@ -300,15 +300,15 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return filteredEnumValues.values();
     }
 
-    public Collection<EnumValue> getEnumValuesForUniqueConstantValues(List<EnumValue> enumValues, String constantName) {
+    public Map<String, EnumValue> getEnumValuesForUniqueConstantValues(List<EnumValue> enumValues, String constantName) {
         Map<String, EnumValue> filteredEnumValues = new TreeMap<>();
         for (EnumValue enumValue : enumValues) {
             String key = enumValue.getConstant(constantName).orElseThrow(() -> new FreemarkerException("No constant name " + constantName + " found in enum value" + enumValue));
-            if (!filteredEnumValues.containsKey(key)) {
+            if(!"null".equalsIgnoreCase(key) && !filteredEnumValues.containsKey(key)) {
                 filteredEnumValues.put(key, enumValue);
             }
         }
-        return filteredEnumValues.values();
+        return filteredEnumValues;
     }
 
     public SimpleTypeReference getEnumFieldSimpleTypeReference(NonSimpleTypeReference type, String fieldName) {
