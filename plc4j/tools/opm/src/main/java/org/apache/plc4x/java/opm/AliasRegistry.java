@@ -35,7 +35,7 @@ public interface AliasRegistry {
     boolean canResolve(String connection, String alias);
 
     /**
-     * Resolves an alias to a valid PLC Tag Address
+     * Resolves an alias to a valid PLC Tag Address.
      */
     String resolve(String alias);
 
