@@ -40,20 +40,20 @@ public class SipPDU implements Message {
 
   // Properties.
   protected final SipRequestLine requestLine;
-  protected final byte[] data;
+  protected final List<Header> headers;
 
-  public SipPDU(SipRequestLine requestLine, byte[] data) {
+  public SipPDU(SipRequestLine requestLine, List<Header> headers) {
     super();
     this.requestLine = requestLine;
-    this.data = data;
+    this.headers = headers;
   }
 
   public SipRequestLine getRequestLine() {
     return requestLine;
   }
 
-  public byte[] getData() {
-    return data;
+  public List<Header> getHeaders() {
+    return headers;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -68,12 +68,9 @@ public class SipPDU implements Message {
         writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    // Array Field (data)
-    writeByteArrayField(
-        "data",
-        data,
-        writeByteArray(writeBuffer, 8),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+    // Array Field (headers)
+    writeComplexTypeArrayField(
+        "headers", headers, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
@@ -107,8 +104,10 @@ public class SipPDU implements Message {
     lengthInBits += requestLine.getLengthInBits();
 
     // Array field
-    if (data != null) {
-      lengthInBits += 8 * data.length;
+    if (headers != null) {
+      for (Message element : headers) {
+        lengthInBits += element.getLengthInBits();
+      }
     }
 
     // Reserved Field (reserved)
@@ -131,10 +130,11 @@ public class SipPDU implements Message {
             readComplex(() -> SipRequestLine.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    byte[] data =
-        readBuffer.readByteArray(
-            "data",
-            Math.toIntExact(((len) - (requestLine.getLengthInBytes())) - (2)),
+    List<Header> headers =
+        readLengthArrayField(
+            "headers",
+            readComplex(() -> Header.staticParse(readBuffer), readBuffer),
+            ((len) - (requestLine.getLengthInBytes())) - (2),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Byte reservedField0 =
@@ -154,7 +154,7 @@ public class SipPDU implements Message {
     readBuffer.closeContext("SipPDU");
     // Create the instance
     SipPDU _sipPDU;
-    _sipPDU = new SipPDU(requestLine, data);
+    _sipPDU = new SipPDU(requestLine, headers);
     return _sipPDU;
   }
 
@@ -167,12 +167,14 @@ public class SipPDU implements Message {
       return false;
     }
     SipPDU that = (SipPDU) o;
-    return (getRequestLine() == that.getRequestLine()) && (getData() == that.getData()) && true;
+    return (getRequestLine() == that.getRequestLine())
+        && (getHeaders() == that.getHeaders())
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getRequestLine(), getData());
+    return Objects.hash(getRequestLine(), getHeaders());
   }
 
   @Override

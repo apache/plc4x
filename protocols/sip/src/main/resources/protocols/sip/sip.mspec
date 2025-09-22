@@ -1,14 +1,24 @@
-[type SipPDU (uint 16 len) byteOrder='BIG_ENDIAN'
-    [simple SipRequestLine requestLine]
-    [array byte data count 'len - requestLine.lengthInBytes - 2']
-    [reserved byte 8 'Constants.R']
-    [reserved byte 8 'Constants.N']
-]
-
 [type Constants
     [const byte SPACE 0x20]
     [const byte COLON 0x3a]
     [const byte SLASH 0x2f]
+    [const byte R     0x0d]
+    [const byte N     0x0a]
+]
+
+[type SipPDU (uint 16 len) byteOrder='BIG_ENDIAN'
+    [simple SipRequestLine requestLine]
+    [array Header headers length 'len - requestLine.lengthInBytes - 2']
+    //[array byte data count 'len - requestLine.lengthInBytes - 2']
+    [reserved byte 8 'Constants.R']
+    [reserved byte 8 'Constants.N']
+]
+
+[type Header
+    [manual vstring header      'STATIC_CALL("readStringTill", readBuffer, ":")'      'STATIC_CALL("writeStringTill", writeBuffer, header)'     '8 * STR_LEN(header)'     ]
+    [reserved byte 8 'Constants.COLON']
+    [reserved byte 8 'Constants.SPACE']
+    [manual vstring value       'STATIC_CALL("readStringTill", readBuffer, "\r\n")'   'STATIC_CALL("writeStringTill", writeBuffer, value)'      '8 * STR_LEN(value)'      ]
     [const byte R     0x0d]
     [const byte N     0x0a]
 ]
