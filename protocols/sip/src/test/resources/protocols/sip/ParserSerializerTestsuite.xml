@@ -131,6 +131,160 @@
             <N dataType="byte" bitLength="8">0x0a</N>
           </Header>
         </headers>
+        <payload dataType="byte" bitLength="0">0x</payload>
+        <reserved dataType="byte" bitLength="8">0x0d</reserved>
+        <reserved dataType="byte" bitLength="8">0x0a</reserved>
+      </SipPDU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Invite</name>
+    <raw>494e56495445207369703a30303937323339323837303434407369702e6379626572636974792e646b205349502f322e300d0a5669613a205349502f322e302f554450203139322e3136382e312e323b6272616e63683d7a39684734624b6e7032303233383237352d34373839323762613139322e3136382e312e323b72706f72740d0a46726f6d3a20226172696b22203c7369703a3335313034373233407369702e6379626572636974792e646b3e3b7461673d313735613164640d0a546f3a203c7369703a30303937323339323837303434407369702e6379626572636974792e646b3e0d0a43616c6c2d49443a2032343438373339312d3434396266326130403139322e3136382e312e320d0a435365713a203220494e564954450d0a50726f78792d417574686f72697a6174696f6e3a2044696765737420757365726e616d653d22766f693138303632222c7265616c6d3d227369702e6379626572636974792e646b222c7572693d227369703a3139322e3136382e312e32222c6e6f6e63653d2231373031623937623465623663363664363464306232306635613062656638222c6f70617175653d22313730316131333531663730373935222c6e633d223030303030303031222c726573706f6e73653d223062373939306262323164353537326436353731653937623938633664373066220d0a436f6e74656e742d547970653a206170706c69636174696f6e2f7364700d0a436f6e74656e742d4c656e6774683a203237300d0a446174653a204d6f6e2c203034204a756c20323030352030393a35343a323520474d540d0a436f6e746163743a203c7369703a3335313034373233403139322e3136382e312e323e0d0a457870697265733a203132300d0a4163636570743a206170706c69636174696f6e2f7364700d0a4d61782d466f7277617264733a2037300d0a557365722d4167656e743a204e65726f2053495050532049502050686f6e652056657273696f6e20322e302e35312e31360d0a416c6c6f773a20494e564954452c2041434b2c2043414e43454c2c204259452c2052454645522c204f5054494f4e532c204e4f544946592c20494e464f0d0a0d0a763d300d0a6f3d534950505320323434363634323220323434363634313820494e20495034203139322e3136382e312e320d0a733d5349502063616c6c0d0a633d494e20495034203139322e3136382e312e320d0a743d3020300d0a6d3d617564696f203330303030205254502f41565020302038203937203220330d0a613d7274706d61703a302070636d752f383030300d0a613d7274706d61703a382070636d612f383030300d0a613d7274706d61703a393720694c42432f383030300d0a613d7274706d61703a3220473732362d33322f383030300d0a613d7274706d61703a332047534d2f383030300d0a613d666d74703a3937206d6f64653d32300d0a613d73656e64726563760d0a</raw>
+    <root-type>SipPDU</root-type>
+    <parser-arguments>
+      <len>1076</len>
+    </parser-arguments>
+    <xml>
+      <SipPDU>
+        <requestLine>
+          <SipRequestLine>
+            <value dataType="string" bitLength="48" encoding="UTF-8">INVITE</value>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="24" encoding="UTF-8">sip</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <value dataType="string" bitLength="240" encoding="UTF-8">0097239287044@sip.cybercity.dk</value>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="24" encoding="UTF-8">SIP</value>
+            <reserved dataType="byte" bitLength="8">0x2f</reserved>
+            <value dataType="string" bitLength="24" encoding="UTF-8">2.0</value>
+            <reserved dataType="byte" bitLength="8">0x0d</reserved>
+            <reserved dataType="byte" bitLength="8">0x0a</reserved>
+          </SipRequestLine>
+        </requestLine>
+        <headers isList="true">
+          <Header>
+            <value dataType="string" bitLength="24" encoding="UTF-8">Via</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="592" encoding="UTF-8">SIP/2.0/UDP 192.168.1.2;branch=z9hG4bKnp20238275-478927ba192.168.1.2;rport</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="32" encoding="UTF-8">From</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="400" encoding="UTF-8">"arik" &lt;sip:35104723@sip.cybercity.dk>;tag=175a1dd</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="16" encoding="UTF-8">To</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="288" encoding="UTF-8">&lt;sip:0097239287044@sip.cybercity.dk></value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="56" encoding="UTF-8">Call-ID</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="232" encoding="UTF-8">24487391-449bf2a0@192.168.1.2</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="32" encoding="UTF-8">CSeq</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="64" encoding="UTF-8">2 INVITE</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="152" encoding="UTF-8">Proxy-Authorization</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="1568" encoding="UTF-8">Digest username="voi18062",realm="sip.cybercity.dk",uri="sip:192.168.1.2",nonce="1701b97b4eb6c66d64d0b20f5a0bef8",opaque="1701a1351f70795",nc="00000001",response="0b7990bb21d5572d6571e97b98c6d70f"</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="96" encoding="UTF-8">Content-Type</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="120" encoding="UTF-8">application/sdp</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="112" encoding="UTF-8">Content-Length</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="24" encoding="UTF-8">270</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="32" encoding="UTF-8">Date</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="232" encoding="UTF-8">Mon, 04 Jul 2005 09:54:25 GMT</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="56" encoding="UTF-8">Contact</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="208" encoding="UTF-8">&lt;sip:35104723@192.168.1.2></value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="56" encoding="UTF-8">Expires</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="24" encoding="UTF-8">120</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="48" encoding="UTF-8">Accept</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="120" encoding="UTF-8">application/sdp</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="96" encoding="UTF-8">Max-Forwards</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="16" encoding="UTF-8">70</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="80" encoding="UTF-8">User-Agent</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="296" encoding="UTF-8">Nero SIPPS IP Phone Version 2.0.51.16</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+          <Header>
+            <value dataType="string" bitLength="40" encoding="UTF-8">Allow</value>
+            <reserved dataType="byte" bitLength="8">0x3a</reserved>
+            <reserved dataType="byte" bitLength="8">0x20</reserved>
+            <value dataType="string" bitLength="432" encoding="UTF-8">INVITE, ACK, CANCEL, BYE, REFER, OPTIONS, NOTIFY, INFO</value>
+            <R dataType="byte" bitLength="8">0x0d</R>
+            <N dataType="byte" bitLength="8">0x0a</N>
+          </Header>
+        </headers>
+        <payload dataType="byte" bitLength="2160">0x0d0a763d300d0a6f3d534950505320323434363634323220323434363634313820494e20495034203139322e3136382e312e320d0a733d5349502063616c6c0d0a633d494e20495034203139322e3136382e312e320d0a743d3020300d0a6d3d617564696f203330303030205254502f41565020302038203937203220330d0a613d7274706d61703a302070636d752f383030300d0a613d7274706d61703a382070636d612f383030300d0a613d7274706d61703a393720694c42432f383030300d0a613d7274706d61703a3220473732362d33322f383030300d0a613d7274706d61703a332047534d2f383030300d0a613d666d74703a3937206d6f64653d32300d0a613d73656e6472656376</payload>
         <reserved dataType="byte" bitLength="8">0x0d</reserved>
         <reserved dataType="byte" bitLength="8">0x0a</reserved>
       </SipPDU>

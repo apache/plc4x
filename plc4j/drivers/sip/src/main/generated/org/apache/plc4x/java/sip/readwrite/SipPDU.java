@@ -41,11 +41,13 @@ public class SipPDU implements Message {
   // Properties.
   protected final SipRequestLine requestLine;
   protected final List<Header> headers;
+  protected final byte[] payload;
 
-  public SipPDU(SipRequestLine requestLine, List<Header> headers) {
+  public SipPDU(SipRequestLine requestLine, List<Header> headers, byte[] payload) {
     super();
     this.requestLine = requestLine;
     this.headers = headers;
+    this.payload = payload;
   }
 
   public SipRequestLine getRequestLine() {
@@ -54,6 +56,10 @@ public class SipPDU implements Message {
 
   public List<Header> getHeaders() {
     return headers;
+  }
+
+  public byte[] getPayload() {
+    return payload;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -71,6 +77,13 @@ public class SipPDU implements Message {
     // Array Field (headers)
     writeComplexTypeArrayField(
         "headers", headers, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Array Field (payload)
+    writeByteArrayField(
+        "payload",
+        payload,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
@@ -110,6 +123,11 @@ public class SipPDU implements Message {
       }
     }
 
+    // Array field
+    if (payload != null) {
+      lengthInBits += 8 * payload.length;
+    }
+
     // Reserved Field (reserved)
     lengthInBits += 8;
 
@@ -134,7 +152,16 @@ public class SipPDU implements Message {
         readLengthArrayField(
             "headers",
             readComplex(() -> Header.staticParse(readBuffer), readBuffer),
-            ((len) - (requestLine.getLengthInBytes())) - (2),
+            org.apache.plc4x.java.sip.readwrite.utils.StaticHelper.untilToken(
+                readBuffer, "\r\n\r\n", 2),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    byte[] payload =
+        readBuffer.readByteArray(
+            "payload",
+            Math.toIntExact(
+                (((len) - (requestLine.getLengthInBytes())) - (ARRAY_SIZE_IN_BYTES(headers)))
+                    - (2)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Byte reservedField0 =
@@ -154,7 +181,7 @@ public class SipPDU implements Message {
     readBuffer.closeContext("SipPDU");
     // Create the instance
     SipPDU _sipPDU;
-    _sipPDU = new SipPDU(requestLine, headers);
+    _sipPDU = new SipPDU(requestLine, headers, payload);
     return _sipPDU;
   }
 
@@ -169,12 +196,13 @@ public class SipPDU implements Message {
     SipPDU that = (SipPDU) o;
     return (getRequestLine() == that.getRequestLine())
         && (getHeaders() == that.getHeaders())
+        && (getPayload() == that.getPayload())
         && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getRequestLine(), getHeaders());
+    return Objects.hash(getRequestLine(), getHeaders(), getPayload());
   }
 
   @Override

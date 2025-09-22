@@ -8,10 +8,11 @@
 
 [type SipPDU (uint 16 len) byteOrder='BIG_ENDIAN'
     [simple SipRequestLine requestLine]
-    [array Header headers length 'len - requestLine.lengthInBytes - 2']
-    //[array byte data count 'len - requestLine.lengthInBytes - 2']
+    [array Header headers length 'STATIC_CALL("untilToken", readBuffer, "\r\n\r\n", 2)']
+    [array byte payload length 'len - requestLine.lengthInBytes - ARRAY_SIZE_IN_BYTES(headers) - 2']
     [reserved byte 8 'Constants.R']
     [reserved byte 8 'Constants.N']
+
 ]
 
 [type Header

@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.java.sip.readwrite.utils;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -30,19 +31,52 @@ public class StaticHelper {
         return new String(bytes);
     }
 
-    public static boolean until(ReadBuffer readBuffer, String terminator) throws ParseException {
+    public static int untilToken(ReadBuffer readBuffer, String terminator, int keep) {
+        int start = readBuffer.getPos();
+        StringBuilder buffer = new StringBuilder();
+        int length = terminator.length();
+        int retrieved = 0;
+        boolean success = false;
+        while (readBuffer.hasMore(8) && retrieved < length) {
+            try {
+                buffer.append((char) readBuffer.readByte());
+                if (buffer.length() >= length) {
+                    if (buffer.toString().endsWith(terminator)) {
+                        success = true;
+                        break;
+                    }
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (!success) {
+            throw new PlcRuntimeException("Failed to reach termination sequence for array");
+        }
+
+        int end = readBuffer.getPos();
+        readBuffer.reset(start);
+        return end - start - keep;
+    }
+
+    public static boolean until(ReadBuffer readBuffer, String terminator) {
         int start = readBuffer.getPos();
         StringBuilder buffer = new StringBuilder();
         int length = terminator.length();
         int retrieved = 0;
         while (readBuffer.hasMore(8) && retrieved < length) {
-            buffer.append((char) readBuffer.readByte());
-            if (buffer.length() == length) {
-                if (buffer.toString().equals(terminator)) {
-                    readBuffer.reset(start + length - 1);
-                    return false;
+            try {
+                buffer.append((char) readBuffer.readByte());
+                if (buffer.length() == length) {
+                    if (buffer.toString().equals(terminator)) {
+                        readBuffer.reset(start + length - 1);
+                        return false;
+                    }
+                    break;
                 }
-                break;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         }
 
