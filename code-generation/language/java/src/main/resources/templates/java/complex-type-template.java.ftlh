@@ -60,6 +60,7 @@ import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.api.value.*;
 
+import java.io.*;
 import java.time.*;
 import java.util.*;
 import java.math.BigInteger;
@@ -623,8 +624,15 @@ ${helper.getExternalTypeImports()}
                 <#assign arrayElementTypeReference = arrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
                 <#if arrayElementTypeReference.isByteBased()>
-                    <#if !field.isCountArrayField() && !field.isLengthArrayField()>${helper.fail("array fields of type byte only support 'count' and 'length' loop-types.")}</#if>
-    byte[] ${namedField.name} = readBuffer.readByteArray("${namedField.name}", Math.toIntExact(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+                    <#if field.isCountArrayField() || field.isLengthArrayField()>
+                        byte[] ${namedField.name} = readBuffer.readByteArray("${namedField.name}", Math.toIntExact(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+                    <#else>
+                        ByteArrayOutputStream ${namedField.name}Buffer = new ByteArrayOutputStream();
+                        while (${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression, parserArguments)}) {
+                            ${namedField.name}Buffer.write(readBuffer.readByte("${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)}));
+                        }
+                        byte[] ${namedField.name} = ${namedField.name}Buffer.toByteArray();
+                    </#if>
                 <#else>
                 <#-- If this is a count array, we can directly initialize an array with the given size -->
                     <#if field.isCountArrayField()>

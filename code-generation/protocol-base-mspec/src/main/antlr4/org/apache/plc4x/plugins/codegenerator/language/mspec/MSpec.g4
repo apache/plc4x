@@ -395,7 +395,12 @@ BOOLEAN_LITERAL
 
 STRING_LITERAL
  : '"' STRING_CHARACTERS? '"'
+ | SINGLE_LINE_STRING
+ | MULTI_LINE_STRING
  ;
+
+SINGLE_LINE_STRING   : '"' ( ESCAPE | '\\"' | ~[\\"])* '"';
+MULTI_LINE_STRING    : '"""' .*? '"""';
 
 // As we're generating property names and class names from these,
 // we have to put more restrictions on them.
@@ -403,6 +408,8 @@ STRING_LITERAL
 IDENTIFIER_LITERAL
  : [A-Za-z0-9_-]+
  ;
+
+fragment ESCAPE: '\\' ( [\\abdefnrstv0] | 'x' HEX_LITERAL HEX_LITERAL | 'u' HEX_LITERAL HEX_LITERAL HEX_LITERAL HEX_LITERAL | 'u{' HEX_LITERAL+ '}');
 
 fragment
 STRING_CHARACTERS
