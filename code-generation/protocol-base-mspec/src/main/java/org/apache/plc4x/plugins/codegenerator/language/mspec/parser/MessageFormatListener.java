@@ -308,7 +308,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void enterAbstractField(MSpecParser.AbstractFieldContext ctx) {
         var name = getIdString(ctx.name);
-        var field = new DefaultAbstractField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, consumePendingComment(ctx));
+        var field = new DefaultAbstractField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
@@ -327,7 +327,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         var name = getIdString(ctx.name);
         var loopType = ArrayField.LoopType.valueOf(ctx.loopType.getText().toUpperCase());
         var loopExpression = getExpressionTerm(ctx.loopExpression);
-        var field = new DefaultArrayField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, loopType, loopExpression, consumePendingComment(ctx));
+        var field = new DefaultArrayField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, loopType, loopExpression, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
@@ -345,7 +345,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     public void enterAssertField(MSpecParser.AssertFieldContext ctx) {
         var name = getIdString(ctx.name);
         var conditionExpression = getExpressionTerm(ctx.condition);
-        var field = new DefaultAssertField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, conditionExpression, consumePendingComment(ctx));
+        var field = new DefaultAssertField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, conditionExpression, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
@@ -364,7 +364,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         var type = getSimpleTypeReference(ctx.type);
         var name = getIdString(ctx.name);
         var checksumExpression = getExpressionTerm(ctx.checksumExpression);
-        var field = new DefaultChecksumField(getAttributes(ctx), getCurFieldAttributeNames(ctx), type, name, checksumExpression, consumePendingComment(ctx));
+        var field = new DefaultChecksumField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), type, name, checksumExpression, consumePendingComment(ctx));
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -373,7 +373,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void enterConstField(MSpecParser.ConstFieldContext ctx) {
         var name = getIdString(ctx.name);
-        var field = new DefaultConstField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, getValueLiteral(ctx.expected), consumePendingComment(ctx));
+        var field = new DefaultConstField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, getValueLiteral(ctx.expected), consumePendingComment(ctx));
         if (ctx.type.dataType() != null) {
             field.setType(getSimpleTypeReference(ctx.type.dataType()));
         } else {
@@ -394,7 +394,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void enterDiscriminatorField(MSpecParser.DiscriminatorFieldContext ctx) {
         var name = getIdString(ctx.name);
-        var field = new DefaultDiscriminatorField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, consumePendingComment(ctx));
+        var field = new DefaultDiscriminatorField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
@@ -418,7 +418,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         if (ctx.fieldName != null) {
             fieldName = getIdString(ctx.fieldName);
         }
-        var field = new DefaultEnumField(getAttributes(ctx), getCurFieldAttributeNames(ctx), type, name, fieldName, consumePendingComment(ctx));
+        var field = new DefaultEnumField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), type, name, fieldName, consumePendingComment(ctx));
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -429,7 +429,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         var type = getSimpleTypeReference(ctx.type);
         var name = getIdString(ctx.name);
         var serializeExpression = getExpressionTerm(ctx.serializeExpression);
-        var field = new DefaultImplicitField(getAttributes(ctx), getCurFieldAttributeNames(ctx), type, name, serializeExpression, consumePendingComment(ctx));
+        var field = new DefaultImplicitField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), type, name, serializeExpression, consumePendingComment(ctx));
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -444,7 +444,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         Term parseExpression = getExpressionTerm(ctx.parseExpression);
         Term serializeExpression = getExpressionTerm(ctx.serializeExpression);
         Term lengthExpression = getExpressionTerm(ctx.lengthExpression);
-        DefaultManualArrayField field = new DefaultManualArrayField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, loopType, loopExpression,
+        DefaultManualArrayField field = new DefaultManualArrayField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, loopType, loopExpression,
             parseExpression, serializeExpression, lengthExpression, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
@@ -465,7 +465,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         Term parseExpression = getExpressionTerm(ctx.parseExpression);
         Term serializeExpression = getExpressionTerm(ctx.serializeExpression);
         Term lengthExpression = getExpressionTerm(ctx.lengthExpression);
-        DefaultManualField field = new DefaultManualField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, parseExpression,
+        DefaultManualField field = new DefaultManualField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, parseExpression,
             serializeExpression,
             lengthExpression, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
@@ -488,7 +488,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         if (ctx.condition != null) {
             conditionExpression = getExpressionTerm(ctx.condition);
         }
-        var field = new DefaultOptionalField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, conditionExpression, consumePendingComment(ctx));
+        var field = new DefaultOptionalField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, conditionExpression, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
@@ -508,7 +508,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         var name = getIdString(ctx.name);
         var paddingValue = getExpressionTerm(ctx.paddingValue);
         var timesPadding = getExpressionTerm(ctx.timesPadding);
-        var field = new DefaultPaddingField(getAttributes(ctx), getCurFieldAttributeNames(ctx), type, name, paddingValue, timesPadding, consumePendingComment(ctx));
+        var field = new DefaultPaddingField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), type, name, paddingValue, timesPadding, consumePendingComment(ctx));
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -521,7 +521,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         if (ctx.offset != null) {
             offsetExpression = getExpressionTerm(ctx.offset);
         }
-        var field = new DefaultPeekField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, offsetExpression, consumePendingComment(ctx));
+        var field = new DefaultPeekField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, offsetExpression, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
@@ -539,7 +539,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     public void enterReservedField(MSpecParser.ReservedFieldContext ctx) {
         var type = getSimpleTypeReference(ctx.type);
         var expected = getExprString(ctx.expected);
-        var field = new DefaultReservedField(getAttributes(ctx), getCurFieldAttributeNames(ctx), type, expected, consumePendingComment(ctx));
+        var field = new DefaultReservedField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), type, expected, consumePendingComment(ctx));
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -548,7 +548,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void enterSimpleField(MSpecParser.SimpleFieldContext ctx) {
         var name = getIdString(ctx.name);
-        var field = new DefaultSimpleField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, consumePendingComment(ctx));
+        var field = new DefaultSimpleField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
@@ -592,7 +592,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             () -> new RuntimeException("state fields must refer to arguments by using the same name.")).type;
         // The variable term is always just a direct reference to the parser argument.
         var valueExpression = new DefaultVariableLiteral(name, null, null, null);
-        var field = new DefaultStateField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, valueExpression, consumePendingComment(ctx));
+        var field = new DefaultStateField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, valueExpression, consumePendingComment(ctx));
         getTypeReference(type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
@@ -611,7 +611,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         var variableLiterals = ctx.discriminators.variableLiteral().stream()
             .map(this::getVariableLiteral)
             .collect(Collectors.toList());
-        var field = new DefaultSwitchField(getAttributes(ctx), getCurFieldAttributeNames(ctx), variableLiterals, consumePendingComment(ctx));
+        var field = new DefaultSwitchField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), variableLiterals, consumePendingComment(ctx));
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -620,7 +620,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void enterUnknownField(MSpecParser.UnknownFieldContext ctx) {
         var type = getSimpleTypeReference(ctx.type);
-        var field = new DefaultUnknownField(getAttributes(ctx), getCurFieldAttributeNames(ctx), type, consumePendingComment(ctx));
+        var field = new DefaultUnknownField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), type, consumePendingComment(ctx));
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -637,7 +637,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         if (ctx.description != null) {
             description = ctx.description.getText();
         }
-        var field = new DefaultValidationField(getAttributes(ctx), getCurFieldAttributeNames(ctx), validationExpression, description, shouldFail, consumePendingComment(ctx));
+        var field = new DefaultValidationField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), validationExpression, description, shouldFail, consumePendingComment(ctx));
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -647,7 +647,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     public void enterVirtualField(MSpecParser.VirtualFieldContext ctx) {
         var name = getIdString(ctx.name);
         var valueExpression = getExpressionTerm(ctx.valueExpression);
-        var field = new DefaultVirtualField(getAttributes(ctx), getCurFieldAttributeNames(ctx), name, valueExpression, consumePendingComment(ctx));
+        var field = new DefaultVirtualField(getCuratedAttributes(ctx), getCurFieldAttributeNames(ctx), name, valueExpression, consumePendingComment(ctx));
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
@@ -1001,6 +1001,41 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 Term attributeExpression = getExpressionTerm(attributeContext.value);
                 attributes.put(attributeContext.name.getText(), attributeExpression);
             }
+        }
+        return attributes;
+    }
+
+    /**
+     * This is a variant of getAttributes, which respects that setting an attribute "encoding"
+     * also sets all types of individual encoding.
+     * @param ctx current Context
+     * @return map of curated attributes
+     */
+    private Map<String, Term> getCuratedAttributes(ParserRuleContext ctx) {
+        Map<String, Term> attributes = new HashMap<>();
+        // Add any attributes from the current batchSet context.
+        if (!batchSetAttributes.empty()) {
+            attributes.putAll(batchSetAttributes.peek());
+        }
+        // Add any attributes set on the current field itself.
+        boolean localGlobalEncoding = false;
+        if (ctx.parent.parent instanceof MSpecParser.FieldDefinitionContext fieldDefinitionContext) {
+            for (MSpecParser.AttributeContext attributeContext : fieldDefinitionContext.attributes.attribute()) {
+                String attributeName = attributeContext.name.getText();
+                Term valueExpression = getExpressionTerm(attributeContext.value);
+                if("encoding".equalsIgnoreCase(attributeName)) {
+                    localGlobalEncoding = true;
+                }
+                attributes.put(attributeContext.name.getText(), valueExpression);
+            }
+        }
+        // If the attribute's name is "encoding", ensure it overrides all sub-encodings.
+        if(localGlobalEncoding) {
+            Term valueExpression = attributes.get("encoding");
+            attributes.put("unsignedIntegerEncoding", valueExpression);
+            attributes.put("signedIntegerEncoding", valueExpression);
+            attributes.put("floatEncoding", valueExpression);
+            attributes.put("stringEncoding", valueExpression);
         }
         return attributes;
     }
