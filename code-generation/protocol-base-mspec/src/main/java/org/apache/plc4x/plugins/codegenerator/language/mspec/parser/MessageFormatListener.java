@@ -1044,7 +1044,15 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         Set<String> attributeNames = new HashSet<>();
         if (ctx.parent.parent instanceof MSpecParser.FieldDefinitionContext fieldDefinitionContext) {
             for (MSpecParser.AttributeContext attributeContext : fieldDefinitionContext.attributes.attribute()) {
-                attributeNames.add(attributeContext.name.getText());
+                String attributeName = attributeContext.name.getText();
+                // Setting the global "encoding" also sets the individual encodings.
+                if("encoding".equalsIgnoreCase(attributeName)) {
+                    attributeNames.add("unsignedIntegerEncoding");
+                    attributeNames.add("signedIntegerEncoding");
+                    attributeNames.add("floatEncoding");
+                    attributeNames.add("stringEncoding");
+                }
+                attributeNames.add(attributeName);
             }
         }
         return attributeNames;
