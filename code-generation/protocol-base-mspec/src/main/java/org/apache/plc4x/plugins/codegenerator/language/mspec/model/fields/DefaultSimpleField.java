@@ -22,11 +22,12 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
+import java.util.Set;
 
 public class DefaultSimpleField extends DefaultTypedNamedField implements SimpleField {
 
-    public DefaultSimpleField(Map<String, Term> attributes, String name, String comment) {
-        super(attributes, name, comment);
+    public DefaultSimpleField(Map<String, Term> attributes, Set<String> currentAttributeNames, String name, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
     }
 
     @Override

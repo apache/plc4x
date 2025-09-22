@@ -24,6 +24,7 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class DefaultValidationField extends DefaultField implements ValidationField {
 
@@ -31,8 +32,8 @@ public class DefaultValidationField extends DefaultField implements ValidationFi
     private final String description;
     private final boolean shouldFail;
 
-    public DefaultValidationField(Map<String, Term> attributes, Term validationExpression, String description, boolean shouldFail, String comment) {
-        super(attributes, comment);
+    public DefaultValidationField(Map<String, Term> attributes, Set<String> currentAttributeNames, Term validationExpression, String description, boolean shouldFail, String comment) {
+        super(attributes, currentAttributeNames, comment);
         this.validationExpression = Objects.requireNonNull(validationExpression);
         this.description = description;
         this.shouldFail = shouldFail;

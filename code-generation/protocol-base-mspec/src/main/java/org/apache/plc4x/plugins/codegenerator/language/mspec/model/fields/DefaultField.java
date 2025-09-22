@@ -24,16 +24,24 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 
 public abstract class DefaultField {
 
     protected final Map<String, Term> attributes;
+    protected final Set<String> currentAttributeNames;
     protected final String comment;
     protected TypeDefinition owner;
 
-    protected DefaultField(Map<String, Term> attributes, String comment) {
+    protected DefaultField(Map<String, Term> attributes, Set<String> currentAttributeNames, String comment) {
         this.attributes = Objects.requireNonNull(attributes);
+        currentAttributeNames.forEach(attributeName -> {
+            if (!attributes.containsKey(attributeName)) {
+                throw new IllegalArgumentException("Attribute '" + attributeName + "' is not defined for field " + this);
+            }
+        });
+        this.currentAttributeNames = Objects.requireNonNull(currentAttributeNames);
         this.comment = comment;
     }
 
@@ -47,6 +55,14 @@ public abstract class DefaultField {
 
     public void setOwner(TypeDefinition owner) {
         this.owner = owner;
+    }
+
+    public Set<String> getAllAttributeNames() {
+        return attributes.keySet();
+    }
+
+    public Set<String> getCurrentAttributeNames() {
+        return attributes.keySet();
     }
 
     public Optional<Term> getAttribute(String attributeName) {

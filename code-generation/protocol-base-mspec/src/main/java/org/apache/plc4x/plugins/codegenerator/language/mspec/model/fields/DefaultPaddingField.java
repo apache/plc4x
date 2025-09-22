@@ -24,14 +24,15 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class DefaultPaddingField extends DefaultTypedNamedField implements PaddingField {
 
     private final Term paddingValue;
     private final Term paddingCondition;
 
-    public DefaultPaddingField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term paddingValue, Term paddingCondition, String comment) {
-        super(attributes, name, comment);
+    public DefaultPaddingField(Map<String, Term> attributes, Set<String> currentAttributeNames, SimpleTypeReference type, String name, Term paddingValue, Term paddingCondition, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
         this.paddingValue = Objects.requireNonNull(paddingValue);
         this.paddingCondition = Objects.requireNonNull(paddingCondition);
         this.type = type;

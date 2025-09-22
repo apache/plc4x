@@ -22,13 +22,14 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class DefaultTypedNamedField extends DefaultTypedField {
 
     protected final String name;
 
-    public DefaultTypedNamedField(Map<String, Term> attributes, String name, String comment) {
-        super(attributes, comment);
+    public DefaultTypedNamedField(Map<String, Term> attributes, Set<String> currentAttributeNames, String name, String comment) {
+        super(attributes, currentAttributeNames, comment);
         this.name = name;
     }
 

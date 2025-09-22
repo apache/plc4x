@@ -25,14 +25,15 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class DefaultArrayField extends DefaultTypedNamedField implements ArrayField {
 
     private final LoopType loopType;
     private final Term loopExpression;
 
-    public DefaultArrayField(Map<String, Term> attributes, String name, LoopType loopType, Term loopExpression, String comment) {
-        super(attributes, name, comment);
+    public DefaultArrayField(Map<String, Term> attributes, Set<String> currentAttributeNames, String name, LoopType loopType, Term loopExpression, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
         this.loopType = Objects.requireNonNull(loopType);
         this.loopExpression = Objects.requireNonNull(loopExpression);
     }

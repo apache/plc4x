@@ -24,13 +24,14 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class DefaultReservedField extends DefaultTypedField implements ReservedField {
 
     private final Object referenceValue;
 
-    public DefaultReservedField(Map<String, Term> attributes, SimpleTypeReference type, Object referenceValue, String comment) {
-        super(attributes, comment);
+    public DefaultReservedField(Map<String, Term> attributes, Set<String> currentAttributeNames, SimpleTypeReference type, Object referenceValue, String comment) {
+        super(attributes, currentAttributeNames, comment);
         this.referenceValue = Objects.requireNonNull(referenceValue);
         this.type = type;
     }

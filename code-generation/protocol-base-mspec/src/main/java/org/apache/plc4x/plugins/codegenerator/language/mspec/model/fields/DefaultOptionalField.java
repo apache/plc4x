@@ -24,13 +24,14 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class DefaultOptionalField extends DefaultTypedNamedField implements OptionalField {
 
     private final Term conditionExpression;
 
-    public DefaultOptionalField(Map<String, Term> attributes, String name, Term conditionExpression, String comment) {
-        super(attributes, name, comment);
+    public DefaultOptionalField(Map<String, Term> attributes, Set<String> currentAttributeNames, String name, Term conditionExpression, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
         this.conditionExpression = conditionExpression;
     }
 

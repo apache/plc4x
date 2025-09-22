@@ -24,13 +24,14 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class DefaultPeekField extends DefaultTypedNamedField implements PeekField {
 
     private final Term offsetExpression;
 
-    public DefaultPeekField(Map<String, Term> attributes, String name, Term offsetExpression, String comment) {
-        super(attributes, name, comment);
+    public DefaultPeekField(Map<String, Term> attributes, Set<String> currentAttributeNames, String name, Term offsetExpression, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
         this.offsetExpression = offsetExpression;
     }
 

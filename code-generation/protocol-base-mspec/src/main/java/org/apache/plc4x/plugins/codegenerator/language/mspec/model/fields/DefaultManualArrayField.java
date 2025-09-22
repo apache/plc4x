@@ -25,6 +25,7 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class DefaultManualArrayField extends DefaultTypedNamedField implements ManualArrayField {
 
@@ -34,8 +35,8 @@ public class DefaultManualArrayField extends DefaultTypedNamedField implements M
     private final Term serializeExpression;
     private final Term lengthExpression;
 
-    public DefaultManualArrayField(Map<String, Term> attributes, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, String comment) {
-        super(attributes, name, comment);
+    public DefaultManualArrayField(Map<String, Term> attributes, Set<String> currentAttributeNames, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
         this.loopType = Objects.requireNonNull(loopType);
         this.loopExpression = Objects.requireNonNull(loopExpression);
         this.parseExpression = Objects.requireNonNull(parseExpression);

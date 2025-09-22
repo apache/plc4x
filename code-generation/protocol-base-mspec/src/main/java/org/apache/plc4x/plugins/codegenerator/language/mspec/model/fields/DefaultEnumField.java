@@ -24,13 +24,14 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class DefaultEnumField extends DefaultTypedNamedField implements EnumField {
 
     private final String fieldName;
 
-    public DefaultEnumField(Map<String, Term> attributes, EnumTypeReference type, String name, String fieldName, String comment) {
-        super(attributes, name, comment);
+    public DefaultEnumField(Map<String, Term> attributes, Set<String> currentAttributeNames, EnumTypeReference type, String name, String fieldName, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
         this.fieldName = Objects.requireNonNull(fieldName);
         this.type = type;
     }

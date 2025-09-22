@@ -23,6 +23,7 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class DefaultManualField extends DefaultTypedNamedField implements ManualField {
 
@@ -30,8 +31,8 @@ public class DefaultManualField extends DefaultTypedNamedField implements Manual
     private final Term serializeExpression;
     private final Term lengthExpression;
 
-    public DefaultManualField(Map<String, Term> attributes, String name, Term parseExpression, Term serializeExpression, Term lengthExpression, String comment) {
-        super(attributes, name, comment);
+    public DefaultManualField(Map<String, Term> attributes, Set<String> currentAttributeNames, String name, Term parseExpression, Term serializeExpression, Term lengthExpression, String comment) {
+        super(attributes, currentAttributeNames, name, comment);
         this.parseExpression = Objects.requireNonNull(parseExpression);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
         this.lengthExpression = Objects.requireNonNull(lengthExpression);

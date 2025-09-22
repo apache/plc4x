@@ -23,6 +23,7 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -31,8 +32,8 @@ public abstract class DefaultTypedField extends DefaultField {
     protected final CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
     protected TypeReference type;
 
-    public DefaultTypedField(Map<String, Term> attributes, String comment) {
-        super(attributes, comment);
+    public DefaultTypedField(Map<String, Term> attributes, Set<String> currentAttributeNames, String comment) {
+        super(attributes, currentAttributeNames, comment);
     }
 
     public TypeReference getType() {
