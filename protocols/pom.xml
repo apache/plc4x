@@ -58,6 +58,7 @@
     <module>profinet</module>
     <module>s7</module>
     <module>simulated</module>
+    <module>sip</module>
     <module>socketcan</module>
     <module>umas</module>
   </modules>

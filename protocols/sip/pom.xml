@@ -23,43 +23,31 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
+    <artifactId>plc4x-protocols</artifactId>
     <version>0.14.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-drivers</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4x-protocols-sip</artifactId>
 
-  <name>PLC4J: Drivers</name>
-  <description>Wrapper project for all PLC4J driver implementations.</description>
+  <name>Protocols: SIP</name>
+  <description>Base protocol specifications for the SIP protocol</description>
 
   <properties>
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
-  <modules>
-    <module>ab-eth</module>
-    <module>ads</module>
-    <module>bacnet</module>
-    <module>c-bus</module>
-    <module>can</module>
-    <module>canopen</module>
-    <module>ctrlx</module>
-    <module>eip</module>
-    <module>firmata</module>
-    <module>iec-60870</module>
-    <module>knxnetip</module>
-    <module>mock</module>
-    <module>open-protocol</module>
-    <module>modbus</module>
-    <module>opcua</module>
-    <module>plc4x</module>
-    <module>profinet</module>
-    <module>profinet-ng</module>
-    <module>s7</module>
-    <module>sip</module>
-    <module>simulated</module>
-    <module>all</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>
