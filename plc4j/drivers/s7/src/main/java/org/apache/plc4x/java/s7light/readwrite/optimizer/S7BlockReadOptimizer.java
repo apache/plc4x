@@ -70,35 +70,41 @@ public class S7BlockReadOptimizer extends S7Optimizer {
 
         // Sort the tags by area
         // (We can only read multiple tags in one byte array if they are located in the same area)
-        Map<String, Map<PlcTag, String>> sortedTagsPerArea = new HashMap<>();
+        Map<String, Map<PlcTag, Set<String>>> sortedTagsPerArea = new HashMap<>();
         for (String tagName : readRequest.getTagNames()) {
             PlcTag tag = readRequest.getTag(tagName);
-            if(tag instanceof S7SzlTag) {
-                if(!sortedTagsPerArea.containsKey("SZL")) {
-                    sortedTagsPerArea.put("SZL", createSortedTagMap());
+            switch (tag) {
+                case S7SzlTag ignored -> {
+                    if (!sortedTagsPerArea.containsKey("SZL")) {
+                        sortedTagsPerArea.put("SZL", createSortedTagMap());
+                    }
+                    sortedTagsPerArea.get("SZL").put(tag, Set.of(tagName));
                 }
-                sortedTagsPerArea.get("SZL").put(tag, tagName);
-            } else if(tag instanceof S7ClkTag) {
-                if(!sortedTagsPerArea.containsKey("CLK")) {
-                    sortedTagsPerArea.put("CLK", createSortedTagMap());
+                case S7ClkTag ignored -> {
+                    if (!sortedTagsPerArea.containsKey("CLK")) {
+                        sortedTagsPerArea.put("CLK", createSortedTagMap());
+                    }
+                    sortedTagsPerArea.get("CLK").put(tag, Set.of(tagName));
                 }
-                sortedTagsPerArea.get("CLK").put(tag, tagName);
-            } else if(tag instanceof S7Tag) {
-                S7Tag s7Tag = (S7Tag) tag;
-                MemoryArea memoryArea = s7Tag.getMemoryArea();
-                // When reading DATA_BLOCKS, we need to also use the block number.
-                String areaName = memoryArea.getShortName();
-                if(memoryArea ==  MemoryArea.DATA_BLOCKS) {
-                    areaName += s7Tag.getBlockNumber();
-                } else if(memoryArea == MemoryArea.INSTANCE_DATA_BLOCKS) {
-                    areaName += s7Tag.getBlockNumber();
+                case S7Tag s7Tag -> {
+                    MemoryArea memoryArea = s7Tag.getMemoryArea();
+                    // When reading DATA_BLOCKS, we need to also use the block number.
+                    String areaName = memoryArea.getShortName();
+                    if (memoryArea == MemoryArea.DATA_BLOCKS) {
+                        areaName += s7Tag.getBlockNumber();
+                    } else if (memoryArea == MemoryArea.INSTANCE_DATA_BLOCKS) {
+                        areaName += s7Tag.getBlockNumber();
+                    }
+                    if (!sortedTagsPerArea.containsKey(areaName)) {
+                        sortedTagsPerArea.put(areaName, createSortedTagMap());
+                    }
+                    if (sortedTagsPerArea.get(areaName).containsKey(tag)) {
+                        sortedTagsPerArea.get(areaName).get(tag).add(tagName);
+                    } else {
+                        sortedTagsPerArea.get(areaName).put(tag, Set.of(tagName));
+                    }
                 }
-                if(!sortedTagsPerArea.containsKey(areaName)) {
-                    sortedTagsPerArea.put(areaName, createSortedTagMap());
-                }
-                sortedTagsPerArea.get(areaName).put(tag, tagName);
-            } else {
-                System.out.println("Ignored");
+                case null, default -> System.out.println("Ignored");
             }
         }
 
@@ -108,77 +114,71 @@ public class S7BlockReadOptimizer extends S7Optimizer {
         //   reading them in one block is less efficient than reading them separately.
         //   Other than that, extend the byte array to include the next tag.
         Map<TagNameSize, PlcTagItem<PlcTag>> optimizedTagMap = new TreeMap<>();
-        for (Map<PlcTag, String> tagList : sortedTagsPerArea.values()) {
+        for (Map<PlcTag, Set<String>> tagList : sortedTagsPerArea.values()) {
             MemoryArea currentMemoryArea = null;
             int currentDataBlockNumber = -1;
             int currentChunkStartByteOffset = -1;
             int currentChunkEndByteOffset = -1;
-            Map<PlcTag, String> currentChunkTags = createSortedTagMap();
+            Map<PlcTag, Set<String>> currentChunkTags = createSortedTagMap();
             for (PlcTag plcTag : tagList.keySet()) {
-                // We don't do anything for Szl and Clk tags.
-                if(plcTag instanceof S7SzlTag) {
-                    // TODO: Implement the size
-                    optimizedTagMap.put(new TagNameSize(tagList.get(plcTag), 0), new DefaultPlcTagItem<>(plcTag));
-                } else if (plcTag instanceof S7ClkTag) {
-                    // TODO: Implement the size
-                    optimizedTagMap.put(new TagNameSize(tagList.get(plcTag), 0), new DefaultPlcTagItem<>(plcTag));
-                }
-                // Var-length strings are a performance nightmare. Trying to optimize reading them is probably not
-                // worth the effort. For now, we simply handle them as un-chunked tags.
-                else if(plcTag instanceof S7StringVarLengthTag) {
-                    // A var-length string tag simply reads 2 or 4 bytes.
-                    optimizedTagMap.put(new TagNameSize(tagList.get(plcTag),
-                        ((S7StringVarLengthTag) plcTag).getDataType() == TransportSize.STRING ? 2 : 4),
-                        new DefaultPlcTagItem<>(plcTag));
-                }
+                switch (plcTag) {
+                    // We don't do anything for Szl and Clk tags.
+                    case S7SzlTag ignored -> // TODO: Implement the size
+                        optimizedTagMap.put(new TagNameSize(tagList.get(plcTag).stream().findFirst().orElseThrow(), 0), new DefaultPlcTagItem<>(plcTag));
+                    case S7ClkTag ignored -> // TODO: Implement the size
+                        optimizedTagMap.put(new TagNameSize(tagList.get(plcTag).stream().findFirst().orElseThrow(), 0), new DefaultPlcTagItem<>(plcTag));
+                    // Var-length strings are a performance nightmare. Trying to optimize reading them is probably not
+                    // worth the effort. For now, we simply handle them as un-chunked tags.
+                    case S7StringVarLengthTag s7StringVarLengthTag -> // A var-length string tag simply reads 2 or 4 bytes.
+                        optimizedTagMap.put(new TagNameSize(tagList.get(plcTag).stream().findFirst().orElseThrow(),
+                                s7StringVarLengthTag.getDataType() == TransportSize.STRING ? 2 : 4),
+                            new DefaultPlcTagItem<>(plcTag));
+                    // Only regular tags are optimized.
+                    case S7Tag s7Tag -> {
+                        // If the dataType is BOOL, the size in bytes needs to be calculated differently.
+                        // Especially if it's more than one element.
+                        int curTagSize = s7Tag.getDataType() == TransportSize.BOOL ? (s7Tag.getNumberOfElements() + 7) / 8 :
+                            s7Tag.getDataType().getSizeInBytes() * s7Tag.getNumberOfElements();
+                        // In the case of fixed length strings, a string starts with two bytes: max length,
+                        // actual length and then the string bytes after that.
+                        if(s7Tag instanceof S7StringFixedLengthTag stringFixedLengthTag) {
+                            int bytesPerChar = (stringFixedLengthTag.getDataType() == TransportSize.WSTRING) ? 2 : 1;
+                            curTagSize = ((2 * bytesPerChar) + (stringFixedLengthTag.getStringLength() * bytesPerChar)) * s7Tag.getNumberOfElements();
+                        }
 
-                // Only regular tags are optimized.
-                else if (plcTag instanceof S7Tag) {
-                    S7Tag s7Tag = (S7Tag) plcTag;
+                        // If this is the first tag, use that as a starting point.
+                        if(currentMemoryArea == null) {
+                            currentMemoryArea = s7Tag.getMemoryArea();
+                            currentDataBlockNumber = s7Tag.getBlockNumber();
+                            currentChunkStartByteOffset = s7Tag.getByteOffset();
+                            currentChunkEndByteOffset = s7Tag.getByteOffset() + curTagSize;
+                        }
+                        // If the next tag is more bytes away than a s7 address item requires, it cost fewer resources to
+                        // split up into multiple items.
+                        else if(currentChunkEndByteOffset + S7_ADDRESS_ANY_SIZE < s7Tag.getByteOffset()) {
+                            // Save the current chunk.
+                            optimizedTagMap.put(new TagNameSize("__chunk__" + optimizedTagMap.size(), currentChunkEndByteOffset - currentChunkStartByteOffset),
+                                new DefaultPlcTagItem<>(
+                                    new S7TagChunk(TransportSize.BYTE, currentMemoryArea, currentDataBlockNumber,
+                                        currentChunkStartByteOffset, (byte) 0,
+                                        currentChunkEndByteOffset - currentChunkStartByteOffset,
+                                        currentChunkTags, 0, 1, currentChunkEndByteOffset - currentChunkStartByteOffset)));
 
-                    // If the dataType is BOOL, the size in bytes needs to be calculated differently.
-                    // Especially if it's more than one element.
-                    int curTagSize = s7Tag.getDataType() == TransportSize.BOOL ? (s7Tag.getNumberOfElements() + 7) / 8 :
-                        s7Tag.getDataType().getSizeInBytes() * s7Tag.getNumberOfElements();
-                    // In the case of fixed length strings, a string starts with two bytes: max length,
-                    // actual length and then the string bytes after that.
-                    if(s7Tag instanceof S7StringFixedLengthTag) {
-                        S7StringFixedLengthTag stringFixedLengthTag = (S7StringFixedLengthTag) s7Tag;
-                        int bytesPerChar = (stringFixedLengthTag.getDataType() == TransportSize.WSTRING) ? 2 : 1;
-                        curTagSize = ((2 * bytesPerChar) + (stringFixedLengthTag.getStringLength() * bytesPerChar)) * s7Tag.getNumberOfElements();
+                            // Start a new one.
+                            currentChunkStartByteOffset = s7Tag.getByteOffset();
+                            currentChunkEndByteOffset = s7Tag.getByteOffset() + curTagSize;
+                            currentChunkTags = createSortedTagMap();
+                        }
+                        // Otherwise extend the array size to include this tag.
+                        else {
+                            // Check if adding this tag would increase the size of the array.
+                            currentChunkEndByteOffset = Math.max(currentChunkEndByteOffset, s7Tag.getByteOffset() + curTagSize);
+                        }
+
+                        // Add the tag to the list of tags for the current chunk.
+                        currentChunkTags.put(s7Tag, tagList.get(s7Tag));
                     }
-
-                    // If this is the first tag, use that as a starting point.
-                    if(currentMemoryArea == null) {
-                        currentMemoryArea = s7Tag.getMemoryArea();
-                        currentDataBlockNumber = s7Tag.getBlockNumber();
-                        currentChunkStartByteOffset = s7Tag.getByteOffset();
-                        currentChunkEndByteOffset = s7Tag.getByteOffset() + curTagSize;
-                    }
-                    // If the next tag is more bytes away than a s7 address item requires, it cost fewer resources to
-                    // split up into multiple items.
-                    else if(currentChunkEndByteOffset + S7_ADDRESS_ANY_SIZE < s7Tag.getByteOffset()) {
-                        // Save the current chunk.
-                        optimizedTagMap.put(new TagNameSize("__chunk__" + optimizedTagMap.size(), currentChunkEndByteOffset - currentChunkStartByteOffset),
-                            new DefaultPlcTagItem<>(
-                                new S7TagChunk(TransportSize.BYTE, currentMemoryArea, currentDataBlockNumber,
-                                    currentChunkStartByteOffset, (byte) 0,
-                                    currentChunkEndByteOffset - currentChunkStartByteOffset,
-                                    currentChunkTags, 0, 1, currentChunkEndByteOffset - currentChunkStartByteOffset)));
-
-                        // Start a new one.
-                        currentChunkStartByteOffset = s7Tag.getByteOffset();
-                        currentChunkEndByteOffset = s7Tag.getByteOffset() + curTagSize;
-                        currentChunkTags = createSortedTagMap();
-                    }
-                    // Otherwise extend the array size to include this tag.
-                    else {
-                        // Check if adding this tag would increase the size of the array.
-                        currentChunkEndByteOffset = Math.max(currentChunkEndByteOffset, s7Tag.getByteOffset() + curTagSize);
-                    }
-
-                    // Add the tag to the list of tags for the current chunk.
-                    currentChunkTags.put(s7Tag, tagList.get(s7Tag));
+                    default -> System.out.println("Ignored");
                 }
             }
 
@@ -209,7 +209,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                     optimizedTagMap2.put(new TagNameSize(curTagNameBase + "." + curTagFragmentNumber, maxRequestSize),
                         new DefaultPlcTagItem<>(
                             new S7TagChunk(curTag.getDataType(), curTag.getMemoryArea(), curTag.getBlockNumber(), curTagOffset, (byte) 0, maxRequestSize,
-                                (curTag instanceof S7TagChunk) ? ((S7TagChunk) curTag).getChunkTags() : Collections.singletonMap(curTag, tagNameSize.getTagName()),
+                                (curTag instanceof S7TagChunk) ? ((S7TagChunk) curTag).getChunkTags() : Collections.singletonMap(curTag, Set.of(tagNameSize.getTagName())),
                                 curPartIndex, totalPartCount, curTagSize)));
 
                     curTagOffset += maxRequestSize;
@@ -220,7 +220,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                 optimizedTagMap2.put(new TagNameSize(curTagNameBase + "." + curTagFragmentNumber, curTagSize),
                     new DefaultPlcTagItem<>(
                         new S7TagChunk(curTag.getDataType(), curTag.getMemoryArea(), curTag.getBlockNumber(), curTagOffset, (byte) 0, curTagSize,
-                            (curTag instanceof S7TagChunk) ? ((S7TagChunk) curTag).getChunkTags() : Collections.singletonMap(curTag, tagNameSize.getTagName()),
+                            (curTag instanceof S7TagChunk) ? ((S7TagChunk) curTag).getChunkTags() : Collections.singletonMap(curTag, Set.of(tagNameSize.getTagName())),
                             curPartIndex, totalPartCount, curTagSize)));
             }
             // Just copy over tags that fit into a request.
@@ -277,8 +277,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             PlcTag tag = rawReadResponse.getRequest().getTag(tagName);
 
             // This indicates it's a chunk that's been split up.
-            if((tag instanceof S7TagChunk) && (((S7TagChunk) tag).getTotalPartNumber() > 1)){
-                S7TagChunk tagChunk = (S7TagChunk) tag;
+            if((tag instanceof S7TagChunk tagChunk) && (tagChunk.getTotalPartNumber() > 1)){
                 // Only handle the first part
                 if(tagChunk.getCurPartIndex() == 0) {
                     String tagBaseName = tagName.substring(0, tagName.indexOf("."));
@@ -332,7 +331,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             PlcTag tag = mergedReadResponse.getRequest().getTag(tagName);
 
             // If it's not a tag-chunk, then we just add it to the response.
-            if(!(tag instanceof S7TagChunk)) {
+            if(!(tag instanceof S7TagChunk s7TagChunk)) {
                 values.put(tagName, new DefaultPlcResponseItem<>(responseCode, plcValue));
                 continue;
             }
@@ -340,16 +339,14 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             // Otherwise it's a tag-chunk and we need to decode the payload.
             // So we decode all the tags that are chunked-together in this.
             ReadBufferByteBased readBuffer = new ReadBufferByteBased(plcValue.getRaw());
-            S7TagChunk s7TagChunk = (S7TagChunk) tag;
             int chunkByteOffset = s7TagChunk.getByteOffset();
             for (PlcTag plcTag : s7TagChunk.getChunkTags().keySet()) {
                 S7Tag s7Tag = (S7Tag) plcTag;
-                String curTagName = s7TagChunk.getChunkTags().get(plcTag);
+                Set<String> curTagNames = s7TagChunk.getChunkTags().get(plcTag);
                 int curTagStartPosition = s7Tag.getByteOffset() - chunkByteOffset;
                 int curTagDataSize = s7Tag.getDataType() == TransportSize.BOOL ? (s7Tag.getNumberOfElements() + 7) / 8 :
                     s7Tag.getDataType().getSizeInBytes() * s7Tag.getNumberOfElements();
-                if(s7Tag instanceof S7StringFixedLengthTag) {
-                    S7StringFixedLengthTag s7StringFixedLengthTag = (S7StringFixedLengthTag) s7Tag;
+                if(s7Tag instanceof S7StringFixedLengthTag s7StringFixedLengthTag) {
                     if(s7Tag.getDataType() == TransportSize.WSTRING) {
                         //curTagStartPosition += 4;
                         curTagDataSize = s7StringFixedLengthTag.getStringLength() * 2;
@@ -360,17 +357,18 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                 }
                 byte[] curTagData = readBuffer.getBytes(curTagStartPosition, curTagStartPosition + curTagDataSize);
                 PlcValue tagValue = parsePlcValue(s7Tag, curTagData, s7DriverContext);
-                values.put(curTagName, new DefaultPlcResponseItem<>(responseCode, tagValue));
+                for (String curTagName : curTagNames) {
+                    values.put(curTagName, new DefaultPlcResponseItem<>(responseCode, tagValue));
+                }
             }
         }
 
         return new DefaultPlcReadResponse(readRequest, values);
     }
 
-    protected Map<PlcTag, String> createSortedTagMap() {
+    protected Map<PlcTag, Set<String>> createSortedTagMap() {
         return new TreeMap<>((tag1, tag2) -> {
-            if (tag1 instanceof S7SzlTag) {
-                S7SzlTag s7Tag1 = (S7SzlTag) tag1;
+            if (tag1 instanceof S7SzlTag s7Tag1) {
                 S7SzlTag s7Tag2 = (S7SzlTag) tag2;
                 if (s7Tag1.getSzlId() == s7Tag2.getSzlId()) {
                     return s7Tag1.getIndex() - s7Tag2.getIndex();
@@ -380,8 +378,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                 // Technically, CLK tags should be identical as there's
                 // only one address for reading the PLC clock information.
                 return 0;
-            } else if (tag1 instanceof S7Tag) {
-                S7Tag s7Tag1 = (S7Tag) tag1;
+            } else if (tag1 instanceof S7Tag s7Tag1) {
                 S7Tag s7Tag2 = (S7Tag) tag2;
                 if (s7Tag1.getByteOffset() == s7Tag2.getByteOffset()) {
                     if (s7Tag1.getBitOffset() == s7Tag2.getBitOffset()) {
@@ -391,9 +388,9 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                         int s7Tag2TypeSizeInBits = s7Tag2.getDataType() == TransportSize.BOOL ? 1 : s7Tag2.getDataType().getSizeInBytes() * 8;
                         int s7Tag2SizeInBits = s7Tag2TypeSizeInBits * s7Tag2.getNumberOfElements();
                         // Tie-breaker, if an identical tag is added multiple times.
-                        if(s7Tag1SizeInBits == s7Tag1TypeSizeInBits) {
+                        /*if(s7Tag1SizeInBits == s7Tag1TypeSizeInBits) {
                             return Integer.compare(System.identityHashCode(s7Tag1), System.identityHashCode(s7Tag2));
-                        }
+                        }*/
                         return s7Tag1SizeInBits - s7Tag2SizeInBits;
                     }
                     return s7Tag1.getBitOffset() - s7Tag2.getBitOffset();
@@ -457,12 +454,12 @@ public class S7BlockReadOptimizer extends S7Optimizer {
 
     public static class S7TagChunk extends S7Tag {
 
-        private final Map<PlcTag, String> chunkTags;
+        private final Map<PlcTag, Set<String>> chunkTags;
         private final int curPartIndex;
         private final int totalPartNumber;
         private final int totalPartSize;
 
-        public S7TagChunk(TransportSize dataType, MemoryArea memoryArea, int blockNumber, int byteOffset, byte bitOffset, int numElements, Map<PlcTag, String> chunkTags, int curPartIndex, int totalPartNumber, int totalPartSize) {
+        public S7TagChunk(TransportSize dataType, MemoryArea memoryArea, int blockNumber, int byteOffset, byte bitOffset, int numElements, Map<PlcTag, Set<String>> chunkTags, int curPartIndex, int totalPartNumber, int totalPartSize) {
             super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
             this.chunkTags = chunkTags;
             this.curPartIndex = curPartIndex;
@@ -470,7 +467,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             this.totalPartSize = totalPartSize;
         }
 
-        public Map<PlcTag, String> getChunkTags() {
+        public Map<PlcTag, Set<String>> getChunkTags() {
             return chunkTags;
         }
 
