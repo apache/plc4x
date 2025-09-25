@@ -385,7 +385,16 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                 S7Tag s7Tag2 = (S7Tag) tag2;
                 if (s7Tag1.getByteOffset() == s7Tag2.getByteOffset()) {
                     if (s7Tag1.getBitOffset() == s7Tag2.getBitOffset()) {
-                        return s7Tag1.getNumberOfElements() - s7Tag2.getNumberOfElements();
+                        // Include the type and size of the tags into the check.
+                        int s7Tag1TypeSizeInBits = s7Tag1.getDataType() == TransportSize.BOOL ? 1 : s7Tag1.getDataType().getSizeInBytes() * 8;
+                        int s7Tag1SizeInBits = s7Tag1TypeSizeInBits * s7Tag1.getNumberOfElements();
+                        int s7Tag2TypeSizeInBits = s7Tag2.getDataType() == TransportSize.BOOL ? 1 : s7Tag2.getDataType().getSizeInBytes() * 8;
+                        int s7Tag2SizeInBits = s7Tag2TypeSizeInBits * s7Tag2.getNumberOfElements();
+                        // Tie-breaker, if an identical tag is added multiple times.
+                        if(s7Tag1SizeInBits == s7Tag1TypeSizeInBits) {
+                            return Integer.compare(System.identityHashCode(s7Tag1), System.identityHashCode(s7Tag2));
+                        }
+                        return s7Tag1SizeInBits - s7Tag2SizeInBits;
                     }
                     return s7Tag1.getBitOffset() - s7Tag2.getBitOffset();
                 }
