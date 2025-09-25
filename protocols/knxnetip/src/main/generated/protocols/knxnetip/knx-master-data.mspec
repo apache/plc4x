@@ -1511,8 +1511,9 @@
     ['759' M_STRUCTURED_CABLE_PRODUCTS ['820', '"structured cable products"']]
     ['760' M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_ ['821', '"Jiwu (Fuzhou) Technology Co., Ltd."']]
     ['761' M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_ ['822', '"Foshan Brisdom Technology Co., Ltd."']]
-    ['762' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['763' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['762' M_YUEOING_ZHONGYI_ELECTRICALCO__LTD ['823', '"YUEOING ZHONGYI ELECTRICALCO.,LTD"']]
+    ['763' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['764' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
