@@ -96,8 +96,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public int getNumberOfValues(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             return plcList.getLength();
         } else {
             return 1;
@@ -146,8 +145,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<Object> getAllObjects(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<Object> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getObject());
@@ -182,8 +180,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<Boolean> getAllBooleans(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<Boolean> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBoolean());
@@ -218,8 +215,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<Byte> getAllBytes(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<Byte> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getByte());
@@ -254,8 +250,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<Short> getAllShorts(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<Short> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getShort());
@@ -290,8 +285,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<Integer> getAllIntegers(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<Integer> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getInteger());
@@ -326,8 +320,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<BigInteger> getAllBigIntegers(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<BigInteger> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBigInteger());
@@ -362,8 +355,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<Long> getAllLongs(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<Long> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getLong());
@@ -398,8 +390,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<Float> getAllFloats(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<Float> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getFloat());
@@ -434,8 +425,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<Double> getAllDoubles(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<Double> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDouble());
@@ -470,8 +460,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<BigDecimal> getAllBigDecimals(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<BigDecimal> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBigDecimal());
@@ -506,8 +495,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<String> getAllStrings(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<String> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getString());
@@ -542,8 +530,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<LocalTime> getAllTimes(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<LocalTime> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getTime());
@@ -578,8 +565,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<LocalDate> getAllDates(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<LocalDate> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDate());
@@ -614,8 +600,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     public Collection<LocalDateTime> getAllDateTimes(String name) {
         PlcValue tagInternal = getTagInternal(name);
-        if(tagInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) tagInternal;
+        if(tagInternal instanceof PlcList plcList) {
             List<LocalDateTime> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDateTime());
@@ -649,8 +634,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
 
     protected PlcValue getTagIndexInternal(String name, int index) {
         final PlcValue values = getTagInternal(name);
-        if(values instanceof PlcList) {
-            PlcList plcList = (PlcList) values;
+        if(values instanceof PlcList plcList) {
             if(index > (plcList.getLength() - 1)) {
                 return null;
             }

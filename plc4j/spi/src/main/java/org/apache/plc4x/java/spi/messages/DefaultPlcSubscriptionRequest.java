@@ -77,7 +77,7 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
 
     @Override
     public PlcSubscriptionTag getTag(String tagName) {
-        return tags.get(tagName).getTag();
+        return tags.get(tagName) != null ? tags.get(tagName).getTag() : null;
     }
 
     @Override

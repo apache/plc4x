@@ -28,7 +28,6 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest, PlcRequest, Serializable {
 
@@ -83,13 +82,13 @@ public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest
         @Override
         public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
             this.plcSubscriptionHandles.add(plcSubscriptionHandle1);
-            this.plcSubscriptionHandles.addAll(Arrays.stream(plcSubscriptionHandles).map(PlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
+            this.plcSubscriptionHandles.addAll(Arrays.stream(plcSubscriptionHandles).map(PlcSubscriptionHandle.class::cast).toList());
             return this;
         }
 
         @Override
         public PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandles) {
-            this.plcSubscriptionHandles.addAll(plcSubscriptionHandles.stream().map(PlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
+            this.plcSubscriptionHandles.addAll(plcSubscriptionHandles.stream().map(PlcSubscriptionHandle.class::cast).toList());
             return this;
         }
 

@@ -85,7 +85,7 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
     @Override
     public String getConnectionUrl() {
         StringBuilder sb = new StringBuilder(String.format("%s:%s://%s",
-            protocolCode, transportCode, transportUrl.toString()));
+            protocolCode, transportCode, transportUrl));
         if(options != null && !options.isEmpty()) {
             boolean first = true;
             for (Map.Entry<String, String> optionEntry : options.entrySet()) {
@@ -112,8 +112,8 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
             transportCode.getBytes(StandardCharsets.UTF_8).length * 8,
             transportCode, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         writeBuffer.writeString("transportUrl",
-            transportUrl.toString().getBytes(StandardCharsets.UTF_8).length * 8,
-            transportUrl.toString(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+            transportUrl.getBytes(StandardCharsets.UTF_8).length * 8,
+            transportUrl, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         if(options != null && !options.isEmpty()) {
             writeBuffer.pushContext("options");
             for (Map.Entry<String, String> optionEntry : options.entrySet()) {

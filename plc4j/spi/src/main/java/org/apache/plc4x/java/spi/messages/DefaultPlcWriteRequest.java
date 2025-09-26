@@ -77,12 +77,12 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
     @Override
     public PlcResponseCode getTagResponseCode(String tagName) {
-        return tags.get(tagName).getResponseCode();
+        return tags.get(tagName) != null ? tags.get(tagName).getResponseCode() : null;
     }
 
     @Override
-    public PlcTag getTag(String name) {
-        return tags.get(name).getTag();
+    public PlcTag getTag(String tagName) {
+        return tags.get(tagName) != null ? tags.get(tagName).getTag() : null;
     }
 
     @Override
@@ -105,8 +105,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
     @Override
     public int getNumberOfValues(String name) {
         final PlcValue value = tags.get(name).getValue();
-        if (value instanceof PlcList) {
-            PlcList list = (PlcList) value;
+        if (value instanceof PlcList list) {
             return list.getLength();
         }
         return 1;
@@ -135,8 +134,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
     }
 
     protected void serializePlcValue(PlcValue plcValue, WriteBuffer writeBuffer) throws SerializationException {
-        if (plcValue instanceof Serializable) {
-            Serializable serializable = (Serializable) plcValue;
+        if (plcValue instanceof Serializable serializable) {
             serializable.serialize(writeBuffer);
         } else {
             String plcValueString = plcValue.getString();
