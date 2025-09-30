@@ -92,11 +92,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     /*
      * Task group for managing connection redundancy.
      */
-    private final ExecutorService clientExecutorService = Executors.newFixedThreadPool(4, new BasicThreadFactory.Builder()
-        .namingPattern("plc4x-app-thread-%d")
-        .daemon(true)
-        .priority(Thread.MAX_PRIORITY)
-        .build());
+    private final ExecutorService clientExecutorService = SharedExecutor.getAppExecutor();
 
     /*
      * Take into account that the size of this buffer depends on the final device.
@@ -154,8 +150,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     @Override
     public void close(ConversationContext<TPKTPacket> context) {
-        // TODO: Find out how to close this prior to Java 19
-        //clientExecutorService.close();
         tm.shutdown();
         eventLogic.stop();
         // TODO Implement Closing on Protocol Level
@@ -259,8 +253,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     @Override
     public void onDisconnect(ConversationContext<TPKTPacket> context) {
         logger.info("onDisconnect");        
-        // 1. Here we shut down the local task executor.
-        clientExecutorService.shutdownNow();
         // 2. Performs the shutdown of the transaction executor.
         tm.shutdown();
         // 3. Finish the execution of the tasks for the handling of Events.

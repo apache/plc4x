@@ -47,15 +47,9 @@ public class RequestTransactionManager {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestTransactionManager.class);
 
-    /** Executor that performs all operations */
-    //static final ExecutorService executor = Executors.newScheduledThreadPool(4);
+    /** Shared Executor that performs all operations */
+    final ExecutorService executor = SharedExecutor.getTmExecutor();
 
-    final ExecutorService executor = Executors.newFixedThreadPool(4, new BasicThreadFactory.Builder()
-                                                    .namingPattern("plc4x-tm-thread-%d")
-                                                    .daemon(true)
-                                                    .priority(Thread.MAX_PRIORITY)
-                                                    .build());    
-    
     private final Set<RequestTransaction> runningRequests;
     /** How many Transactions are allowed to run at the same time? */
     private int numberOfConcurrentRequests;
@@ -92,11 +86,9 @@ public class RequestTransactionManager {
     }
     
     /*
-    * It allows the sequential shutdown of the associated driver.
-    */
-    public void shutdown(){
-        executor.shutdown();
-    }    
+     * Empty shutdown because of shared executor
+     */
+    public void shutdown(){}
 
     public void submit(Consumer<RequestTransaction> context) {
         RequestTransaction transaction = startRequest();
