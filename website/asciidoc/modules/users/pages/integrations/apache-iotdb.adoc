@@ -21,7 +21,7 @@
 
 
 
-Apache IoTDB is database for storing time serie data.
+Apache IoTDB is a database for storing time series data.
 Therefore, it can be a good solution for managing the data which is collected by PLC4x.
 
 
@@ -36,18 +36,22 @@ Then, we can write data into IoTDB using JDBC with SQL or native API called sess
 
 == Example
 
-https://github.com/apache/plc4x-extras/tree/develop/plc4j/examples/hello-integration-iotdb shows an example
-to collect data using PLC4x and then writing data to IoTDB.
+NOTE: A dedicated `hello-integration-iotdb` example that was previously referenced is no longer part of the PLC4X source tree.  
+However, the integration concepts remain valid. You can follow the general PLC4X examples together with IoTDB’s ingestion APIs to achieve the same functionality.  
 
-To run the java example, some arguments are needed:
+For details, see:
+- PLC4X Java examples: https://github.com/apache/plc4x/tree/develop/plc4j/examples
+- IoTDB Programming Guide: https://iotdb.apache.org/UserGuide/Master/Client/Programming%20-%20Native%20API.html
+
+To run a Java example, some arguments are needed:
 
 e.g., `java -jar .....  --connection-string simulated://127.0.0.1 --field-address RANDOM/foo:Integer  --polling-interval 1000 --iotdb-address 127.0.0.1:6667 --iotdb-user-name root --iotdb-user-password root --iotdb-sg mi --iotdb-device d1 --iotdb-datatype INT32 --use-jdbc false`
 
-Then PLC4x will collect data from a simulated PLC device, which generate random integer per 1 second.
+Then PLC4x will collect data from a simulated PLC device, which generates a random integer per 1 second.
 IoTDB's address is 127.0.0.1 and the port is 6667. The data will be stored in device `root.m1.d1`, and the measurement name is RANDOM_foo_Integer.
 
 If you are using IoTDB v0.10.0 with the default configuration, and do not manually create the above time series, then IoTDB will consider the data as float.
-So, after running the program a few secondes, you can query the data using IoTDB's command line: `select * from root.mi.d1;`
+So, after running the program a few seconds, you can query the data using IoTDB's command line: `select * from root.mi.d1;`
 
 ....
 +-----------------------------+-----------------------------+
@@ -60,5 +64,3 @@ So, after running the program a few secondes, you can query the data using IoTDB
 |2020-07-16T20:01:43.157+08:00|                  -4.207406E7|
 +-----------------------------+-----------------------------+
 ....
- 
-The detailed usage about IoTDB can be found https://iotdb.apache.org/UserGuide/Master/Client/Programming%20-%20Native%20API.html
