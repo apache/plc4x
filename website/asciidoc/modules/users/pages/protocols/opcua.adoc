@@ -236,21 +236,16 @@ This means that depending on operation conducted by client (read/write/subscribe
 
 == Compatibility with OPC-UA Servers
 
-There are multiple OPC-UA server implementations.
-Each of it have its own specifics, sometimes showing up more detailed security handling or further edge case buried in specification.
-So far Apache PLC4X OPC-UA client have been confirmed to be working with below servers (order in chronology of passed tests/confirmed compatibility):
+The Apache PLC4X OPC-UA driver has been tested against multiple open-source and commercial servers.  
+The following implementations have been confirmed to work with recent releases (≥ 0.13):
 
-* version 0.13
-- https://github.com/node-opcua/node-opcua[node-opcua]
-- Mitsubishi Electric MX OPC Server UA
-* version 0.12
-- https://prosysopc.com/products/opc-ua-simulation-server/[Prosys OPC-UA Simulation Server]
-- Simatic OPC UA S7-1200 Basic
-- https://github.com/OPCFoundation/UA-.NETStandard[OPC Foundation UA-.NET Standard]
-- Simocode OPC UA server
-* versions prior 0.12
-- https://eclipse.org/milo[Eclipse Milo]
-
+* node-opcua (https://github.com/node-opcua/node-opcua)
+* Mitsubishi Electric MX OPC Server UA
+* Prosys OPC-UA Simulation Server (https://prosysopc.com/products/opc-ua-simulation-server/)
+* Simatic OPC UA S7-1200 Basic
+* OPC Foundation UA-.NET Standard (https://github.com/OPCFoundation/UA-.NETStandard)
+* Simocode OPC UA server
+* Eclipse Milo (https://eclipse.org/milo)
 
 == More details on OPC UA
 

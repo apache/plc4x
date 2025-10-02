@@ -244,18 +244,18 @@ Not all S7 device types support the same full set of memory areas, so the last c
 
 |C
 |COUNTERS
-|TODO: Document this
-|TODO: Document this
+|Represents hardware/software counters in the PLC.
+|Documentation pending
 
 |T
 |TIMERS
-|TODO: Document this
-|TODO: Document this
+|Represents hardware/software timers in the PLC.
+|Documentation pending
 
 |D
 |DIRECT_PERIPHERAL_ACCESS
-|TODO: Document this
-|TODO: Document this
+|Direct access to hardware inputs/outputs bypassing image table.
+|Documentation pending
 
 |I
 |INPUTS
@@ -269,8 +269,8 @@ Not all S7 device types support the same full set of memory areas, so the last c
 
 |M
 |FLAGS_MARKERS
-|TODO: Document this
-|TODO: Document this
+|Reserved for flag/marker memory areas in Siemens S7 PLCs.
+|Support status and usage details not yet documented
 
 |DB
 |DATA_BLOCKS
@@ -279,13 +279,13 @@ Not all S7 device types support the same full set of memory areas, so the last c
 
 |DBI
 |INSTANCE_DATA_BLOCKS
-|TODO: Document this
-|TODO: Document this
+|Memory blocks tied to function block instances.
+|Documentation pending
 
 |LD
 |LOCAL_DATA
-|TODO: Document this
-|TODO: Document this
+|Temporary memory area used by program blocks.
+|Documentation pending
 
 |===
 
@@ -877,7 +877,7 @@ Another important feature of the driver is the ability to recognize the alarms g
 
 Within the cyclical execution of the application *S7App* waits for the confirmation of the alarm (26) to continue with some specific routine. 
 
-TODO: Field description
+Field descriptions pending – contributors welcome to expand
 
 |===
 |Field |Type |Description
@@ -910,8 +910,7 @@ TODO: Field description
 |===
 
 
-TODO: Example code
-
+Example code section to be provided – see API usage above for guidance
 
 === TODO: Cyclic subscription (CYC).
 
