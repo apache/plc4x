@@ -230,7 +230,7 @@ innerExpression
  : valueLiteral
  // Explicitly allow the loop type keywords in expressions
  | ARRAY_LOOP_TYPE
- | IDENTIFIER_LITERAL ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
+ | idExpression ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
  | innerExpression '.' innerExpression // Field Reference or method call
  | innerExpression '[' + INTEGER_LITERAL + ']' // Array index
  | innerExpression binaryOperator innerExpression  // Addition
