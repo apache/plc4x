@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1040 827" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+     style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;"><g><g><path d="M417.304,239.22c-0,5.104 -4.143,9.247 -9.246,9.247l-36.755,-0c-5.104,-0 -9.247,-4.143 -9.247,-9.247c0,-5.103 4.143,-9.246 9.247,-9.246l36.755,0c5.103,0 9.246,4.143 9.246,9.246Z" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/><rect
+  x="361.977" y="239.409" width="55.334" height="9.112" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/><rect
+  x="363.026" y="238.263" width="53.331" height="5.619" style="fill:#374b54;"/></g><g><path d="M679.505,240.621c0,5.103 -4.143,9.246 -9.246,9.246l-36.755,-0c-5.103,-0 -9.246,-4.143 -9.246,-9.246c0,-5.103 4.143,-9.246 9.246,-9.246l36.755,-0c5.103,-0 9.246,4.143 9.246,9.246Z" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/>
+  <rect x="624.179" y="240.81" width="55.334" height="9.112" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/>
+  <rect x="625.228" y="239.663" width="53.331" height="5.619" style="fill:#374b54;"/></g><g><path d="M680.143,322.828c0,-5.103 -4.143,-9.246 -9.246,-9.246l-36.755,-0c-5.103,-0 -9.246,4.143 -9.246,9.246c0,5.103 4.143,9.246 9.246,9.246l36.755,-0c5.103,-0 9.246,-4.143 9.246,-9.246Z" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/>
+  <rect x="624.817" y="313.527" width="55.334" height="9.112" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/>
+  <rect x="625.866" y="318.166" width="53.331" height="5.619" style="fill:#374b54;"/></g><g><path d="M417.962,323.195c0,-5.103 -4.143,-9.246 -9.246,-9.246l-36.755,0c-5.103,0 -9.246,4.143 -9.246,9.246c0,5.103 4.143,9.246 9.246,9.246l36.755,0c5.103,0 9.246,-4.143 9.246,-9.246Z" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/>
+  <rect x="362.636" y="313.894" width="55.334" height="9.112" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/>
+  <rect x="363.685" y="318.533" width="53.331" height="5.619" style="fill:#374b54;"/></g><rect x="361.816" y="256.459"
+                                                                                               width="55.334"
+                                                                                               height="21.469"
+                                                                                               style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/><rect
+  x="361.575" y="284.688" width="55.334" height="21.469" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/><rect
+  x="624.214" y="255.711" width="55.334" height="21.469" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/><rect
+  x="624.364" y="284.567" width="55.334" height="21.469" style="fill:#374b54;stroke:#000;stroke-width:2.08px;"/><path
+  d="M631.237,117.373c0,33.481 -27.182,60.663 -60.663,60.663l-100.336,-0c-33.481,-0 -60.663,-27.182 -60.663,-60.663c0,-33.481 27.182,-60.663 60.663,-60.663l100.336,0c33.481,0 60.663,27.182 60.663,60.663Z"
+  style="fill:#c8223d;"/><g><ellipse cx="471.478" cy="116.717" rx="38.948" ry="37.056" style="fill:#fafbf9;"/>
+  <ellipse cx="471.399" cy="116.16" rx="21.244" ry="19.833" style="fill:#2563ea;"/></g><g><ellipse cx="569.831" cy="116.548" rx="38.948" ry="37.056" style="fill:#fafbf9;"/>
+  <ellipse cx="569.751" cy="115.991" rx="21.244" ry="19.833" style="fill:#2563ea;"/></g><path
+  d="M612.02,294.157c-0,19.132 -15.533,34.665 -34.665,34.665l-115.661,0c-19.132,0 -34.665,-15.533 -34.665,-34.665c-0,-19.132 15.533,-34.665 34.665,-34.665l115.661,0c19.132,0 34.665,15.533 34.665,34.665Z"
+  style="fill:#c7233d;"/><rect x="427.171" y="229.929" width="184.674" height="67.469" style="fill:#c7233d;"/><path
+  d="M538.838,199.665l-36.825,-0l0.945,-21.651l34.934,-0l0.946,21.651Z" style="fill:#c8223d;"/><path
+  d="M611.772,228.839c-0,16.463 -13.366,29.828 -29.829,29.828l-124.955,0c-16.463,0 -29.829,-13.365 -29.829,-29.828c0,-16.463 13.366,-29.829 29.829,-29.829l124.955,0c16.463,0 29.829,13.366 29.829,29.829Z"
+  style="fill:#c8223d;"/><ellipse cx="588.353"
+                                                                                                  cy="222.909"
+                                                                                                  rx="6.135" ry="5.837"
+                                                                                                  style="fill:#ebebeb;"/></g>
+  <g><g transform="matrix(200,0,0,200,612.776,546.274)"></g>
+    <text x="27.717px" y="546.274px"
+          style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:200px;fill:#c8223d;">T<tspan
+      x="135.041px 257.209px " y="546.274px 546.274px ">od</tspan>dy</text>
+    <g><g transform="matrix(200,0,0,200,1010.16,545.49)"></g>
+      <text x="621.389px" y="545.49px"
+            style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:200px;fill:#2563ea;">Soft</text>
+      <g transform="matrix(104.167,0,0,104.167,684.566,714.384)"></g>
+      <g transform="matrix(104.167,0,0,104.167,719.254,714.384)"></g>
+      <g transform="matrix(104.167,0,0,104.167,869.757,714.384)"></g>
+      <text x="169.48px" y="714.384px"
+            style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:104.167px;fill:#374b54;">IIoT simpliﬁed</text></g></g></svg>
