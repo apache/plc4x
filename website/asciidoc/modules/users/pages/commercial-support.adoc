@@ -38,7 +38,7 @@ a|image::users/companies/logo-connectorio.png[connectorio, 200, 200] |https://co
 
 a|image::users/companies/logo-timecho.png[timecho, 200, 200]  |https://www.timecho-global.com/[Timecho Europe GmbH,opts=nofollow] |consulting, workshops, individual software development, protocol/driver development, data-storage solutions |Pengchen Zheng |pengcheng.zheng@timecho.com |  |
 
-a|image::users/companies/logo-toddysoft.svg[toddysoft, 200, 200] |https://toddysoft.com/[ToddySoft GmbH,opts=nofollow]|consulting, workshops, individual software development, protocol/driver development |Christofer Dutz |christofer.dutz@toddysoft.com |  |PMC Member
+a|image::users/companies/logo-toddysoft.png[toddysoft, 200, 159] |https://toddysoft.com/[ToddySoft GmbH,opts=nofollow]|consulting, workshops, individual software development, protocol/driver development |Christofer Dutz |christofer.dutz@toddysoft.com |  |PMC Member
 
 |===
 
