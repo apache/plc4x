@@ -114,7 +114,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
 
         // Example for sending a request ...
         if (request.getTagNames().size() == 1) {
-            String tagName = request.getTagNames().iterator().next();
+            String tagName = request.getTagNames().getFirst();
             ModbusTag tag = (ModbusTag) request.getTag(tagName);
             final ModbusPDU requestPdu = getReadRequestPdu(tag);
             final short unitId = getUnitId(tag);
@@ -138,8 +138,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
                     PlcValue plcValue = null;
                     PlcResponseCode responseCode;
                     // Check if the response was an error response.
-                    if (responsePdu instanceof ModbusPDUError) {
-                        ModbusPDUError errorResponse = (ModbusPDUError) responsePdu;
+                    if (responsePdu instanceof ModbusPDUError errorResponse) {
                         responseCode = getErrorCode(errorResponse);
                     } else {
                         try {
@@ -185,7 +184,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
         //      - FileRecord        (read-write)    --> ModbusPduWriteFileRecordRequest
         // 2. Split up into multiple sub-requests
         if (request.getTagNames().size() == 1) {
-            String tagName = request.getTagNames().iterator().next();
+            String tagName = request.getTagNames().getFirst();
             PlcTag tag = request.getTag(tagName);
             final ModbusPDU requestPdu = getWriteRequestPdu(tag, writeRequest.getPlcValue(tagName));
             final short unitId = getUnitId(tag);
@@ -207,14 +206,12 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
                     PlcResponseCode responseCode;
 
                     // Check if the response was an error response.
-                    if (responsePdu instanceof ModbusPDUError) {
-                        ModbusPDUError errorResponse = (ModbusPDUError) responsePdu;
+                    if (responsePdu instanceof ModbusPDUError errorResponse) {
                         responseCode = getErrorCode(errorResponse);
                     } else {
                         responseCode = PlcResponseCode.OK;
                         // TODO: Check the correct number of elements were written.
-                        if (responsePdu instanceof ModbusPDUWriteSingleCoilResponse) {
-                            ModbusPDUWriteSingleCoilResponse response = (ModbusPDUWriteSingleCoilResponse) responsePdu;
+                        if (responsePdu instanceof ModbusPDUWriteSingleCoilResponse response) {
                             ModbusPDUWriteSingleCoilRequest requestSingleCoil = (ModbusPDUWriteSingleCoilRequest) requestPdu;
                             if (!((response.getValue() == requestSingleCoil.getValue()) && (response.getAddress() == requestSingleCoil.getAddress()))) {
                                 responseCode = PlcResponseCode.REMOTE_ERROR;
