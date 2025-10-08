@@ -37,7 +37,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
-	golang.org/x/net v0.44.0
+	golang.org/x/net v0.45.0
 	golang.org/x/text v0.29.0
 	golang.org/x/tools v0.37.0
 )
