@@ -37,9 +37,9 @@ const _PlcSubscriptionType_name = "SubscriptionCyclicSubscriptionChangeOfStateSu
 var _PlcSubscriptionType_index = [...]uint8{0, 18, 43, 60}
 
 func (i PlcSubscriptionType) String() string {
-	i -= 1
-	if i >= PlcSubscriptionType(len(_PlcSubscriptionType_index)-1) {
-		return "PlcSubscriptionType(" + strconv.FormatInt(int64(i+1), 10) + ")"
+	idx := int(i) - 1
+	if i < 1 || idx >= len(_PlcSubscriptionType_index)-1 {
+		return "PlcSubscriptionType(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
-	return _PlcSubscriptionType_name[_PlcSubscriptionType_index[i]:_PlcSubscriptionType_index[i+1]]
+	return _PlcSubscriptionType_name[_PlcSubscriptionType_index[idx]:_PlcSubscriptionType_index[idx+1]]
 }

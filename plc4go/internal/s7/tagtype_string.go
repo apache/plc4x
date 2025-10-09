@@ -36,8 +36,9 @@ const _TagType_name = "S7TagS7StringTag"
 var _TagType_index = [...]uint8{0, 5, 16}
 
 func (i TagType) String() string {
-	if i >= TagType(len(_TagType_index)-1) {
+	idx := int(i) - 0
+	if i < 0 || idx >= len(_TagType_index)-1 {
 		return "TagType(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
-	return _TagType_name[_TagType_index[i]:_TagType_index[i+1]]
+	return _TagType_name[_TagType_index[idx]:_TagType_index[idx+1]]
 }

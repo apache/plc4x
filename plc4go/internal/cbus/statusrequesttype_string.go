@@ -36,8 +36,9 @@ const _StatusRequestType_name = "StatusRequestTypeBinaryStateStatusRequestTypeLe
 var _StatusRequestType_index = [...]uint8{0, 28, 50}
 
 func (i StatusRequestType) String() string {
-	if i >= StatusRequestType(len(_StatusRequestType_index)-1) {
+	idx := int(i) - 0
+	if i < 0 || idx >= len(_StatusRequestType_index)-1 {
 		return "StatusRequestType(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
-	return _StatusRequestType_name[_StatusRequestType_index[i]:_StatusRequestType_index[i+1]]
+	return _StatusRequestType_name[_StatusRequestType_index[idx]:_StatusRequestType_index[idx+1]]
 }
