@@ -154,7 +154,7 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 			return err
 		}
 	} else {
-		m.log.Info().Msg("Transport instance already connected")
+		m.log.Debug().Msg("Transport instance already connected")
 	}
 
 	m.log.Debug().Msg("Message codec currently not running, starting worker now")
@@ -213,7 +213,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 		// Check if this expectation has expired.
 		if now.After(expectation.GetExpiration()) {
 			// Remove this expectation from the list.
-			m.log.Info().Stringer("expectation", expectation).Msg("timeout expectation")
+			m.log.Debug().Stringer("expectation", expectation).Msg("timeout expectation")
 			// Call the error handler.
 			go func(expectation spi.Expectation) {
 				if err := expectation.GetHandleError()(utils.NewTimeoutError(expectation.GetExpiration().Sub(expectation.GetCreationTime()))); err != nil {
@@ -223,7 +223,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			return true
 		}
 		if err := expectation.GetContext().Err(); err != nil {
-			m.log.Info().Err(err).Stringer("expectation", expectation).Msg("expectation canceled")
+			m.log.Debug().Err(err).Stringer("expectation", expectation).Msg("expectation canceled")
 			// Remove this expectation from the list.
 			go func(expectation spi.Expectation) {
 				if err := expectation.GetHandleError()(err); err != nil {
