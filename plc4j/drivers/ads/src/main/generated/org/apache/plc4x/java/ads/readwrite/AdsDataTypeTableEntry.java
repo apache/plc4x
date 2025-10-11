@@ -39,8 +39,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AdsDataTypeTableEntry implements Message {
 
   // Constant values.
-  public static final Short DATATYPENAMETERMINATOR = 0x00;
-  public static final Short SIMPLETYPENAMETERMINATOR = 0x00;
+  public static final Short MAINNAMETERMINATOR = 0x00;
+  public static final Short SECONDARYNAMETERMINATOR = 0x00;
   public static final Short COMMENTTERMINATOR = 0x00;
 
   // Properties.
@@ -54,11 +54,11 @@ public class AdsDataTypeTableEntry implements Message {
   protected final long flags;
   protected final int arrayDimensions;
   protected final int numChildren;
-  protected final String dataTypeName;
-  protected final String simpleTypeName;
+  protected final String mainName;
+  protected final String secondaryName;
   protected final String comment;
   protected final List<AdsDataTypeArrayInfo> arrayInfo;
-  protected final List<AdsDataTypeTableChildEntry> children;
+  protected final List<AdsDataTypeTableEntry> children;
 
   /**
    * Gobbling up the rest, but it seems there is content in here, when looking at the data in
@@ -79,11 +79,11 @@ public class AdsDataTypeTableEntry implements Message {
       long flags,
       int arrayDimensions,
       int numChildren,
-      String dataTypeName,
-      String simpleTypeName,
+      String mainName,
+      String secondaryName,
       String comment,
       List<AdsDataTypeArrayInfo> arrayInfo,
-      List<AdsDataTypeTableChildEntry> children,
+      List<AdsDataTypeTableEntry> children,
       byte[] rest) {
     super();
     this.entryLength = entryLength;
@@ -96,8 +96,8 @@ public class AdsDataTypeTableEntry implements Message {
     this.flags = flags;
     this.arrayDimensions = arrayDimensions;
     this.numChildren = numChildren;
-    this.dataTypeName = dataTypeName;
-    this.simpleTypeName = simpleTypeName;
+    this.mainName = mainName;
+    this.secondaryName = secondaryName;
     this.comment = comment;
     this.arrayInfo = arrayInfo;
     this.children = children;
@@ -144,12 +144,12 @@ public class AdsDataTypeTableEntry implements Message {
     return numChildren;
   }
 
-  public String getDataTypeName() {
-    return dataTypeName;
+  public String getMainName() {
+    return mainName;
   }
 
-  public String getSimpleTypeName() {
-    return simpleTypeName;
+  public String getSecondaryName() {
+    return secondaryName;
   }
 
   public String getComment() {
@@ -160,7 +160,7 @@ public class AdsDataTypeTableEntry implements Message {
     return arrayInfo;
   }
 
-  public List<AdsDataTypeTableChildEntry> getChildren() {
+  public List<AdsDataTypeTableEntry> getChildren() {
     return children;
   }
 
@@ -174,12 +174,12 @@ public class AdsDataTypeTableEntry implements Message {
     return rest;
   }
 
-  public short getDataTypeNameTerminator() {
-    return DATATYPENAMETERMINATOR;
+  public short getMainNameTerminator() {
+    return MAINNAMETERMINATOR;
   }
 
-  public short getSimpleTypeNameTerminator() {
-    return SIMPLETYPENAMETERMINATOR;
+  public short getSecondaryNameTerminator() {
+    return SECONDARYNAMETERMINATOR;
   }
 
   public short getCommentTerminator() {
@@ -248,21 +248,21 @@ public class AdsDataTypeTableEntry implements Message {
         writeUnsignedLong(writeBuffer, 32),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    // Implicit Field (dataTypeNameLength) (Used for parsing, but its value is not stored as it's
+    // Implicit Field (mainNameLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    int dataTypeNameLength = (int) (STR_LEN(getDataTypeName()));
+    int mainNameLength = (int) (STR_LEN(getMainName()));
     writeImplicitField(
-        "dataTypeNameLength",
-        dataTypeNameLength,
+        "mainNameLength",
+        mainNameLength,
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    // Implicit Field (simpleTypeNameLength) (Used for parsing, but its value is not stored as it's
+    // Implicit Field (secondaryNameLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    int simpleTypeNameLength = (int) (STR_LEN(getSimpleTypeName()));
+    int secondaryNameLength = (int) (STR_LEN(getSecondaryName()));
     writeImplicitField(
-        "simpleTypeNameLength",
-        simpleTypeNameLength,
+        "secondaryNameLength",
+        secondaryNameLength,
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -289,31 +289,31 @@ public class AdsDataTypeTableEntry implements Message {
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    // Simple Field (dataTypeName)
+    // Simple Field (mainName)
     writeSimpleField(
-        "dataTypeName",
-        dataTypeName,
-        writeString(writeBuffer, (dataTypeNameLength) * (8)),
+        "mainName",
+        mainName,
+        writeString(writeBuffer, (mainNameLength) * (8)),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    // Const Field (dataTypeNameTerminator)
+    // Const Field (mainNameTerminator)
     writeConstField(
-        "dataTypeNameTerminator",
-        DATATYPENAMETERMINATOR,
+        "mainNameTerminator",
+        MAINNAMETERMINATOR,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    // Simple Field (simpleTypeName)
+    // Simple Field (secondaryName)
     writeSimpleField(
-        "simpleTypeName",
-        simpleTypeName,
-        writeString(writeBuffer, (simpleTypeNameLength) * (8)),
+        "secondaryName",
+        secondaryName,
+        writeString(writeBuffer, (secondaryNameLength) * (8)),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    // Const Field (simpleTypeNameTerminator)
+    // Const Field (secondaryNameTerminator)
     writeConstField(
-        "simpleTypeNameTerminator",
-        SIMPLETYPENAMETERMINATOR,
+        "secondaryNameTerminator",
+        SECONDARYNAMETERMINATOR,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -384,10 +384,10 @@ public class AdsDataTypeTableEntry implements Message {
     // Simple field (flags)
     lengthInBits += 32;
 
-    // Implicit Field (dataTypeNameLength)
+    // Implicit Field (mainNameLength)
     lengthInBits += 16;
 
-    // Implicit Field (simpleTypeNameLength)
+    // Implicit Field (secondaryNameLength)
     lengthInBits += 16;
 
     // Implicit Field (commentLength)
@@ -399,16 +399,16 @@ public class AdsDataTypeTableEntry implements Message {
     // Simple field (numChildren)
     lengthInBits += 16;
 
-    // Simple field (dataTypeName)
-    lengthInBits += (STR_LEN(getDataTypeName())) * (8);
+    // Simple field (mainName)
+    lengthInBits += (STR_LEN(getMainName())) * (8);
 
-    // Const Field (dataTypeNameTerminator)
+    // Const Field (mainNameTerminator)
     lengthInBits += 8;
 
-    // Simple field (simpleTypeName)
-    lengthInBits += (STR_LEN(getSimpleTypeName())) * (8);
+    // Simple field (secondaryName)
+    lengthInBits += (STR_LEN(getSecondaryName())) * (8);
 
-    // Const Field (simpleTypeNameTerminator)
+    // Const Field (secondaryNameTerminator)
     lengthInBits += 8;
 
     // Simple field (comment)
@@ -429,7 +429,7 @@ public class AdsDataTypeTableEntry implements Message {
     // Array field
     if (children != null) {
       int i = 0;
-      for (AdsDataTypeTableChildEntry element : children) {
+      for (AdsDataTypeTableEntry element : children) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= children.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -498,15 +498,15 @@ public class AdsDataTypeTableEntry implements Message {
             readUnsignedLong(readBuffer, 32),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    int dataTypeNameLength =
+    int mainNameLength =
         readImplicitField(
-            "dataTypeNameLength",
+            "mainNameLength",
             readUnsignedInt(readBuffer, 16),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    int simpleTypeNameLength =
+    int secondaryNameLength =
         readImplicitField(
-            "simpleTypeNameLength",
+            "secondaryNameLength",
             readUnsignedInt(readBuffer, 16),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -528,30 +528,30 @@ public class AdsDataTypeTableEntry implements Message {
             readUnsignedInt(readBuffer, 16),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    String dataTypeName =
+    String mainName =
         readSimpleField(
-            "dataTypeName",
-            readString(readBuffer, (dataTypeNameLength) * (8)),
+            "mainName",
+            readString(readBuffer, (mainNameLength) * (8)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    short dataTypeNameTerminator =
+    short mainNameTerminator =
         readConstField(
-            "dataTypeNameTerminator",
+            "mainNameTerminator",
             readUnsignedShort(readBuffer, 8),
-            AdsDataTypeTableEntry.DATATYPENAMETERMINATOR,
+            AdsDataTypeTableEntry.MAINNAMETERMINATOR,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    String simpleTypeName =
+    String secondaryName =
         readSimpleField(
-            "simpleTypeName",
-            readString(readBuffer, (simpleTypeNameLength) * (8)),
+            "secondaryName",
+            readString(readBuffer, (secondaryNameLength) * (8)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    short simpleTypeNameTerminator =
+    short secondaryNameTerminator =
         readConstField(
-            "simpleTypeNameTerminator",
+            "secondaryNameTerminator",
             readUnsignedShort(readBuffer, 8),
-            AdsDataTypeTableEntry.SIMPLETYPENAMETERMINATOR,
+            AdsDataTypeTableEntry.SECONDARYNAMETERMINATOR,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     String comment =
@@ -574,10 +574,10 @@ public class AdsDataTypeTableEntry implements Message {
             arrayDimensions,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
-    List<AdsDataTypeTableChildEntry> children =
+    List<AdsDataTypeTableEntry> children =
         readCountArrayField(
             "children",
-            readComplex(() -> AdsDataTypeTableChildEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AdsDataTypeTableEntry.staticParse(readBuffer), readBuffer),
             numChildren,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -602,8 +602,8 @@ public class AdsDataTypeTableEntry implements Message {
             flags,
             arrayDimensions,
             numChildren,
-            dataTypeName,
-            simpleTypeName,
+            mainName,
+            secondaryName,
             comment,
             arrayInfo,
             children,
@@ -630,8 +630,8 @@ public class AdsDataTypeTableEntry implements Message {
         && (getFlags() == that.getFlags())
         && (getArrayDimensions() == that.getArrayDimensions())
         && (getNumChildren() == that.getNumChildren())
-        && (getDataTypeName() == that.getDataTypeName())
-        && (getSimpleTypeName() == that.getSimpleTypeName())
+        && (getMainName() == that.getMainName())
+        && (getSecondaryName() == that.getSecondaryName())
         && (getComment() == that.getComment())
         && (getArrayInfo() == that.getArrayInfo())
         && (getChildren() == that.getChildren())
@@ -652,8 +652,8 @@ public class AdsDataTypeTableEntry implements Message {
         getFlags(),
         getArrayDimensions(),
         getNumChildren(),
-        getDataTypeName(),
-        getSimpleTypeName(),
+        getMainName(),
+        getSecondaryName(),
         getComment(),
         getArrayInfo(),
         getChildren(),

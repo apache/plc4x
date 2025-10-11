@@ -302,7 +302,7 @@ func (m *Connection) readDataTypeTable(ctx context.Context, dataTableSize uint32
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table: %v", err)
 		}
-		dataTypes[dataType.GetDataTypeName()] = dataType
+		dataTypes[dataType.GetSecondaryName()] = dataType
 	}
 	return dataTypes, nil
 }
@@ -380,23 +380,23 @@ func (m *Connection) resolveSymbolicAddress(ctx context.Context, addressParts []
 	curAddressPart := addressParts[0]
 	restAddressParts := addressParts[1:]
 	for _, child := range curDataType.GetChildren() {
-		if child.GetPropertyName() == curAddressPart {
-			childDataTypeName := child.GetDataTypeName()
+		if child.GetMainName() == curAddressPart {
+			childDataTypeName := child.GetSecondaryName()
 			childDataType, ok := m.driverContext.dataTypeTable[childDataTypeName]
 			if !ok {
 				return nil, fmt.Errorf("couldn't find data type %s for property %s of data type %s",
-					childDataTypeName, curAddressPart, curDataType.GetDataTypeName())
+					childDataTypeName, curAddressPart, curDataType.GetSecondaryName())
 			}
 			return m.resolveSymbolicAddress(ctx, restAddressParts, childDataType, indexGroup, indexOffset+child.GetOffset())
 		}
 	}
 	return nil, fmt.Errorf("couldn't find property named %s for data type %s",
-		curAddressPart, curDataType.GetDataTypeName())
+		curAddressPart, curDataType.GetSecondaryName())
 }
 
 func (m *Connection) getPlcValueForAdsDataTypeTableEntry(entry readWriteModel.AdsDataTypeTableEntry) (apiValues.PlcValueType, int32) {
 	stringLength := -1
-	dataTypeName := entry.GetDataTypeName()
+	dataTypeName := entry.GetSecondaryName()
 	if strings.HasPrefix(dataTypeName, "STRING(") {
 		var err error
 		stringLength, err = strconv.Atoi(dataTypeName[7 : len(dataTypeName)-1])

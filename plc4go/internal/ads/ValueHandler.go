@@ -132,10 +132,10 @@ func (t ValueHandler) AdsParseStructType(dataType readWriteModel.AdsDataTypeTabl
 		childValues := plcStruct.GetStruct()
 
 		for _, childTypeEntry := range dataType.GetChildren() {
-			childName := childTypeEntry.GetPropertyName()
-			childType := t.driverContext.dataTypeTable[childTypeEntry.GetDataTypeName()]
+			childName := childTypeEntry.GetMainName()
+			childType := t.driverContext.dataTypeTable[childTypeEntry.GetSecondaryName()]
 			childArrayInfo := childType.GetArrayInfo()
-			childValue, ok := childValues[childTypeEntry.GetPropertyName()]
+			childValue, ok := childValues[childTypeEntry.GetMainName()]
 			if !ok {
 				return nil, fmt.Errorf("missing child value named %s", childName)
 			}
@@ -151,10 +151,10 @@ func (t ValueHandler) AdsParseStructType(dataType readWriteModel.AdsDataTypeTabl
 		parsedValues := map[string]apiValues.PlcValue{}
 
 		for _, childTypeEntry := range dataType.GetChildren() {
-			childName := childTypeEntry.GetPropertyName()
-			childType := t.driverContext.dataTypeTable[childTypeEntry.GetDataTypeName()]
+			childName := childTypeEntry.GetMainName()
+			childType := t.driverContext.dataTypeTable[childTypeEntry.GetSecondaryName()]
 			childArrayInfo := childType.GetArrayInfo()
-			childValue, ok := simpleMap[childTypeEntry.GetPropertyName()]
+			childValue, ok := simpleMap[childTypeEntry.GetMainName()]
 			if !ok {
 				return nil, fmt.Errorf("missing child value named %s", childName)
 			}

@@ -18,8 +18,10 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcQuery;
+
 public interface PlcBrowseRequestInterceptor {
 
-    boolean intercept(PlcBrowseItem item);
+    boolean intercept(PlcQuery query, PlcBrowseItem item);
 
 }

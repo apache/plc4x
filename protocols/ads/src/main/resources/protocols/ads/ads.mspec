@@ -833,7 +833,7 @@
 ]
 
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L15
-[discriminatedType AdsDataTypeTableEntry byteOrder='LITTLE_ENDIAN'
+[type AdsDataTypeTableEntry byteOrder='LITTLE_ENDIAN'
 	[simple   uint 32                            entryLength                                                            ]
 	[simple   uint 32                            version                                                                ]
 	[simple   uint 32                            hashValue                                                              ]
@@ -842,58 +842,25 @@
 	[simple   uint 32                            offset                                                                 ]
 	[simple   uint 32                            dataType                                                               ]
 	[simple   uint 32                            flags                                                                  ]
-	[implicit uint 16                            dataTypeNameLength       'STR_LEN(dataTypeName)'                       ]
-	[implicit uint 16                            simpleTypeNameLength     'STR_LEN(simpleTypeName)'                     ]
+	[implicit uint 16                            mainNameLength           'STR_LEN(mainName)'                           ]
+	[implicit uint 16                            secondaryNameLength      'STR_LEN(secondaryName)'                      ]
 	[implicit uint 16                            commentLength            'STR_LEN(comment)'                            ]
 	[simple   uint 16                            arrayDimensions                                                        ]
 	[simple   uint 16                            numChildren                                                            ]
-	[simple   vstring 'dataTypeNameLength * 8'   dataTypeName                                                           ]
-	[const    uint 8                             dataTypeNameTerminator   0x00                                          ]
-	[simple   vstring 'simpleTypeNameLength * 8' simpleTypeName                                                         ]
-	[const    uint 8                             simpleTypeNameTerminator 0x00                                          ]
+	[simple   vstring 'mainNameLength * 8'       mainName                                                               ]
+	[const    uint 8                             mainNameTerminator       0x00                                          ]
+	[simple   vstring 'secondaryNameLength * 8'  secondaryName                                                          ]
+	[const    uint 8                             secondaryNameTerminator  0x00                                          ]
 	[simple   vstring 'commentLength * 8'        comment                                                                ]
 	[const    uint 8                             commentTerminator        0x00                                          ]
     [array    AdsDataTypeArrayInfo               arrayInfo                count                   'arrayDimensions'     ]
-   	[array    AdsDataTypeTableChildEntry         children                 count                   'numChildren'         ]
+   	[array    AdsDataTypeTableEntry              children                 count                   'numChildren'         ]
 	// Gobbling up the rest, but it seems there is content in here, when looking
 	// at the data in wireshark, it seems to be related to the flags field.
 	// Will have to continue searching for more details on how to decode this.
 	// I would assume that we'll have some "optional" fields here which depend
 	// on values in the flags section.
 	[array    byte                               rest                     length                  'entryLength - curPos']
-]
-
-// In data-type child entries, the name seems to be used by the property name and the data-type name seems to contain
-// what in the parent case the "name" attribute seems to use.
-// TODO: In general only the propertyName, dataTypeName and offset are interesting here. The rest is mostly not fully initialized
-[discriminatedType AdsDataTypeTableChildEntry byteOrder='LITTLE_ENDIAN'
-	[simple   uint 32                          entryLength                                                            ]
-	[simple   uint 32                          version                                                                ]
-	[simple   uint 32                          hashValue                                                              ]
-	[simple   uint 32                          typeHashValue                                                          ]
-	[simple   uint 32                          size                                                                   ]
-	[simple   uint 32                          offset                                                                 ]
-	[simple   uint 32                          dataType                                                               ]
-	[simple   uint 32                          flags                                                                  ]
-	[implicit uint 16                          propertyNameLength       'STR_LEN(propertyName)'                       ]
-	[implicit uint 16                          dataTypeNameLength       'STR_LEN(dataTypeName)'                       ]
-	[implicit uint 16                          commentLength            'STR_LEN(comment)'                            ]
-	[simple   uint 16                          arrayDimensions                                                        ]
-	[simple   uint 16                          numChildren                                                            ]
-	[simple   vstring 'propertyNameLength * 8' propertyName                                                           ]
-	[const    uint 8                           propertyNameTerminator   0x00                                          ]
-	[simple   vstring 'dataTypeNameLength * 8' dataTypeName                                                           ]
-	[const    uint 8                           dataTypeNameTerminator   0x00                                          ]
-	[simple   vstring 'commentLength * 8'      comment                                                                ]
-	[const    uint 8                           commentTerminator        0x00                                          ]
-    [array    AdsDataTypeArrayInfo             arrayInfo                count                   'arrayDimensions'     ]
-   	[array    AdsDataTypeTableEntry            children                 count                   'numChildren'         ]
-	// Gobbling up the rest, but it seems there is content in here, when looking
-	// at the data in wireshark, it seems to be related to the flags field.
-	// Will have to continue searching for more details on how to decode this.
-	// I would assume that we'll have some "optional" fields here which depend
-	// on values in the flags section.
-	[array    byte                             rest                     length                  'entryLength - curPos']
 ]
 
 [type AdsDataTypeArrayInfo byteOrder='LITTLE_ENDIAN'

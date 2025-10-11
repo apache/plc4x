@@ -127,7 +127,7 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 				SymbolicAddress: parentName,
 			},
 			parentName,
-			currentType.GetDataTypeName(),
+			currentType.GetSecondaryName(),
 			false,
 			false,
 			false,
@@ -140,13 +140,13 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 	currentAddressSegment := remainingAddressSegments[0]
 	remainingAddressSegments = remainingAddressSegments[1:]
 	for _, child := range currentType.GetChildren() {
-		if child.GetPropertyName() == currentAddressSegment {
-			childTypeName := child.GetDataTypeName()
+		if child.GetMainName() == currentAddressSegment {
+			childTypeName := child.GetSecondaryName()
 			if symbolDataType, ok := m.driverContext.dataTypeTable[childTypeName]; !ok {
 				// TODO: Couldn't find data type with the name defined in the protperty.
 				return nil
 			} else {
-				return m.filterDataTypes(parentName+"."+child.GetPropertyName(), symbolDataType,
+				return m.filterDataTypes(parentName+"."+child.GetMainName(), symbolDataType,
 					currentPath+"."+currentAddressSegment, remainingAddressSegments)
 			}
 		}

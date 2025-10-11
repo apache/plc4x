@@ -108,15 +108,15 @@ func (m *DriverContext) resolveDirectTag(remainingSegments []string, currentData
 	currentSegment := remainingSegments[0]
 	remainingSegments = remainingSegments[1:]
 	for _, child := range currentDatatype.GetChildren() {
-		if child.GetPropertyName() == currentSegment {
-			childDataType, ok := m.dataTypeTable[child.GetDataTypeName()]
+		if child.GetMainName() == currentSegment {
+			childDataType, ok := m.dataTypeTable[child.GetSecondaryName()]
 			if !ok {
-				return nil, fmt.Errorf("couldn't find data type with name %s", child.GetDataTypeName())
+				return nil, fmt.Errorf("couldn't find data type with name %s", child.GetSecondaryName())
 			}
 			return m.resolveDirectTag(remainingSegments, childDataType, indexGroup, indexOffset+child.GetOffset())
 		}
 	}
-	return nil, fmt.Errorf("couldn't find child with name %s in type %s", currentSegment, currentDatatype.GetDataTypeName())
+	return nil, fmt.Errorf("couldn't find child with name %s in type %s", currentSegment, currentDatatype.GetSecondaryName())
 }
 
 func (m *DriverContext) getDataTypeForDataTypeTableEntry(entry driverModel.AdsDataTypeTableEntry) apiValues.PlcValueType {
@@ -126,7 +126,7 @@ func (m *DriverContext) getDataTypeForDataTypeTableEntry(entry driverModel.AdsDa
 	if entry.GetNumChildren() > 0 {
 		return apiValues.Struct
 	}
-	dataTypeName := entry.GetDataTypeName()
+	dataTypeName := entry.GetSecondaryName()
 	if strings.HasPrefix(dataTypeName, "STRING(") {
 		dataTypeName = "STRING"
 	} else if strings.HasPrefix(dataTypeName, "WSTRING(") {
@@ -137,7 +137,7 @@ func (m *DriverContext) getDataTypeForDataTypeTableEntry(entry driverModel.AdsDa
 }
 
 func (m *DriverContext) getStringLengthForDataTypeTableEntry(entry driverModel.AdsDataTypeTableEntry) int32 {
-	dataTypeName := entry.GetDataTypeName()
+	dataTypeName := entry.GetSecondaryName()
 	if strings.HasPrefix(dataTypeName, "STRING(") {
 		lenStr := dataTypeName[7 : len(dataTypeName)-1]
 		lenVal, err := strconv.Atoi(lenStr)

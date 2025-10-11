@@ -205,7 +205,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
-        return browseWithInterceptor(browseRequest, item -> true);
+        return browseWithInterceptor(browseRequest, (query, item) -> true);
     }
 
     @Override
