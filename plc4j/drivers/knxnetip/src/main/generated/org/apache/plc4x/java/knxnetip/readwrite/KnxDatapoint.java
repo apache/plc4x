@@ -2216,6 +2216,24 @@ public class KnxDatapoint {
 
       short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_EVSEMode_1)) { // USINT
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
+      return new PlcUSINT(value);
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_EVSEMode_2)) { // USINT
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
+      return new PlcUSINT(value);
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_EVSEMode_3)) { // USINT
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
+      return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_StatusGen)) { // Struct
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
@@ -6112,6 +6130,24 @@ public class KnxDatapoint {
 
       // Simple field (value)
       lengthInBits += 8;
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_EVSEMode_1)) { // USINT
+      // Reserved Field (reserved)
+      lengthInBits += 8;
+
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_EVSEMode_2)) { // USINT
+      // Reserved Field (reserved)
+      lengthInBits += 8;
+
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_EVSEMode_3)) { // USINT
+      // Reserved Field (reserved)
+      lengthInBits += 8;
+
+      // Simple field (value)
+      lengthInBits += 8;
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_StatusGen)) { // Struct
       // Reserved Field (reserved)
       lengthInBits += 8;
@@ -9534,6 +9570,24 @@ public class KnxDatapoint {
       writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_RF_FilterSelect)) { // USINT
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (value)
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_EVSEMode_1)) { // USINT
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (value)
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_EVSEMode_2)) { // USINT
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (value)
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_EVSEMode_3)) { // USINT
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 

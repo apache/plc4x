@@ -788,8 +788,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_ = 760,
         M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_ = 761,
         M_YUEOING_ZHONGYI_ELECTRICALCO__LTD = 762,
-        M_ABB___RESERVED = 763,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 764,
+        M_HYUNDAI_LIGHTING = 763,
+        M_ABB___RESERVED = 764,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 765,
     }
 
     public static class KnxManufacturerInfo
@@ -3013,10 +3014,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_YUEOING_ZHONGYI_ELECTRICALCO__LTD: { /* '762' */
                     return 823;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '763' */
+                case KnxManufacturer.M_HYUNDAI_LIGHTING: { /* '763' */
+                    return 824;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '764' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '764' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '765' */
                     return 43959;
                 }
                 case KnxManufacturer.M_UPONOR: { /* '77' */
@@ -5318,10 +5322,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_YUEOING_ZHONGYI_ELECTRICALCO__LTD: { /* '762' */
                     return "YUEOING ZHONGYI ELECTRICALCO.,LTD";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '763' */
+                case KnxManufacturer.M_HYUNDAI_LIGHTING: { /* '763' */
+                    return "Hyundai Lighting";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '764' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '764' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '765' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_UPONOR: { /* '77' */
