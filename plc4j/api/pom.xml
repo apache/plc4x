@@ -35,6 +35,18 @@
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <release>17</release>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>nl.jqno.equalsverifier</groupId>
