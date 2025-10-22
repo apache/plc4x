@@ -13,6 +13,9 @@ Incompatible changes
 
 - Dropped support for Java 11, new baseline Java version is
   Java 21.
+- The PLC4J-API module however is intentionally held at
+  Java 17 to allow alternate driver implementations to support
+  Java 17.
 - Updated the signature of the PlcBrowseRequestInterceptor to
   also accept a tag and item instead of just an item.
 
