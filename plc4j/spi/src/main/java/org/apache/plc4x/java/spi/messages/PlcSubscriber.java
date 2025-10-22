@@ -49,14 +49,21 @@ public interface PlcSubscriber {
     CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest);
 
     /**
-     * @param consumer
-     * @param handles
-     * @return TODO: document me
+     * This method is used to register a consumer for a set of subscription handles. This is generally used if the
+     * user didn't pre-register consumers when creating the subscription request. In this case the consumer will
+     * use the DefaultPlcSubscriptionHandle.register() method to register after the subscription request has been
+     * executed.
+     *
+     * @param consumer consumer to register.
+     * @param handles handle for which to register the consumer.
+     * @return registration object.
      */
     PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles);
 
     /**
-     * // TODO: document me.
+     * Allows manually unregistering a consumer.
+     *
+     * @param registration registration object returned by the register method.
      */
     void unregister(PlcConsumerRegistration registration);
 
