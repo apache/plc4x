@@ -127,7 +127,7 @@
     <dom4j.version>2.2.0</dom4j.version>
     <equalsverifier.version>4.2</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
-    <groovy.version>5.0.1</groovy.version>
+    <groovy.version>5.0.2</groovy.version>
     <guava.version>33.5.0-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
