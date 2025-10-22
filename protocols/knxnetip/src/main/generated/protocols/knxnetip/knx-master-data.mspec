@@ -1515,9 +1515,11 @@
     ['760' M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_ ['821', '"Jiwu (Fuzhou) Technology Co., Ltd."']]
     ['761' M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_ ['822', '"Foshan Brisdom Technology Co., Ltd."']]
     ['762' M_YUEOING_ZHONGYI_ELECTRICALCO__LTD ['823', '"YUEOING ZHONGYI ELECTRICALCO.,LTD"']]
-    ['763' M_HYUNDAI_LIGHTING ['824', '"Hyundai Lighting"']]
-    ['764' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['765' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['763' M_HYUNDAI ['824', '"HYUNDAI"']]
+    ['764' M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_ ['825', '"Qingdao Hisense TransTech Co.,Ltd."']]
+    ['765' M_SPECIALCAVI_BALDASSARI_SRL ['826', '"SPECIALCAVI BALDASSARI SRL"']]
+    ['766' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['767' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

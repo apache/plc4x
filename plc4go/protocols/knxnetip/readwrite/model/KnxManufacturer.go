@@ -806,9 +806,11 @@ const (
 	KnxManufacturer_M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_                   KnxManufacturer = 760
 	KnxManufacturer_M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_                KnxManufacturer = 761
 	KnxManufacturer_M_YUEOING_ZHONGYI_ELECTRICALCO__LTD                  KnxManufacturer = 762
-	KnxManufacturer_M_HYUNDAI_LIGHTING                                   KnxManufacturer = 763
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 764
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 765
+	KnxManufacturer_M_HYUNDAI                                            KnxManufacturer = 763
+	KnxManufacturer_M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_                 KnxManufacturer = 764
+	KnxManufacturer_M_SPECIALCAVI_BALDASSARI_SRL                         KnxManufacturer = 765
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 766
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 767
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1579,7 +1581,9 @@ func init() {
 		KnxManufacturer_M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_,
 		KnxManufacturer_M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_,
 		KnxManufacturer_M_YUEOING_ZHONGYI_ELECTRICALCO__LTD,
-		KnxManufacturer_M_HYUNDAI_LIGHTING,
+		KnxManufacturer_M_HYUNDAI,
+		KnxManufacturer_M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_,
+		KnxManufacturer_M_SPECIALCAVI_BALDASSARI_SRL,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4545,10 +4549,18 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 764:
 		{ /* '764' */
-			return 43954
+			return 825
 		}
 	case 765:
 		{ /* '765' */
+			return 826
+		}
+	case 766:
+		{ /* '766' */
+			return 43954
+		}
+	case 767:
+		{ /* '767' */
 			return 43959
 		}
 	case 77:
@@ -7623,14 +7635,22 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 763:
 		{ /* '763' */
-			return "Hyundai Lighting"
+			return "HYUNDAI"
 		}
 	case 764:
 		{ /* '764' */
-			return "ABB - reserved"
+			return "Qingdao Hisense TransTech Co.,Ltd."
 		}
 	case 765:
 		{ /* '765' */
+			return "SPECIALCAVI BALDASSARI SRL"
+		}
+	case 766:
+		{ /* '766' */
+			return "ABB - reserved"
+		}
+	case 767:
+		{ /* '767' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 77:
@@ -9227,10 +9247,14 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 762:
 		return KnxManufacturer_M_YUEOING_ZHONGYI_ELECTRICALCO__LTD, true
 	case 763:
-		return KnxManufacturer_M_HYUNDAI_LIGHTING, true
+		return KnxManufacturer_M_HYUNDAI, true
 	case 764:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_, true
 	case 765:
+		return KnxManufacturer_M_SPECIALCAVI_BALDASSARI_SRL, true
+	case 766:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 767:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 77:
 		return KnxManufacturer_M_UPONOR, true
@@ -10764,8 +10788,12 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_, true
 	case "M_YUEOING_ZHONGYI_ELECTRICALCO__LTD":
 		return KnxManufacturer_M_YUEOING_ZHONGYI_ELECTRICALCO__LTD, true
-	case "M_HYUNDAI_LIGHTING":
-		return KnxManufacturer_M_HYUNDAI_LIGHTING, true
+	case "M_HYUNDAI":
+		return KnxManufacturer_M_HYUNDAI, true
+	case "M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_":
+		return KnxManufacturer_M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_, true
+	case "M_SPECIALCAVI_BALDASSARI_SRL":
+		return KnxManufacturer_M_SPECIALCAVI_BALDASSARI_SRL, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -12374,8 +12402,12 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_"
 	case KnxManufacturer_M_YUEOING_ZHONGYI_ELECTRICALCO__LTD:
 		return "M_YUEOING_ZHONGYI_ELECTRICALCO__LTD"
-	case KnxManufacturer_M_HYUNDAI_LIGHTING:
-		return "M_HYUNDAI_LIGHTING"
+	case KnxManufacturer_M_HYUNDAI:
+		return "M_HYUNDAI"
+	case KnxManufacturer_M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_:
+		return "M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_"
+	case KnxManufacturer_M_SPECIALCAVI_BALDASSARI_SRL:
+		return "M_SPECIALCAVI_BALDASSARI_SRL"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

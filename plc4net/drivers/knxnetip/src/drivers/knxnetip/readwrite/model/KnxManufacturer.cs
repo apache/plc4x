@@ -788,9 +788,11 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_ = 760,
         M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_ = 761,
         M_YUEOING_ZHONGYI_ELECTRICALCO__LTD = 762,
-        M_HYUNDAI_LIGHTING = 763,
-        M_ABB___RESERVED = 764,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 765,
+        M_HYUNDAI = 763,
+        M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_ = 764,
+        M_SPECIALCAVI_BALDASSARI_SRL = 765,
+        M_ABB___RESERVED = 766,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 767,
     }
 
     public static class KnxManufacturerInfo
@@ -3014,13 +3016,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_YUEOING_ZHONGYI_ELECTRICALCO__LTD: { /* '762' */
                     return 823;
                 }
-                case KnxManufacturer.M_HYUNDAI_LIGHTING: { /* '763' */
+                case KnxManufacturer.M_HYUNDAI: { /* '763' */
                     return 824;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '764' */
+                case KnxManufacturer.M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_: { /* '764' */
+                    return 825;
+                }
+                case KnxManufacturer.M_SPECIALCAVI_BALDASSARI_SRL: { /* '765' */
+                    return 826;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '766' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '765' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '767' */
                     return 43959;
                 }
                 case KnxManufacturer.M_UPONOR: { /* '77' */
@@ -5322,13 +5330,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_YUEOING_ZHONGYI_ELECTRICALCO__LTD: { /* '762' */
                     return "YUEOING ZHONGYI ELECTRICALCO.,LTD";
                 }
-                case KnxManufacturer.M_HYUNDAI_LIGHTING: { /* '763' */
-                    return "Hyundai Lighting";
+                case KnxManufacturer.M_HYUNDAI: { /* '763' */
+                    return "HYUNDAI";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '764' */
+                case KnxManufacturer.M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_: { /* '764' */
+                    return "Qingdao Hisense TransTech Co.,Ltd.";
+                }
+                case KnxManufacturer.M_SPECIALCAVI_BALDASSARI_SRL: { /* '765' */
+                    return "SPECIALCAVI BALDASSARI SRL";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '766' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '765' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '767' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_UPONOR: { /* '77' */

@@ -897,10 +897,13 @@ public enum KnxManufacturer {
       (int) 761, (int) 822, (String) "Foshan Brisdom Technology Co., Ltd."),
   M_YUEOING_ZHONGYI_ELECTRICALCO__LTD(
       (int) 762, (int) 823, (String) "YUEOING ZHONGYI ELECTRICALCO.,LTD"),
-  M_HYUNDAI_LIGHTING((int) 763, (int) 824, (String) "Hyundai Lighting"),
-  M_ABB___RESERVED((int) 764, (int) 43954, (String) "ABB - reserved"),
+  M_HYUNDAI((int) 763, (int) 824, (String) "HYUNDAI"),
+  M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_(
+      (int) 764, (int) 825, (String) "Qingdao Hisense TransTech Co.,Ltd."),
+  M_SPECIALCAVI_BALDASSARI_SRL((int) 765, (int) 826, (String) "SPECIALCAVI BALDASSARI SRL"),
+  M_ABB___RESERVED((int) 766, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 765, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 767, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
