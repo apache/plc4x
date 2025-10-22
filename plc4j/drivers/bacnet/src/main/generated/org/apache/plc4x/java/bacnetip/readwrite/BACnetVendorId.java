@@ -1798,6 +1798,18 @@ public enum BACnetVendorId {
   AVTECH_SOFTWARE_INC((int) 1564, (int) 1564, (String) "AVTECH Software, Inc."),
   IN_CONTROL_ENGINEERINGLLC((int) 1565, (int) 1565, (String) "InControl Engineering LLC"),
   SOUND_WATER_TECHNOLOGIESLLC((int) 1566, (int) 1566, (String) "SoundWater Technologies LLC"),
+  CIRCULAR_BV((int) 1567, (int) 1567, (String) "Circular Bv"),
+  NORMATICAS((int) 1568, (int) 1568, (String) "Normatic AS"),
+  DOCK_RD((int) 1569, (int) 1569, (String) "Dock Rd"),
+  SMARTD_TECHNOLOGIES_INC((int) 1570, (int) 1570, (String) "SmartD Technologies Inc."),
+  LINEOF_SIGHT_SERVICESLLC((int) 1571, (int) 1571, (String) "Line of Sight Services LLC"),
+  LAIIER_LTD((int) 1572, (int) 1572, (String) "LAIIER Ltd."),
+  ANTEC_CONTROLS((int) 1573, (int) 1573, (String) "Antec Controls"),
+  CG_CONCEPTION((int) 1574, (int) 1574, (String) "CG Conception"),
+  SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD(
+      (int) 1575, (int) 1575, (String) "Shanghai YuanKong Automation Technology Co., Ltd."),
+  ARMATURALLC((int) 1576, (int) 1576, (String) "Armatura LLC"),
+  INGYBV((int) 1577, (int) 1577, (String) "Ingy BV"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

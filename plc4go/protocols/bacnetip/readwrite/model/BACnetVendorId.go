@@ -1600,6 +1600,17 @@ const (
 	BACnetVendorId_AVTECH_SOFTWARE_INC                                                          BACnetVendorId = 1564
 	BACnetVendorId_IN_CONTROL_ENGINEERINGLLC                                                    BACnetVendorId = 1565
 	BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC                                                  BACnetVendorId = 1566
+	BACnetVendorId_CIRCULAR_BV                                                                  BACnetVendorId = 1567
+	BACnetVendorId_NORMATICAS                                                                   BACnetVendorId = 1568
+	BACnetVendorId_DOCK_RD                                                                      BACnetVendorId = 1569
+	BACnetVendorId_SMARTD_TECHNOLOGIES_INC                                                      BACnetVendorId = 1570
+	BACnetVendorId_LINEOF_SIGHT_SERVICESLLC                                                     BACnetVendorId = 1571
+	BACnetVendorId_LAIIER_LTD                                                                   BACnetVendorId = 1572
+	BACnetVendorId_ANTEC_CONTROLS                                                               BACnetVendorId = 1573
+	BACnetVendorId_CG_CONCEPTION                                                                BACnetVendorId = 1574
+	BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD                              BACnetVendorId = 1575
+	BACnetVendorId_ARMATURALLC                                                                  BACnetVendorId = 1576
+	BACnetVendorId_INGYBV                                                                       BACnetVendorId = 1577
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3165,6 +3176,17 @@ func init() {
 		BACnetVendorId_AVTECH_SOFTWARE_INC,
 		BACnetVendorId_IN_CONTROL_ENGINEERINGLLC,
 		BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC,
+		BACnetVendorId_CIRCULAR_BV,
+		BACnetVendorId_NORMATICAS,
+		BACnetVendorId_DOCK_RD,
+		BACnetVendorId_SMARTD_TECHNOLOGIES_INC,
+		BACnetVendorId_LINEOF_SIGHT_SERVICESLLC,
+		BACnetVendorId_LAIIER_LTD,
+		BACnetVendorId_ANTEC_CONTROLS,
+		BACnetVendorId_CG_CONCEPTION,
+		BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD,
+		BACnetVendorId_ARMATURALLC,
+		BACnetVendorId_INGYBV,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5687,9 +5709,53 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1566' */
 			return 1566
 		}
+	case 1567:
+		{ /* '1567' */
+			return 1567
+		}
+	case 1568:
+		{ /* '1568' */
+			return 1568
+		}
+	case 1569:
+		{ /* '1569' */
+			return 1569
+		}
 	case 157:
 		{ /* '157' */
 			return 157
+		}
+	case 1570:
+		{ /* '1570' */
+			return 1570
+		}
+	case 1571:
+		{ /* '1571' */
+			return 1571
+		}
+	case 1572:
+		{ /* '1572' */
+			return 1572
+		}
+	case 1573:
+		{ /* '1573' */
+			return 1573
+		}
+	case 1574:
+		{ /* '1574' */
+			return 1574
+		}
+	case 1575:
+		{ /* '1575' */
+			return 1575
+		}
+	case 1576:
+		{ /* '1576' */
+			return 1576
+		}
+	case 1577:
+		{ /* '1577' */
+			return 1577
 		}
 	case 158:
 		{ /* '158' */
@@ -11937,9 +12003,53 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1566' */
 			return "SoundWater Technologies LLC"
 		}
+	case 1567:
+		{ /* '1567' */
+			return "Circular Bv"
+		}
+	case 1568:
+		{ /* '1568' */
+			return "Normatic AS"
+		}
+	case 1569:
+		{ /* '1569' */
+			return "Dock Rd"
+		}
 	case 157:
 		{ /* '157' */
 			return "Integrated.CH"
+		}
+	case 1570:
+		{ /* '1570' */
+			return "SmartD Technologies Inc."
+		}
+	case 1571:
+		{ /* '1571' */
+			return "Line of Sight Services LLC"
+		}
+	case 1572:
+		{ /* '1572' */
+			return "LAIIER Ltd."
+		}
+	case 1573:
+		{ /* '1573' */
+			return "Antec Controls"
+		}
+	case 1574:
+		{ /* '1574' */
+			return "CG Conception"
+		}
+	case 1575:
+		{ /* '1575' */
+			return "Shanghai YuanKong Automation Technology Co., Ltd."
+		}
+	case 1576:
+		{ /* '1576' */
+			return "Armatura LLC"
+		}
+	case 1577:
+		{ /* '1577' */
+			return "Ingy BV"
 		}
 	case 158:
 		{ /* '158' */
@@ -16928,8 +17038,30 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IN_CONTROL_ENGINEERINGLLC, true
 	case 1566:
 		return BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC, true
+	case 1567:
+		return BACnetVendorId_CIRCULAR_BV, true
+	case 1568:
+		return BACnetVendorId_NORMATICAS, true
+	case 1569:
+		return BACnetVendorId_DOCK_RD, true
 	case 157:
 		return BACnetVendorId_INTEGRATEDCH, true
+	case 1570:
+		return BACnetVendorId_SMARTD_TECHNOLOGIES_INC, true
+	case 1571:
+		return BACnetVendorId_LINEOF_SIGHT_SERVICESLLC, true
+	case 1572:
+		return BACnetVendorId_LAIIER_LTD, true
+	case 1573:
+		return BACnetVendorId_ANTEC_CONTROLS, true
+	case 1574:
+		return BACnetVendorId_CG_CONCEPTION, true
+	case 1575:
+		return BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD, true
+	case 1576:
+		return BACnetVendorId_ARMATURALLC, true
+	case 1577:
+		return BACnetVendorId_INGYBV, true
 	case 158:
 		return BACnetVendorId_PRICE_INDUSTRIES, true
 	case 159:
@@ -20050,8 +20182,30 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IN_CONTROL_ENGINEERINGLLC, true
 	case "SOUND_WATER_TECHNOLOGIESLLC":
 		return BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC, true
+	case "CIRCULAR_BV":
+		return BACnetVendorId_CIRCULAR_BV, true
+	case "NORMATICAS":
+		return BACnetVendorId_NORMATICAS, true
+	case "DOCK_RD":
+		return BACnetVendorId_DOCK_RD, true
 	case "INTEGRATEDCH":
 		return BACnetVendorId_INTEGRATEDCH, true
+	case "SMARTD_TECHNOLOGIES_INC":
+		return BACnetVendorId_SMARTD_TECHNOLOGIES_INC, true
+	case "LINEOF_SIGHT_SERVICESLLC":
+		return BACnetVendorId_LINEOF_SIGHT_SERVICESLLC, true
+	case "LAIIER_LTD":
+		return BACnetVendorId_LAIIER_LTD, true
+	case "ANTEC_CONTROLS":
+		return BACnetVendorId_ANTEC_CONTROLS, true
+	case "CG_CONCEPTION":
+		return BACnetVendorId_CG_CONCEPTION, true
+	case "SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD":
+		return BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD, true
+	case "ARMATURALLC":
+		return BACnetVendorId_ARMATURALLC, true
+	case "INGYBV":
+		return BACnetVendorId_INGYBV, true
 	case "PRICE_INDUSTRIES":
 		return BACnetVendorId_PRICE_INDUSTRIES, true
 	case "SE_ELEKTRONIC_GMBH":
@@ -23244,8 +23398,30 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "IN_CONTROL_ENGINEERINGLLC"
 	case BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC:
 		return "SOUND_WATER_TECHNOLOGIESLLC"
+	case BACnetVendorId_CIRCULAR_BV:
+		return "CIRCULAR_BV"
+	case BACnetVendorId_NORMATICAS:
+		return "NORMATICAS"
+	case BACnetVendorId_DOCK_RD:
+		return "DOCK_RD"
 	case BACnetVendorId_INTEGRATEDCH:
 		return "INTEGRATEDCH"
+	case BACnetVendorId_SMARTD_TECHNOLOGIES_INC:
+		return "SMARTD_TECHNOLOGIES_INC"
+	case BACnetVendorId_LINEOF_SIGHT_SERVICESLLC:
+		return "LINEOF_SIGHT_SERVICESLLC"
+	case BACnetVendorId_LAIIER_LTD:
+		return "LAIIER_LTD"
+	case BACnetVendorId_ANTEC_CONTROLS:
+		return "ANTEC_CONTROLS"
+	case BACnetVendorId_CG_CONCEPTION:
+		return "CG_CONCEPTION"
+	case BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD:
+		return "SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD"
+	case BACnetVendorId_ARMATURALLC:
+		return "ARMATURALLC"
+	case BACnetVendorId_INGYBV:
+		return "INGYBV"
 	case BACnetVendorId_PRICE_INDUSTRIES:
 		return "PRICE_INDUSTRIES"
 	case BACnetVendorId_SE_ELEKTRONIC_GMBH:
