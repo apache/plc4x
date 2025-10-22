@@ -136,7 +136,10 @@ public class ManualAdsDriverTest extends ManualTest {
         // TODO: Add some complex array path
         //test.addTestCase("...3323(/987", PlcResponseCode.INVALID_ADDRESS);
         //test.addTestCase("MAIN.hurz_UDT_array[4].hurz_INT_array[2].someProperty", PlcResponseCode.NOT_FOUND);
+        long startMillis = System.currentTimeMillis();
         test.run();
+        long endMillis = System.currentTimeMillis();
+        System.out.println("Test executed in " + (endMillis - startMillis) + "ms");
     }
 
 }
