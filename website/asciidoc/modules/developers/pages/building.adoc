@@ -68,6 +68,7 @@ The following profiles are available:
 - `with-go`: Builds all Go related modules
 - `with-java`: Builds all Java related modules
 - `with-python`: Builds all Python related modules
+- `update-code-generation`: Generates the generated code from the mspec definitions
 
 WARNING: As these profiles typically require some preparation and setup on your development machine, please read the link:preparing/index.html[Preparing your Computer] guide for a detailed description on this.
 
