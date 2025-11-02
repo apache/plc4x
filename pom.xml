@@ -1160,7 +1160,7 @@
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>false</generateReports>
             <generateSitemap>false</generateSitemap>
-            <relativizeDecorationLinks>false</relativizeDecorationLinks>
+            <relativizeSiteLinks>false</relativizeSiteLinks>
             <locales>en</locales>
             <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
             <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
