@@ -2055,6 +2055,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private S7VarPayloadDataItem serializePlcValue(S7Tag tag, PlcValue plcValue) {
         try {
             DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
+            // In the case of STRING, the default and the max stringLength are both 254. With WSTRING the default
+            // is also 254. For WSTRING, the max stringLength is 16382. Here we're only handling the default, the
+            // max is handled in the StaticHelper.
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             if((tag.getDataType() == TransportSize.BYTE) && (tag.getNumberOfElements() > 1)) {

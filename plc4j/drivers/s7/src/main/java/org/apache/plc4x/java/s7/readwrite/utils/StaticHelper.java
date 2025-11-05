@@ -2690,12 +2690,13 @@ public class StaticHelper {
      * the String as char arrays from your application.
      */
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
-        int maxStringLength = 0xFF & Math.min(stringLength, 250);
-        int actStringLength = 0xFF & value.getString().length();
-        actStringLength = Math.min(maxStringLength, actStringLength);
-
         switch (encoding) {
             case "UTF-8": {
+                // In the case of STRING, the default and the max stringLength is 254.
+                int maxStringLength = 0xFF & Math.min(stringLength, 254);
+                int actStringLength = 0xFF & value.getString().length();
+                actStringLength = Math.min(maxStringLength, actStringLength);
+
                 byte[] chars = new byte[maxStringLength];
                 byte[] actChars = value.getString().substring(0, actStringLength).getBytes(StandardCharsets.UTF_8);
                 System.arraycopy(actChars, 0, chars, 0, actChars.length);
@@ -2709,6 +2710,12 @@ public class StaticHelper {
                 break;
             }
             case "UTF-16": {
+                // In the case of WSTRING the default is also 254. However, the max stringLength is 16382.
+                // As we've settled the default handling in S7ProtocolLogic, we'll only handle the max here.
+                int maxStringLength = 0xFFFF & Math.min(stringLength, 16382);
+                int actStringLength = 0xFFFF & value.getString().length();
+                actStringLength = Math.min(maxStringLength, actStringLength);
+
                 byte[] chars = new byte[maxStringLength * 2];
                 byte[] actChars = value.getString().substring(0, actStringLength).getBytes(StandardCharsets.UTF_16BE);
                 System.arraycopy(actChars, 0, chars, 0, actChars.length);

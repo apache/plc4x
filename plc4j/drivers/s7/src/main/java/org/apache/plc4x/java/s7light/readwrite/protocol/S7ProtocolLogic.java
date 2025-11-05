@@ -71,9 +71,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         super.setDriverContext(driverContext);
         this.s7DriverContext = (S7DriverContext) driverContext;
         // Initialize Transaction Manager.
-        // Until the number of concurrent requests is successfully negotiated we set it to a
-        // maximum of only one request being able to be sent at a time. During the login process
-        // No concurrent requests can be sent anyway. It will be updated when receiving the
+        // Until the number of concurrent requests is successfully negotiated, we set it to a
+        // maximum of only one request being able to be sent at a time. During the login process,
+        // no concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
     }
@@ -136,7 +136,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
                         // If the controller type is explicitly set, were finished with the login
                         // process. If it's set to ANY, we have to query the serial number information
-                        // in order to detect the type of PLC.
+                        // to detect the type of PLC.
                         if (s7DriverContext.getControllerType() != ControllerType.ANY) {
                             // Send an event that connection setup is complete.
                             context.fireConnected();
@@ -225,7 +225,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         CompletableFuture<S7Message> responseFuture = new CompletableFuture<>();
 
         // If the list of tags contains at least one STRING/WSTRING element,
-        // we need to check the sizes of the string fields in a first request.
+        // we need to check the sizes of the string fields in the first request.
         if (request.getTagNames().stream().anyMatch(t -> request.getTag(t) instanceof S7StringVarLengthTag)) {
             responseFuture = performVarLengthStringWriteRequest((DefaultPlcWriteRequest) writeRequest);
         }
@@ -776,6 +776,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private S7VarPayloadDataItem serializePlcValue(S7Tag tag, PlcValue plcValue) {
         try {
             DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
+            // In the case of STRING, the default and the max stringLength are both 254. With WSTRING the default
+            // is also 254. For WSTRING, the max stringLength is 16382. Here we're only handling the default, the
+            // max is handled in the StaticHelper.
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             if((tag.getDataType() == TransportSize.BYTE) && (tag.getNumberOfElements() > 1)) {
@@ -956,7 +959,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private int getTpduId() {
         int tpduId = tpduGenerator.getAndIncrement();
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+        // If we've reached the max value for a 16-bit transaction identifier, reset back to 1
         if (tpduGenerator.get() == 0xFFFF) {
             tpduGenerator.set(1);
         }
@@ -964,7 +967,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     /**
-     * A generic purpose error handler which terminates transaction and calls back given future with error message.
+     * A generic purpose error handler which terminates a transaction and calls back the given future with an error message.
      */
     static class TransactionErrorCallback<T, E extends Throwable> implements Consumer<TimeoutException>, BiConsumer<TPKTPacket, E> {
 
@@ -1007,7 +1010,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .collect(Collectors.toList());
         List<S7VarRequestParameterItem> stringFields = new ArrayList<>(varLengthStringTags.size());
         for (S7StringVarLengthTag varLengthStringTag : varLengthStringTags) {
-            // For STRING, the header is 2 bytes (first byte contains the max length and the second the actual length)
+            // For STRING, the header is 2 bytes (The first byte contains the max length, and the second the actual length)
             if (varLengthStringTag.getDataType() == TransportSize.STRING) {
                 stringFields.add(new S7VarRequestParameterItemAddress(
                     new S7AddressAny(
@@ -1019,7 +1022,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         varLengthStringTag.getBitOffset()
                     )));
             }
-            // For WSTRING, the header is 4 bytes (first word contains the max length and the second the actual length)
+            // For WSTRING, the header is 4 bytes (The first word contains the max length, and the second the actual length)
             else if (varLengthStringTag.getDataType() == TransportSize.WSTRING) {
                 stringFields.add(new S7VarRequestParameterItemAddress(
                     new S7AddressAny(
