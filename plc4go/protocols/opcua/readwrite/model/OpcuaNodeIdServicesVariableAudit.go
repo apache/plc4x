@@ -113,6 +113,7 @@ const (
 	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_CurrentRoleIds                OpcuaNodeIdServicesVariableAudit = 19304
 	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_StatusCodeId                     OpcuaNodeIdServicesVariableAudit = 19305
 	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments                  OpcuaNodeIdServicesVariableAudit = 19306
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientApplicationUri                         OpcuaNodeIdServicesVariableAudit = 19811
 	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerUri                              OpcuaNodeIdServicesVariableAudit = 23908
 	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ObjectId             OpcuaNodeIdServicesVariableAudit = 23994
 	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_MethodId             OpcuaNodeIdServicesVariableAudit = 23995
@@ -202,6 +203,7 @@ func init() {
 		OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_CurrentRoleIds,
 		OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_StatusCodeId,
 		OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments,
+		OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientApplicationUri,
 		OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerUri,
 		OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ObjectId,
 		OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_MethodId,
@@ -251,6 +253,8 @@ func OpcuaNodeIdServicesVariableAuditByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_StatusCodeId, true
 	case 19306:
 		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments, true
+	case 19811:
+		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientApplicationUri, true
 	case 2053:
 		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp, true
 	case 2054:
@@ -421,6 +425,8 @@ func OpcuaNodeIdServicesVariableAuditByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_StatusCodeId, true
 	case "AuditUpdateMethodEventType_OutputArguments":
 		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments, true
+	case "AuditEventType_ClientApplicationUri":
+		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientApplicationUri, true
 	case "AuditEventType_ActionTimeStamp":
 		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp, true
 	case "AuditEventType_Status":
@@ -656,6 +662,8 @@ func (e OpcuaNodeIdServicesVariableAudit) PLC4XEnumName() string {
 		return "AuditUpdateMethodEventType_StatusCodeId"
 	case OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_OutputArguments:
 		return "AuditUpdateMethodEventType_OutputArguments"
+	case OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientApplicationUri:
+		return "AuditEventType_ClientApplicationUri"
 	case OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp:
 		return "AuditEventType_ActionTimeStamp"
 	case OpcuaNodeIdServicesVariableAudit_AuditEventType_Status:

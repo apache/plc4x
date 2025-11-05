@@ -1037,6 +1037,8 @@ const (
 	OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationFileType_CertificateGroupPurposes                                                                                                                        OpcuaNodeIdServicesVariableApplication = 19416
 	OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_KeyCredentials_CreateCredential_InputArguments                                                                                                      OpcuaNodeIdServicesVariableApplication = 19425
 	OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_KeyCredentials_CreateCredential_OutputArguments                                                                                                     OpcuaNodeIdServicesVariableApplication = 19426
+	OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationFolderType_ApplicationName_Placeholder_IsNonUaApplication                                                                                                OpcuaNodeIdServicesVariableApplication = 23740
+	OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_IsNonUaApplication                                                                                                                                  OpcuaNodeIdServicesVariableApplication = 23741
 	OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_Enabled                                                                                                                                             OpcuaNodeIdServicesVariableApplication = 26849
 	OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_ApplicationUri                                                                                                                                      OpcuaNodeIdServicesVariableApplication = 26850
 	OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_ProductUri                                                                                                                                          OpcuaNodeIdServicesVariableApplication = 26851
@@ -2044,6 +2046,8 @@ func init() {
 		OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationFileType_CertificateGroupPurposes,
 		OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_KeyCredentials_CreateCredential_InputArguments,
 		OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_KeyCredentials_CreateCredential_OutputArguments,
+		OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationFolderType_ApplicationName_Placeholder_IsNonUaApplication,
+		OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_IsNonUaApplication,
 		OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_Enabled,
 		OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_ApplicationUri,
 		OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_ProductUri,
@@ -4043,6 +4047,10 @@ func OpcuaNodeIdServicesVariableApplicationByValue(value int32) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_KeyCredentials_CreateCredential_InputArguments, true
 	case 19426:
 		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_KeyCredentials_CreateCredential_OutputArguments, true
+	case 23740:
+		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationFolderType_ApplicationName_Placeholder_IsNonUaApplication, true
+	case 23741:
+		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_IsNonUaApplication, true
 	case 26849:
 		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_Enabled, true
 	case 26850:
@@ -6049,6 +6057,10 @@ func OpcuaNodeIdServicesVariableApplicationByName(value string) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_KeyCredentials_CreateCredential_InputArguments, true
 	case "ApplicationConfigurationType_KeyCredentials_CreateCredential_OutputArguments":
 		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_KeyCredentials_CreateCredential_OutputArguments, true
+	case "ApplicationConfigurationFolderType_ApplicationName_Placeholder_IsNonUaApplication":
+		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationFolderType_ApplicationName_Placeholder_IsNonUaApplication, true
+	case "ApplicationConfigurationType_IsNonUaApplication":
+		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_IsNonUaApplication, true
 	case "ApplicationConfigurationType_Enabled":
 		return OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_Enabled, true
 	case "ApplicationConfigurationType_ApplicationUri":
@@ -8120,6 +8132,10 @@ func (e OpcuaNodeIdServicesVariableApplication) PLC4XEnumName() string {
 		return "ApplicationConfigurationType_KeyCredentials_CreateCredential_InputArguments"
 	case OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_KeyCredentials_CreateCredential_OutputArguments:
 		return "ApplicationConfigurationType_KeyCredentials_CreateCredential_OutputArguments"
+	case OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationFolderType_ApplicationName_Placeholder_IsNonUaApplication:
+		return "ApplicationConfigurationFolderType_ApplicationName_Placeholder_IsNonUaApplication"
+	case OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_IsNonUaApplication:
+		return "ApplicationConfigurationType_IsNonUaApplication"
 	case OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_Enabled:
 		return "ApplicationConfigurationType_Enabled"
 	case OpcuaNodeIdServicesVariableApplication_ApplicationConfigurationType_ApplicationUri:

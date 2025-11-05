@@ -276,7 +276,7 @@ func (b *_ApplicationConfigurationDataType) CreateApplicationConfigurationDataTy
 ///////////////////////
 
 func (m *_ApplicationConfigurationDataType) GetExtensionId() int32 {
-	return int32(15551)
+	return int32(23745)
 }
 
 ///////////////////////
@@ -543,7 +543,7 @@ func (m *_ApplicationConfigurationDataType) parse(ctx context.Context, readBuffe
 	}
 	_ = noOfAuthorizationServices
 
-	authorizationServices, err := ReadCountArrayField[AuthorizationServiceConfigurationDataType](ctx, "authorizationServices", ReadComplex[AuthorizationServiceConfigurationDataType](ExtensionObjectDefinitionParseWithBufferProducer[AuthorizationServiceConfigurationDataType]((int32)(int32(19447))), readBuffer), uint64(noOfAuthorizationServices))
+	authorizationServices, err := ReadCountArrayField[AuthorizationServiceConfigurationDataType](ctx, "authorizationServices", ReadComplex[AuthorizationServiceConfigurationDataType](ExtensionObjectDefinitionParseWithBufferProducer[AuthorizationServiceConfigurationDataType]((int32)(int32(23746))), readBuffer), uint64(noOfAuthorizationServices))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authorizationServices' field"))
 	}

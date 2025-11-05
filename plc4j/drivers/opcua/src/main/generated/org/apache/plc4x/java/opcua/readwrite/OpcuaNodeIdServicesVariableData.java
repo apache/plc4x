@@ -211,6 +211,7 @@ public enum OpcuaNodeIdServicesVariableData {
   DataSetReaderType_Diagnostics_LiveValues_SecurityTokenID_DiagnosticsLevel((int) 19674L),
   DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID((int) 19675L),
   DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel((int) 19676L),
+  DataTypeRefinementType_FieldDescription_Placeholder((int) 19821L),
   DataSetWriterType_DataSetWriterId((int) 21092L),
   DataSetWriterType_DataSetFieldContentMask((int) 21093L),
   DataSetWriterType_KeyFrameCount((int) 21094L),

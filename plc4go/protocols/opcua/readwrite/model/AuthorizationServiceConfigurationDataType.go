@@ -47,8 +47,8 @@ type AuthorizationServiceConfigurationDataType interface {
 	GetRecordProperties() []KeyValuePair
 	// GetServiceUri returns ServiceUri (property field)
 	GetServiceUri() PascalString
-	// GetServiceCertificate returns ServiceCertificate (property field)
-	GetServiceCertificate() []PascalByteString
+	// GetServiceCertificates returns ServiceCertificates (property field)
+	GetServiceCertificates() []ServiceCertificateDataType
 	// GetIssuerEndpointSettings returns IssuerEndpointSettings (property field)
 	GetIssuerEndpointSettings() PascalString
 	// IsAuthorizationServiceConfigurationDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -63,7 +63,7 @@ type _AuthorizationServiceConfigurationDataType struct {
 	Name                   PascalString
 	RecordProperties       []KeyValuePair
 	ServiceUri             PascalString
-	ServiceCertificate     []PascalByteString
+	ServiceCertificates    []ServiceCertificateDataType
 	IssuerEndpointSettings PascalString
 }
 
@@ -71,7 +71,7 @@ var _ AuthorizationServiceConfigurationDataType = (*_AuthorizationServiceConfigu
 var _ ExtensionObjectDefinitionRequirements = (*_AuthorizationServiceConfigurationDataType)(nil)
 
 // NewAuthorizationServiceConfigurationDataType factory function for _AuthorizationServiceConfigurationDataType
-func NewAuthorizationServiceConfigurationDataType(name PascalString, recordProperties []KeyValuePair, serviceUri PascalString, serviceCertificate []PascalByteString, issuerEndpointSettings PascalString) *_AuthorizationServiceConfigurationDataType {
+func NewAuthorizationServiceConfigurationDataType(name PascalString, recordProperties []KeyValuePair, serviceUri PascalString, serviceCertificates []ServiceCertificateDataType, issuerEndpointSettings PascalString) *_AuthorizationServiceConfigurationDataType {
 	if name == nil {
 		panic("name of type PascalString for AuthorizationServiceConfigurationDataType must not be nil")
 	}
@@ -86,7 +86,7 @@ func NewAuthorizationServiceConfigurationDataType(name PascalString, recordPrope
 		Name:                              name,
 		RecordProperties:                  recordProperties,
 		ServiceUri:                        serviceUri,
-		ServiceCertificate:                serviceCertificate,
+		ServiceCertificates:               serviceCertificates,
 		IssuerEndpointSettings:            issuerEndpointSettings,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -102,7 +102,7 @@ func NewAuthorizationServiceConfigurationDataType(name PascalString, recordPrope
 type AuthorizationServiceConfigurationDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(name PascalString, recordProperties []KeyValuePair, serviceUri PascalString, serviceCertificate []PascalByteString, issuerEndpointSettings PascalString) AuthorizationServiceConfigurationDataTypeBuilder
+	WithMandatoryFields(name PascalString, recordProperties []KeyValuePair, serviceUri PascalString, serviceCertificates []ServiceCertificateDataType, issuerEndpointSettings PascalString) AuthorizationServiceConfigurationDataTypeBuilder
 	// WithName adds Name (property field)
 	WithName(PascalString) AuthorizationServiceConfigurationDataTypeBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
@@ -113,8 +113,8 @@ type AuthorizationServiceConfigurationDataTypeBuilder interface {
 	WithServiceUri(PascalString) AuthorizationServiceConfigurationDataTypeBuilder
 	// WithServiceUriBuilder adds ServiceUri (property field) which is build by the builder
 	WithServiceUriBuilder(func(PascalStringBuilder) PascalStringBuilder) AuthorizationServiceConfigurationDataTypeBuilder
-	// WithServiceCertificate adds ServiceCertificate (property field)
-	WithServiceCertificate(...PascalByteString) AuthorizationServiceConfigurationDataTypeBuilder
+	// WithServiceCertificates adds ServiceCertificates (property field)
+	WithServiceCertificates(...ServiceCertificateDataType) AuthorizationServiceConfigurationDataTypeBuilder
 	// WithIssuerEndpointSettings adds IssuerEndpointSettings (property field)
 	WithIssuerEndpointSettings(PascalString) AuthorizationServiceConfigurationDataTypeBuilder
 	// WithIssuerEndpointSettingsBuilder adds IssuerEndpointSettings (property field) which is build by the builder
@@ -147,8 +147,8 @@ func (b *_AuthorizationServiceConfigurationDataTypeBuilder) setParent(contract E
 	contract.(*_ExtensionObjectDefinition)._SubType = b._AuthorizationServiceConfigurationDataType
 }
 
-func (b *_AuthorizationServiceConfigurationDataTypeBuilder) WithMandatoryFields(name PascalString, recordProperties []KeyValuePair, serviceUri PascalString, serviceCertificate []PascalByteString, issuerEndpointSettings PascalString) AuthorizationServiceConfigurationDataTypeBuilder {
-	return b.WithName(name).WithRecordProperties(recordProperties...).WithServiceUri(serviceUri).WithServiceCertificate(serviceCertificate...).WithIssuerEndpointSettings(issuerEndpointSettings)
+func (b *_AuthorizationServiceConfigurationDataTypeBuilder) WithMandatoryFields(name PascalString, recordProperties []KeyValuePair, serviceUri PascalString, serviceCertificates []ServiceCertificateDataType, issuerEndpointSettings PascalString) AuthorizationServiceConfigurationDataTypeBuilder {
+	return b.WithName(name).WithRecordProperties(recordProperties...).WithServiceUri(serviceUri).WithServiceCertificates(serviceCertificates...).WithIssuerEndpointSettings(issuerEndpointSettings)
 }
 
 func (b *_AuthorizationServiceConfigurationDataTypeBuilder) WithName(name PascalString) AuthorizationServiceConfigurationDataTypeBuilder {
@@ -186,8 +186,8 @@ func (b *_AuthorizationServiceConfigurationDataTypeBuilder) WithServiceUriBuilde
 	return b
 }
 
-func (b *_AuthorizationServiceConfigurationDataTypeBuilder) WithServiceCertificate(serviceCertificate ...PascalByteString) AuthorizationServiceConfigurationDataTypeBuilder {
-	b.ServiceCertificate = serviceCertificate
+func (b *_AuthorizationServiceConfigurationDataTypeBuilder) WithServiceCertificates(serviceCertificates ...ServiceCertificateDataType) AuthorizationServiceConfigurationDataTypeBuilder {
+	b.ServiceCertificates = serviceCertificates
 	return b
 }
 
@@ -268,7 +268,7 @@ func (b *_AuthorizationServiceConfigurationDataType) CreateAuthorizationServiceC
 ///////////////////////
 
 func (m *_AuthorizationServiceConfigurationDataType) GetExtensionId() int32 {
-	return int32(19447)
+	return int32(23746)
 }
 
 ///////////////////////
@@ -297,8 +297,8 @@ func (m *_AuthorizationServiceConfigurationDataType) GetServiceUri() PascalStrin
 	return m.ServiceUri
 }
 
-func (m *_AuthorizationServiceConfigurationDataType) GetServiceCertificate() []PascalByteString {
-	return m.ServiceCertificate
+func (m *_AuthorizationServiceConfigurationDataType) GetServiceCertificates() []ServiceCertificateDataType {
+	return m.ServiceCertificates
 }
 
 func (m *_AuthorizationServiceConfigurationDataType) GetIssuerEndpointSettings() PascalString {
@@ -345,13 +345,13 @@ func (m *_AuthorizationServiceConfigurationDataType) GetLengthInBits(ctx context
 	// Simple field (serviceUri)
 	lengthInBits += m.ServiceUri.GetLengthInBits(ctx)
 
-	// Implicit Field (noOfServiceCertificate)
+	// Implicit Field (noOfServiceCertificates)
 	lengthInBits += 32
 
 	// Array field
-	if len(m.ServiceCertificate) > 0 {
-		for _curItem, element := range m.ServiceCertificate {
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.ServiceCertificate), _curItem)
+	if len(m.ServiceCertificates) > 0 {
+		for _curItem, element := range m.ServiceCertificates {
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.ServiceCertificates), _curItem)
 			lengthInBits += element.GetLengthInBits(arrayCtx)
 		}
 	}
@@ -401,17 +401,17 @@ func (m *_AuthorizationServiceConfigurationDataType) parse(ctx context.Context, 
 	}
 	m.ServiceUri = serviceUri
 
-	noOfServiceCertificate, err := ReadImplicitField[int32](ctx, "noOfServiceCertificate", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServiceCertificates, err := ReadImplicitField[int32](ctx, "noOfServiceCertificates", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServiceCertificate' field"))
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServiceCertificates' field"))
 	}
-	_ = noOfServiceCertificate
+	_ = noOfServiceCertificates
 
-	serviceCertificate, err := ReadCountArrayField[PascalByteString](ctx, "serviceCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfServiceCertificate))
+	serviceCertificates, err := ReadCountArrayField[ServiceCertificateDataType](ctx, "serviceCertificates", ReadComplex[ServiceCertificateDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCertificateDataType]((int32)(int32(23726))), readBuffer), uint64(noOfServiceCertificates))
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceCertificate' field"))
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceCertificates' field"))
 	}
-	m.ServiceCertificate = serviceCertificate
+	m.ServiceCertificates = serviceCertificates
 
 	issuerEndpointSettings, err := ReadSimpleField[PascalString](ctx, "issuerEndpointSettings", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
 	if err != nil {
@@ -459,13 +459,13 @@ func (m *_AuthorizationServiceConfigurationDataType) SerializeWithWriteBuffer(ct
 		if err := WriteSimpleField[PascalString](ctx, "serviceUri", m.GetServiceUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceUri' field")
 		}
-		noOfServiceCertificate := int32(utils.InlineIf(bool((m.GetServiceCertificate()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServiceCertificate()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfServiceCertificate", noOfServiceCertificate, WriteSignedInt(writeBuffer, 32)); err != nil {
-			return errors.Wrap(err, "Error serializing 'noOfServiceCertificate' field")
+		noOfServiceCertificates := int32(utils.InlineIf(bool((m.GetServiceCertificates()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServiceCertificates()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfServiceCertificates", noOfServiceCertificates, WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServiceCertificates' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "serviceCertificate", m.GetServiceCertificate(), writeBuffer); err != nil {
-			return errors.Wrap(err, "Error serializing 'serviceCertificate' field")
+		if err := WriteComplexTypeArrayField(ctx, "serviceCertificates", m.GetServiceCertificates(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceCertificates' field")
 		}
 
 		if err := WriteSimpleField[PascalString](ctx, "issuerEndpointSettings", m.GetIssuerEndpointSettings(), WriteComplex[PascalString](writeBuffer)); err != nil {
@@ -495,7 +495,7 @@ func (m *_AuthorizationServiceConfigurationDataType) deepCopy() *_AuthorizationS
 		utils.DeepCopy[PascalString](m.Name),
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.RecordProperties),
 		utils.DeepCopy[PascalString](m.ServiceUri),
-		utils.DeepCopySlice[PascalByteString, PascalByteString](m.ServiceCertificate),
+		utils.DeepCopySlice[ServiceCertificateDataType, ServiceCertificateDataType](m.ServiceCertificates),
 		utils.DeepCopy[PascalString](m.IssuerEndpointSettings),
 	}
 	_AuthorizationServiceConfigurationDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

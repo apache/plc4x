@@ -99,6 +99,7 @@ public enum OpcuaNodeIdServicesVariableProvisionable {
       (int) 19741L),
   ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_OutputArguments(
       (int) 19742L),
+  ProvisionableDeviceType_ApplicationName_Placeholder_IsNonUaApplication((int) 23742L),
   ProvisionableDeviceType_IsSingleton((int) 26872L),
   ProvisionableDeviceType_RequestTickets_OutputArguments((int) 26874L),
   ProvisionableDeviceType_SetRegistrarEndpoints_InputArguments((int) 26876L),

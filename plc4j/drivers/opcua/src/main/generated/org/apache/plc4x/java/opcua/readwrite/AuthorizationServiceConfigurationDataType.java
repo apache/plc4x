@@ -40,27 +40,27 @@ public class AuthorizationServiceConfigurationDataType extends ExtensionObjectDe
 
   // Accessors for discriminator values.
   public Integer getExtensionId() {
-    return (int) 19447;
+    return (int) 23746;
   }
 
   // Properties.
   protected final PascalString name;
   protected final List<KeyValuePair> recordProperties;
   protected final PascalString serviceUri;
-  protected final List<PascalByteString> serviceCertificate;
+  protected final List<ServiceCertificateDataType> serviceCertificates;
   protected final PascalString issuerEndpointSettings;
 
   public AuthorizationServiceConfigurationDataType(
       PascalString name,
       List<KeyValuePair> recordProperties,
       PascalString serviceUri,
-      List<PascalByteString> serviceCertificate,
+      List<ServiceCertificateDataType> serviceCertificates,
       PascalString issuerEndpointSettings) {
     super();
     this.name = name;
     this.recordProperties = recordProperties;
     this.serviceUri = serviceUri;
-    this.serviceCertificate = serviceCertificate;
+    this.serviceCertificates = serviceCertificates;
     this.issuerEndpointSettings = issuerEndpointSettings;
   }
 
@@ -76,8 +76,8 @@ public class AuthorizationServiceConfigurationDataType extends ExtensionObjectDe
     return serviceUri;
   }
 
-  public List<PascalByteString> getServiceCertificate() {
-    return serviceCertificate;
+  public List<ServiceCertificateDataType> getServiceCertificates() {
+    return serviceCertificates;
   }
 
   public PascalString getIssuerEndpointSettings() {
@@ -107,15 +107,15 @@ public class AuthorizationServiceConfigurationDataType extends ExtensionObjectDe
     // Simple Field (serviceUri)
     writeSimpleField("serviceUri", serviceUri, writeComplex(writeBuffer));
 
-    // Implicit Field (noOfServiceCertificate) (Used for parsing, but its value is not stored as
+    // Implicit Field (noOfServiceCertificates) (Used for parsing, but its value is not stored as
     // it's implicitly given by the objects content)
-    int noOfServiceCertificate =
-        (int) ((((getServiceCertificate()) == (null)) ? -(1) : COUNT(getServiceCertificate())));
+    int noOfServiceCertificates =
+        (int) ((((getServiceCertificates()) == (null)) ? -(1) : COUNT(getServiceCertificates())));
     writeImplicitField(
-        "noOfServiceCertificate", noOfServiceCertificate, writeSignedInt(writeBuffer, 32));
+        "noOfServiceCertificates", noOfServiceCertificates, writeSignedInt(writeBuffer, 32));
 
-    // Array Field (serviceCertificate)
-    writeComplexTypeArrayField("serviceCertificate", serviceCertificate, writeBuffer);
+    // Array Field (serviceCertificates)
+    writeComplexTypeArrayField("serviceCertificates", serviceCertificates, writeBuffer);
 
     // Simple Field (issuerEndpointSettings)
     writeSimpleField("issuerEndpointSettings", issuerEndpointSettings, writeComplex(writeBuffer));
@@ -152,14 +152,14 @@ public class AuthorizationServiceConfigurationDataType extends ExtensionObjectDe
     // Simple field (serviceUri)
     lengthInBits += serviceUri.getLengthInBits();
 
-    // Implicit Field (noOfServiceCertificate)
+    // Implicit Field (noOfServiceCertificates)
     lengthInBits += 32;
 
     // Array field
-    if (serviceCertificate != null) {
+    if (serviceCertificates != null) {
       int i = 0;
-      for (PascalByteString element : serviceCertificate) {
-        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serviceCertificate.size());
+      for (ServiceCertificateDataType element : serviceCertificates) {
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serviceCertificates.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -196,14 +196,18 @@ public class AuthorizationServiceConfigurationDataType extends ExtensionObjectDe
         readSimpleField(
             "serviceUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    int noOfServiceCertificate =
-        readImplicitField("noOfServiceCertificate", readSignedInt(readBuffer, 32));
+    int noOfServiceCertificates =
+        readImplicitField("noOfServiceCertificates", readSignedInt(readBuffer, 32));
 
-    List<PascalByteString> serviceCertificate =
+    List<ServiceCertificateDataType> serviceCertificates =
         readCountArrayField(
-            "serviceCertificate",
-            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer),
-            noOfServiceCertificate);
+            "serviceCertificates",
+            readComplex(
+                () ->
+                    (ServiceCertificateDataType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (23726)),
+                readBuffer),
+            noOfServiceCertificates);
 
     PascalString issuerEndpointSettings =
         readSimpleField(
@@ -213,7 +217,7 @@ public class AuthorizationServiceConfigurationDataType extends ExtensionObjectDe
     readBuffer.closeContext("AuthorizationServiceConfigurationDataType");
     // Create the instance
     return new AuthorizationServiceConfigurationDataTypeBuilderImpl(
-        name, recordProperties, serviceUri, serviceCertificate, issuerEndpointSettings);
+        name, recordProperties, serviceUri, serviceCertificates, issuerEndpointSettings);
   }
 
   public static class AuthorizationServiceConfigurationDataTypeBuilderImpl
@@ -221,26 +225,26 @@ public class AuthorizationServiceConfigurationDataType extends ExtensionObjectDe
     private final PascalString name;
     private final List<KeyValuePair> recordProperties;
     private final PascalString serviceUri;
-    private final List<PascalByteString> serviceCertificate;
+    private final List<ServiceCertificateDataType> serviceCertificates;
     private final PascalString issuerEndpointSettings;
 
     public AuthorizationServiceConfigurationDataTypeBuilderImpl(
         PascalString name,
         List<KeyValuePair> recordProperties,
         PascalString serviceUri,
-        List<PascalByteString> serviceCertificate,
+        List<ServiceCertificateDataType> serviceCertificates,
         PascalString issuerEndpointSettings) {
       this.name = name;
       this.recordProperties = recordProperties;
       this.serviceUri = serviceUri;
-      this.serviceCertificate = serviceCertificate;
+      this.serviceCertificates = serviceCertificates;
       this.issuerEndpointSettings = issuerEndpointSettings;
     }
 
     public AuthorizationServiceConfigurationDataType build() {
       AuthorizationServiceConfigurationDataType authorizationServiceConfigurationDataType =
           new AuthorizationServiceConfigurationDataType(
-              name, recordProperties, serviceUri, serviceCertificate, issuerEndpointSettings);
+              name, recordProperties, serviceUri, serviceCertificates, issuerEndpointSettings);
       return authorizationServiceConfigurationDataType;
     }
   }
@@ -257,7 +261,7 @@ public class AuthorizationServiceConfigurationDataType extends ExtensionObjectDe
     return (getName() == that.getName())
         && (getRecordProperties() == that.getRecordProperties())
         && (getServiceUri() == that.getServiceUri())
-        && (getServiceCertificate() == that.getServiceCertificate())
+        && (getServiceCertificates() == that.getServiceCertificates())
         && (getIssuerEndpointSettings() == that.getIssuerEndpointSettings())
         && super.equals(that)
         && true;
@@ -270,7 +274,7 @@ public class AuthorizationServiceConfigurationDataType extends ExtensionObjectDe
         getName(),
         getRecordProperties(),
         getServiceUri(),
-        getServiceCertificate(),
+        getServiceCertificates(),
         getIssuerEndpointSettings());
   }
 

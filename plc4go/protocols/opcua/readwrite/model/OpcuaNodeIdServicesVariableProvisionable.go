@@ -83,6 +83,7 @@ const (
 	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_ConfigurationFile_CertificateGroupPurposes                                                                        OpcuaNodeIdServicesVariableProvisionable = 19738
 	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_InputArguments                                                                    OpcuaNodeIdServicesVariableProvisionable = 19741
 	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_OutputArguments                                                                   OpcuaNodeIdServicesVariableProvisionable = 19742
+	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_IsNonUaApplication                                                                                                OpcuaNodeIdServicesVariableProvisionable = 23742
 	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton                                                                                                                                   OpcuaNodeIdServicesVariableProvisionable = 26872
 	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_RequestTickets_OutputArguments                                                                                                                OpcuaNodeIdServicesVariableProvisionable = 26874
 	OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_SetRegistrarEndpoints_InputArguments                                                                                                          OpcuaNodeIdServicesVariableProvisionable = 26876
@@ -1081,6 +1082,7 @@ func init() {
 		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_ConfigurationFile_CertificateGroupPurposes,
 		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_InputArguments,
 		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_OutputArguments,
+		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_IsNonUaApplication,
 		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton,
 		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_RequestTickets_OutputArguments,
 		OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_SetRegistrarEndpoints_InputArguments,
@@ -2119,6 +2121,8 @@ func OpcuaNodeIdServicesVariableProvisionableByValue(value int32) (enum OpcuaNod
 		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_InputArguments, true
 	case 19742:
 		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_OutputArguments, true
+	case 23742:
+		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_IsNonUaApplication, true
 	case 26872:
 		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton, true
 	case 26874:
@@ -4107,6 +4111,8 @@ func OpcuaNodeIdServicesVariableProvisionableByName(value string) (enum OpcuaNod
 		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_InputArguments, true
 	case "ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_OutputArguments":
 		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_OutputArguments, true
+	case "ProvisionableDeviceType_ApplicationName_Placeholder_IsNonUaApplication":
+		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_IsNonUaApplication, true
 	case "ProvisionableDeviceType_IsSingleton":
 		return OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton, true
 	case "ProvisionableDeviceType_RequestTickets_OutputArguments":
@@ -6160,6 +6166,8 @@ func (e OpcuaNodeIdServicesVariableProvisionable) PLC4XEnumName() string {
 		return "ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_InputArguments"
 	case OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_OutputArguments:
 		return "ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential_OutputArguments"
+	case OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_ApplicationName_Placeholder_IsNonUaApplication:
+		return "ProvisionableDeviceType_ApplicationName_Placeholder_IsNonUaApplication"
 	case OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_IsSingleton:
 		return "ProvisionableDeviceType_IsSingleton"
 	case OpcuaNodeIdServicesVariableProvisionable_ProvisionableDeviceType_RequestTickets_OutputArguments:

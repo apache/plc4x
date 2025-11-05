@@ -309,7 +309,7 @@
             [simple StatusCode error]
             [simple LocalizedText message]
         ]
-        ['15551' ApplicationConfigurationDataType
+        ['23745' ApplicationConfigurationDataType
             [simple uint 32 configurationVersion]
             [implicit int 32 noOfConfigurationProperties 'configurationProperties == null ? -1 : COUNT(configurationProperties)']
             [array KeyValuePair('14535') configurationProperties count 'noOfConfigurationProperties']
@@ -325,7 +325,7 @@
             [implicit int 32 noOfUserTokenSettings 'userTokenSettings == null ? -1 : COUNT(userTokenSettings)']
             [array UserTokenSettingsDataType('15562') userTokenSettings count 'noOfUserTokenSettings']
             [implicit int 32 noOfAuthorizationServices 'authorizationServices == null ? -1 : COUNT(authorizationServices)']
-            [array AuthorizationServiceConfigurationDataType('19447') authorizationServices count 'noOfAuthorizationServices']
+            [array AuthorizationServiceConfigurationDataType('23746') authorizationServices count 'noOfAuthorizationServices']
         ]
         ['15558' ApplicationIdentityDataType
             [simple PascalString name]
@@ -385,13 +385,20 @@
             [simple PascalString certificateGroupName]
             [simple PascalString authorizationServiceName]
         ]
-        ['19447' AuthorizationServiceConfigurationDataType
+        ['23726' ServiceCertificateDataType
+            [simple PascalByteString certificate]
+            [implicit int 32 noOfIssuers 'issuers == null ? -1 : COUNT(issuers)']
+            [array PascalByteString issuers count 'noOfIssuers']
+            [simple int 64 validFrom]
+            [simple int 64 validTo]
+        ]
+        ['23746' AuthorizationServiceConfigurationDataType
             [simple PascalString name]
             [implicit int 32 noOfRecordProperties 'recordProperties == null ? -1 : COUNT(recordProperties)']
             [array KeyValuePair('14535') recordProperties count 'noOfRecordProperties']
             [simple PascalString serviceUri]
-            [implicit int 32 noOfServiceCertificate 'serviceCertificate == null ? -1 : COUNT(serviceCertificate)']
-            [array PascalByteString serviceCertificate count 'noOfServiceCertificate']
+            [implicit int 32 noOfServiceCertificates 'serviceCertificates == null ? -1 : COUNT(serviceCertificates)']
+            [array ServiceCertificateDataType('23726') serviceCertificates count 'noOfServiceCertificates']
             [simple PascalString issuerEndpointSettings]
         ]
         ['15536' DataTypeSchemaHeader

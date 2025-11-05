@@ -145,6 +145,8 @@ type ExtensionObjectDefinitionBuilder interface {
 	AsSecuritySettingsDataType() SecuritySettingsDataTypeBuilder
 	// AsUserTokenSettingsDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsUserTokenSettingsDataType() UserTokenSettingsDataTypeBuilder
+	// AsServiceCertificateDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsServiceCertificateDataType() ServiceCertificateDataTypeBuilder
 	// AsAuthorizationServiceConfigurationDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsAuthorizationServiceConfigurationDataType() AuthorizationServiceConfigurationDataTypeBuilder
 	// AsDataTypeSchemaHeader converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -1120,6 +1122,16 @@ func (b *_ExtensionObjectDefinitionBuilder) AsUserTokenSettingsDataType() UserTo
 		return cb
 	}
 	cb := NewUserTokenSettingsDataTypeBuilder().(*_UserTokenSettingsDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsServiceCertificateDataType() ServiceCertificateDataTypeBuilder {
+	if cb, ok := b.childBuilder.(ServiceCertificateDataTypeBuilder); ok {
+		return cb
+	}
+	cb := NewServiceCertificateDataTypeBuilder().(*_ServiceCertificateDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -4530,7 +4542,7 @@ func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils
 		if _child, err = new(_TransactionErrorType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TransactionErrorType for type-switch of ExtensionObjectDefinition")
 		}
-	case extensionId == int32(15551): // ApplicationConfigurationDataType
+	case extensionId == int32(23745): // ApplicationConfigurationDataType
 		if _child, err = new(_ApplicationConfigurationDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApplicationConfigurationDataType for type-switch of ExtensionObjectDefinition")
 		}
@@ -4554,7 +4566,11 @@ func (m *_ExtensionObjectDefinition) parse(ctx context.Context, readBuffer utils
 		if _child, err = new(_UserTokenSettingsDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UserTokenSettingsDataType for type-switch of ExtensionObjectDefinition")
 		}
-	case extensionId == int32(19447): // AuthorizationServiceConfigurationDataType
+	case extensionId == int32(23726): // ServiceCertificateDataType
+		if _child, err = new(_ServiceCertificateDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type ServiceCertificateDataType for type-switch of ExtensionObjectDefinition")
+		}
+	case extensionId == int32(23746): // AuthorizationServiceConfigurationDataType
 		if _child, err = new(_AuthorizationServiceConfigurationDataType).parse(ctx, readBuffer, m, extensionId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AuthorizationServiceConfigurationDataType for type-switch of ExtensionObjectDefinition")
 		}

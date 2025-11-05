@@ -39,7 +39,7 @@ public class ApplicationConfigurationDataType extends ExtensionObjectDefinition 
 
   // Accessors for discriminator values.
   public Integer getExtensionId() {
-    return (int) 15551;
+    return (int) 23745;
   }
 
   // Properties.
@@ -410,7 +410,7 @@ public class ApplicationConfigurationDataType extends ExtensionObjectDefinition 
             readComplex(
                 () ->
                     (AuthorizationServiceConfigurationDataType)
-                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (19447)),
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (23746)),
                 readBuffer),
             noOfAuthorizationServices);
 

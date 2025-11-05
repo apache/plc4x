@@ -758,6 +758,11 @@ const (
 	OpcuaNodeIdServicesMethod_DataSetReaderType_Diagnostics_Reset                                                                                                                      OpcuaNodeIdServicesMethod = 19621
 	OpcuaNodeIdServicesMethod_PubSubDiagnosticsType_Reset                                                                                                                              OpcuaNodeIdServicesMethod = 19689
 	OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential                                                                      OpcuaNodeIdServicesMethod = 19740
+	OpcuaNodeIdServicesMethod_SerializationEntityType_ConfigureSerialization                                                                                                           OpcuaNodeIdServicesMethod = 19839
+	OpcuaNodeIdServicesMethod_ConfigureSerializationMethodType                                                                                                                         OpcuaNodeIdServicesMethod = 19842
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Disable                                                                                             OpcuaNodeIdServicesMethod = 20034
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Enable                                                                                              OpcuaNodeIdServicesMethod = 20035
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_AddComment                                                                                          OpcuaNodeIdServicesMethod = 20036
 	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve                                                                                        OpcuaNodeIdServicesMethod = 20097
 	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve                                                                                           OpcuaNodeIdServicesMethod = 20099
 	OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve                                                                                      OpcuaNodeIdServicesMethod = 20100
@@ -1072,6 +1077,7 @@ const (
 	OpcuaNodeIdServicesMethod_FindAliasMethodType                                                                                                                                      OpcuaNodeIdServicesMethod = 23465
 	OpcuaNodeIdServicesMethod_Aliases_FindAlias                                                                                                                                        OpcuaNodeIdServicesMethod = 23476
 	OpcuaNodeIdServicesMethod_TagVariables_FindAlias                                                                                                                                   OpcuaNodeIdServicesMethod = 23485
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Acknowledge                                                                                         OpcuaNodeIdServicesMethod = 23493
 	OpcuaNodeIdServicesMethod_Topics_FindAlias                                                                                                                                         OpcuaNodeIdServicesMethod = 23494
 	OpcuaNodeIdServicesMethod_CertificateGroupType_GetRejectedList                                                                                                                     OpcuaNodeIdServicesMethod = 23526
 	OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_GetRejectedList                                                                                       OpcuaNodeIdServicesMethod = 23529
@@ -1084,10 +1090,29 @@ const (
 	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_GetRejectedList                                                                            OpcuaNodeIdServicesMethod = 23550
 	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_GetRejectedList                                                                                  OpcuaNodeIdServicesMethod = 23552
 	OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_GetRejectedList                                                                              OpcuaNodeIdServicesMethod = 23554
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Confirm                                                                                             OpcuaNodeIdServicesMethod = 23577
 	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_AddDataSetFolder                                                                                                 OpcuaNodeIdServicesMethod = 23637
 	OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_RemoveDataSetFolder                                                                                              OpcuaNodeIdServicesMethod = 23640
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve                                                                           OpcuaNodeIdServicesMethod = 23651
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve2                                                                          OpcuaNodeIdServicesMethod = 23653
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve                                                                              OpcuaNodeIdServicesMethod = 23655
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve2                                                                             OpcuaNodeIdServicesMethod = 23656
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve                                                                         OpcuaNodeIdServicesMethod = 23659
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve2                                                                        OpcuaNodeIdServicesMethod = 23660
 	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_AddDataSetFolder                                                                                                     OpcuaNodeIdServicesMethod = 23673
 	OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_RemoveDataSetFolder                                                                                                  OpcuaNodeIdServicesMethod = 23676
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Silence                                                                                             OpcuaNodeIdServicesMethod = 23706
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress                                                                                            OpcuaNodeIdServicesMethod = 23707
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress2                                                                                           OpcuaNodeIdServicesMethod = 23708
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress                                                                                          OpcuaNodeIdServicesMethod = 23710
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress2                                                                                         OpcuaNodeIdServicesMethod = 23711
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService                                                                                   OpcuaNodeIdServicesMethod = 23713
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService2                                                                                  OpcuaNodeIdServicesMethod = 23714
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService                                                                                      OpcuaNodeIdServicesMethod = 23716
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService2                                                                                     OpcuaNodeIdServicesMethod = 23717
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset                                                                                               OpcuaNodeIdServicesMethod = 23719
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset2                                                                                              OpcuaNodeIdServicesMethod = 23720
+	OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_GetGroupMemberships                                                                                 OpcuaNodeIdServicesMethod = 23722
 	OpcuaNodeIdServicesMethod_GetConnectionMethodType                                                                                                                                  OpcuaNodeIdServicesMethod = 23726
 	OpcuaNodeIdServicesMethod_ModifyConnectionMethodType                                                                                                                               OpcuaNodeIdServicesMethod = 23729
 	OpcuaNodeIdServicesMethod_GetWriterGroupMethodType                                                                                                                                 OpcuaNodeIdServicesMethod = 23745
@@ -2350,6 +2375,11 @@ func init() {
 		OpcuaNodeIdServicesMethod_DataSetReaderType_Diagnostics_Reset,
 		OpcuaNodeIdServicesMethod_PubSubDiagnosticsType_Reset,
 		OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential,
+		OpcuaNodeIdServicesMethod_SerializationEntityType_ConfigureSerialization,
+		OpcuaNodeIdServicesMethod_ConfigureSerializationMethodType,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Disable,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Enable,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_AddComment,
 		OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve,
 		OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve,
 		OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve,
@@ -2664,6 +2694,7 @@ func init() {
 		OpcuaNodeIdServicesMethod_FindAliasMethodType,
 		OpcuaNodeIdServicesMethod_Aliases_FindAlias,
 		OpcuaNodeIdServicesMethod_TagVariables_FindAlias,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Acknowledge,
 		OpcuaNodeIdServicesMethod_Topics_FindAlias,
 		OpcuaNodeIdServicesMethod_CertificateGroupType_GetRejectedList,
 		OpcuaNodeIdServicesMethod_CertificateGroupFolderType_DefaultApplicationGroup_GetRejectedList,
@@ -2676,10 +2707,29 @@ func init() {
 		OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_GetRejectedList,
 		OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_GetRejectedList,
 		OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_GetRejectedList,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Confirm,
 		OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_AddDataSetFolder,
 		OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_RemoveDataSetFolder,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve2,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve2,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve2,
 		OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_AddDataSetFolder,
 		OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_RemoveDataSetFolder,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Silence,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress2,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress2,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService2,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService2,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset2,
+		OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_GetGroupMemberships,
 		OpcuaNodeIdServicesMethod_GetConnectionMethodType,
 		OpcuaNodeIdServicesMethod_ModifyConnectionMethodType,
 		OpcuaNodeIdServicesMethod_GetWriterGroupMethodType,
@@ -4613,6 +4663,16 @@ func OpcuaNodeIdServicesMethodByValue(value int32) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_PubSubDiagnosticsType_Reset, true
 	case 19740:
 		return OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential, true
+	case 19839:
+		return OpcuaNodeIdServicesMethod_SerializationEntityType_ConfigureSerialization, true
+	case 19842:
+		return OpcuaNodeIdServicesMethod_ConfigureSerializationMethodType, true
+	case 20034:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Disable, true
+	case 20035:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Enable, true
+	case 20036:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_AddComment, true
 	case 20097:
 		return OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve, true
 	case 20099:
@@ -5241,6 +5301,8 @@ func OpcuaNodeIdServicesMethodByValue(value int32) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_Aliases_FindAlias, true
 	case 23485:
 		return OpcuaNodeIdServicesMethod_TagVariables_FindAlias, true
+	case 23493:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Acknowledge, true
 	case 23494:
 		return OpcuaNodeIdServicesMethod_Topics_FindAlias, true
 	case 23526:
@@ -5265,14 +5327,52 @@ func OpcuaNodeIdServicesMethodByValue(value int32) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_GetRejectedList, true
 	case 23554:
 		return OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_GetRejectedList, true
+	case 23577:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Confirm, true
 	case 23637:
 		return OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_AddDataSetFolder, true
 	case 23640:
 		return OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_RemoveDataSetFolder, true
+	case 23651:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve, true
+	case 23653:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve2, true
+	case 23655:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve, true
+	case 23656:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve2, true
+	case 23659:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve, true
+	case 23660:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve2, true
 	case 23673:
 		return OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_AddDataSetFolder, true
 	case 23676:
 		return OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_RemoveDataSetFolder, true
+	case 23706:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Silence, true
+	case 23707:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress, true
+	case 23708:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress2, true
+	case 23710:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress, true
+	case 23711:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress2, true
+	case 23713:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService, true
+	case 23714:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService2, true
+	case 23716:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService, true
+	case 23717:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService2, true
+	case 23719:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset, true
+	case 23720:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset2, true
+	case 23722:
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_GetGroupMemberships, true
 	case 23726:
 		return OpcuaNodeIdServicesMethod_GetConnectionMethodType, true
 	case 23729:
@@ -7789,6 +7889,16 @@ func OpcuaNodeIdServicesMethodByName(value string) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_PubSubDiagnosticsType_Reset, true
 	case "ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential":
 		return OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential, true
+	case "SerializationEntityType_ConfigureSerialization":
+		return OpcuaNodeIdServicesMethod_SerializationEntityType_ConfigureSerialization, true
+	case "ConfigureSerializationMethodType":
+		return OpcuaNodeIdServicesMethod_ConfigureSerializationMethodType, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Disable":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Disable, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Enable":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Enable, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_AddComment":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_AddComment, true
 	case "CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve":
 		return OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve, true
 	case "CertificateGroupType_CertificateExpired_ShelvingState_Unshelve":
@@ -8417,6 +8527,8 @@ func OpcuaNodeIdServicesMethodByName(value string) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_Aliases_FindAlias, true
 	case "TagVariables_FindAlias":
 		return OpcuaNodeIdServicesMethod_TagVariables_FindAlias, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Acknowledge":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Acknowledge, true
 	case "Topics_FindAlias":
 		return OpcuaNodeIdServicesMethod_Topics_FindAlias, true
 	case "CertificateGroupType_GetRejectedList":
@@ -8441,14 +8553,52 @@ func OpcuaNodeIdServicesMethodByName(value string) (enum OpcuaNodeIdServicesMeth
 		return OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_GetRejectedList, true
 	case "ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_GetRejectedList":
 		return OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_GetRejectedList, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Confirm":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Confirm, true
 	case "PublishSubscribeType_SubscribedDataSets_AddDataSetFolder":
 		return OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_AddDataSetFolder, true
 	case "PublishSubscribeType_SubscribedDataSets_RemoveDataSetFolder":
 		return OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_RemoveDataSetFolder, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve2":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve2, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve2":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve2, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve2":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve2, true
 	case "PublishSubscribe_SubscribedDataSets_AddDataSetFolder":
 		return OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_AddDataSetFolder, true
 	case "PublishSubscribe_SubscribedDataSets_RemoveDataSetFolder":
 		return OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_RemoveDataSetFolder, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Silence":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Silence, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress2":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress2, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress2":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress2, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService2":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService2, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService2":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService2, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset2":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset2, true
+	case "AlarmSuppressionGroupType_AlarmCondition_Placeholder_GetGroupMemberships":
+		return OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_GetGroupMemberships, true
 	case "GetConnectionMethodType":
 		return OpcuaNodeIdServicesMethod_GetConnectionMethodType, true
 	case "ModifyConnectionMethodType":
@@ -11030,6 +11180,16 @@ func (e OpcuaNodeIdServicesMethod) PLC4XEnumName() string {
 		return "PubSubDiagnosticsType_Reset"
 	case OpcuaNodeIdServicesMethod_ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential:
 		return "ProvisionableDeviceType_ApplicationName_Placeholder_KeyCredentials_CreateCredential"
+	case OpcuaNodeIdServicesMethod_SerializationEntityType_ConfigureSerialization:
+		return "SerializationEntityType_ConfigureSerialization"
+	case OpcuaNodeIdServicesMethod_ConfigureSerializationMethodType:
+		return "ConfigureSerializationMethodType"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Disable:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Disable"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Enable:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Enable"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_AddComment:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_AddComment"
 	case OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve:
 		return "CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve"
 	case OpcuaNodeIdServicesMethod_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve:
@@ -11658,6 +11818,8 @@ func (e OpcuaNodeIdServicesMethod) PLC4XEnumName() string {
 		return "Aliases_FindAlias"
 	case OpcuaNodeIdServicesMethod_TagVariables_FindAlias:
 		return "TagVariables_FindAlias"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Acknowledge:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Acknowledge"
 	case OpcuaNodeIdServicesMethod_Topics_FindAlias:
 		return "Topics_FindAlias"
 	case OpcuaNodeIdServicesMethod_CertificateGroupType_GetRejectedList:
@@ -11682,14 +11844,52 @@ func (e OpcuaNodeIdServicesMethod) PLC4XEnumName() string {
 		return "ServerConfiguration_CertificateGroups_DefaultHttpsGroup_GetRejectedList"
 	case OpcuaNodeIdServicesMethod_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_GetRejectedList:
 		return "ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_GetRejectedList"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Confirm:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Confirm"
 	case OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_AddDataSetFolder:
 		return "PublishSubscribeType_SubscribedDataSets_AddDataSetFolder"
 	case OpcuaNodeIdServicesMethod_PublishSubscribeType_SubscribedDataSets_RemoveDataSetFolder:
 		return "PublishSubscribeType_SubscribedDataSets_RemoveDataSetFolder"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve2:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_TimedShelve2"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve2:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_Unshelve2"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve2:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_ShelvingState_OneShotShelve2"
 	case OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_AddDataSetFolder:
 		return "PublishSubscribe_SubscribedDataSets_AddDataSetFolder"
 	case OpcuaNodeIdServicesMethod_PublishSubscribe_SubscribedDataSets_RemoveDataSetFolder:
 		return "PublishSubscribe_SubscribedDataSets_RemoveDataSetFolder"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Silence:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Silence"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress2:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Suppress2"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress2:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Unsuppress2"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService2:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_RemoveFromService2"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService2:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_PlaceInService2"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset2:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_Reset2"
+	case OpcuaNodeIdServicesMethod_AlarmSuppressionGroupType_AlarmCondition_Placeholder_GetGroupMemberships:
+		return "AlarmSuppressionGroupType_AlarmCondition_Placeholder_GetGroupMemberships"
 	case OpcuaNodeIdServicesMethod_GetConnectionMethodType:
 		return "GetConnectionMethodType"
 	case OpcuaNodeIdServicesMethod_ModifyConnectionMethodType:

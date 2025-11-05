@@ -177,7 +177,6 @@ const (
 	OpcuaNodeIdServicesObjectType_TargetVariablesType                          OpcuaNodeIdServicesObjectType = 15111
 	OpcuaNodeIdServicesObjectType_SubscribedDataSetMirrorType                  OpcuaNodeIdServicesObjectType = 15127
 	OpcuaNodeIdServicesObjectType_BrokerConnectionTransportType                OpcuaNodeIdServicesObjectType = 15155
-	OpcuaNodeIdServicesObjectType_UserCredentialCertificateType                OpcuaNodeIdServicesObjectType = 15181
 	OpcuaNodeIdServicesObjectType_DataSetWriterType                            OpcuaNodeIdServicesObjectType = 15298
 	OpcuaNodeIdServicesObjectType_DataSetWriterTransportType                   OpcuaNodeIdServicesObjectType = 15305
 	OpcuaNodeIdServicesObjectType_DataSetReaderType                            OpcuaNodeIdServicesObjectType = 15306
@@ -245,6 +244,9 @@ const (
 	OpcuaNodeIdServicesObjectType_PubSubDiagnosticsType                        OpcuaNodeIdServicesObjectType = 19677
 	OpcuaNodeIdServicesObjectType_PubSubDiagnosticsRootType                    OpcuaNodeIdServicesObjectType = 19732
 	OpcuaNodeIdServicesObjectType_PubSubDiagnosticsConnectionType              OpcuaNodeIdServicesObjectType = 19786
+	OpcuaNodeIdServicesObjectType_DataTypeRefinementType                       OpcuaNodeIdServicesObjectType = 19820
+	OpcuaNodeIdServicesObjectType_SubtypeRestrictionType                       OpcuaNodeIdServicesObjectType = 19822
+	OpcuaNodeIdServicesObjectType_SerializationEntityType                      OpcuaNodeIdServicesObjectType = 19824
 	OpcuaNodeIdServicesObjectType_PubSubDiagnosticsWriterGroupType             OpcuaNodeIdServicesObjectType = 19834
 	OpcuaNodeIdServicesObjectType_PubSubDiagnosticsReaderGroupType             OpcuaNodeIdServicesObjectType = 19903
 	OpcuaNodeIdServicesObjectType_PubSubDiagnosticsDataSetWriterType           OpcuaNodeIdServicesObjectType = 19968
@@ -316,7 +318,6 @@ const (
 	OpcuaNodeIdServicesObjectType_ServerUnitType                               OpcuaNodeIdServicesObjectType = 32447
 	OpcuaNodeIdServicesObjectType_AlternativeUnitType                          OpcuaNodeIdServicesObjectType = 32467
 	OpcuaNodeIdServicesObjectType_QuantityType                                 OpcuaNodeIdServicesObjectType = 32475
-	OpcuaNodeIdServicesObjectType_QuantitiesFolderType                         OpcuaNodeIdServicesObjectType = 32502
 	OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType             OpcuaNodeIdServicesObjectType = 32621
 	OpcuaNodeIdServicesObjectType_HistoricalExternalEventSourceType            OpcuaNodeIdServicesObjectType = 32625
 	OpcuaNodeIdServicesObjectType_AuditHistoryConfigurationChangeEventType     OpcuaNodeIdServicesObjectType = 32758
@@ -464,7 +465,6 @@ func init() {
 		OpcuaNodeIdServicesObjectType_TargetVariablesType,
 		OpcuaNodeIdServicesObjectType_SubscribedDataSetMirrorType,
 		OpcuaNodeIdServicesObjectType_BrokerConnectionTransportType,
-		OpcuaNodeIdServicesObjectType_UserCredentialCertificateType,
 		OpcuaNodeIdServicesObjectType_DataSetWriterType,
 		OpcuaNodeIdServicesObjectType_DataSetWriterTransportType,
 		OpcuaNodeIdServicesObjectType_DataSetReaderType,
@@ -532,6 +532,9 @@ func init() {
 		OpcuaNodeIdServicesObjectType_PubSubDiagnosticsType,
 		OpcuaNodeIdServicesObjectType_PubSubDiagnosticsRootType,
 		OpcuaNodeIdServicesObjectType_PubSubDiagnosticsConnectionType,
+		OpcuaNodeIdServicesObjectType_DataTypeRefinementType,
+		OpcuaNodeIdServicesObjectType_SubtypeRestrictionType,
+		OpcuaNodeIdServicesObjectType_SerializationEntityType,
 		OpcuaNodeIdServicesObjectType_PubSubDiagnosticsWriterGroupType,
 		OpcuaNodeIdServicesObjectType_PubSubDiagnosticsReaderGroupType,
 		OpcuaNodeIdServicesObjectType_PubSubDiagnosticsDataSetWriterType,
@@ -603,7 +606,6 @@ func init() {
 		OpcuaNodeIdServicesObjectType_ServerUnitType,
 		OpcuaNodeIdServicesObjectType_AlternativeUnitType,
 		OpcuaNodeIdServicesObjectType_QuantityType,
-		OpcuaNodeIdServicesObjectType_QuantitiesFolderType,
 		OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType,
 		OpcuaNodeIdServicesObjectType_HistoricalExternalEventSourceType,
 		OpcuaNodeIdServicesObjectType_AuditHistoryConfigurationChangeEventType,
@@ -713,8 +715,6 @@ func OpcuaNodeIdServicesObjectTypeByValue(value int32) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_SubscribedDataSetMirrorType, true
 	case 15155:
 		return OpcuaNodeIdServicesObjectType_BrokerConnectionTransportType, true
-	case 15181:
-		return OpcuaNodeIdServicesObjectType_UserCredentialCertificateType, true
 	case 15298:
 		return OpcuaNodeIdServicesObjectType_DataSetWriterType, true
 	case 15305:
@@ -849,6 +849,12 @@ func OpcuaNodeIdServicesObjectTypeByValue(value int32) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_PubSubDiagnosticsRootType, true
 	case 19786:
 		return OpcuaNodeIdServicesObjectType_PubSubDiagnosticsConnectionType, true
+	case 19820:
+		return OpcuaNodeIdServicesObjectType_DataTypeRefinementType, true
+	case 19822:
+		return OpcuaNodeIdServicesObjectType_SubtypeRestrictionType, true
+	case 19824:
+		return OpcuaNodeIdServicesObjectType_SerializationEntityType, true
 	case 19834:
 		return OpcuaNodeIdServicesObjectType_PubSubDiagnosticsWriterGroupType, true
 	case 19903:
@@ -1133,8 +1139,6 @@ func OpcuaNodeIdServicesObjectTypeByValue(value int32) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_AlternativeUnitType, true
 	case 32475:
 		return OpcuaNodeIdServicesObjectType_QuantityType, true
-	case 32502:
-		return OpcuaNodeIdServicesObjectType_QuantitiesFolderType, true
 	case 32621:
 		return OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType, true
 	case 32625:
@@ -1279,8 +1283,6 @@ func OpcuaNodeIdServicesObjectTypeByName(value string) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_SubscribedDataSetMirrorType, true
 	case "BrokerConnectionTransportType":
 		return OpcuaNodeIdServicesObjectType_BrokerConnectionTransportType, true
-	case "UserCredentialCertificateType":
-		return OpcuaNodeIdServicesObjectType_UserCredentialCertificateType, true
 	case "DataSetWriterType":
 		return OpcuaNodeIdServicesObjectType_DataSetWriterType, true
 	case "DataSetWriterTransportType":
@@ -1415,6 +1417,12 @@ func OpcuaNodeIdServicesObjectTypeByName(value string) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_PubSubDiagnosticsRootType, true
 	case "PubSubDiagnosticsConnectionType":
 		return OpcuaNodeIdServicesObjectType_PubSubDiagnosticsConnectionType, true
+	case "DataTypeRefinementType":
+		return OpcuaNodeIdServicesObjectType_DataTypeRefinementType, true
+	case "SubtypeRestrictionType":
+		return OpcuaNodeIdServicesObjectType_SubtypeRestrictionType, true
+	case "SerializationEntityType":
+		return OpcuaNodeIdServicesObjectType_SerializationEntityType, true
 	case "PubSubDiagnosticsWriterGroupType":
 		return OpcuaNodeIdServicesObjectType_PubSubDiagnosticsWriterGroupType, true
 	case "PubSubDiagnosticsReaderGroupType":
@@ -1699,8 +1707,6 @@ func OpcuaNodeIdServicesObjectTypeByName(value string) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_AlternativeUnitType, true
 	case "QuantityType":
 		return OpcuaNodeIdServicesObjectType_QuantityType, true
-	case "QuantitiesFolderType":
-		return OpcuaNodeIdServicesObjectType_QuantitiesFolderType, true
 	case "HistoricalEventConfigurationType":
 		return OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType, true
 	case "HistoricalExternalEventSourceType":
@@ -1910,8 +1916,6 @@ func (e OpcuaNodeIdServicesObjectType) PLC4XEnumName() string {
 		return "SubscribedDataSetMirrorType"
 	case OpcuaNodeIdServicesObjectType_BrokerConnectionTransportType:
 		return "BrokerConnectionTransportType"
-	case OpcuaNodeIdServicesObjectType_UserCredentialCertificateType:
-		return "UserCredentialCertificateType"
 	case OpcuaNodeIdServicesObjectType_DataSetWriterType:
 		return "DataSetWriterType"
 	case OpcuaNodeIdServicesObjectType_DataSetWriterTransportType:
@@ -2046,6 +2050,12 @@ func (e OpcuaNodeIdServicesObjectType) PLC4XEnumName() string {
 		return "PubSubDiagnosticsRootType"
 	case OpcuaNodeIdServicesObjectType_PubSubDiagnosticsConnectionType:
 		return "PubSubDiagnosticsConnectionType"
+	case OpcuaNodeIdServicesObjectType_DataTypeRefinementType:
+		return "DataTypeRefinementType"
+	case OpcuaNodeIdServicesObjectType_SubtypeRestrictionType:
+		return "SubtypeRestrictionType"
+	case OpcuaNodeIdServicesObjectType_SerializationEntityType:
+		return "SerializationEntityType"
 	case OpcuaNodeIdServicesObjectType_PubSubDiagnosticsWriterGroupType:
 		return "PubSubDiagnosticsWriterGroupType"
 	case OpcuaNodeIdServicesObjectType_PubSubDiagnosticsReaderGroupType:
@@ -2330,8 +2340,6 @@ func (e OpcuaNodeIdServicesObjectType) PLC4XEnumName() string {
 		return "AlternativeUnitType"
 	case OpcuaNodeIdServicesObjectType_QuantityType:
 		return "QuantityType"
-	case OpcuaNodeIdServicesObjectType_QuantitiesFolderType:
-		return "QuantitiesFolderType"
 	case OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType:
 		return "HistoricalEventConfigurationType"
 	case OpcuaNodeIdServicesObjectType_HistoricalExternalEventSourceType:

@@ -86,7 +86,14 @@ const (
 	OpcuaNodeIdServicesReferenceType_HasEffectUnsuppressed               OpcuaNodeIdServicesReferenceType = 17985
 	OpcuaNodeIdServicesReferenceType_HasWriterGroup                      OpcuaNodeIdServicesReferenceType = 18804
 	OpcuaNodeIdServicesReferenceType_HasReaderGroup                      OpcuaNodeIdServicesReferenceType = 18805
-	OpcuaNodeIdServicesReferenceType_HasLogHierarchy                     OpcuaNodeIdServicesReferenceType = 19371
+	OpcuaNodeIdServicesReferenceType_UsesDataTypeRefinement              OpcuaNodeIdServicesReferenceType = 19814
+	OpcuaNodeIdServicesReferenceType_HasFieldDescription                 OpcuaNodeIdServicesReferenceType = 19815
+	OpcuaNodeIdServicesReferenceType_HasFieldDescriptionSetMandatory     OpcuaNodeIdServicesReferenceType = 19816
+	OpcuaNodeIdServicesReferenceType_IsDisabledOptionalField             OpcuaNodeIdServicesReferenceType = 19817
+	OpcuaNodeIdServicesReferenceType_UsesSubtypeRestriction              OpcuaNodeIdServicesReferenceType = 19818
+	OpcuaNodeIdServicesReferenceType_AllowedSubtype                      OpcuaNodeIdServicesReferenceType = 19819
+	OpcuaNodeIdServicesReferenceType_HasSerializationEntity              OpcuaNodeIdServicesReferenceType = 19845
+	OpcuaNodeIdServicesReferenceType_HasDataTypeRefinement               OpcuaNodeIdServicesReferenceType = 19846
 	OpcuaNodeIdServicesReferenceType_AliasFor                            OpcuaNodeIdServicesReferenceType = 23469
 	OpcuaNodeIdServicesReferenceType_IsDeprecated                        OpcuaNodeIdServicesReferenceType = 23562
 	OpcuaNodeIdServicesReferenceType_HasStructuredComponent              OpcuaNodeIdServicesReferenceType = 24136
@@ -166,7 +173,14 @@ func init() {
 		OpcuaNodeIdServicesReferenceType_HasEffectUnsuppressed,
 		OpcuaNodeIdServicesReferenceType_HasWriterGroup,
 		OpcuaNodeIdServicesReferenceType_HasReaderGroup,
-		OpcuaNodeIdServicesReferenceType_HasLogHierarchy,
+		OpcuaNodeIdServicesReferenceType_UsesDataTypeRefinement,
+		OpcuaNodeIdServicesReferenceType_HasFieldDescription,
+		OpcuaNodeIdServicesReferenceType_HasFieldDescriptionSetMandatory,
+		OpcuaNodeIdServicesReferenceType_IsDisabledOptionalField,
+		OpcuaNodeIdServicesReferenceType_UsesSubtypeRestriction,
+		OpcuaNodeIdServicesReferenceType_AllowedSubtype,
+		OpcuaNodeIdServicesReferenceType_HasSerializationEntity,
+		OpcuaNodeIdServicesReferenceType_HasDataTypeRefinement,
 		OpcuaNodeIdServicesReferenceType_AliasFor,
 		OpcuaNodeIdServicesReferenceType_IsDeprecated,
 		OpcuaNodeIdServicesReferenceType_HasStructuredComponent,
@@ -237,8 +251,22 @@ func OpcuaNodeIdServicesReferenceTypeByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesReferenceType_HasWriterGroup, true
 	case 18805:
 		return OpcuaNodeIdServicesReferenceType_HasReaderGroup, true
-	case 19371:
-		return OpcuaNodeIdServicesReferenceType_HasLogHierarchy, true
+	case 19814:
+		return OpcuaNodeIdServicesReferenceType_UsesDataTypeRefinement, true
+	case 19815:
+		return OpcuaNodeIdServicesReferenceType_HasFieldDescription, true
+	case 19816:
+		return OpcuaNodeIdServicesReferenceType_HasFieldDescriptionSetMandatory, true
+	case 19817:
+		return OpcuaNodeIdServicesReferenceType_IsDisabledOptionalField, true
+	case 19818:
+		return OpcuaNodeIdServicesReferenceType_UsesSubtypeRestriction, true
+	case 19819:
+		return OpcuaNodeIdServicesReferenceType_AllowedSubtype, true
+	case 19845:
+		return OpcuaNodeIdServicesReferenceType_HasSerializationEntity, true
+	case 19846:
+		return OpcuaNodeIdServicesReferenceType_HasDataTypeRefinement, true
 	case 23469:
 		return OpcuaNodeIdServicesReferenceType_AliasFor, true
 	case 23562:
@@ -389,8 +417,22 @@ func OpcuaNodeIdServicesReferenceTypeByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesReferenceType_HasWriterGroup, true
 	case "HasReaderGroup":
 		return OpcuaNodeIdServicesReferenceType_HasReaderGroup, true
-	case "HasLogHierarchy":
-		return OpcuaNodeIdServicesReferenceType_HasLogHierarchy, true
+	case "UsesDataTypeRefinement":
+		return OpcuaNodeIdServicesReferenceType_UsesDataTypeRefinement, true
+	case "HasFieldDescription":
+		return OpcuaNodeIdServicesReferenceType_HasFieldDescription, true
+	case "HasFieldDescriptionSetMandatory":
+		return OpcuaNodeIdServicesReferenceType_HasFieldDescriptionSetMandatory, true
+	case "IsDisabledOptionalField":
+		return OpcuaNodeIdServicesReferenceType_IsDisabledOptionalField, true
+	case "UsesSubtypeRestriction":
+		return OpcuaNodeIdServicesReferenceType_UsesSubtypeRestriction, true
+	case "AllowedSubtype":
+		return OpcuaNodeIdServicesReferenceType_AllowedSubtype, true
+	case "HasSerializationEntity":
+		return OpcuaNodeIdServicesReferenceType_HasSerializationEntity, true
+	case "HasDataTypeRefinement":
+		return OpcuaNodeIdServicesReferenceType_HasDataTypeRefinement, true
 	case "AliasFor":
 		return OpcuaNodeIdServicesReferenceType_AliasFor, true
 	case "IsDeprecated":
@@ -606,8 +648,22 @@ func (e OpcuaNodeIdServicesReferenceType) PLC4XEnumName() string {
 		return "HasWriterGroup"
 	case OpcuaNodeIdServicesReferenceType_HasReaderGroup:
 		return "HasReaderGroup"
-	case OpcuaNodeIdServicesReferenceType_HasLogHierarchy:
-		return "HasLogHierarchy"
+	case OpcuaNodeIdServicesReferenceType_UsesDataTypeRefinement:
+		return "UsesDataTypeRefinement"
+	case OpcuaNodeIdServicesReferenceType_HasFieldDescription:
+		return "HasFieldDescription"
+	case OpcuaNodeIdServicesReferenceType_HasFieldDescriptionSetMandatory:
+		return "HasFieldDescriptionSetMandatory"
+	case OpcuaNodeIdServicesReferenceType_IsDisabledOptionalField:
+		return "IsDisabledOptionalField"
+	case OpcuaNodeIdServicesReferenceType_UsesSubtypeRestriction:
+		return "UsesSubtypeRestriction"
+	case OpcuaNodeIdServicesReferenceType_AllowedSubtype:
+		return "AllowedSubtype"
+	case OpcuaNodeIdServicesReferenceType_HasSerializationEntity:
+		return "HasSerializationEntity"
+	case OpcuaNodeIdServicesReferenceType_HasDataTypeRefinement:
+		return "HasDataTypeRefinement"
 	case OpcuaNodeIdServicesReferenceType_AliasFor:
 		return "AliasFor"
 	case OpcuaNodeIdServicesReferenceType_IsDeprecated:

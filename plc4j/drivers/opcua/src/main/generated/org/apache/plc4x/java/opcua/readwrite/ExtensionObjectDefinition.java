@@ -150,7 +150,7 @@ public abstract class ExtensionObjectDefinition implements Message {
     } else if (EvaluationHelper.equals(extensionId, (int) 32287)) {
       builder =
           TransactionErrorType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
-    } else if (EvaluationHelper.equals(extensionId, (int) 15551)) {
+    } else if (EvaluationHelper.equals(extensionId, (int) 23745)) {
       builder =
           ApplicationConfigurationDataType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, extensionId);
@@ -173,7 +173,11 @@ public abstract class ExtensionObjectDefinition implements Message {
       builder =
           UserTokenSettingsDataType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, extensionId);
-    } else if (EvaluationHelper.equals(extensionId, (int) 19447)) {
+    } else if (EvaluationHelper.equals(extensionId, (int) 23726)) {
+      builder =
+          ServiceCertificateDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23746)) {
       builder =
           AuthorizationServiceConfigurationDataType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, extensionId);

@@ -1994,6 +1994,8 @@ public enum OpcuaNodeIdServicesVariableApplication {
   ApplicationConfigurationFileType_CertificateGroupPurposes((int) 19416L),
   ApplicationConfigurationType_KeyCredentials_CreateCredential_InputArguments((int) 19425L),
   ApplicationConfigurationType_KeyCredentials_CreateCredential_OutputArguments((int) 19426L),
+  ApplicationConfigurationFolderType_ApplicationName_Placeholder_IsNonUaApplication((int) 23740L),
+  ApplicationConfigurationType_IsNonUaApplication((int) 23741L),
   ApplicationConfigurationType_Enabled((int) 26849L),
   ApplicationConfigurationType_ApplicationUri((int) 26850L),
   ApplicationConfigurationType_ProductUri((int) 26851L),

@@ -96,6 +96,7 @@ public enum OpcuaNodeIdServicesVariableAudit {
   AuditActivateSessionEventType_CurrentRoleIds((int) 19304L),
   AuditUpdateMethodEventType_StatusCodeId((int) 19305L),
   AuditUpdateMethodEventType_OutputArguments((int) 19306L),
+  AuditEventType_ClientApplicationUri((int) 19811L),
   AuditClientEventType_ServerUri((int) 23908L),
   AuditClientUpdateMethodResultEventType_ObjectId((int) 23994L),
   AuditClientUpdateMethodResultEventType_MethodId((int) 23995L),
