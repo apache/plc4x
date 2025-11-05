@@ -1589,6 +1589,10 @@
   ['1575' SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD ['1575', '"Shanghai YuanKong Automation Technology Co., Ltd."']]
   ['1576' ARMATURALLC ['1576', '"Armatura LLC"']]
   ['1577' INGYBV ['1577', '"Ingy BV"']]
+  ['1578' HEARTFUL_CODE ['1578', '"Heartful Code"']]
+  ['1579' SYSTEM_MART_LTD ['1579', '"System Mart Ltd."']]
+  ['1580' SPOT_GMBH ['1580', '"Spot7 GmbH"']]
+  ['1581' INTEMPCO_CONTROLS_LTD ['1581', '"Intempco Controls Ltd."']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

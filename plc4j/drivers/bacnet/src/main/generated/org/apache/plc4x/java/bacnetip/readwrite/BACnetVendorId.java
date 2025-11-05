@@ -1810,6 +1810,10 @@ public enum BACnetVendorId {
       (int) 1575, (int) 1575, (String) "Shanghai YuanKong Automation Technology Co., Ltd."),
   ARMATURALLC((int) 1576, (int) 1576, (String) "Armatura LLC"),
   INGYBV((int) 1577, (int) 1577, (String) "Ingy BV"),
+  HEARTFUL_CODE((int) 1578, (int) 1578, (String) "Heartful Code"),
+  SYSTEM_MART_LTD((int) 1579, (int) 1579, (String) "System Mart Ltd."),
+  SPOT_GMBH((int) 1580, (int) 1580, (String) "Spot7 GmbH"),
+  INTEMPCO_CONTROLS_LTD((int) 1581, (int) 1581, (String) "Intempco Controls Ltd."),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

@@ -1611,6 +1611,10 @@ const (
 	BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD                              BACnetVendorId = 1575
 	BACnetVendorId_ARMATURALLC                                                                  BACnetVendorId = 1576
 	BACnetVendorId_INGYBV                                                                       BACnetVendorId = 1577
+	BACnetVendorId_HEARTFUL_CODE                                                                BACnetVendorId = 1578
+	BACnetVendorId_SYSTEM_MART_LTD                                                              BACnetVendorId = 1579
+	BACnetVendorId_SPOT_GMBH                                                                    BACnetVendorId = 1580
+	BACnetVendorId_INTEMPCO_CONTROLS_LTD                                                        BACnetVendorId = 1581
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3187,6 +3191,10 @@ func init() {
 		BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD,
 		BACnetVendorId_ARMATURALLC,
 		BACnetVendorId_INGYBV,
+		BACnetVendorId_HEARTFUL_CODE,
+		BACnetVendorId_SYSTEM_MART_LTD,
+		BACnetVendorId_SPOT_GMBH,
+		BACnetVendorId_INTEMPCO_CONTROLS_LTD,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5757,9 +5765,25 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1577' */
 			return 1577
 		}
+	case 1578:
+		{ /* '1578' */
+			return 1578
+		}
+	case 1579:
+		{ /* '1579' */
+			return 1579
+		}
 	case 158:
 		{ /* '158' */
 			return 158
+		}
+	case 1580:
+		{ /* '1580' */
+			return 1580
+		}
+	case 1581:
+		{ /* '1581' */
+			return 1581
 		}
 	case 159:
 		{ /* '159' */
@@ -12051,9 +12075,25 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1577' */
 			return "Ingy BV"
 		}
+	case 1578:
+		{ /* '1578' */
+			return "Heartful Code"
+		}
+	case 1579:
+		{ /* '1579' */
+			return "System Mart Ltd."
+		}
 	case 158:
 		{ /* '158' */
 			return "Price Industries"
+		}
+	case 1580:
+		{ /* '1580' */
+			return "Spot7 GmbH"
+		}
+	case 1581:
+		{ /* '1581' */
+			return "Intempco Controls Ltd."
 		}
 	case 159:
 		{ /* '159' */
@@ -17062,8 +17102,16 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ARMATURALLC, true
 	case 1577:
 		return BACnetVendorId_INGYBV, true
+	case 1578:
+		return BACnetVendorId_HEARTFUL_CODE, true
+	case 1579:
+		return BACnetVendorId_SYSTEM_MART_LTD, true
 	case 158:
 		return BACnetVendorId_PRICE_INDUSTRIES, true
+	case 1580:
+		return BACnetVendorId_SPOT_GMBH, true
+	case 1581:
+		return BACnetVendorId_INTEMPCO_CONTROLS_LTD, true
 	case 159:
 		return BACnetVendorId_SE_ELEKTRONIC_GMBH, true
 	case 16:
@@ -20206,8 +20254,16 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ARMATURALLC, true
 	case "INGYBV":
 		return BACnetVendorId_INGYBV, true
+	case "HEARTFUL_CODE":
+		return BACnetVendorId_HEARTFUL_CODE, true
+	case "SYSTEM_MART_LTD":
+		return BACnetVendorId_SYSTEM_MART_LTD, true
 	case "PRICE_INDUSTRIES":
 		return BACnetVendorId_PRICE_INDUSTRIES, true
+	case "SPOT_GMBH":
+		return BACnetVendorId_SPOT_GMBH, true
+	case "INTEMPCO_CONTROLS_LTD":
+		return BACnetVendorId_INTEMPCO_CONTROLS_LTD, true
 	case "SE_ELEKTRONIC_GMBH":
 		return BACnetVendorId_SE_ELEKTRONIC_GMBH, true
 	case "UNITED_TECHNOLOGIES_CARRIER":
@@ -23422,8 +23478,16 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "ARMATURALLC"
 	case BACnetVendorId_INGYBV:
 		return "INGYBV"
+	case BACnetVendorId_HEARTFUL_CODE:
+		return "HEARTFUL_CODE"
+	case BACnetVendorId_SYSTEM_MART_LTD:
+		return "SYSTEM_MART_LTD"
 	case BACnetVendorId_PRICE_INDUSTRIES:
 		return "PRICE_INDUSTRIES"
+	case BACnetVendorId_SPOT_GMBH:
+		return "SPOT_GMBH"
+	case BACnetVendorId_INTEMPCO_CONTROLS_LTD:
+		return "INTEMPCO_CONTROLS_LTD"
 	case BACnetVendorId_SE_ELEKTRONIC_GMBH:
 		return "SE_ELEKTRONIC_GMBH"
 	case BACnetVendorId_UNITED_TECHNOLOGIES_CARRIER:
