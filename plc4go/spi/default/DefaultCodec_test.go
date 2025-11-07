@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -1440,11 +1441,13 @@ func Test_defaultCodec_Work(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			go func() {
+			var wg sync.WaitGroup
+			t.Cleanup(wg.Wait)
+			wg.Go(func() {
 				// Stop after 200ms
 				time.Sleep(200 * time.Millisecond)
 				m.running.Store(false)
-			}()
+			})
 			m.Work()
 		})
 	}

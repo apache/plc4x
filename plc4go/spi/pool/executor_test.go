@@ -259,9 +259,12 @@ func Test_executor_Submit(t *testing.T) {
 			},
 			args: args{
 				workItemId: 13,
-				runnable: func() {
+				runnable: func(ctx context.Context) {
 					// We do something for 3 seconds
-					<-time.NewTimer(3 * time.Second).C
+					select {
+					case <-time.NewTimer(3 * time.Second).C:
+					case <-ctx.Done():
+					}
 				},
 				context: func() context.Context {
 					ctx, cancelFunc := context.WithCancel(context.Background())
@@ -281,9 +284,12 @@ func Test_executor_Submit(t *testing.T) {
 			},
 			args: args{
 				workItemId: 13,
-				runnable: func() {
+				runnable: func(ctx context.Context) {
 					// We do something for 3 seconds
-					<-time.NewTimer(3 * time.Second).C
+					select {
+					case <-time.NewTimer(3 * time.Second).C:
+					case <-ctx.Done():
+					}
 				},
 				context: t.Context(),
 			},
@@ -306,7 +312,7 @@ func Test_executor_Submit(t *testing.T) {
 			}(),
 			args: args{
 				workItemId: 13,
-				runnable: func() {
+				runnable: func(_ context.Context) {
 					// NOOP
 				},
 				context: t.Context(),

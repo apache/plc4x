@@ -93,9 +93,7 @@ func (d *AsciiDriver) GetConnectionWithContext(ctx context.Context, transportUrl
 	// Create a new codec for taking care of encoding/decoding of messages
 	// TODO: the code below looks strange: where is defaultChanel being used?
 	defaultChanel := make(chan any)
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				d.log.Error().
@@ -109,7 +107,7 @@ func (d *AsciiDriver) GetConnectionWithContext(ctx context.Context, transportUrl
 			adu := msg.(model.ModbusTcpADU)
 			d.log.Debug().Stringer("adu", adu).Msg("got message in the default handler %s\n")
 		}
-	}()
+	})
 	codec := NewMessageCodec(
 		transportInstance,
 		append(d._options, options.WithCustomLogger(d.log))...,

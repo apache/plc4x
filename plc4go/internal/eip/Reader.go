@@ -70,9 +70,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	// TODO: handle ctx
 	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -109,7 +107,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				typeIds,
 			)
 			transaction := m.tm.StartTransaction()
-			transaction.Submit(func(transaction transactions.RequestTransaction) {
+			transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
+				ctx, cancel := context.WithCancel(ctx)
+				context.AfterFunc(transactionContext, cancel)
 				if err := m.messageCodec.SendRequest(
 					ctx,
 					request,
@@ -167,7 +167,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				}
 			})
 		}
-	}()
+	})
 	return result
 }
 

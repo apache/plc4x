@@ -20,6 +20,7 @@
 package pool
 
 import (
+	"context"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -37,6 +38,7 @@ func Test_worker_initialize(t *testing.T) {
 			isTraceWorkers() bool
 			getWorksItems() chan workItem
 			getWorkerWaitGroup() *sync.WaitGroup
+			getCtx() context.Context
 		}
 	}
 	tests := []struct {
@@ -67,6 +69,7 @@ func Test_worker_start(t *testing.T) {
 			isTraceWorkers() bool
 			getWorksItems() chan workItem
 			getWorkerWaitGroup() *sync.WaitGroup
+			getCtx() context.Context
 		}
 		lastReceived atomic.Value
 		interrupter  chan struct{}
@@ -86,7 +89,7 @@ func Test_worker_start(t *testing.T) {
 					}
 					e.workItems <- workItem{
 						workItemId: 0,
-						runnable: func() {
+						runnable: func(context.Context) {
 							// No-op
 						},
 						completionFuture: &future{},
@@ -105,7 +108,7 @@ func Test_worker_start(t *testing.T) {
 					}
 					e.workItems <- workItem{
 						workItemId: 0,
-						runnable: func() {
+						runnable: func(context.Context) {
 							// No-op
 						},
 						completionFuture: &future{},
@@ -146,6 +149,7 @@ func Test_worker_stop(t *testing.T) {
 			isTraceWorkers() bool
 			getWorksItems() chan workItem
 			getWorkerWaitGroup() *sync.WaitGroup
+			getCtx() context.Context
 		}
 		lastReceived atomic.Value
 		interrupter  chan struct{}
@@ -168,15 +172,17 @@ func Test_worker_stop(t *testing.T) {
 						workItems:    make(chan workItem),
 						traceWorkers: true,
 					}
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						e.workItems <- workItem{
 							workItemId: 0,
-							runnable: func() {
+							runnable: func(context.Context) {
 								// No-op
 							},
 							completionFuture: &future{},
 						}
-					}()
+					})
 					return e
 				}(),
 			},
@@ -226,15 +232,17 @@ func Test_worker_work(t *testing.T) {
 						workItems:    make(chan workItem),
 						traceWorkers: true,
 					}
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						e.workItems <- workItem{
 							workItemId: 0,
-							runnable: func() {
+							runnable: func(context.Context) {
 								panic("Oh no what should I do???")
 							},
 							completionFuture: &future{},
 						}
-					}()
+					})
 					return e
 				}(),
 			},
@@ -260,15 +268,17 @@ func Test_worker_work(t *testing.T) {
 						workItems:    make(chan workItem),
 						traceWorkers: true,
 					}
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						e.workItems <- workItem{
 							workItemId: 0,
-							runnable: func() {
+							runnable: func(context.Context) {
 								time.Sleep(time.Millisecond * 70)
 							},
 							completionFuture: &future{},
 						}
-					}()
+					})
 					return e
 				}(),
 			},
@@ -318,17 +328,19 @@ func Test_worker_work(t *testing.T) {
 						workItems:    make(chan workItem),
 						traceWorkers: true,
 					}
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						completionFuture := &future{}
 						completionFuture.cancelRequested.Store(true)
 						e.workItems <- workItem{
 							workItemId: 0,
-							runnable: func() {
+							runnable: func(context.Context) {
 								time.Sleep(time.Millisecond * 70)
 							},
 							completionFuture: completionFuture,
 						}
-					}()
+					})
 					return e
 				}(),
 			},

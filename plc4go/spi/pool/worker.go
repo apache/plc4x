@@ -20,6 +20,7 @@
 package pool
 
 import (
+	"context"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -35,6 +36,7 @@ type worker struct {
 		isTraceWorkers() bool
 		getWorksItems() chan workItem
 		getWorkerWaitGroup() *sync.WaitGroup
+		getCtx() context.Context
 	}
 
 	lastReceived atomic.Value
@@ -52,6 +54,7 @@ func newWorker(localLog zerolog.Logger, workerId int, executor interface {
 	isTraceWorkers() bool
 	getWorksItems() chan workItem
 	getWorkerWaitGroup() *sync.WaitGroup
+	getCtx() context.Context
 }) *worker {
 	w := &worker{
 		id:       workerId,
@@ -82,9 +85,8 @@ func (w *worker) start() {
 	if w.executor.isTraceWorkers() {
 		w.log.Debug().Stringer("worker", w).Msg("Starting worker")
 	}
-	w.executor.getWorkerWaitGroup().Add(1)
 	w.running.Store(true)
-	go w.work()
+	w.executor.getWorkerWaitGroup().Go(w.work)
 }
 
 func (w *worker) stop(interrupt bool) {
@@ -106,7 +108,6 @@ func (w *worker) stop(interrupt bool) {
 }
 
 func (w *worker) work() {
-	defer w.executor.getWorkerWaitGroup().Done()
 	defer func() {
 		if err := recover(); err != nil {
 			w.log.Error().
@@ -137,12 +138,15 @@ func (w *worker) work() {
 				// TODO: do we need to complete with a error?
 			} else {
 				workItemLog.Debug().Msg("Running work item")
-				_workItem.runnable()
+				_workItem.runnable(w.executor.getCtx())
 				_workItem.completionFuture.complete()
 				workItemLog.Debug().Msg("work item completed")
 			}
 		case <-w.interrupter:
 			workerLog.Debug().Msg("We got interrupted")
+		case <-w.executor.getCtx().Done():
+			workerLog.Debug().Msg("Ctx done")
+			return
 		}
 	}
 	workerLog.Trace().Msg("done")

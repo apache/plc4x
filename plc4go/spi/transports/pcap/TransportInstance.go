@@ -55,6 +55,8 @@ type TransportInstance struct {
 	handle    *pcap.Handle
 	reader    *bufio.Reader
 
+	wg sync.WaitGroup
+
 	log zerolog.Logger
 }
 
@@ -95,7 +97,7 @@ func (m *TransportInstance) Connect() error {
 	buffer := new(bytes.Buffer)
 	m.reader = bufio.NewReader(buffer)
 
-	go func(m *TransportInstance, buffer *bytes.Buffer) {
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -161,7 +163,7 @@ func (m *TransportInstance) Connect() error {
 			buffer.Write(payload)
 			lastPacketTime = &captureInfo.Timestamp
 		}
-	}(m, buffer)
+	})
 
 	return nil
 }
@@ -174,6 +176,7 @@ func (m *TransportInstance) Close() error {
 		handle.Close()
 	}
 	m.connected.Store(false)
+	m.wg.Wait()
 	return nil
 }
 

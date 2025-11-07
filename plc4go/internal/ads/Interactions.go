@@ -32,9 +32,7 @@ import (
 
 func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model.AdsReadDeviceInfoResponse, error) {
 	responseChannel := make(chan model.AdsReadDeviceInfoResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -67,7 +65,7 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error reading device info: %v", err)
@@ -77,9 +75,7 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 
 func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, length uint32) (model.AdsReadResponse, error) {
 	responseChannel := make(chan model.AdsReadResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -112,7 +108,7 @@ func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint3
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error reading: %v", err)
@@ -122,9 +118,7 @@ func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint3
 
 func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, data []byte) (model.AdsWriteResponse, error) {
 	responseChannel := make(chan model.AdsWriteResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -157,7 +151,7 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
@@ -167,9 +161,7 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 
 func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, readLength uint32, items []model.AdsMultiRequestItem, writeData []byte) (model.AdsReadWriteResponse, error) {
 	responseChannel := make(chan model.AdsReadWriteResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -202,7 +194,7 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
@@ -212,9 +204,7 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 
 func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, length uint32, transmissionMode model.AdsTransMode, maxDelay uint32, cycleTime uint32) (model.AdsAddDeviceNotificationResponse, error) {
 	responseChannel := make(chan model.AdsAddDeviceNotificationResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -247,7 +237,7 @@ func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context,
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
@@ -257,9 +247,7 @@ func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context,
 
 func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Context, notificationHandle uint32) (model.AdsDeleteDeviceNotificationResponse, error) {
 	responseChannel := make(chan model.AdsDeleteDeviceNotificationResponse, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -292,7 +280,7 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
-	}()
+	})
 	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)

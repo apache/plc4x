@@ -98,9 +98,7 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 	result := make(chan plc4go.PlcConnectionCloseResult, 1)
 
-	t.wg.Add(1)
-	go func() {
-		defer t.wg.Done()
+	t.wg.Go(func() {
 		// Check if the connection is still alive, if it is, put it back into the cache
 		pingResults := t.Ping()
 		pingTimeout := time.NewTimer(5 * time.Second)
@@ -143,7 +141,7 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 		// Finish closing the connection.
 		result <- _default.NewDefaultPlcConnectionCloseResultWithTraces(t, err, traces)
-	}()
+	})
 
 	return result
 }

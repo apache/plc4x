@@ -119,8 +119,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		if err != nil {
 			return err
 		}
-		wg.Add(1)
-		go func(netInterface net.Interface) {
+		wg.Go(func() {
 			defer func() {
 				if err := recover(); err != nil {
 					d.log.Error().
@@ -129,7 +128,6 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 						Msg("panic-ed")
 				}
 			}()
-			defer func() { wg.Done() }()
 			// Iterate over all addresses the current interface has configured
 			// For KNX we're only interested in IPv4 addresses, as it doesn't
 			// seem to work with IPv6.
@@ -157,19 +155,15 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				}
 				d.transportInstanceCreationQueue.Submit(ctx, d.transportInstanceCreationWorkItemId.Add(1), d.createTransportInstanceDispatcher(ctx, wg, connectionUrl, ipv4Addr, udpTransport, transportInstances))
 			}
-		}(netInterface)
+		})
 	}
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		wg.Wait()
 		d.log.Trace().Msg("Closing transport instance channel")
 		close(transportInstances)
-	}()
+	})
 
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				d.log.Error().
@@ -185,13 +179,15 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			}
 			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(ctx, transportInstance.(*udp.TransportInstance), callback))
 		}
-	}()
+	})
 	return nil
 }
 
 func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *sync.WaitGroup, connectionUrl *url.URL, ipv4Addr net.IP, udpTransport *udp.Transport, transportInstances chan transports.TransportInstance) pool.Runnable {
 	wg.Add(1)
-	return func() {
+	return func(workerCtx context.Context) {
+		ctx, cancel := context.WithCancel(ctx)
+		context.AfterFunc(workerCtx, cancel)
 		defer wg.Done()
 		// Create a new "connection" (Actually open a local udp socket and target outgoing packets to that address)
 		transportInstance, err :=
@@ -212,7 +208,9 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 }
 
 func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTransportInstance *udp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
-	return func() {
+	return func(workerCtx context.Context) {
+		ctx, cancel := context.WithCancel(ctx)
+		context.AfterFunc(workerCtx, cancel)
 		d.log.Debug().Stringer("udpTransportInstance", udpTransportInstance).Msg("Scanning")
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(

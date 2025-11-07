@@ -110,9 +110,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ctx := context.TODO()
 	c.log.Trace().Msg("Pinging")
 	result := make(chan plc4go.PlcConnectionPingResult, 1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				result <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -149,7 +147,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		); err != nil {
 			result <- _default.NewDefaultPlcConnectionPingResult(err)
 		}
-	}()
+	})
 	return result
 }
 

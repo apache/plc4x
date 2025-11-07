@@ -39,6 +39,9 @@ type executor struct {
 	workItems    chan workItem
 	traceWorkers bool
 
+	ctx       context.Context
+	ctxCancel context.CancelFunc
+
 	stateChange     sync.RWMutex
 	workerWaitGroup sync.WaitGroup
 
@@ -50,6 +53,7 @@ func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolo
 		workItems: make(chan workItem, queueDepth),
 		log:       customLogger,
 	}
+	e.ctx, e.ctxCancel = context.WithCancel(context.Background())
 	workers := make([]*worker, numberOfInitialWorkers)
 	for i := 0; i < numberOfInitialWorkers; i++ {
 		w := newWorker(customLogger, i, e)
@@ -69,6 +73,10 @@ func (e *executor) getWorksItems() chan workItem {
 
 func (e *executor) getWorkerWaitGroup() *sync.WaitGroup {
 	return &e.workerWaitGroup
+}
+
+func (e *executor) getCtx() context.Context {
+	return e.ctx
 }
 
 func (e *executor) Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture {
@@ -127,11 +135,13 @@ func (e *executor) Stop() {
 	}
 	e.shutdown = true
 	for i := 0; i < len(e.worker); i++ {
+		e.log.Debug().Int("workerId", i).Msg("stopping worker")
 		e.worker[i].stop(true)
 	}
 	e.running = false
 	e.shutdown = false
 	e.log.Debug().Int("nWorkers", len(e.worker)).Msg("waiting for nWorkers workers to stop")
+	e.ctxCancel()
 	e.workerWaitGroup.Wait()
 	e.log.Trace().Msg("stopped")
 }

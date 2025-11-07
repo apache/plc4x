@@ -129,9 +129,9 @@ func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
 		t.log.Warn().Msg("Operation already set")
 	}
 	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Submission")
-	t.operation = func() {
+	t.operation = func(ctx context.Context) {
 		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Start operation")
-		operation(t)
+		operation(ctx, t)
 		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Completed operation")
 	}
 	t.parent.submitTransaction(t)

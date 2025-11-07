@@ -1685,10 +1685,8 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				codec.monitoredMMIs = make(chan readWriteModel.CALReply, 1)
 				codec.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 1)
 				dispatchWg := new(sync.WaitGroup)
-				dispatchWg.Add(1)
 				t.Cleanup(dispatchWg.Wait)
-				go func() {
-					defer dispatchWg.Done()
+				dispatchWg.Go(func() {
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil)
 					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(
 						0,
@@ -1699,7 +1697,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 						readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5,
 						nil,
 					)
-				}()
+				})
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1718,10 +1716,8 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				codec := NewMessageCodec(nil, _options...)
 				written := make(chan struct{})
 				dispatchWg := new(sync.WaitGroup)
-				dispatchWg.Add(1)
 				t.Cleanup(dispatchWg.Wait)
-				go func() {
-					defer dispatchWg.Done()
+				dispatchWg.Go(func() {
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil)
 					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(
 						0,
@@ -1733,7 +1729,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 						nil,
 					)
 					close(written)
-				}()
+				})
 				t.Cleanup(func() {
 					<-written
 				})

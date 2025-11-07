@@ -251,15 +251,13 @@ func (i *IOCB) SetTimeout(delay time.Duration) {
 		now := GetTaskManagerTime()
 		i.ioTimeout = time.NewTimer(delay)
 		i.ioTimoutCancel = make(chan struct{})
-		i.wg.Add(1)
-		go func() {
-			defer i.wg.Done()
+		i.wg.Go(func() {
 			select {
 			case timeout := <-i.ioTimeout.C:
 				_ = i.Abort(utils.NewTimeoutError(now.Sub(timeout)))
 			case <-i.ioTimoutCancel:
 			}
-		}()
+		})
 	}
 }
 

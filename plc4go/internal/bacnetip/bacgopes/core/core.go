@@ -51,18 +51,15 @@ var wg sync.WaitGroup // use to track spawned go routines
 
 func run() {
 	running = true
-	wg.Add(1)
-	go func() {
+	wg.Go(func() {
 		defer wg.Done()
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
 		<-c
 		running = false
-	}()
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	})
+	wg.Go(func() {
 		for running {
 			// get the next task
 			var delta time.Duration
@@ -112,7 +109,7 @@ func run() {
 				}
 			}
 		}
-	}()
+	})
 }
 
 // RunOnce makes a pass through the scheduled tasks and deferred functions just

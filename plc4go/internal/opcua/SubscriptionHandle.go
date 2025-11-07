@@ -219,11 +219,7 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 func (h *SubscriptionHandle) startSubscriber() {
 	h.log.Trace().Msg("Starting Subscription")
 
-	h.subscriberWg.Add(1)
-	h.wg.Add(1)
-	go func() {
-		defer h.wg.Done()
-		defer h.subscriberWg.Done()
+	h.subscriberWg.Go(func() {
 
 		var outstandingAcknowledgements []readWriteModel.SubscriptionAcknowledgement
 		var outstandingRequests []uint32
@@ -353,7 +349,7 @@ func (h *SubscriptionHandle) startSubscriber() {
 		//Wait for any outstanding responses to arrive, using the request timeout length
 		//sleep(this.revisedCycleTime * 10);
 		h.complete = true
-	}()
+	})
 }
 
 // stopSubscriber stops the subscriber either on disconnect or on error

@@ -119,9 +119,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 
 	// Reset the driver context (Actually this should not be required, but just to be on the safe side)
 	m.driverContext.clear()
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -133,7 +131,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 		}
 
 		m.setupConnection(ctx, ch)
-	}()
+	})
 	return ch
 }
 
@@ -178,9 +176,7 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	// Start the worker for handling incoming messages
 	// (Messages that are not responses to outgoing messages)
 	defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -206,7 +202,7 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			}
 		}
 		m.log.Info().Msg("Done waiting for messages ...")
-	}()
+	})
 
 	// Subscribe for changes to the symbol or the offline-versions
 	versionChangeRequest, err := m.SubscriptionRequestBuilder().

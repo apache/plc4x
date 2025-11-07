@@ -64,9 +64,7 @@ func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subs
 func (s *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	// TODO: handle context
 	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
-	s.wg.Add(1)
-	go func() {
-		defer s.wg.Done()
+	s.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -96,7 +94,7 @@ func (s *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			),
 			nil,
 		)
-	}()
+	})
 	return result
 }
 

@@ -59,9 +59,7 @@ func NewReader(device *Device, readerOptions map[string][]string, tracer tracer.
 
 func (r *Reader) Read(_ context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	ch := make(chan apiModel.PlcReadRequestResult, 1)
-	r.wg.Add(1)
-	go func() {
-		defer r.wg.Done()
+	r.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -111,6 +109,6 @@ func (r *Reader) Read(_ context.Context, readRequest apiModel.PlcReadRequest) <-
 			spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, responseValues),
 			nil,
 		)
-	}()
+	})
 	return ch
 }

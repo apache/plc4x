@@ -339,9 +339,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	readCtx, readCtxCancel := context.WithTimeout(ctx, 2*time.Second)
 	defer readCtxCancel()
 	readWg := new(sync.WaitGroup)
-	readWg.Add(1)
-	go func() {
-		defer readWg.Done()
+	readWg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -431,7 +429,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 				Stringer("responseCode", responseCode).
 				Msg("We got responseCode as response code for installation mmi so we rely on getting it via subscription")
 		}
-	}()
+	})
 
 	syncCtx, syncCtxCancel := context.WithTimeout(ctx, 6*time.Second)
 	defer syncCtxCancel()

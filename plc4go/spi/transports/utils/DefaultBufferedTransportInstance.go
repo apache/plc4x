@@ -64,9 +64,7 @@ type defaultBufferedTransportInstance struct {
 // ConnectWithContext is a compatibility implementation for those transports not implementing this function
 func (m *defaultBufferedTransportInstance) ConnectWithContext(ctx context.Context) error {
 	ch := make(chan error, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -77,7 +75,7 @@ func (m *defaultBufferedTransportInstance) ConnectWithContext(ctx context.Contex
 		}()
 		ch <- m.Connect()
 		close(ch)
-	}()
+	})
 	select {
 	case err := <-ch:
 		return err

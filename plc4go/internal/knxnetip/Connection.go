@@ -240,9 +240,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 		result <- _default.NewDefaultPlcConnectionConnectResult(connection, err)
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -314,9 +312,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				// handled by any other handler. This is where usually the GroupValueWrite messages
 				// are being handled.
 				m.log.Debug().Msg("Starting tunneling handler")
-				m.wg.Add(1)
-				go func() {
-					defer m.wg.Done()
+				m.wg.Go(func() {
 					defer func() {
 						if err := recover(); err != nil {
 							m.log.Error().
@@ -374,7 +370,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 						}
 					}
 					m.log.Warn().Msg("Tunneling handler shat down")
-				}()
+				})
 
 				// Fire the "connected" event
 				sendResult(m, nil)
@@ -386,7 +382,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 		} else {
 			m.doSomethingAndClose(func() { sendResult(nil, errors.New("this device doesn't support tunneling")) })
 		}
-	}()
+	})
 
 	return result
 }
@@ -419,9 +415,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionCloseResult, 1)
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -455,7 +449,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		} else {
 			result <- _default.NewDefaultPlcConnectionCloseResult(m, nil)
 		}
-	}()
+	})
 
 	return result
 }
@@ -484,9 +478,7 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionPingResult, 1)
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				result <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -500,7 +492,7 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 			result <- _default.NewDefaultPlcConnectionPingResult(nil)
 		}
 		return
-	}()
+	})
 
 	return result
 }

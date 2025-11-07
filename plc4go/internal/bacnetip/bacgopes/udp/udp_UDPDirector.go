@@ -96,19 +96,15 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	}
 
 	d.running = true
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		for d.running {
 			d.handleRead()
 		}
-	}()
+	})
 
 	// create the request queue
 	d.request = make(chan PDU)
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		for d.running {
 			pdu := <-d.request
 			serialize, err := pdu.GetRootMessage().Serialize()
@@ -131,7 +127,7 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 			}
 			localLog.Debug().Int("writtenBytes", writtenBytes).Msg("written bytes")
 		}
-	}()
+	})
 
 	// start with an empty peer pool
 	d.peers = map[string]*UDPActor{}
@@ -226,13 +222,11 @@ func (d *UDPDirector) handleRead() {
 	}
 	pdu := NewCPDU(readBytes, NKW(KWCPCISource, saddr, KWCPCIDestination, daddr), WithRootMessage(bvlc)) // TODO: why do we set the destination here??? This might be completely wrong
 	// send the _PDU up to the client
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		if err := d._response(pdu); err != nil {
 			d.log.Debug().Err(err).Msg("errored")
 		}
-	}()
+	})
 }
 
 func (d *UDPDirector) writeable() {

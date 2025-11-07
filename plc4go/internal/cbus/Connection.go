@@ -129,9 +129,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				c.fireConnectionError(errors.Errorf("panic-ed %v. Stack:\n%s", err, debug.Stack()), ch)
@@ -154,21 +152,19 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 		}
 
 		c.setupConnection(ctx, ch)
-	}()
+	})
 	return ch
 }
 
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	results := make(chan plc4go.PlcConnectionCloseResult, 1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.wg.Go(func() {
 		result := <-c.DefaultConnection.Close()
 		c.log.Trace().Msg("Waiting for handlers to stop")
 		c.handlerWaitGroup.Wait()
 		c.log.Trace().Msg("handlers stopped, dispatching result")
 		results <- result
-	}()
+	})
 	return results
 }
 
@@ -271,12 +267,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 
 func (c *Connection) startSubscriptionHandler() {
 	c.log.Debug().Msg("Starting SAL handler")
-	c.handlerWaitGroup.Add(1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.handlerWaitGroup.Go(func() {
 		salLogger := c.log.With().Str("handlerType", "SAL").Logger()
-		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				salLogger.Error().
@@ -313,14 +305,10 @@ func (c *Connection) startSubscriptionHandler() {
 			}
 		}
 		salLogger.Info().Msg("handler ended")
-	}()
+	})
 	c.log.Debug().Msg("Starting MMI handler")
-	c.handlerWaitGroup.Add(1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.handlerWaitGroup.Go(func() {
 		mmiLogger := c.log.With().Str("handlerType", "MMI").Logger()
-		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				mmiLogger.Error().
@@ -352,7 +340,7 @@ func (c *Connection) startSubscriptionHandler() {
 			}
 		}
 		mmiLogger.Info().Msg("handler ended")
-	}()
+	})
 }
 
 func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, cbusOptions *readWriteModel.CBusOptions, requestContext *readWriteModel.RequestContext, sendOutErrorNotification bool) (ok bool) {

@@ -44,9 +44,7 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -57,7 +55,7 @@ func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadReque
 		} else {
 			m.multiRead(ctx, readRequest, result)
 		}
-	}()
+	})
 	return result
 }
 
@@ -97,9 +95,7 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 		return
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -140,7 +136,7 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 			spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues),
 			nil,
 		)
-	}()
+	})
 }
 
 func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult) {

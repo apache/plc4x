@@ -128,16 +128,12 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
-		m.wg.Add(1)
-		go func() {
-			defer m.wg.Done()
+	m.wg.Go(func() {
+		m.wg.Go(func() {
 			if err := m.bipSimpleApplication.RequestIO(iocb); err != nil {
 				m.log.Debug().Err(err).Msg("errored")
 			}
-		}()
+		})
 		iocb.Wait()
 		if err := iocb.GetIOError(); err != nil {
 			// TODO: handle error
@@ -148,7 +144,7 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 		} else {
 			// TODO: what now?
 		}
-	}()
+	})
 	return nil
 }
 
@@ -166,16 +162,12 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
-		m.wg.Add(1)
-		go func() {
-			defer m.wg.Done()
+	m.wg.Go(func() {
+		m.wg.Go(func() {
 			if err := m.bipSimpleApplication.RequestIO(iocb); err != nil {
 				m.log.Error().Err(err).Msg("errored")
 			}
-		}()
+		})
 		iocb.Wait()
 		if err := iocb.GetIOError(); err != nil {
 			if err := handleError(err); err != nil {
@@ -216,7 +208,7 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 		} else {
 			// TODO: what now?
 		}
-	}()
+	})
 	return nil
 }
 

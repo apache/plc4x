@@ -113,9 +113,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				c.fireConnectionError(errors.Errorf("panic-ed %v. Stack:\n%s", err, debug.Stack()), ch)
@@ -146,15 +144,13 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 		}
 
 		c.setupConnection(ctx, ch)
-	}()
+	})
 	return ch
 }
 
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	results := make(chan plc4go.PlcConnectionCloseResult, 1)
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.wg.Go(func() {
 		result := <-c.DefaultConnection.Close()
 		c.channel.onDisconnect(context.Background(), c)
 		disconnectTimeout := time.NewTimer(c.disconnectTimeout)
@@ -165,7 +161,7 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		case <-disconnectTimeout.C:
 			results <- _default.NewDefaultPlcConnectionCloseResult(c, errors.Errorf("timeout after %s", c.disconnectTimeout))
 		}
-	}()
+	})
 	return results
 }
 

@@ -60,7 +60,7 @@ func init() {
 	}()
 }
 
-type RequestTransactionRunnable func(RequestTransaction)
+type RequestTransactionRunnable func(context.Context, RequestTransaction)
 
 // RequestTransactionManager handles transactions
 type RequestTransactionManager interface {
@@ -77,7 +77,7 @@ type RequestTransactionManager interface {
 func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...options.WithOption) RequestTransactionManager {
 	extractTraceTransactionManagerTransactions, _ := options.ExtractTraceTransactionManagerTransactions(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	_requestTransactionManager := &requestTransactionManager{
+	rtm := &requestTransactionManager{
 		numberOfConcurrentRequests: numberOfConcurrentRequests,
 		currentTransactionId:       0,
 		workLog:                    *list.New(),
@@ -87,13 +87,14 @@ func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...op
 
 		log: customLogger,
 	}
+	rtm.ctx, rtm.cancelCtx = context.WithCancel(context.Background())
 	for _, option := range _options {
 		switch option := option.(type) {
 		case *withCustomExecutor:
-			_requestTransactionManager.executor = option.executor
+			rtm.executor = option.executor
 		}
 	}
-	return _requestTransactionManager
+	return rtm
 }
 
 // WithCustomExecutor sets a custom Executor for the RequestTransactionManager
@@ -128,6 +129,9 @@ type requestTransactionManager struct {
 	executor pool.Executor
 
 	shutdown atomic.Bool // Indicates it this rtm is in shutdown
+
+	ctx       context.Context    `ignore:"true"`
+	cancelCtx context.CancelFunc `ignore:"true"`
 
 	traceTransactionManagerTransactions bool // flag set to true if it should trace transactions
 
@@ -184,7 +188,7 @@ func (r *requestTransactionManager) processWorklog() {
 			Int("nRunningRequests", len(r.runningRequests)).
 			Msg("Handling next. (Adding to running requests (length: nRunningRequests))")
 		r.runningRequests = append(r.runningRequests, next)
-		completionFuture := r.executor.Submit(context.Background(), next.transactionId, next.operation)
+		completionFuture := r.executor.Submit(r.ctx, next.transactionId, next.operation)
 		next.setCompletionFuture(completionFuture)
 		r.workLog.Remove(front)
 	}
@@ -284,6 +288,7 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	} else {
 		r.log.Warn().Msg("not closing shared instance")
 	}
+	r.cancelCtx()
 	r.log.Debug().Msg("closed")
 	return nil
 }

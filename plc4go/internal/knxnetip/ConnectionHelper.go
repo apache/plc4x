@@ -54,9 +54,7 @@ func (m *Connection) castIpToKnxAddress(ip net.IP) driverModel.IPAddress {
 }
 
 func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunnelingRequest driverModel.TunnelingRequest) {
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -115,7 +113,7 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 		default:
 			m.log.Info().Msg("Unknown unhandled message.")
 		}
-	}()
+	})
 }
 
 func (m *Connection) handleValueCacheUpdate(ctx context.Context, destinationAddress []byte, payload []byte) {
@@ -142,9 +140,7 @@ func (m *Connection) handleTimeout() {
 	// If this is the first timeout in a sequence, start the timer.
 	/*	if m.connectionTimeoutTimer == nil {
 		m.connectionTimeoutTimer = time.NewTimer(m.connectionTtl)
-		m.wg.Add(1)
-		go func() {
-			defer m.wg.Done()
+			m.wg.Go(func() {
 			<-m.connectionTimeoutTimer.C
 			m.resetConnection()
 		}()

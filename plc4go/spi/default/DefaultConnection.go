@@ -152,9 +152,7 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	d.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -164,7 +162,7 @@ func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4g
 		d.SetConnected(true)
 		connection := d.GetConnection()
 		ch <- NewDefaultPlcConnectionConnectResult(connection, err)
-	}()
+	})
 	return ch
 }
 
@@ -217,9 +215,7 @@ func (d *defaultConnection) IsConnected() bool {
 
 func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ch := make(chan plc4go.PlcConnectionPingResult, 1)
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				ch <- NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -230,7 +226,7 @@ func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		} else {
 			ch <- NewDefaultPlcConnectionPingResult(errors.New("not connected"))
 		}
-	}()
+	})
 	return ch
 }
 

@@ -20,6 +20,7 @@
 package pool
 
 import (
+	"context"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -86,7 +87,7 @@ func Test_dynamicExecutor_Start(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				fields.executor.log = produceTestingLogger(t)
-				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+				fields.executor.workItems <- workItem{1, func(context.Context) {}, &future{}}
 			},
 		},
 		{
@@ -101,7 +102,7 @@ func Test_dynamicExecutor_Start(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				fields.executor.log = produceTestingLogger(t)
-				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+				fields.executor.workItems <- workItem{1, func(context.Context) {}, &future{}}
 			},
 			startTwice: true,
 		},
@@ -152,7 +153,7 @@ func Test_dynamicExecutor_Stop(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				fields.executor.log = produceTestingLogger(t)
-				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+				fields.executor.workItems <- workItem{1, func(context.Context) {}, &future{}}
 			},
 		},
 		{
@@ -167,7 +168,7 @@ func Test_dynamicExecutor_Stop(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				fields.executor.log = produceTestingLogger(t)
-				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+				fields.executor.workItems <- workItem{1, func(context.Context) {}, &future{}}
 			},
 		},
 		{
@@ -182,7 +183,7 @@ func Test_dynamicExecutor_Stop(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				fields.executor.log = produceTestingLogger(t)
-				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+				fields.executor.workItems <- workItem{1, func(context.Context) {}, &future{}}
 			},
 			stopTwice: true,
 		},

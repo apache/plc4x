@@ -78,9 +78,7 @@ func (m *defaultBrowser) Browse(ctx context.Context, browseRequest apiModel.PlcB
 
 func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -101,6 +99,6 @@ func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseReques
 			browseResponse,
 			nil,
 		)
-	}()
+	})
 	return result
 }

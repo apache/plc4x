@@ -162,11 +162,9 @@ func (c *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 		// is definitely eagerly waiting for input.
 		c.log.Debug().Str("connectionString", c.connectionString).
 			Msg("Got lease instantly as connection was idle.")
-		c.wg.Add(1)
-		go func() {
-			defer c.wg.Done()
+		c.wg.Go(func() {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
-		}()
+		})
 	case StateInUse, StateInitialized:
 		// If the connection is currently busy or not finished initializing,
 		// add the new channel to the queue for this connection.
@@ -213,9 +211,7 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 		// Send asynchronously as the receiver might have given up waiting,
 		// and we don'c want anything to block here. 1ms should be enough for
 		// the calling process to reach the blocking read.
-		c.wg.Add(1)
-		go func() {
-			defer c.wg.Done()
+		c.wg.Go(func() {
 			// In this case we don'c need to check for blocks
 			// as the getConnection function of the connection cache
 			// is definitely eagerly waiting for input.
@@ -223,7 +219,7 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 			c.log.Debug().Str("connectionString", c.connectionString).
 				Int("waiting-queue-size", len(c.queue)).
 				Msg("Returned connection to the next client waiting.")
-		}()
+		})
 	} else {
 		// Otherwise, just mark the connection as idle.
 		c.log.Debug().Str("connectionString", c.connectionString).

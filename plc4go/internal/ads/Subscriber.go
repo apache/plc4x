@@ -101,9 +101,7 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
 	globalResultChannel := make(chan apiModel.PlcSubscriptionRequestResult, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -128,16 +126,14 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		result := m.processSubscriptionResponses(ctx, subscriptionRequest, subResults)
 		// Return the final result
 		globalResultChannel <- result
-	}()
+	})
 
 	return globalResultChannel
 }
 
 func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	responseChan := make(chan apiModel.PlcSubscriptionRequestResult, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -177,7 +173,7 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 		)
 		// Store it together with the returned ADS handle.
 		m.subscriptions[response.GetNotificationHandle()] = subscriptionHandle
-	}()
+	})
 	return responseChan
 }
 

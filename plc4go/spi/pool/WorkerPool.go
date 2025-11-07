@@ -27,7 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
-type Runnable func()
+type Runnable func(ctx context.Context)
 
 type CompletionFuture interface {
 	AwaitCompletion(ctx context.Context) error

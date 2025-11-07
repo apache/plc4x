@@ -65,9 +65,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 		}
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -107,7 +105,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 
 		// Return the value
 		sendResponse(plcValue, 1, nil)
-	}()
+	})
 
 	return result
 }
@@ -130,9 +128,7 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 		}
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -208,7 +204,7 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 		connection.maxApdu = uint16(math.Min(float64(deviceApduSize), 240))
 
 		sendResponse(connection, nil)
-	}()
+	})
 
 	return result
 }
@@ -231,9 +227,7 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 		}
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -252,7 +246,7 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 		} else {
 			sendResponse(connection, nil)
 		}
-	}()
+	})
 
 	return result
 }
@@ -274,9 +268,7 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 		}
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -315,7 +307,7 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 		} else {
 			sendResponse(errors.Errorf("got error authenticating at device %s", KnxAddressToString(targetAddress)))
 		}
-	}()
+	})
 
 	return result
 }
@@ -339,9 +331,7 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 		}
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -405,7 +395,7 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 		} else {
 			sendResponse(plcValue, 1, err)
 		}
-	}()
+	})
 
 	return result
 }
@@ -429,9 +419,7 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 		}
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -475,7 +463,7 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 		val["writeLevel"] = spiValues.NewPlcSTRING(propertyDescriptionResponse.GetWriteLevel().String())
 		str := spiValues.NewPlcStruct(val)
 		sendResponse(&str, 1, nil)
-	}()
+	})
 
 	return result
 }
@@ -499,9 +487,7 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 		}
 	}
 
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().
@@ -588,7 +574,7 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 		} else if len(results) == 1 {
 			sendResponse(results[0], 1, nil)
 		}
-	}()
+	})
 
 	return result
 }

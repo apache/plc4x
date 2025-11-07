@@ -20,7 +20,9 @@
 package pool
 
 import (
+	"context"
 	"math/rand"
+	"sync"
 	"testing"
 	"time"
 
@@ -137,21 +139,29 @@ func TestNewDynamicExecutor(t *testing.T) {
 					timeToBecomeUnused = 100 * time.Millisecond
 				}
 				t.Log("fill some jobs")
-				go func() {
+				var wg sync.WaitGroup
+				t.Cleanup(wg.Wait)
+				wg.Go(func() {
 					for i := 0; i < 500; i++ {
 						e.workItems <- workItem{
 							workItemId: int32(i),
-							runnable: func() {
+							runnable: func(runnableCtx context.Context) {
+								ctx, cancel := context.WithCancel(t.Context())
+								context.AfterFunc(runnableCtx, cancel)
 								max := 100
 								min := 10
 								sleepTime := time.Duration(rand.Intn(max-min)+min) * time.Millisecond
 								t.Logf("Sleeping for %v", sleepTime)
-								time.Sleep(sleepTime)
+								timer := time.NewTimer(sleepTime)
+								select {
+								case <-timer.C:
+								case <-ctx.Done():
+								}
 							},
 							completionFuture: &future{},
 						}
 					}
-				}()
+				})
 			},
 			executorValidator: func(t *testing.T, e *dynamicExecutor) bool {
 				time.Sleep(500 * time.Millisecond)

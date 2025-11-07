@@ -87,12 +87,10 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (IOCBContract, error) {
 	if len(i.Queue) == 0 {
 		if delay != nil {
 			gotSomething := make(chan struct{})
-			i.wg.Add(1)
-			go func() {
-				defer i.wg.Done()
+			i.wg.Go(func() {
 				i.notEmpty.Wait()
 				close(gotSomething)
-			}()
+			})
 			timeout := time.NewTimer(*delay)
 			select {
 			case <-gotSomething:

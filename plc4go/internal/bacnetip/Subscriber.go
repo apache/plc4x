@@ -55,9 +55,7 @@ func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subs
 
 func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
-	m.wg.Add(1)
-	go func() {
-		defer m.wg.Done()
+	m.wg.Go(func() {
 		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 		// Add this subscriber to the connection.
@@ -85,7 +83,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			),
 			nil,
 		)
-	}()
+	})
 	return result
 }
 

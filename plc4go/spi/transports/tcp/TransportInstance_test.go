@@ -23,6 +23,7 @@ import (
 	"bufio"
 	"context"
 	"net"
+	"sync"
 	"testing"
 
 	"github.com/rs/zerolog/log"
@@ -102,9 +103,11 @@ func TestTransportInstance_Close(t *testing.T) {
 					t.Cleanup(func() {
 						assert.NoError(t, listener.Close())
 					})
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						_, _ = listener.Accept()
-					}()
+					})
 					tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
 					require.NoError(t, err)
 					t.Cleanup(func() {
@@ -206,9 +209,11 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 					t.Cleanup(func() {
 						assert.NoError(t, listener.Close())
 					})
-					go func() {
+					var wg sync.WaitGroup
+					t.Cleanup(wg.Wait)
+					wg.Go(func() {
 						_, _ = listener.Accept()
-					}()
+					})
 					return listener.Addr().(*net.TCPAddr)
 				}(),
 			},
@@ -401,9 +406,11 @@ func TestTransportInstance_Write(t *testing.T) {
 				t.Cleanup(func() {
 					assert.NoError(t, listener.Close())
 				})
-				go func() {
+				var wg sync.WaitGroup
+				t.Cleanup(wg.Wait)
+				wg.Go(func() {
 					_, _ = listener.Accept()
-				}()
+				})
 				tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
 				require.NoError(t, err)
 				t.Cleanup(func() {

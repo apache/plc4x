@@ -20,6 +20,7 @@
 package cache
 
 import (
+	"sync"
 	"testing"
 	"time"
 
@@ -230,11 +231,9 @@ func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), con
 			closeResults := connection.Close()
 			// Wait for the connection to be correctly closed.
 			closeResult := <-closeResults
-			c.wg.Add(1)
-			go func() {
-				defer c.wg.Done()
+			c.wg.Go(func() {
 				ch <- (closeResult.(_default.DefaultPlcConnectionCloseResult)).GetTraces()
-			}()
+			})
 		}()
 
 		// Prepare a read request.
@@ -264,9 +263,7 @@ func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), con
 
 func (c *plcConnectionCache) executeAndTestReadFromPlc(t *testing.T, preConnectJob func(), connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan struct{} {
 	ch := make(chan struct{})
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.wg.Go(func() {
 		// Read once from the c.
 		traces := <-c.readFromPlc(t, preConnectJob, connectionString, resourceString)
 
@@ -287,7 +284,7 @@ func (c *plcConnectionCache) executeAndTestReadFromPlc(t *testing.T, preConnectJ
 			t.Errorf("Expected %d connections in the c but got %d", expectedNumTotalConnections, len(c.connections))
 		}
 		ch <- struct{}{}
-	}()
+	})
 	return ch
 }
 
@@ -875,8 +872,10 @@ func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 	// The third connection should be given up by the cache
 	thirdConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 
+	var wg sync.WaitGroup
+	t.Cleanup(wg.Wait)
 	// Just make sure the first two connections are returned as soon as they are received
-	go func() {
+	wg.Go(func() {
 		select {
 		case connectionResult := <-firstConnectionResults:
 			if assert.NotNil(t, connectionResult) {
@@ -888,8 +887,8 @@ func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 		case <-time.After(5 * time.Second):
 			t.Errorf("Timeout")
 		}
-	}()
-	go func() {
+	})
+	wg.Go(func() {
 		select {
 		case connectionResult := <-secondConnectionResults:
 			if assert.NotNil(t, connectionResult) {
@@ -901,7 +900,7 @@ func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 		case <-time.After(5 * time.Second):
 			t.Errorf("Timeout")
 		}
-	}()
+	})
 
 	// Now wait for the last connection to be timed out by the cache
 	select {

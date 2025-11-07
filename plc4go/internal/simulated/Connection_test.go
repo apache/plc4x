@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"sync"
 	"testing"
 	"time"
 
@@ -328,10 +329,12 @@ func TestConnection_BlockingClose(t *testing.T) {
 			timeBeforeClose := time.Now()
 			executor := func() <-chan bool {
 				ch := make(chan bool)
-				go func() {
+				var wg sync.WaitGroup
+				t.Cleanup(wg.Wait)
+				wg.Go(func() {
 					c.BlockingClose()
 					ch <- true
-				}()
+				})
 				return ch
 			}
 			timeout := time.NewTimer(3 * time.Second)

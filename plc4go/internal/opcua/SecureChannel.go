@@ -1273,11 +1273,7 @@ func (s *SecureChannel) keepAlive() {
 		s.log.Warn().Msg("keepalive already running")
 		return
 	}
-	s.keepAliveWg.Add(1)
-	s.wg.Add(1)
-	go func() {
-		defer s.wg.Done()
-		defer s.keepAliveWg.Done()
+	s.keepAliveWg.Go(func() {
 		s.keepAliveIndicator.Store(true)
 		defer s.keepAliveIndicator.Store(false)
 		defer s.log.Info().Msg("ending keepalive")
@@ -1424,7 +1420,7 @@ func (s *SecureChannel) keepAlive() {
 				s.log.Debug().Err(err).Msg("error submitting")
 			}
 		}
-	}()
+	})
 	return
 }
 

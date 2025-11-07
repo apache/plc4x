@@ -167,9 +167,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		discoveryItem.socket = socket
 
 		// Start a worker to receive responses
-		d.wg.Add(1)
-		go func(discoveryItem *discovery) {
-			defer d.wg.Done()
+		d.wg.Go(func() {
 			defer func() {
 				if err := recover(); err != nil {
 					d.log.Error().
@@ -271,7 +269,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					callback(plcDiscoveryItem)
 				}
 			}
-		}(discoveryItem)
+		})
 	}
 	defer func() {
 		for _, discoveryItem := range discoveryItems {

@@ -150,9 +150,7 @@ func (d *DefaultPlcReadRequest) ExecuteWithContextAndInterceptor(ctx context.Con
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
 	resultChannel := make(chan apiModel.PlcReadRequestResult, 1)
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				resultChannel <- NewDefaultPlcReadRequestResult(d, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -173,6 +171,6 @@ func (d *DefaultPlcReadRequest) ExecuteWithContextAndInterceptor(ctx context.Con
 		result := d.readRequestInterceptor.ProcessReadResponses(ctx, d, subResults)
 		// Return the final result
 		resultChannel <- result
-	}()
+	})
 	return resultChannel
 }

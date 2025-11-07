@@ -44,8 +44,6 @@ type dynamicExecutor struct {
 	interrupter            chan struct{}
 
 	wg sync.WaitGroup // use to track spawned go routines
-
-	dynamicWorkers sync.WaitGroup
 }
 
 func newDynamicExecutor(queueDepth, maxNumberOfWorkers int, log zerolog.Logger) *dynamicExecutor {
@@ -65,18 +63,14 @@ func (e *dynamicExecutor) Start() {
 	if e.interrupter != nil {
 		e.log.Debug().Msg("Ensuring that the old spawner/killers are not running")
 		close(e.interrupter)
-		e.dynamicWorkers.Wait()
+		e.wg.Wait()
 	}
 
 	e.executor.Start()
 	mutex := sync.Mutex{}
 	e.interrupter = make(chan struct{})
 	// Worker spawner
-	e.wg.Add(1)
-	go func() {
-		defer e.wg.Done()
-		e.dynamicWorkers.Add(1)
-		defer e.dynamicWorkers.Done()
+	e.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				e.log.Error().
@@ -123,13 +117,9 @@ func (e *dynamicExecutor) Start() {
 			}()
 		}
 		workerLog.Info().Msg("Terminated")
-	}()
+	})
 	// Worker killer
-	e.dynamicWorkers.Add(1)
-	e.wg.Add(1)
-	go func() {
-		defer e.wg.Done()
-		defer e.dynamicWorkers.Done()
+	e.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
 				e.log.Error().
@@ -181,7 +171,7 @@ func (e *dynamicExecutor) Start() {
 			}()
 		}
 		workerLog.Info().Msg("Terminated")
-	}()
+	})
 }
 
 func (e *dynamicExecutor) Stop() {
@@ -199,7 +189,7 @@ func (e *dynamicExecutor) Stop() {
 	e.log.Debug().
 		Interface("currentNumberOfWorkers", e.currentNumberOfWorkers.Load()).
 		Msg("waiting for currentNumberOfWorkers dynamic workers to stop")
-	e.dynamicWorkers.Wait()
+	e.wg.Wait()
 	e.log.Trace().Msg("stopped")
 }
 

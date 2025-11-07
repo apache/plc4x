@@ -215,21 +215,21 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			// Remove this expectation from the list.
 			m.log.Debug().Stringer("expectation", expectation).Msg("timeout expectation")
 			// Call the error handler.
-			go func(expectation spi.Expectation) {
+			m.wg.Go(func() {
 				if err := expectation.GetHandleError()(utils.NewTimeoutError(expectation.GetExpiration().Sub(expectation.GetCreationTime()))); err != nil {
 					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
-			}(expectation)
+			})
 			return true
 		}
 		if err := expectation.GetContext().Err(); err != nil {
 			m.log.Debug().Err(err).Stringer("expectation", expectation).Msg("expectation canceled")
 			// Remove this expectation from the list.
-			go func(expectation spi.Expectation) {
+			m.wg.Go(func() {
 				if err := expectation.GetHandleError()(err); err != nil {
 					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
-			}(expectation)
+			})
 			return true
 		}
 		return false
@@ -252,11 +252,11 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 			if err := expectation.GetHandleMessage()(message); err != nil {
 				expectationLog.Debug().Err(err).Msg("errored handling the message")
 				// Pass the error to the error handler.
-				go func(expectation spi.Expectation) {
+				m.wg.Go(func() {
 					if err := expectation.GetHandleError()(err); err != nil {
 						m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 					}
-				}(expectation)
+				})
 				return false
 			}
 			m.log.Trace().Msg("message handled")
@@ -273,12 +273,10 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 
 func (m *defaultCodec) startWorker() {
 	m.log.Trace().Msg("starting worker")
-	m.activeWorker.Add(1)
-	go m.Work()
+	m.activeWorker.Go(m.Work)
 }
 
 func (m *defaultCodec) Work() {
-	defer m.activeWorker.Done()
 	workerLog := m.log.With().Logger()
 	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
@@ -335,16 +333,14 @@ mainLoop:
 		var err error
 		{
 			syncer := make(chan struct{})
-			m.wg.Add(1)
-			go func() {
-				defer m.wg.Done()
+			m.wg.Go(func() {
 				defer close(syncer)
 				if !m.running.Load() {
 					err = errors.New("not running")
 					return
 				}
 				message, err = m.Receive()
-			}()
+			})
 			timeoutTimer := time.NewTimer(m.receiveTimeout)
 			select {
 			case <-syncer:

@@ -58,9 +58,7 @@ func StopWarn(localLog zerolog.Logger, opts ...func(*stopWarnOptions)) func() {
 	ticker := time.NewTicker(o.interval)
 	wg := new(sync.WaitGroup)
 	done := make(chan struct{})
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		localLog.Trace().Msgf("start checking")
 		startTime := time.Now()
 		for {
@@ -94,7 +92,7 @@ func StopWarn(localLog zerolog.Logger, opts ...func(*stopWarnOptions)) func() {
 					Msgf("%sstill in progress", processId)
 			}
 		}
-	}()
+	})
 	start := time.Now()
 	return func() {
 		localLog.Trace().TimeDiff("check duration", time.Now(), start).Msg("done")

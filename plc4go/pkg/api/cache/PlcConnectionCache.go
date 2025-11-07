@@ -162,9 +162,7 @@ func (c *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 func (c *plcConnectionCache) GetConnectionWithContext(ctx context.Context, connectionString string) <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.wg.Go(func() {
 		c.cacheLock.Lock()
 
 		// If a connection for this connection string didn't exist yet, create a new container
@@ -181,9 +179,9 @@ func (c *plcConnectionCache) GetConnectionWithContext(ctx context.Context, conne
 			// Store the new connection container in the cache of connections.
 			c.connections[connectionString] = cc
 			// Initialize the connection itself.
-			go func(cc2 *connectionContainer) {
-				cc2.connect(ctx)
-			}(cc)
+			c.wg.Go(func() {
+				cc.connect(ctx)
+			})
 		}
 
 		// Get the ConnectionContainer for this connection string.
@@ -229,19 +227,17 @@ func (c *plcConnectionCache) GetConnectionWithContext(ctx context.Context, conne
 
 		case <-maximumWaitTimeout.C: // Timeout after the maximum waiting time.
 			// In this case we need to drain the chan and return it immediate
-			c.wg.Add(1)
-			go func() {
-				defer c.wg.Done()
+			c.wg.Go(func() {
 				<-leaseChan
 				_ = connection.returnConnection(ctx, StateIdle)
-			}()
+			})
 			if c.tracer != nil {
 				c.tracer.AddTransactionalTrace(txId, "get-connection", "timeout")
 			}
 			c.log.Debug().Str("connectionString", connectionString).Msg("Timeout while waiting for connection.")
 			ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.New("timeout while waiting for connection"))
 		}
-	}()
+	})
 
 	return ch
 }
@@ -250,9 +246,7 @@ func (c *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 	c.log.Debug().Msg("Closing connection cache started.")
 	ch := make(chan PlcConnectionCacheCloseResult)
 
-	c.wg.Add(1)
-	go func() {
-		defer c.wg.Done()
+	c.wg.Go(func() {
 		c.log.Trace().Msg("Acquire lock")
 		c.cacheLock.Lock()
 		defer c.cacheLock.Unlock()
@@ -268,16 +262,16 @@ func (c *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 			return
 		}
 
-		for _, cc := range c.connections {
-			ccLog := c.log.With().Stringer("cc", cc).Logger()
+		for _, connectionContainer := range c.connections {
+			ccLog := c.log.With().Stringer("connectionContainer", connectionContainer).Logger()
 			ccLog.Trace().Msg("Closing connection")
 			// Mark the connection as being closed to not try to re-establish it.
-			cc.closed = true
+			connectionContainer.closed = true
 			// Try to get a lease as this way we kow we're not closing the connection
 			// while some go func is still using it.
-			go func(container *connectionContainer) {
+			c.wg.Go(func() {
 				ccLog.Trace().Msg("getting a lease")
-				leaseResults := container.lease()
+				leaseResults := connectionContainer.lease()
 				closeTimeout := time.NewTimer(c.maxWaitTime)
 				select {
 				// We're just getting the lease as this way we can be sure nobody else is using it.
@@ -286,16 +280,16 @@ func (c *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 				case _ = <-leaseResults:
 					ccLog.Debug().Msg("Gracefully closing connection ...")
 					// Give back the connection.
-					if container.connection != nil {
+					if connectionContainer.connection != nil {
 						ccLog.Trace().Msg("closing actual connection")
-						container.connection.Close()
+						connectionContainer.connection.Close()
 					}
 				// If we're timing out brutally kill the connection.
 				case <-closeTimeout.C:
 					ccLog.Debug().Msg("Forcefully closing connection ...")
 					// Forcefully close this connection.
-					if container.connection != nil {
-						container.connection.Close()
+					if connectionContainer.connection != nil {
+						connectionContainer.connection.Close()
 					}
 				}
 
@@ -306,9 +300,9 @@ func (c *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 				case <-responseDeliveryTimeout.C:
 				}
 				c.log.Debug().Msg("Closing connection cache finished.")
-			}(cc)
+			})
 		}
-	}()
+	})
 
 	return ch
 }
