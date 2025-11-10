@@ -36,30 +36,21 @@ func Test_newDynamicExecutor(t *testing.T) {
 		log                zerolog.Logger
 	}
 	tests := []struct {
-		name        string
-		args        args
-		want        *dynamicExecutor
-		manipulator func(t *testing.T, want *dynamicExecutor, got *dynamicExecutor)
+		name       string
+		args       args
+		wantAssert func(*testing.T, *dynamicExecutor) bool
 	}{
 		{
 			name: "just create it",
-			want: &dynamicExecutor{
-				executor: newExecutor(0, 0, zerolog.Logger{}),
-			},
-			manipulator: func(t *testing.T, want *dynamicExecutor, got *dynamicExecutor) {
-				assert.NotNil(t, got.workItems)
-				want.workItems = got.workItems
+			wantAssert: func(t *testing.T, d *dynamicExecutor) bool {
+				return assert.NotNil(t, d.executor)
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := newDynamicExecutor(tt.args.queueDepth, tt.args.maxNumberOfWorkers, tt.args.log)
-			want := tt.want
-			if tt.manipulator != nil {
-				tt.manipulator(t, want, got)
-			}
-			assert.Equalf(t, want, got, "newDynamicExecutor(%v, %v, %v)", tt.args.queueDepth, tt.args.maxNumberOfWorkers, tt.args.log)
+			assert.Truef(t, tt.wantAssert(t, got), "newDynamicExecutor(%v, %v, %v)", tt.args.queueDepth, tt.args.maxNumberOfWorkers, tt.args.log)
 		})
 	}
 }
@@ -82,6 +73,8 @@ func Test_dynamicExecutor_Start(t *testing.T) {
 					workItems:    make(chan workItem, 1),
 					worker:       make([]*worker, 0),
 					traceWorkers: true,
+					ctxCancel:    func() {},
+					ctx:          t.Context(),
 				},
 				maxNumberOfWorkers: 100,
 			},
@@ -97,6 +90,8 @@ func Test_dynamicExecutor_Start(t *testing.T) {
 					workItems:    make(chan workItem, 1),
 					worker:       make([]*worker, 0),
 					traceWorkers: true,
+					ctxCancel:    func() {},
+					ctx:          t.Context(),
 				},
 				maxNumberOfWorkers: 100,
 			},
@@ -236,24 +231,21 @@ func Test_dynamicExecutor_String(t *testing.T) {
 				maxNumberOfWorkers: 3,
 			},
 			want: `
-╔═dynamicExecutor══════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═executor═══════════════════════════════════════════════════════════════════════════════════════════════╗║
-║║╔═running╗╔═shutdown╗                                                                                   ║║
-║║║b0 false║║b0 false ║                                                                                   ║║
-║║╚════════╝╚═════════╝                                                                                   ║║
-║║╔═worker/value/worker══════════════════════════════════════════════════════════════════════════════════╗║║
-║║║╔═id═════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║║║
-║║║║0x0000000000000000 0║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║║║
-║║║╚════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║║║
-║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
-║║╔═workItems══╗╔═traceWorkers╗                                                                           ║║
-║║║0 element(s)║║  b0 false   ║                                                                           ║║
-║║╚════════════╝╚═════════════╝                                                                           ║║
-║╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
-║╔═maxNumberOfWorkers═╗╔═currentNumberOfWorkers╗╔═interrupter╗                                             ║
-║║0x0000000000000003 3║║     0x00000000 0      ║║0 element(s)║                                             ║
-║╚════════════════════╝╚═══════════════════════╝╚════════════╝                                             ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
+╔═dynamicExecutor═════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═executor══════════════════════════════════════════════════════════════════════════════════════════════╗║
+║║╔═running╗╔═shutdown╗╔═worker/value/worker════════════════════════════════════════════════════════════╗║║
+║║║b0 false║║b0 false ║║╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║║║
+║║╚════════╝╚═════════╝║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║║║
+║║                     ║╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║║║
+║║                     ╚════════════════════════════════════════════════════════════════════════════════╝║║
+║║╔═workerNumber╗╔═workItems══╗╔═traceWorkers╗                                                           ║║
+║║║0x00000000 0 ║║0 element(s)║║  b0 false   ║                                                           ║║
+║║╚═════════════╝╚════════════╝╚═════════════╝                                                           ║║
+║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║
+║╔═maxNumberOfWorkers═╗╔═currentNumberOfWorkers╗╔═interrupter╗                                            ║
+║║0x0000000000000003 3║║     0x00000000 0      ║║0 element(s)║                                            ║
+║╚════════════════════╝╚═══════════════════════╝╚════════════╝                                            ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

@@ -171,16 +171,22 @@ func Test_worker_stop(t *testing.T) {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
 					var wg sync.WaitGroup
 					t.Cleanup(wg.Wait)
 					wg.Go(func() {
-						e.workItems <- workItem{
+						select {
+						case e.workItems <- workItem{
 							workItemId: 0,
 							runnable: func(context.Context) {
 								// No-op
 							},
 							completionFuture: &future{},
+						}:
+						case <-t.Context().Done():
+							return
 						}
 					})
 					return e
@@ -231,6 +237,8 @@ func Test_worker_work(t *testing.T) {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
 					var wg sync.WaitGroup
 					t.Cleanup(wg.Wait)
@@ -267,6 +275,8 @@ func Test_worker_work(t *testing.T) {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
 					var wg sync.WaitGroup
 					t.Cleanup(wg.Wait)
@@ -302,6 +312,8 @@ func Test_worker_work(t *testing.T) {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
 					return e
 				}(),
@@ -327,6 +339,8 @@ func Test_worker_work(t *testing.T) {
 					e := &executor{
 						workItems:    make(chan workItem),
 						traceWorkers: true,
+						ctx:          t.Context(),
+						ctxCancel:    func() {},
 					}
 					var wg sync.WaitGroup
 					t.Cleanup(wg.Wait)
@@ -396,11 +410,11 @@ func Test_worker_String(t *testing.T) {
 		{
 			name: "string it",
 			want: `
-╔═worker═══════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═id═════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║
-║║0x0000000000000000 0║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║
-║╚════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
+╔═worker═════════════════════════════════════════════════════════════════════════╗
+║╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║
+║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║
+║╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║
+╚════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {
