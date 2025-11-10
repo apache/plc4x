@@ -17,14 +17,13 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 https://maven.apache.org/xsd/maven-4.1.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.1.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.14.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-drivers</artifactId>
@@ -37,29 +36,29 @@
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
-  <modules>
-    <module>ab-eth</module>
-    <module>ads</module>
-    <module>bacnet</module>
-    <module>c-bus</module>
-    <module>can</module>
-    <module>canopen</module>
-    <module>ctrlx</module>
-    <module>eip</module>
-    <module>firmata</module>
-    <module>iec-60870</module>
-    <module>knxnetip</module>
-    <module>mock</module>
-    <module>open-protocol</module>
-    <module>modbus</module>
-    <module>opcua</module>
-    <module>plc4x</module>
-    <module>profinet</module>
-    <module>profinet-ng</module>
-    <module>s7</module>
-    <module>simulated</module>
-    <module>umas</module>
-    <module>all</module>
-  </modules>
+  <subprojects>
+    <subproject>ab-eth</subproject>
+    <subproject>ads</subproject>
+    <subproject>bacnet</subproject>
+    <subproject>c-bus</subproject>
+    <subproject>can</subproject>
+    <subproject>canopen</subproject>
+    <subproject>ctrlx</subproject>
+    <subproject>eip</subproject>
+    <subproject>firmata</subproject>
+    <subproject>iec-60870</subproject>
+    <subproject>knxnetip</subproject>
+    <subproject>mock</subproject>
+    <subproject>open-protocol</subproject>
+    <subproject>modbus</subproject>
+    <subproject>opcua</subproject>
+    <subproject>plc4x</subproject>
+    <subproject>profinet</subproject>
+    <subproject>profinet-ng</subproject>
+    <subproject>s7</subproject>
+    <subproject>simulated</subproject>
+    <subproject>umas</subproject>
+    <subproject>all</subproject>
+  </subprojects>
 
 </project>

@@ -17,14 +17,13 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.1.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.14.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-protocols</artifactId>
@@ -37,32 +36,32 @@
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
-  <modules>
-    <module>ab-eth</module>
-    <module>ads</module>
-    <module>c-bus</module>
-    <module>bacnetip</module>
-    <module>canopen</module>
-    <module>cotp</module>
-    <module>df1</module>
-    <module>eip</module>
-    <module>firmata</module>
-    <module>genericcan</module>
-    <module>iec-60870</module>
-    <module>knxnetip</module>
-    <module>modbus</module>
-    <module>mqtt</module>
-    <module>opcua</module>
-    <module>open-protocol</module>
-    <module>plc4x</module>
-    <module>plc4x-api</module>
-    <module>profinet</module>
-    <module>s7</module>
-    <module>simulated</module>
-    <module>slmp</module>
-    <module>socketcan</module>
-    <module>umas</module>
-  </modules>
+  <subprojects>
+    <subproject>ab-eth</subproject>
+    <subproject>ads</subproject>
+    <subproject>c-bus</subproject>
+    <subproject>bacnetip</subproject>
+    <subproject>canopen</subproject>
+    <subproject>cotp</subproject>
+    <subproject>df1</subproject>
+    <subproject>eip</subproject>
+    <subproject>firmata</subproject>
+    <subproject>genericcan</subproject>
+    <subproject>iec-60870</subproject>
+    <subproject>knxnetip</subproject>
+    <subproject>modbus</subproject>
+    <subproject>mqtt</subproject>
+    <subproject>opcua</subproject>
+    <subproject>open-protocol</subproject>
+    <subproject>plc4x</subproject>
+    <subproject>plc4x-api</subproject>
+    <subproject>profinet</subproject>
+    <subproject>s7</subproject>
+    <subproject>simulated</subproject>
+    <subproject>slmp</subproject>
+    <subproject>socketcan</subproject>
+    <subproject>umas</subproject>
+  </subprojects>
 
   <build>
     <plugins>
@@ -98,8 +97,8 @@
               is passed as VM argument when Maven the Failsafe plugin is executed.
           -->
           <execution>
-            <id>pre-integration-test</id>
-            <phase>pre-integration-test</phase>
+            <id>before:integration-test</id>
+            <phase>before:integration-test</phase>
             <goals>
               <goal>prepare-agent-integration</goal>
             </goals>
