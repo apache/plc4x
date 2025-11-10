@@ -200,10 +200,16 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
+            return addChangeOfStateTag(name, tag, consumer, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer,
+                                                                  Duration minInterval) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, consumer));
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, minInterval, consumer));
             return this;
         }
 

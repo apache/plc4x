@@ -21,25 +21,18 @@ package org.apache.plc4x.java.s7.readwrite.utils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
-import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.apache.plc4x.java.s7.readwrite.TimeBase;
 import org.apache.plc4x.java.s7.readwrite.tag.S7SubscriptionTag;
@@ -247,18 +240,20 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
             return addChangeOfStateTag(name, tag, null);
         }
 
-        /*
-        *
-        */        
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
+            return addChangeOfStateTag(name, tag, consumer, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
-            if (!(tag instanceof S7SubscriptionTag)){
+            if (!(tag instanceof S7SubscriptionTag)) {
                 throw new PlcRuntimeException(CONST_INVALID_TYPE);
-            }              
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, consumer));
+            }
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, minInterval, consumer));
             return this;
         }
 
