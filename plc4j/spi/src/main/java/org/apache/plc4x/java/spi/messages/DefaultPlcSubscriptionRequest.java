@@ -179,23 +179,36 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
-            addChangeOfStateTagAddress(name, tagAddress, null);
-            return this;
+            return addChangeOfStateTagAddress(name, tagAddress, null, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration minInterval) {
+            return addChangeOfStateTagAddress(name, tagAddress, null, minInterval);
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
+            return addChangeOfStateTagAddress(name, tagAddress, consumer, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.CHANGE_OF_STATE, consumer));
-            return null;
+            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.CHANGE_OF_STATE, minInterval, consumer));
+            return this;
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
-            addChangeOfStateTag(name, tag, null);
-            return this;
+            return addChangeOfStateTag(name, tag, null, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Duration minInterval) {
+            return addChangeOfStateTag(name, tag, null, minInterval);
         }
 
         @Override

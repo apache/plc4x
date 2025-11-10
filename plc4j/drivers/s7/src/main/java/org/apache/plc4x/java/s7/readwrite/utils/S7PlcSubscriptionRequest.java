@@ -218,26 +218,38 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
-            return addChangeOfStateTagAddress(tagAddress, name);
+            return addChangeOfStateTagAddress(name, tagAddress, null, null);
         }
 
-        /*
-        *
-        */
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration minInterval) {
+            return addChangeOfStateTagAddress(name, tagAddress, null, minInterval);
+        }
+
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
+            return addChangeOfStateTagAddress(name, tagAddress, consumer, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
-            S7Tag[] s7tags = new S7Tag[]{S7Tag.of(tagAddress)};   
-            S7SubscriptionTag tag = new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION, s7tags, TimeBase.B01SEC, (short) 1);            
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, consumer));
+            S7Tag[] s7tags = new S7Tag[]{S7Tag.of(tagAddress)};
+            S7SubscriptionTag tag = new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION, s7tags, TimeBase.B01SEC, (short) 1);
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, minInterval, consumer));
             return this;
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
-            return addChangeOfStateTag(name, tag, null);
+            return addChangeOfStateTag(name, tag, null, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Duration minInterval) {
+            return addChangeOfStateTag(name, tag, null, minInterval);
         }
 
         @Override
