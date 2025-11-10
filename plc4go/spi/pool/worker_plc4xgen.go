@@ -49,7 +49,7 @@ func (d *worker) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return err
 	}
 
-	if err := writeBuffer.WriteInt64("id", 64, int64(d.id)); err != nil {
+	if err := writeBuffer.WriteString("id", uint32(len(d.id)*8), d.id); err != nil {
 		return err
 	}
 

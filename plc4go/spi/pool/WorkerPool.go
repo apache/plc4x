@@ -21,6 +21,7 @@ package pool
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"time"
 
@@ -54,7 +55,8 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.
 	_executor := newDynamicExecutor(queueDepth, maxNumberOfWorkers, customLogger)
 	_executor.traceWorkers, _ = options.ExtractTracerWorkers(_options...)
 	// We spawn one initial worker
-	w := newWorker(customLogger, 0, _executor)
+	workerId := fmt.Sprintf("%s-worker-%d", _executor.name, 0)
+	w := newWorker(customLogger, workerId, _executor)
 	w.lastReceived.Store(time.Now()) // We store the current timestamp so the worker isn't cut of instantly by the worker killer
 	_executor.worker = append(_executor.worker, w)
 	return _executor

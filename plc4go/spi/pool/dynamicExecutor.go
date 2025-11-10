@@ -20,6 +20,7 @@
 package pool
 
 import (
+	"fmt"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -95,11 +96,11 @@ func (e *dynamicExecutor) Start() {
 				Msg("Checking if numberOfItemsInQueue > numberOfWorkers && numberOfWorkers < maxNumberOfWorkers")
 			if numberOfItemsInQueue > numberOfWorkers && numberOfWorkers < e.maxNumberOfWorkers {
 				workerLog.Trace().Msg("spawning new worker")
-				workerId := numberOfWorkers - 1
+				workerId := fmt.Sprintf("%s-worker-%d", e.name, numberOfWorkers-1)
 				_worker := newWorker(e.log, workerId, e)
 				_worker.lastReceived.Store(time.Now()) // We store the current timestamp so the worker isn't cut of instantly by the worker killer
 				e.worker = append(e.worker, _worker)
-				workerLog.Info().Int("Worker id", _worker.id).Msg("spawning")
+				workerLog.Info().Str("Worker id", _worker.id).Msg("spawning")
 				_worker.start()
 				e.currentNumberOfWorkers.Add(1)
 			} else {
@@ -140,16 +141,16 @@ func (e *dynamicExecutor) Start() {
 			for _, _worker := range e.worker {
 				deadline := time.Now().Add(-timeToBecomeUnused)
 				workerLog.Debug().
-					Int("workerId", _worker.id).
+					Str("workerId", _worker.id).
 					Time("lastReceived", _worker.lastReceived.Load().(time.Time)).
 					Time("deadline", deadline).
 					Msg("Checking if lastReceived is before deadline")
 				if _worker.lastReceived.Load().(time.Time).Before(deadline) {
-					workerLog.Info().Int("Worker id", _worker.id).Msg("killing")
+					workerLog.Info().Str("Worker id", _worker.id).Msg("killing")
 					_worker.stop(true)
 					e.currentNumberOfWorkers.Add(-1)
 				} else {
-					workerLog.Debug().Int("Worker id", _worker.id).Msg("still ok")
+					workerLog.Debug().Str("Worker id", _worker.id).Msg("still ok")
 					newWorkers = append(newWorkers, _worker)
 					workersChanged = true
 				}
@@ -175,7 +176,7 @@ func (e *dynamicExecutor) Start() {
 }
 
 func (e *dynamicExecutor) Stop() {
-	defer utils.StopWarn(e.log)()
+	defer utils.StopWarn(e.log, utils.WithStopWarnProcessId(e.name))()
 	e.log.Trace().Msg("stopping now")
 	e.dynamicStateChange.Lock()
 	defer e.dynamicStateChange.Unlock()

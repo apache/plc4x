@@ -460,7 +460,7 @@ func Test_executor_String(t *testing.T) {
 				shutdown: true,
 				worker: []*worker{
 					{
-						id:          1,
+						id:          "1",
 						shutdown:    atomic.Bool{},
 						interrupted: atomic.Bool{},
 						lastReceived: func() atomic.Value {

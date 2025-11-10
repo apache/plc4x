@@ -49,6 +49,10 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return err
 	}
 
+	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), d.name); err != nil {
+		return err
+	}
+
 	if err := writeBuffer.WriteBit("running", d.running); err != nil {
 		return err
 	}
@@ -82,6 +86,10 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		}
 	}
 	if err := writeBuffer.PopContext("worker", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteUint32("workerNumber", 32, d.workerNumber.Load()); err != nil {
 		return err
 	}
 

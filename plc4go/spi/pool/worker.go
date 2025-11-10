@@ -31,7 +31,7 @@ import (
 
 //go:generate go tool plc4xGenerator -type=worker
 type worker struct {
-	id       int
+	id       string
 	executor interface {
 		isTraceWorkers() bool
 		getWorksItems() chan workItem
@@ -50,7 +50,7 @@ type worker struct {
 	log zerolog.Logger
 }
 
-func newWorker(localLog zerolog.Logger, workerId int, executor interface {
+func newWorker(localLog zerolog.Logger, workerId string, executor interface {
 	isTraceWorkers() bool
 	getWorksItems() chan workItem
 	getWorkerWaitGroup() *sync.WaitGroup
@@ -59,7 +59,7 @@ func newWorker(localLog zerolog.Logger, workerId int, executor interface {
 	w := &worker{
 		id:       workerId,
 		executor: executor,
-		log:      localLog.With().Int("workerId", workerId).Logger(),
+		log:      localLog.With().Str("workerId", workerId).Logger(),
 	}
 	w.initialize()
 	return w
@@ -79,7 +79,7 @@ func (w *worker) start() {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
 	if w.running.Load() {
-		w.log.Warn().Int("Worker id", w.id).Msg("Worker already started")
+		w.log.Warn().Msg("Worker already started")
 		return
 	}
 	if w.executor.isTraceWorkers() {
@@ -93,7 +93,7 @@ func (w *worker) stop(interrupt bool) {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
 	if !w.running.Load() {
-		w.log.Warn().Int("Worker id", w.id).Msg("Worker not running")
+		w.log.Warn().Msg("Worker not running")
 		return
 	}
 

@@ -143,7 +143,8 @@ func TestNewDynamicExecutor(t *testing.T) {
 				t.Cleanup(wg.Wait)
 				wg.Go(func() {
 					for i := 0; i < 500; i++ {
-						e.workItems <- workItem{
+						select {
+						case e.workItems <- workItem{
 							workItemId: int32(i),
 							runnable: func(runnableCtx context.Context) {
 								ctx, cancel := context.WithCancel(t.Context())
@@ -158,7 +159,10 @@ func TestNewDynamicExecutor(t *testing.T) {
 								case <-ctx.Done():
 								}
 							},
-							completionFuture: &future{},
+							completionFuture: &future{}}:
+							t.Logf("Item %d added", i)
+						case <-t.Context().Done():
+							return
 						}
 					}
 				})
@@ -177,7 +181,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 				tt.setup(t, &tt.args)
 			}
 			dynamicSizedExecutor := NewDynamicExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
-			defer dynamicSizedExecutor.Stop()
+			t.Cleanup(dynamicSizedExecutor.Stop)
 			if tt.manipulator != nil {
 				tt.manipulator(t, dynamicSizedExecutor.(*dynamicExecutor))
 			}
