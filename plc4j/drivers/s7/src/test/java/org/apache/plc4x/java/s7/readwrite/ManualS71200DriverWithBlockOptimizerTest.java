@@ -85,15 +85,15 @@ public class ManualS71200DriverWithBlockOptimizerTest extends ManualTest {
         test.addTestCase("%DB4:26:UDINT", new PlcUDINT(4242442424L));
         test.addTestCase("%DB4:46:REAL", new PlcREAL(3.141593F));
         test.addTestCase("%DB4:50:LREAL", new PlcLREAL(2.71828182846D));
+        test.addTestCase("%DB4:58:TIME", new PlcTIME(Duration.parse("PT1.234S")));
+        test.addTestCase("%DB4:70:DATE", new PlcDATE(LocalDate.parse("1998-03-28")));
+        test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         test.addTestCase("%DB4:136:CHAR", new PlcCHAR("H"));
         test.addTestCase("%DB4:138:WCHAR", new PlcWCHAR("w"));
         test.addTestCase("%DB4:140:STRING(200)", new PlcSTRING("hurz"));
         test.addTestCase("%DB4:396:WSTRING(100)", new PlcWSTRING("wolf"));
         //test.addTestCase("%DB4:140:STRING", new PlcSTRING("hurz"));
         //test.addTestCase("%DB4:396:WSTRING", new PlcWSTRING("wolf"));
-        test.addTestCase("%DB4:58:TIME", new PlcTIME(Duration.parse("PT1.234S")));
-        test.addTestCase("%DB4:70:DATE", new PlcDATE(LocalDate.parse("1998-03-28")));
-        test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         test.addTestCase("%DB4:908:CHAR[5]", new PlcList(Arrays.asList(new PlcCHAR("w"), new PlcCHAR("i"), new PlcCHAR("e"), new PlcCHAR("s"), new PlcCHAR("e"))));
         test.addTestCase("%DB4:914:RAW_BYTE_ARRAY[11]", new PlcRawByteArray(new byte[] {(byte) 0, (byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6, (byte) 7, (byte) 8, (byte) 9, (byte) 10}));
         // Disabled, as we currently only have the large-array-splitting for read requests.
