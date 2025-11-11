@@ -82,10 +82,10 @@ public abstract class ManualTest {
                 // Run all entries separately:
                 for (TestCase testCase : testCases) {
                     String tagName = testCase.address;
+                    System.out.println(" - Single Tag: " + tagName);
 
                     // Try reading the value from the PLC.
                     if (testRead) {
-                        System.out.println(" - Reading: " + tagName);
                         // Prepare the read-request
                         final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress(
                             tagName, testCase.address).build();
@@ -139,12 +139,11 @@ public abstract class ManualTest {
                                     readResponse.getPlcValue(tagName).getObject().toString(), tagName);
                             }
                         }
+                        System.out.println("        - Read OK (" + (endTime - startTime) + " ms)");
                     }
 
                     // Try writing the value to the PLC.
                     if (testWrite) {
-                        System.out.println(" - Writing: " + tagName);
-
                         // Prepare the write request
                         PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addTagAddress(
                             tagName, testCase.address, testCase.expectedReadValue).build();
@@ -158,6 +157,7 @@ public abstract class ManualTest {
                         Assertions.assertEquals(testCase.responseCode, writeResponse.getResponseCode(tagName),
                             String.format("Got status %s for %s",
                                 writeResponse.getResponseCode(tagName).name(), testCase.address));
+                        System.out.println("        - Write OK (" + (endTime - startTime) + " ms)");
                     }
                 }
                 System.out.println("Success");
