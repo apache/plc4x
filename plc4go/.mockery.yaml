@@ -15,19 +15,26 @@
 # specific language governing permissions and limitations
 # under the License.
 
-with-expecter: true
-inpackage: True
-testonly: True
-mockname: "{{.Mock}}{{.InterfaceName}}"
-boilerplate-file: .mockery.asl.header
-
+all: true
+dir: '{{.InterfaceDir}}'
+filename: mocks_test.go
+force-file-write: true
+formatter: goimports
+include-auto-generated: false
+log-level: info
+structname: '{{.Mock}}{{.InterfaceName}}'
+pkgname: '{{.SrcPackageName}}'
+recursive: true
+require-template-schema-exists: true
+template: testify
+template-schema: '{{.Template}}.schema.json'
+template-data:
+  boilerplate-file: .mockery.asl.header
 packages:
   github.com/apache/plc4x/plc4go:
     config:
-      recursive: true
-      include-regex: ".*.go"
-      exclude-regex: "Element"
-      exclude:
+      all: true
+      exclude-subpkg-regex:
       - .idea
       - .git
       - protocols
