@@ -55,13 +55,16 @@ type executor struct {
 	log zerolog.Logger
 }
 
-func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolog.Logger) *executor {
+func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolog.Logger, opts ...func(*executor)) *executor {
 	e := &executor{
 		name:      fmt.Sprintf("executor-%d", defaultExecutorNameUsage.Add(1)),
 		workItems: make(chan workItem, queueDepth),
 		log:       customLogger,
 	}
 	e.ctx, e.ctxCancel = context.WithCancel(context.Background())
+	for _, opt := range opts {
+		opt(e)
+	}
 	workers := make([]*worker, numberOfInitialWorkers)
 	for i := 0; i < numberOfInitialWorkers; i++ {
 		w := newWorker(customLogger, fmt.Sprintf("%s-worker-%d", e.name, i), e)
@@ -69,6 +72,18 @@ func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolo
 	}
 	e.worker = workers
 	return e
+}
+
+func withExecutorName(name string) func(*executor) {
+	return func(e *executor) {
+		e.name = name
+	}
+}
+
+func withTraceWorkers(traceWorkers bool) func(*executor) {
+	return func(e *executor) {
+		e.traceWorkers = traceWorkers
+	}
 }
 
 func (e *executor) isTraceWorkers() bool {

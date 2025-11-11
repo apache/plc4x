@@ -47,9 +47,9 @@ type dynamicExecutor struct {
 	wg sync.WaitGroup // use to track spawned go routines
 }
 
-func newDynamicExecutor(queueDepth, maxNumberOfWorkers int, log zerolog.Logger) *dynamicExecutor {
+func newDynamicExecutor(queueDepth, maxNumberOfWorkers int, log zerolog.Logger, opts ...func(*executor)) *dynamicExecutor {
 	return &dynamicExecutor{
-		executor:           newExecutor(queueDepth, 0, log),
+		executor:           newExecutor(queueDepth, 0, log, opts...),
 		maxNumberOfWorkers: maxNumberOfWorkers,
 	}
 }

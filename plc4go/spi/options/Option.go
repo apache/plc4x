@@ -168,11 +168,11 @@ func WithExecutorOptionName(name string) WithOption {
 }
 
 // ExtractExecutorName returns the value from WithExecutorOptionName
-func ExtractExecutorName(_options ...WithOption) (executorName string) {
+func ExtractExecutorName(_options ...WithOption) (executorName string, found bool) {
 	for _, option := range _options {
 		switch option := option.(type) {
 		case *withExecutorNameOption:
-			executorName = option.name
+			executorName, found = option.name, true
 		}
 	}
 	return
