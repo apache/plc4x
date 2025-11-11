@@ -56,7 +56,7 @@ public class AdsDataTypeArrayInfo implements Message {
   }
 
   public long getUpperBound() {
-    return (long) ((getLowerBound()) + (getNumElements()));
+    return (long) ((getLowerBound()) + (((getNumElements()) - (1L))));
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -127,7 +127,7 @@ public class AdsDataTypeArrayInfo implements Message {
         readVirtualField(
             "upperBound",
             long.class,
-            (lowerBound) + (numElements),
+            (lowerBound) + (((numElements) - (1L))),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("AdsDataTypeArrayInfo");
