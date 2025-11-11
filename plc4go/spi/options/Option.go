@@ -162,6 +162,22 @@ func ExtractTracerWorkers(_options ...WithOption) (traceWorkers bool, found bool
 	return
 }
 
+// WithExecutorOptionName sets a name
+func WithExecutorOptionName(name string) WithOption {
+	return &withExecutorNameOption{name: name}
+}
+
+// ExtractExecutorName returns the value from WithExecutorOptionName
+func ExtractExecutorName(_options ...WithOption) (executorName string) {
+	for _, option := range _options {
+		switch option := option.(type) {
+		case *withExecutorNameOption:
+			executorName = option.name
+		}
+	}
+	return
+}
+
 // GetLoggerContextForModel returns a log context if the WithPassLoggerToModel WithOption is set
 func GetLoggerContextForModel(ctx context.Context, log zerolog.Logger, options ...WithOption) context.Context {
 	passToModel := false
@@ -216,6 +232,11 @@ type withTraceDefaultMessageCodecWorker struct {
 type withTracerExecutorWorkersOption struct {
 	Option
 	traceWorkers bool
+}
+
+type withExecutorNameOption struct {
+	Option
+	name string
 }
 
 //

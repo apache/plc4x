@@ -47,6 +47,9 @@ func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.W
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	_executor := newExecutor(queueDepth, numberOfWorkers, customLogger)
 	_executor.traceWorkers, _ = options.ExtractTracerWorkers(_options...)
+	if name := options.ExtractExecutorName(_options...); name != "" {
+		_executor.name = name
+	}
 	return _executor
 }
 
@@ -54,6 +57,9 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	_executor := newDynamicExecutor(queueDepth, maxNumberOfWorkers, customLogger)
 	_executor.traceWorkers, _ = options.ExtractTracerWorkers(_options...)
+	if name := options.ExtractExecutorName(_options...); name != "" {
+		_executor.name = name
+	}
 	// We spawn one initial worker
 	workerId := fmt.Sprintf("%s-worker-%d", _executor.name, 0)
 	w := newWorker(customLogger, workerId, _executor)
