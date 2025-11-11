@@ -400,10 +400,6 @@
             <phase>none</phase>
           </execution>
         </executions>
-        <configuration>
-          <!-- TODO: configuration issue. This is now true in maven 4 and we should investigate why we fail without that-->
-          <installAtEnd>false</installAtEnd>
-        </configuration>
       </plugin>
 
       <!-- Ensure we don't deploy anything -->

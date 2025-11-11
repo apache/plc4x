@@ -1687,6 +1687,13 @@
             </executions>
           </plugin>
           <plugin>
+            <artifactId>maven-install-plugin</artifactId>
+            <configuration>
+              <!-- TODO: configuration issue. This is now true in maven 4 and we should investigate why we fail without that-->
+              <installAtEnd>false</installAtEnd>
+            </configuration>
+          </plugin>
+          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-deploy-plugin</artifactId>
             <executions>
@@ -1701,6 +1708,10 @@
                 </configuration>
               </execution>
             </executions>
+            <configuration>
+              <!-- TODO: configuration issue. This is now true in maven 4 and we should investigate why we fail without that-->
+              <deployAtEnd>false</deployAtEnd>
+            </configuration>
           </plugin>
           <!--
             Generate an SBOM for the project
