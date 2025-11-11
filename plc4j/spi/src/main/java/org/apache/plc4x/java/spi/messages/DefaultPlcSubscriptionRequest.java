@@ -179,31 +179,50 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
-            addChangeOfStateTagAddress(name, tagAddress, null);
-            return this;
+            return addChangeOfStateTagAddress(name, tagAddress, null, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration minInterval) {
+            return addChangeOfStateTagAddress(name, tagAddress, null, minInterval);
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
-            if (tags.containsKey(name)) {
-                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
-            }
-            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.CHANGE_OF_STATE, consumer));
-            return null;
+            return addChangeOfStateTagAddress(name, tagAddress, consumer, null);
         }
 
         @Override
-        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
-            addChangeOfStateTag(name, tag, null);
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.CHANGE_OF_STATE, minInterval, consumer));
             return this;
         }
 
         @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
+            return addChangeOfStateTag(name, tag, null, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Duration minInterval) {
+            return addChangeOfStateTag(name, tag, null, minInterval);
+        }
+
+        @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
+            return addChangeOfStateTag(name, tag, consumer, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer,
+                                                                  Duration minInterval) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, consumer));
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, minInterval, consumer));
             return this;
         }
 
