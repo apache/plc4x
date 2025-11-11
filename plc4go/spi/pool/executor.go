@@ -47,7 +47,7 @@ type executor struct {
 	traceWorkers bool
 
 	ctx       context.Context
-	ctxCancel context.CancelFunc
+	ctxCancel context.CancelFunc `ignore:"true"`
 
 	stateChange     sync.RWMutex
 	workerWaitGroup sync.WaitGroup
