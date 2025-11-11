@@ -1518,8 +1518,10 @@
     ['763' M_HYUNDAI ['824', '"HYUNDAI"']]
     ['764' M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_ ['825', '"Qingdao Hisense TransTech Co.,Ltd."']]
     ['765' M_SPECIALCAVI_BALDASSARI_SRL ['826', '"SPECIALCAVI BALDASSARI SRL"']]
-    ['766' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['767' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['766' M_OSPA_APPARATEBAU_PAUSER_GMBH_AND_CO__KG ['827', '"Ospa Apparatebau Pauser GmbH & Co. KG"']]
+    ['767' M_PLH ['828', '"PLH"']]
+    ['768' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['769' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
