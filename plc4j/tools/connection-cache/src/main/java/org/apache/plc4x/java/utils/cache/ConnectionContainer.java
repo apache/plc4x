@@ -152,6 +152,7 @@ class ConnectionContainer {
                 // If something goes wrong, close all waiting futures exceptionally.
                 LOGGER.warn("Can't get connection for {} complete queue items exceptionally", connectionUrl, e);
                 queue.forEach(future -> future.completeExceptionally(e));
+                queue.clear();
                 connection = null;
             }
         }
@@ -177,6 +178,9 @@ class ConnectionContainer {
             }, maxIdleTime.toMillis());
             return;
         }
+
+
+
 
         // Create a new lease and complete the next future in the queue with this.
         leasedConnection = new LeasedPlcConnection(this, connection, maxLeaseTime);
