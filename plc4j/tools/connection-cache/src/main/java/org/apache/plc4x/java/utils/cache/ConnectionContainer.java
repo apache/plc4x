@@ -179,9 +179,6 @@ class ConnectionContainer {
             return;
         }
 
-
-
-
         // Create a new lease and complete the next future in the queue with this.
         leasedConnection = new LeasedPlcConnection(this, connection, maxLeaseTime);
         CompletableFuture<PlcConnection> leaseFuture = queue.poll();
