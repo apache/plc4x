@@ -87,6 +87,8 @@ type defaultCodec struct {
 	running                 atomic.Bool
 	stateChange             sync.Mutex
 	activeWorker            sync.WaitGroup
+	notifyExpireWorker      chan struct{} `ignore:"true"`
+	notifyReceiveWorker     chan struct{} `ignore:"true"`
 
 	receiveTimeout                 time.Duration
 	traceDefaultMessageCodecWorker bool
@@ -118,6 +120,8 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
 		expectations:                   []spi.Expectation{},
 		customMessageHandling:          customMessageHandler,
+		notifyExpireWorker:             make(chan struct{}),
+		notifyReceiveWorker:            make(chan struct{}),
 		receiveTimeout:                 receiveTimeout,
 		traceDefaultMessageCodecWorker: traceDefaultMessageCodecWorker || config.TraceDefaultMessageCodecWorker,
 		log:                            customLogger,
@@ -158,7 +162,7 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	}
 
 	m.log.Debug().Msg("Message codec currently not running, starting worker now")
-	m.startWorker()
+	m.startWorkers()
 	m.running.Store(true)
 	m.log.Trace().Msg("connected")
 	return nil
@@ -172,6 +176,8 @@ func (m *defaultCodec) Disconnect() error {
 	}
 	m.log.Trace().Msg("Disconnecting")
 	m.running.Store(false)
+	close(m.notifyExpireWorker)
+	close(m.notifyReceiveWorker)
 	m.log.Trace().Msg("Waiting for worker to shutdown")
 	m.activeWorker.Wait()
 	m.log.Trace().Msg("worker shut down")
@@ -195,6 +201,14 @@ func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMes
 	expectation := newDefaultExpectation(ctx, ttl, acceptsMessage, handleMessage, handleError)
 	m.expectations = append(m.expectations, expectation)
 	m.log.Debug().Stringer("expectation", expectation).Msg("Added expectation")
+	select {
+	case m.notifyExpireWorker <- struct{}{}:
+	default:
+	}
+	select {
+	case m.notifyReceiveWorker <- struct{}{}:
+	default:
+	}
 }
 
 func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
@@ -206,7 +220,7 @@ func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acc
 	return m.Send(message)
 }
 
-func (m *defaultCodec) TimeoutExpectations(now time.Time) {
+func (m *defaultCodec) TimeoutExpectations(now time.Time) time.Duration {
 	m.expectationsChangeMutex.Lock() // TODO: Note: would be nice if this is a read mutex which can be upgraded
 	defer m.expectationsChangeMutex.Unlock()
 	m.expectations = slices.DeleteFunc(m.expectations, func(expectation spi.Expectation) bool {
@@ -234,6 +248,14 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 		}
 		return false
 	})
+	nextExpire := 30 * time.Second
+	for _, expectation := range m.expectations {
+		expiresIn := time.Until(expectation.GetExpiration())
+		if expiresIn < nextExpire {
+			nextExpire = expiresIn
+		}
+	}
+	return nextExpire
 }
 
 func (m *defaultCodec) HandleMessages(message spi.Message) bool {
@@ -271,12 +293,79 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	return messageHandled
 }
 
-func (m *defaultCodec) startWorker() {
-	m.log.Trace().Msg("starting worker")
-	m.activeWorker.Go(m.Work)
+func (m *defaultCodec) startWorkers() {
+	m.log.Trace().Msg("starting workers")
+	m.startExpire()
+	m.startReceive()
 }
 
-func (m *defaultCodec) Work() {
+func (m *defaultCodec) startExpire() {
+	m.log.Trace().Msg("starting expire worker")
+	m.activeWorker.Go(m.ExpireWork)
+}
+
+func (m *defaultCodec) startReceive() {
+	m.log.Trace().Msg("starting receive worker")
+	m.activeWorker.Go(m.ReceiveWork)
+}
+
+func (m *defaultCodec) ExpireWork() {
+	workerLog := m.log.With().Logger()
+	if !m.traceDefaultMessageCodecWorker {
+		workerLog = zerolog.Nop()
+	}
+	workerLog.Trace().Msg("Starting expire work")
+	defer workerLog.Trace().Msg("expire work ended")
+
+	defer func() {
+		if err := recover(); err != nil {
+			m.log.Error().
+				Str("stack", string(debug.Stack())).
+				Interface("err", err).
+				Msg("panic-ed")
+		}
+		if m.running.Load() {
+			workerLog.Warn().Msg("Keep running")
+			m.startExpire()
+		} else {
+			workerLog.Info().Msg("expire worker terminated")
+		}
+	}()
+
+	// Start an endless loop
+mainLoop:
+	for m.running.Load() {
+		workerLog.Trace().Msg("expire mainloop cycle")
+		now := time.Now()
+
+		// Guard against empty expectations
+		m.expectationsChangeMutex.RLock()
+		numberOfExpectations := len(m.expectations)
+		m.expectationsChangeMutex.RUnlock()
+		if numberOfExpectations <= 0 && m.customMessageHandling == nil {
+			workerLog.Trace().Msg("no available expectations")
+			timer := time.NewTimer(30 * time.Second)
+			select {
+			case <-m.notifyExpireWorker:
+				workerLog.Trace().Msg("waking up because of notification")
+			case <-timer.C:
+				workerLog.Trace().Msg("waking up for next expire")
+			}
+			continue mainLoop
+		}
+		nextExpire := m.TimeoutExpectations(now)
+		workerLog.Debug().Dur("nextExpire", nextExpire).Msg("waiting for next expire")
+		timer := time.NewTimer(nextExpire)
+		select {
+		case <-m.notifyExpireWorker:
+			workerLog.Trace().Msg("waking up because of notification")
+		case <-timer.C:
+			workerLog.Trace().Msg("waking up for next expire")
+		}
+	}
+}
+
+func (m *defaultCodec) ReceiveWork() {
 	workerLog := m.log.With().Logger()
 	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
@@ -293,9 +382,9 @@ func (m *defaultCodec) Work() {
 		}
 		if m.running.Load() {
 			workerLog.Warn().Msg("Keep running")
-			m.startWorker()
+			m.startReceive()
 		} else {
-			workerLog.Info().Msg("Worker terminated")
+			workerLog.Info().Msg("receive worker terminated")
 		}
 	}()
 
@@ -311,11 +400,7 @@ mainLoop:
 		} else {
 			workerLog.Debug().Stringer("processingTime", processingTime).Msg("no need to sleep") // we use stringer instead of Dur to have it a bit more readable
 		}
-		workerLog.Trace().Msg("Working")
-		// Check for any expired expectations.
-		// (Doing this outside the loop lets us expire expectations even if no input is coming in)
-		now := time.Now()
-		lastLoopTime = now
+		workerLog.Trace().Msg("receive mainloop cycle")
 
 		// Guard against empty expectations
 		m.expectationsChangeMutex.RLock()
@@ -323,9 +408,15 @@ mainLoop:
 		m.expectationsChangeMutex.RUnlock()
 		if numberOfExpectations <= 0 && m.customMessageHandling == nil {
 			workerLog.Trace().Msg("no available expectations")
-			continue mainLoop
+			timer := time.NewTimer(30 * time.Second)
+			select {
+			case <-m.notifyReceiveWorker:
+				workerLog.Trace().Msg("waking up because of notification")
+			case <-timer.C:
+				workerLog.Trace().Msg("waking up for next receive")
+				continue mainLoop
+			}
 		}
-		m.TimeoutExpectations(now)
 
 		workerLog.Trace().Msg("Receiving message")
 		// Check for incoming messages.
