@@ -175,7 +175,7 @@ func (m *_AdsDataTypeArrayInfo) GetNumElements() uint32 {
 func (m *_AdsDataTypeArrayInfo) GetUpperBound() uint32 {
 	ctx := context.Background()
 	_ = ctx
-	return uint32(uint32(m.GetLowerBound()) + uint32(m.GetNumElements()))
+	return uint32(uint32(m.GetLowerBound()) + uint32((uint32(m.GetNumElements()) - uint32(uint32(1)))))
 }
 
 ///////////////////////
@@ -255,7 +255,7 @@ func (m *_AdsDataTypeArrayInfo) parse(ctx context.Context, readBuffer utils.Read
 	}
 	m.NumElements = numElements
 
-	upperBound, err := ReadVirtualField[uint32](ctx, "upperBound", (*uint32)(nil), uint32(lowerBound)+uint32(numElements), codegen.WithByteOrder(binary.LittleEndian))
+	upperBound, err := ReadVirtualField[uint32](ctx, "upperBound", (*uint32)(nil), uint32(lowerBound)+uint32((uint32(numElements)-uint32(uint32(1)))), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'upperBound' field"))
 	}
