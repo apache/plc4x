@@ -864,9 +864,9 @@
 ]
 
 [type AdsDataTypeArrayInfo byteOrder='LITTLE_ENDIAN'
-    [simple  uint 32 lowerBound                            ]
-    [simple  uint 32 numElements                           ]
-    [virtual uint 32 upperBound  'lowerBound + numElements']
+    [simple  uint 32 lowerBound                                                                                        ]
+    [simple  uint 32 numElements                                                                                       ]
+    [virtual uint 32 upperBound  'lowerBound + (numElements - 1)'                                                      ]
 ]
 
 // From: https://infosys.beckhoff.com/english.php?content=../content/1033/tcplclib_tc2_system/31064331.html&id=
