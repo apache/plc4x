@@ -21,15 +21,28 @@ package org.apache.plc4x.protocol.ads;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
 
 public class ManualAdsBrowse {
 
     public static void main(String[] args) throws Exception {
         try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection("ads:tcp://192.168.23.20:48898?target-ams-port=851&source-ams-port=65534&source-ams-net-id=192.168.23.220.1.1&target-ams-net-id=192.168.23.20.1.1")){
-            connection.browseRequestBuilder().addQuery("all", "*").build().executeWithInterceptor((query, item) -> {
-                System.out.printf("- %s%n", item.getTag().getAddressString());
-                return true;
-            }).get();
+            PlcBrowseResponse plcBrowseResponse = connection.browseRequestBuilder()
+                //.addQuery("all", "**")
+                .addQuery("allMain", "MAIN.*")
+                .build().executeWithInterceptor((tag, item) -> {
+                    outputItem(item, 0);
+                    return true;
+                }).get();
+            System.out.println(plcBrowseResponse);
+        }
+    }
+
+    protected static void outputItem(PlcBrowseItem item, int level) {
+        System.out.printf("%s- %s (%s %s)%n", "  ".repeat(level), item.getName(), item.getTag().getAddressString(), item.getTag().getPlcValueType());
+        if ((item.getChildren() != null) && !item.getChildren().isEmpty()) {
+            item.getChildren().forEach((s, plcBrowseItem) -> outputItem(plcBrowseItem, level + 1));
         }
     }
 }
