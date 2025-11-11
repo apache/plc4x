@@ -7,6 +7,9 @@ New Features
 
 - Java Configurations of drivers now support a "FILE" type
   of configuration parameter.
+- Subscription of change-of-state values now supports
+  providing a min time interval to prevent excessive
+  notifications.
 
 Incompatible changes
 --------------------
