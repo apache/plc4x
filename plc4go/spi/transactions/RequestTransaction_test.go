@@ -307,7 +307,7 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 			},
 			args: args{
 				ctx: func() context.Context {
-					ctx, cancelFunc := context.WithCancel(context.Background())
+					ctx, cancelFunc := context.WithCancel(t1.Context())
 					cancelFunc()
 					return ctx
 				}(),

@@ -729,7 +729,7 @@ func Test_writeBufferPlcValueBased_WriteSerializable(t *testing.T) {
 		{
 			name: "write it",
 			args: args{
-				ctx:          context.Background(),
+				ctx:          t.Context(),
 				serializable: NewPlcBOOL(true),
 			},
 			wantErr: assert.NoError,

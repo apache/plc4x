@@ -1647,16 +1647,16 @@ func (_c *MockMessageCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockMe
 }
 
 // Send provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Send(message Message) error {
-	ret := _mock.Called(message)
+func (_mock *MockMessageCodec) Send(message Message, timeout time.Duration) error {
+	ret := _mock.Called(message, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(Message) error); ok {
-		r0 = returnFunc(message)
+	if returnFunc, ok := ret.Get(0).(func(Message, time.Duration) error); ok {
+		r0 = returnFunc(message, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1670,18 +1670,24 @@ type MockMessageCodec_Send_Call struct {
 
 // Send is a helper method to define mock.On call
 //   - message Message
-func (_e *MockMessageCodec_Expecter) Send(message interface{}) *MockMessageCodec_Send_Call {
-	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", message)}
+//   - timeout time.Duration
+func (_e *MockMessageCodec_Expecter) Send(message interface{}, timeout interface{}) *MockMessageCodec_Send_Call {
+	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", message, timeout)}
 }
 
-func (_c *MockMessageCodec_Send_Call) Run(run func(message Message)) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) Run(run func(message Message, timeout time.Duration)) *MockMessageCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 Message
 		if args[0] != nil {
 			arg0 = args[0].(Message)
 		}
+		var arg1 time.Duration
+		if args[1] != nil {
+			arg1 = args[1].(time.Duration)
+		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -1692,7 +1698,7 @@ func (_c *MockMessageCodec_Send_Call) Return(err error) *MockMessageCodec_Send_C
 	return _c
 }
 
-func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(message Message) error) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(message Message, timeout time.Duration) error) *MockMessageCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -450,7 +450,7 @@ func TestDefaultPlcWriteRequest_ExecuteWithContext(t *testing.T) {
 			name: "execute it with interceptor with three request (context done)",
 			args: args{
 				ctx: func() context.Context {
-					timeout, cancelFunc := context.WithCancel(context.Background())
+					timeout, cancelFunc := context.WithCancel(t.Context())
 					cancelFunc()
 					return timeout
 				}(),
@@ -490,7 +490,7 @@ func TestDefaultPlcWriteRequest_ExecuteWithContext(t *testing.T) {
 			name: "execute it with interceptor with three request",
 			args: args{
 				ctx: func() context.Context {
-					timeout, cancelFunc := context.WithTimeout(context.Background(), 1*time.Second)
+					timeout, cancelFunc := context.WithTimeout(t.Context(), 1*time.Second)
 					t.Cleanup(cancelFunc)
 					return timeout
 				}(),

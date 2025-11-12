@@ -22,6 +22,7 @@ package ads
 import (
 	"context"
 	"encoding/binary"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -67,43 +68,49 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Send(message spi.Message) error {
+func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
 	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	tcpPaket := message.(model.AmsTCPPacket)
 	// Serialize the request
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	err := tcpPaket.SerializeWithWriteBuffer(context.Background(), wb)
+	err := tcpPaket.SerializeWithWriteBuffer(ctx, wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(ctx, wb.GetBytes(), timeout)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	return nil
 }
 
-func (m *MessageCodec) Receive() (spi.Message, error) {
+func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.Message, error) {
 	transportInstance := m.GetTransportInstance()
 
+	start := time.Now()
 	if err := transportInstance.FillBuffer(
+		ctx,
 		func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 			numBytesAvailable, err := transportInstance.GetNumBytesAvailableInBuffer()
 			if err != nil {
 				return false
 			}
 			return numBytesAvailable < 6
-		}); err != nil {
+		},
+		timeout); err != nil {
 		m.log.Warn().Err(err).Msg("error filling buffer")
 	}
+	timeout -= time.Since(start)
 
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := transportInstance.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
 		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
-		data, err := transportInstance.PeekReadableBytes(6)
+		start = time.Now()
+		data, err := transportInstance.PeekReadableBytes(ctx, 6, timeout)
+		timeout -= time.Since(start)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -112,24 +119,29 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		// Get the size of the entire packet little endian plus size of header
 		packetSize := (uint32(data[5]) << 24) + (uint32(data[4]) << 16) + (uint32(data[3]) << 8) + (uint32(data[2])) + 6
 		if num < packetSize {
+			start := time.Now()
 			if err := transportInstance.FillBuffer(
+				ctx,
 				func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					numBytesAvailable, err := transportInstance.GetNumBytesAvailableInBuffer()
 					if err != nil {
 						return false
 					}
 					return numBytesAvailable < packetSize
-				}); err != nil {
+				},
+				timeout,
+			); err != nil {
 				m.log.Warn().Err(err).Msg("error filling buffer")
 			}
+			timeout -= time.Since(start)
 		}
-		data, err = transportInstance.Read(packetSize)
+		data, err = transportInstance.Read(packetSize, timeout)
 		if err != nil {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		tcpPacket, err := model.AmsTCPPacketParseWithBuffer(context.Background(), rb)
+		tcpPacket, err := model.AmsTCPPacketParseWithBuffer(ctx, rb)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

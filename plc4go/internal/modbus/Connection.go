@@ -106,7 +106,6 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	// TODO: use proper context
 	ctx := context.TODO()
 	c.log.Trace().Msg("Pinging")
 	result := make(chan plc4go.PlcConnectionPingResult, 1)
@@ -118,6 +117,11 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		}()
 		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 		pingRequest := readWriteModel.NewModbusTcpADU(1, c.unitIdentifier, diagnosticRequestPdu)
+		ttl := 60 * time.Second
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := c.messageCodec.SendRequest(ctx, pingRequest,
 			func(message spi.Message) bool {
 				responseAdu, ok := message.(readWriteModel.ModbusTcpADU)
@@ -143,7 +147,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 				result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
 				return nil
 			},
-			time.Second*1,
+			ttl,
 		); err != nil {
 			result <- _default.NewDefaultPlcConnectionPingResult(err)
 		}

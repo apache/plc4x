@@ -126,7 +126,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
-func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	c.wg.Go(func() {
@@ -135,7 +135,7 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				c.fireConnectionError(errors.Errorf("panic-ed %v. Stack:\n%s", err, debug.Stack()), ch)
 			}
 		}()
-		if err := c.messageCodec.ConnectWithContext(ctx); err != nil {
+		if err := c.messageCodec.Connect(ctx); err != nil {
 			c.fireConnectionError(errors.Wrap(err, "Error connecting codec"), ch)
 			return
 		}
@@ -359,6 +359,11 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(requestReset)
 
+	ttl := c.GetTtl()
+	if deadline, ok := ctx.Deadline(); ok {
+		ttl = time.Until(deadline)
+		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+	}
 	receivedResetEchoChan := make(chan bool, 1)
 	receivedResetEchoErrorChan := make(chan error, 1)
 	if err := c.messageCodec.SendRequest(
@@ -425,7 +430,9 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 			default:
 			}
 			return nil
-		}, c.GetTtl()); err != nil {
+		},
+		ttl,
+	); err != nil {
 		if sendOutErrorNotification {
 			c.fireConnectionError(errors.Wrap(err, "Error during sending of Reset Request"), ch)
 		} else {
@@ -530,64 +537,76 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 	)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(directCommand)
 
+	ttl := c.GetTtl()
+	if deadline, ok := ctx.Deadline(); ok {
+		ttl = time.Until(deadline)
+		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+	}
 	directCommandAckChan := make(chan bool, 1)
 	directCommandAckErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
-		switch message := message.(type) {
-		case readWriteModel.CBusMessageToClient:
-			switch reply := message.GetReply().(type) {
-			case readWriteModel.ReplyOrConfirmationReply:
-				switch reply := reply.GetReply().(type) {
-				case readWriteModel.ReplyEncodedReply:
-					switch encodedReply := reply.GetEncodedReply().(type) {
-					case readWriteModel.EncodedReplyCALReply:
-						switch data := encodedReply.GetCalReply().GetCalData().(type) {
-						case readWriteModel.CALDataAcknowledge:
-							if data.GetParamNo() == paramNo {
-								return true
-							}
-						}
-					}
-				}
-			}
-		}
-		return false
-	}, func(message spi.Message) error {
-		switch message := message.(type) {
-		case readWriteModel.CBusMessageToClient:
-			switch reply := message.GetReply().(type) {
-			case readWriteModel.ReplyOrConfirmationReply:
-				switch reply := reply.GetReply().(type) {
-				case readWriteModel.ReplyEncodedReply:
-					switch encodedReply := reply.GetEncodedReply().(type) {
-					case readWriteModel.EncodedReplyCALReply:
-						switch data := encodedReply.GetCalReply().GetCalData().(type) {
-						case readWriteModel.CALDataAcknowledge:
-							if data.GetParamNo() == paramNo {
-								select {
-								case directCommandAckChan <- true:
-								default:
+	if err := c.messageCodec.SendRequest(
+		ctx,
+		cBusMessage,
+		func(message spi.Message) bool {
+			switch message := message.(type) {
+			case readWriteModel.CBusMessageToClient:
+				switch reply := message.GetReply().(type) {
+				case readWriteModel.ReplyOrConfirmationReply:
+					switch reply := reply.GetReply().(type) {
+					case readWriteModel.ReplyEncodedReply:
+						switch encodedReply := reply.GetEncodedReply().(type) {
+						case readWriteModel.EncodedReplyCALReply:
+							switch data := encodedReply.GetCalReply().GetCalData().(type) {
+							case readWriteModel.CALDataAcknowledge:
+								if data.GetParamNo() == paramNo {
+									return true
 								}
 							}
 						}
 					}
 				}
 			}
-		}
-		return nil
-	}, func(err error) error {
-		select {
-		case directCommandAckErrorChan <- errors.Wrap(err, "got error processing request"):
-		default:
-		}
-		return nil
-	}, c.GetTtl()); err != nil {
+			return false
+		},
+		func(message spi.Message) error {
+			switch message := message.(type) {
+			case readWriteModel.CBusMessageToClient:
+				switch reply := message.GetReply().(type) {
+				case readWriteModel.ReplyOrConfirmationReply:
+					switch reply := reply.GetReply().(type) {
+					case readWriteModel.ReplyEncodedReply:
+						switch encodedReply := reply.GetEncodedReply().(type) {
+						case readWriteModel.EncodedReplyCALReply:
+							switch data := encodedReply.GetCalReply().GetCalData().(type) {
+							case readWriteModel.CALDataAcknowledge:
+								if data.GetParamNo() == paramNo {
+									select {
+									case directCommandAckChan <- true:
+									default:
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return nil
+		},
+		func(err error) error {
+			select {
+			case directCommandAckErrorChan <- errors.Wrap(err, "got error processing request"):
+			default:
+			}
+			return nil
+		},
+		ttl,
+	); err != nil {
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of write request"), ch)
 		return false
 	}
 
 	startTime := time.Now()
-	timeout := time.NewTimer(2 * time.Second)
+	timeout := time.NewTimer(60 * time.Second)
 	select {
 	case <-directCommandAckChan:
 		c.log.Debug().Msg("We received the ack")

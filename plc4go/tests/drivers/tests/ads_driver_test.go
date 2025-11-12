@@ -20,7 +20,6 @@
 package tests
 
 import (
-	"context"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/ads"
@@ -33,7 +32,7 @@ import (
 func TestAdsDriver(t *testing.T) {
 	t.Skip("I have to port the commands for reading the symbol-table first")
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
-		return readWriteModel.AmsTCPPacketParseWithBuffer(context.Background(), readBufferByteBased)
+		return readWriteModel.AmsTCPPacketParseWithBuffer(t.Context(), readBufferByteBased)
 	}
 	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(

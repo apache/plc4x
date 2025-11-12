@@ -205,7 +205,7 @@ func TestNewDefaultConnection(t *testing.T) {
 		{
 			name: "just create it",
 			want: &defaultConnection{
-				defaultTtl: 10 * time.Second,
+				defaultTtl: 60 * time.Second,
 				log:        log.Logger,
 			},
 		},
@@ -381,7 +381,7 @@ func Test_buildDefaultConnection(t *testing.T) {
 		{
 			name: "build it",
 			want: &defaultConnection{
-				defaultTtl: 10 * time.Second,
+				defaultTtl: 60 * time.Second,
 				log:        log.Logger,
 			},
 		},
@@ -404,7 +404,7 @@ func Test_buildDefaultConnection(t *testing.T) {
 				},
 			},
 			want: &defaultConnection{
-				defaultTtl: 10 * time.Second,
+				defaultTtl: 60 * time.Second,
 				log:        log.Logger,
 			},
 		},
@@ -416,7 +416,7 @@ func Test_buildDefaultConnection(t *testing.T) {
 				},
 			},
 			want: &defaultConnection{
-				defaultTtl: 10 * time.Second,
+				defaultTtl: 60 * time.Second,
 				log:        log.Logger,
 			},
 		},

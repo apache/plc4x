@@ -74,6 +74,7 @@ func (s *Subscriber) subscribeSync(result chan apiModel.PlcSubscriptionRequestRe
 			result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 		}
 	}()
+	ctx := context.TODO()
 	internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 	cycleTime := subscriptionRequest.GetTag(subscriptionRequest.GetTagNames()[0]).GetDuration()
@@ -81,7 +82,7 @@ func (s *Subscriber) subscribeSync(result chan apiModel.PlcSubscriptionRequestRe
 		cycleTime = 1 * time.Second
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), REQUEST_TIMEOUT)
+	ctx, cancel := context.WithTimeout(ctx, REQUEST_TIMEOUT)
 	defer cancel()
 	subscription, err := s.onSubscribeCreateSubscription(ctx, cycleTime)
 	if err != nil {
@@ -192,11 +193,12 @@ func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTim
 }
 
 func (s *Subscriber) onDisconnect() {
+	ctx := context.TODO()
 	s.log.Trace().Msg("disconnecting")
 	for _, handle := range s.subscriptions {
 		handle.stopSubscriber()
 	}
-	s.connection.channel.onDisconnect(context.Background(), s.connection)
+	s.connection.channel.onDisconnect(ctx, s.connection)
 }
 
 func (s *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {

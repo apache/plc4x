@@ -92,6 +92,7 @@ func (t *plcConnectionLease) BlockingClose() {
 }
 
 func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
+	ctx := context.TODO()
 	if t.connection == nil {
 		panic("Called 'Close' on a closed cached connection")
 	}
@@ -134,7 +135,7 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 		}
 
 		// Return the connection to the connection container and don't actually close it.
-		err := t.connectionContainer.returnConnection(context.Background(), newState)
+		err := t.connectionContainer.returnConnection(ctx, newState)
 
 		// Detach the connection from this lease, so it can no longer be used by the client.
 		t.connection = nil

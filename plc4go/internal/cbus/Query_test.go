@@ -332,7 +332,7 @@ func Test_unitInfoQuery_SerializeWithWriteBuffer(t *testing.T) {
 				tagType: UNIT_INFO,
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewJsonWriteBuffer(),
 			},
 			wantErr: assert.NoError,
@@ -348,7 +348,7 @@ func Test_unitInfoQuery_SerializeWithWriteBuffer(t *testing.T) {
 				}(),
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewJsonWriteBuffer(),
 			},
 			wantErr: assert.NoError,

@@ -303,6 +303,7 @@ func (s *Subscriber) handleMonitoredSAL(sal readWriteModel.MonitoredSAL) bool {
 }
 
 func (s *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandle *SubscriptionHandle, consumer apiModel.PlcSubscriptionEventConsumer) bool {
+	ctx := context.TODO()
 	tag, ok := subscriptionHandle.tag.(*salMonitorTag)
 	if !ok {
 		s.log.Debug().Interface("tag", subscriptionHandle.tag).Msg("Unusable tag for mmi subscription")
@@ -430,7 +431,7 @@ func (s *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 	address[tagName] = fmt.Sprintf("sal/%s/%s", applicationString, commandType)
 
 	rbvb := spiValues.NewWriteBufferPlcValueBased()
-	err := salData.SerializeWithWriteBuffer(context.Background(), rbvb)
+	err := salData.SerializeWithWriteBuffer(ctx, rbvb)
 	if err != nil {
 		s.log.Error().Err(err).Msg("Error serializing to plc value... just returning it as string")
 		plcValues[tagName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", salData))

@@ -85,6 +85,9 @@ func TestWriter_Write(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
@@ -108,6 +111,9 @@ func TestWriter_Write(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 				timeout := time.NewTimer(2 * time.Second)
@@ -155,6 +161,9 @@ func TestWriter_Write(t *testing.T) {
 				},
 				setup: func(t *testing.T, fields *fields, args *args){
 					args.ctx = testutils.TestContext(t)
+					var cancelFunc context.CancelFunc
+					args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+					t.Cleanup(cancelFunc)
 				},
 				wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
 					timeout := time.NewTimer(2 * time.Second)

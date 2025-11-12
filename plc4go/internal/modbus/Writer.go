@@ -26,14 +26,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Writer struct {
@@ -121,35 +120,49 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu)
 
 		// Send the ADU over the wire
-		err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
-			responseAdu := message.(readWriteModel.ModbusTcpADU)
-			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
-				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
-		}, func(message spi.Message) error {
-			// Convert the response into an ADU
-			responseAdu := message.(readWriteModel.ModbusTcpADU)
-			// Convert the modbus response into a PLC4X response
-			readResponse, err := m.ToPlc4xWriteResponse(requestAdu, responseAdu, writeRequest)
+		ttl := 60 * time.Second
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
+		if err = m.messageCodec.SendRequest(
+			ctx,
+			requestAdu,
+			func(message spi.Message) bool {
+				responseAdu := message.(readWriteModel.ModbusTcpADU)
+				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
+					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
+			},
+			func(message spi.Message) error {
+				// Convert the response into an ADU
+				responseAdu := message.(readWriteModel.ModbusTcpADU)
+				// Convert the modbus response into a PLC4X response
+				readResponse, err := m.ToPlc4xWriteResponse(requestAdu, responseAdu, writeRequest)
 
-			if err != nil {
+				if err != nil {
+					result <- &spiModel.DefaultPlcWriteRequestResult{
+						Request: writeRequest,
+						Err:     errors.Wrap(err, "Error decoding response"),
+					}
+				} else {
+					result <- &spiModel.DefaultPlcWriteRequestResult{
+						Request:  writeRequest,
+						Response: readResponse,
+					}
+				}
+				return nil
+			},
+			func(err error) error {
 				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
-					Err:     errors.Wrap(err, "Error decoding response"),
+					Err:     errors.New("got timeout while waiting for response"),
 				}
-			} else {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: readResponse,
-				}
-			}
-			return nil
-		}, func(err error) error {
-			result <- &spiModel.DefaultPlcWriteRequestResult{
-				Request: writeRequest,
-				Err:     errors.New("got timeout while waiting for response"),
-			}
-			return nil
-		}, time.Second*1)
+				return nil
+			},
+			ttl,
+		); err != nil {
+			m.log.Debug().Err(err).Msg("error sending message")
+		}
 	})
 	return result
 }

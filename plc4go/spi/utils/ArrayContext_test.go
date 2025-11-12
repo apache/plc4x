@@ -82,14 +82,14 @@ func TestGetCurItemFromContext(t *testing.T) {
 		{
 			name: "key present but wrong value",
 			args: args{
-				ctx: context.WithValue(context.Background(), keyArrayInfo, nil),
+				ctx: context.WithValue(t.Context(), keyArrayInfo, nil),
 			},
 			wantPanic: true,
 		},
 		{
 			name: "key present",
 			args: args{
-				ctx: context.WithValue(context.Background(), keyArrayInfo, arrayInfo{
+				ctx: context.WithValue(t.Context(), keyArrayInfo, arrayInfo{
 					numItems: 1,
 					curItem:  2,
 				}),
@@ -131,14 +131,14 @@ func TestGetLastItemFromContext(t *testing.T) {
 		{
 			name: "key present but wrong value",
 			args: args{
-				ctx: context.WithValue(context.Background(), keyArrayInfo, nil),
+				ctx: context.WithValue(t.Context(), keyArrayInfo, nil),
 			},
 			wantPanic: true,
 		},
 		{
 			name: "key present",
 			args: args{
-				ctx: context.WithValue(context.Background(), keyArrayInfo, arrayInfo{
+				ctx: context.WithValue(t.Context(), keyArrayInfo, arrayInfo{
 					numItems: 2,
 					curItem:  1,
 				}),
@@ -180,14 +180,14 @@ func TestGetNumItemsFromContext(t *testing.T) {
 		{
 			name: "key present but wrong value",
 			args: args{
-				ctx: context.WithValue(context.Background(), keyArrayInfo, nil),
+				ctx: context.WithValue(t.Context(), keyArrayInfo, nil),
 			},
 			wantPanic: true,
 		},
 		{
 			name: "key present",
 			args: args{
-				ctx: context.WithValue(context.Background(), keyArrayInfo, arrayInfo{
+				ctx: context.WithValue(t.Context(), keyArrayInfo, arrayInfo{
 					numItems: 1,
 					curItem:  2,
 				}),
@@ -225,7 +225,7 @@ func produceTestingLogger(t *testing.T) zerolog.Logger {
 
 // note: we can't use testutils here due to import cycle
 func testContext(t *testing.T) context.Context {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	t.Cleanup(cancel)
 	ctx = produceTestingLogger(t).WithContext(ctx)
 	return ctx

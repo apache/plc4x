@@ -22,6 +22,7 @@ package cbus
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -45,6 +46,7 @@ func TestMessageCodec_Send(t *testing.T) {
 	}
 	type args struct {
 		message spi.Message
+		timeout time.Duration
 	}
 	tests := []struct {
 		name    string
@@ -59,8 +61,8 @@ func TestMessageCodec_Send(t *testing.T) {
 		},
 		{
 			name: "a cbus message",
-			args: args{message: readWriteModel.NewCBusMessageToClient(
-				readWriteModel.NewReplyOrConfirmationConfirmation(
+			args: args{
+				message: readWriteModel.NewCBusMessageToClient(readWriteModel.NewReplyOrConfirmationConfirmation(
 					0x00,
 					readWriteModel.NewConfirmation(
 						readWriteModel.NewAlpha('!'),
@@ -68,8 +70,9 @@ func TestMessageCodec_Send(t *testing.T) {
 						readWriteModel.ConfirmationType_CHECKSUM_FAILURE,
 					),
 					nil,
-				),
-			)},
+				)),
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
@@ -97,7 +100,7 @@ func TestMessageCodec_Send(t *testing.T) {
 				monitoredMMIs:  tt.fields.monitoredMMIs,
 				monitoredSALs:  tt.fields.monitoredSALs,
 			}
-			tt.wantErr(t, m.Send(tt.args.message), fmt.Sprintf("Send(%v)", tt.args.message))
+			tt.wantErr(t, m.Send(t.Context(), tt.args.message, tt.args.timeout), fmt.Sprintf("Send(%v)", tt.args.message))
 		})
 	}
 }
@@ -113,9 +116,13 @@ func TestMessageCodec_Receive(t *testing.T) {
 		monitoredMMIs  chan readWriteModel.CALReply
 		monitoredSALs  chan readWriteModel.MonitoredSAL
 	}
+	type args struct {
+		timeout time.Duration
+	}
 	tests := []struct {
 		name        string
 		fields      fields
+		args        args
 		setup       func(t *testing.T, fields *fields)
 		manipulator func(t *testing.T, messageCodec *MessageCodec)
 		want        spi.Message
@@ -129,12 +136,15 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredMMIs:  nil,
 				monitoredSALs:  nil,
 			},
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
-				require.NoError(t, instance.Connect())
+				require.NoError(t, instance.Connect(t.Context()))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
@@ -151,6 +161,9 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredMMIs:  nil,
 				monitoredSALs:  nil,
 			},
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewServerErrorReply(
 					33,
@@ -161,7 +174,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
-				require.NoError(t, instance.Connect())
+				require.NoError(t, instance.Connect(t.Context()))
 				instance.FillReadBuffer([]byte("!"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -179,12 +192,15 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredMMIs:  nil,
 				monitoredSALs:  nil,
 			},
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
-				require.NoError(t, instance.Connect())
+				require.NoError(t, instance.Connect(t.Context()))
 				instance.FillReadBuffer([]byte("@A62120\r@A62120\r"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -202,12 +218,15 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredMMIs:  nil,
 				monitoredSALs:  nil,
 			},
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
-				require.NoError(t, instance.Connect())
+				require.NoError(t, instance.Connect(t.Context()))
 				instance.FillReadBuffer([]byte("what on earth\n\r"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -225,12 +244,15 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredMMIs:  nil,
 				monitoredSALs:  nil,
 			},
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
-				require.NoError(t, instance.Connect())
+				require.NoError(t, instance.Connect(t.Context()))
 				instance.FillReadBuffer([]byte("AFFE!!!\r"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -255,6 +277,9 @@ func TestMessageCodec_Receive(t *testing.T) {
 				cbusOptions:    cbusOptions,
 				monitoredMMIs:  nil,
 				monitoredSALs:  nil,
+			},
+			args: args{
+				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, messageCodec *MessageCodec) {
 				messageCodec.hashEncountered.Store(9999)
@@ -282,7 +307,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
-				require.NoError(t, instance.Connect())
+				require.NoError(t, instance.Connect(t.Context()))
 				instance.FillReadBuffer([]byte("@1A2001!!!\r"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -300,12 +325,15 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredMMIs:  nil,
 				monitoredSALs:  nil,
 			},
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
-				require.NoError(t, instance.Connect())
+				require.NoError(t, instance.Connect(t.Context()))
 				instance.FillReadBuffer([]byte("86040200F940380001000000000000000008000000000000000000000000FA\r\n"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -494,6 +522,9 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredMMIs:  nil,
 				monitoredSALs:  nil,
 			},
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			manipulator: func(t *testing.T, messageCodec *MessageCodec) {
 				messageCodec.hashEncountered.Store(9999)
 				messageCodec.currentlyReportedServerErrors.Store(9999)
@@ -503,7 +534,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
-				require.NoError(t, instance.Connect())
+				require.NoError(t, instance.Connect(t.Context()))
 				instance.FillReadBuffer([]byte("0531AC0079042F0401430316000011\r\n"))
 				codec := NewMessageCodec(instance, _options...)
 				t.Cleanup(func() {
@@ -572,7 +603,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.Receive()
+			got, err := m.Receive(t.Context(), tt.args.timeout)
 			if !tt.wantErr(t, err, fmt.Sprintf("Receive()")) {
 				return
 			}
@@ -587,7 +618,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		transport := test.NewTransport(_options...)
 		transportInstance := test.NewTransportInstance(transport, _options...)
-		require.NoError(t, transportInstance.Connect())
+		require.NoError(t, transportInstance.Connect(t.Context()))
 		codec := NewMessageCodec(transportInstance, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())
@@ -596,7 +627,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		var msg spi.Message
 		var err error
-		msg, err = codec.Receive()
+		msg, err = codec.Receive(t.Context(), 10*time.Second)
 		// No data yet so this should return no error and no data
 		assert.NoError(t, err)
 		assert.Nil(t, msg)
@@ -604,7 +635,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		transportInstance.FillReadBuffer([]byte("i."))
 
 		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive()
+		msg, err = codec.Receive(t.Context(), 10*time.Second)
 		assert.NoError(t, err)
 		assert.Nil(t, msg)
 
@@ -612,7 +643,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
 		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive()
+		msg, err = codec.Receive(t.Context(), 10*time.Second)
 		assert.NoError(t, err)
 		require.NotNil(t, msg)
 
@@ -624,7 +655,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		transport := test.NewTransport(_options...)
 		transportInstance := test.NewTransportInstance(transport, _options...)
-		require.NoError(t, transportInstance.Connect())
+		require.NoError(t, transportInstance.Connect(t.Context()))
 		codec := NewMessageCodec(transportInstance, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())
@@ -633,7 +664,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		var msg spi.Message
 		var err error
-		msg, err = codec.Receive()
+		msg, err = codec.Receive(t.Context(), 10*time.Second)
 		// No data yet so this should return no error and no data
 		assert.NoError(t, err)
 		assert.Nil(t, msg)
@@ -643,7 +674,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		for i := 0; i < 8; i++ {
 			t.Logf("%d try", i+1)
 			// We should wait for more data, so no error, no message
-			msg, err = codec.Receive()
+			msg, err = codec.Receive(t.Context(), 10*time.Second)
 			assert.NoError(t, err)
 			assert.Nil(t, msg)
 		}
@@ -652,7 +683,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
 		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive()
+		msg, err = codec.Receive(t.Context(), 10*time.Second)
 		assert.NoError(t, err)
 		assert.NotNil(t, msg)
 
@@ -664,7 +695,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		transport := test.NewTransport(_options...)
 		transportInstance := test.NewTransportInstance(transport, _options...)
-		require.NoError(t, transportInstance.Connect())
+		require.NoError(t, transportInstance.Connect(t.Context()))
 		codec := NewMessageCodec(transportInstance, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())
@@ -673,7 +704,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		var msg spi.Message
 		var err error
-		msg, err = codec.Receive()
+		msg, err = codec.Receive(t.Context(), 10*time.Second)
 		// No data yet so this should return no error and no data
 		assert.NoError(t, err)
 		assert.Nil(t, msg)
@@ -683,7 +714,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		for i := 0; i <= 15; i++ {
 			t.Logf("%d try", i+1)
 			// We should wait for more data, so no error, no message
-			msg, err = codec.Receive()
+			msg, err = codec.Receive(t.Context(), 10*time.Second)
 			if i == 15 {
 				assert.NoError(t, err)
 				require.NotNil(t, msg)
@@ -702,7 +733,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
 		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive()
+		msg, err = codec.Receive(t.Context(), 10*time.Second)
 		assert.NoError(t, err)
 		assert.NotNil(t, msg)
 

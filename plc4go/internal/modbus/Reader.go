@@ -27,15 +27,14 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Reader struct {
@@ -132,41 +131,53 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 		// Send the ADU over the wire
 		m.log.Trace().Msg("Send ADU")
-		if err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
-			responseAdu := message.(readWriteModel.ModbusTcpADU)
-			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
-				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
-		}, func(message spi.Message) error {
-			// Convert the response into an ADU
-			m.log.Trace().Msg("convert response to ADU")
-			responseAdu := message.(readWriteModel.ModbusTcpADU)
-			// Convert the modbus response into a PLC4X response
-			m.log.Trace().Msg("convert response to PLC4X response")
-			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
+		ttl := 60 * time.Second
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
+		if err = m.messageCodec.SendRequest(
+			ctx,
+			requestAdu,
+			func(message spi.Message) bool {
+				responseAdu := message.(readWriteModel.ModbusTcpADU)
+				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
+					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
+			},
+			func(message spi.Message) error {
+				// Convert the response into an ADU
+				m.log.Trace().Msg("convert response to ADU")
+				responseAdu := message.(readWriteModel.ModbusTcpADU)
+				// Convert the modbus response into a PLC4X response
+				m.log.Trace().Msg("convert response to PLC4X response")
+				readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
-			if err != nil {
+				if err != nil {
+					result <- spiModel.NewDefaultPlcReadRequestResult(
+						readRequest,
+						nil,
+						errors.Wrap(err, "Error decoding response"),
+					)
+					// TODO: should we return the error here?
+					return nil
+				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					readResponse,
+					nil,
+				)
+				return nil
+			},
+			func(err error) error {
 				result <- spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,
-					errors.Wrap(err, "Error decoding response"),
+					errors.Wrap(err, "got timeout while waiting for response"),
 				)
-				// TODO: should we return the error here?
 				return nil
-			}
-			result <- spiModel.NewDefaultPlcReadRequestResult(
-				readRequest,
-				readResponse,
-				nil,
-			)
-			return nil
-		}, func(err error) error {
-			result <- spiModel.NewDefaultPlcReadRequestResult(
-				readRequest,
-				nil,
-				errors.Wrap(err, "got timeout while waiting for response"),
-			)
-			return nil
-		}, time.Second*1); err != nil {
+			},
+			ttl,
+		); err != nil {
 			result <- spiModel.NewDefaultPlcReadRequestResult(
 				readRequest,
 				nil,
@@ -178,6 +189,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 }
 
 func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
+	ctx := context.TODO()
 	var data []uint8
 	switch pdu := responseAdu.GetPdu().(type) {
 	case readWriteModel.ModbusPDUReadDiscreteInputsResponse:
@@ -207,7 +219,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 
 	// Decode the data according to the information from the request
 	m.log.Trace().Msg("decode data")
-	ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	value, err := readWriteModel.DataItemParse(ctxForModel, data, tag.Datatype, tag.Quantity, true)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")

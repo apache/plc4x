@@ -42,8 +42,8 @@ type PlcReadRequestResult interface {
 
 type PlcReadRequest interface {
 	PlcRequest
-	Execute() <-chan PlcReadRequestResult
-	ExecuteWithContext(ctx context.Context) <-chan PlcReadRequestResult
+
+	Execute(ctx context.Context) <-chan PlcReadRequestResult
 
 	GetTagNames() []string
 	GetTag(tagName string) PlcTag

@@ -111,7 +111,7 @@ func (m DirectPlcTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m DirectPlcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+func (m DirectPlcTag) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("DirectPlcTag"); err != nil {
 		return err
 	}

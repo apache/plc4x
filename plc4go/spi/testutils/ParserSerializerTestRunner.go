@@ -20,7 +20,6 @@
 package testutils
 
 import (
-	"context"
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
@@ -58,6 +57,7 @@ type ParserSerializerTestcase struct {
 }
 
 func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerTestcase) error {
+	ctx := t.Context()
 	t.Logf("running testsuite: %s test: %s", p.name, testcase.name)
 
 	// Get the raw input by decoding the hex-encoded binary input
@@ -90,7 +90,7 @@ func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerT
 		// First try to use the native xml writer
 		serializable := msg.(utils.Serializable)
 		buffer := utils.NewXmlWriteBuffer()
-		if err := serializable.SerializeWithWriteBuffer(context.Background(), buffer); err == nil {
+		if err := serializable.SerializeWithWriteBuffer(ctx, buffer); err == nil {
 			actualXml := buffer.GetXmlString()
 			if err := CompareResults(t, []byte(actualXml), []byte(testcase.referenceXml)); err != nil {
 				border := strings.Repeat("=", 100)
@@ -142,7 +142,7 @@ func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerT
 
 	// Serialize the message
 	t.Log("Serialize message")
-	err = s.SerializeWithWriteBuffer(context.Background(), writeBuffer)
+	err = s.SerializeWithWriteBuffer(ctx, writeBuffer)
 	if !ok {
 		return errors.New("Couldn't serialize message back to byte array")
 	}

@@ -260,7 +260,7 @@ func Test_executor_Submit(t *testing.T) {
 					}
 				},
 				context: func() context.Context {
-					ctx, cancelFunc := context.WithCancel(context.Background())
+					ctx, cancelFunc := context.WithCancel(t.Context())
 					cancelFunc()
 					return ctx
 				}(),

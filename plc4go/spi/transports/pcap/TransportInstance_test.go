@@ -22,6 +22,7 @@ package pcap
 import (
 	"bufio"
 	"testing"
+	"time"
 
 	"github.com/gopacket/gopacket/pcap"
 	"github.com/rs/zerolog/log"
@@ -311,6 +312,7 @@ func TestTransportInstance_Write(t *testing.T) {
 	}
 	type args struct {
 		in0 []byte
+		in1 time.Duration
 	}
 	tests := []struct {
 		name    string
@@ -335,7 +337,7 @@ func TestTransportInstance_Write(t *testing.T) {
 				handle:                           tt.fields.handle,
 				reader:                           tt.fields.reader,
 			}
-			if err := m.Write(tt.args.in0); (err != nil) != tt.wantErr {
+			if err := m.Write(tt.args.in0, tt.args.in1); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

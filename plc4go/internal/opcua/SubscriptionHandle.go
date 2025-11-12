@@ -78,6 +78,7 @@ func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connectio
 }
 
 func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWriteModel.CreateMonitoredItemsResponse, error) {
+	ctx := context.TODO()
 	requestList := make([]readWriteModel.MonitoredItemCreateRequest, len(h.tagNames))
 
 	for _, tagName := range h.tagNames {
@@ -149,7 +150,7 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		createMonitoredItemsRequest,
 	)
 
-	ctx, cancel := context.WithTimeout(context.Background(), REQUEST_TIMEOUT)
+	ctx, cancel := context.WithTimeout(ctx, REQUEST_TIMEOUT)
 	defer cancel()
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
@@ -354,6 +355,7 @@ func (h *SubscriptionHandle) startSubscriber() {
 
 // stopSubscriber stops the subscriber either on disconnect or on error
 func (h *SubscriptionHandle) stopSubscriber() {
+	ctx := context.TODO()
 	h.destroy.Store(true)
 
 	requestHandle := h.connection.channel.getRequestHandle()
@@ -385,8 +387,6 @@ func (h *SubscriptionHandle) stopSubscriber() {
 		extExpandedNodeId,
 		deleteSubscriptionrequest,
 	)
-
-	ctx := context.Background()
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {

@@ -114,44 +114,56 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			tagNameCopy := tagName
 			// Start a new request-transaction (Is ended in the response-handler)
 			transaction := m.tm.StartTransaction()
+			ttl := 60 * time.Second
+			if deadline, ok := ctx.Deadline(); ok {
+				ttl = time.Until(deadline)
+				m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+			}
 			transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 				ctx, cancel := context.WithCancel(ctx)
 				context.AfterFunc(transactionContext, cancel)
 				// Send the  over the wire
 				m.log.Trace().Msg("Send ")
-				if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {
-					cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessage)
-					if !ok {
-						return false
-					}
-					messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClient)
-					if !ok {
-						return false
-					}
-					// Check if this errored
-					if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReply); ok {
-						// This means we must handle this below
-						return true
-					}
+				if err := m.messageCodec.SendRequest(
+					ctx,
+					messageToSend,
+					func(receivedMessage spi.Message) bool {
+						cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessage)
+						if !ok {
+							return false
+						}
+						messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClient)
+						if !ok {
+							return false
+						}
+						// Check if this errored
+						if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReply); ok {
+							// This means we must handle this below
+							return true
+						}
 
-					confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmation)
-					if !ok {
-						return false
-					}
-					return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
-				}, func(receivedMessage spi.Message) error {
-					// Convert the response into an
-					addResponseCode(tagName, apiModel.PlcResponseCode_OK)
-					return transaction.EndRequest()
-				}, func(err error) error {
-					m.log.Debug().Str("tagName", tagNameCopy).Msg("Error waiting for tag")
-					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
-					// TODO: ok or not ok?
-					return transaction.EndRequest()
-				}, time.Second*1); err != nil {
+						confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmation)
+						if !ok {
+							return false
+						}
+						return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
+					},
+					func(receivedMessage spi.Message) error {
+						// Convert the response into an
+						addResponseCode(tagName, apiModel.PlcResponseCode_OK)
+						return transaction.EndRequest()
+					},
+					func(err error) error {
+						m.log.Debug().Str("tagName", tagNameCopy).Msg("Error waiting for tag")
+						addResponseCode(tagNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
+						// TODO: ok or not ok?
+						return transaction.EndRequest()
+					},
+					ttl,
+				); err != nil {
 					m.log.Debug().Str("tagName", tagNameCopy).Err(err).Msg("Error sending message for tag")
 					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
-					if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
+					if err := transaction.FailRequest(errors.Errorf("timeout after %s", ttl)); err != nil {
 						m.log.Debug().Err(err).Msg("Error failing request")
 					}
 				}

@@ -38,6 +38,8 @@ type Transport struct {
 	log zerolog.Logger
 }
 
+var _ transports.Transport = (*Transport)(nil)
+
 func NewTransport(_options ...options.WithOption) *Transport {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Transport{

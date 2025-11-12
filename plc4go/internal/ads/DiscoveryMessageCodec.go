@@ -21,6 +21,7 @@ package ads
 
 import (
 	"context"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -54,7 +55,7 @@ func (m *DiscoveryMessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *DiscoveryMessageCodec) Send(message spi.Message) error {
+func (m *DiscoveryMessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
 	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	tcpPaket := message.(model.AdsDiscovery)
@@ -65,18 +66,20 @@ func (m *DiscoveryMessageCodec) Send(message spi.Message) error {
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(bytes)
+	err = m.GetTransportInstance().Write(ctx, bytes, timeout)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	return nil
 }
 
-func (m *DiscoveryMessageCodec) Receive() (spi.Message, error) {
+func (m *DiscoveryMessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
 		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
-		data, err := m.GetTransportInstance().PeekReadableBytes(6)
+		start := time.Now()
+		data, err := m.GetTransportInstance().PeekReadableBytes(ctx, 6, timeout)
+		timeout -= time.Since(start)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -88,12 +91,14 @@ func (m *DiscoveryMessageCodec) Receive() (spi.Message, error) {
 			m.log.Debug().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil
 		}
-		data, err = m.GetTransportInstance().Read(packetSize)
+		start = time.Now()
+		data, err = m.GetTransportInstance().Read(ctx, packetSize, timeout)
+		timeout -= time.Since(start)
 		if err != nil {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		tcpPacket, err := model.AdsDiscoveryParse(ctxForModel, data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")

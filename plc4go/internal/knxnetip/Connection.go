@@ -411,7 +411,6 @@ func (m *Connection) BlockingClose() {
 }
 
 func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	// TODO: use proper context
 	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionCloseResult, 1)
 
@@ -474,7 +473,6 @@ func (m *Connection) IsConnected() bool {
 }
 
 func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	// TODO: use proper context
 	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionPingResult, 1)
 

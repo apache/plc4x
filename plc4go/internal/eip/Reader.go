@@ -29,9 +29,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
@@ -41,6 +38,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Reader struct {
@@ -110,6 +109,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 				ctx, cancel := context.WithCancel(ctx)
 				context.AfterFunc(transactionContext, cancel)
+				ttl := 1 * time.Second
+				if deadline, ok := ctx.Deadline(); ok {
+					ttl = time.Until(deadline)
+					m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+				}
 				if err := m.messageCodec.SendRequest(
 					ctx,
 					request,
@@ -154,7 +158,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 						)
 						return transaction.EndRequest()
 					},
-					time.Second*1,
+					ttl,
 				); err != nil {
 					result <- spiModel.NewDefaultPlcReadRequestResult(
 						readRequest,
@@ -172,6 +176,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 }
 
 func toAnsi(tag string) ([]byte, error) {
+	ctx := context.TODO()
 	resourceAddressPattern := regexp.MustCompile("([.\\[\\]])*([A-Za-z_0-9]+){1}")
 
 	segments := make([]readWriteModel.PathSegment, 0)
@@ -200,7 +205,7 @@ func toAnsi(tag string) ([]byte, error) {
 			}
 			newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, pad))
 		}
-		lengthInBytes += newSegment.GetLengthInBytes(context.Background())
+		lengthInBytes += newSegment.GetLengthInBytes(ctx)
 		segments = append(segments, newSegment)
 	}
 	buffer := utils.NewWriteBufferByteBased(
@@ -215,6 +220,7 @@ func toAnsi(tag string) ([]byte, error) {
 }
 
 func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
+	ctx := context.TODO()
 	plcValues := map[string]values.PlcValue{}
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
@@ -252,7 +258,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 			serviceBuf := utils.NewReadBufferByteBased(read.GetBytes()[offset:offset+length], utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 			var err error
 			// TODO: If we're using a connected connection, do this differently
-			arr[i], err = readWriteModel.CipServiceParseWithBuffer[readWriteModel.CipService](context.Background(), serviceBuf, false, length)
+			arr[i], err = readWriteModel.CipServiceParseWithBuffer[readWriteModel.CipService](ctx, serviceBuf, false, length)
 			if err != nil {
 				return nil, err
 			}

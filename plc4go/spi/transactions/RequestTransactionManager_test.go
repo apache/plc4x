@@ -196,7 +196,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 			},
 			wantAssert: func(t *testing.T, requestTransaction RequestTransaction) bool {
 				assert.True(t, requestTransaction.IsCompleted())
-				assert.Error(t, requestTransaction.AwaitCompletion(context.Background()))
+				assert.Error(t, requestTransaction.AwaitCompletion(t.Context()))
 				return true
 			},
 		},

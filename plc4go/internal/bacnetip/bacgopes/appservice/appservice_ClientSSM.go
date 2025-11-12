@@ -527,6 +527,7 @@ func (c *ClientSSM) awaitConfirmationTimeout() error {
 }
 
 func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
+	ctx := context.TODO()
 	c.log.Debug().Stringer("apdu", apdu).Msg("segmentedConfirmation")
 
 	// the only messages we should be getting are complex acks
@@ -599,7 +600,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 		}
 		// TODO: this is nonsense... We need to parse the service and the apdu not sure where to get it from now...
 		// TODO: it should be the original apdu, we might just need to use that as base and forward it as non segmented
-		ctxForModel := options.GetLoggerContextForModel(context.TODO(), c.log, options.WithPassLoggerToModel(c.passLogToModel))
+		ctxForModel := options.GetLoggerContextForModel(ctx, c.log, options.WithPassLoggerToModel(c.passLogToModel))
 		parse, err := readWriteModel.APDUParse[readWriteModel.APDU](ctxForModel, c.segmentAPDU.serviceBytes, uint16(len(c.segmentAPDU.serviceBytes)))
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")

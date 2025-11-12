@@ -220,7 +220,7 @@ func TestDefaultExpectation_String(t *testing.T) {
 	}{
 		{
 			name: "string it",
-			want: "Expectation 00000000-0000-0000-0000-000000000000 (expires at 0001-01-01 00:00:00 +0000 UTC)",
+			want: "Expectation 00000000-0000-0000-0000-000000000000 (expires at 0001-01-01 00:00:00 +0000 UTC in -2562047h47m16.854775808s)",
 		},
 	}
 	for _, tt := range tests {
@@ -254,7 +254,7 @@ func TestNewDefaultCodec(t *testing.T) {
 				require.IsType(t, &defaultCodec{}, got)
 				d := got.(*defaultCodec)
 				assert.NotNil(t, d.defaultIncomingMessageChannel)
-				assert.Equal(t, 10*time.Second, d.receiveTimeout)
+				assert.Equal(t, 1*time.Minute, d.receiveTimeout)
 				return true
 			},
 		},
@@ -305,7 +305,7 @@ func Test_buildDefaultCodec(t *testing.T) {
 				require.IsType(t, &defaultCodec{}, got)
 				d := got.(*defaultCodec)
 				assert.NotNil(t, d.defaultIncomingMessageChannel)
-				assert.Equal(t, 10*time.Second, d.receiveTimeout)
+				assert.Equal(t, 1*time.Minute, d.receiveTimeout)
 				return true
 			},
 		},
@@ -324,7 +324,7 @@ func Test_buildDefaultCodec(t *testing.T) {
 				require.IsType(t, &defaultCodec{}, got)
 				d := got.(*defaultCodec)
 				assert.NotNil(t, d.defaultIncomingMessageChannel)
-				assert.Equal(t, 10*time.Second, d.receiveTimeout)
+				assert.Equal(t, 1*time.Minute, d.receiveTimeout)
 				assert.NotNil(t, d.customMessageHandling)
 				return true
 			},
@@ -534,6 +534,9 @@ func Test_defaultCodec_Expect(t *testing.T) {
 			name: "expect it",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 	}
@@ -919,10 +922,13 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 			name: "send it",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Send(mock.Anything).Return(nil)
+				requirements.EXPECT().Send(mock.Anything, mock.Anything).Return(nil)
 				fields.DefaultCodecRequirements = requirements
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantErr: assert.NoError,
 		},
@@ -941,10 +947,13 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 			name: "send it errors",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Send(mock.Anything).Return(errors.New("nope"))
+				requirements.EXPECT().Send(mock.Anything, mock.Anything).Return(errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantErr: assert.Error,
 		},
@@ -1181,7 +1190,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive().Return(nil, errors.New("nope"))
+				requirements.EXPECT().Receive(mock.Anything).Return(nil, errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1227,7 +1236,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive().Return(nil, nil)
+				requirements.EXPECT().Receive(mock.Anything).Return(nil, nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1273,7 +1282,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive().Return(NewMockMessage(t), nil)
+				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1297,7 +1306,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive().Return(NewMockMessage(t), nil)
+				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1343,7 +1352,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive().Return(nil, errors.New("nope"))
+				requirements.EXPECT().Receive(mock.Anything).Return(nil, errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1392,7 +1401,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive().Return(NewMockMessage(t), nil)
+				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1441,7 +1450,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive().Return(NewMockMessage(t), nil)
+				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1527,7 +1536,7 @@ func Test_defaultCodec_integration(t *testing.T) {
 			expect := message.EXPECT()
 			expect.String().Return("message for " + t.Name())
 		}
-		expect.Receive().RunAndReturn(func() (spi.Message, error) {
+		expect.Receive(mock.Anything).RunAndReturn(func(_ time.Duration) (spi.Message, error) {
 			// Simulate a bit read delay
 			timer := time.NewTimer(100 * time.Millisecond)
 			select {

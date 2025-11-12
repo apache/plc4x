@@ -23,6 +23,7 @@ import (
 	"bufio"
 	"io"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -238,7 +239,8 @@ func TestTransportInstance_Write(t *testing.T) {
 		reader                           *bufio.Reader
 	}
 	type args struct {
-		data []byte
+		data    []byte
+		timeout time.Duration
 	}
 	tests := []struct {
 		name    string
@@ -259,7 +261,7 @@ func TestTransportInstance_Write(t *testing.T) {
 				serialPort:                       tt.fields.serialPort,
 				reader:                           tt.fields.reader,
 			}
-			if err := m.Write(tt.args.data); (err != nil) != tt.wantErr {
+			if err := m.Write(tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

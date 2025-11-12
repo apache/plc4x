@@ -76,5 +76,5 @@ func (d *defaultExpectation) GetHandleError() spi.HandleError {
 }
 
 func (d *defaultExpectation) String() string {
-	return fmt.Sprintf("Expectation %s (expires at %v)", d.uuid, d.Expiration)
+	return fmt.Sprintf("Expectation %s (expires at %v in %s)", d.uuid, d.Expiration, time.Until(d.Expiration))
 }

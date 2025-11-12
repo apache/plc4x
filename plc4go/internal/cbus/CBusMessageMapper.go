@@ -357,6 +357,7 @@ func producePointToMultiPointCommandNormal(bridgeAddresses []readWriteModel.Brid
 }
 
 func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTransaction, encodedReply readWriteModel.EncodedReply, tagName string, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), addPlcValue func(name string, plcValue apiValues.PlcValue)) error {
+	ctx := context.TODO()
 	switch reply := encodedReply.(type) {
 	case readWriteModel.EncodedReplyCALReply:
 		calData := reply.GetCalReply().GetCalData()
@@ -557,7 +558,7 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 			}
 		default:
 			wbpcb := spiValues.NewWriteBufferPlcValueBased()
-			if err := calData.SerializeWithWriteBuffer(context.Background(), wbpcb); err != nil {
+			if err := calData.SerializeWithWriteBuffer(ctx, wbpcb); err != nil {
 				localLog.Warn().Err(err).Type("calData", calData).Msg("Unmapped cal data type %T. Returning raw to string")
 				addPlcValue(tagName, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
 			} else {

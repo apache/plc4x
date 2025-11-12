@@ -189,6 +189,7 @@ func (d *UDPDirector) readable() {
 }
 
 func (d *UDPDirector) handleRead() {
+	ctx := context.TODO()
 	d.log.Debug().Stringer("address", &d.address).Msg("handleRead")
 
 	readBytes := make([]byte, 1500) // TODO: check if that is sufficient
@@ -200,7 +201,7 @@ func (d *UDPDirector) handleRead() {
 		sourceAddr = addr
 	}
 
-	ctxForModel := options.GetLoggerContextForModel(context.TODO(), d.log, options.WithPassLoggerToModel(d.passLogToModel))
+	ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
 	bvlc, err := model.BVLCParse[model.BVLC](ctxForModel, readBytes)
 	if err != nil {
 		// pass along to a handler

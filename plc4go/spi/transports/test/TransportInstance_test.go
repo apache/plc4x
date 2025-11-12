@@ -22,8 +22,9 @@ package test
 import (
 	"context"
 	"testing"
+	"time"
 
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -34,23 +35,22 @@ func TestNewTransportInstance(t *testing.T) {
 		transport *Transport
 	}
 	tests := []struct {
-		name string
-		args args
-		want *TransportInstance
+		name       string
+		args       args
+		wantAssert func(*testing.T, *TransportInstance) bool
 	}{
 		{
 			name: "create it",
-			want: &TransportInstance{
-				readBuffer:  []byte{},
-				writeBuffer: []byte{},
-				log:         log.Logger,
+			wantAssert: func(t *testing.T, instance *TransportInstance) bool {
+				return assert.NotNil(t, instance)
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransportInstance(tt.args.transport); !assert.Equal(t, tt.want, got) {
-				t.Errorf("NewTransportInstance() = %v, want %v", got, tt.want)
+			got := NewTransportInstance(tt.args.transport)
+			if !assert.True(t, tt.wantAssert(t, got)) {
+				t.Errorf("NewTransportInstance() = %v", got)
 			}
 		})
 	}
@@ -203,7 +203,8 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
 	type args struct {
-		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
+		until   func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
+		timeout time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -218,6 +219,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					return pos < 3
 				},
+				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -230,9 +232,12 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 				readBuffer: []byte{1, 2, 3, 4},
 			},
 			args: args{
-				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
-					return pos < 3
+				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool) {
+					keepGoing = pos < 3
+					t.Logf("pos: %d, currentByte: %d: keepGoing: %t", pos, currentByte, keepGoing)
+					return keepGoing
 				},
+				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -242,15 +247,18 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &TransportInstance{
+				readChannel:      make(chan []byte, 1),
+				simulatedLatency: 10 * time.Millisecond,
 				readBuffer:       tt.fields.readBuffer,
 				writeBuffer:      tt.fields.writeBuffer,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+				log:              zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t))).With().Timestamp().Logger(),
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.FillBuffer(tt.args.until); (err != nil) != tt.wantErr {
+			if err := m.FillBuffer(tt.args.until, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("FillBuffer() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -434,6 +442,7 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 	}
 	type args struct {
 		numBytes uint32
+		timeout  time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -445,6 +454,9 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 	}{
 		{
 			name: "peek it",
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
 			},
@@ -461,7 +473,7 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.PeekReadableBytes(tt.args.numBytes)
+			got, err := m.PeekReadableBytes(tt.args.numBytes, tt.args.timeout)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -482,6 +494,7 @@ func TestTransportInstance_Read(t *testing.T) {
 	}
 	type args struct {
 		numBytes uint32
+		timeout  time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -493,6 +506,9 @@ func TestTransportInstance_Read(t *testing.T) {
 	}{
 		{
 			name: "read it",
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
 			},
@@ -510,7 +526,7 @@ func TestTransportInstance_Read(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.Read(tt.args.numBytes)
+			got, err := m.Read(tt.args.numBytes, tt.args.timeout)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -594,7 +610,8 @@ func TestTransportInstance_Write(t *testing.T) {
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
 	type args struct {
-		data []byte
+		data    []byte
+		timeout time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -605,6 +622,9 @@ func TestTransportInstance_Write(t *testing.T) {
 	}{
 		{
 			name: "write it",
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
 			},
@@ -618,7 +638,8 @@ func TestTransportInstance_Write(t *testing.T) {
 				},
 			},
 			args: args{
-				data: []byte{1, 2, 3, 4},
+				data:    []byte{1, 2, 3, 4},
+				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -636,7 +657,7 @@ func TestTransportInstance_Write(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.Write(tt.args.data); (err != nil) != tt.wantErr {
+			if err := m.Write(tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

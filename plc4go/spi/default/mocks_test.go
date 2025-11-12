@@ -370,8 +370,8 @@ func (_c *MockDefaultCodecRequirements_GetCodec_Call) RunAndReturn(run func() sp
 }
 
 // Receive provides a mock function for the type MockDefaultCodecRequirements
-func (_mock *MockDefaultCodecRequirements) Receive() (spi.Message, error) {
-	ret := _mock.Called()
+func (_mock *MockDefaultCodecRequirements) Receive(timeout time.Duration) (spi.Message, error) {
+	ret := _mock.Called(timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Receive")
@@ -379,18 +379,18 @@ func (_mock *MockDefaultCodecRequirements) Receive() (spi.Message, error) {
 
 	var r0 spi.Message
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func() (spi.Message, error)); ok {
-		return returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(time.Duration) (spi.Message, error)); ok {
+		return returnFunc(timeout)
 	}
-	if returnFunc, ok := ret.Get(0).(func() spi.Message); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(time.Duration) spi.Message); ok {
+		r0 = returnFunc(timeout)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(spi.Message)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func() error); ok {
-		r1 = returnFunc()
+	if returnFunc, ok := ret.Get(1).(func(time.Duration) error); ok {
+		r1 = returnFunc(timeout)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -403,13 +403,20 @@ type MockDefaultCodecRequirements_Receive_Call struct {
 }
 
 // Receive is a helper method to define mock.On call
-func (_e *MockDefaultCodecRequirements_Expecter) Receive() *MockDefaultCodecRequirements_Receive_Call {
-	return &MockDefaultCodecRequirements_Receive_Call{Call: _e.mock.On("Receive")}
+//   - timeout time.Duration
+func (_e *MockDefaultCodecRequirements_Expecter) Receive(timeout interface{}) *MockDefaultCodecRequirements_Receive_Call {
+	return &MockDefaultCodecRequirements_Receive_Call{Call: _e.mock.On("Receive", timeout)}
 }
 
-func (_c *MockDefaultCodecRequirements_Receive_Call) Run(run func()) *MockDefaultCodecRequirements_Receive_Call {
+func (_c *MockDefaultCodecRequirements_Receive_Call) Run(run func(timeout time.Duration)) *MockDefaultCodecRequirements_Receive_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		var arg0 time.Duration
+		if args[0] != nil {
+			arg0 = args[0].(time.Duration)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -419,22 +426,22 @@ func (_c *MockDefaultCodecRequirements_Receive_Call) Return(message spi.Message,
 	return _c
 }
 
-func (_c *MockDefaultCodecRequirements_Receive_Call) RunAndReturn(run func() (spi.Message, error)) *MockDefaultCodecRequirements_Receive_Call {
+func (_c *MockDefaultCodecRequirements_Receive_Call) RunAndReturn(run func(timeout time.Duration) (spi.Message, error)) *MockDefaultCodecRequirements_Receive_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Send provides a mock function for the type MockDefaultCodecRequirements
-func (_mock *MockDefaultCodecRequirements) Send(message spi.Message) error {
-	ret := _mock.Called(message)
+func (_mock *MockDefaultCodecRequirements) Send(message spi.Message, timeout time.Duration) error {
+	ret := _mock.Called(message, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(spi.Message) error); ok {
-		r0 = returnFunc(message)
+	if returnFunc, ok := ret.Get(0).(func(spi.Message, time.Duration) error); ok {
+		r0 = returnFunc(message, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -448,18 +455,24 @@ type MockDefaultCodecRequirements_Send_Call struct {
 
 // Send is a helper method to define mock.On call
 //   - message spi.Message
-func (_e *MockDefaultCodecRequirements_Expecter) Send(message interface{}) *MockDefaultCodecRequirements_Send_Call {
-	return &MockDefaultCodecRequirements_Send_Call{Call: _e.mock.On("Send", message)}
+//   - timeout time.Duration
+func (_e *MockDefaultCodecRequirements_Expecter) Send(message interface{}, timeout interface{}) *MockDefaultCodecRequirements_Send_Call {
+	return &MockDefaultCodecRequirements_Send_Call{Call: _e.mock.On("Send", message, timeout)}
 }
 
-func (_c *MockDefaultCodecRequirements_Send_Call) Run(run func(message spi.Message)) *MockDefaultCodecRequirements_Send_Call {
+func (_c *MockDefaultCodecRequirements_Send_Call) Run(run func(message spi.Message, timeout time.Duration)) *MockDefaultCodecRequirements_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 spi.Message
 		if args[0] != nil {
 			arg0 = args[0].(spi.Message)
 		}
+		var arg1 time.Duration
+		if args[1] != nil {
+			arg1 = args[1].(time.Duration)
+		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -470,7 +483,7 @@ func (_c *MockDefaultCodecRequirements_Send_Call) Return(err error) *MockDefault
 	return _c
 }
 
-func (_c *MockDefaultCodecRequirements_Send_Call) RunAndReturn(run func(message spi.Message) error) *MockDefaultCodecRequirements_Send_Call {
+func (_c *MockDefaultCodecRequirements_Send_Call) RunAndReturn(run func(message spi.Message, timeout time.Duration) error) *MockDefaultCodecRequirements_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -842,16 +855,16 @@ func (_c *MockDefaultCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockDe
 }
 
 // Send provides a mock function for the type MockDefaultCodec
-func (_mock *MockDefaultCodec) Send(message spi.Message) error {
-	ret := _mock.Called(message)
+func (_mock *MockDefaultCodec) Send(message spi.Message, timeout time.Duration) error {
+	ret := _mock.Called(message, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(spi.Message) error); ok {
-		r0 = returnFunc(message)
+	if returnFunc, ok := ret.Get(0).(func(spi.Message, time.Duration) error); ok {
+		r0 = returnFunc(message, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -865,18 +878,24 @@ type MockDefaultCodec_Send_Call struct {
 
 // Send is a helper method to define mock.On call
 //   - message spi.Message
-func (_e *MockDefaultCodec_Expecter) Send(message interface{}) *MockDefaultCodec_Send_Call {
-	return &MockDefaultCodec_Send_Call{Call: _e.mock.On("Send", message)}
+//   - timeout time.Duration
+func (_e *MockDefaultCodec_Expecter) Send(message interface{}, timeout interface{}) *MockDefaultCodec_Send_Call {
+	return &MockDefaultCodec_Send_Call{Call: _e.mock.On("Send", message, timeout)}
 }
 
-func (_c *MockDefaultCodec_Send_Call) Run(run func(message spi.Message)) *MockDefaultCodec_Send_Call {
+func (_c *MockDefaultCodec_Send_Call) Run(run func(message spi.Message, timeout time.Duration)) *MockDefaultCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 spi.Message
 		if args[0] != nil {
 			arg0 = args[0].(spi.Message)
 		}
+		var arg1 time.Duration
+		if args[1] != nil {
+			arg1 = args[1].(time.Duration)
+		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -887,7 +906,7 @@ func (_c *MockDefaultCodec_Send_Call) Return(err error) *MockDefaultCodec_Send_C
 	return _c
 }
 
-func (_c *MockDefaultCodec_Send_Call) RunAndReturn(run func(message spi.Message) error) *MockDefaultCodec_Send_Call {
+func (_c *MockDefaultCodec_Send_Call) RunAndReturn(run func(message spi.Message, timeout time.Duration) error) *MockDefaultCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -4839,16 +4858,16 @@ func (_c *MockMessageCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockMe
 }
 
 // Send provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Send(message spi.Message) error {
-	ret := _mock.Called(message)
+func (_mock *MockMessageCodec) Send(message spi.Message, timeout time.Duration) error {
+	ret := _mock.Called(message, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(spi.Message) error); ok {
-		r0 = returnFunc(message)
+	if returnFunc, ok := ret.Get(0).(func(spi.Message, time.Duration) error); ok {
+		r0 = returnFunc(message, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -4862,18 +4881,24 @@ type MockMessageCodec_Send_Call struct {
 
 // Send is a helper method to define mock.On call
 //   - message spi.Message
-func (_e *MockMessageCodec_Expecter) Send(message interface{}) *MockMessageCodec_Send_Call {
-	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", message)}
+//   - timeout time.Duration
+func (_e *MockMessageCodec_Expecter) Send(message interface{}, timeout interface{}) *MockMessageCodec_Send_Call {
+	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", message, timeout)}
 }
 
-func (_c *MockMessageCodec_Send_Call) Run(run func(message spi.Message)) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) Run(run func(message spi.Message, timeout time.Duration)) *MockMessageCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 spi.Message
 		if args[0] != nil {
 			arg0 = args[0].(spi.Message)
 		}
+		var arg1 time.Duration
+		if args[1] != nil {
+			arg1 = args[1].(time.Duration)
+		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -4884,7 +4909,7 @@ func (_c *MockMessageCodec_Send_Call) Return(err error) *MockMessageCodec_Send_C
 	return _c
 }
 
-func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(message spi.Message) error) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(message spi.Message, timeout time.Duration) error) *MockMessageCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -5359,16 +5384,16 @@ func (_c *MockTransportInstance_ConnectWithContext_Call) RunAndReturn(run func(c
 }
 
 // FillBuffer provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error {
-	ret := _mock.Called(until)
+func (_mock *MockTransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error {
+	ret := _mock.Called(until, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FillBuffer")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error); ok {
-		r0 = returnFunc(until)
+	if returnFunc, ok := ret.Get(0).(func(func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), time.Duration) error); ok {
+		r0 = returnFunc(until, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -5381,19 +5406,25 @@ type MockTransportInstance_FillBuffer_Call struct {
 }
 
 // FillBuffer is a helper method to define mock.On call
-//   - until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
-func (_e *MockTransportInstance_Expecter) FillBuffer(until interface{}) *MockTransportInstance_FillBuffer_Call {
-	return &MockTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", until)}
+//   - until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)
+//   - timeout time.Duration
+func (_e *MockTransportInstance_Expecter) FillBuffer(until interface{}, timeout interface{}) *MockTransportInstance_FillBuffer_Call {
+	return &MockTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", until, timeout)}
 }
 
-func (_c *MockTransportInstance_FillBuffer_Call) Run(run func(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool)) *MockTransportInstance_FillBuffer_Call {
+func (_c *MockTransportInstance_FillBuffer_Call) Run(run func(until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration)) *MockTransportInstance_FillBuffer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
+		var arg0 func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)
 		if args[0] != nil {
-			arg0 = args[0].(func(pos uint, currentByte byte, reader transports.ExtendedReader) bool)
+			arg0 = args[0].(func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool))
+		}
+		var arg1 time.Duration
+		if args[1] != nil {
+			arg1 = args[1].(time.Duration)
 		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -5404,7 +5435,7 @@ func (_c *MockTransportInstance_FillBuffer_Call) Return(err error) *MockTranspor
 	return _c
 }
 
-func (_c *MockTransportInstance_FillBuffer_Call) RunAndReturn(run func(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error) *MockTransportInstance_FillBuffer_Call {
+func (_c *MockTransportInstance_FillBuffer_Call) RunAndReturn(run func(until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error) *MockTransportInstance_FillBuffer_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -5507,8 +5538,8 @@ func (_c *MockTransportInstance_IsConnected_Call) RunAndReturn(run func() bool) 
 }
 
 // PeekReadableBytes provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
-	ret := _mock.Called(numBytes)
+func (_mock *MockTransportInstance) PeekReadableBytes(numBytes uint32, timeout time.Duration) ([]byte, error) {
+	ret := _mock.Called(numBytes, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for PeekReadableBytes")
@@ -5516,18 +5547,18 @@ func (_mock *MockTransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, 
 
 	var r0 []byte
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(uint32) ([]byte, error)); ok {
-		return returnFunc(numBytes)
+	if returnFunc, ok := ret.Get(0).(func(uint32, time.Duration) ([]byte, error)); ok {
+		return returnFunc(numBytes, timeout)
 	}
-	if returnFunc, ok := ret.Get(0).(func(uint32) []byte); ok {
-		r0 = returnFunc(numBytes)
+	if returnFunc, ok := ret.Get(0).(func(uint32, time.Duration) []byte); ok {
+		r0 = returnFunc(numBytes, timeout)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]byte)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(uint32) error); ok {
-		r1 = returnFunc(numBytes)
+	if returnFunc, ok := ret.Get(1).(func(uint32, time.Duration) error); ok {
+		r1 = returnFunc(numBytes, timeout)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -5541,18 +5572,24 @@ type MockTransportInstance_PeekReadableBytes_Call struct {
 
 // PeekReadableBytes is a helper method to define mock.On call
 //   - numBytes uint32
-func (_e *MockTransportInstance_Expecter) PeekReadableBytes(numBytes interface{}) *MockTransportInstance_PeekReadableBytes_Call {
-	return &MockTransportInstance_PeekReadableBytes_Call{Call: _e.mock.On("PeekReadableBytes", numBytes)}
+//   - timeout time.Duration
+func (_e *MockTransportInstance_Expecter) PeekReadableBytes(numBytes interface{}, timeout interface{}) *MockTransportInstance_PeekReadableBytes_Call {
+	return &MockTransportInstance_PeekReadableBytes_Call{Call: _e.mock.On("PeekReadableBytes", numBytes, timeout)}
 }
 
-func (_c *MockTransportInstance_PeekReadableBytes_Call) Run(run func(numBytes uint32)) *MockTransportInstance_PeekReadableBytes_Call {
+func (_c *MockTransportInstance_PeekReadableBytes_Call) Run(run func(numBytes uint32, timeout time.Duration)) *MockTransportInstance_PeekReadableBytes_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 uint32
 		if args[0] != nil {
 			arg0 = args[0].(uint32)
 		}
+		var arg1 time.Duration
+		if args[1] != nil {
+			arg1 = args[1].(time.Duration)
+		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -5563,14 +5600,14 @@ func (_c *MockTransportInstance_PeekReadableBytes_Call) Return(bytes []byte, err
 	return _c
 }
 
-func (_c *MockTransportInstance_PeekReadableBytes_Call) RunAndReturn(run func(numBytes uint32) ([]byte, error)) *MockTransportInstance_PeekReadableBytes_Call {
+func (_c *MockTransportInstance_PeekReadableBytes_Call) RunAndReturn(run func(numBytes uint32, timeout time.Duration) ([]byte, error)) *MockTransportInstance_PeekReadableBytes_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Read provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) Read(numBytes uint32) ([]byte, error) {
-	ret := _mock.Called(numBytes)
+func (_mock *MockTransportInstance) Read(numBytes uint32, timeout time.Duration) ([]byte, error) {
+	ret := _mock.Called(numBytes, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Read")
@@ -5578,18 +5615,18 @@ func (_mock *MockTransportInstance) Read(numBytes uint32) ([]byte, error) {
 
 	var r0 []byte
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(uint32) ([]byte, error)); ok {
-		return returnFunc(numBytes)
+	if returnFunc, ok := ret.Get(0).(func(uint32, time.Duration) ([]byte, error)); ok {
+		return returnFunc(numBytes, timeout)
 	}
-	if returnFunc, ok := ret.Get(0).(func(uint32) []byte); ok {
-		r0 = returnFunc(numBytes)
+	if returnFunc, ok := ret.Get(0).(func(uint32, time.Duration) []byte); ok {
+		r0 = returnFunc(numBytes, timeout)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]byte)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(uint32) error); ok {
-		r1 = returnFunc(numBytes)
+	if returnFunc, ok := ret.Get(1).(func(uint32, time.Duration) error); ok {
+		r1 = returnFunc(numBytes, timeout)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -5603,18 +5640,24 @@ type MockTransportInstance_Read_Call struct {
 
 // Read is a helper method to define mock.On call
 //   - numBytes uint32
-func (_e *MockTransportInstance_Expecter) Read(numBytes interface{}) *MockTransportInstance_Read_Call {
-	return &MockTransportInstance_Read_Call{Call: _e.mock.On("Read", numBytes)}
+//   - timeout time.Duration
+func (_e *MockTransportInstance_Expecter) Read(numBytes interface{}, timeout interface{}) *MockTransportInstance_Read_Call {
+	return &MockTransportInstance_Read_Call{Call: _e.mock.On("Read", numBytes, timeout)}
 }
 
-func (_c *MockTransportInstance_Read_Call) Run(run func(numBytes uint32)) *MockTransportInstance_Read_Call {
+func (_c *MockTransportInstance_Read_Call) Run(run func(numBytes uint32, timeout time.Duration)) *MockTransportInstance_Read_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 uint32
 		if args[0] != nil {
 			arg0 = args[0].(uint32)
 		}
+		var arg1 time.Duration
+		if args[1] != nil {
+			arg1 = args[1].(time.Duration)
+		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -5625,7 +5668,7 @@ func (_c *MockTransportInstance_Read_Call) Return(bytes []byte, err error) *Mock
 	return _c
 }
 
-func (_c *MockTransportInstance_Read_Call) RunAndReturn(run func(numBytes uint32) ([]byte, error)) *MockTransportInstance_Read_Call {
+func (_c *MockTransportInstance_Read_Call) RunAndReturn(run func(numBytes uint32, timeout time.Duration) ([]byte, error)) *MockTransportInstance_Read_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -5675,16 +5718,16 @@ func (_c *MockTransportInstance_String_Call) RunAndReturn(run func() string) *Mo
 }
 
 // Write provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) Write(data []byte) error {
-	ret := _mock.Called(data)
+func (_mock *MockTransportInstance) Write(data []byte, timeout time.Duration) error {
+	ret := _mock.Called(data, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Write")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func([]byte) error); ok {
-		r0 = returnFunc(data)
+	if returnFunc, ok := ret.Get(0).(func([]byte, time.Duration) error); ok {
+		r0 = returnFunc(data, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -5698,18 +5741,24 @@ type MockTransportInstance_Write_Call struct {
 
 // Write is a helper method to define mock.On call
 //   - data []byte
-func (_e *MockTransportInstance_Expecter) Write(data interface{}) *MockTransportInstance_Write_Call {
-	return &MockTransportInstance_Write_Call{Call: _e.mock.On("Write", data)}
+//   - timeout time.Duration
+func (_e *MockTransportInstance_Expecter) Write(data interface{}, timeout interface{}) *MockTransportInstance_Write_Call {
+	return &MockTransportInstance_Write_Call{Call: _e.mock.On("Write", data, timeout)}
 }
 
-func (_c *MockTransportInstance_Write_Call) Run(run func(data []byte)) *MockTransportInstance_Write_Call {
+func (_c *MockTransportInstance_Write_Call) Run(run func(data []byte, timeout time.Duration)) *MockTransportInstance_Write_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 []byte
 		if args[0] != nil {
 			arg0 = args[0].([]byte)
 		}
+		var arg1 time.Duration
+		if args[1] != nil {
+			arg1 = args[1].(time.Duration)
+		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -5720,7 +5769,7 @@ func (_c *MockTransportInstance_Write_Call) Return(err error) *MockTransportInst
 	return _c
 }
 
-func (_c *MockTransportInstance_Write_Call) RunAndReturn(run func(data []byte) error) *MockTransportInstance_Write_Call {
+func (_c *MockTransportInstance_Write_Call) RunAndReturn(run func(data []byte, timeout time.Duration) error) *MockTransportInstance_Write_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -88,7 +88,7 @@ func (c *Connection) GetTracer() tracer.Tracer {
 	return c.tracer
 }
 
-func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	c.wg.Go(func() {
@@ -97,7 +97,7 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
-		connectionConnectResult := <-c.DefaultConnection.ConnectWithContext(ctx)
+		connectionConnectResult := <-c.DefaultConnection.Connect(ctx)
 		c.wg.Go(func() {
 			defer func() {
 				if err := recover(); err != nil {

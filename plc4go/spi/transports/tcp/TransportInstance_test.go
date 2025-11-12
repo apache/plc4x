@@ -25,6 +25,7 @@ import (
 	"net"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
@@ -217,14 +218,14 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 					return listener.Addr().(*net.TCPAddr)
 				}(),
 			},
-			args: args{ctx: context.Background()},
+			args: args{ctx: t.Context()},
 		},
 		{
 			name: "connect it (non existing address)",
 			fields: fields{
 				RemoteAddress: &net.TCPAddr{},
 			},
-			args:    args{ctx: context.Background()},
+			args:    args{ctx: t.Context()},
 			wantErr: true,
 		},
 	}
@@ -377,7 +378,8 @@ func TestTransportInstance_Write(t *testing.T) {
 		reader                           *bufio.Reader
 	}
 	type args struct {
-		data []byte
+		data    []byte
+		timeout time.Duration
 	}
 	tests := []struct {
 		name        string
@@ -400,6 +402,10 @@ func TestTransportInstance_Write(t *testing.T) {
 		},
 		{
 			name: "write it",
+			args: args{
+				data:    []byte("test"),
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				listener, err := nettest.NewLocalListener("tcp")
 				require.NoError(t, err)
@@ -440,7 +446,7 @@ func TestTransportInstance_Write(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.Write(tt.args.data); (err != nil) != tt.wantErr {
+			if err := m.Write(tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

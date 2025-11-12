@@ -28,6 +28,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -75,7 +76,7 @@ func Test_defaultBufferedTransportInstance_ConnectWithContext(t *testing.T) {
 			name: "connect",
 			args: args{
 				func() context.Context {
-					ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+					ctx, cancel := context.WithTimeout(t.Context(), 1*time.Second)
 					t.Cleanup(cancel)
 					return ctx
 				}(),
@@ -90,7 +91,7 @@ func Test_defaultBufferedTransportInstance_ConnectWithContext(t *testing.T) {
 			name: "connect canceled",
 			args: args{
 				func() context.Context {
-					ctx, cancel := context.WithCancel(context.Background())
+					ctx, cancel := context.WithCancel(t.Context())
 					cancel()
 					return ctx
 				}(),
@@ -123,7 +124,8 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 		DefaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements
 	}
 	type args struct {
-		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
+		until   func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
+		timeout time.Duration
 	}
 	tests := []struct {
 		name    string
@@ -134,6 +136,9 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 	}{
 		{
 			name: "fill it",
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
@@ -144,27 +149,31 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 		},
 		{
 			name: "fill it with reader",
-			args: args{func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
-				return pos < 1
-			}},
+			args: args{
+				until:   func(pos uint, currentByte byte, reader transports.ExtendedReader) bool { return pos < 1 },
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
 				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
 				expect.IsConnected().Return(true)
+				expect.SetTimeout(mock.Anything).Return(nil)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 		},
 		{
 			name: "fill it with reader errors",
-			args: args{func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
-				return pos < 2
-			}},
+			args: args{
+				until:   func(pos uint, currentByte byte, reader transports.ExtendedReader) bool { return pos < 2 },
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
 				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
 				expect.IsConnected().Return(true)
+				expect.SetTimeout(mock.Anything).Return(nil)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
@@ -178,7 +187,7 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
 			}
-			if err := m.FillBuffer(tt.args.until); (err != nil) != tt.wantErr {
+			if err := m.FillBuffer(tt.args.until, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("FillBuffer() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -244,6 +253,7 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 	}
 	type args struct {
 		numBytes uint32
+		timeout  time.Duration
 	}
 	tests := []struct {
 		name    string
@@ -255,6 +265,9 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 	}{
 		{
 			name: "peek it without reader",
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
@@ -266,12 +279,16 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 		},
 		{
 			name: "peek it with reader",
-			args: args{numBytes: 2},
+			args: args{
+				numBytes: 2,
+				timeout:  10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
 				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
 				expect.IsConnected().Return(true)
+				expect.SetTimeout(mock.Anything).Return(nil)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			want: []byte{0x0, 0x0},
@@ -285,7 +302,7 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
 			}
-			got, err := m.PeekReadableBytes(tt.args.numBytes)
+			got, err := m.PeekReadableBytes(tt.args.numBytes, tt.args.timeout)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -303,6 +320,7 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 	}
 	type args struct {
 		numBytes uint32
+		timeout  time.Duration
 	}
 	tests := []struct {
 		name    string
@@ -314,6 +332,9 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 	}{
 		{
 			name: "read it without reader",
+			args: args{
+				timeout: 10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
@@ -325,24 +346,32 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 		},
 		{
 			name: "read it with reader",
-			args: args{numBytes: 2},
+			args: args{
+				numBytes: 2,
+				timeout:  10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
 				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
 				expect.IsConnected().Return(true)
+				expect.SetTimeout(mock.Anything).Return(nil)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			want: []byte{0x0, 0x0},
 		},
 		{
 			name: "read it with reader errors",
-			args: args{numBytes: 2},
+			args: args{
+				numBytes: 2,
+				timeout:  10 * time.Second,
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
 				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0})))
 				expect.IsConnected().Return(true)
+				expect.SetTimeout(mock.Anything).Return(nil)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
@@ -356,7 +385,7 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
 			}
-			got, err := m.Read(tt.args.numBytes)
+			got, err := m.Read(tt.args.numBytes, tt.args.timeout)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return

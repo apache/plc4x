@@ -501,7 +501,7 @@ func Test_calGetStatusTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize empty",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -739,7 +739,7 @@ func Test_calIdentifyTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize with write buffer",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1020,7 +1020,7 @@ func Test_calRecallTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize empty",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1154,7 +1154,7 @@ func Test_calTag_SerializeWithWriteBuffer(t *testing.T) {
 				unitAddress: readWriteModel.NewUnitAddress(34),
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1449,7 +1449,7 @@ func Test_mmiMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize empty",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1464,7 +1464,7 @@ func Test_mmiMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 				}(),
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1765,7 +1765,7 @@ func Test_salMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "default serialize",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -1780,7 +1780,7 @@ func Test_salMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 				}(),
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -2117,7 +2117,7 @@ func Test_salTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize default",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -2135,7 +2135,7 @@ func Test_salTag_SerializeWithWriteBuffer(t *testing.T) {
 				},
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -2527,7 +2527,7 @@ func Test_statusTag_SerializeWithWriteBuffer(t *testing.T) {
 		{
 			name: "serialize empty",
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,
@@ -2553,7 +2553,7 @@ func Test_statusTag_SerializeWithWriteBuffer(t *testing.T) {
 				numElements: 0,
 			},
 			args: args{
-				ctx:         context.Background(),
+				ctx:         t.Context(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
 			},
 			wantErr: assert.NoError,

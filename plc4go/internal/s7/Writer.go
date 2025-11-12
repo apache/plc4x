@@ -25,9 +25,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
@@ -35,6 +32,8 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Writer struct {
@@ -110,50 +109,62 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 			ctx, cancel := context.WithCancel(ctx)
 			context.AfterFunc(transactionContext, cancel)
-			// Send the  over the wire
-			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
-				if !ok {
-					return false
-				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				if !ok {
-					return false
-				}
-				payload := cotpPacketData.GetPayload()
-				if payload == nil {
-					return false
-				}
-				return payload.GetTpduReference() == tpduId
-			}, func(message spi.Message) error {
-				// Convert the response into an
-				m.log.Trace().Msg("convert response to ")
-				tpktPacket := message.(readWriteModel.TPKTPacket)
-				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				payload := cotpPacketData.GetPayload()
-				// Convert the s7 response into a PLC4X response
-				m.log.Trace().Msg("convert response to PLC4X response")
-				readResponse, err := m.ToPlc4xWriteResponse(payload, writeRequest)
+			ttl := 60 * time.Second
+			if deadline, ok := ctx.Deadline(); ok {
+				ttl = time.Until(deadline)
+				m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+			}
+			// Send the over the wire
+			if err := m.messageCodec.SendRequest(
+				ctx,
+				tpktPacket,
+				func(message spi.Message) bool {
+					tpktPacket, ok := message.(readWriteModel.TPKTPacket)
+					if !ok {
+						return false
+					}
+					cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+					if !ok {
+						return false
+					}
+					payload := cotpPacketData.GetPayload()
+					if payload == nil {
+						return false
+					}
+					return payload.GetTpduReference() == tpduId
+				},
+				func(message spi.Message) error {
+					// Convert the response into an
+					m.log.Trace().Msg("convert response to ")
+					tpktPacket := message.(readWriteModel.TPKTPacket)
+					cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+					payload := cotpPacketData.GetPayload()
+					// Convert the s7 response into a PLC4X response
+					m.log.Trace().Msg("convert response to PLC4X response")
+					readResponse, err := m.ToPlc4xWriteResponse(payload, writeRequest)
 
-				if err != nil {
+					if err != nil {
+						result <- &spiModel.DefaultPlcWriteRequestResult{
+							Request: writeRequest,
+							Err:     errors.Wrap(err, "Error decoding response"),
+						}
+						return transaction.EndRequest()
+					}
 					result <- &spiModel.DefaultPlcWriteRequestResult{
-						Request: writeRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
+						Request:  writeRequest,
+						Response: readResponse,
 					}
 					return transaction.EndRequest()
-				}
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: readResponse,
-				}
-				return transaction.EndRequest()
-			}, func(err error) error {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request: writeRequest,
-					Err:     errors.New("got timeout while waiting for response"),
-				}
-				return transaction.EndRequest()
-			}, time.Second*1); err != nil {
+				},
+				func(err error) error {
+					result <- &spiModel.DefaultPlcWriteRequestResult{
+						Request: writeRequest,
+						Err:     errors.New("got timeout while waiting for response"),
+					}
+					return transaction.EndRequest()
+				},
+				ttl,
+			); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message"))
 				if err := transaction.FailRequest(errors.Errorf("timeout after %s", 1*time.Second)); err != nil {
 					m.log.Debug().Err(err).Msg("Error failing request")

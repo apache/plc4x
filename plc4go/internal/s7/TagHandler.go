@@ -90,6 +90,7 @@ const (
 )
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
+	ctx := context.TODO()
 	if match := utils.GetSubgroupMatches(m.dataBlockStringAddressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -266,7 +267,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)
 		}
-		ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		s7Address, err := readWriteModel.S7AddressParse[readWriteModel.S7AddressAny](ctxForModel, addressData)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)

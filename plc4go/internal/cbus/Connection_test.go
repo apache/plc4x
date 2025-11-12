@@ -127,7 +127,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 	}
 }
 
-func TestConnection_ConnectWithContext(t *testing.T) {
+func TestConnection_Connect(t *testing.T) {
 	type fields struct {
 		messageCodec  *MessageCodec
 		subscribers   []*Subscriber
@@ -166,7 +166,9 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 				connectionId: "connectionId13",
 				tracer:       nil,
 			},
-			args: args{ctx: context.Background()},
+			args: args{
+				ctx: t.Context(),
+			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
@@ -205,7 +207,7 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 				log:           testutils.ProduceTestingLogger(t),
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.True(t, tt.wantAsserter(t, c.ConnectWithContext(tt.args.ctx)), "ConnectWithContext(%v)", tt.args.ctx)
+			assert.True(t, tt.wantAsserter(t, c.Connect(tt.args.ctx)), "ConnectWithContext(%v)", tt.args.ctx)
 			// To shut down properly we always do that
 			c.SetConnected(false)
 			c.handlerWaitGroup.Wait()
@@ -814,13 +816,12 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 		name   string
 		fields fields
 		args   args
-		setup  func(t *testing.T, fields *fields)
+		setup  func(t *testing.T, fields *fields, args *args)
 		want   bool
 	}{
 		{
 			name: "send something",
 			args: args{
-				ctx:            context.Background(),
 				ch:             make(chan plc4go.PlcConnectionConnectResult, 1),
 				paramNo:        readWriteModel.Parameter_APPLICATION_ADDRESS_2,
 				parameterValue: readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(1), nil),
@@ -833,7 +834,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 					return &cBusOptions
 				}(),
 			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 				transport := test.NewTransport(_options...)
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
@@ -844,6 +845,11 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			want: false,
 		},
@@ -851,7 +857,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			c := &Connection{
 				messageCodec:  tt.fields.messageCodec,
@@ -919,6 +925,9 @@ func TestConnection_sendReset(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantOk: false,
 		},
@@ -994,6 +1003,9 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantOk: false,
 		},
@@ -1069,6 +1081,9 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantOk: false,
 		},
@@ -1144,6 +1159,9 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			want: false,
 		},
@@ -1219,6 +1237,9 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantOk: false,
 		},
@@ -1284,6 +1305,9 @@ func TestConnection_setupConnection(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1332,6 +1356,9 @@ func TestConnection_setupConnection(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1391,6 +1418,9 @@ func TestConnection_setupConnection(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1458,6 +1488,9 @@ func TestConnection_setupConnection(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1530,6 +1563,9 @@ func TestConnection_setupConnection(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)
@@ -1546,7 +1582,7 @@ func TestConnection_setupConnection(t *testing.T) {
 
 				// Build the message codec
 				transport := test.NewTransport(_options...)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"10ms"}}, _options...)
 
 				type MockState uint8
 				const (
@@ -1607,6 +1643,9 @@ func TestConnection_setupConnection(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
 				assert.NotNil(t, result)

@@ -70,10 +70,9 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				remoteAddress, err := net.ResolveUDPAddr("udp", ":0")
 				require.NoError(t, err)
 				return &TransportInstance{
-					ConnectTimeout: 1000,
-					RemoteAddress:  remoteAddress,
-					transport:      NewTransport(),
-					log:            log.Logger,
+					RemoteAddress: remoteAddress,
+					transport:     NewTransport(),
+					log:           log.Logger,
 				}
 			}(),
 		},
@@ -110,10 +109,9 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 		{
 			name: "Create it",
 			want: &TransportInstance{
-				transport:      NewTransport(),
-				RemoteAddress:  &net.UDPAddr{},
-				ConnectTimeout: 1000,
-				log:            log.Logger,
+				transport:     NewTransport(),
+				RemoteAddress: &net.UDPAddr{},
+				log:           log.Logger,
 			},
 		},
 		{
@@ -125,10 +123,9 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 				udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", "127.0.0.1", 123))
 				assert.NoError(t, err)
 				ti := &TransportInstance{
-					transport:      NewTransport(),
-					RemoteAddress:  udpAddr,
-					ConnectTimeout: 1000,
-					log:            log.Logger,
+					transport:     NewTransport(),
+					RemoteAddress: udpAddr,
+					log:           log.Logger,
 				}
 				return ti
 			}(),
@@ -142,10 +139,9 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 				udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", "localhost", 123))
 				assert.NoError(t, err)
 				ti := &TransportInstance{
-					transport:      NewTransport(),
-					RemoteAddress:  udpAddr,
-					ConnectTimeout: 1000,
-					log:            log.Logger,
+					transport:     NewTransport(),
+					RemoteAddress: udpAddr,
+					log:           log.Logger,
 				}
 				return ti
 			}(),
@@ -176,10 +172,9 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 				udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", "127.0.0.1", 123))
 				assert.NoError(t, err)
 				ti := &TransportInstance{
-					transport:      NewTransport(),
-					RemoteAddress:  udpAddr,
-					ConnectTimeout: 1000,
-					log:            log.Logger,
+					transport:     NewTransport(),
+					RemoteAddress: udpAddr,
+					log:           log.Logger,
 				}
 				return ti
 			}(),
@@ -199,20 +194,18 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 			args: args{
 				transportUrl: url.URL{Host: "127.0.0.1"},
 				options: map[string][]string{
-					"defaultUdpPort":  {"123"},
-					"connect-timeout": {"123"},
-					"so-reuse":        {"true"},
+					"defaultUdpPort": {"123"},
+					"so-reuse":       {"true"},
 				},
 			},
 			want: func() transports.TransportInstance {
 				udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", "127.0.0.1", 123))
 				assert.NoError(t, err)
 				ti := &TransportInstance{
-					transport:      NewTransport(),
-					RemoteAddress:  udpAddr,
-					ConnectTimeout: 123,
-					SoReUse:        true,
-					log:            log.Logger,
+					transport:     NewTransport(),
+					RemoteAddress: udpAddr,
+					SoReUse:       true,
+					log:           log.Logger,
 				}
 				return ti
 			}(),
@@ -222,20 +215,8 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 			args: args{
 				transportUrl: url.URL{Host: "127.0.0.1"},
 				options: map[string][]string{
-					"defaultUdpPort":  {"123"},
-					"connect-timeout": {"123"},
-					"so-reuse":        {"banana"},
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "Create it with transport url (with default port and connection timeout broken)",
-			args: args{
-				transportUrl: url.URL{Host: "127.0.0.1"},
-				options: map[string][]string{
-					"defaultUdpPort":  {"123"},
-					"connect-timeout": {"banana"},
+					"defaultUdpPort": {"123"},
+					"so-reuse":       {"banana"},
 				},
 			},
 			wantErr: true,

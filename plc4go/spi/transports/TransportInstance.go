@@ -23,22 +23,22 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"time"
 )
 
 type TransportInstance interface {
 	fmt.Stringer
 	io.Closer
-	Connect() error
-	ConnectWithContext(ctx context.Context) error
+	Connect(ctx context.Context) error
 
 	IsConnected() bool
 
 	// FillBuffer fills the buffer `until` false (Useful in conjunction if you want GetNumBytesAvailableInBuffer)
-	FillBuffer(until func(pos uint, currentByte byte, reader ExtendedReader) bool) error
+	FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader ExtendedReader) (keepGoing bool), timeout time.Duration) error
 	// GetNumBytesAvailableInBuffer returns the bytes currently available in buffer (!!!Careful: if you looking for a termination you have to use FillBuffer)
 	GetNumBytesAvailableInBuffer() (uint32, error)
-	PeekReadableBytes(numBytes uint32) ([]byte, error)
-	Read(numBytes uint32) ([]byte, error)
+	PeekReadableBytes(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error)
+	Read(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error)
 
-	Write(data []byte) error
+	Write(ctx context.Context, data []byte, timeout time.Duration) error
 }

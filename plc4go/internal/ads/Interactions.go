@@ -42,6 +42,11 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 			}
 		}()
 		request := m.NewAdsReadDeviceInfoRequest()
+		ttl := 60 * time.Second
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := m.messageCodec.SendRequest(
 			ctx,
 			request,
@@ -59,9 +64,11 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 				return nil
 			},
 			func(err error) error {
+				m.log.Debug().Err(err).Msg("error during send request")
 				return nil
 			},
-			time.Second); err != nil {
+			ttl,
+		); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
@@ -85,6 +92,11 @@ func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint3
 			}
 		}()
 		request := m.NewAdsReadRequest(indexGroup, indexOffset, length)
+		ttl := 60 * time.Second
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := m.messageCodec.SendRequest(
 			ctx,
 			request,
@@ -102,9 +114,11 @@ func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint3
 				return nil
 			},
 			func(err error) error {
+				m.log.Debug().Err(err).Msg("error during send request")
 				return nil
 			},
-			time.Second*5); err != nil {
+			ttl,
+		); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
@@ -128,6 +142,11 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 			}
 		}()
 		request := m.NewAdsWriteRequest(indexGroup, indexOffset, data)
+		ttl := 60 * time.Second
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := m.messageCodec.SendRequest(
 			ctx,
 			request,
@@ -145,9 +164,11 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 				return nil
 			},
 			func(err error) error {
+				m.log.Debug().Err(err).Msg("error during send request")
 				return nil
 			},
-			time.Second); err != nil {
+			ttl,
+		); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
@@ -171,6 +192,11 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 			}
 		}()
 		request := m.NewAdsReadWriteRequest(indexGroup, indexOffset, readLength, items, writeData)
+		ttl := 60 * time.Second
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := m.messageCodec.SendRequest(
 			ctx,
 			request,
@@ -188,9 +214,11 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 				return nil
 			},
 			func(err error) error {
+				m.log.Debug().Err(err).Msg("error during send request")
 				return nil
 			},
-			time.Second); err != nil {
+			ttl,
+		); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
@@ -204,6 +232,11 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 
 func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, length uint32, transmissionMode model.AdsTransMode, maxDelay uint32, cycleTime uint32) (model.AdsAddDeviceNotificationResponse, error) {
 	responseChannel := make(chan model.AdsAddDeviceNotificationResponse, 1)
+	ttl := 60 * time.Second
+	if deadline, ok := ctx.Deadline(); ok {
+		ttl = time.Until(deadline)
+		m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+	}
 	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -233,7 +266,8 @@ func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context,
 			func(err error) error {
 				return nil
 			},
-			time.Second); err != nil {
+			ttl,
+		); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}
@@ -257,6 +291,11 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 			}
 		}()
 		request := m.NewAdsDeleteDeviceNotificationRequest(notificationHandle)
+		ttl := 60 * time.Second
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := m.messageCodec.SendRequest(
 			ctx,
 			request,
@@ -274,9 +313,11 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 				return nil
 			},
 			func(err error) error {
+				m.log.Debug().Err(err).Msg("error during send request")
 				return nil
 			},
-			time.Second); err != nil {
+			ttl,
+		); err != nil {
 			m.log.Debug().Err(err).Msg("error during send request")
 			close(responseChannel)
 		}

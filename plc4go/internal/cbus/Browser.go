@@ -127,7 +127,7 @@ unitLoop:
 				Stringer("readRequest", readRequest).
 				Dur("timeout", timeout).
 				Msg("Executing readRequest with timeout")
-			requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
+			requestResult := <-readRequest.Execute(timeoutCtx)
 			m.log.Trace().Stringer("requestResult", requestResult).Msg("got a response")
 			timeoutCancel()
 			if err := requestResult.GetErr(); err != nil {
@@ -218,7 +218,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	}
 	subCtx, subCtxCancel := context.WithTimeout(ctx, 2*time.Second)
 	defer subCtxCancel()
-	subscriptionResult := <-subscriptionRequest.ExecuteWithContext(subCtx)
+	subscriptionResult := <-subscriptionRequest.Execute(subCtx)
 	if err := subscriptionResult.GetErr(); err != nil {
 		return nil, errors.Wrap(err, "Error subscribing to the mmi")
 	}
@@ -234,7 +234,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	if err != nil {
 		return nil, errors.Wrap(err, "Error building unsubscription request")
 	}
-	defer build.ExecuteWithContext(ctx)
+	defer build.Execute(ctx)
 
 	blockOffset0Received := false
 	blockOffset0ReceivedChan := make(chan any, 100) // We only expect one, but we make it a bit bigger to no clog up
@@ -350,7 +350,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 		}()
 		defer readCtxCancel()
 		m.log.Debug().Stringer("readRequest", readRequest).Msg("sending read request")
-		readRequestResult := <-readRequest.ExecuteWithContext(readCtx)
+		readRequestResult := <-readRequest.Execute(readCtx)
 		if err := readRequestResult.GetErr(); err != nil {
 			m.log.Warn().Err(err).Msg("Error reading the mmi")
 			return

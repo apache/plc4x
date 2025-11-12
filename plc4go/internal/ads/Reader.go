@@ -256,6 +256,7 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 }
 
 func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo, rb utils.ReadBufferByteBased) (apiValues.PlcValue, error) {
+	ctx := context.TODO()
 	// Decode the data according to the information from the request
 	// Based on the AdsDataTypeTableEntry in tag.DataType() parse the data
 	if len(arrayInfo) > 0 {
@@ -312,6 +313,6 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}
-		return driverModel.DataItemParseWithBuffer(context.Background(), rb, adsValueType, stringLength)
+		return driverModel.DataItemParseWithBuffer(ctx, rb, adsValueType, stringLength)
 	}
 }

@@ -24,17 +24,17 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 type DefaultDriverRequirements interface {
-	GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult
+	GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult
 	DiscoverWithContext(callback context.Context, event func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
 }
 
@@ -95,10 +95,6 @@ func (d *defaultDriver) CheckTagAddress(query string) error {
 func (d *defaultDriver) CheckQuery(query string) error {
 	_, err := d.plcTagHandler.ParseQuery(query)
 	return err
-}
-
-func (d *defaultDriver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	return d.GetConnectionWithContext(context.Background(), transportUrl, transports, options)
 }
 
 func (d *defaultDriver) SupportsDiscovery() bool {

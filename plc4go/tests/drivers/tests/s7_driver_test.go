@@ -20,7 +20,6 @@
 package tests
 
 import (
-	"context"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/s7"
@@ -32,7 +31,7 @@ import (
 
 func TestS7Driver(t *testing.T) {
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
-		return readWriteModel.TPKTPacketParseWithBuffer(context.Background(), readBufferByteBased)
+		return readWriteModel.TPKTPacketParseWithBuffer(t.Context(), readBufferByteBased)
 	}
 	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(

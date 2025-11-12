@@ -216,6 +216,11 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 
 	requestConsumer := func(transactionId int32) {
 		var messageBuffer []byte
+		ttl := REQUEST_TIMEOUT
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			s.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := codec.SendRequest(ctx, apu,
 			func(message spi.Message) bool {
 				opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
@@ -271,7 +276,8 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 				errorDispatcher(err)
 				return nil
 			},
-			REQUEST_TIMEOUT); err != nil {
+			ttl,
+		); err != nil {
 			errorDispatcher(err)
 		}
 	}
@@ -302,6 +308,11 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 
 	requestConsumer := func(transactionId int32) {
 		s.log.Trace().Int32("transactionId", transactionId).Msg("request consumer called")
+		ttl := REQUEST_TIMEOUT
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			s.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := s.codec.SendRequest(
 			ctx,
 			hello,
@@ -331,7 +342,8 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 				connection.fireConnectionError(err, ch)
 				return nil
 			},
-			REQUEST_TIMEOUT); err != nil {
+			ttl,
+		); err != nil {
 			s.log.Debug().Err(err).Msg("error sending")
 		}
 	}
@@ -425,6 +437,11 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 	}
 
 	requestConsumer := func(transactionId int32) {
+		ttl := REQUEST_TIMEOUT
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			s.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := s.codec.SendRequest(
 			ctx,
 			apu,
@@ -476,7 +493,7 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 				connection.fireConnectionError(err, ch)
 				return nil
 			},
-			REQUEST_TIMEOUT,
+			ttl,
 		); err != nil {
 			s.log.Debug().Err(err).Msg("a error")
 			connection.fireConnectionError(err, ch)
@@ -837,6 +854,11 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, conn
 	apu := readWriteModel.NewOpcuaAPU(closeRequest)
 
 	requestConsumer := func(transactionId int32) {
+		ttl := REQUEST_TIMEOUT
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			s.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := connection.messageCodec.SendRequest(
 			ctx,
 			apu,
@@ -865,7 +887,7 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, conn
 				s.log.Debug().Err(err).Msg("error submitting")
 				return nil
 			},
-			REQUEST_TIMEOUT,
+			ttl,
 		); err != nil {
 			s.log.Debug().Err(err).Msg("a error")
 		}
@@ -896,6 +918,11 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 	apu := readWriteModel.NewOpcuaAPU(hello)
 
 	requestConsumer := func(transactionId int32) {
+		ttl := REQUEST_TIMEOUT
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			s.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := codec.SendRequest(
 			ctx,
 			apu,
@@ -925,7 +952,7 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 				s.log.Debug().Err(err).Msg("error submitting")
 				return nil
 			},
-			REQUEST_TIMEOUT,
+			ttl,
 		); err != nil {
 			s.log.Debug().Err(err).Msg("a error")
 		}
@@ -994,6 +1021,11 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 	apu := readWriteModel.NewOpcuaAPU(openRequest)
 
 	requestConsumer := func(transactionId int32) {
+		ttl := REQUEST_TIMEOUT
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			s.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := codec.SendRequest(
 			ctx,
 			apu,
@@ -1039,7 +1071,7 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 				s.log.Debug().Err(err).Msg("error submitting")
 				return nil
 			},
-			REQUEST_TIMEOUT,
+			ttl,
 		); err != nil {
 			s.log.Debug().Err(err).Msg("a error")
 		}
@@ -1117,6 +1149,11 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 	apu := readWriteModel.NewOpcuaAPU(messageRequest)
 
 	requestConsumer := func(transactionId int32) {
+		ttl := REQUEST_TIMEOUT
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			s.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := codec.SendRequest(
 			ctx,
 			apu,
@@ -1175,7 +1212,7 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 				s.log.Debug().Err(err).Msg("error submitting")
 				return nil
 			},
-			REQUEST_TIMEOUT,
+			ttl,
 		); err != nil {
 			s.log.Debug().Err(err).Msg("a error")
 		}
@@ -1227,6 +1264,11 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 	apu := readWriteModel.NewOpcuaAPU(closeRequest)
 
 	requestConsumer := func(transactionId int32) {
+		ttl := REQUEST_TIMEOUT
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			s.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
 		if err := codec.SendRequest(
 			ctx,
 			apu,
@@ -1255,7 +1297,7 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 				s.log.Debug().Err(err).Msg("error submitting")
 				return nil
 			},
-			REQUEST_TIMEOUT,
+			ttl,
 		); err != nil {
 			s.log.Debug().Err(err).Msg("a error")
 		}
@@ -1267,6 +1309,7 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 }
 
 func (s *SecureChannel) keepAlive() {
+	ctx := context.TODO()
 	s.keepAliveStateChange.Lock()
 	defer s.keepAliveStateChange.Unlock()
 	if s.keepAliveIndicator.Load() {
@@ -1277,7 +1320,6 @@ func (s *SecureChannel) keepAlive() {
 		s.keepAliveIndicator.Store(true)
 		defer s.keepAliveIndicator.Store(false)
 		defer s.log.Info().Msg("ending keepalive")
-		ctx := context.Background()
 		for (s.codec == nil || s.codec.IsRunning()) && s.keepAliveIndicator.Load() {
 			sleepTime := time.Duration(math.Ceil(float64(s.lifetime)*0.75)) * time.Millisecond
 			s.log.Trace().Dur("sleepTime", sleepTime).Msg("Sleeping")
@@ -1362,6 +1404,11 @@ func (s *SecureChannel) keepAlive() {
 			}
 
 			requestConsumer := func(transactionId int32) {
+				ttl := REQUEST_TIMEOUT
+				if deadline, ok := ctx.Deadline(); ok {
+					ttl = time.Until(deadline)
+					s.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+				}
 				if err := s.codec.SendRequest(
 					ctx,
 					apu,
@@ -1410,7 +1457,7 @@ func (s *SecureChannel) keepAlive() {
 						s.log.Debug().Err(err).Msg("error submitting")
 						return nil
 					},
-					REQUEST_TIMEOUT,
+					ttl,
 				); err != nil {
 					s.log.Debug().Err(err).Msg("a error")
 				}

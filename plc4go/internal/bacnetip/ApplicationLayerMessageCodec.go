@@ -96,13 +96,7 @@ func (m *ApplicationLayerMessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *ApplicationLayerMessageCodec) Connect() error {
-	// TODO: this is currently done by the BIP
-	//	return m.messageCode.Connect()
-	return nil
-}
-
-func (m *ApplicationLayerMessageCodec) ConnectWithContext(ctx context.Context) error {
+func (m *ApplicationLayerMessageCodec) Connect(ctx context.Context) error {
 	// TODO: this is currently done by the BIP
 	//	return m.messageCode.ConnectWithContext(ctx)
 	return nil
@@ -119,28 +113,28 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 	return m.messageCode.IsRunning()
 }
 
-func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
+func (m *ApplicationLayerMessageCodec) Send(message spi.Message, timeout time.Duration) error {
 	address, err := pdu.NewAddress(comp.NewArgs(m.remoteAddress))
 	if err != nil {
 		return err
 	}
-	iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(comp.NewArgs(message), comp.NewKWArgs(comp.KWCPCIDestination, address)), address)
+	_iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(comp.NewArgs(message), comp.NewKWArgs(comp.KWCPCIDestination, address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
 	m.wg.Go(func() {
 		m.wg.Go(func() {
-			if err := m.bipSimpleApplication.RequestIO(iocb); err != nil {
+			if err := m.bipSimpleApplication.RequestIO(_iocb); err != nil {
 				m.log.Debug().Err(err).Msg("errored")
 			}
 		})
-		iocb.Wait()
-		if err := iocb.GetIOError(); err != nil {
+		_iocb.Wait()
+		if err := _iocb.GetIOError(); err != nil {
 			// TODO: handle error
 			fmt.Printf("Err: %v\n", err)
-		} else if iocb.GetIOResponse() != nil {
+		} else if _iocb.GetIOResponse() != nil {
 			// TODO: response?
-			fmt.Printf("Response: %v\n", iocb.GetIOResponse())
+			fmt.Printf("Response: %v\n", _iocb.GetIOResponse())
 		} else {
 			// TODO: what now?
 		}
@@ -158,23 +152,23 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 	if err != nil {
 		return err
 	}
-	iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(comp.NewArgs(message), comp.NewKWArgs(comp.KWCPCIDestination, address)), address)
+	_iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(comp.NewArgs(message), comp.NewKWArgs(comp.KWCPCIDestination, address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
 	m.wg.Go(func() {
 		m.wg.Go(func() {
-			if err := m.bipSimpleApplication.RequestIO(iocb); err != nil {
+			if err := m.bipSimpleApplication.RequestIO(_iocb); err != nil {
 				m.log.Error().Err(err).Msg("errored")
 			}
 		})
-		iocb.Wait()
-		if err := iocb.GetIOError(); err != nil {
+		_iocb.Wait()
+		if err := _iocb.GetIOError(); err != nil {
 			if err := handleError(err); err != nil {
 				m.log.Debug().Err(err).Msg("error handling error")
 				return
 			}
-		} else if response := iocb.GetIOResponse(); response != nil {
+		} else if response := _iocb.GetIOResponse(); response != nil {
 			// TODO: we wrap it into a BVLC for now. Once we change the Readers etc. to accept apdus we can remove that
 			tempBVLC := model.NewBVLCOriginalUnicastNPDU(
 				model.NewNPDU(

@@ -119,7 +119,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 
 // TestContext produces a context which is getting cleaned up by testing.T
 func TestContext(t *testing.T) context.Context {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	t.Cleanup(cancel)
 	ctx = ProduceTestingLogger(t).WithContext(ctx)
 	return ctx
@@ -161,11 +161,11 @@ func getOrLeaveBool(key string, setting *bool) {
 
 func getOrLeaveDuration(key string, setting *time.Duration) {
 	if env, ok := os.LookupEnv(key); ok && env != "" {
-		parsedDuration, err := strconv.ParseInt(env, 10, 64)
+		parsedDuration, err := time.ParseDuration(env)
 		if err != nil {
 			panic(err)
 		}
-		*setting = time.Duration(parsedDuration) * time.Millisecond
+		*setting = parsedDuration
 	}
 }
 

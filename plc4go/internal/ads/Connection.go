@@ -113,7 +113,7 @@ func (m *Connection) GetConnection() plc4go.PlcConnection {
 	return m
 }
 
-func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	m.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 
@@ -125,7 +125,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
-		err := m.messageCodec.ConnectWithContext(ctx)
+		err := m.messageCodec.Connect(ctx)
 		if err != nil {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
 		}
@@ -294,7 +294,7 @@ func (m *Connection) readDataTypeTable(ctx context.Context, dataTableSize uint32
 	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	dataTypes := map[string]readWriteModel.AdsDataTypeTableEntry{}
 	for i := uint32(0); i < numDataTypes; i++ {
-		dataType, err := readWriteModel.AdsDataTypeTableEntryParseWithBuffer(context.Background(), readBuffer)
+		dataType, err := readWriteModel.AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table: %v", err)
 		}
@@ -313,7 +313,7 @@ func (m *Connection) readSymbolTable(ctx context.Context, symbolTableSize uint32
 	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	symbols := map[string]readWriteModel.AdsSymbolTableEntry{}
 	for i := uint32(0); i < numSymbols; i++ {
-		symbol, err := readWriteModel.AdsSymbolTableEntryParseWithBuffer(context.Background(), readBuffer)
+		symbol, err := readWriteModel.AdsSymbolTableEntryParseWithBuffer(ctx, readBuffer)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table")
 		}

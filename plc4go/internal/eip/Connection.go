@@ -158,7 +158,6 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 }
 
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	// TODO: use proper context
 	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionCloseResult, 1)
 	c.wg.Go(func() {
@@ -168,7 +167,12 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			}
 		}()
 		c.log.Debug().Msg("Sending UnregisterSession EIP Packet")
-		_ = c.messageCodec.SendRequest(
+		ttl := 60 * time.Second
+		if deadline, ok := ctx.Deadline(); ok {
+			ttl = time.Until(deadline)
+			c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+		}
+		if err := c.messageCodec.SendRequest(
 			ctx,
 			readWriteModel.NewEipDisconnectRequest(c.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
 				return true
@@ -179,8 +183,12 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			func(err error) error {
 				return nil
 			},
-			c.GetTtl(),
-		) //Unregister gets no response
+			ttl,
+		); err != nil {
+			c.log.Debug().Err(err).Msg("error sending unregister session request")
+		}
+
+		//Unregister gets no response
 		time.Sleep(100 * time.Millisecond) // Just to make sure it ge's out
 		if err := c.messageCodec.Disconnect(); err != nil {
 			c.log.Warn().Err(err).Msg("error disconnecting message codec")
@@ -221,6 +229,11 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 	c.log.Debug().Msg("Sending ListServices Request")
 	listServicesResultChan := make(chan readWriteModel.ListServicesResponse, 1)
 	listServicesResultErrorChan := make(chan error, 1)
+	ttl := c.GetTtl()
+	if deadline, ok := ctx.Deadline(); ok {
+		ttl = time.Until(deadline)
+		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+	}
 	if err := c.messageCodec.SendRequest(
 		ctx,
 		readWriteModel.NewListServicesRequest(
@@ -257,7 +270,8 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 			listServicesResultErrorChan <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
-		c.GetTtl()); err != nil {
+		ttl,
+	); err != nil {
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
 
@@ -276,6 +290,11 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 	c.log.Debug().Msg("Sending EipConnectionRequest")
 	connectionResponseChan := make(chan readWriteModel.EipConnectionResponse, 1)
 	connectionResponseErrorChan := make(chan error, 1)
+	ttl := c.GetTtl()
+	if deadline, ok := ctx.Deadline(); ok {
+		ttl = time.Until(deadline)
+		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+	}
 	if err := c.messageCodec.SendRequest(
 		ctx,
 		readWriteModel.NewEipConnectionRequest(
@@ -328,6 +347,10 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 					0,
 					typeIds,
 				)
+				if deadline, ok := ctx.Deadline(); ok {
+					ttl = time.Until(deadline)
+					c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+				}
 				if err := c.messageCodec.SendRequest(
 					ctx,
 					eipWrapper,
@@ -364,7 +387,7 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 						connectionResponseErrorChan <- errors.Wrap(err, "got error processing request")
 						return nil
 					},
-					c.GetTtl(),
+					ttl,
 				); err != nil {
 					c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 				}
@@ -381,7 +404,7 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 			connectionResponseErrorChan <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
-		c.GetTtl(),
+		ttl,
 	); err != nil {
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
@@ -402,6 +425,11 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 	listAllAttributesErrorChan := make(chan error, 1)
 	classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(uint8(0), uint8(2)))
 	instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(uint8(0), uint8(1)))
+	ttl := c.GetTtl()
+	if deadline, ok := ctx.Deadline(); ok {
+		ttl = time.Until(deadline)
+		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+	}
 	if err := c.messageCodec.SendRequest(
 		ctx,
 		readWriteModel.NewCipRRData(
@@ -458,7 +486,7 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 			c.fireConnectionError(errors.Wrap(err, "got error processing request"), ch)
 			return nil
 		},
-		c.GetTtl(),
+		ttl,
 	); err != nil {
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}

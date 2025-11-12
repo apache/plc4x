@@ -22,6 +22,7 @@ package test
 import (
 	"net/url"
 	"testing"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
@@ -117,10 +118,11 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				preregisteredInstances: map[url.URL]transports.TransportInstance{},
 			},
 			want: &TransportInstance{
-				readBuffer:  []byte{},
-				writeBuffer: []byte{},
-				transport:   NewTransport(),
-				log:         log.Logger,
+				readBuffer:       []byte{},
+				writeBuffer:      []byte{},
+				transport:        NewTransport(),
+				simulatedLatency: 100 * time.Millisecond,
+				log:              log.Logger,
 			},
 		},
 		{

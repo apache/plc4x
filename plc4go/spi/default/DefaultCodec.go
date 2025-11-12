@@ -27,6 +27,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
@@ -40,8 +41,8 @@ import (
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
 type DefaultCodecRequirements interface {
 	GetCodec() spi.MessageCodec
-	Send(message spi.Message) error
-	Receive() (spi.Message, error)
+	Send(ctx context.Context, message spi.Message, timeout time.Duration) error
+	Receive(ctx context.Context, timeout time.Duration) (spi.Message, error)
 }
 
 // DefaultCodec is a default codec implementation which has so sensitive defaults for message handling and a built-in worker
@@ -93,6 +94,9 @@ type defaultCodec struct {
 	receiveTimeout                 time.Duration
 	traceDefaultMessageCodecWorker bool
 
+	ctx       context.Context
+	ctxCancel context.CancelFunc
+
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
@@ -110,11 +114,11 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 
 	receiveTimeout, timeoutDefined := options.ExtractReceiveTimeout(_options...)
 	if !timeoutDefined {
-		receiveTimeout = 10 * time.Second
+		receiveTimeout = 60 * time.Second
 	}
 	traceDefaultMessageCodecWorker, _ := options.ExtractTraceDefaultMessageCodecWorker(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	return &defaultCodec{
+	d := &defaultCodec{
 		DefaultCodecRequirements:       defaultCodecRequirements,
 		transportInstance:              transportInstance,
 		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
@@ -126,6 +130,8 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 		traceDefaultMessageCodecWorker: traceDefaultMessageCodecWorker || config.TraceDefaultMessageCodecWorker,
 		log:                            customLogger,
 	}
+	d.ctx, d.ctxCancel = context.WithCancel(context.Background())
+	return d
 }
 
 //
@@ -154,7 +160,7 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	}
 	m.log.Trace().Msg("connecting")
 	if !m.transportInstance.IsConnected() {
-		if err := m.transportInstance.ConnectWithContext(ctx); err != nil {
+		if err := m.transportInstance.Connect(ctx); err != nil {
 			return err
 		}
 	} else {
@@ -175,6 +181,7 @@ func (m *defaultCodec) Disconnect() error {
 		return errors.New("already disconnected")
 	}
 	m.log.Trace().Msg("Disconnecting")
+	m.ctxCancel()
 	m.running.Store(false)
 	close(m.notifyExpireWorker)
 	close(m.notifyReceiveWorker)
@@ -216,8 +223,8 @@ func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acc
 		return errors.Wrap(err, "Not sending message as context is aborted")
 	}
 	m.Expect(ctx, acceptsMessage, handleMessage, handleError, ttl) // We register the expectation first to avoid getting a response between sending and adding the expect
-	m.log.Trace().Msg("Sending request")
-	return m.Send(message)
+	m.log.Trace().Dur("ttl", ttl).Msg("Sending request")
+	return m.Send(ctx, message, ttl)
 }
 
 func (m *defaultCodec) TimeoutExpectations(now time.Time) time.Duration {
@@ -314,6 +321,7 @@ func (m *defaultCodec) ExpireWork() {
 	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
+	workerLog = workerLog.With().Str("workerId", uuid.NewString()).Logger()
 	workerLog.Trace().Msg("Starting expire work")
 	defer workerLog.Trace().Msg("expire work ended")
 
@@ -359,6 +367,9 @@ mainLoop:
 		select {
 		case <-m.notifyExpireWorker:
 			workerLog.Trace().Msg("waking up because of notification")
+		case <-m.ctx.Done():
+			workerLog.Trace().Msg("context done, exiting expire work")
+			return
 		case <-timer.C:
 			workerLog.Trace().Msg("waking up for next expire")
 		}
@@ -370,6 +381,7 @@ func (m *defaultCodec) ReceiveWork() {
 	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
+	workerLog = workerLog.With().Str("workerId", uuid.NewString()).Logger()
 	workerLog.Trace().Msg("Starting work")
 	defer workerLog.Trace().Msg("work ended")
 
@@ -392,13 +404,14 @@ func (m *defaultCodec) ReceiveWork() {
 	// Start an endless loop
 mainLoop:
 	for m.running.Load() {
-		if processingTime := time.Since(lastLoopTime); processingTime < 10*time.Millisecond {
+		const cycleTime = 10 * time.Millisecond
+		if processingTime := time.Since(lastLoopTime); processingTime < cycleTime {
 			// Ensure that we leave at least 10ms between loops to not burn cycles
-			sleepTime := 10*time.Millisecond - processingTime
+			sleepTime := cycleTime - processingTime
 			workerLog.Trace().Stringer("sleepTime", sleepTime).Msg("sleeping") // we use stringer instead of Dur to have it a bit more readable
 			time.Sleep(sleepTime)
 		} else {
-			workerLog.Debug().Stringer("processingTime", processingTime).Msg("no need to sleep") // we use stringer instead of Dur to have it a bit more readable
+			workerLog.Debug().Stringer("processingTime", processingTime).Stringer("cycleTime", cycleTime).Msg("no need to sleep") // we use stringer instead of Dur to have it a bit more readable
 		}
 		workerLog.Trace().Msg("receive mainloop cycle")
 		lastLoopTime = time.Now()
@@ -413,6 +426,9 @@ mainLoop:
 			select {
 			case <-m.notifyReceiveWorker:
 				workerLog.Trace().Msg("waking up because of notification")
+			case <-m.ctx.Done():
+				workerLog.Trace().Msg("context done, exiting receive work")
+				return
 			case <-timer.C:
 				workerLog.Trace().Msg("waking up for next receive")
 				continue mainLoop
@@ -431,12 +447,15 @@ mainLoop:
 					err = errors.New("not running")
 					return
 				}
-				message, err = m.Receive()
+				message, err = m.Receive(m.ctx, m.receiveTimeout)
 			})
 			timeoutTimer := time.NewTimer(m.receiveTimeout)
 			select {
 			case <-syncer:
-				// nothing
+			// nothing
+			case <-m.ctx.Done():
+				workerLog.Trace().Msg("context done, exiting receive work")
+				return
 			case <-timeoutTimer.C:
 				workerLog.Error().Dur("receiveTimeout", m.receiveTimeout).Msg("receive timeout")
 				continue mainLoop

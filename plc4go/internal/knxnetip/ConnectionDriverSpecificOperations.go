@@ -97,7 +97,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 			datapointType = &defaultDatapointType
 		}
 		// Parse the value
-		plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, *datapointType)
+		plcValue, err := driverModel.KnxDatapointParseWithBuffer(ctx, rb, *datapointType)
 		if err != nil {
 			sendResponse(nil, 0, errors.Wrap(err, "error parsing group address response"))
 			return
@@ -553,7 +553,7 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 			// Parse the data according to the property type information
 			rb := utils.NewReadBufferByteBased(memoryReadResponse.GetData())
 			for rb.HasMore(datapointType.DatapointMainType().SizeInBits()) {
-				plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, *datapointType)
+				plcValue, err := driverModel.KnxDatapointParseWithBuffer(ctx, rb, *datapointType)
 				// Return the result
 				if err != nil {
 					sendResponse(nil, 0, err)

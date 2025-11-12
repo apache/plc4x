@@ -21,6 +21,7 @@ package s7
 
 import (
 	"context"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -55,7 +56,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Send(message spi.Message) error {
+func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
 	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	tpktPacket := message.(model.TPKTPacket)
@@ -66,18 +67,20 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(theBytes)
+	err = m.GetTransportInstance().Write(ctx, theBytes, timeout)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	return nil
 }
 
-func (m *MessageCodec) Receive() (spi.Message, error) {
+func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
 		m.log.Debug().Uint32("num", num).Msg("we got %d readable bytes")
-		data, err := m.GetTransportInstance().PeekReadableBytes(4)
+		start := time.Now()
+		data, err := m.GetTransportInstance().PeekReadableBytes(ctx, 4, timeout)
+		timeout -= time.Since(start)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -89,13 +92,15 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			m.log.Debug().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil
 		}
-		data, err = m.GetTransportInstance().Read(packetSize)
+		start = time.Now()
+		data, err = m.GetTransportInstance().Read(ctx, packetSize, timeout)
+		timeout -= time.Since(start)
 		if err != nil {
 			m.log.Debug().Err(err).Msg("Error reading")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		tpktPacket, err := model.TPKTPacketParse(ctxForModel, data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")

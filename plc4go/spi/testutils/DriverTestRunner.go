@@ -180,6 +180,7 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 }
 
 func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnection, testcase *DriverTestcase, step DriverTestStep) error {
+	ctx := t.Context()
 	mc, ok := connection.(spi.TransportInstanceExposer)
 	if !ok {
 		return errors.New("couldn't access connections transport instance")
@@ -267,7 +268,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
 			response := readRequestResult.GetResponse()
 			t.Logf("Got response (%T)\n%[1]s", response)
-			err := response.(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
+			err := response.(utils.Serializable).SerializeWithWriteBuffer(ctx, xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -294,7 +295,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
 			response := writeResponseResult.GetResponse()
 			t.Logf("Got response (%T)\n%[1]s", response)
-			err := response.(utils.Serializable).SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer)
+			err := response.(utils.Serializable).SerializeWithWriteBuffer(ctx, xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -334,7 +335,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			t.Log("using little endian")
 			expectedWriteBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
-		err = expectedSerializable.SerializeWithWriteBuffer(context.Background(), expectedWriteBuffer)
+		err = expectedSerializable.SerializeWithWriteBuffer(ctx, expectedWriteBuffer)
 		if err != nil {
 			return errors.Wrap(err, "error serializing expectedMessage")
 		}

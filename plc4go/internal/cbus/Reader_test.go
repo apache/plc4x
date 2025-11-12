@@ -101,6 +101,9 @@ func TestReader_Read(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -158,6 +161,9 @@ func TestReader_readSync(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -207,6 +213,9 @@ func TestReader_readSync(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -232,6 +241,9 @@ func TestReader_readSync(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -308,6 +320,9 @@ func TestReader_readSync(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -467,6 +482,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				args.transaction = transaction
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 		{
@@ -544,6 +562,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 		{
@@ -622,6 +643,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				args.transaction = transaction
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 		{
@@ -702,6 +726,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 		{
@@ -782,6 +809,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 		{
@@ -862,6 +892,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 		{
@@ -942,6 +975,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 		{
@@ -1022,6 +1058,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 		{
@@ -1102,6 +1141,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				fields.messageCodec = codec
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 		},
 	}

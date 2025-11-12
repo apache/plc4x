@@ -46,18 +46,15 @@ type HandleError func(err error) error
 
 // MessageCodec handles sending and retrieving of messages
 type MessageCodec interface {
-	// Deprecated: use ConnectWithContext
-	// Connect connects this codec
-	Connect() error
-	// ConnectWithContext connects this codec with the supplied context
-	ConnectWithContext(ctx context.Context) error
+	// Connect connects this codec with the supplied context
+	Connect(ctx context.Context) error
 	// Disconnect disconnects this codec
 	Disconnect() error
 	// IsRunning returns true if the codec (workers are running)
 	IsRunning() bool
 
 	// Send is sending a given message
-	Send(message Message) error
+	Send(ctx context.Context, message Message, timeout time.Duration) error
 	// Expect Wait for a given timespan for a message to come in, which returns 'true' for 'acceptMessage'
 	// and is then forwarded to the 'handleMessage' function
 	Expect(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration)

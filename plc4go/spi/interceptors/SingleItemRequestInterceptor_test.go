@@ -127,6 +127,9 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 				args.readRequest = plcReadRequest
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got []apiModel.PlcReadRequest) bool {
 				assert.Len(t, got, 2)
@@ -156,7 +159,7 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 			},
 			args: args{
 				ctx: func() context.Context {
-					ctx, cancelFunc := context.WithCancel(context.Background())
+					ctx, cancelFunc := context.WithCancel(t.Context())
 					cancelFunc()
 					return ctx
 				}(),
@@ -280,6 +283,9 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 				args.writeRequest = plcWriteRequest
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got []apiModel.PlcWriteRequest) bool {
 				assert.Len(t, got, 2)
@@ -307,7 +313,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 			},
 			args: args{
 				ctx: func() context.Context {
-					ctx, cancelFunc := context.WithCancel(context.Background())
+					ctx, cancelFunc := context.WithCancel(t.Context())
 					cancelFunc()
 					return ctx
 				}(),
@@ -437,6 +443,9 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 				}
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
 				return assert.Equal(t, &interceptedPlcReadRequestResult{}, got)
@@ -465,6 +474,9 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 				}
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
 				assert.NotNil(t, errors.Cause(errors.New("error aggregating")))
@@ -476,7 +488,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 			name: "two result (canceled)",
 			args: args{
 				ctx: func() context.Context {
-					ctx, cancelFunc := context.WithCancel(context.Background())
+					ctx, cancelFunc := context.WithCancel(t.Context())
 					cancelFunc()
 					return ctx
 				}(),
@@ -612,6 +624,9 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 				}
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcWriteRequestResult) bool {
 				return assert.Equal(t, &interceptedPlcWriteRequestResult{}, got)
@@ -638,6 +653,9 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 				}
 
 				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcWriteRequestResult) bool {
 				assert.NotNil(t, errors.Cause(errors.New("error aggregating")))
@@ -649,7 +667,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 			name: "two result (canceled)",
 			args: args{
 				ctx: func() context.Context {
-					ctx, cancelFunc := context.WithCancel(context.Background())
+					ctx, cancelFunc := context.WithCancel(t.Context())
 					cancelFunc()
 					return ctx
 				}(),

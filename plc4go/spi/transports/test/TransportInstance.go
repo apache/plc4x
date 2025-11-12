@@ -20,13 +20,12 @@
 package test
 
 import (
-	"bufio"
-	"bytes"
 	"context"
 	"encoding/hex"
-	"math"
+	"os"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -37,6 +36,7 @@ import (
 )
 
 type TransportInstance struct {
+	readChannel      chan []byte
 	readBuffer       []byte
 	writeBuffer      []byte
 	transport        *Transport
@@ -46,8 +46,12 @@ type TransportInstance struct {
 	connected        atomic.Bool
 	stateChangeMutex sync.RWMutex
 
+	simulatedLatency time.Duration
+
 	log zerolog.Logger
 }
+
+var _ transports.TransportInstance = (*TransportInstance)(nil)
 
 func NewTransportInstance(transport *Transport, _options ...options.WithOption) *TransportInstance {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
@@ -57,10 +61,17 @@ func NewTransportInstance(transport *Transport, _options ...options.WithOption) 
 			customLogger = customLogger.Level(zerolog.InfoLevel)
 		}
 	}
+	simulatedLatency, found := ExtractSimulatedLatency(_options...)
+	if !found {
+		simulatedLatency = 10 * time.Millisecond
+	}
 	return &TransportInstance{
+		readChannel: make(chan []byte, 10),
 		readBuffer:  []byte{},
 		writeBuffer: []byte{},
 		transport:   transport,
+
+		simulatedLatency: simulatedLatency,
 
 		log: customLogger,
 	}
@@ -87,7 +98,28 @@ type withTraceTransportInstance struct {
 	trace bool
 }
 
-func (m *TransportInstance) Connect() error {
+// WithSimulatedLatency adds simulated latency to the transport instance
+func WithSimulatedLatency(latency time.Duration) options.WithOption {
+	return withSimulatedLatency{latency: latency}
+}
+
+// ExtractSimulatedLatency to extract the simulated latency of the transport instance
+func ExtractSimulatedLatency(options ...options.WithOption) (latency time.Duration, found bool) {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withSimulatedLatency:
+			latency, found = option.latency, true
+		}
+	}
+	return
+}
+
+type withSimulatedLatency struct {
+	options.Option
+	latency time.Duration
+}
+
+func (m *TransportInstance) Connect(_ context.Context) error {
 	m.stateChangeMutex.Lock()
 	defer m.stateChangeMutex.Unlock()
 	if m.connected.Load() {
@@ -97,10 +129,6 @@ func (m *TransportInstance) Connect() error {
 	m.log.Trace().Msg("Connect")
 	m.connected.Store(true)
 	return nil
-}
-
-func (m *TransportInstance) ConnectWithContext(_ context.Context) error {
-	return m.Connect()
 }
 
 func (m *TransportInstance) Close() error {
@@ -124,65 +152,94 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 		panic(errors.New("working on a unconnected connection"))
 	}
 	m.dataMutex.RLock()
-	defer m.dataMutex.RUnlock()
 	readableBytes := len(m.readBuffer)
+	m.dataMutex.RUnlock()
 	m.log.Trace().Int("readableBytes", readableBytes).Msg("return number of readable bytes")
 	return uint32(readableBytes), nil
 }
 
-func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error {
+func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
 	}
 	m.log.Trace().Msg("Fill the buffer")
 	nBytes := uint32(1)
-	for {
+	start := time.Now()
+	for time.Since(start) < timeout {
+		m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
+		timer := time.NewTimer(m.simulatedLatency)
+		select {
+		case <-ctx.Done():
+		case <-timer.C:
+		}
 		m.log.Trace().Uint32("nBytes", nBytes).Msg("Peeking bytes")
-		_bytes, err := m.PeekReadableBytes(nBytes)
+		_bytes, err := m.PeekReadableBytes(ctx, nBytes, timeout)
 		if err != nil {
 			return errors.Wrap(err, "Error while peeking")
 		}
-		m.dataMutex.RLock()
-		reader := bufio.NewReader(bytes.NewReader(m.readBuffer))
-		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], reader); !keepGoing {
+		m.log.Trace().Msg("calling until callback")
+		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], &transportInstanceDrivenExtendedReader{m, ctx, timeout}); !keepGoing {
 			m.log.Trace().Uint32("nBytes", nBytes).Msg("Stopped after nBytes")
-			m.dataMutex.RUnlock()
 			return nil
 		}
-		m.dataMutex.RUnlock()
+		m.log.Trace().Uint32("nBytes", nBytes).Msg("Keep going")
 		nBytes++
 	}
+	return errors.New("Timeout while filling buffer")
 }
-
-func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
+func (m *TransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
-	m.dataMutex.RLock()
-	defer m.dataMutex.RUnlock()
-	availableBytes := uint32(math.Min(float64(numBytes), float64(len(m.readBuffer))))
+	if timeout < m.simulatedLatency {
+		m.log.Warn().Dur("timeout", timeout).Msg("timeout exceeds simulatedLatency. Sleeping timeout")
+		timer := time.NewTimer(m.simulatedLatency)
+		select {
+		case <-ctx.Done():
+		case <-timer.C:
+		}
+		return nil, os.ErrDeadlineExceeded
+	}
+	m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
+	timer := time.NewTimer(m.simulatedLatency)
+	select {
+	case <-ctx.Done():
+	case <-timer.C:
+	}
+	availableBytes := m.availableBytes()
+	if availableBytes < numBytes {
+		m.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
+		availableBytes = m.transferFromChannel(ctx, timeout)
+	} else {
+		m.log.Trace().Msg("enough bytes available")
+	}
 	m.log.Trace().
 		Uint32("numBytes", numBytes).
 		Uint32("availableBytes", availableBytes).
 		Msg("Peek numBytes readable bytes (of availableBytes available)")
 	var err error
-	if availableBytes != numBytes {
+	if availableBytes < numBytes {
+		m.log.Trace().Msg("not enough bytes available")
 		err = errors.New("not enough bytes available")
+	} else {
+		m.log.Trace().Msg("enough bytes available")
 	}
 	if availableBytes == 0 {
 		m.log.Trace().Msg("No bytes available")
 		return nil, err
 	}
-	return m.readBuffer[0:availableBytes], err
+	m.dataMutex.RLock()
+	peekAble := m.readBuffer[0:availableBytes]
+	m.dataMutex.RUnlock()
+	m.log.Trace().Int("peekAbleLen", len(peekAble)).Msg("New buffer size peekAbleLen")
+	return peekAble, err
 }
 
-func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
+func (m *TransportInstance) Read(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
-	m.dataMutex.Lock()
-	defer m.dataMutex.Unlock()
-	availableBytes := uint32(math.Min(float64(numBytes), float64(len(m.readBuffer))))
+	availableBytes := m.availableBytes()
 	m.log.Trace().
 		Uint32("numBytes", numBytes).
 		Uint32("availableBytes", availableBytes).
@@ -190,8 +247,33 @@ func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
 	if availableBytes < 1 {
 		return nil, errors.Errorf("Only %d bytes available. Requested %d", availableBytes, numBytes)
 	}
+	if deadline, ok := ctx.Deadline(); ok {
+		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
+		timeout = deadline.Sub(time.Now())
+	}
+	if timeout < m.simulatedLatency {
+		m.log.Warn().Dur("timeout", timeout).Msg("timeout exceeds simulatedLatency. Sleeping timeout")
+		timer := time.NewTimer(timeout)
+		select {
+		case <-ctx.Done():
+		case <-timer.C:
+		}
+		return nil, os.ErrDeadlineExceeded
+	}
+	if availableBytes < numBytes {
+		m.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
+		availableBytes = m.transferFromChannel(ctx, timeout)
+	}
+	m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
+	timer := time.NewTimer(m.simulatedLatency)
+	select {
+	case <-ctx.Done():
+	case <-timer.C:
+	}
+	m.dataMutex.RLock()
 	data := m.readBuffer[0:int(numBytes)]
 	m.readBuffer = m.readBuffer[int(numBytes):]
+	m.dataMutex.RUnlock()
 	m.log.Trace().Uint32("availableBytes", availableBytes).Msg("New buffer size availableBytes")
 	return data, nil
 }
@@ -201,7 +283,7 @@ func (m *TransportInstance) SetWriteInterceptor(writeInterceptor func(transportI
 	m.writeInterceptor = writeInterceptor
 }
 
-func (m *TransportInstance) Write(data []byte) error {
+func (m *TransportInstance) Write(ctx context.Context, data []byte, timeout time.Duration) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
 	}
@@ -212,13 +294,28 @@ func (m *TransportInstance) Write(data []byte) error {
 			Msg("Passing data to write interceptor")
 		m.writeInterceptor(m, data)
 	}
-	m.dataMutex.Lock()
-	defer m.dataMutex.Unlock()
+	if timeout < m.simulatedLatency {
+		m.log.Warn().Dur("timeout", timeout).Msg("timeout exceeds simulatedLatency. Sleeping timeout")
+		timer := time.NewTimer(timeout)
+		select {
+		case <-ctx.Done():
+		case <-timer.C:
+		}
+		return os.ErrDeadlineExceeded
+	}
+	m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
+	timer := time.NewTimer(m.simulatedLatency)
+	select {
+	case <-ctx.Done():
+	case <-timer.C:
+	}
 	m.log.Trace().
 		Hex("data", data).
 		Str("hexDump", hex.Dump(data)).
 		Msg("Write data to write buffer")
+	m.dataMutex.Lock()
 	m.writeBuffer = append(m.writeBuffer, data...)
+	m.dataMutex.Unlock()
 	return nil
 }
 
@@ -227,14 +324,13 @@ func (m *TransportInstance) FillReadBuffer(data []byte) {
 		m.log.Error().Msg("working on a unconnected connection")
 		return
 	}
-	m.dataMutex.Lock()
-	defer m.dataMutex.Unlock()
 	m.log.Trace().
 		Int("nBytes", len(data)).
 		Int("existingBytes", len(m.readBuffer)).
+		Int("readChannelSize", len(m.readChannel)).
 		Str("hexDump", hex.Dump(data)).
 		Msg("fill read buffer with hexDump (nBytes bytes). (Adding to existingBytes bytes existing)")
-	m.readBuffer = append(m.readBuffer, data...)
+	m.readChannel <- data
 }
 
 func (m *TransportInstance) GetNumDrainableBytes() uint32 {
@@ -243,9 +339,10 @@ func (m *TransportInstance) GetNumDrainableBytes() uint32 {
 		return 0
 	}
 	m.dataMutex.RLock()
-	defer m.dataMutex.RUnlock()
 	m.log.Trace().Msg("get number of drainable bytes")
-	return uint32(len(m.writeBuffer))
+	writeBufLen := uint32(len(m.writeBuffer))
+	m.dataMutex.RUnlock()
+	return writeBufLen
 }
 
 func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) []byte {
@@ -254,15 +351,40 @@ func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) []byte {
 		return nil
 	}
 	m.dataMutex.Lock()
-	defer m.dataMutex.Unlock()
 	m.log.Trace().
 		Uint32("numBytes", numBytes).
 		Msg("Drain write buffer with number of bytes")
 	data := m.writeBuffer[0:int(numBytes)]
 	m.writeBuffer = m.writeBuffer[int(numBytes):]
+	m.dataMutex.Unlock()
 	return data
 }
 
 func (m *TransportInstance) String() string {
 	return "test"
+}
+
+func (m *TransportInstance) availableBytes() uint32 {
+	m.dataMutex.RLock()
+	defer m.dataMutex.RUnlock()
+	return uint32(len(m.readBuffer))
+}
+
+func (m *TransportInstance) transferFromChannel(ctx context.Context, timeout time.Duration) (totalAvailableBytes uint32) {
+	m.log.Trace().Dur("timeout", timeout).Msg("Transfer from channel")
+	m.dataMutex.Lock()
+	timer := time.NewTimer(timeout)
+	start := time.Now()
+	select {
+	case <-ctx.Done():
+		m.log.Trace().Msg("Context done")
+	case <-timer.C:
+		m.log.Trace().Msg("Timeout")
+	case newBytes := <-m.readChannel:
+		m.log.Trace().Dur("time", time.Since(start)).Msg("Got new bytes")
+		m.readBuffer = append(m.readBuffer, newBytes...)
+	}
+	totalAvailableBytes = uint32(len(m.readBuffer))
+	m.dataMutex.Unlock()
+	return totalAvailableBytes
 }

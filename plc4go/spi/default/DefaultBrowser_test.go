@@ -74,7 +74,7 @@ func Test_defaultBrowser_Browse(t *testing.T) {
 		{
 			name: "Browse empty",
 			args: args{
-				ctx:           context.Background(),
+				ctx:           t.Context(),
 				browseRequest: spiModel.NewDefaultPlcBrowseRequest(nil, nil, nil),
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
@@ -119,7 +119,7 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 		{
 			name: "Browse empty",
 			args: args{
-				ctx:           context.Background(),
+				ctx:           t.Context(),
 				browseRequest: spiModel.NewDefaultPlcBrowseRequest(nil, nil, nil),
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {

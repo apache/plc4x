@@ -39,8 +39,7 @@ type PlcUnsubscriptionRequestBuilder interface {
 
 type PlcUnsubscriptionRequest interface {
 	PlcRequest
-	Execute() <-chan PlcUnsubscriptionRequestResult
-	ExecuteWithContext(ctx context.Context) <-chan PlcUnsubscriptionRequestResult
+	Execute(ctx context.Context) <-chan PlcUnsubscriptionRequestResult
 }
 
 type PlcUnsubscriptionResponse interface {
