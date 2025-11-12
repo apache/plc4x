@@ -401,6 +401,7 @@ mainLoop:
 			workerLog.Debug().Stringer("processingTime", processingTime).Msg("no need to sleep") // we use stringer instead of Dur to have it a bit more readable
 		}
 		workerLog.Trace().Msg("receive mainloop cycle")
+		lastLoopTime = time.Now()
 
 		// Guard against empty expectations
 		m.expectationsChangeMutex.RLock()
