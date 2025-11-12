@@ -120,7 +120,7 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.serialPort != nil
 }
 
-func (m *TransportInstance) Write(data []byte, timeout time.Duration) error {
+func (m *TransportInstance) Write(ctx context.Context, data []byte, timeout time.Duration) error {
 	if !m.connected.Load() {
 		return errors.New("error writing to transport. Not connected")
 	}

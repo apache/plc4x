@@ -75,11 +75,7 @@ func (t *plcConnectionLease) GetConnectionId() string {
 	return fmt.Sprintf("%s-%d", t.connection.GetConnectionId(), t.leaseId)
 }
 
-func (t *plcConnectionLease) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	panic("Called 'Connect' on a cached connection")
-}
-
-func (t *plcConnectionLease) ConnectWithContext(_ context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (t *plcConnectionLease) Connect(_ context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	panic("Called 'Connect' on a cached connection")
 }
 

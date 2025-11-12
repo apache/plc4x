@@ -51,7 +51,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnectionWithContext(ctx context.Context, _ url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (d *Driver) GetConnection(ctx context.Context, _ url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	connection := NewConnection(
 		NewDevice(
 			"test",
@@ -63,7 +63,7 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, _ url.URL, _ map[
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	d.log.Debug().Stringer("connection", connection).Msg("Connecting and returning connection")
-	return connection.ConnectWithContext(ctx)
+	return connection.Connect(ctx)
 }
 
 // SupportsDiscovery returns true if this driver supports discovery

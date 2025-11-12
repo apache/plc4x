@@ -123,7 +123,7 @@ func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.
 }
 
 func CustomMessageHandling(localLog zerolog.Logger) _default.CustomMessageHandler {
-	return func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
+	return func(ctx context.Context, codec _default.DefaultCodecRequirements, message spi.Message) bool {
 		// If this message is a simple KNXNet/IP UDP Ack, ignore it for now
 		tunnelingResponse := message.(model.TunnelingResponse)
 		if tunnelingResponse != nil {

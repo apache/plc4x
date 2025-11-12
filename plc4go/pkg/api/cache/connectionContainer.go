@@ -69,7 +69,7 @@ func newConnectionContainer(log zerolog.Logger, driverManager plc4go.PlcDriverMa
 func (c *connectionContainer) connect(ctx context.Context) {
 	c.log.Debug().Str("connectionString", c.connectionString).Msg("Connecting new cached connection ...")
 	// Initialize the new connection.
-	connectionResultChan := c.driverManager.GetConnection(c.connectionString)
+	connectionResultChan := c.driverManager.GetConnection(ctx, c.connectionString)
 
 	// Allow us to finish this function and return the lock quickly
 	// Wait for the connection to be established.

@@ -186,16 +186,16 @@ func (_c *MockPlcConnection_Close_Call) RunAndReturn(run func() <-chan PlcConnec
 }
 
 // Connect provides a mock function for the type MockPlcConnection
-func (_mock *MockPlcConnection) Connect() <-chan PlcConnectionConnectResult {
-	ret := _mock.Called()
+func (_mock *MockPlcConnection) Connect(ctx context.Context) <-chan PlcConnectionConnectResult {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Connect")
 	}
 
 	var r0 <-chan PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan PlcConnectionConnectResult); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcConnectionConnectResult); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcConnectionConnectResult)
@@ -210,58 +210,12 @@ type MockPlcConnection_Connect_Call struct {
 }
 
 // Connect is a helper method to define mock.On call
-func (_e *MockPlcConnection_Expecter) Connect() *MockPlcConnection_Connect_Call {
-	return &MockPlcConnection_Connect_Call{Call: _e.mock.On("Connect")}
-}
-
-func (_c *MockPlcConnection_Connect_Call) Run(run func()) *MockPlcConnection_Connect_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcConnection_Connect_Call) Return(plcConnectionConnectResultCh <-chan PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
-	return _c
-}
-
-func (_c *MockPlcConnection_Connect_Call) RunAndReturn(run func() <-chan PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ConnectWithContext provides a mock function for the type MockPlcConnection
-func (_mock *MockPlcConnection) ConnectWithContext(ctx context.Context) <-chan PlcConnectionConnectResult {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ConnectWithContext")
-	}
-
-	var r0 <-chan PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcConnectionConnectResult); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan PlcConnectionConnectResult)
-		}
-	}
-	return r0
-}
-
-// MockPlcConnection_ConnectWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConnectWithContext'
-type MockPlcConnection_ConnectWithContext_Call struct {
-	*mock.Call
-}
-
-// ConnectWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcConnection_Expecter) ConnectWithContext(ctx interface{}) *MockPlcConnection_ConnectWithContext_Call {
-	return &MockPlcConnection_ConnectWithContext_Call{Call: _e.mock.On("ConnectWithContext", ctx)}
+func (_e *MockPlcConnection_Expecter) Connect(ctx interface{}) *MockPlcConnection_Connect_Call {
+	return &MockPlcConnection_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
-func (_c *MockPlcConnection_ConnectWithContext_Call) Run(run func(ctx context.Context)) *MockPlcConnection_ConnectWithContext_Call {
+func (_c *MockPlcConnection_Connect_Call) Run(run func(ctx context.Context)) *MockPlcConnection_Connect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -274,12 +228,12 @@ func (_c *MockPlcConnection_ConnectWithContext_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockPlcConnection_ConnectWithContext_Call) Return(plcConnectionConnectResultCh <-chan PlcConnectionConnectResult) *MockPlcConnection_ConnectWithContext_Call {
+func (_c *MockPlcConnection_Connect_Call) Return(plcConnectionConnectResultCh <-chan PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
 	_c.Call.Return(plcConnectionConnectResultCh)
 	return _c
 }
 
-func (_c *MockPlcConnection_ConnectWithContext_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcConnectionConnectResult) *MockPlcConnection_ConnectWithContext_Call {
+func (_c *MockPlcConnection_Connect_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1259,12 +1213,12 @@ func (_c *MockPlcDriver_Close_Call) RunAndReturn(run func() error) *MockPlcDrive
 }
 
 // Discover provides a mock function for the type MockPlcDriver
-func (_mock *MockPlcDriver) Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+func (_mock *MockPlcDriver) Discover(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	var tmpRet mock.Arguments
 	if len(discoveryOptions) > 0 {
-		tmpRet = _mock.Called(callback, discoveryOptions)
+		tmpRet = _mock.Called(ctx, callback, discoveryOptions)
 	} else {
-		tmpRet = _mock.Called(callback)
+		tmpRet = _mock.Called(ctx, callback)
 	}
 	ret := tmpRet
 
@@ -1273,8 +1227,8 @@ func (_mock *MockPlcDriver) Discover(callback func(event model.PlcDiscoveryItem)
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
-		r0 = returnFunc(callback, discoveryOptions...)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
+		r0 = returnFunc(ctx, callback, discoveryOptions...)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1287,81 +1241,15 @@ type MockPlcDriver_Discover_Call struct {
 }
 
 // Discover is a helper method to define mock.On call
-//   - callback func(event model.PlcDiscoveryItem)
-//   - discoveryOptions ...options.WithDiscoveryOption
-func (_e *MockPlcDriver_Expecter) Discover(callback interface{}, discoveryOptions ...interface{}) *MockPlcDriver_Discover_Call {
-	return &MockPlcDriver_Discover_Call{Call: _e.mock.On("Discover",
-		append([]interface{}{callback}, discoveryOptions...)...)}
-}
-
-func (_c *MockPlcDriver_Discover_Call) Run(run func(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockPlcDriver_Discover_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 func(event model.PlcDiscoveryItem)
-		if args[0] != nil {
-			arg0 = args[0].(func(event model.PlcDiscoveryItem))
-		}
-		var arg1 []options.WithDiscoveryOption
-		var variadicArgs []options.WithDiscoveryOption
-		if len(args) > 1 {
-			variadicArgs = args[1].([]options.WithDiscoveryOption)
-		}
-		arg1 = variadicArgs
-		run(
-			arg0,
-			arg1...,
-		)
-	})
-	return _c
-}
-
-func (_c *MockPlcDriver_Discover_Call) Return(err error) *MockPlcDriver_Discover_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockPlcDriver_Discover_Call) RunAndReturn(run func(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockPlcDriver_Discover_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// DiscoverWithContext provides a mock function for the type MockPlcDriver
-func (_mock *MockPlcDriver) DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	var tmpRet mock.Arguments
-	if len(discoveryOptions) > 0 {
-		tmpRet = _mock.Called(ctx, callback, discoveryOptions)
-	} else {
-		tmpRet = _mock.Called(ctx, callback)
-	}
-	ret := tmpRet
-
-	if len(ret) == 0 {
-		panic("no return value specified for DiscoverWithContext")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
-		r0 = returnFunc(ctx, callback, discoveryOptions...)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockPlcDriver_DiscoverWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DiscoverWithContext'
-type MockPlcDriver_DiscoverWithContext_Call struct {
-	*mock.Call
-}
-
-// DiscoverWithContext is a helper method to define mock.On call
 //   - ctx context.Context
 //   - callback func(event model.PlcDiscoveryItem)
 //   - discoveryOptions ...options.WithDiscoveryOption
-func (_e *MockPlcDriver_Expecter) DiscoverWithContext(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockPlcDriver_DiscoverWithContext_Call {
-	return &MockPlcDriver_DiscoverWithContext_Call{Call: _e.mock.On("DiscoverWithContext",
+func (_e *MockPlcDriver_Expecter) Discover(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockPlcDriver_Discover_Call {
+	return &MockPlcDriver_Discover_Call{Call: _e.mock.On("Discover",
 		append([]interface{}{ctx, callback}, discoveryOptions...)...)}
 }
 
-func (_c *MockPlcDriver_DiscoverWithContext_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockPlcDriver_DiscoverWithContext_Call {
+func (_c *MockPlcDriver_Discover_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockPlcDriver_Discover_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -1386,27 +1274,27 @@ func (_c *MockPlcDriver_DiscoverWithContext_Call) Run(run func(ctx context.Conte
 	return _c
 }
 
-func (_c *MockPlcDriver_DiscoverWithContext_Call) Return(err error) *MockPlcDriver_DiscoverWithContext_Call {
+func (_c *MockPlcDriver_Discover_Call) Return(err error) *MockPlcDriver_Discover_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockPlcDriver_DiscoverWithContext_Call) RunAndReturn(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockPlcDriver_DiscoverWithContext_Call {
+func (_c *MockPlcDriver_Discover_Call) RunAndReturn(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockPlcDriver_Discover_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetConnection provides a mock function for the type MockPlcDriver
-func (_mock *MockPlcDriver) GetConnection(transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan PlcConnectionConnectResult {
-	ret := _mock.Called(transportUrl, transports1, options1)
+func (_mock *MockPlcDriver) GetConnection(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan PlcConnectionConnectResult {
+	ret := _mock.Called(ctx, transportUrl, transports1, options1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetConnection")
 	}
 
 	var r0 <-chan PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(url.URL, map[string]transports.Transport, map[string][]string) <-chan PlcConnectionConnectResult); ok {
-		r0 = returnFunc(transportUrl, transports1, options1)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) <-chan PlcConnectionConnectResult); ok {
+		r0 = returnFunc(ctx, transportUrl, transports1, options1)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcConnectionConnectResult)
@@ -1421,80 +1309,15 @@ type MockPlcDriver_GetConnection_Call struct {
 }
 
 // GetConnection is a helper method to define mock.On call
-//   - transportUrl url.URL
-//   - transports1 map[string]transports.Transport
-//   - options1 map[string][]string
-func (_e *MockPlcDriver_Expecter) GetConnection(transportUrl interface{}, transports1 interface{}, options1 interface{}) *MockPlcDriver_GetConnection_Call {
-	return &MockPlcDriver_GetConnection_Call{Call: _e.mock.On("GetConnection", transportUrl, transports1, options1)}
-}
-
-func (_c *MockPlcDriver_GetConnection_Call) Run(run func(transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string)) *MockPlcDriver_GetConnection_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 url.URL
-		if args[0] != nil {
-			arg0 = args[0].(url.URL)
-		}
-		var arg1 map[string]transports.Transport
-		if args[1] != nil {
-			arg1 = args[1].(map[string]transports.Transport)
-		}
-		var arg2 map[string][]string
-		if args[2] != nil {
-			arg2 = args[2].(map[string][]string)
-		}
-		run(
-			arg0,
-			arg1,
-			arg2,
-		)
-	})
-	return _c
-}
-
-func (_c *MockPlcDriver_GetConnection_Call) Return(plcConnectionConnectResultCh <-chan PlcConnectionConnectResult) *MockPlcDriver_GetConnection_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
-	return _c
-}
-
-func (_c *MockPlcDriver_GetConnection_Call) RunAndReturn(run func(transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan PlcConnectionConnectResult) *MockPlcDriver_GetConnection_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetConnectionWithContext provides a mock function for the type MockPlcDriver
-func (_mock *MockPlcDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan PlcConnectionConnectResult {
-	ret := _mock.Called(ctx, transportUrl, transports1, driverOptions)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetConnectionWithContext")
-	}
-
-	var r0 <-chan PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) <-chan PlcConnectionConnectResult); ok {
-		r0 = returnFunc(ctx, transportUrl, transports1, driverOptions)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan PlcConnectionConnectResult)
-		}
-	}
-	return r0
-}
-
-// MockPlcDriver_GetConnectionWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnectionWithContext'
-type MockPlcDriver_GetConnectionWithContext_Call struct {
-	*mock.Call
-}
-
-// GetConnectionWithContext is a helper method to define mock.On call
 //   - ctx context.Context
 //   - transportUrl url.URL
 //   - transports1 map[string]transports.Transport
-//   - driverOptions map[string][]string
-func (_e *MockPlcDriver_Expecter) GetConnectionWithContext(ctx interface{}, transportUrl interface{}, transports1 interface{}, driverOptions interface{}) *MockPlcDriver_GetConnectionWithContext_Call {
-	return &MockPlcDriver_GetConnectionWithContext_Call{Call: _e.mock.On("GetConnectionWithContext", ctx, transportUrl, transports1, driverOptions)}
+//   - options1 map[string][]string
+func (_e *MockPlcDriver_Expecter) GetConnection(ctx interface{}, transportUrl interface{}, transports1 interface{}, options1 interface{}) *MockPlcDriver_GetConnection_Call {
+	return &MockPlcDriver_GetConnection_Call{Call: _e.mock.On("GetConnection", ctx, transportUrl, transports1, options1)}
 }
 
-func (_c *MockPlcDriver_GetConnectionWithContext_Call) Run(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string)) *MockPlcDriver_GetConnectionWithContext_Call {
+func (_c *MockPlcDriver_GetConnection_Call) Run(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string)) *MockPlcDriver_GetConnection_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -1522,12 +1345,12 @@ func (_c *MockPlcDriver_GetConnectionWithContext_Call) Run(run func(ctx context.
 	return _c
 }
 
-func (_c *MockPlcDriver_GetConnectionWithContext_Call) Return(plcConnectionConnectResultCh <-chan PlcConnectionConnectResult) *MockPlcDriver_GetConnectionWithContext_Call {
+func (_c *MockPlcDriver_GetConnection_Call) Return(plcConnectionConnectResultCh <-chan PlcConnectionConnectResult) *MockPlcDriver_GetConnection_Call {
 	_c.Call.Return(plcConnectionConnectResultCh)
 	return _c
 }
 
-func (_c *MockPlcDriver_GetConnectionWithContext_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan PlcConnectionConnectResult) *MockPlcDriver_GetConnectionWithContext_Call {
+func (_c *MockPlcDriver_GetConnection_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan PlcConnectionConnectResult) *MockPlcDriver_GetConnection_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1824,12 +1647,12 @@ func (_c *MockPlcDriverManager_Close_Call) RunAndReturn(run func() error) *MockP
 }
 
 // Discover provides a mock function for the type MockPlcDriverManager
-func (_mock *MockPlcDriverManager) Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error {
+func (_mock *MockPlcDriverManager) Discover(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error {
 	var tmpRet mock.Arguments
 	if len(discoveryOptions) > 0 {
-		tmpRet = _mock.Called(callback, discoveryOptions)
+		tmpRet = _mock.Called(ctx, callback, discoveryOptions)
 	} else {
-		tmpRet = _mock.Called(callback)
+		tmpRet = _mock.Called(ctx, callback)
 	}
 	ret := tmpRet
 
@@ -1838,8 +1661,8 @@ func (_mock *MockPlcDriverManager) Discover(callback func(event model.PlcDiscove
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(func(event model.PlcDiscoveryItem), ...WithDiscoveryOption) error); ok {
-		r0 = returnFunc(callback, discoveryOptions...)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, func(event model.PlcDiscoveryItem), ...WithDiscoveryOption) error); ok {
+		r0 = returnFunc(ctx, callback, discoveryOptions...)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1852,81 +1675,15 @@ type MockPlcDriverManager_Discover_Call struct {
 }
 
 // Discover is a helper method to define mock.On call
-//   - callback func(event model.PlcDiscoveryItem)
-//   - discoveryOptions ...WithDiscoveryOption
-func (_e *MockPlcDriverManager_Expecter) Discover(callback interface{}, discoveryOptions ...interface{}) *MockPlcDriverManager_Discover_Call {
-	return &MockPlcDriverManager_Discover_Call{Call: _e.mock.On("Discover",
-		append([]interface{}{callback}, discoveryOptions...)...)}
-}
-
-func (_c *MockPlcDriverManager_Discover_Call) Run(run func(callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption)) *MockPlcDriverManager_Discover_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 func(event model.PlcDiscoveryItem)
-		if args[0] != nil {
-			arg0 = args[0].(func(event model.PlcDiscoveryItem))
-		}
-		var arg1 []WithDiscoveryOption
-		var variadicArgs []WithDiscoveryOption
-		if len(args) > 1 {
-			variadicArgs = args[1].([]WithDiscoveryOption)
-		}
-		arg1 = variadicArgs
-		run(
-			arg0,
-			arg1...,
-		)
-	})
-	return _c
-}
-
-func (_c *MockPlcDriverManager_Discover_Call) Return(err error) *MockPlcDriverManager_Discover_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockPlcDriverManager_Discover_Call) RunAndReturn(run func(callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error) *MockPlcDriverManager_Discover_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// DiscoverWithContext provides a mock function for the type MockPlcDriverManager
-func (_mock *MockPlcDriverManager) DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error {
-	var tmpRet mock.Arguments
-	if len(discoveryOptions) > 0 {
-		tmpRet = _mock.Called(ctx, callback, discoveryOptions)
-	} else {
-		tmpRet = _mock.Called(ctx, callback)
-	}
-	ret := tmpRet
-
-	if len(ret) == 0 {
-		panic("no return value specified for DiscoverWithContext")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, func(event model.PlcDiscoveryItem), ...WithDiscoveryOption) error); ok {
-		r0 = returnFunc(ctx, callback, discoveryOptions...)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockPlcDriverManager_DiscoverWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DiscoverWithContext'
-type MockPlcDriverManager_DiscoverWithContext_Call struct {
-	*mock.Call
-}
-
-// DiscoverWithContext is a helper method to define mock.On call
 //   - ctx context.Context
 //   - callback func(event model.PlcDiscoveryItem)
 //   - discoveryOptions ...WithDiscoveryOption
-func (_e *MockPlcDriverManager_Expecter) DiscoverWithContext(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockPlcDriverManager_DiscoverWithContext_Call {
-	return &MockPlcDriverManager_DiscoverWithContext_Call{Call: _e.mock.On("DiscoverWithContext",
+func (_e *MockPlcDriverManager_Expecter) Discover(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockPlcDriverManager_Discover_Call {
+	return &MockPlcDriverManager_Discover_Call{Call: _e.mock.On("Discover",
 		append([]interface{}{ctx, callback}, discoveryOptions...)...)}
 }
 
-func (_c *MockPlcDriverManager_DiscoverWithContext_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption)) *MockPlcDriverManager_DiscoverWithContext_Call {
+func (_c *MockPlcDriverManager_Discover_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption)) *MockPlcDriverManager_Discover_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -1951,27 +1708,27 @@ func (_c *MockPlcDriverManager_DiscoverWithContext_Call) Run(run func(ctx contex
 	return _c
 }
 
-func (_c *MockPlcDriverManager_DiscoverWithContext_Call) Return(err error) *MockPlcDriverManager_DiscoverWithContext_Call {
+func (_c *MockPlcDriverManager_Discover_Call) Return(err error) *MockPlcDriverManager_Discover_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockPlcDriverManager_DiscoverWithContext_Call) RunAndReturn(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error) *MockPlcDriverManager_DiscoverWithContext_Call {
+func (_c *MockPlcDriverManager_Discover_Call) RunAndReturn(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error) *MockPlcDriverManager_Discover_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetConnection provides a mock function for the type MockPlcDriverManager
-func (_mock *MockPlcDriverManager) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
-	ret := _mock.Called(connectionString)
+func (_mock *MockPlcDriverManager) GetConnection(ctx context.Context, connectionString string) <-chan PlcConnectionConnectResult {
+	ret := _mock.Called(ctx, connectionString)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetConnection")
 	}
 
 	var r0 <-chan PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(string) <-chan PlcConnectionConnectResult); ok {
-		r0 = returnFunc(connectionString)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string) <-chan PlcConnectionConnectResult); ok {
+		r0 = returnFunc(ctx, connectionString)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcConnectionConnectResult)
@@ -1986,19 +1743,25 @@ type MockPlcDriverManager_GetConnection_Call struct {
 }
 
 // GetConnection is a helper method to define mock.On call
+//   - ctx context.Context
 //   - connectionString string
-func (_e *MockPlcDriverManager_Expecter) GetConnection(connectionString interface{}) *MockPlcDriverManager_GetConnection_Call {
-	return &MockPlcDriverManager_GetConnection_Call{Call: _e.mock.On("GetConnection", connectionString)}
+func (_e *MockPlcDriverManager_Expecter) GetConnection(ctx interface{}, connectionString interface{}) *MockPlcDriverManager_GetConnection_Call {
+	return &MockPlcDriverManager_GetConnection_Call{Call: _e.mock.On("GetConnection", ctx, connectionString)}
 }
 
-func (_c *MockPlcDriverManager_GetConnection_Call) Run(run func(connectionString string)) *MockPlcDriverManager_GetConnection_Call {
+func (_c *MockPlcDriverManager_GetConnection_Call) Run(run func(ctx context.Context, connectionString string)) *MockPlcDriverManager_GetConnection_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 string
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].(string)
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
 		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -2009,7 +1772,7 @@ func (_c *MockPlcDriverManager_GetConnection_Call) Return(plcConnectionConnectRe
 	return _c
 }
 
-func (_c *MockPlcDriverManager_GetConnection_Call) RunAndReturn(run func(connectionString string) <-chan PlcConnectionConnectResult) *MockPlcDriverManager_GetConnection_Call {
+func (_c *MockPlcDriverManager_GetConnection_Call) RunAndReturn(run func(ctx context.Context, connectionString string) <-chan PlcConnectionConnectResult) *MockPlcDriverManager_GetConnection_Call {
 	_c.Call.Return(run)
 	return _c
 }

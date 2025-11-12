@@ -207,7 +207,7 @@ func TestConnection_Connect(t *testing.T) {
 				log:           testutils.ProduceTestingLogger(t),
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.True(t, tt.wantAsserter(t, c.Connect(tt.args.ctx)), "ConnectWithContext(%v)", tt.args.ctx)
+			assert.True(t, tt.wantAsserter(t, c.Connect(tt.args.ctx)), "Connect(%v)", tt.args.ctx)
 			// To shut down properly we always do that
 			c.SetConnected(false)
 			c.handlerWaitGroup.Wait()
@@ -840,7 +840,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -918,7 +918,7 @@ func TestConnection_sendReset(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -996,7 +996,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1074,7 +1074,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1152,7 +1152,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1230,7 +1230,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1298,7 +1298,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1348,7 +1348,7 @@ func TestConnection_setupConnection(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1410,7 +1410,7 @@ func TestConnection_setupConnection(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1480,7 +1480,7 @@ func TestConnection_setupConnection(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1555,7 +1555,7 @@ func TestConnection_setupConnection(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})
@@ -1636,7 +1636,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				})
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})

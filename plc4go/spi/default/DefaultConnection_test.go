@@ -577,51 +577,6 @@ func Test_defaultConnection_Connect(t *testing.T) {
 		tagHandler                    spi.PlcTagHandler
 		valueHandler                  spi.PlcValueHandler
 	}
-	tests := []struct {
-		name         string
-		fields       fields
-		setup        func(t *testing.T, fields *fields)
-		wantAsserter func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool
-	}{
-		{
-			name: "connect it",
-			setup: func(t *testing.T, fields *fields) {
-				requirements := NewMockDefaultConnectionRequirements(t)
-				results := make(chan plc4go.PlcConnectionConnectResult, 1)
-				results <- NewMockPlcConnectionConnectResult(t)
-				expect := requirements.EXPECT()
-				expect.ConnectWithContext(mock.Anything).Return(results)
-				fields.DefaultConnectionRequirements = requirements
-			},
-			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
-				// Delegated call is tested below
-				return true
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			d := &defaultConnection{
-				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
-				defaultTtl:                    tt.fields.defaultTtl,
-				tagHandler:                    tt.fields.tagHandler,
-				valueHandler:                  tt.fields.valueHandler,
-			}
-			assert.Truef(t, tt.wantAsserter(t, d.Connect()), "Connect()")
-		})
-	}
-}
-
-func Test_defaultConnection_ConnectWithContext(t *testing.T) {
-	type fields struct {
-		DefaultConnectionRequirements DefaultConnectionRequirements
-		defaultTtl                    time.Duration
-		tagHandler                    spi.PlcTagHandler
-		valueHandler                  spi.PlcValueHandler
-	}
 	type args struct {
 		ctx context.Context
 	}
@@ -638,7 +593,7 @@ func Test_defaultConnection_ConnectWithContext(t *testing.T) {
 				requirements := NewMockDefaultConnectionRequirements(t)
 				codec := NewMockMessageCodec(t)
 				{
-					codec.EXPECT().ConnectWithContext(mock.Anything).Return(nil)
+					codec.EXPECT().Connect(mock.Anything).Return(nil)
 				}
 				expect := requirements.EXPECT()
 				expect.GetMessageCodec().Return(codec)
@@ -668,7 +623,7 @@ func Test_defaultConnection_ConnectWithContext(t *testing.T) {
 				tagHandler:                    tt.fields.tagHandler,
 				valueHandler:                  tt.fields.valueHandler,
 			}
-			assert.Truef(t, tt.wantAsserter(t, d.ConnectWithContext(tt.args.ctx)), "ConnectWithContext(%v)", tt.args.ctx)
+			assert.Truef(t, tt.wantAsserter(t, d.Connect(tt.args.ctx)), "Connect(%v)", tt.args.ctx)
 		})
 	}
 }

@@ -139,11 +139,7 @@ func NewDefaultPlcWriteRequest(tags map[string]apiModel.PlcTag, tagNames []strin
 	return &DefaultPlcWriteRequest{DefaultPlcTagRequest: NewDefaultPlcTagRequest(tags, tagNames), values: values, writer: writer, writeRequestInterceptor: writeRequestInterceptor}
 }
 
-func (d *DefaultPlcWriteRequest) Execute() <-chan apiModel.PlcWriteRequestResult {
-	return d.ExecuteWithContext(context.TODO())
-}
-
-func (d *DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcWriteRequestResult {
+func (d *DefaultPlcWriteRequest) Execute(ctx context.Context) <-chan apiModel.PlcWriteRequestResult {
 	if d.writeRequestInterceptor != nil {
 		return d.ExecuteWithContextAndInterceptor(ctx)
 	}

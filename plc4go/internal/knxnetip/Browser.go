@@ -182,7 +182,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating read request")
 	}
-	rrr := readRequest.Execute()
+	rrr := readRequest.Execute(ctx)
 	readResult := <-rrr
 	if readResult.GetErr() != nil {
 		return nil, errors.Wrap(readResult.GetErr(), "error reading the group address table starting address:")
@@ -209,7 +209,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating read request")
 	}
-	rrr = readRequest.Execute()
+	rrr = readRequest.Execute(ctx)
 	readResult = <-rrr
 	if readResult.GetErr() != nil {
 		return nil, errors.Wrap(readResult.GetErr(), "error reading the number of group address table entries")
@@ -240,7 +240,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating read request")
 	}
-	rrr = readRequest.Execute()
+	rrr = readRequest.Execute(ctx)
 	readResult = <-rrr
 	if readResult.GetErr() != nil {
 		return nil, errors.Wrap(readResult.GetErr(), "error reading the group address table content")
@@ -274,7 +274,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating read request")
 	}
-	rrr = readRequest.Execute()
+	rrr = readRequest.Execute(ctx)
 	readResult = <-rrr
 	if readResult.GetErr() != nil {
 		return nil, errors.Wrap(readResult.GetErr(), "error reading the group address association table address")
@@ -300,7 +300,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating read request")
 	}
-	rrr = readRequest.Execute()
+	rrr = readRequest.Execute(ctx)
 	readResult = <-rrr
 	if readResult.GetErr() != nil {
 		return nil, errors.Wrap(readResult.GetErr(), "error reading the number of group address association table entries")
@@ -329,7 +329,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating read request")
 	}
-	rrr = readRequest.Execute()
+	rrr = readRequest.Execute(ctx)
 	readResult = <-rrr
 	if readResult.GetErr() != nil {
 		return nil, errors.Wrap(readResult.GetErr(), "error reading the group address association table content")
@@ -375,7 +375,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating read request")
 		}
-		rrr = readRequest.Execute()
+		rrr = readRequest.Execute(ctx)
 		readResult = <-rrr
 		for groupAddress, comObjectNumber := range groupAddressComObjectNumberMapping {
 			if readResult.GetResponse().GetResponseCode(strconv.Itoa(int(comObjectNumber))) != apiModel.PlcResponseCode_OK {
@@ -440,7 +440,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			return nil, errors.Wrap(err, "error creating read request")
 		}
 
-		rrr = readRequest.Execute()
+		rrr = readRequest.Execute(ctx)
 		readRequestResult := <-rrr
 		readResponse := readRequestResult.GetResponse()
 		var programVersionData []byte
@@ -473,7 +473,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating read request")
 		}
-		rrr = readRequest.Execute()
+		rrr = readRequest.Execute(ctx)
 		readResult = <-rrr
 
 		for _, tagName := range readResult.GetResponse().GetTagNames() {
@@ -517,7 +517,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating read request")
 		}
-		rrr = readRequest.Execute()
+		rrr = readRequest.Execute(ctx)
 		readResult = <-rrr
 		if readResult.GetResponse().GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
 			comObjectTableAddress := readResult.GetResponse().GetValue("comObjectTableAddress")

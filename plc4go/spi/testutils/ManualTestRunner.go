@@ -75,7 +75,7 @@ func WithUnwrappedValue(unwrap bool) WithTestCaseOption {
 }
 
 func (m *ManualTestSuite) Run() plc4go.PlcConnection {
-	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
+	connectionResult := <-m.DriverManager.GetConnection(m.t.Context(), m.ConnectionString)
 	if err := connectionResult.GetErr(); err != nil {
 		tracer, ok := errors.Cause(err).(interface{ StackTrace() errors.StackTrace })
 		if ok {
@@ -117,7 +117,7 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 	}
 
 	// Execute the read request
-	readResponseResult := <-readRequest.Execute()
+	readResponseResult := <-readRequest.Execute(m.t.Context())
 	if readResponseResult.GetErr() != nil {
 		t.Fatalf("Error getting response %v", readResponseResult.GetErr())
 		return
@@ -183,7 +183,7 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 		}
 
 		// Execute the read request
-		readResponseResult := <-readRequest.Execute()
+		readResponseResult := <-readRequest.Execute(m.t.Context())
 		if readResponseResult.GetErr() != nil {
 			t.Errorf("Error getting response %v", err)
 			return

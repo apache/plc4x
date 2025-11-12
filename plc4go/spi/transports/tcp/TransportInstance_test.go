@@ -154,44 +154,6 @@ func TestTransportInstance_Connect(t *testing.T) {
 		tcpConn                          net.Conn
 		reader                           *bufio.Reader
 	}
-	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
-	}{
-		{
-			name:    "connect it (failing)",
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &TransportInstance{
-				DefaultBufferedTransportInstance: tt.fields.DefaultBufferedTransportInstance,
-				RemoteAddress:                    tt.fields.RemoteAddress,
-				LocalAddress:                     tt.fields.LocalAddress,
-				ConnectTimeout:                   tt.fields.ConnectTimeout,
-				transport:                        tt.fields.transport,
-				tcpConn:                          tt.fields.tcpConn,
-				reader:                           tt.fields.reader,
-			}
-			if err := m.Connect(); (err != nil) != tt.wantErr {
-				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func TestTransportInstance_ConnectWithContext(t *testing.T) {
-	type fields struct {
-		DefaultBufferedTransportInstance transportUtils.DefaultBufferedTransportInstance
-		RemoteAddress                    *net.TCPAddr
-		LocalAddress                     *net.TCPAddr
-		ConnectTimeout                   uint32
-		transport                        *Transport
-		tcpConn                          net.Conn
-		reader                           *bufio.Reader
-	}
 	type args struct {
 		ctx context.Context
 	}
@@ -240,8 +202,8 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 				tcpConn:                          tt.fields.tcpConn,
 				reader:                           tt.fields.reader,
 			}
-			if err := m.ConnectWithContext(tt.args.ctx); (err != nil) != tt.wantErr {
-				t.Errorf("ConnectWithContext() error = %v, wantErr %v", err, tt.wantErr)
+			if err := m.Connect(tt.args.ctx); (err != nil) != tt.wantErr {
+				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -446,7 +408,7 @@ func TestTransportInstance_Write(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.Write(tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
+			if err := m.Write(t.Context(), tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

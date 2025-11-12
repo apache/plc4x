@@ -22,7 +22,6 @@ package utils
 import (
 	"bufio"
 	"bytes"
-	"context"
 	"testing"
 	"time"
 
@@ -53,67 +52,6 @@ func TestNewDefaultBufferedTransportInstance(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := NewDefaultBufferedTransportInstance(tt.args.defaultBufferedTransportInstanceRequirements); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewDefaultBufferedTransportInstance() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_defaultBufferedTransportInstance_ConnectWithContext(t *testing.T) {
-	type fields struct {
-		DefaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements
-	}
-	type args struct {
-		ctx context.Context
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		setup   func(t *testing.T, fields *fields, args *args)
-		wantErr bool
-	}{
-		{
-			name: "connect",
-			args: args{
-				func() context.Context {
-					ctx, cancel := context.WithTimeout(t.Context(), 1*time.Second)
-					t.Cleanup(cancel)
-					return ctx
-				}(),
-			},
-			setup: func(t *testing.T, fields *fields, args *args) {
-				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().Connect().Return(nil)
-				fields.DefaultBufferedTransportInstanceRequirements = requirements
-			},
-		},
-		{
-			name: "connect canceled",
-			args: args{
-				func() context.Context {
-					ctx, cancel := context.WithCancel(t.Context())
-					cancel()
-					return ctx
-				}(),
-			},
-			setup: func(t *testing.T, fields *fields, args *args) {
-				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().Connect().Return(nil).Maybe()
-				fields.DefaultBufferedTransportInstanceRequirements = requirements
-			},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields, &tt.args)
-			}
-			m := &defaultBufferedTransportInstance{
-				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
-			}
-			if err := m.ConnectWithContext(tt.args.ctx); (err != nil) != tt.wantErr {
-				t.Errorf("ConnectWithContext() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -187,7 +125,7 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
 			}
-			if err := m.FillBuffer(tt.args.until, tt.args.timeout); (err != nil) != tt.wantErr {
+			if err := m.FillBuffer(t.Context(), tt.args.until, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("FillBuffer() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -302,7 +240,7 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
 			}
-			got, err := m.PeekReadableBytes(tt.args.numBytes, tt.args.timeout)
+			got, err := m.PeekReadableBytes(t.Context(), tt.args.numBytes, tt.args.timeout)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -385,7 +323,7 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
 			}
-			got, err := m.Read(tt.args.numBytes, tt.args.timeout)
+			got, err := m.Read(t.Context(), tt.args.numBytes, tt.args.timeout)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return

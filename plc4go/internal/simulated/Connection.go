@@ -85,11 +85,7 @@ func (c *Connection) GetTracer() tracer.Tracer {
 	return c.tracer
 }
 
-func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	return c.ConnectWithContext(context.Background())
-}
-
-func (c *Connection) ConnectWithContext(_ context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) Connect(_ context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	c.wg.Go(func() {
 		defer func() {

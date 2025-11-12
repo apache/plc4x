@@ -87,7 +87,7 @@ func TestDriver_Discover(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
-			if err := d.Discover(tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
+			if err := d.Discover(t.Context(), tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
 				t.Errorf("Discover() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -131,7 +131,7 @@ func TestDriver_GetConnection(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
-			connectionChan := d.GetConnection(tt.args.in0, tt.args.in1, tt.args.options)
+			connectionChan := d.GetConnection(t.Context(), tt.args.in0, tt.args.in1, tt.args.options)
 			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case connectResult := <-connectionChan:

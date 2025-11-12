@@ -37,8 +37,7 @@ import (
 )
 
 type PlcConnectionCache interface {
-	GetConnection(connectionString string) <-chan plc4go.PlcConnectionConnectResult
-	GetConnectionWithContext(ctx context.Context, connectionString string) <-chan plc4go.PlcConnectionConnectResult
+	GetConnection(ctx context.Context, connectionString string) <-chan plc4go.PlcConnectionConnectResult
 	Close() <-chan PlcConnectionCacheCloseResult
 }
 
@@ -155,11 +154,7 @@ func (c *plcConnectionCache) GetTracer() tracer.Tracer {
 	return c.tracer
 }
 
-func (c *plcConnectionCache) GetConnection(connectionString string) <-chan plc4go.PlcConnectionConnectResult {
-	return c.GetConnectionWithContext(context.Background(), connectionString)
-}
-
-func (c *plcConnectionCache) GetConnectionWithContext(ctx context.Context, connectionString string) <-chan plc4go.PlcConnectionConnectResult {
+func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString string) <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 
 	c.wg.Go(func() {

@@ -152,7 +152,7 @@ func (d *defaultConnection) Connect(ctx context.Context) <-chan plc4go.PlcConnec
 				ch <- NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
-		err := d.GetMessageCodec().ConnectWithContext(ctx)
+		err := d.GetMessageCodec().Connect(ctx)
 		d.SetConnected(true)
 		connection := d.GetConnection()
 		ch <- NewDefaultPlcConnectionConnectResult(connection, err)

@@ -94,37 +94,6 @@ func TestTransportInstance_Connect(t *testing.T) {
 		transport        *Transport
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
-	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
-	}{
-		{
-			name: "connect it",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &TransportInstance{
-				readBuffer:       tt.fields.readBuffer,
-				writeBuffer:      tt.fields.writeBuffer,
-				transport:        tt.fields.transport,
-				writeInterceptor: tt.fields.writeInterceptor,
-			}
-			if err := m.Connect(); (err != nil) != tt.wantErr {
-				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func TestTransportInstance_ConnectWithContext(t *testing.T) {
-	type fields struct {
-		readBuffer       []byte
-		writeBuffer      []byte
-		transport        *Transport
-		writeInterceptor func(transportInstance *TransportInstance, data []byte)
-	}
 	type args struct {
 		in0 context.Context
 	}
@@ -146,8 +115,8 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
 			}
-			if err := m.ConnectWithContext(tt.args.in0); (err != nil) != tt.wantErr {
-				t.Errorf("ConnectWithContext() error = %v, wantErr %v", err, tt.wantErr)
+			if err := m.Connect(tt.args.in0); (err != nil) != tt.wantErr {
+				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -258,7 +227,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.FillBuffer(tt.args.until, tt.args.timeout); (err != nil) != tt.wantErr {
+			if err := m.FillBuffer(t.Context(), tt.args.until, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("FillBuffer() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -473,7 +442,7 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.PeekReadableBytes(tt.args.numBytes, tt.args.timeout)
+			got, err := m.PeekReadableBytes(t.Context(), tt.args.numBytes, tt.args.timeout)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -526,7 +495,7 @@ func TestTransportInstance_Read(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.Read(tt.args.numBytes, tt.args.timeout)
+			got, err := m.Read(t.Context(), tt.args.numBytes, tt.args.timeout)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -657,7 +626,7 @@ func TestTransportInstance_Write(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.Write(tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
+			if err := m.Write(t.Context(), tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

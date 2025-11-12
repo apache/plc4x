@@ -61,10 +61,6 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Connect() error {
-	return m.ConnectWithContext(context.Background())
-}
-
 func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
 	m.log.Trace().Stringer("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct

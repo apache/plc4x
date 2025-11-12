@@ -370,8 +370,8 @@ func (_c *MockDefaultCodecRequirements_GetCodec_Call) RunAndReturn(run func() sp
 }
 
 // Receive provides a mock function for the type MockDefaultCodecRequirements
-func (_mock *MockDefaultCodecRequirements) Receive(timeout time.Duration) (spi.Message, error) {
-	ret := _mock.Called(timeout)
+func (_mock *MockDefaultCodecRequirements) Receive(ctx context.Context, timeout time.Duration) (spi.Message, error) {
+	ret := _mock.Called(ctx, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Receive")
@@ -379,18 +379,18 @@ func (_mock *MockDefaultCodecRequirements) Receive(timeout time.Duration) (spi.M
 
 	var r0 spi.Message
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(time.Duration) (spi.Message, error)); ok {
-		return returnFunc(timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, time.Duration) (spi.Message, error)); ok {
+		return returnFunc(ctx, timeout)
 	}
-	if returnFunc, ok := ret.Get(0).(func(time.Duration) spi.Message); ok {
-		r0 = returnFunc(timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, time.Duration) spi.Message); ok {
+		r0 = returnFunc(ctx, timeout)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(spi.Message)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(time.Duration) error); ok {
-		r1 = returnFunc(timeout)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, time.Duration) error); ok {
+		r1 = returnFunc(ctx, timeout)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -403,68 +403,17 @@ type MockDefaultCodecRequirements_Receive_Call struct {
 }
 
 // Receive is a helper method to define mock.On call
+//   - ctx context.Context
 //   - timeout time.Duration
-func (_e *MockDefaultCodecRequirements_Expecter) Receive(timeout interface{}) *MockDefaultCodecRequirements_Receive_Call {
-	return &MockDefaultCodecRequirements_Receive_Call{Call: _e.mock.On("Receive", timeout)}
+func (_e *MockDefaultCodecRequirements_Expecter) Receive(ctx interface{}, timeout interface{}) *MockDefaultCodecRequirements_Receive_Call {
+	return &MockDefaultCodecRequirements_Receive_Call{Call: _e.mock.On("Receive", ctx, timeout)}
 }
 
-func (_c *MockDefaultCodecRequirements_Receive_Call) Run(run func(timeout time.Duration)) *MockDefaultCodecRequirements_Receive_Call {
+func (_c *MockDefaultCodecRequirements_Receive_Call) Run(run func(ctx context.Context, timeout time.Duration)) *MockDefaultCodecRequirements_Receive_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 time.Duration
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].(time.Duration)
-		}
-		run(
-			arg0,
-		)
-	})
-	return _c
-}
-
-func (_c *MockDefaultCodecRequirements_Receive_Call) Return(message spi.Message, err error) *MockDefaultCodecRequirements_Receive_Call {
-	_c.Call.Return(message, err)
-	return _c
-}
-
-func (_c *MockDefaultCodecRequirements_Receive_Call) RunAndReturn(run func(timeout time.Duration) (spi.Message, error)) *MockDefaultCodecRequirements_Receive_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// Send provides a mock function for the type MockDefaultCodecRequirements
-func (_mock *MockDefaultCodecRequirements) Send(message spi.Message, timeout time.Duration) error {
-	ret := _mock.Called(message, timeout)
-
-	if len(ret) == 0 {
-		panic("no return value specified for Send")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(spi.Message, time.Duration) error); ok {
-		r0 = returnFunc(message, timeout)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockDefaultCodecRequirements_Send_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Send'
-type MockDefaultCodecRequirements_Send_Call struct {
-	*mock.Call
-}
-
-// Send is a helper method to define mock.On call
-//   - message spi.Message
-//   - timeout time.Duration
-func (_e *MockDefaultCodecRequirements_Expecter) Send(message interface{}, timeout interface{}) *MockDefaultCodecRequirements_Send_Call {
-	return &MockDefaultCodecRequirements_Send_Call{Call: _e.mock.On("Send", message, timeout)}
-}
-
-func (_c *MockDefaultCodecRequirements_Send_Call) Run(run func(message spi.Message, timeout time.Duration)) *MockDefaultCodecRequirements_Send_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 spi.Message
-		if args[0] != nil {
-			arg0 = args[0].(spi.Message)
+			arg0 = args[0].(context.Context)
 		}
 		var arg1 time.Duration
 		if args[1] != nil {
@@ -478,12 +427,75 @@ func (_c *MockDefaultCodecRequirements_Send_Call) Run(run func(message spi.Messa
 	return _c
 }
 
+func (_c *MockDefaultCodecRequirements_Receive_Call) Return(message spi.Message, err error) *MockDefaultCodecRequirements_Receive_Call {
+	_c.Call.Return(message, err)
+	return _c
+}
+
+func (_c *MockDefaultCodecRequirements_Receive_Call) RunAndReturn(run func(ctx context.Context, timeout time.Duration) (spi.Message, error)) *MockDefaultCodecRequirements_Receive_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Send provides a mock function for the type MockDefaultCodecRequirements
+func (_mock *MockDefaultCodecRequirements) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
+	ret := _mock.Called(ctx, message, timeout)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Send")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, spi.Message, time.Duration) error); ok {
+		r0 = returnFunc(ctx, message, timeout)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockDefaultCodecRequirements_Send_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Send'
+type MockDefaultCodecRequirements_Send_Call struct {
+	*mock.Call
+}
+
+// Send is a helper method to define mock.On call
+//   - ctx context.Context
+//   - message spi.Message
+//   - timeout time.Duration
+func (_e *MockDefaultCodecRequirements_Expecter) Send(ctx interface{}, message interface{}, timeout interface{}) *MockDefaultCodecRequirements_Send_Call {
+	return &MockDefaultCodecRequirements_Send_Call{Call: _e.mock.On("Send", ctx, message, timeout)}
+}
+
+func (_c *MockDefaultCodecRequirements_Send_Call) Run(run func(ctx context.Context, message spi.Message, timeout time.Duration)) *MockDefaultCodecRequirements_Send_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 spi.Message
+		if args[1] != nil {
+			arg1 = args[1].(spi.Message)
+		}
+		var arg2 time.Duration
+		if args[2] != nil {
+			arg2 = args[2].(time.Duration)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
+	})
+	return _c
+}
+
 func (_c *MockDefaultCodecRequirements_Send_Call) Return(err error) *MockDefaultCodecRequirements_Send_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockDefaultCodecRequirements_Send_Call) RunAndReturn(run func(message spi.Message, timeout time.Duration) error) *MockDefaultCodecRequirements_Send_Call {
+func (_c *MockDefaultCodecRequirements_Send_Call) RunAndReturn(run func(ctx context.Context, message spi.Message, timeout time.Duration) error) *MockDefaultCodecRequirements_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -516,16 +528,16 @@ func (_m *MockDefaultCodec) EXPECT() *MockDefaultCodec_Expecter {
 }
 
 // Connect provides a mock function for the type MockDefaultCodec
-func (_mock *MockDefaultCodec) Connect() error {
-	ret := _mock.Called()
+func (_mock *MockDefaultCodec) Connect(ctx context.Context) error {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Connect")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func() error); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -538,56 +550,12 @@ type MockDefaultCodec_Connect_Call struct {
 }
 
 // Connect is a helper method to define mock.On call
-func (_e *MockDefaultCodec_Expecter) Connect() *MockDefaultCodec_Connect_Call {
-	return &MockDefaultCodec_Connect_Call{Call: _e.mock.On("Connect")}
-}
-
-func (_c *MockDefaultCodec_Connect_Call) Run(run func()) *MockDefaultCodec_Connect_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultCodec_Connect_Call) Return(err error) *MockDefaultCodec_Connect_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockDefaultCodec_Connect_Call) RunAndReturn(run func() error) *MockDefaultCodec_Connect_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ConnectWithContext provides a mock function for the type MockDefaultCodec
-func (_mock *MockDefaultCodec) ConnectWithContext(ctx context.Context) error {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ConnectWithContext")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockDefaultCodec_ConnectWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConnectWithContext'
-type MockDefaultCodec_ConnectWithContext_Call struct {
-	*mock.Call
-}
-
-// ConnectWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockDefaultCodec_Expecter) ConnectWithContext(ctx interface{}) *MockDefaultCodec_ConnectWithContext_Call {
-	return &MockDefaultCodec_ConnectWithContext_Call{Call: _e.mock.On("ConnectWithContext", ctx)}
+func (_e *MockDefaultCodec_Expecter) Connect(ctx interface{}) *MockDefaultCodec_Connect_Call {
+	return &MockDefaultCodec_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
-func (_c *MockDefaultCodec_ConnectWithContext_Call) Run(run func(ctx context.Context)) *MockDefaultCodec_ConnectWithContext_Call {
+func (_c *MockDefaultCodec_Connect_Call) Run(run func(ctx context.Context)) *MockDefaultCodec_Connect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -600,12 +568,12 @@ func (_c *MockDefaultCodec_ConnectWithContext_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockDefaultCodec_ConnectWithContext_Call) Return(err error) *MockDefaultCodec_ConnectWithContext_Call {
+func (_c *MockDefaultCodec_Connect_Call) Return(err error) *MockDefaultCodec_Connect_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockDefaultCodec_ConnectWithContext_Call) RunAndReturn(run func(ctx context.Context) error) *MockDefaultCodec_ConnectWithContext_Call {
+func (_c *MockDefaultCodec_Connect_Call) RunAndReturn(run func(ctx context.Context) error) *MockDefaultCodec_Connect_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -855,16 +823,16 @@ func (_c *MockDefaultCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockDe
 }
 
 // Send provides a mock function for the type MockDefaultCodec
-func (_mock *MockDefaultCodec) Send(message spi.Message, timeout time.Duration) error {
-	ret := _mock.Called(message, timeout)
+func (_mock *MockDefaultCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
+	ret := _mock.Called(ctx, message, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(spi.Message, time.Duration) error); ok {
-		r0 = returnFunc(message, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, spi.Message, time.Duration) error); ok {
+		r0 = returnFunc(ctx, message, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -877,25 +845,31 @@ type MockDefaultCodec_Send_Call struct {
 }
 
 // Send is a helper method to define mock.On call
+//   - ctx context.Context
 //   - message spi.Message
 //   - timeout time.Duration
-func (_e *MockDefaultCodec_Expecter) Send(message interface{}, timeout interface{}) *MockDefaultCodec_Send_Call {
-	return &MockDefaultCodec_Send_Call{Call: _e.mock.On("Send", message, timeout)}
+func (_e *MockDefaultCodec_Expecter) Send(ctx interface{}, message interface{}, timeout interface{}) *MockDefaultCodec_Send_Call {
+	return &MockDefaultCodec_Send_Call{Call: _e.mock.On("Send", ctx, message, timeout)}
 }
 
-func (_c *MockDefaultCodec_Send_Call) Run(run func(message spi.Message, timeout time.Duration)) *MockDefaultCodec_Send_Call {
+func (_c *MockDefaultCodec_Send_Call) Run(run func(ctx context.Context, message spi.Message, timeout time.Duration)) *MockDefaultCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 spi.Message
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].(spi.Message)
+			arg0 = args[0].(context.Context)
 		}
-		var arg1 time.Duration
+		var arg1 spi.Message
 		if args[1] != nil {
-			arg1 = args[1].(time.Duration)
+			arg1 = args[1].(spi.Message)
+		}
+		var arg2 time.Duration
+		if args[2] != nil {
+			arg2 = args[2].(time.Duration)
 		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -906,7 +880,7 @@ func (_c *MockDefaultCodec_Send_Call) Return(err error) *MockDefaultCodec_Send_C
 	return _c
 }
 
-func (_c *MockDefaultCodec_Send_Call) RunAndReturn(run func(message spi.Message, timeout time.Duration) error) *MockDefaultCodec_Send_Call {
+func (_c *MockDefaultCodec_Send_Call) RunAndReturn(run func(ctx context.Context, message spi.Message, timeout time.Duration) error) *MockDefaultCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1129,59 +1103,6 @@ type MockDefaultConnectionRequirements_Expecter struct {
 
 func (_m *MockDefaultConnectionRequirements) EXPECT() *MockDefaultConnectionRequirements_Expecter {
 	return &MockDefaultConnectionRequirements_Expecter{mock: &_m.Mock}
-}
-
-// ConnectWithContext provides a mock function for the type MockDefaultConnectionRequirements
-func (_mock *MockDefaultConnectionRequirements) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ConnectWithContext")
-	}
-
-	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan plc4go.PlcConnectionConnectResult); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
-		}
-	}
-	return r0
-}
-
-// MockDefaultConnectionRequirements_ConnectWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConnectWithContext'
-type MockDefaultConnectionRequirements_ConnectWithContext_Call struct {
-	*mock.Call
-}
-
-// ConnectWithContext is a helper method to define mock.On call
-//   - ctx context.Context
-func (_e *MockDefaultConnectionRequirements_Expecter) ConnectWithContext(ctx interface{}) *MockDefaultConnectionRequirements_ConnectWithContext_Call {
-	return &MockDefaultConnectionRequirements_ConnectWithContext_Call{Call: _e.mock.On("ConnectWithContext", ctx)}
-}
-
-func (_c *MockDefaultConnectionRequirements_ConnectWithContext_Call) Run(run func(ctx context.Context)) *MockDefaultConnectionRequirements_ConnectWithContext_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 context.Context
-		if args[0] != nil {
-			arg0 = args[0].(context.Context)
-		}
-		run(
-			arg0,
-		)
-	})
-	return _c
-}
-
-func (_c *MockDefaultConnectionRequirements_ConnectWithContext_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnectionRequirements_ConnectWithContext_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
-	return _c
-}
-
-func (_c *MockDefaultConnectionRequirements_ConnectWithContext_Call) RunAndReturn(run func(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnectionRequirements_ConnectWithContext_Call {
-	_c.Call.Return(run)
-	return _c
 }
 
 // GetConnection provides a mock function for the type MockDefaultConnectionRequirements
@@ -1429,16 +1350,16 @@ func (_c *MockDefaultConnection_Close_Call) RunAndReturn(run func() <-chan plc4g
 }
 
 // Connect provides a mock function for the type MockDefaultConnection
-func (_mock *MockDefaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	ret := _mock.Called()
+func (_mock *MockDefaultConnection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Connect")
 	}
 
 	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan plc4go.PlcConnectionConnectResult); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan plc4go.PlcConnectionConnectResult); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
@@ -1453,58 +1374,12 @@ type MockDefaultConnection_Connect_Call struct {
 }
 
 // Connect is a helper method to define mock.On call
-func (_e *MockDefaultConnection_Expecter) Connect() *MockDefaultConnection_Connect_Call {
-	return &MockDefaultConnection_Connect_Call{Call: _e.mock.On("Connect")}
-}
-
-func (_c *MockDefaultConnection_Connect_Call) Run(run func()) *MockDefaultConnection_Connect_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultConnection_Connect_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnection_Connect_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
-	return _c
-}
-
-func (_c *MockDefaultConnection_Connect_Call) RunAndReturn(run func() <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnection_Connect_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ConnectWithContext provides a mock function for the type MockDefaultConnection
-func (_mock *MockDefaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ConnectWithContext")
-	}
-
-	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan plc4go.PlcConnectionConnectResult); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
-		}
-	}
-	return r0
-}
-
-// MockDefaultConnection_ConnectWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConnectWithContext'
-type MockDefaultConnection_ConnectWithContext_Call struct {
-	*mock.Call
-}
-
-// ConnectWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockDefaultConnection_Expecter) ConnectWithContext(ctx interface{}) *MockDefaultConnection_ConnectWithContext_Call {
-	return &MockDefaultConnection_ConnectWithContext_Call{Call: _e.mock.On("ConnectWithContext", ctx)}
+func (_e *MockDefaultConnection_Expecter) Connect(ctx interface{}) *MockDefaultConnection_Connect_Call {
+	return &MockDefaultConnection_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
-func (_c *MockDefaultConnection_ConnectWithContext_Call) Run(run func(ctx context.Context)) *MockDefaultConnection_ConnectWithContext_Call {
+func (_c *MockDefaultConnection_Connect_Call) Run(run func(ctx context.Context)) *MockDefaultConnection_Connect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -1517,12 +1392,12 @@ func (_c *MockDefaultConnection_ConnectWithContext_Call) Run(run func(ctx contex
 	return _c
 }
 
-func (_c *MockDefaultConnection_ConnectWithContext_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnection_ConnectWithContext_Call {
+func (_c *MockDefaultConnection_Connect_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnection_Connect_Call {
 	_c.Call.Return(plcConnectionConnectResultCh)
 	return _c
 }
 
-func (_c *MockDefaultConnection_ConnectWithContext_Call) RunAndReturn(run func(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnection_ConnectWithContext_Call {
+func (_c *MockDefaultConnection_Connect_Call) RunAndReturn(run func(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnection_Connect_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2252,44 +2127,44 @@ func (_m *MockDefaultDriverRequirements) EXPECT() *MockDefaultDriverRequirements
 	return &MockDefaultDriverRequirements_Expecter{mock: &_m.Mock}
 }
 
-// DiscoverWithContext provides a mock function for the type MockDefaultDriverRequirements
-func (_mock *MockDefaultDriverRequirements) DiscoverWithContext(callback context.Context, event func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+// Discover provides a mock function for the type MockDefaultDriverRequirements
+func (_mock *MockDefaultDriverRequirements) Discover(ctx context.Context, eventCallback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	var tmpRet mock.Arguments
 	if len(discoveryOptions) > 0 {
-		tmpRet = _mock.Called(callback, event, discoveryOptions)
+		tmpRet = _mock.Called(ctx, eventCallback, discoveryOptions)
 	} else {
-		tmpRet = _mock.Called(callback, event)
+		tmpRet = _mock.Called(ctx, eventCallback)
 	}
 	ret := tmpRet
 
 	if len(ret) == 0 {
-		panic("no return value specified for DiscoverWithContext")
+		panic("no return value specified for Discover")
 	}
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(context.Context, func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
-		r0 = returnFunc(callback, event, discoveryOptions...)
+		r0 = returnFunc(ctx, eventCallback, discoveryOptions...)
 	} else {
 		r0 = ret.Error(0)
 	}
 	return r0
 }
 
-// MockDefaultDriverRequirements_DiscoverWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DiscoverWithContext'
-type MockDefaultDriverRequirements_DiscoverWithContext_Call struct {
+// MockDefaultDriverRequirements_Discover_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Discover'
+type MockDefaultDriverRequirements_Discover_Call struct {
 	*mock.Call
 }
 
-// DiscoverWithContext is a helper method to define mock.On call
-//   - callback context.Context
-//   - event func(event model.PlcDiscoveryItem)
+// Discover is a helper method to define mock.On call
+//   - ctx context.Context
+//   - eventCallback func(event model.PlcDiscoveryItem)
 //   - discoveryOptions ...options.WithDiscoveryOption
-func (_e *MockDefaultDriverRequirements_Expecter) DiscoverWithContext(callback interface{}, event interface{}, discoveryOptions ...interface{}) *MockDefaultDriverRequirements_DiscoverWithContext_Call {
-	return &MockDefaultDriverRequirements_DiscoverWithContext_Call{Call: _e.mock.On("DiscoverWithContext",
-		append([]interface{}{callback, event}, discoveryOptions...)...)}
+func (_e *MockDefaultDriverRequirements_Expecter) Discover(ctx interface{}, eventCallback interface{}, discoveryOptions ...interface{}) *MockDefaultDriverRequirements_Discover_Call {
+	return &MockDefaultDriverRequirements_Discover_Call{Call: _e.mock.On("Discover",
+		append([]interface{}{ctx, eventCallback}, discoveryOptions...)...)}
 }
 
-func (_c *MockDefaultDriverRequirements_DiscoverWithContext_Call) Run(run func(callback context.Context, event func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockDefaultDriverRequirements_DiscoverWithContext_Call {
+func (_c *MockDefaultDriverRequirements_Discover_Call) Run(run func(ctx context.Context, eventCallback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockDefaultDriverRequirements_Discover_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -2314,22 +2189,22 @@ func (_c *MockDefaultDriverRequirements_DiscoverWithContext_Call) Run(run func(c
 	return _c
 }
 
-func (_c *MockDefaultDriverRequirements_DiscoverWithContext_Call) Return(err error) *MockDefaultDriverRequirements_DiscoverWithContext_Call {
+func (_c *MockDefaultDriverRequirements_Discover_Call) Return(err error) *MockDefaultDriverRequirements_Discover_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockDefaultDriverRequirements_DiscoverWithContext_Call) RunAndReturn(run func(callback context.Context, event func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockDefaultDriverRequirements_DiscoverWithContext_Call {
+func (_c *MockDefaultDriverRequirements_Discover_Call) RunAndReturn(run func(ctx context.Context, eventCallback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockDefaultDriverRequirements_Discover_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetConnectionWithContext provides a mock function for the type MockDefaultDriverRequirements
-func (_mock *MockDefaultDriverRequirements) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+// GetConnection provides a mock function for the type MockDefaultDriverRequirements
+func (_mock *MockDefaultDriverRequirements) GetConnection(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	ret := _mock.Called(ctx, transportUrl, transports1, driverOptions)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetConnectionWithContext")
+		panic("no return value specified for GetConnection")
 	}
 
 	var r0 <-chan plc4go.PlcConnectionConnectResult
@@ -2343,21 +2218,21 @@ func (_mock *MockDefaultDriverRequirements) GetConnectionWithContext(ctx context
 	return r0
 }
 
-// MockDefaultDriverRequirements_GetConnectionWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnectionWithContext'
-type MockDefaultDriverRequirements_GetConnectionWithContext_Call struct {
+// MockDefaultDriverRequirements_GetConnection_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnection'
+type MockDefaultDriverRequirements_GetConnection_Call struct {
 	*mock.Call
 }
 
-// GetConnectionWithContext is a helper method to define mock.On call
+// GetConnection is a helper method to define mock.On call
 //   - ctx context.Context
 //   - transportUrl url.URL
 //   - transports1 map[string]transports.Transport
 //   - driverOptions map[string][]string
-func (_e *MockDefaultDriverRequirements_Expecter) GetConnectionWithContext(ctx interface{}, transportUrl interface{}, transports1 interface{}, driverOptions interface{}) *MockDefaultDriverRequirements_GetConnectionWithContext_Call {
-	return &MockDefaultDriverRequirements_GetConnectionWithContext_Call{Call: _e.mock.On("GetConnectionWithContext", ctx, transportUrl, transports1, driverOptions)}
+func (_e *MockDefaultDriverRequirements_Expecter) GetConnection(ctx interface{}, transportUrl interface{}, transports1 interface{}, driverOptions interface{}) *MockDefaultDriverRequirements_GetConnection_Call {
+	return &MockDefaultDriverRequirements_GetConnection_Call{Call: _e.mock.On("GetConnection", ctx, transportUrl, transports1, driverOptions)}
 }
 
-func (_c *MockDefaultDriverRequirements_GetConnectionWithContext_Call) Run(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string)) *MockDefaultDriverRequirements_GetConnectionWithContext_Call {
+func (_c *MockDefaultDriverRequirements_GetConnection_Call) Run(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string)) *MockDefaultDriverRequirements_GetConnection_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -2385,12 +2260,12 @@ func (_c *MockDefaultDriverRequirements_GetConnectionWithContext_Call) Run(run f
 	return _c
 }
 
-func (_c *MockDefaultDriverRequirements_GetConnectionWithContext_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriverRequirements_GetConnectionWithContext_Call {
+func (_c *MockDefaultDriverRequirements_GetConnection_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriverRequirements_GetConnection_Call {
 	_c.Call.Return(plcConnectionConnectResultCh)
 	return _c
 }
 
-func (_c *MockDefaultDriverRequirements_GetConnectionWithContext_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriverRequirements_GetConnectionWithContext_Call {
+func (_c *MockDefaultDriverRequirements_GetConnection_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriverRequirements_GetConnection_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2569,12 +2444,12 @@ func (_c *MockDefaultDriver_Close_Call) RunAndReturn(run func() error) *MockDefa
 }
 
 // Discover provides a mock function for the type MockDefaultDriver
-func (_mock *MockDefaultDriver) Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+func (_mock *MockDefaultDriver) Discover(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	var tmpRet mock.Arguments
 	if len(discoveryOptions) > 0 {
-		tmpRet = _mock.Called(callback, discoveryOptions)
+		tmpRet = _mock.Called(ctx, callback, discoveryOptions)
 	} else {
-		tmpRet = _mock.Called(callback)
+		tmpRet = _mock.Called(ctx, callback)
 	}
 	ret := tmpRet
 
@@ -2583,8 +2458,8 @@ func (_mock *MockDefaultDriver) Discover(callback func(event model.PlcDiscoveryI
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
-		r0 = returnFunc(callback, discoveryOptions...)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
+		r0 = returnFunc(ctx, callback, discoveryOptions...)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -2597,81 +2472,15 @@ type MockDefaultDriver_Discover_Call struct {
 }
 
 // Discover is a helper method to define mock.On call
-//   - callback func(event model.PlcDiscoveryItem)
-//   - discoveryOptions ...options.WithDiscoveryOption
-func (_e *MockDefaultDriver_Expecter) Discover(callback interface{}, discoveryOptions ...interface{}) *MockDefaultDriver_Discover_Call {
-	return &MockDefaultDriver_Discover_Call{Call: _e.mock.On("Discover",
-		append([]interface{}{callback}, discoveryOptions...)...)}
-}
-
-func (_c *MockDefaultDriver_Discover_Call) Run(run func(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockDefaultDriver_Discover_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 func(event model.PlcDiscoveryItem)
-		if args[0] != nil {
-			arg0 = args[0].(func(event model.PlcDiscoveryItem))
-		}
-		var arg1 []options.WithDiscoveryOption
-		var variadicArgs []options.WithDiscoveryOption
-		if len(args) > 1 {
-			variadicArgs = args[1].([]options.WithDiscoveryOption)
-		}
-		arg1 = variadicArgs
-		run(
-			arg0,
-			arg1...,
-		)
-	})
-	return _c
-}
-
-func (_c *MockDefaultDriver_Discover_Call) Return(err error) *MockDefaultDriver_Discover_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockDefaultDriver_Discover_Call) RunAndReturn(run func(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockDefaultDriver_Discover_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// DiscoverWithContext provides a mock function for the type MockDefaultDriver
-func (_mock *MockDefaultDriver) DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	var tmpRet mock.Arguments
-	if len(discoveryOptions) > 0 {
-		tmpRet = _mock.Called(ctx, callback, discoveryOptions)
-	} else {
-		tmpRet = _mock.Called(ctx, callback)
-	}
-	ret := tmpRet
-
-	if len(ret) == 0 {
-		panic("no return value specified for DiscoverWithContext")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
-		r0 = returnFunc(ctx, callback, discoveryOptions...)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockDefaultDriver_DiscoverWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DiscoverWithContext'
-type MockDefaultDriver_DiscoverWithContext_Call struct {
-	*mock.Call
-}
-
-// DiscoverWithContext is a helper method to define mock.On call
 //   - ctx context.Context
 //   - callback func(event model.PlcDiscoveryItem)
 //   - discoveryOptions ...options.WithDiscoveryOption
-func (_e *MockDefaultDriver_Expecter) DiscoverWithContext(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockDefaultDriver_DiscoverWithContext_Call {
-	return &MockDefaultDriver_DiscoverWithContext_Call{Call: _e.mock.On("DiscoverWithContext",
+func (_e *MockDefaultDriver_Expecter) Discover(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockDefaultDriver_Discover_Call {
+	return &MockDefaultDriver_Discover_Call{Call: _e.mock.On("Discover",
 		append([]interface{}{ctx, callback}, discoveryOptions...)...)}
 }
 
-func (_c *MockDefaultDriver_DiscoverWithContext_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockDefaultDriver_DiscoverWithContext_Call {
+func (_c *MockDefaultDriver_Discover_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockDefaultDriver_Discover_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -2696,27 +2505,27 @@ func (_c *MockDefaultDriver_DiscoverWithContext_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockDefaultDriver_DiscoverWithContext_Call) Return(err error) *MockDefaultDriver_DiscoverWithContext_Call {
+func (_c *MockDefaultDriver_Discover_Call) Return(err error) *MockDefaultDriver_Discover_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockDefaultDriver_DiscoverWithContext_Call) RunAndReturn(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockDefaultDriver_DiscoverWithContext_Call {
+func (_c *MockDefaultDriver_Discover_Call) RunAndReturn(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockDefaultDriver_Discover_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetConnection provides a mock function for the type MockDefaultDriver
-func (_mock *MockDefaultDriver) GetConnection(transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	ret := _mock.Called(transportUrl, transports1, options1)
+func (_mock *MockDefaultDriver) GetConnection(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	ret := _mock.Called(ctx, transportUrl, transports1, options1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetConnection")
 	}
 
 	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(url.URL, map[string]transports.Transport, map[string][]string) <-chan plc4go.PlcConnectionConnectResult); ok {
-		r0 = returnFunc(transportUrl, transports1, options1)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) <-chan plc4go.PlcConnectionConnectResult); ok {
+		r0 = returnFunc(ctx, transportUrl, transports1, options1)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
@@ -2731,80 +2540,15 @@ type MockDefaultDriver_GetConnection_Call struct {
 }
 
 // GetConnection is a helper method to define mock.On call
-//   - transportUrl url.URL
-//   - transports1 map[string]transports.Transport
-//   - options1 map[string][]string
-func (_e *MockDefaultDriver_Expecter) GetConnection(transportUrl interface{}, transports1 interface{}, options1 interface{}) *MockDefaultDriver_GetConnection_Call {
-	return &MockDefaultDriver_GetConnection_Call{Call: _e.mock.On("GetConnection", transportUrl, transports1, options1)}
-}
-
-func (_c *MockDefaultDriver_GetConnection_Call) Run(run func(transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string)) *MockDefaultDriver_GetConnection_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 url.URL
-		if args[0] != nil {
-			arg0 = args[0].(url.URL)
-		}
-		var arg1 map[string]transports.Transport
-		if args[1] != nil {
-			arg1 = args[1].(map[string]transports.Transport)
-		}
-		var arg2 map[string][]string
-		if args[2] != nil {
-			arg2 = args[2].(map[string][]string)
-		}
-		run(
-			arg0,
-			arg1,
-			arg2,
-		)
-	})
-	return _c
-}
-
-func (_c *MockDefaultDriver_GetConnection_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriver_GetConnection_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
-	return _c
-}
-
-func (_c *MockDefaultDriver_GetConnection_Call) RunAndReturn(run func(transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriver_GetConnection_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetConnectionWithContext provides a mock function for the type MockDefaultDriver
-func (_mock *MockDefaultDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	ret := _mock.Called(ctx, transportUrl, transports1, driverOptions)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetConnectionWithContext")
-	}
-
-	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) <-chan plc4go.PlcConnectionConnectResult); ok {
-		r0 = returnFunc(ctx, transportUrl, transports1, driverOptions)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
-		}
-	}
-	return r0
-}
-
-// MockDefaultDriver_GetConnectionWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnectionWithContext'
-type MockDefaultDriver_GetConnectionWithContext_Call struct {
-	*mock.Call
-}
-
-// GetConnectionWithContext is a helper method to define mock.On call
 //   - ctx context.Context
 //   - transportUrl url.URL
 //   - transports1 map[string]transports.Transport
-//   - driverOptions map[string][]string
-func (_e *MockDefaultDriver_Expecter) GetConnectionWithContext(ctx interface{}, transportUrl interface{}, transports1 interface{}, driverOptions interface{}) *MockDefaultDriver_GetConnectionWithContext_Call {
-	return &MockDefaultDriver_GetConnectionWithContext_Call{Call: _e.mock.On("GetConnectionWithContext", ctx, transportUrl, transports1, driverOptions)}
+//   - options1 map[string][]string
+func (_e *MockDefaultDriver_Expecter) GetConnection(ctx interface{}, transportUrl interface{}, transports1 interface{}, options1 interface{}) *MockDefaultDriver_GetConnection_Call {
+	return &MockDefaultDriver_GetConnection_Call{Call: _e.mock.On("GetConnection", ctx, transportUrl, transports1, options1)}
 }
 
-func (_c *MockDefaultDriver_GetConnectionWithContext_Call) Run(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string)) *MockDefaultDriver_GetConnectionWithContext_Call {
+func (_c *MockDefaultDriver_GetConnection_Call) Run(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string)) *MockDefaultDriver_GetConnection_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -2832,12 +2576,12 @@ func (_c *MockDefaultDriver_GetConnectionWithContext_Call) Run(run func(ctx cont
 	return _c
 }
 
-func (_c *MockDefaultDriver_GetConnectionWithContext_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriver_GetConnectionWithContext_Call {
+func (_c *MockDefaultDriver_GetConnection_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriver_GetConnection_Call {
 	_c.Call.Return(plcConnectionConnectResultCh)
 	return _c
 }
 
-func (_c *MockDefaultDriver_GetConnectionWithContext_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriver_GetConnectionWithContext_Call {
+func (_c *MockDefaultDriver_GetConnection_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriver_GetConnection_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -3744,16 +3488,16 @@ func (_c *MockPlcConnection_Close_Call) RunAndReturn(run func() <-chan plc4go.Pl
 }
 
 // Connect provides a mock function for the type MockPlcConnection
-func (_mock *MockPlcConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	ret := _mock.Called()
+func (_mock *MockPlcConnection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Connect")
 	}
 
 	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan plc4go.PlcConnectionConnectResult); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan plc4go.PlcConnectionConnectResult); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
@@ -3768,58 +3512,12 @@ type MockPlcConnection_Connect_Call struct {
 }
 
 // Connect is a helper method to define mock.On call
-func (_e *MockPlcConnection_Expecter) Connect() *MockPlcConnection_Connect_Call {
-	return &MockPlcConnection_Connect_Call{Call: _e.mock.On("Connect")}
-}
-
-func (_c *MockPlcConnection_Connect_Call) Run(run func()) *MockPlcConnection_Connect_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcConnection_Connect_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
-	return _c
-}
-
-func (_c *MockPlcConnection_Connect_Call) RunAndReturn(run func() <-chan plc4go.PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ConnectWithContext provides a mock function for the type MockPlcConnection
-func (_mock *MockPlcConnection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ConnectWithContext")
-	}
-
-	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan plc4go.PlcConnectionConnectResult); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
-		}
-	}
-	return r0
-}
-
-// MockPlcConnection_ConnectWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConnectWithContext'
-type MockPlcConnection_ConnectWithContext_Call struct {
-	*mock.Call
-}
-
-// ConnectWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcConnection_Expecter) ConnectWithContext(ctx interface{}) *MockPlcConnection_ConnectWithContext_Call {
-	return &MockPlcConnection_ConnectWithContext_Call{Call: _e.mock.On("ConnectWithContext", ctx)}
+func (_e *MockPlcConnection_Expecter) Connect(ctx interface{}) *MockPlcConnection_Connect_Call {
+	return &MockPlcConnection_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
-func (_c *MockPlcConnection_ConnectWithContext_Call) Run(run func(ctx context.Context)) *MockPlcConnection_ConnectWithContext_Call {
+func (_c *MockPlcConnection_Connect_Call) Run(run func(ctx context.Context)) *MockPlcConnection_Connect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -3832,12 +3530,12 @@ func (_c *MockPlcConnection_ConnectWithContext_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockPlcConnection_ConnectWithContext_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockPlcConnection_ConnectWithContext_Call {
+func (_c *MockPlcConnection_Connect_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
 	_c.Call.Return(plcConnectionConnectResultCh)
 	return _c
 }
 
-func (_c *MockPlcConnection_ConnectWithContext_Call) RunAndReturn(run func(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult) *MockPlcConnection_ConnectWithContext_Call {
+func (_c *MockPlcConnection_Connect_Call) RunAndReturn(run func(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -4519,16 +4217,16 @@ func (_m *MockMessageCodec) EXPECT() *MockMessageCodec_Expecter {
 }
 
 // Connect provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Connect() error {
-	ret := _mock.Called()
+func (_mock *MockMessageCodec) Connect(ctx context.Context) error {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Connect")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func() error); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -4541,56 +4239,12 @@ type MockMessageCodec_Connect_Call struct {
 }
 
 // Connect is a helper method to define mock.On call
-func (_e *MockMessageCodec_Expecter) Connect() *MockMessageCodec_Connect_Call {
-	return &MockMessageCodec_Connect_Call{Call: _e.mock.On("Connect")}
-}
-
-func (_c *MockMessageCodec_Connect_Call) Run(run func()) *MockMessageCodec_Connect_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockMessageCodec_Connect_Call) Return(err error) *MockMessageCodec_Connect_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockMessageCodec_Connect_Call) RunAndReturn(run func() error) *MockMessageCodec_Connect_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ConnectWithContext provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) ConnectWithContext(ctx context.Context) error {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ConnectWithContext")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockMessageCodec_ConnectWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConnectWithContext'
-type MockMessageCodec_ConnectWithContext_Call struct {
-	*mock.Call
-}
-
-// ConnectWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockMessageCodec_Expecter) ConnectWithContext(ctx interface{}) *MockMessageCodec_ConnectWithContext_Call {
-	return &MockMessageCodec_ConnectWithContext_Call{Call: _e.mock.On("ConnectWithContext", ctx)}
+func (_e *MockMessageCodec_Expecter) Connect(ctx interface{}) *MockMessageCodec_Connect_Call {
+	return &MockMessageCodec_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
-func (_c *MockMessageCodec_ConnectWithContext_Call) Run(run func(ctx context.Context)) *MockMessageCodec_ConnectWithContext_Call {
+func (_c *MockMessageCodec_Connect_Call) Run(run func(ctx context.Context)) *MockMessageCodec_Connect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -4603,12 +4257,12 @@ func (_c *MockMessageCodec_ConnectWithContext_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockMessageCodec_ConnectWithContext_Call) Return(err error) *MockMessageCodec_ConnectWithContext_Call {
+func (_c *MockMessageCodec_Connect_Call) Return(err error) *MockMessageCodec_Connect_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockMessageCodec_ConnectWithContext_Call) RunAndReturn(run func(ctx context.Context) error) *MockMessageCodec_ConnectWithContext_Call {
+func (_c *MockMessageCodec_Connect_Call) RunAndReturn(run func(ctx context.Context) error) *MockMessageCodec_Connect_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -4858,16 +4512,16 @@ func (_c *MockMessageCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockMe
 }
 
 // Send provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Send(message spi.Message, timeout time.Duration) error {
-	ret := _mock.Called(message, timeout)
+func (_mock *MockMessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
+	ret := _mock.Called(ctx, message, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(spi.Message, time.Duration) error); ok {
-		r0 = returnFunc(message, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, spi.Message, time.Duration) error); ok {
+		r0 = returnFunc(ctx, message, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -4880,25 +4534,31 @@ type MockMessageCodec_Send_Call struct {
 }
 
 // Send is a helper method to define mock.On call
+//   - ctx context.Context
 //   - message spi.Message
 //   - timeout time.Duration
-func (_e *MockMessageCodec_Expecter) Send(message interface{}, timeout interface{}) *MockMessageCodec_Send_Call {
-	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", message, timeout)}
+func (_e *MockMessageCodec_Expecter) Send(ctx interface{}, message interface{}, timeout interface{}) *MockMessageCodec_Send_Call {
+	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", ctx, message, timeout)}
 }
 
-func (_c *MockMessageCodec_Send_Call) Run(run func(message spi.Message, timeout time.Duration)) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) Run(run func(ctx context.Context, message spi.Message, timeout time.Duration)) *MockMessageCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 spi.Message
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].(spi.Message)
+			arg0 = args[0].(context.Context)
 		}
-		var arg1 time.Duration
+		var arg1 spi.Message
 		if args[1] != nil {
-			arg1 = args[1].(time.Duration)
+			arg1 = args[1].(spi.Message)
+		}
+		var arg2 time.Duration
+		if args[2] != nil {
+			arg2 = args[2].(time.Duration)
 		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -4909,7 +4569,7 @@ func (_c *MockMessageCodec_Send_Call) Return(err error) *MockMessageCodec_Send_C
 	return _c
 }
 
-func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(message spi.Message, timeout time.Duration) error) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(ctx context.Context, message spi.Message, timeout time.Duration) error) *MockMessageCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -5289,16 +4949,16 @@ func (_c *MockTransportInstance_Close_Call) RunAndReturn(run func() error) *Mock
 }
 
 // Connect provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) Connect() error {
-	ret := _mock.Called()
+func (_mock *MockTransportInstance) Connect(ctx context.Context) error {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Connect")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func() error); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -5311,56 +4971,12 @@ type MockTransportInstance_Connect_Call struct {
 }
 
 // Connect is a helper method to define mock.On call
-func (_e *MockTransportInstance_Expecter) Connect() *MockTransportInstance_Connect_Call {
-	return &MockTransportInstance_Connect_Call{Call: _e.mock.On("Connect")}
-}
-
-func (_c *MockTransportInstance_Connect_Call) Run(run func()) *MockTransportInstance_Connect_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockTransportInstance_Connect_Call) Return(err error) *MockTransportInstance_Connect_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockTransportInstance_Connect_Call) RunAndReturn(run func() error) *MockTransportInstance_Connect_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ConnectWithContext provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) ConnectWithContext(ctx context.Context) error {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ConnectWithContext")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockTransportInstance_ConnectWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConnectWithContext'
-type MockTransportInstance_ConnectWithContext_Call struct {
-	*mock.Call
-}
-
-// ConnectWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockTransportInstance_Expecter) ConnectWithContext(ctx interface{}) *MockTransportInstance_ConnectWithContext_Call {
-	return &MockTransportInstance_ConnectWithContext_Call{Call: _e.mock.On("ConnectWithContext", ctx)}
+func (_e *MockTransportInstance_Expecter) Connect(ctx interface{}) *MockTransportInstance_Connect_Call {
+	return &MockTransportInstance_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
-func (_c *MockTransportInstance_ConnectWithContext_Call) Run(run func(ctx context.Context)) *MockTransportInstance_ConnectWithContext_Call {
+func (_c *MockTransportInstance_Connect_Call) Run(run func(ctx context.Context)) *MockTransportInstance_Connect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -5373,27 +4989,27 @@ func (_c *MockTransportInstance_ConnectWithContext_Call) Run(run func(ctx contex
 	return _c
 }
 
-func (_c *MockTransportInstance_ConnectWithContext_Call) Return(err error) *MockTransportInstance_ConnectWithContext_Call {
+func (_c *MockTransportInstance_Connect_Call) Return(err error) *MockTransportInstance_Connect_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockTransportInstance_ConnectWithContext_Call) RunAndReturn(run func(ctx context.Context) error) *MockTransportInstance_ConnectWithContext_Call {
+func (_c *MockTransportInstance_Connect_Call) RunAndReturn(run func(ctx context.Context) error) *MockTransportInstance_Connect_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // FillBuffer provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error {
-	ret := _mock.Called(until, timeout)
+func (_mock *MockTransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error {
+	ret := _mock.Called(ctx, until, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FillBuffer")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), time.Duration) error); ok {
-		r0 = returnFunc(until, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), time.Duration) error); ok {
+		r0 = returnFunc(ctx, until, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -5406,25 +5022,31 @@ type MockTransportInstance_FillBuffer_Call struct {
 }
 
 // FillBuffer is a helper method to define mock.On call
+//   - ctx context.Context
 //   - until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)
 //   - timeout time.Duration
-func (_e *MockTransportInstance_Expecter) FillBuffer(until interface{}, timeout interface{}) *MockTransportInstance_FillBuffer_Call {
-	return &MockTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", until, timeout)}
+func (_e *MockTransportInstance_Expecter) FillBuffer(ctx interface{}, until interface{}, timeout interface{}) *MockTransportInstance_FillBuffer_Call {
+	return &MockTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", ctx, until, timeout)}
 }
 
-func (_c *MockTransportInstance_FillBuffer_Call) Run(run func(until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration)) *MockTransportInstance_FillBuffer_Call {
+func (_c *MockTransportInstance_FillBuffer_Call) Run(run func(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration)) *MockTransportInstance_FillBuffer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].(func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool))
+			arg0 = args[0].(context.Context)
 		}
-		var arg1 time.Duration
+		var arg1 func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)
 		if args[1] != nil {
-			arg1 = args[1].(time.Duration)
+			arg1 = args[1].(func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool))
+		}
+		var arg2 time.Duration
+		if args[2] != nil {
+			arg2 = args[2].(time.Duration)
 		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -5435,7 +5057,7 @@ func (_c *MockTransportInstance_FillBuffer_Call) Return(err error) *MockTranspor
 	return _c
 }
 
-func (_c *MockTransportInstance_FillBuffer_Call) RunAndReturn(run func(until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error) *MockTransportInstance_FillBuffer_Call {
+func (_c *MockTransportInstance_FillBuffer_Call) RunAndReturn(run func(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error) *MockTransportInstance_FillBuffer_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -5538,8 +5160,8 @@ func (_c *MockTransportInstance_IsConnected_Call) RunAndReturn(run func() bool) 
 }
 
 // PeekReadableBytes provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) PeekReadableBytes(numBytes uint32, timeout time.Duration) ([]byte, error) {
-	ret := _mock.Called(numBytes, timeout)
+func (_mock *MockTransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
+	ret := _mock.Called(ctx, numBytes, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for PeekReadableBytes")
@@ -5547,18 +5169,18 @@ func (_mock *MockTransportInstance) PeekReadableBytes(numBytes uint32, timeout t
 
 	var r0 []byte
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(uint32, time.Duration) ([]byte, error)); ok {
-		return returnFunc(numBytes, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32, time.Duration) ([]byte, error)); ok {
+		return returnFunc(ctx, numBytes, timeout)
 	}
-	if returnFunc, ok := ret.Get(0).(func(uint32, time.Duration) []byte); ok {
-		r0 = returnFunc(numBytes, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32, time.Duration) []byte); ok {
+		r0 = returnFunc(ctx, numBytes, timeout)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]byte)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(uint32, time.Duration) error); ok {
-		r1 = returnFunc(numBytes, timeout)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uint32, time.Duration) error); ok {
+		r1 = returnFunc(ctx, numBytes, timeout)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -5571,25 +5193,31 @@ type MockTransportInstance_PeekReadableBytes_Call struct {
 }
 
 // PeekReadableBytes is a helper method to define mock.On call
+//   - ctx context.Context
 //   - numBytes uint32
 //   - timeout time.Duration
-func (_e *MockTransportInstance_Expecter) PeekReadableBytes(numBytes interface{}, timeout interface{}) *MockTransportInstance_PeekReadableBytes_Call {
-	return &MockTransportInstance_PeekReadableBytes_Call{Call: _e.mock.On("PeekReadableBytes", numBytes, timeout)}
+func (_e *MockTransportInstance_Expecter) PeekReadableBytes(ctx interface{}, numBytes interface{}, timeout interface{}) *MockTransportInstance_PeekReadableBytes_Call {
+	return &MockTransportInstance_PeekReadableBytes_Call{Call: _e.mock.On("PeekReadableBytes", ctx, numBytes, timeout)}
 }
 
-func (_c *MockTransportInstance_PeekReadableBytes_Call) Run(run func(numBytes uint32, timeout time.Duration)) *MockTransportInstance_PeekReadableBytes_Call {
+func (_c *MockTransportInstance_PeekReadableBytes_Call) Run(run func(ctx context.Context, numBytes uint32, timeout time.Duration)) *MockTransportInstance_PeekReadableBytes_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 uint32
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].(uint32)
+			arg0 = args[0].(context.Context)
 		}
-		var arg1 time.Duration
+		var arg1 uint32
 		if args[1] != nil {
-			arg1 = args[1].(time.Duration)
+			arg1 = args[1].(uint32)
+		}
+		var arg2 time.Duration
+		if args[2] != nil {
+			arg2 = args[2].(time.Duration)
 		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -5600,14 +5228,14 @@ func (_c *MockTransportInstance_PeekReadableBytes_Call) Return(bytes []byte, err
 	return _c
 }
 
-func (_c *MockTransportInstance_PeekReadableBytes_Call) RunAndReturn(run func(numBytes uint32, timeout time.Duration) ([]byte, error)) *MockTransportInstance_PeekReadableBytes_Call {
+func (_c *MockTransportInstance_PeekReadableBytes_Call) RunAndReturn(run func(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error)) *MockTransportInstance_PeekReadableBytes_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Read provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) Read(numBytes uint32, timeout time.Duration) ([]byte, error) {
-	ret := _mock.Called(numBytes, timeout)
+func (_mock *MockTransportInstance) Read(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
+	ret := _mock.Called(ctx, numBytes, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Read")
@@ -5615,18 +5243,18 @@ func (_mock *MockTransportInstance) Read(numBytes uint32, timeout time.Duration)
 
 	var r0 []byte
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(uint32, time.Duration) ([]byte, error)); ok {
-		return returnFunc(numBytes, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32, time.Duration) ([]byte, error)); ok {
+		return returnFunc(ctx, numBytes, timeout)
 	}
-	if returnFunc, ok := ret.Get(0).(func(uint32, time.Duration) []byte); ok {
-		r0 = returnFunc(numBytes, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32, time.Duration) []byte); ok {
+		r0 = returnFunc(ctx, numBytes, timeout)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]byte)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(uint32, time.Duration) error); ok {
-		r1 = returnFunc(numBytes, timeout)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uint32, time.Duration) error); ok {
+		r1 = returnFunc(ctx, numBytes, timeout)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -5639,25 +5267,31 @@ type MockTransportInstance_Read_Call struct {
 }
 
 // Read is a helper method to define mock.On call
+//   - ctx context.Context
 //   - numBytes uint32
 //   - timeout time.Duration
-func (_e *MockTransportInstance_Expecter) Read(numBytes interface{}, timeout interface{}) *MockTransportInstance_Read_Call {
-	return &MockTransportInstance_Read_Call{Call: _e.mock.On("Read", numBytes, timeout)}
+func (_e *MockTransportInstance_Expecter) Read(ctx interface{}, numBytes interface{}, timeout interface{}) *MockTransportInstance_Read_Call {
+	return &MockTransportInstance_Read_Call{Call: _e.mock.On("Read", ctx, numBytes, timeout)}
 }
 
-func (_c *MockTransportInstance_Read_Call) Run(run func(numBytes uint32, timeout time.Duration)) *MockTransportInstance_Read_Call {
+func (_c *MockTransportInstance_Read_Call) Run(run func(ctx context.Context, numBytes uint32, timeout time.Duration)) *MockTransportInstance_Read_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 uint32
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].(uint32)
+			arg0 = args[0].(context.Context)
 		}
-		var arg1 time.Duration
+		var arg1 uint32
 		if args[1] != nil {
-			arg1 = args[1].(time.Duration)
+			arg1 = args[1].(uint32)
+		}
+		var arg2 time.Duration
+		if args[2] != nil {
+			arg2 = args[2].(time.Duration)
 		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -5668,7 +5302,7 @@ func (_c *MockTransportInstance_Read_Call) Return(bytes []byte, err error) *Mock
 	return _c
 }
 
-func (_c *MockTransportInstance_Read_Call) RunAndReturn(run func(numBytes uint32, timeout time.Duration) ([]byte, error)) *MockTransportInstance_Read_Call {
+func (_c *MockTransportInstance_Read_Call) RunAndReturn(run func(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error)) *MockTransportInstance_Read_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -5718,16 +5352,16 @@ func (_c *MockTransportInstance_String_Call) RunAndReturn(run func() string) *Mo
 }
 
 // Write provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) Write(data []byte, timeout time.Duration) error {
-	ret := _mock.Called(data, timeout)
+func (_mock *MockTransportInstance) Write(ctx context.Context, data []byte, timeout time.Duration) error {
+	ret := _mock.Called(ctx, data, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Write")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func([]byte, time.Duration) error); ok {
-		r0 = returnFunc(data, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, []byte, time.Duration) error); ok {
+		r0 = returnFunc(ctx, data, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -5740,25 +5374,31 @@ type MockTransportInstance_Write_Call struct {
 }
 
 // Write is a helper method to define mock.On call
+//   - ctx context.Context
 //   - data []byte
 //   - timeout time.Duration
-func (_e *MockTransportInstance_Expecter) Write(data interface{}, timeout interface{}) *MockTransportInstance_Write_Call {
-	return &MockTransportInstance_Write_Call{Call: _e.mock.On("Write", data, timeout)}
+func (_e *MockTransportInstance_Expecter) Write(ctx interface{}, data interface{}, timeout interface{}) *MockTransportInstance_Write_Call {
+	return &MockTransportInstance_Write_Call{Call: _e.mock.On("Write", ctx, data, timeout)}
 }
 
-func (_c *MockTransportInstance_Write_Call) Run(run func(data []byte, timeout time.Duration)) *MockTransportInstance_Write_Call {
+func (_c *MockTransportInstance_Write_Call) Run(run func(ctx context.Context, data []byte, timeout time.Duration)) *MockTransportInstance_Write_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 []byte
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].([]byte)
+			arg0 = args[0].(context.Context)
 		}
-		var arg1 time.Duration
+		var arg1 []byte
 		if args[1] != nil {
-			arg1 = args[1].(time.Duration)
+			arg1 = args[1].([]byte)
+		}
+		var arg2 time.Duration
+		if args[2] != nil {
+			arg2 = args[2].(time.Duration)
 		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -5769,7 +5409,7 @@ func (_c *MockTransportInstance_Write_Call) Return(err error) *MockTransportInst
 	return _c
 }
 
-func (_c *MockTransportInstance_Write_Call) RunAndReturn(run func(data []byte, timeout time.Duration) error) *MockTransportInstance_Write_Call {
+func (_c *MockTransportInstance_Write_Call) RunAndReturn(run func(ctx context.Context, data []byte, timeout time.Duration) error) *MockTransportInstance_Write_Call {
 	_c.Call.Return(run)
 	return _c
 }

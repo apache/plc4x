@@ -55,7 +55,7 @@ func NewModbusTcpDriver(_options ...options.WithOption) *TcpDriver {
 	return driver
 }
 
-func (d *TcpDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (d *TcpDriver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	d.log.Debug().
 		Stringer("transportUrl", &transportUrl).
 		Int("nTransports", len(transports)).
@@ -134,5 +134,5 @@ func (d *TcpDriver) GetConnectionWithContext(ctx context.Context, transportUrl u
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	d.log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
-	return connection.ConnectWithContext(ctx)
+	return connection.Connect(ctx)
 }

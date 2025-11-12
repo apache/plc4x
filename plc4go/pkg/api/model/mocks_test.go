@@ -448,16 +448,16 @@ func (_m *MockPlcBrowseRequest) EXPECT() *MockPlcBrowseRequest_Expecter {
 }
 
 // Execute provides a mock function for the type MockPlcBrowseRequest
-func (_mock *MockPlcBrowseRequest) Execute() <-chan PlcBrowseRequestResult {
-	ret := _mock.Called()
+func (_mock *MockPlcBrowseRequest) Execute(ctx context.Context) <-chan PlcBrowseRequestResult {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Execute")
 	}
 
 	var r0 <-chan PlcBrowseRequestResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan PlcBrowseRequestResult); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcBrowseRequestResult); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcBrowseRequestResult)
@@ -472,58 +472,12 @@ type MockPlcBrowseRequest_Execute_Call struct {
 }
 
 // Execute is a helper method to define mock.On call
-func (_e *MockPlcBrowseRequest_Expecter) Execute() *MockPlcBrowseRequest_Execute_Call {
-	return &MockPlcBrowseRequest_Execute_Call{Call: _e.mock.On("Execute")}
-}
-
-func (_c *MockPlcBrowseRequest_Execute_Call) Run(run func()) *MockPlcBrowseRequest_Execute_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcBrowseRequest_Execute_Call) Return(plcBrowseRequestResultCh <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_Execute_Call {
-	_c.Call.Return(plcBrowseRequestResultCh)
-	return _c
-}
-
-func (_c *MockPlcBrowseRequest_Execute_Call) RunAndReturn(run func() <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_Execute_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ExecuteWithContext provides a mock function for the type MockPlcBrowseRequest
-func (_mock *MockPlcBrowseRequest) ExecuteWithContext(ctx context.Context) <-chan PlcBrowseRequestResult {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ExecuteWithContext")
-	}
-
-	var r0 <-chan PlcBrowseRequestResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcBrowseRequestResult); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan PlcBrowseRequestResult)
-		}
-	}
-	return r0
-}
-
-// MockPlcBrowseRequest_ExecuteWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExecuteWithContext'
-type MockPlcBrowseRequest_ExecuteWithContext_Call struct {
-	*mock.Call
-}
-
-// ExecuteWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcBrowseRequest_Expecter) ExecuteWithContext(ctx interface{}) *MockPlcBrowseRequest_ExecuteWithContext_Call {
-	return &MockPlcBrowseRequest_ExecuteWithContext_Call{Call: _e.mock.On("ExecuteWithContext", ctx)}
+func (_e *MockPlcBrowseRequest_Expecter) Execute(ctx interface{}) *MockPlcBrowseRequest_Execute_Call {
+	return &MockPlcBrowseRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
-func (_c *MockPlcBrowseRequest_ExecuteWithContext_Call) Run(run func(ctx context.Context)) *MockPlcBrowseRequest_ExecuteWithContext_Call {
+func (_c *MockPlcBrowseRequest_Execute_Call) Run(run func(ctx context.Context)) *MockPlcBrowseRequest_Execute_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -536,27 +490,27 @@ func (_c *MockPlcBrowseRequest_ExecuteWithContext_Call) Run(run func(ctx context
 	return _c
 }
 
-func (_c *MockPlcBrowseRequest_ExecuteWithContext_Call) Return(plcBrowseRequestResultCh <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_ExecuteWithContext_Call {
+func (_c *MockPlcBrowseRequest_Execute_Call) Return(plcBrowseRequestResultCh <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_Execute_Call {
 	_c.Call.Return(plcBrowseRequestResultCh)
 	return _c
 }
 
-func (_c *MockPlcBrowseRequest_ExecuteWithContext_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_ExecuteWithContext_Call {
+func (_c *MockPlcBrowseRequest_Execute_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_Execute_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ExecuteWithInterceptor provides a mock function for the type MockPlcBrowseRequest
-func (_mock *MockPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult {
-	ret := _mock.Called(interceptor)
+func (_mock *MockPlcBrowseRequest) ExecuteWithInterceptor(ctx context.Context, interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult {
+	ret := _mock.Called(ctx, interceptor)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ExecuteWithInterceptor")
 	}
 
 	var r0 <-chan PlcBrowseRequestResult
-	if returnFunc, ok := ret.Get(0).(func(func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult); ok {
-		r0 = returnFunc(interceptor)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult); ok {
+		r0 = returnFunc(ctx, interceptor)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcBrowseRequestResult)
@@ -571,66 +525,13 @@ type MockPlcBrowseRequest_ExecuteWithInterceptor_Call struct {
 }
 
 // ExecuteWithInterceptor is a helper method to define mock.On call
-//   - interceptor func(result PlcBrowseItem) bool
-func (_e *MockPlcBrowseRequest_Expecter) ExecuteWithInterceptor(interceptor interface{}) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
-	return &MockPlcBrowseRequest_ExecuteWithInterceptor_Call{Call: _e.mock.On("ExecuteWithInterceptor", interceptor)}
-}
-
-func (_c *MockPlcBrowseRequest_ExecuteWithInterceptor_Call) Run(run func(interceptor func(result PlcBrowseItem) bool)) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 func(result PlcBrowseItem) bool
-		if args[0] != nil {
-			arg0 = args[0].(func(result PlcBrowseItem) bool)
-		}
-		run(
-			arg0,
-		)
-	})
-	return _c
-}
-
-func (_c *MockPlcBrowseRequest_ExecuteWithInterceptor_Call) Return(plcBrowseRequestResultCh <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
-	_c.Call.Return(plcBrowseRequestResultCh)
-	return _c
-}
-
-func (_c *MockPlcBrowseRequest_ExecuteWithInterceptor_Call) RunAndReturn(run func(interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ExecuteWithInterceptorWithContext provides a mock function for the type MockPlcBrowseRequest
-func (_mock *MockPlcBrowseRequest) ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult {
-	ret := _mock.Called(ctx, interceptor)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ExecuteWithInterceptorWithContext")
-	}
-
-	var r0 <-chan PlcBrowseRequestResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context, func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult); ok {
-		r0 = returnFunc(ctx, interceptor)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan PlcBrowseRequestResult)
-		}
-	}
-	return r0
-}
-
-// MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExecuteWithInterceptorWithContext'
-type MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call struct {
-	*mock.Call
-}
-
-// ExecuteWithInterceptorWithContext is a helper method to define mock.On call
 //   - ctx context.Context
 //   - interceptor func(result PlcBrowseItem) bool
-func (_e *MockPlcBrowseRequest_Expecter) ExecuteWithInterceptorWithContext(ctx interface{}, interceptor interface{}) *MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call {
-	return &MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call{Call: _e.mock.On("ExecuteWithInterceptorWithContext", ctx, interceptor)}
+func (_e *MockPlcBrowseRequest_Expecter) ExecuteWithInterceptor(ctx interface{}, interceptor interface{}) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
+	return &MockPlcBrowseRequest_ExecuteWithInterceptor_Call{Call: _e.mock.On("ExecuteWithInterceptor", ctx, interceptor)}
 }
 
-func (_c *MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call) Run(run func(ctx context.Context, interceptor func(result PlcBrowseItem) bool)) *MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call {
+func (_c *MockPlcBrowseRequest_ExecuteWithInterceptor_Call) Run(run func(ctx context.Context, interceptor func(result PlcBrowseItem) bool)) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -648,12 +549,12 @@ func (_c *MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call) Run(run f
 	return _c
 }
 
-func (_c *MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call) Return(plcBrowseRequestResultCh <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call {
+func (_c *MockPlcBrowseRequest_ExecuteWithInterceptor_Call) Return(plcBrowseRequestResultCh <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
 	_c.Call.Return(plcBrowseRequestResultCh)
 	return _c
 }
 
-func (_c *MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call) RunAndReturn(run func(ctx context.Context, interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_ExecuteWithInterceptorWithContext_Call {
+func (_c *MockPlcBrowseRequest_ExecuteWithInterceptor_Call) RunAndReturn(run func(ctx context.Context, interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult) *MockPlcBrowseRequest_ExecuteWithInterceptor_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -3089,16 +2990,16 @@ func (_m *MockPlcReadRequest) EXPECT() *MockPlcReadRequest_Expecter {
 }
 
 // Execute provides a mock function for the type MockPlcReadRequest
-func (_mock *MockPlcReadRequest) Execute() <-chan PlcReadRequestResult {
-	ret := _mock.Called()
+func (_mock *MockPlcReadRequest) Execute(ctx context.Context) <-chan PlcReadRequestResult {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Execute")
 	}
 
 	var r0 <-chan PlcReadRequestResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan PlcReadRequestResult); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcReadRequestResult); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcReadRequestResult)
@@ -3113,58 +3014,12 @@ type MockPlcReadRequest_Execute_Call struct {
 }
 
 // Execute is a helper method to define mock.On call
-func (_e *MockPlcReadRequest_Expecter) Execute() *MockPlcReadRequest_Execute_Call {
-	return &MockPlcReadRequest_Execute_Call{Call: _e.mock.On("Execute")}
-}
-
-func (_c *MockPlcReadRequest_Execute_Call) Run(run func()) *MockPlcReadRequest_Execute_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcReadRequest_Execute_Call) Return(plcReadRequestResultCh <-chan PlcReadRequestResult) *MockPlcReadRequest_Execute_Call {
-	_c.Call.Return(plcReadRequestResultCh)
-	return _c
-}
-
-func (_c *MockPlcReadRequest_Execute_Call) RunAndReturn(run func() <-chan PlcReadRequestResult) *MockPlcReadRequest_Execute_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ExecuteWithContext provides a mock function for the type MockPlcReadRequest
-func (_mock *MockPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan PlcReadRequestResult {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ExecuteWithContext")
-	}
-
-	var r0 <-chan PlcReadRequestResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcReadRequestResult); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan PlcReadRequestResult)
-		}
-	}
-	return r0
-}
-
-// MockPlcReadRequest_ExecuteWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExecuteWithContext'
-type MockPlcReadRequest_ExecuteWithContext_Call struct {
-	*mock.Call
-}
-
-// ExecuteWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcReadRequest_Expecter) ExecuteWithContext(ctx interface{}) *MockPlcReadRequest_ExecuteWithContext_Call {
-	return &MockPlcReadRequest_ExecuteWithContext_Call{Call: _e.mock.On("ExecuteWithContext", ctx)}
+func (_e *MockPlcReadRequest_Expecter) Execute(ctx interface{}) *MockPlcReadRequest_Execute_Call {
+	return &MockPlcReadRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
-func (_c *MockPlcReadRequest_ExecuteWithContext_Call) Run(run func(ctx context.Context)) *MockPlcReadRequest_ExecuteWithContext_Call {
+func (_c *MockPlcReadRequest_Execute_Call) Run(run func(ctx context.Context)) *MockPlcReadRequest_Execute_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -3177,12 +3032,12 @@ func (_c *MockPlcReadRequest_ExecuteWithContext_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockPlcReadRequest_ExecuteWithContext_Call) Return(plcReadRequestResultCh <-chan PlcReadRequestResult) *MockPlcReadRequest_ExecuteWithContext_Call {
+func (_c *MockPlcReadRequest_Execute_Call) Return(plcReadRequestResultCh <-chan PlcReadRequestResult) *MockPlcReadRequest_Execute_Call {
 	_c.Call.Return(plcReadRequestResultCh)
 	return _c
 }
 
-func (_c *MockPlcReadRequest_ExecuteWithContext_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcReadRequestResult) *MockPlcReadRequest_ExecuteWithContext_Call {
+func (_c *MockPlcReadRequest_Execute_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcReadRequestResult) *MockPlcReadRequest_Execute_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -4980,16 +4835,16 @@ func (_m *MockPlcSubscriptionRequest) EXPECT() *MockPlcSubscriptionRequest_Expec
 }
 
 // Execute provides a mock function for the type MockPlcSubscriptionRequest
-func (_mock *MockPlcSubscriptionRequest) Execute() <-chan PlcSubscriptionRequestResult {
-	ret := _mock.Called()
+func (_mock *MockPlcSubscriptionRequest) Execute(ctx context.Context) <-chan PlcSubscriptionRequestResult {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Execute")
 	}
 
 	var r0 <-chan PlcSubscriptionRequestResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan PlcSubscriptionRequestResult); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcSubscriptionRequestResult); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcSubscriptionRequestResult)
@@ -5004,58 +4859,12 @@ type MockPlcSubscriptionRequest_Execute_Call struct {
 }
 
 // Execute is a helper method to define mock.On call
-func (_e *MockPlcSubscriptionRequest_Expecter) Execute() *MockPlcSubscriptionRequest_Execute_Call {
-	return &MockPlcSubscriptionRequest_Execute_Call{Call: _e.mock.On("Execute")}
-}
-
-func (_c *MockPlcSubscriptionRequest_Execute_Call) Run(run func()) *MockPlcSubscriptionRequest_Execute_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcSubscriptionRequest_Execute_Call) Return(plcSubscriptionRequestResultCh <-chan PlcSubscriptionRequestResult) *MockPlcSubscriptionRequest_Execute_Call {
-	_c.Call.Return(plcSubscriptionRequestResultCh)
-	return _c
-}
-
-func (_c *MockPlcSubscriptionRequest_Execute_Call) RunAndReturn(run func() <-chan PlcSubscriptionRequestResult) *MockPlcSubscriptionRequest_Execute_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ExecuteWithContext provides a mock function for the type MockPlcSubscriptionRequest
-func (_mock *MockPlcSubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan PlcSubscriptionRequestResult {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ExecuteWithContext")
-	}
-
-	var r0 <-chan PlcSubscriptionRequestResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcSubscriptionRequestResult); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan PlcSubscriptionRequestResult)
-		}
-	}
-	return r0
-}
-
-// MockPlcSubscriptionRequest_ExecuteWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExecuteWithContext'
-type MockPlcSubscriptionRequest_ExecuteWithContext_Call struct {
-	*mock.Call
-}
-
-// ExecuteWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcSubscriptionRequest_Expecter) ExecuteWithContext(ctx interface{}) *MockPlcSubscriptionRequest_ExecuteWithContext_Call {
-	return &MockPlcSubscriptionRequest_ExecuteWithContext_Call{Call: _e.mock.On("ExecuteWithContext", ctx)}
+func (_e *MockPlcSubscriptionRequest_Expecter) Execute(ctx interface{}) *MockPlcSubscriptionRequest_Execute_Call {
+	return &MockPlcSubscriptionRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
-func (_c *MockPlcSubscriptionRequest_ExecuteWithContext_Call) Run(run func(ctx context.Context)) *MockPlcSubscriptionRequest_ExecuteWithContext_Call {
+func (_c *MockPlcSubscriptionRequest_Execute_Call) Run(run func(ctx context.Context)) *MockPlcSubscriptionRequest_Execute_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -5068,12 +4877,12 @@ func (_c *MockPlcSubscriptionRequest_ExecuteWithContext_Call) Run(run func(ctx c
 	return _c
 }
 
-func (_c *MockPlcSubscriptionRequest_ExecuteWithContext_Call) Return(plcSubscriptionRequestResultCh <-chan PlcSubscriptionRequestResult) *MockPlcSubscriptionRequest_ExecuteWithContext_Call {
+func (_c *MockPlcSubscriptionRequest_Execute_Call) Return(plcSubscriptionRequestResultCh <-chan PlcSubscriptionRequestResult) *MockPlcSubscriptionRequest_Execute_Call {
 	_c.Call.Return(plcSubscriptionRequestResultCh)
 	return _c
 }
 
-func (_c *MockPlcSubscriptionRequest_ExecuteWithContext_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcSubscriptionRequestResult) *MockPlcSubscriptionRequest_ExecuteWithContext_Call {
+func (_c *MockPlcSubscriptionRequest_Execute_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcSubscriptionRequestResult) *MockPlcSubscriptionRequest_Execute_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -6782,16 +6591,16 @@ func (_m *MockPlcUnsubscriptionRequest) EXPECT() *MockPlcUnsubscriptionRequest_E
 }
 
 // Execute provides a mock function for the type MockPlcUnsubscriptionRequest
-func (_mock *MockPlcUnsubscriptionRequest) Execute() <-chan PlcUnsubscriptionRequestResult {
-	ret := _mock.Called()
+func (_mock *MockPlcUnsubscriptionRequest) Execute(ctx context.Context) <-chan PlcUnsubscriptionRequestResult {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Execute")
 	}
 
 	var r0 <-chan PlcUnsubscriptionRequestResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan PlcUnsubscriptionRequestResult); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcUnsubscriptionRequestResult); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcUnsubscriptionRequestResult)
@@ -6806,58 +6615,12 @@ type MockPlcUnsubscriptionRequest_Execute_Call struct {
 }
 
 // Execute is a helper method to define mock.On call
-func (_e *MockPlcUnsubscriptionRequest_Expecter) Execute() *MockPlcUnsubscriptionRequest_Execute_Call {
-	return &MockPlcUnsubscriptionRequest_Execute_Call{Call: _e.mock.On("Execute")}
-}
-
-func (_c *MockPlcUnsubscriptionRequest_Execute_Call) Run(run func()) *MockPlcUnsubscriptionRequest_Execute_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcUnsubscriptionRequest_Execute_Call) Return(plcUnsubscriptionRequestResultCh <-chan PlcUnsubscriptionRequestResult) *MockPlcUnsubscriptionRequest_Execute_Call {
-	_c.Call.Return(plcUnsubscriptionRequestResultCh)
-	return _c
-}
-
-func (_c *MockPlcUnsubscriptionRequest_Execute_Call) RunAndReturn(run func() <-chan PlcUnsubscriptionRequestResult) *MockPlcUnsubscriptionRequest_Execute_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ExecuteWithContext provides a mock function for the type MockPlcUnsubscriptionRequest
-func (_mock *MockPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan PlcUnsubscriptionRequestResult {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ExecuteWithContext")
-	}
-
-	var r0 <-chan PlcUnsubscriptionRequestResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcUnsubscriptionRequestResult); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan PlcUnsubscriptionRequestResult)
-		}
-	}
-	return r0
-}
-
-// MockPlcUnsubscriptionRequest_ExecuteWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExecuteWithContext'
-type MockPlcUnsubscriptionRequest_ExecuteWithContext_Call struct {
-	*mock.Call
-}
-
-// ExecuteWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcUnsubscriptionRequest_Expecter) ExecuteWithContext(ctx interface{}) *MockPlcUnsubscriptionRequest_ExecuteWithContext_Call {
-	return &MockPlcUnsubscriptionRequest_ExecuteWithContext_Call{Call: _e.mock.On("ExecuteWithContext", ctx)}
+func (_e *MockPlcUnsubscriptionRequest_Expecter) Execute(ctx interface{}) *MockPlcUnsubscriptionRequest_Execute_Call {
+	return &MockPlcUnsubscriptionRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
-func (_c *MockPlcUnsubscriptionRequest_ExecuteWithContext_Call) Run(run func(ctx context.Context)) *MockPlcUnsubscriptionRequest_ExecuteWithContext_Call {
+func (_c *MockPlcUnsubscriptionRequest_Execute_Call) Run(run func(ctx context.Context)) *MockPlcUnsubscriptionRequest_Execute_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -6870,12 +6633,12 @@ func (_c *MockPlcUnsubscriptionRequest_ExecuteWithContext_Call) Run(run func(ctx
 	return _c
 }
 
-func (_c *MockPlcUnsubscriptionRequest_ExecuteWithContext_Call) Return(plcUnsubscriptionRequestResultCh <-chan PlcUnsubscriptionRequestResult) *MockPlcUnsubscriptionRequest_ExecuteWithContext_Call {
+func (_c *MockPlcUnsubscriptionRequest_Execute_Call) Return(plcUnsubscriptionRequestResultCh <-chan PlcUnsubscriptionRequestResult) *MockPlcUnsubscriptionRequest_Execute_Call {
 	_c.Call.Return(plcUnsubscriptionRequestResultCh)
 	return _c
 }
 
-func (_c *MockPlcUnsubscriptionRequest_ExecuteWithContext_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcUnsubscriptionRequestResult) *MockPlcUnsubscriptionRequest_ExecuteWithContext_Call {
+func (_c *MockPlcUnsubscriptionRequest_Execute_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcUnsubscriptionRequestResult) *MockPlcUnsubscriptionRequest_Execute_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -7576,16 +7339,16 @@ func (_m *MockPlcWriteRequest) EXPECT() *MockPlcWriteRequest_Expecter {
 }
 
 // Execute provides a mock function for the type MockPlcWriteRequest
-func (_mock *MockPlcWriteRequest) Execute() <-chan PlcWriteRequestResult {
-	ret := _mock.Called()
+func (_mock *MockPlcWriteRequest) Execute(ctx context.Context) <-chan PlcWriteRequestResult {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Execute")
 	}
 
 	var r0 <-chan PlcWriteRequestResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan PlcWriteRequestResult); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcWriteRequestResult); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(<-chan PlcWriteRequestResult)
@@ -7600,58 +7363,12 @@ type MockPlcWriteRequest_Execute_Call struct {
 }
 
 // Execute is a helper method to define mock.On call
-func (_e *MockPlcWriteRequest_Expecter) Execute() *MockPlcWriteRequest_Execute_Call {
-	return &MockPlcWriteRequest_Execute_Call{Call: _e.mock.On("Execute")}
-}
-
-func (_c *MockPlcWriteRequest_Execute_Call) Run(run func()) *MockPlcWriteRequest_Execute_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcWriteRequest_Execute_Call) Return(plcWriteRequestResultCh <-chan PlcWriteRequestResult) *MockPlcWriteRequest_Execute_Call {
-	_c.Call.Return(plcWriteRequestResultCh)
-	return _c
-}
-
-func (_c *MockPlcWriteRequest_Execute_Call) RunAndReturn(run func() <-chan PlcWriteRequestResult) *MockPlcWriteRequest_Execute_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ExecuteWithContext provides a mock function for the type MockPlcWriteRequest
-func (_mock *MockPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan PlcWriteRequestResult {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ExecuteWithContext")
-	}
-
-	var r0 <-chan PlcWriteRequestResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan PlcWriteRequestResult); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan PlcWriteRequestResult)
-		}
-	}
-	return r0
-}
-
-// MockPlcWriteRequest_ExecuteWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExecuteWithContext'
-type MockPlcWriteRequest_ExecuteWithContext_Call struct {
-	*mock.Call
-}
-
-// ExecuteWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockPlcWriteRequest_Expecter) ExecuteWithContext(ctx interface{}) *MockPlcWriteRequest_ExecuteWithContext_Call {
-	return &MockPlcWriteRequest_ExecuteWithContext_Call{Call: _e.mock.On("ExecuteWithContext", ctx)}
+func (_e *MockPlcWriteRequest_Expecter) Execute(ctx interface{}) *MockPlcWriteRequest_Execute_Call {
+	return &MockPlcWriteRequest_Execute_Call{Call: _e.mock.On("Execute", ctx)}
 }
 
-func (_c *MockPlcWriteRequest_ExecuteWithContext_Call) Run(run func(ctx context.Context)) *MockPlcWriteRequest_ExecuteWithContext_Call {
+func (_c *MockPlcWriteRequest_Execute_Call) Run(run func(ctx context.Context)) *MockPlcWriteRequest_Execute_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -7664,12 +7381,12 @@ func (_c *MockPlcWriteRequest_ExecuteWithContext_Call) Run(run func(ctx context.
 	return _c
 }
 
-func (_c *MockPlcWriteRequest_ExecuteWithContext_Call) Return(plcWriteRequestResultCh <-chan PlcWriteRequestResult) *MockPlcWriteRequest_ExecuteWithContext_Call {
+func (_c *MockPlcWriteRequest_Execute_Call) Return(plcWriteRequestResultCh <-chan PlcWriteRequestResult) *MockPlcWriteRequest_Execute_Call {
 	_c.Call.Return(plcWriteRequestResultCh)
 	return _c
 }
 
-func (_c *MockPlcWriteRequest_ExecuteWithContext_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcWriteRequestResult) *MockPlcWriteRequest_ExecuteWithContext_Call {
+func (_c *MockPlcWriteRequest_Execute_Call) RunAndReturn(run func(ctx context.Context) <-chan PlcWriteRequestResult) *MockPlcWriteRequest_Execute_Call {
 	_c.Call.Return(run)
 	return _c
 }

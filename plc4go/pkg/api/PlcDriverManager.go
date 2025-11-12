@@ -47,12 +47,10 @@ type PlcDriverManager interface {
 	GetDriver(driverName string) (PlcDriver, error)
 
 	// GetConnection Get a connection to a remote PLC for a given plc4x connection-string
-	GetConnection(connectionString string) <-chan PlcConnectionConnectResult
+	GetConnection(ctx context.Context, connectionString string) <-chan PlcConnectionConnectResult
 
 	// Discover Execute all available discovery methods on all available drivers using all transports
-	Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error
-	// DiscoverWithContext Execute all available discovery methods on all available drivers using all transports
-	DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error
+	Discover(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error
 }
 
 func NewPlcDriverManager(_options ...config.WithOption) PlcDriverManager {
@@ -192,7 +190,7 @@ func (m *plcDriverManger) GetTransport(transportName string, _ string, _ map[str
 	return nil, errors.Errorf("couldn't find transport %s", transportName)
 }
 
-func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
+func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString string) <-chan PlcConnectionConnectResult {
 	m.log.Debug().Str("connectionString", connectionString).Msg("Getting connection for connectionString")
 	// Parse the connection string.
 	connectionUrl, err := url.Parse(connectionString)
@@ -263,14 +261,10 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	m.log.Debug().Stringer("transportUrl", &transportUrl).Msg("Assembled transport url")
 
 	// Create a new connection
-	return driver.GetConnection(transportUrl, m.transports, configOptions)
+	return driver.GetConnection(ctx, transportUrl, m.transports, configOptions)
 }
 
-func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error {
-	return m.DiscoverWithContext(context.TODO(), callback, discoveryOptions...)
-}
-
-func (m *plcDriverManger) DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error {
+func (m *plcDriverManger) Discover(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error {
 	// Check if we've got at least one option to restrict to certain protocols only.
 	// If there is at least one, we only check that protocol, if there are none, all
 	// available protocols are checked.
@@ -290,7 +284,7 @@ func (m *plcDriverManger) DiscoverWithContext(ctx context.Context, callback func
 	// Execute discovery on all selected drivers
 	for _, driver := range discoveryDrivers {
 		if driver.SupportsDiscovery() {
-			err := driver.DiscoverWithContext(ctx, callback, internalOptions...)
+			err := driver.Discover(ctx, callback, internalOptions...)
 			if err != nil {
 				return errors.Wrapf(err, "Error running Discover on driver %s", driver.GetProtocolName())
 			}

@@ -94,6 +94,7 @@ type TestTransportInstance interface {
 }
 
 func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager, testcase DriverTestcase) error {
+	ctx := t.Context()
 	var driverParameters []string
 	for key, value := range m.driverParameters {
 		driverParameters = append(driverParameters, fmt.Sprintf("%s=%s", key, value))
@@ -104,7 +105,7 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 	}
 	// Get a connection
 	t.Log("getting a connection")
-	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz" + optionsString)
+	connectionChan := driverManager.GetConnection(ctx, m.driverName+":test://hurz"+optionsString)
 	timer := time.NewTimer(DriverTestsuiteConnectTimeout)
 	var connectionResult plc4go.PlcConnectionConnectResult
 	select {
@@ -214,7 +215,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			if testcase.readRequestResultChannel != nil {
 				return errors.New("testcase read-request result channel already occupied")
 			}
-			testcase.readRequestResultChannel = readRequest.Execute()
+			testcase.readRequestResultChannel = readRequest.Execute(ctx)
 			t.Log("request executed")
 		case "TestWriteRequest":
 			t.Log("Assemble write request")
@@ -250,7 +251,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			if testcase.writeRequestResultChannel != nil {
 				return errors.New("testcase write-request result channel already occupied")
 			}
-			testcase.writeRequestResultChannel = writeRequest.Execute()
+			testcase.writeRequestResultChannel = writeRequest.Execute(ctx)
 			t.Log("request executed")
 		}
 	case StepTypeApiResponse:

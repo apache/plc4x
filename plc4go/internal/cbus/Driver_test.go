@@ -36,7 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 )
 
-func TestDriver_GetConnectionWithContext(t *testing.T) {
+func TestDriver_GetConnection(t *testing.T) {
 	type fields struct {
 		DefaultDriver           _default.DefaultDriver
 		tm                      transactions.RequestTransactionManager
@@ -204,7 +204,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitSetupComplete:      tt.fields.awaitSetupComplete,
 				awaitDisconnectComplete: tt.fields.awaitDisconnectComplete,
 			}
-			assert.Truef(t, tt.wantVerifier(t, m.GetConnectionWithContext(tt.args.ctx, tt.args.transportUrl, tt.args.transports, tt.args.options)), "GetConnectionWithContext(%v, %v, %v, %v)", tt.args.ctx, tt.args.transportUrl, tt.args.transports, tt.args.options)
+			assert.Truef(t, tt.wantVerifier(t, m.GetConnection(tt.args.ctx, tt.args.transportUrl, tt.args.transports, tt.args.options)), "GetConnection(%v, %v, %v, %v)", tt.args.ctx, tt.args.transportUrl, tt.args.transports, tt.args.options)
 		})
 	}
 }

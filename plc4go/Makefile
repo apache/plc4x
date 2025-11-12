@@ -92,7 +92,12 @@ go-clean:
 	@echo "  >  Cleaning build cache"
 	$(MVNBIN) clean
 
-go-fmt:
+go-imports:
+	@echo "  > adjusting imports"
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool goimports-reviser -excludes .idea,.git ./...
+
+go-fmt: go-imports
+	@echo "  > formatting files"
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go fmt ./...
 
 .PHONY: help

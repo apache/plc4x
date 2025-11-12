@@ -144,11 +144,7 @@ func NewDefaultPlcSubscriptionRequest(subscriber spi.PlcSubscriber, tagNames []s
 	return &DefaultPlcSubscriptionRequest{NewDefaultPlcTagRequest(_tags, tagNames), types, intervals, preRegisteredConsumers, subscriber}
 }
 
-func (d *DefaultPlcSubscriptionRequest) Execute() <-chan apiModel.PlcSubscriptionRequestResult {
-	return d.ExecuteWithContext(context.Background())
-}
-
-func (d *DefaultPlcSubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcSubscriptionRequestResult {
+func (d *DefaultPlcSubscriptionRequest) Execute(ctx context.Context) <-chan apiModel.PlcSubscriptionRequestResult {
 	return d.subscriber.Subscribe(ctx, d)
 }
 

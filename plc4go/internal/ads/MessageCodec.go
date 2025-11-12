@@ -56,7 +56,7 @@ func NewMessageCodec(transportInstance transports.TransportInstance, _options ..
 				// This just prevents the loop from aborting in the start and by returning false,
 				// it makes the message go to the default channel, as this means:
 				// The handler hasn't handled the message
-				func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
+				func(ctx context.Context, codec _default.DefaultCodecRequirements, message spi.Message) bool {
 					return false
 				}),
 		)...,
@@ -135,7 +135,7 @@ func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.
 			}
 			timeout -= time.Since(start)
 		}
-		data, err = transportInstance.Read(packetSize, timeout)
+		data, err = transportInstance.Read(ctx, packetSize, timeout)
 		if err != nil {
 			// TODO: Possibly clean up ...
 			return nil, nil

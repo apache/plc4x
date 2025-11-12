@@ -230,11 +230,7 @@ func (m *Connection) GetTracer() tracer.Tracer {
 	return m.tracer
 }
 
-func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	return m.ConnectWithContext(context.Background())
-}
-
-func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	result := make(chan plc4go.PlcConnectionConnectResult, 1)
 	sendResult := func(connection plc4go.PlcConnection, err error) {
 		result <- _default.NewDefaultPlcConnectionConnectResult(connection, err)
@@ -247,7 +243,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 			}
 		}()
 		// Open the UDP Connection
-		err := m.messageCodec.ConnectWithContext(ctx)
+		err := m.messageCodec.Connect(ctx)
 		if err != nil {
 			m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error opening connection")) })
 			return

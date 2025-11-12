@@ -110,7 +110,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
-func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	c.wg.Go(func() {
@@ -120,7 +120,7 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 			}
 		}()
 		c.log.Trace().Msg("connecting codec")
-		if err := c.messageCodec.ConnectWithContext(ctx); err != nil {
+		if err := c.messageCodec.Connect(ctx); err != nil {
 			c.fireConnectionError(errors.Wrap(err, "Error connecting codec"), ch)
 			return
 		}

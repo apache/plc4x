@@ -56,7 +56,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -82,7 +82,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 	}
 
 	// The first and second connection should work fine
-	connectionResults = cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100")
+	connectionResults = cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -131,7 +131,7 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -180,7 +180,7 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -229,7 +229,7 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -244,7 +244,7 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 							t.Errorf("The code did not panic")
 						}
 					}()
-					connection.Connect()
+					connection.Connect(t.Context())
 				}()
 			}
 		}
@@ -276,7 +276,7 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -324,7 +324,7 @@ func TestLeasedPlcConnection_Close(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -372,7 +372,7 @@ func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -412,7 +412,7 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -461,7 +461,7 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -514,7 +514,7 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -564,7 +564,7 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -614,7 +614,7 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -664,7 +664,7 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {
@@ -722,7 +722,7 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t, connectionResult) {

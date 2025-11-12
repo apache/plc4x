@@ -1354,16 +1354,16 @@ func (_m *MockMessageCodec) EXPECT() *MockMessageCodec_Expecter {
 }
 
 // Connect provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Connect() error {
-	ret := _mock.Called()
+func (_mock *MockMessageCodec) Connect(ctx context.Context) error {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Connect")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func() error); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1376,56 +1376,12 @@ type MockMessageCodec_Connect_Call struct {
 }
 
 // Connect is a helper method to define mock.On call
-func (_e *MockMessageCodec_Expecter) Connect() *MockMessageCodec_Connect_Call {
-	return &MockMessageCodec_Connect_Call{Call: _e.mock.On("Connect")}
-}
-
-func (_c *MockMessageCodec_Connect_Call) Run(run func()) *MockMessageCodec_Connect_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockMessageCodec_Connect_Call) Return(err error) *MockMessageCodec_Connect_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockMessageCodec_Connect_Call) RunAndReturn(run func() error) *MockMessageCodec_Connect_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ConnectWithContext provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) ConnectWithContext(ctx context.Context) error {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ConnectWithContext")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockMessageCodec_ConnectWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConnectWithContext'
-type MockMessageCodec_ConnectWithContext_Call struct {
-	*mock.Call
-}
-
-// ConnectWithContext is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockMessageCodec_Expecter) ConnectWithContext(ctx interface{}) *MockMessageCodec_ConnectWithContext_Call {
-	return &MockMessageCodec_ConnectWithContext_Call{Call: _e.mock.On("ConnectWithContext", ctx)}
+func (_e *MockMessageCodec_Expecter) Connect(ctx interface{}) *MockMessageCodec_Connect_Call {
+	return &MockMessageCodec_Connect_Call{Call: _e.mock.On("Connect", ctx)}
 }
 
-func (_c *MockMessageCodec_ConnectWithContext_Call) Run(run func(ctx context.Context)) *MockMessageCodec_ConnectWithContext_Call {
+func (_c *MockMessageCodec_Connect_Call) Run(run func(ctx context.Context)) *MockMessageCodec_Connect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -1438,12 +1394,12 @@ func (_c *MockMessageCodec_ConnectWithContext_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockMessageCodec_ConnectWithContext_Call) Return(err error) *MockMessageCodec_ConnectWithContext_Call {
+func (_c *MockMessageCodec_Connect_Call) Return(err error) *MockMessageCodec_Connect_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockMessageCodec_ConnectWithContext_Call) RunAndReturn(run func(ctx context.Context) error) *MockMessageCodec_ConnectWithContext_Call {
+func (_c *MockMessageCodec_Connect_Call) RunAndReturn(run func(ctx context.Context) error) *MockMessageCodec_Connect_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1647,16 +1603,16 @@ func (_c *MockMessageCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockMe
 }
 
 // Send provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Send(message Message, timeout time.Duration) error {
-	ret := _mock.Called(message, timeout)
+func (_mock *MockMessageCodec) Send(ctx context.Context, message Message, timeout time.Duration) error {
+	ret := _mock.Called(ctx, message, timeout)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(Message, time.Duration) error); ok {
-		r0 = returnFunc(message, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, Message, time.Duration) error); ok {
+		r0 = returnFunc(ctx, message, timeout)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1669,25 +1625,31 @@ type MockMessageCodec_Send_Call struct {
 }
 
 // Send is a helper method to define mock.On call
+//   - ctx context.Context
 //   - message Message
 //   - timeout time.Duration
-func (_e *MockMessageCodec_Expecter) Send(message interface{}, timeout interface{}) *MockMessageCodec_Send_Call {
-	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", message, timeout)}
+func (_e *MockMessageCodec_Expecter) Send(ctx interface{}, message interface{}, timeout interface{}) *MockMessageCodec_Send_Call {
+	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", ctx, message, timeout)}
 }
 
-func (_c *MockMessageCodec_Send_Call) Run(run func(message Message, timeout time.Duration)) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) Run(run func(ctx context.Context, message Message, timeout time.Duration)) *MockMessageCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 Message
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].(Message)
+			arg0 = args[0].(context.Context)
 		}
-		var arg1 time.Duration
+		var arg1 Message
 		if args[1] != nil {
-			arg1 = args[1].(time.Duration)
+			arg1 = args[1].(Message)
+		}
+		var arg2 time.Duration
+		if args[2] != nil {
+			arg2 = args[2].(time.Duration)
 		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -1698,7 +1660,7 @@ func (_c *MockMessageCodec_Send_Call) Return(err error) *MockMessageCodec_Send_C
 	return _c
 }
 
-func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(message Message, timeout time.Duration) error) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(ctx context.Context, message Message, timeout time.Duration) error) *MockMessageCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1963,12 +1925,12 @@ func (_m *MockPlcDiscoverer) EXPECT() *MockPlcDiscoverer_Expecter {
 }
 
 // Discover provides a mock function for the type MockPlcDiscoverer
-func (_mock *MockPlcDiscoverer) Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+func (_mock *MockPlcDiscoverer) Discover(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	var tmpRet mock.Arguments
 	if len(discoveryOptions) > 0 {
-		tmpRet = _mock.Called(callback, discoveryOptions)
+		tmpRet = _mock.Called(ctx, callback, discoveryOptions)
 	} else {
-		tmpRet = _mock.Called(callback)
+		tmpRet = _mock.Called(ctx, callback)
 	}
 	ret := tmpRet
 
@@ -1977,8 +1939,8 @@ func (_mock *MockPlcDiscoverer) Discover(callback func(event model.PlcDiscoveryI
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
-		r0 = returnFunc(callback, discoveryOptions...)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
+		r0 = returnFunc(ctx, callback, discoveryOptions...)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1991,81 +1953,15 @@ type MockPlcDiscoverer_Discover_Call struct {
 }
 
 // Discover is a helper method to define mock.On call
-//   - callback func(event model.PlcDiscoveryItem)
-//   - discoveryOptions ...options.WithDiscoveryOption
-func (_e *MockPlcDiscoverer_Expecter) Discover(callback interface{}, discoveryOptions ...interface{}) *MockPlcDiscoverer_Discover_Call {
-	return &MockPlcDiscoverer_Discover_Call{Call: _e.mock.On("Discover",
-		append([]interface{}{callback}, discoveryOptions...)...)}
-}
-
-func (_c *MockPlcDiscoverer_Discover_Call) Run(run func(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockPlcDiscoverer_Discover_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 func(event model.PlcDiscoveryItem)
-		if args[0] != nil {
-			arg0 = args[0].(func(event model.PlcDiscoveryItem))
-		}
-		var arg1 []options.WithDiscoveryOption
-		var variadicArgs []options.WithDiscoveryOption
-		if len(args) > 1 {
-			variadicArgs = args[1].([]options.WithDiscoveryOption)
-		}
-		arg1 = variadicArgs
-		run(
-			arg0,
-			arg1...,
-		)
-	})
-	return _c
-}
-
-func (_c *MockPlcDiscoverer_Discover_Call) Return(err error) *MockPlcDiscoverer_Discover_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockPlcDiscoverer_Discover_Call) RunAndReturn(run func(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockPlcDiscoverer_Discover_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// DiscoverWithContext provides a mock function for the type MockPlcDiscoverer
-func (_mock *MockPlcDiscoverer) DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	var tmpRet mock.Arguments
-	if len(discoveryOptions) > 0 {
-		tmpRet = _mock.Called(ctx, callback, discoveryOptions)
-	} else {
-		tmpRet = _mock.Called(ctx, callback)
-	}
-	ret := tmpRet
-
-	if len(ret) == 0 {
-		panic("no return value specified for DiscoverWithContext")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, func(event model.PlcDiscoveryItem), ...options.WithDiscoveryOption) error); ok {
-		r0 = returnFunc(ctx, callback, discoveryOptions...)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockPlcDiscoverer_DiscoverWithContext_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DiscoverWithContext'
-type MockPlcDiscoverer_DiscoverWithContext_Call struct {
-	*mock.Call
-}
-
-// DiscoverWithContext is a helper method to define mock.On call
 //   - ctx context.Context
 //   - callback func(event model.PlcDiscoveryItem)
 //   - discoveryOptions ...options.WithDiscoveryOption
-func (_e *MockPlcDiscoverer_Expecter) DiscoverWithContext(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockPlcDiscoverer_DiscoverWithContext_Call {
-	return &MockPlcDiscoverer_DiscoverWithContext_Call{Call: _e.mock.On("DiscoverWithContext",
+func (_e *MockPlcDiscoverer_Expecter) Discover(ctx interface{}, callback interface{}, discoveryOptions ...interface{}) *MockPlcDiscoverer_Discover_Call {
+	return &MockPlcDiscoverer_Discover_Call{Call: _e.mock.On("Discover",
 		append([]interface{}{ctx, callback}, discoveryOptions...)...)}
 }
 
-func (_c *MockPlcDiscoverer_DiscoverWithContext_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockPlcDiscoverer_DiscoverWithContext_Call {
+func (_c *MockPlcDiscoverer_Discover_Call) Run(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption)) *MockPlcDiscoverer_Discover_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -2090,12 +1986,12 @@ func (_c *MockPlcDiscoverer_DiscoverWithContext_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockPlcDiscoverer_DiscoverWithContext_Call) Return(err error) *MockPlcDiscoverer_DiscoverWithContext_Call {
+func (_c *MockPlcDiscoverer_Discover_Call) Return(err error) *MockPlcDiscoverer_Discover_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockPlcDiscoverer_DiscoverWithContext_Call) RunAndReturn(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockPlcDiscoverer_DiscoverWithContext_Call {
+func (_c *MockPlcDiscoverer_Discover_Call) RunAndReturn(run func(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error) *MockPlcDiscoverer_Discover_Call {
 	_c.Call.Return(run)
 	return _c
 }

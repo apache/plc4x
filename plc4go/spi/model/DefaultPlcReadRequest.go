@@ -118,11 +118,7 @@ func (d *DefaultPlcReadRequest) GetReader() spi.PlcReader {
 func (d *DefaultPlcReadRequest) GetReadRequestInterceptor() interceptors.ReadRequestInterceptor {
 	return d.readRequestInterceptor
 }
-func (d *DefaultPlcReadRequest) Execute() <-chan apiModel.PlcReadRequestResult {
-	return d.ExecuteWithContext(context.TODO())
-}
-
-func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcReadRequestResult {
+func (d *DefaultPlcReadRequest) Execute(ctx context.Context) <-chan apiModel.PlcReadRequestResult {
 	if d.readRequestInterceptor != nil {
 		return d.ExecuteWithContextAndInterceptor(ctx)
 	}

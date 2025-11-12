@@ -207,43 +207,6 @@ func TestDefaultPlcReadRequest_Execute(t *testing.T) {
 		reader                 spi.PlcReader
 		readRequestInterceptor interceptors.ReadRequestInterceptor
 	}
-	tests := []struct {
-		name   string
-		fields fields
-		setup  func(t *testing.T, fields *fields)
-		want   <-chan apiModel.PlcReadRequestResult
-	}{
-		{
-			name: "execute it",
-			setup: func(t *testing.T, fields *fields) {
-				reader := NewMockPlcReader(t)
-				reader.EXPECT().Read(mock.Anything, mock.Anything).Return(nil)
-				fields.reader = reader
-			},
-			want: nil,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			d := &DefaultPlcReadRequest{
-				DefaultPlcTagRequest:   tt.fields.DefaultPlcTagRequest,
-				reader:                 tt.fields.reader,
-				readRequestInterceptor: tt.fields.readRequestInterceptor,
-			}
-			assert.Equalf(t, tt.want, d.Execute(), "Execute()")
-		})
-	}
-}
-
-func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
-	type fields struct {
-		DefaultPlcTagRequest   *DefaultPlcTagRequest
-		reader                 spi.PlcReader
-		readRequestInterceptor interceptors.ReadRequestInterceptor
-	}
 	type args struct {
 		ctx context.Context
 	}
@@ -433,9 +396,9 @@ func TestDefaultPlcReadRequest_ExecuteWithContext(t *testing.T) {
 				reader:                 tt.fields.reader,
 				readRequestInterceptor: tt.fields.readRequestInterceptor,
 			}
-			result := d.ExecuteWithContext(tt.args.ctx)
+			result := d.Execute(tt.args.ctx)
 			if tt.wantAsserter != nil {
-				assert.True(t, tt.wantAsserter(t, result), "ExecuteWithContext(%v)", tt.args.ctx)
+				assert.True(t, tt.wantAsserter(t, result), "Execute(%v)", tt.args.ctx)
 			}
 		})
 	}

@@ -127,7 +127,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
-func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	c.wg.Go(func() {
@@ -136,7 +136,7 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
-		err := c.messageCodec.ConnectWithContext(ctx)
+		err := c.messageCodec.Connect(ctx)
 		if err != nil {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(c, err)
 		}

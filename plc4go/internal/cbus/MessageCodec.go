@@ -402,7 +402,7 @@ lookingForTheEnd:
 }
 
 func extractMMIAndSAL(log zerolog.Logger) _default.CustomMessageHandler {
-	return func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
+	return func(ctx context.Context, codec _default.DefaultCodecRequirements, message spi.Message) bool {
 		switch message := message.(type) {
 		case readWriteModel.CBusMessageToClient:
 			switch reply := message.GetReply().(type) {
@@ -412,13 +412,23 @@ func extractMMIAndSAL(log zerolog.Logger) _default.CustomMessageHandler {
 					switch encodedReply := reply.GetEncodedReply().(type) {
 					case readWriteModel.MonitoredSALReply:
 						log.Trace().Msg("Feed to monitored SALs")
-						codec.(*MessageCodec).monitoredSALs <- encodedReply.GetMonitoredSAL()
+						select {
+						case codec.(*MessageCodec).monitoredSALs <- encodedReply.GetMonitoredSAL():
+							return true
+						case <-ctx.Done():
+							return false
+						}
 					case readWriteModel.EncodedReplyCALReply:
 						calData := encodedReply.GetCalReply().GetCalData()
 						switch calData.(type) {
 						case readWriteModel.CALDataStatus, readWriteModel.CALDataStatusExtended:
 							log.Trace().Msg("Feed to monitored MMIs")
-							codec.(*MessageCodec).monitoredMMIs <- encodedReply.GetCalReply()
+							select {
+							case codec.(*MessageCodec).monitoredMMIs <- encodedReply.GetCalReply():
+								return true
+							case <-ctx.Done():
+								return false
+							}
 						default:
 							log.Trace().
 								Type("actualType", calData).

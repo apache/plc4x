@@ -269,7 +269,7 @@ func TestNewDefaultCodec(t *testing.T) {
 
 func TestWithCustomMessageHandler(t *testing.T) {
 	type args struct {
-		customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandler CustomMessageHandler
 	}
 	tests := []struct {
 		name string
@@ -314,7 +314,7 @@ func Test_buildDefaultCodec(t *testing.T) {
 			args: args{
 				options: []options.WithOption{
 					withCustomMessageHandler{
-						customMessageHandler: func(_ DefaultCodecRequirements, _ spi.Message) bool {
+						customMessageHandler: func(_ context.Context, _ DefaultCodecRequirements, _ spi.Message) bool {
 							return true
 						},
 					},
@@ -345,52 +345,7 @@ func Test_defaultCodec_Connect(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		setup   func(t *testing.T, fields *fields)
-		wantErr assert.ErrorAssertionFunc
-	}{
-		{
-			name: "connect it",
-			setup: func(t *testing.T, fields *fields) {
-				instance := NewMockTransportInstance(t)
-				instance.EXPECT().IsConnected().Return(true)
-				fields.transportInstance = instance
-			},
-			wantErr: assert.NoError,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			m := &defaultCodec{
-				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
-				transportInstance:             tt.fields.transportInstance,
-				defaultIncomingMessageChannel: tt.fields.defaultIncomingMessageChannel,
-				expectations:                  tt.fields.expectations,
-				notifyExpireWorker:            make(chan struct{}, 100),
-				notifyReceiveWorker:           make(chan struct{}, 100),
-				customMessageHandling:         tt.fields.customMessageHandling,
-				log:                           testutils.ProduceTestingLogger(t),
-			}
-			tt.wantErr(t, m.Connect(), fmt.Sprintf("Connect()"))
-		})
-	}
-}
-
-func Test_defaultCodec_ConnectWithContext(t *testing.T) {
-	type fields struct {
-		DefaultCodecRequirements      DefaultCodecRequirements
-		transportInstance             transports.TransportInstance
-		defaultIncomingMessageChannel chan spi.Message
-		expectations                  []spi.Expectation
-		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	type args struct {
 		ctx context.Context
@@ -417,7 +372,7 @@ func Test_defaultCodec_ConnectWithContext(t *testing.T) {
 				instance := NewMockTransportInstance(t)
 				expect := instance.EXPECT()
 				expect.IsConnected().Return(false)
-				expect.ConnectWithContext(mock.Anything).Return(errors.New("nope"))
+				expect.Connect(mock.Anything).Return(errors.New("nope"))
 				fields.transportInstance = instance
 			},
 			wantErr: assert.Error,
@@ -447,7 +402,7 @@ func Test_defaultCodec_ConnectWithContext(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			tt.wantErr(t, m.ConnectWithContext(tt.args.ctx), fmt.Sprintf("ConnectWithContext(%v)", tt.args.ctx))
+			tt.wantErr(t, m.Connect(tt.args.ctx), fmt.Sprintf("Connect(%v)", tt.args.ctx))
 		})
 	}
 }
@@ -459,7 +414,7 @@ func Test_defaultCodec_Disconnect(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	tests := []struct {
 		name        string
@@ -500,6 +455,7 @@ func Test_defaultCodec_Disconnect(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
+			c.ctx, c.ctxCancel = context.WithCancel(t.Context())
 			if tt.manipulator != nil {
 				tt.manipulator(t, c)
 			}
@@ -515,7 +471,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	type args struct {
 		ctx            context.Context
@@ -567,7 +523,7 @@ func Test_defaultCodec_GetDefaultIncomingMessageChannel(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	tests := []struct {
 		name   string
@@ -602,7 +558,7 @@ func Test_defaultCodec_GetTransportInstance(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	tests := []struct {
 		name   string
@@ -637,7 +593,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	type args struct {
 		message spi.Message
@@ -866,7 +822,7 @@ func Test_defaultCodec_IsRunning(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	tests := []struct {
 		name   string
@@ -901,7 +857,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	type args struct {
 		ctx            context.Context
@@ -922,7 +878,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 			name: "send it",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Send(mock.Anything, mock.Anything).Return(nil)
+				requirements.EXPECT().Send(mock.Anything, mock.Anything, mock.Anything).Return(nil)
 				fields.DefaultCodecRequirements = requirements
 
 				args.ctx = testutils.TestContext(t)
@@ -947,7 +903,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 			name: "send it errors",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Send(mock.Anything, mock.Anything).Return(errors.New("nope"))
+				requirements.EXPECT().Send(mock.Anything, mock.Anything, mock.Anything).Return(errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
 
 				args.ctx = testutils.TestContext(t)
@@ -985,7 +941,7 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	type args struct {
 		now time.Time
@@ -1133,7 +1089,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 		defaultIncomingMessageChannel chan spi.Message
 		expectations                  []spi.Expectation
 		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling         CustomMessageHandler
 	}
 	tests := []struct {
 		name        string
@@ -1190,7 +1146,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive(mock.Anything).Return(nil, errors.New("nope"))
+				requirements.EXPECT().Receive(mock.Anything, mock.Anything).Return(nil, errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1236,7 +1192,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive(mock.Anything).Return(nil, nil)
+				requirements.EXPECT().Receive(mock.Anything, mock.Anything).Return(nil, nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1282,7 +1238,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
+				requirements.EXPECT().Receive(mock.Anything, mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1306,7 +1262,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
+				requirements.EXPECT().Receive(mock.Anything, mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1352,7 +1308,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive(mock.Anything).Return(nil, errors.New("nope"))
+				requirements.EXPECT().Receive(mock.Anything, mock.Anything).Return(nil, errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1363,7 +1319,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 		{
 			name: "work harder (message custom not handled)",
 			fields: fields{
-				customMessageHandling: func(_ DefaultCodecRequirements, _ spi.Message) bool {
+				customMessageHandling: func(_ context.Context, _ DefaultCodecRequirements, _ spi.Message) bool {
 					return false
 				},
 				expectations: []spi.Expectation{
@@ -1401,7 +1357,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
+				requirements.EXPECT().Receive(mock.Anything, mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1412,7 +1368,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 		{
 			name: "work harder (message custom handled)",
 			fields: fields{
-				customMessageHandling: func(_ DefaultCodecRequirements, _ spi.Message) bool {
+				customMessageHandling: func(_ context.Context, _ DefaultCodecRequirements, _ spi.Message) bool {
 					return true
 				},
 				expectations: []spi.Expectation{
@@ -1450,7 +1406,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
+				requirements.EXPECT().Receive(mock.Anything, mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
@@ -1474,6 +1430,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
+			m.ctx, m.ctxCancel = context.WithCancel(t.Context())
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
@@ -1498,7 +1455,7 @@ func Test_defaultCodec_startWorkers(t *testing.T) {
 		transportInstance              transports.TransportInstance
 		expectations                   []spi.Expectation
 		defaultIncomingMessageChannel  chan spi.Message
-		customMessageHandling          func(codec DefaultCodecRequirements, message spi.Message) bool
+		customMessageHandling          CustomMessageHandler
 		receiveTimeout                 time.Duration
 		traceDefaultMessageCodecWorker bool
 	}
@@ -1536,7 +1493,7 @@ func Test_defaultCodec_integration(t *testing.T) {
 			expect := message.EXPECT()
 			expect.String().Return("message for " + t.Name())
 		}
-		expect.Receive(mock.Anything).RunAndReturn(func(_ time.Duration) (spi.Message, error) {
+		expect.Receive(mock.Anything, mock.Anything).RunAndReturn(func(_ context.Context, _ time.Duration) (spi.Message, error) {
 			// Simulate a bit read delay
 			timer := time.NewTimer(100 * time.Millisecond)
 			select {
@@ -1622,7 +1579,7 @@ func Test_defaultCodec_integration(t *testing.T) {
 		},
 		3000*time.Millisecond)
 
-	err := sut.ConnectWithContext(t.Context())
+	err := sut.Connect(t.Context())
 	assert.NoError(t, err)
 	timer := time.NewTimer(10 * time.Second)
 	select {

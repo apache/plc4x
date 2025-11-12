@@ -98,7 +98,7 @@ func (m *ApplicationLayerMessageCodec) GetCodec() spi.MessageCodec {
 
 func (m *ApplicationLayerMessageCodec) Connect(ctx context.Context) error {
 	// TODO: this is currently done by the BIP
-	//	return m.messageCode.ConnectWithContext(ctx)
+	//	return m.messageCode.Connect(ctx)
 	return nil
 }
 
@@ -113,7 +113,7 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 	return m.messageCode.IsRunning()
 }
 
-func (m *ApplicationLayerMessageCodec) Send(message spi.Message, timeout time.Duration) error {
+func (m *ApplicationLayerMessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
 	address, err := pdu.NewAddress(comp.NewArgs(m.remoteAddress))
 	if err != nil {
 		return err

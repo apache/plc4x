@@ -532,46 +532,6 @@ func TestDefaultPlcSubscriptionRequest_Execute(t *testing.T) {
 		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
 		subscriber             spi.PlcSubscriber
 	}
-	tests := []struct {
-		name   string
-		fields fields
-		setup  func(t *testing.T, fields *fields)
-		want   <-chan apiModel.PlcSubscriptionRequestResult
-	}{
-		{
-			name: "execute it",
-			setup: func(t *testing.T, fields *fields) {
-				subscriber := NewMockPlcSubscriber(t)
-				subscriber.EXPECT().Subscribe(mock.Anything, mock.Anything).Return(nil)
-				fields.subscriber = subscriber
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			d := &DefaultPlcSubscriptionRequest{
-				DefaultPlcTagRequest:   tt.fields.DefaultPlcTagRequest,
-				types:                  tt.fields.types,
-				intervals:              tt.fields.intervals,
-				preRegisteredConsumers: tt.fields.preRegisteredConsumers,
-				subscriber:             tt.fields.subscriber,
-			}
-			assert.Equalf(t, tt.want, d.Execute(), "Execute()")
-		})
-	}
-}
-
-func TestDefaultPlcSubscriptionRequest_ExecuteWithContext(t *testing.T) {
-	type fields struct {
-		DefaultPlcTagRequest   *DefaultPlcTagRequest
-		types                  map[string]apiModel.PlcSubscriptionType
-		intervals              map[string]time.Duration
-		preRegisteredConsumers map[string][]apiModel.PlcSubscriptionEventConsumer
-		subscriber             spi.PlcSubscriber
-	}
 	type args struct {
 		ctx context.Context
 	}
@@ -603,7 +563,7 @@ func TestDefaultPlcSubscriptionRequest_ExecuteWithContext(t *testing.T) {
 				preRegisteredConsumers: tt.fields.preRegisteredConsumers,
 				subscriber:             tt.fields.subscriber,
 			}
-			assert.Equalf(t, tt.want, d.ExecuteWithContext(tt.args.ctx), "ExecuteWithContext(%v)", tt.args.ctx)
+			assert.Equalf(t, tt.want, d.Execute(tt.args.ctx), "Execute(%v)", tt.args.ctx)
 		})
 	}
 }

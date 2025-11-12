@@ -57,7 +57,7 @@ func NewDefaultCodec(requirements DefaultCodecRequirements, transportInstance tr
 	return buildDefaultCodec(requirements, transportInstance, options...)
 }
 
-type CustomMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
+type CustomMessageHandler func(ctx context.Context, codec DefaultCodecRequirements, message spi.Message) bool
 
 func WithCustomMessageHandler(customMessageHandler CustomMessageHandler) options.WithOption {
 	return withCustomMessageHandler{customMessageHandler: customMessageHandler}
@@ -71,7 +71,7 @@ func WithCustomMessageHandler(customMessageHandler CustomMessageHandler) options
 
 type withCustomMessageHandler struct {
 	options.Option
-	customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
+	customMessageHandler CustomMessageHandler
 }
 
 //go:generate go tool plc4xGenerator -type=defaultCodec
@@ -82,7 +82,7 @@ type defaultCodec struct {
 
 	expectations                  []spi.Expectation
 	defaultIncomingMessageChannel chan spi.Message
-	customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
+	customMessageHandling         CustomMessageHandler
 
 	expectationsChangeMutex sync.RWMutex
 	running                 atomic.Bool
@@ -103,7 +103,7 @@ type defaultCodec struct {
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {
-	var customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
+	var customMessageHandler CustomMessageHandler
 
 	for _, option := range _options {
 		switch option := option.(type) {
@@ -148,11 +148,7 @@ func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
 	return m.defaultIncomingMessageChannel
 }
 
-func (m *defaultCodec) Connect() error {
-	return m.ConnectWithContext(context.Background())
-}
-
-func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
+func (m *defaultCodec) Connect(ctx context.Context) error {
 	m.stateChange.Lock()
 	defer m.stateChange.Unlock()
 	if m.running.Load() {
@@ -474,7 +470,7 @@ mainLoop:
 		if m.customMessageHandling != nil {
 			workerLog.Trace().Msg("Executing custom handling")
 			start := time.Now()
-			handled := m.customMessageHandling(m.DefaultCodecRequirements, message)
+			handled := m.customMessageHandling(m.ctx, m.DefaultCodecRequirements, message)
 			workerLog.Trace().TimeDiff("elapsedTime", time.Now(), start).Msg("custom handling took elapsedTime")
 			if handled {
 				workerLog.Trace().Msg("Custom handling handled the message")

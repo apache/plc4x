@@ -28,6 +28,7 @@ import (
 
 type PlcWriteRequestBuilder interface {
 	fmt.Stringer
+
 	AddTagAddress(tagName string, tagAddress string, value any) PlcWriteRequestBuilder
 	AddTag(tagName string, tag PlcTag, value any) PlcWriteRequestBuilder
 	Build() (PlcWriteRequest, error)
@@ -35,6 +36,7 @@ type PlcWriteRequestBuilder interface {
 
 type PlcWriteRequestResult interface {
 	fmt.Stringer
+
 	GetRequest() PlcWriteRequest
 	GetResponse() PlcWriteResponse
 	GetErr() error
@@ -42,8 +44,8 @@ type PlcWriteRequestResult interface {
 
 type PlcWriteRequest interface {
 	PlcRequest
-	Execute() <-chan PlcWriteRequestResult
-	ExecuteWithContext(ctx context.Context) <-chan PlcWriteRequestResult
+
+	Execute(ctx context.Context) <-chan PlcWriteRequestResult
 
 	GetTagNames() []string
 	GetTag(tagName string) PlcTag

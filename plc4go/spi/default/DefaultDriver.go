@@ -24,18 +24,18 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 type DefaultDriverRequirements interface {
 	GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult
-	DiscoverWithContext(callback context.Context, event func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
+	Discover(ctx context.Context, eventCallback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
 }
 
 type DefaultDriver interface {
@@ -101,11 +101,7 @@ func (d *defaultDriver) SupportsDiscovery() bool {
 	return false
 }
 
-func (d *defaultDriver) Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return d.DefaultDriverRequirements.DiscoverWithContext(context.Background(), callback, discoveryOptions...)
-}
-
-func (d *defaultDriver) DiscoverWithContext(_ context.Context, _ func(event apiModel.PlcDiscoveryItem), _ ...options.WithDiscoveryOption) error {
+func (d *defaultDriver) Discover(_ context.Context, _ func(event apiModel.PlcDiscoveryItem), _ ...options.WithDiscoveryOption) error {
 	return errors.New("not available")
 }
 

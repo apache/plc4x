@@ -64,11 +64,7 @@ func NewDefaultPlcUnsubscriptionRequest(subscriptionHandles []apiModel.PlcSubscr
 	}
 }
 
-func (d *DefaultPlcUnsubscriptionRequest) Execute() <-chan apiModel.PlcUnsubscriptionRequestResult {
-	return d.ExecuteWithContext(context.Background())
-}
-
-func (d *DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcUnsubscriptionRequestResult {
+func (d *DefaultPlcUnsubscriptionRequest) Execute(ctx context.Context) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	results := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
 	d.wg.Go(func() {
 		var collectedErrors []error

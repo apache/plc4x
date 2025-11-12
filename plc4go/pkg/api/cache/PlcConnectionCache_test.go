@@ -95,7 +95,7 @@ func TestPlcConnectionCache_GetConnection(t *testing.T) {
 				tt.setup(t, &tt.fields, &tt.args)
 			}
 			cc := NewPlcConnectionCache(tt.fields.driverManager, WithCustomLogger(testutils.ProduceTestingLogger(t)))
-			got := cc.GetConnection(tt.args.connectionString)
+			got := cc.GetConnection(t.Context(), tt.args.connectionString)
 			select {
 			case connectResult := <-got:
 				if tt.wantErr && (connectResult.GetErr() == nil) {
@@ -173,7 +173,7 @@ func TestPlcConnectionCache_Close(t *testing.T) {
 			cc := NewPlcConnectionCache(tt.fields.driverManager)
 			// Connect to all sources first
 			for _, connectionString := range tt.args.connectionStrings {
-				got := cc.GetConnection(connectionString)
+				got := cc.GetConnection(t.Context(), connectionString)
 				select {
 				case connectResult := <-got:
 					if connectResult.GetErr() != nil {
@@ -215,7 +215,7 @@ func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), con
 		preConnectJob()
 	}
 	// Get a connection
-	connectionResultChan := c.GetConnection(connectionString)
+	connectionResultChan := c.GetConnection(t.Context(), connectionString)
 	select {
 	case connectResult := <-connectionResultChan:
 		if connectResult == nil {
@@ -244,7 +244,7 @@ func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), con
 		}
 
 		// Execute the read request.
-		execution := readRequest.Execute()
+		execution := readRequest.Execute(t.Context())
 		select {
 		case readRequestResult := <-execution:
 			err := readRequestResult.GetErr()
@@ -485,7 +485,7 @@ func TestPlcConnectionCache_ConnectWithError(t *testing.T) {
 		t.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
-	connectionResultChan := cache.GetConnection("simulated://1.2.3.4:42?connectionError=hurz&traceEnabled=true")
+	connectionResultChan := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionError=hurz&traceEnabled=true")
 	select {
 	case connectResult := <-connectionResultChan:
 		if connectResult.GetErr() == nil {
@@ -528,7 +528,7 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 
 	// In the connection string, we tell the driver to return an error with
 	// the given message on executing a ping operation.
-	connectionResultChan := cache.GetConnection("simulated://1.2.3.4:42?pingError=hurz&traceEnabled=true")
+	connectionResultChan := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?pingError=hurz&traceEnabled=true")
 	select {
 	case connectResult := <-connectionResultChan:
 		if connectResult.GetErr() != nil {
@@ -728,7 +728,7 @@ func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneT
 	}
 
 	// Intentionally just ignore the response.
-	cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 
 	time.Sleep(1 * time.Millisecond)
 
@@ -799,7 +799,7 @@ func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 	time.Sleep(1 * time.Millisecond)
 
 	// Almost instantly we try to get a new connection but don't listen for the result
-	cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 
 	// Wait for the first operation to finish
 	select {
@@ -861,16 +861,16 @@ func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 	}
 
 	// The first and second connection should work fine
-	firstConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
+	firstConnectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 
 	time.Sleep(1 * time.Millisecond)
 
-	secondConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
+	secondConnectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 
 	time.Sleep(1 * time.Millisecond)
 
 	// The third connection should be given up by the cache
-	thirdConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
+	thirdConnectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 
 	var wg sync.WaitGroup
 	t.Cleanup(wg.Wait)

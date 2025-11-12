@@ -124,7 +124,7 @@ func TestConnection_Connect(t *testing.T) {
 				connected:    tt.fields.connected,
 			}
 			timeBeforeConnect := time.Now()
-			connectionChan := c.Connect()
+			connectionChan := c.Connect(t.Context())
 			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case connectResult := <-connectionChan:

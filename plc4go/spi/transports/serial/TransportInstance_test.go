@@ -116,7 +116,7 @@ func TestTransportInstance_Connect(t *testing.T) {
 				serialPort:                       tt.fields.serialPort,
 				reader:                           tt.fields.reader,
 			}
-			if err := m.Connect(); (err != nil) != tt.wantErr {
+			if err := m.Connect(t.Context()); (err != nil) != tt.wantErr {
 				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -261,7 +261,7 @@ func TestTransportInstance_Write(t *testing.T) {
 				serialPort:                       tt.fields.serialPort,
 				reader:                           tt.fields.reader,
 			}
-			if err := m.Write(tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
+			if err := m.Write(t.Context(), tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

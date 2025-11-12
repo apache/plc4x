@@ -237,7 +237,7 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
 		return
 	}
-	subscriptionResultChan := versionChangeRequest.Execute()
+	subscriptionResultChan := versionChangeRequest.Execute(ctx)
 	subscriptionRequestResult := <-subscriptionResultChan
 	if subscriptionRequestResult.GetErr() != nil {
 		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, subscriptionRequestResult.GetErr())

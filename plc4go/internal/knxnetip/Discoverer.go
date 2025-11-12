@@ -197,7 +197,7 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 			d.log.Error().Err(err).Msg("error creating transport instance")
 			return
 		}
-		err = transportInstance.ConnectWithContext(ctx)
+		err = transportInstance.Connect(ctx)
 		if err != nil {
 			d.log.Debug().Err(err).Msg("Error Connecting")
 			return
@@ -219,7 +219,7 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 			append(d._options, options.WithCustomLogger(d.log))...,
 		)
 		// Explicitly start the worker
-		if err := codec.ConnectWithContext(ctx); err != nil {
+		if err := codec.Connect(ctx); err != nil {
 			d.log.Error().Err(err).Msg("Error connecting")
 			return
 		}
@@ -232,7 +232,7 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 			driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
 		searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
 		// Send the search request.
-		if err := codec.Send(searchRequestMessage, 60*time.Second /*TODO: where to get that timeout from*/); err != nil {
+		if err := codec.Send(ctx, searchRequestMessage, 60*time.Second /*TODO: where to get that timeout from*/); err != nil {
 			d.log.Debug().Err(err).Stringer("searchRequestMessage", searchRequestMessage).Msg("Error sending message")
 			return
 		}

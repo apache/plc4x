@@ -208,7 +208,7 @@ func TestReader_readSync(t *testing.T) {
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -313,7 +313,7 @@ func TestReader_readSync(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -376,7 +376,7 @@ func TestReader_readSync(t *testing.T) {
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -465,7 +465,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -555,7 +555,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -629,7 +629,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -719,7 +719,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -802,7 +802,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -885,7 +885,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -968,7 +968,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1051,7 +1051,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1134,7 +1134,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})

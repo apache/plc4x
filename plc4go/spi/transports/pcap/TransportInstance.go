@@ -76,7 +76,7 @@ func NewPcapTransportInstance(transportFile string, transportType TransportType,
 	return transportInstance
 }
 
-func (m *TransportInstance) Connect() error {
+func (m *TransportInstance) Connect(ctx context.Context) error {
 	m.stateChangeMutex.Lock()
 	defer m.stateChangeMutex.Unlock()
 	if m.connected.Load() {
@@ -109,7 +109,7 @@ func (m *TransportInstance) Connect() error {
 		}()
 		packageCount := 0
 		var lastPacketTime *time.Time
-		for m.connected.Load() {
+		for m.connected.Load() && ctx.Err() == nil {
 			packetData, captureInfo, err := m.handle.ReadPacketData()
 			packageCount++
 			m.log.Info().Int("packageCount", packageCount).Interface("captureInfo", captureInfo).Msg("Read new package (nr. packageCount)")

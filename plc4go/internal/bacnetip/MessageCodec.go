@@ -113,8 +113,11 @@ func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.
 	return nil, nil
 }
 
-func (m *MessageCodec) handleCustomMessage(_ _default.DefaultCodecRequirements, message spi.Message) bool {
+func (m *MessageCodec) handleCustomMessage(ctx context.Context, _ _default.DefaultCodecRequirements, message spi.Message) bool {
 	// For now, we just put them in the incoming channel
-	m.GetDefaultIncomingMessageChannel() <- message
+	select {
+	case m.GetDefaultIncomingMessageChannel() <- message:
+	case <-ctx.Done():
+	}
 	return true
 }

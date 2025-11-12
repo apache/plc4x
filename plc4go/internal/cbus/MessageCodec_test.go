@@ -79,7 +79,7 @@ func TestMessageCodec_Send(t *testing.T) {
 				transport := test.NewTransport(_options...)
 				instance := test.NewTransportInstance(transport, _options...)
 				codec := NewMessageCodec(instance, _options...)
-				require.NoError(t, codec.Connect())
+				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -825,7 +825,7 @@ func Test_extractMMIAndSAL(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.args)
 			}
-			assert.Equalf(t, tt.want, extractMMIAndSAL(testutils.ProduceTestingLogger(t))(tt.args.codec, tt.args.message), "extractMMIAndSAL(%v, %v)", tt.args.codec, tt.args.message)
+			assert.Equalf(t, tt.want, extractMMIAndSAL(testutils.ProduceTestingLogger(t))(t.Context(), tt.args.codec, tt.args.message), "extractMMIAndSAL(%v, %v)", tt.args.codec, tt.args.message)
 		})
 	}
 }

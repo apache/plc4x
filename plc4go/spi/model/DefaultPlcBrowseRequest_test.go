@@ -160,42 +160,6 @@ func TestDefaultPlcBrowseRequest_Execute(t *testing.T) {
 		queryNames []string
 		queries    map[string]apiModel.PlcQuery
 	}
-	tests := []struct {
-		name   string
-		fields fields
-		setup  func(t *testing.T, fields *fields)
-		want   <-chan apiModel.PlcBrowseRequestResult
-	}{
-		{
-			name: "execute it",
-			setup: func(t *testing.T, fields *fields) {
-				browser := NewMockPlcBrowser(t)
-				browser.EXPECT().Browse(mock.Anything, mock.Anything).Return(nil)
-				fields.browser = browser
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			d := &DefaultPlcBrowseRequest{
-				browser:    tt.fields.browser,
-				queryNames: tt.fields.queryNames,
-				queries:    tt.fields.queries,
-			}
-			assert.Equalf(t, tt.want, d.Execute(), "Execute()")
-		})
-	}
-}
-
-func TestDefaultPlcBrowseRequest_ExecuteWithContext(t *testing.T) {
-	type fields struct {
-		browser    spi.PlcBrowser
-		queryNames []string
-		queries    map[string]apiModel.PlcQuery
-	}
 	type args struct {
 		ctx context.Context
 	}
@@ -225,52 +189,12 @@ func TestDefaultPlcBrowseRequest_ExecuteWithContext(t *testing.T) {
 				queryNames: tt.fields.queryNames,
 				queries:    tt.fields.queries,
 			}
-			assert.Equalf(t, tt.want, d.ExecuteWithContext(tt.args.ctx), "ExecuteWithContext(%v)", tt.args.ctx)
+			assert.Equalf(t, tt.want, d.Execute(tt.args.ctx), "Execute(%v)", tt.args.ctx)
 		})
 	}
 }
 
 func TestDefaultPlcBrowseRequest_ExecuteWithInterceptor(t *testing.T) {
-	type fields struct {
-		browser    spi.PlcBrowser
-		queryNames []string
-		queries    map[string]apiModel.PlcQuery
-	}
-	type args struct {
-		interceptor func(result apiModel.PlcBrowseItem) bool
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		setup  func(t *testing.T, fields *fields)
-		want   <-chan apiModel.PlcBrowseRequestResult
-	}{
-		{
-			name: "execute it",
-			setup: func(t *testing.T, fields *fields) {
-				browser := NewMockPlcBrowser(t)
-				browser.EXPECT().BrowseWithInterceptor(mock.Anything, mock.Anything, mock.Anything).Return(nil)
-				fields.browser = browser
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			d := &DefaultPlcBrowseRequest{
-				browser:    tt.fields.browser,
-				queryNames: tt.fields.queryNames,
-				queries:    tt.fields.queries,
-			}
-			assert.Equalf(t, tt.want, d.ExecuteWithInterceptor(tt.args.interceptor), "ExecuteWithInterceptor(func(%t))", tt.args.interceptor != nil)
-		})
-	}
-}
-
-func TestDefaultPlcBrowseRequest_ExecuteWithInterceptorWithContext(t *testing.T) {
 	type fields struct {
 		browser    spi.PlcBrowser
 		queryNames []string
@@ -306,7 +230,7 @@ func TestDefaultPlcBrowseRequest_ExecuteWithInterceptorWithContext(t *testing.T)
 				queryNames: tt.fields.queryNames,
 				queries:    tt.fields.queries,
 			}
-			assert.Equalf(t, tt.want, d.ExecuteWithInterceptorWithContext(tt.args.ctx, tt.args.interceptor), "ExecuteWithInterceptorWithContext(%v, func(%t))", tt.args.ctx, tt.args.interceptor != nil)
+			assert.Equalf(t, tt.want, d.ExecuteWithInterceptor(tt.args.ctx, tt.args.interceptor), "ExecuteWithInterceptor(%v, func(%t))", tt.args.ctx, tt.args.interceptor != nil)
 		})
 	}
 }

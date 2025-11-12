@@ -59,7 +59,7 @@ func (d *Driver) CheckQuery(query string) error {
 	return err
 }
 
-func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
@@ -89,14 +89,14 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	d.log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
-	return connection.ConnectWithContext(ctx)
+	return connection.Connect(ctx)
 }
 
 func (d *Driver) SupportsDiscovery() bool {
 	return true
 }
 
-func (d *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *Driver) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	return d.discoverer.Discover(ctx, callback, discoveryOptions...)
 }
 
