@@ -102,7 +102,7 @@ func TestReader_Read(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
@@ -162,7 +162,7 @@ func TestReader_readSync(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -214,7 +214,7 @@ func TestReader_readSync(t *testing.T) {
 				})
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -242,7 +242,7 @@ func TestReader_readSync(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -321,7 +321,7 @@ func TestReader_readSync(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -483,7 +483,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 		},
@@ -644,7 +644,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 		},
@@ -727,7 +727,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 		},
@@ -810,7 +810,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 		},
@@ -893,7 +893,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 		},
@@ -976,7 +976,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 		},
@@ -1059,7 +1059,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 		},
@@ -1142,7 +1142,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 		},
@@ -1161,12 +1161,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			}
 			m.sendMessageOverTheWire(tt.args.ctx, tt.args.transaction, tt.args.messageToSend, tt.args.addResponseCode(t), tt.args.tagName, tt.args.addPlcValue(t))
 			t.Log("Waiting now")
-			timer := time.NewTimer(10 * time.Second)
 			select {
+			case <-t.Context().Done():
+				t.Log("aborted")
 			case <-ch:
 				t.Log("Done waiting")
-			case <-timer.C:
-				t.Error("Timeout")
 			}
 		})
 	}

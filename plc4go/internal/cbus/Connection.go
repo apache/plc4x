@@ -234,10 +234,10 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	cbusOptions := &c.messageCodec.cbusOptions
 	requestContext := &c.messageCodec.requestContext
 
-	if !c.sendReset(ctx, ch, cbusOptions, requestContext, false) {
+	if !c.sendReset(ctx, ch, false) {
 		c.log.Warn().Msg("First reset failed")
 		// We try a second reset in case we get a power up
-		if !c.sendReset(ctx, ch, cbusOptions, requestContext, true) {
+		if !c.sendReset(ctx, ch, true) {
 			c.log.Trace().Msg("Reset failed")
 			return
 		}
@@ -343,7 +343,7 @@ func (c *Connection) startSubscriptionHandler() {
 	})
 }
 
-func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, cbusOptions *readWriteModel.CBusOptions, requestContext *readWriteModel.RequestContext, sendOutErrorNotification bool) (ok bool) {
+func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, sendOutErrorNotification bool) (ok bool) {
 	c.log.Debug().Bool("sendOutErrorNotification", sendOutErrorNotification).Msg("Send a reset")
 	requestTypeReset := readWriteModel.RequestType_RESET
 	requestReset := readWriteModel.NewRequestReset(
@@ -442,7 +442,7 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	}
 
 	startTime := time.Now()
-	timeout := time.NewTimer(time.Millisecond * 500)
+	timer := time.NewTimer(ttl)
 	select {
 	case <-receivedResetEchoChan:
 		c.log.Debug().Msg("We received the echo")
@@ -453,7 +453,7 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 			c.log.Trace().Err(err).Msg("connect failed")
 		}
 		return false
-	case timeout := <-timeout.C:
+	case timeout := <-timer.C:
 		if sendOutErrorNotification {
 			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 		} else {
@@ -593,27 +593,33 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 			return nil
 		},
 		func(err error) error {
+			c.log.Trace().Err(err).Msg("got error processing request")
 			select {
 			case directCommandAckErrorChan <- errors.Wrap(err, "got error processing request"):
+				c.log.Trace().Msg("error redirected")
 			default:
+				c.log.Trace().Err(err).Msg("error discarded")
 			}
 			return nil
 		},
 		ttl,
 	); err != nil {
+		c.log.Trace().Err(err).Msg("got error sending request")
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of write request"), ch)
 		return false
 	}
 
 	startTime := time.Now()
-	timeout := time.NewTimer(60 * time.Second)
+	timer := time.NewTimer(60 * time.Second)
 	select {
 	case <-directCommandAckChan:
-		c.log.Debug().Msg("We received the ack")
+		c.log.Trace().Msg("We received the ack")
 	case err := <-directCommandAckErrorChan:
+		c.log.Trace().Err(err).Msg("got error processing request")
 		c.fireConnectionError(errors.Wrap(err, "Error receiving of ack"), ch)
 		return false
-	case timeout := <-timeout.C:
+	case timeout := <-timer.C:
+		c.log.Trace().Dur("timeout", timeout.Sub(startTime)).Msg("Timeout")
 		c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 		return false
 	}

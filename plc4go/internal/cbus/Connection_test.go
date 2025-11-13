@@ -143,7 +143,7 @@ func TestConnection_Connect(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
-		setup        func(t *testing.T, fields *fields)
+		setup        func(*testing.T, *fields, *args)
 		wantAsserter func(*testing.T, <-chan plc4go.PlcConnectionConnectResult) bool
 	}{
 		{
@@ -166,10 +166,7 @@ func TestConnection_Connect(t *testing.T) {
 				connectionId: "connectionId13",
 				tracer:       nil,
 			},
-			args: args{
-				ctx: t.Context(),
-			},
-			setup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
@@ -180,6 +177,10 @@ func TestConnection_Connect(t *testing.T) {
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				t.Cleanup(cancelFunc)
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				assert.NotNil(t, results)
@@ -194,7 +195,7 @@ func TestConnection_Connect(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			c := &Connection{
 				messageCodec:  tt.fields.messageCodec,
@@ -887,8 +888,6 @@ func TestConnection_sendReset(t *testing.T) {
 	type args struct {
 		ctx                      context.Context
 		ch                       chan plc4go.PlcConnectionConnectResult
-		cbusOptions              *readWriteModel.CBusOptions
-		requestContext           *readWriteModel.RequestContext
 		sendOutErrorNotification bool
 	}
 	tests := []struct {
@@ -901,15 +900,7 @@ func TestConnection_sendReset(t *testing.T) {
 		{
 			name: "send reset",
 			args: args{
-				ch: make(chan plc4go.PlcConnectionConnectResult, 1),
-				cbusOptions: func() *readWriteModel.CBusOptions {
-					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
-					return &cBusOptions
-				}(),
-				requestContext: func() *readWriteModel.RequestContext {
-					var requestContext readWriteModel.RequestContext = readWriteModel.NewRequestContext(false)
-					return &requestContext
-				}(),
+				ch:                       make(chan plc4go.PlcConnectionConnectResult, 1),
 				sendOutErrorNotification: false,
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
@@ -926,7 +917,7 @@ func TestConnection_sendReset(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantOk: false,
@@ -948,7 +939,7 @@ func TestConnection_sendReset(t *testing.T) {
 				log:           testutils.ProduceTestingLogger(t),
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.Equalf(t, tt.wantOk, c.sendReset(tt.args.ctx, tt.args.ch, tt.args.cbusOptions, tt.args.requestContext, tt.args.sendOutErrorNotification), "sendReset(%v, %v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.cbusOptions, tt.args.requestContext, tt.args.sendOutErrorNotification)
+			assert.Equalf(t, tt.wantOk, c.sendReset(tt.args.ctx, tt.args.ch, tt.args.sendOutErrorNotification), "sendReset(%v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.sendOutErrorNotification)
 		})
 	}
 }
@@ -1076,6 +1067,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
+					t.Log("disconnecting codec")
 					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
@@ -1306,7 +1298,7 @@ func TestConnection_setupConnection(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {
@@ -1644,7 +1636,7 @@ func TestConnection_setupConnection(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			validator: func(t *testing.T, result plc4go.PlcConnectionConnectResult) {

@@ -270,6 +270,7 @@ func TestTransportInstance_FillReadBuffer(t *testing.T) {
 				writeBuffer:      tt.fields.writeBuffer,
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
+				readChannel:      make(chan []byte, 1),
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)

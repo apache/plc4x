@@ -137,16 +137,18 @@ func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.
 		if err := ti.FillBuffer(
 			ctx,
 			func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
-				m.log.Trace().Uint8("byte", currentByte).Msg("current byte")
+				m.log.Trace().Uint("pos", pos).Uint8("byte", currentByte).Str("rune", string(rune(currentByte))).Msg("current byte")
 				switch currentByte {
 				case
 					readWriteModel.ResponseTermination_CR,
 					readWriteModel.ResponseTermination_LF:
+					m.log.Trace().Msg("Found termination byte")
 					return false
 				case byte(readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL):
 					confirmation = true
 					// In case we have directly more data in the buffer after a confirmation
 					_, err := reader.Peek(int(pos + 1))
+					m.log.Trace().Err(err).Msg("Peeking one more")
 					return err == nil
 				case
 					byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS),
@@ -155,6 +157,7 @@ func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.
 					byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG),
 					byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE):
 					confirmation = true
+					m.log.Trace().Msg("Found confirmation")
 					return false
 				default:
 					return true

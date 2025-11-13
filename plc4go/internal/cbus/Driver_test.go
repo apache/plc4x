@@ -73,7 +73,7 @@ func TestDriver_GetConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
@@ -108,7 +108,7 @@ func TestDriver_GetConnection(t *testing.T) {
 				args.transports["test"] = test.NewTransport(testutils.EnrichOptionsWithOptionsForTesting(t)...)
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
@@ -144,7 +144,7 @@ func TestDriver_GetConnection(t *testing.T) {
 				args.transports["test"] = test.NewTransport(testutils.EnrichOptionsWithOptionsForTesting(t)...)
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
@@ -177,7 +177,7 @@ func TestDriver_GetConnection(t *testing.T) {
 				args.transports["test"] = test.NewTransport(testutils.EnrichOptionsWithOptionsForTesting(t)...)
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {

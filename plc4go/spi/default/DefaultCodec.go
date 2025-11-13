@@ -358,7 +358,10 @@ mainLoop:
 			continue mainLoop
 		}
 		nextExpire := m.TimeoutExpectations(now)
-		workerLog.Debug().Dur("nextExpire", nextExpire).Msg("waiting for next expire")
+		m.expectationsChangeMutex.RLock()
+		numberOfExpectations = len(m.expectations)
+		m.expectationsChangeMutex.RUnlock()
+		workerLog.Debug().Dur("nextExpire", nextExpire).Int("numberOfExpectations", numberOfExpectations).Msg("waiting for next expire")
 		timer := time.NewTimer(nextExpire)
 		select {
 		case <-m.notifyExpireWorker:
@@ -471,7 +474,7 @@ mainLoop:
 			workerLog.Trace().Msg("Executing custom handling")
 			start := time.Now()
 			handled := m.customMessageHandling(m.ctx, m.DefaultCodecRequirements, message)
-			workerLog.Trace().TimeDiff("elapsedTime", time.Now(), start).Msg("custom handling took elapsedTime")
+			workerLog.Trace().TimeDiff("elapsedTime", time.Now(), start).Bool("handled", handled).Msg("custom handling took elapsedTime")
 			if handled {
 				workerLog.Trace().Msg("Custom handling handled the message")
 				continue mainLoop

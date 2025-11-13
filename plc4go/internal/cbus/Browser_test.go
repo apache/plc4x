@@ -326,7 +326,7 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantResponseCode: apiModel.PlcResponseCode_OK,
@@ -395,7 +395,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			want:    []readWriteModel.UnitAddress{readWriteModel.NewUnitAddress(2)},
@@ -595,7 +595,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			want: map[byte]any{

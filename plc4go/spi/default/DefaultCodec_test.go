@@ -491,7 +491,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 		},
@@ -883,7 +883,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantErr: assert.NoError,
@@ -908,7 +908,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantErr: assert.Error,

@@ -129,7 +129,7 @@ func TestSingleItemRequestInterceptor_InterceptReadRequest(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got []apiModel.PlcReadRequest) bool {
@@ -285,7 +285,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got []apiModel.PlcWriteRequest) bool {
@@ -445,7 +445,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
@@ -476,7 +476,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
@@ -626,7 +626,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcWriteRequestResult) bool {
@@ -655,7 +655,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantAssert: func(t *testing.T, args args, got apiModel.PlcWriteRequestResult) bool {

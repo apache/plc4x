@@ -20,6 +20,7 @@
 package test
 
 import (
+	"bufio"
 	"context"
 	"encoding/hex"
 	"os"
@@ -36,17 +37,18 @@ import (
 )
 
 type TransportInstance struct {
-	readChannel      chan []byte
-	readBuffer       []byte
-	writeBuffer      []byte
-	transport        *Transport
-	writeInterceptor func(transportInstance *TransportInstance, data []byte)
+	readChannel chan []byte
+	readBuffer  []byte
+	writeBuffer []byte
+	dataMutex   sync.RWMutex
 
-	dataMutex        sync.RWMutex
+	transport *Transport
+
+	writeInterceptor func(transportInstance *TransportInstance, data []byte)
+	simulatedLatency time.Duration
+
 	connected        atomic.Bool
 	stateChangeMutex sync.RWMutex
-
-	simulatedLatency time.Duration
 
 	log zerolog.Logger
 }
@@ -151,11 +153,7 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	if !m.IsConnected() {
 		panic(errors.New("working on a unconnected connection"))
 	}
-	m.dataMutex.RLock()
-	readableBytes := len(m.readBuffer)
-	m.dataMutex.RUnlock()
-	m.log.Trace().Int("readableBytes", readableBytes).Msg("return number of readable bytes")
-	return uint32(readableBytes), nil
+	return m.availableBytes(), nil
 }
 
 func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error {
@@ -220,19 +218,12 @@ func (m *TransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint
 	var err error
 	if availableBytes < numBytes {
 		m.log.Trace().Msg("not enough bytes available")
-		err = errors.New("not enough bytes available")
-	} else {
-		m.log.Trace().Msg("enough bytes available")
+		return m.readBuffer[:], bufio.ErrBufferFull
 	}
-	if availableBytes == 0 {
-		m.log.Trace().Msg("No bytes available")
-		return nil, err
-	}
-	m.dataMutex.RLock()
-	peekAble := m.readBuffer[0:availableBytes]
-	m.dataMutex.RUnlock()
+	m.log.Trace().Msg("enough bytes available")
+	peekAble := m.peek()
 	m.log.Trace().Int("peekAbleLen", len(peekAble)).Msg("New buffer size peekAbleLen")
-	return peekAble, err
+	return peekAble[:numBytes], err
 }
 
 func (m *TransportInstance) Read(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
@@ -270,12 +261,7 @@ func (m *TransportInstance) Read(ctx context.Context, numBytes uint32, timeout t
 	case <-ctx.Done():
 	case <-timer.C:
 	}
-	m.dataMutex.RLock()
-	data := m.readBuffer[0:int(numBytes)]
-	m.readBuffer = m.readBuffer[int(numBytes):]
-	m.dataMutex.RUnlock()
-	m.log.Trace().Uint32("availableBytes", availableBytes).Msg("New buffer size availableBytes")
-	return data, nil
+	return m.read(int(numBytes)), nil
 }
 
 func (m *TransportInstance) SetWriteInterceptor(writeInterceptor func(transportInstance *TransportInstance, data []byte)) {
@@ -370,9 +356,30 @@ func (m *TransportInstance) availableBytes() uint32 {
 	return uint32(len(m.readBuffer))
 }
 
+func (m *TransportInstance) peek() []byte {
+	m.dataMutex.RLock()
+	defer m.dataMutex.RUnlock()
+	return m.readBuffer[0:len(m.readBuffer)]
+}
+
+func (m *TransportInstance) read(numBytes int) []byte {
+	m.dataMutex.Lock()
+	defer m.dataMutex.Unlock()
+	data := m.readBuffer[0:int(numBytes)]
+	m.readBuffer = m.readBuffer[int(numBytes):]
+	return data
+}
+
+func (m *TransportInstance) appendRead(newBytes ...byte) (totalAvailableBytes uint32) {
+	m.dataMutex.Lock()
+	defer m.dataMutex.Unlock()
+	m.readBuffer = append(m.readBuffer, newBytes...)
+	return uint32(len(m.readBuffer))
+}
+
 func (m *TransportInstance) transferFromChannel(ctx context.Context, timeout time.Duration) (totalAvailableBytes uint32) {
 	m.log.Trace().Dur("timeout", timeout).Msg("Transfer from channel")
-	m.dataMutex.Lock()
+	totalAvailableBytes = m.availableBytes()
 	timer := time.NewTimer(timeout)
 	start := time.Now()
 	select {
@@ -382,9 +389,7 @@ func (m *TransportInstance) transferFromChannel(ctx context.Context, timeout tim
 		m.log.Trace().Msg("Timeout")
 	case newBytes := <-m.readChannel:
 		m.log.Trace().Dur("time", time.Since(start)).Msg("Got new bytes")
-		m.readBuffer = append(m.readBuffer, newBytes...)
+		totalAvailableBytes = m.appendRead(newBytes...)
 	}
-	totalAvailableBytes = uint32(len(m.readBuffer))
-	m.dataMutex.Unlock()
 	return totalAvailableBytes
 }

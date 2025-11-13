@@ -47,9 +47,7 @@ func (t *transportInstanceDrivenExtendedReader) Read(p []byte) (n int, err error
 
 func (t *transportInstanceDrivenExtendedReader) ReadByte() (byte, error) {
 	numBytes := uint32(1)
-	t.dataMutex.RLock()
 	availableBytes := t.availableBytes()
-	t.dataMutex.RUnlock()
 	if availableBytes < numBytes {
 		t.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
 		availableBytes = t.transferFromChannel(t.ctx, t.timeout)
@@ -61,9 +59,7 @@ func (t *transportInstanceDrivenExtendedReader) ReadByte() (byte, error) {
 
 func (t *transportInstanceDrivenExtendedReader) Peek(n int) ([]byte, error) {
 	numBytes := uint32(n)
-	t.dataMutex.RLock()
 	availableBytes := t.availableBytes()
-	t.dataMutex.RUnlock()
 	if availableBytes < numBytes {
 		t.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
 		availableBytes = t.transferFromChannel(t.ctx, t.timeout)

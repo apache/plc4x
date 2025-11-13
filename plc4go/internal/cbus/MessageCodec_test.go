@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -117,6 +118,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 		monitoredSALs  chan readWriteModel.MonitoredSAL
 	}
 	type args struct {
+		ctx     context.Context
 		timeout time.Duration
 	}
 	tests := []struct {
@@ -137,6 +139,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
+				ctx:     t.Context(),
 				timeout: 10 * time.Second,
 			},
 			setup: func(t *testing.T, fields *fields) {
@@ -162,6 +165,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
+				ctx:     t.Context(),
 				timeout: 10 * time.Second,
 			},
 			want: readWriteModel.NewCBusMessageToClient(
@@ -193,6 +197,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
+				ctx:     t.Context(),
 				timeout: 10 * time.Second,
 			},
 			setup: func(t *testing.T, fields *fields) {
@@ -219,6 +224,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
+				ctx:     t.Context(),
 				timeout: 10 * time.Second,
 			},
 			setup: func(t *testing.T, fields *fields) {
@@ -245,6 +251,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
+				ctx:     t.Context(),
 				timeout: 10 * time.Second,
 			},
 			setup: func(t *testing.T, fields *fields) {
@@ -279,6 +286,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
+				ctx:     t.Context(),
 				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, messageCodec *MessageCodec) {
@@ -326,6 +334,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
+				ctx:     t.Context(),
 				timeout: 10 * time.Second,
 			},
 			setup: func(t *testing.T, fields *fields) {
@@ -523,6 +532,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
+				ctx:     t.Context(),
 				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, messageCodec *MessageCodec) {
@@ -603,7 +613,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.Receive(t.Context(), tt.args.timeout)
+			got, err := m.Receive(tt.args.ctx, tt.args.timeout)
 			if !tt.wantErr(t, err, fmt.Sprintf("Receive()")) {
 				return
 			}
@@ -776,10 +786,10 @@ func Test_extractMMIAndSAL(t *testing.T) {
 		message spi.Message
 	}
 	tests := []struct {
-		name  string
-		args  args
-		setup func(t *testing.T, args *args)
-		want  bool
+		name    string
+		args    args
+		setup   func(t *testing.T, args *args)
+		handled bool
 	}{
 		{
 			name: "extract it",
@@ -818,6 +828,7 @@ func Test_extractMMIAndSAL(t *testing.T) {
 				codec.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 1)
 				args.codec = codec
 			},
+			handled: true,
 		},
 	}
 	for _, tt := range tests {
@@ -825,7 +836,7 @@ func Test_extractMMIAndSAL(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.args)
 			}
-			assert.Equalf(t, tt.want, extractMMIAndSAL(testutils.ProduceTestingLogger(t))(t.Context(), tt.args.codec, tt.args.message), "extractMMIAndSAL(%v, %v)", tt.args.codec, tt.args.message)
+			assert.Equalf(t, tt.handled, extractMMIAndSAL(testutils.ProduceTestingLogger(t))(t.Context(), tt.args.codec, tt.args.message), "extractMMIAndSAL(%v, %v) to be handled", tt.args.codec, tt.args.message)
 		})
 	}
 }
