@@ -77,9 +77,8 @@ func TestDriver_GetConnection(t *testing.T) {
 				t.Cleanup(cancelFunc)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
-				timeout := time.NewTimer(20 * time.Millisecond)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 					return false
 				case result := <-results:
@@ -112,9 +111,8 @@ func TestDriver_GetConnection(t *testing.T) {
 				t.Cleanup(cancelFunc)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
-				timeout := time.NewTimer(20 * time.Millisecond)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 					return false
 				case result := <-results:
@@ -148,9 +146,8 @@ func TestDriver_GetConnection(t *testing.T) {
 				t.Cleanup(cancelFunc)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
-				timeout := time.NewTimer(20 * time.Millisecond)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 					return false
 				case result := <-results:
@@ -181,9 +178,8 @@ func TestDriver_GetConnection(t *testing.T) {
 				t.Cleanup(cancelFunc)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
-				timeout := time.NewTimer(20 * time.Millisecond)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 					return false
 				case result := <-results:
@@ -281,9 +277,8 @@ func TestDriver_reportError(t *testing.T) {
 				err: errors.New("No no no no no"),
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
-				timeout := time.NewTimer(20 * time.Millisecond)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 					return false
 				case result := <-results:

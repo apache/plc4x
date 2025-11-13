@@ -64,7 +64,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 			if assert.NotNil(t, connectionResult.GetConnection()) {
 				connection := connectionResult.GetConnection().(tracedPlcConnection)
 				assert.True(t, connection.IsTraceEnabled())
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -90,7 +90,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 			if assert.NotNil(t, connectionResult.GetConnection()) {
 				connection := connectionResult.GetConnection().(tracedPlcConnection)
 				assert.False(t, connection.IsTraceEnabled())
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -139,7 +139,7 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 			if assert.NotNil(t, connectionResult.GetConnection()) {
 				connection := connectionResult.GetConnection().(tracedPlcConnection)
 				assert.NotNil(t, connection.GetTracer())
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -188,7 +188,7 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 			if assert.NotNil(t, connectionResult.GetConnection()) {
 				connection := connectionResult.GetConnection().(tracedPlcConnection)
 				assert.Greater(t, len(connection.GetConnectionId()), 0)
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -283,7 +283,7 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 			assert.Nil(t, connectionResult.GetErr())
 			if assert.NotNil(t, connectionResult.GetConnection()) {
 				connection := connectionResult.GetConnection()
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -292,7 +292,7 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 							t.Errorf("The code did not panic")
 						}
 					}()
-					connection.BlockingClose()
+					assert.NoError(t, connection.BlockingClose(t.Context()))
 				}()
 			}
 		}
@@ -331,7 +331,7 @@ func TestLeasedPlcConnection_Close(t *testing.T) {
 			assert.Nil(t, connectionResult.GetErr())
 			if assert.NotNil(t, connectionResult.GetConnection()) {
 				connection := connectionResult.GetConnection()
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -380,7 +380,7 @@ func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 			if assert.NotNil(t, connectionResult.GetConnection()) {
 				connection := connectionResult.GetConnection()
 				assert.True(t, connection.IsConnected())
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				assert.False(t, connection.IsConnected())
 			}
 		}
@@ -420,7 +420,7 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 			if assert.NotNil(t, connectionResult.GetConnection()) {
 				connection := connectionResult.GetConnection()
 				connection.Ping()
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -473,7 +473,7 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 					attributes := metadata.GetConnectionAttributes()
 					assert.NotNil(t, attributes)
 				}
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -523,7 +523,7 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 				connection := connectionResult.GetConnection()
 				builder := connection.ReadRequestBuilder()
 				assert.NotNil(t, builder)
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -573,7 +573,7 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 				connection := connectionResult.GetConnection()
 				builder := connection.WriteRequestBuilder()
 				assert.NotNil(t, builder)
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -623,7 +623,7 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 				connection := connectionResult.GetConnection()
 				builder := connection.SubscriptionRequestBuilder()
 				assert.NotNil(t, builder)
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -681,7 +681,7 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 					}()
 					connection.UnsubscriptionRequestBuilder()
 				}()
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
@@ -739,7 +739,7 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 					}()
 					connection.BrowseRequestBuilder()
 				}()
-				connection.BlockingClose()
+				assert.NoError(t, connection.BlockingClose(t.Context()))
 				func() {
 					defer func() {
 						if r := recover(); r != nil {

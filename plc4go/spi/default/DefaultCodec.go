@@ -198,9 +198,13 @@ func (m *defaultCodec) IsRunning() bool {
 	return m.running.Load()
 }
 
-func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) {
+func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
 	m.expectationsChangeMutex.Lock()
 	defer m.expectationsChangeMutex.Unlock()
+	ttl := m.receiveTimeout
+	if deadline, ok := ctx.Deadline(); ok {
+		ttl = time.Until(deadline)
+	}
 	expectation := newDefaultExpectation(ctx, ttl, acceptsMessage, handleMessage, handleError)
 	m.expectations = append(m.expectations, expectation)
 	m.log.Debug().Stringer("expectation", expectation).Msg("Added expectation")
@@ -214,12 +218,12 @@ func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMes
 	}
 }
 
-func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
 	if err := ctx.Err(); err != nil {
 		return errors.Wrap(err, "Not sending message as context is aborted")
 	}
-	m.Expect(ctx, acceptsMessage, handleMessage, handleError, ttl) // We register the expectation first to avoid getting a response between sending and adding the expect
-	m.log.Trace().Dur("ttl", ttl).Msg("Sending request")
+	m.Expect(ctx, acceptsMessage, handleMessage, handleError) // We register the expectation first to avoid getting a response between sending and adding the expect
+	m.log.Trace().Msg("Sending request")
 	return m.Send(ctx, message)
 }
 

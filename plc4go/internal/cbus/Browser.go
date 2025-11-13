@@ -121,7 +121,7 @@ unitLoop:
 			readRequest, _ := m.connection.ReadRequestBuilder().
 				AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
 				Build()
-			timeout := 5 * time.Second
+			timeout := 5 * time.Second // TODO: do we want to keep this
 			timeoutCtx, timeoutCancel := context.WithTimeout(ctx, timeout)
 			m.log.Trace().
 				Stringer("readRequest", readRequest).

@@ -167,24 +167,13 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			}
 		}()
 		c.log.Debug().Msg("Sending UnregisterSession EIP Packet")
-		ttl := c.GetTtl()
-		if deadline, ok := ctx.Deadline(); ok {
-			ttl = time.Until(deadline)
-			c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-		}
-		if err := c.messageCodec.SendRequest(
-			ctx,
-			readWriteModel.NewEipDisconnectRequest(c.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
-				return true
-			},
-			func(message spi.Message) error {
-				return nil
-			},
-			func(err error) error {
-				return nil
-			},
-			ttl,
-		); err != nil {
+		if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewEipDisconnectRequest(c.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
+			return true
+		}, func(message spi.Message) error {
+			return nil
+		}, func(err error) error {
+			return nil
+		}); err != nil {
 			c.log.Debug().Err(err).Msg("error sending unregister session request")
 		}
 
@@ -229,56 +218,43 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 	c.log.Debug().Msg("Sending ListServices Request")
 	listServicesResultChan := make(chan readWriteModel.ListServicesResponse, 1)
 	listServicesResultErrorChan := make(chan error, 1)
-	ttl := c.GetTtl()
-	if deadline, ok := ctx.Deadline(); ok {
-		ttl = time.Until(deadline)
-		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-	}
-	if err := c.messageCodec.SendRequest(
-		ctx,
-		readWriteModel.NewListServicesRequest(
-			EmptySessionHandle,
-			uint32(readWriteModel.CIPStatus_Success),
-			[]byte(DefaultSenderContext),
-			uint32(0),
-		),
-		func(message spi.Message) bool {
-			eipPacket, ok := message.(readWriteModel.EipPacket)
-			if !ok {
-				return false
-			}
-			eipPacketListServicesResponse := eipPacket.(readWriteModel.ListServicesResponse)
-			return eipPacketListServicesResponse != nil
-		},
-		func(message spi.Message) error {
-			listServicesResponse := message.(readWriteModel.ListServicesResponse)
-			serviceResponse := listServicesResponse.GetTypeIds()[0].(readWriteModel.ServicesResponse)
-			if serviceResponse.GetSupportsCIPEncapsulation() {
-				c.log.Debug().Msg("Device is capable of CIP over EIP encapsulation")
-			}
-			c.cipEncapsulationAvailable = serviceResponse.GetSupportsCIPEncapsulation()
-			listServicesResultChan <- listServicesResponse
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				c.Close()
-			}
-			listServicesResultErrorChan <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		ttl,
-	); err != nil {
+	if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewListServicesRequest(
+		EmptySessionHandle,
+		uint32(readWriteModel.CIPStatus_Success),
+		[]byte(DefaultSenderContext),
+		uint32(0),
+	), func(message spi.Message) bool {
+		eipPacket, ok := message.(readWriteModel.EipPacket)
+		if !ok {
+			return false
+		}
+		eipPacketListServicesResponse := eipPacket.(readWriteModel.ListServicesResponse)
+		return eipPacketListServicesResponse != nil
+	}, func(message spi.Message) error {
+		listServicesResponse := message.(readWriteModel.ListServicesResponse)
+		serviceResponse := listServicesResponse.GetTypeIds()[0].(readWriteModel.ServicesResponse)
+		if serviceResponse.GetSupportsCIPEncapsulation() {
+			c.log.Debug().Msg("Device is capable of CIP over EIP encapsulation")
+		}
+		c.cipEncapsulationAvailable = serviceResponse.GetSupportsCIPEncapsulation()
+		listServicesResultChan <- listServicesResponse
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+			c.Close()
+		}
+		listServicesResultErrorChan <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
 
-	timeout := time.NewTimer(1 * time.Second)
 	select {
-	case <-timeout.C:
-		return errors.New("timeout")
+	case <-ctx.Done():
+		return errors.Wrap(ctx.Err(), "timeout")
 	case err := <-listServicesResultErrorChan:
 		return errors.Wrap(err, "Error receiving of ListServices response")
 	case _ = <-listServicesResultChan:
@@ -290,128 +266,104 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 	c.log.Debug().Msg("Sending EipConnectionRequest")
 	connectionResponseChan := make(chan readWriteModel.EipConnectionResponse, 1)
 	connectionResponseErrorChan := make(chan error, 1)
-	ttl := c.GetTtl()
-	if deadline, ok := ctx.Deadline(); ok {
-		ttl = time.Until(deadline)
-		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-	}
-	if err := c.messageCodec.SendRequest(
-		ctx,
-		readWriteModel.NewEipConnectionRequest(
-			EmptySessionHandle,
-			uint32(readWriteModel.CIPStatus_Success),
-			[]byte(DefaultSenderContext),
-			uint32(0),
-		),
-		func(message spi.Message) bool {
-			_, ok := message.(readWriteModel.EipPacket)
-			return ok
-		},
-		func(message spi.Message) error {
-			eipPacket := message.(readWriteModel.EipPacket)
-			connectionResponse := eipPacket.(readWriteModel.EipConnectionResponse)
-			if connectionResponse != nil {
-				if connectionResponse.GetStatus() == 0 {
-					c.sessionHandle = connectionResponse.GetSessionHandle()
-					c.senderContext = connectionResponse.GetSenderContext()
+	if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewEipConnectionRequest(
+		EmptySessionHandle,
+		uint32(readWriteModel.CIPStatus_Success),
+		[]byte(DefaultSenderContext),
+		uint32(0),
+	), func(message spi.Message) bool {
+		_, ok := message.(readWriteModel.EipPacket)
+		return ok
+	}, func(message spi.Message) error {
+		eipPacket := message.(readWriteModel.EipPacket)
+		connectionResponse := eipPacket.(readWriteModel.EipConnectionResponse)
+		if connectionResponse != nil {
+			if connectionResponse.GetStatus() == 0 {
+				c.sessionHandle = connectionResponse.GetSessionHandle()
+				c.senderContext = connectionResponse.GetSenderContext()
+				c.log.Debug().
+					Uint32("sessionHandle", c.sessionHandle).
+					Msg("Got assigned with Session")
+				connectionResponseChan <- connectionResponse
+			} else {
+				c.log.Error().
+					Uint32("status", connectionResponse.GetStatus()).
+					Msg("Got unsuccessful status for connection request")
+				connectionResponseErrorChan <- errors.New("got unsuccessful connection response")
+			}
+		} else {
+			// TODO: This seems pretty hard-coded ... possibly find out if we can't simplify this.
+			classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 6))
+			instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 1))
+			exchange := readWriteModel.NewUnConnectedDataItem(
+				readWriteModel.NewCipConnectionManagerRequest(classSegment, instanceSegment, 0, 10,
+					14, 536870914, 33944, c.connectionSerialNumber,
+					4919, 42, 3, 2101812,
+					readWriteModel.NewNetworkConnectionParameters(4002, false, 2, 0, true),
+					2113537,
+					readWriteModel.NewNetworkConnectionParameters(4002, false, 2, 0, true),
+					readWriteModel.NewTransportType(true, 2, 3),
+					c.connectionPathSize, c.routingAddress))
+			typeIds := []readWriteModel.TypeId{readWriteModel.NewNullAddressItem(), exchange}
+			eipWrapper := readWriteModel.NewCipRRData(
+				c.sessionHandle,
+				uint32(readWriteModel.CIPStatus_Success),
+				c.senderContext,
+				0,
+				c.sessionHandle,
+				0,
+				typeIds,
+			)
+			if err := c.messageCodec.SendRequest(ctx, eipWrapper, func(message spi.Message) bool {
+				eipPacket := message.(readWriteModel.EipPacket)
+				if eipPacket == nil {
+					return false
+				}
+				cipRRData := eipPacket.(readWriteModel.CipRRData)
+				return cipRRData != nil
+			}, func(message spi.Message) error {
+				cipRRData := message.(readWriteModel.CipRRData)
+				if cipRRData.GetStatus() == 0 {
+					unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
+					connectionManagerResponse := unconnectedDataItem.GetService().(readWriteModel.CipConnectionManagerResponse)
+					c.connectionId = connectionManagerResponse.GetOtConnectionId()
 					c.log.Debug().
-						Uint32("sessionHandle", c.sessionHandle).
-						Msg("Got assigned with Session")
+						Uint32("connectionId", c.connectionId).
+						Msg("Got assigned with connection if")
 					connectionResponseChan <- connectionResponse
 				} else {
-					c.log.Error().
-						Uint32("status", connectionResponse.GetStatus()).
-						Msg("Got unsuccessful status for connection request")
-					connectionResponseErrorChan <- errors.New("got unsuccessful connection response")
+					connectionResponseErrorChan <- fmt.Errorf("got status code while opening Connection manager: %d", cipRRData.GetStatus())
 				}
-			} else {
-				// TODO: This seems pretty hard-coded ... possibly find out if we can't simplify this.
-				classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 6))
-				instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 1))
-				exchange := readWriteModel.NewUnConnectedDataItem(
-					readWriteModel.NewCipConnectionManagerRequest(classSegment, instanceSegment, 0, 10,
-						14, 536870914, 33944, c.connectionSerialNumber,
-						4919, 42, 3, 2101812,
-						readWriteModel.NewNetworkConnectionParameters(4002, false, 2, 0, true),
-						2113537,
-						readWriteModel.NewNetworkConnectionParameters(4002, false, 2, 0, true),
-						readWriteModel.NewTransportType(true, 2, 3),
-						c.connectionPathSize, c.routingAddress))
-				typeIds := []readWriteModel.TypeId{readWriteModel.NewNullAddressItem(), exchange}
-				eipWrapper := readWriteModel.NewCipRRData(
-					c.sessionHandle,
-					uint32(readWriteModel.CIPStatus_Success),
-					c.senderContext,
-					0,
-					c.sessionHandle,
-					0,
-					typeIds,
-				)
-				if deadline, ok := ctx.Deadline(); ok {
-					ttl = time.Until(deadline)
-					c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
+				return nil
+			}, func(err error) error {
+				// If this is a timeout, do a check if the connection requires a reconnection
+				var timeoutError utils.TimeoutError
+				if errors.As(err, &timeoutError) {
+					c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+					c.Close()
 				}
-				if err := c.messageCodec.SendRequest(
-					ctx,
-					eipWrapper,
-					func(message spi.Message) bool {
-						eipPacket := message.(readWriteModel.EipPacket)
-						if eipPacket == nil {
-							return false
-						}
-						cipRRData := eipPacket.(readWriteModel.CipRRData)
-						return cipRRData != nil
-					},
-					func(message spi.Message) error {
-						cipRRData := message.(readWriteModel.CipRRData)
-						if cipRRData.GetStatus() == 0 {
-							unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
-							connectionManagerResponse := unconnectedDataItem.GetService().(readWriteModel.CipConnectionManagerResponse)
-							c.connectionId = connectionManagerResponse.GetOtConnectionId()
-							c.log.Debug().
-								Uint32("connectionId", c.connectionId).
-								Msg("Got assigned with connection if")
-							connectionResponseChan <- connectionResponse
-						} else {
-							connectionResponseErrorChan <- fmt.Errorf("got status code while opening Connection manager: %d", cipRRData.GetStatus())
-						}
-						return nil
-					},
-					func(err error) error {
-						// If this is a timeout, do a check if the connection requires a reconnection
-						var timeoutError utils.TimeoutError
-						if errors.As(err, &timeoutError) {
-							c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-							c.Close()
-						}
-						connectionResponseErrorChan <- errors.Wrap(err, "got error processing request")
-						return nil
-					},
-					ttl,
-				); err != nil {
-					c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
-				}
+				connectionResponseErrorChan <- errors.Wrap(err, "got error processing request")
+				return nil
+			}); err != nil {
+				c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 			}
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			var timeoutError utils.TimeoutError
-			if errors.As(err, &timeoutError) {
-				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				c.Close()
-			}
-			connectionResponseErrorChan <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		ttl,
-	); err != nil {
+		}
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		var timeoutError utils.TimeoutError
+		if errors.As(err, &timeoutError) {
+			c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+			c.Close()
+		}
+		connectionResponseErrorChan <- errors.Wrap(err, "got error processing request")
+		return nil
+	}); err != nil {
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
-	timeout := time.NewTimer(1 * time.Second)
 	select {
-	case <-timeout.C:
-		return errors.New("timeout")
+	case <-ctx.Done():
+		return errors.Wrap(ctx.Err(), "timeout")
 	case err := <-connectionResponseErrorChan:
 		return errors.Wrap(err, "Error receiving of ListServices response")
 	case _ = <-connectionResponseChan:
@@ -425,76 +377,63 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 	listAllAttributesErrorChan := make(chan error, 1)
 	classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(uint8(0), uint8(2)))
 	instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(uint8(0), uint8(1)))
-	ttl := c.GetTtl()
-	if deadline, ok := ctx.Deadline(); ok {
-		ttl = time.Until(deadline)
-		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-	}
-	if err := c.messageCodec.SendRequest(
-		ctx,
-		readWriteModel.NewCipRRData(
-			c.sessionHandle,
-			uint32(readWriteModel.CIPStatus_Success),
-			c.senderContext,
-			0,
-			EmptyInterfaceHandle,
-			0,
-			[]readWriteModel.TypeId{
-				readWriteModel.NewNullAddressItem(),
-				readWriteModel.NewUnConnectedDataItem(
-					readWriteModel.NewGetAttributeAllRequest(classSegment, instanceSegment),
-				),
-			},
-		),
-		func(message spi.Message) bool {
-			eipPacket := message.(readWriteModel.CipRRData)
-			return eipPacket != nil
+	if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewCipRRData(
+		c.sessionHandle,
+		uint32(readWriteModel.CIPStatus_Success),
+		c.senderContext,
+		0,
+		EmptyInterfaceHandle,
+		0,
+		[]readWriteModel.TypeId{
+			readWriteModel.NewNullAddressItem(),
+			readWriteModel.NewUnConnectedDataItem(
+				readWriteModel.NewGetAttributeAllRequest(classSegment, instanceSegment),
+			),
 		},
-		func(message spi.Message) error {
-			cipRrData := message.(readWriteModel.CipRRData)
-			if cipRrData.GetStatus() == uint32(readWriteModel.CIPStatus_Success) {
-				dataItem := cipRrData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
-				response := dataItem.GetService().(readWriteModel.GetAttributeAllResponse)
-				if response.GetStatus() != uint8(readWriteModel.CIPStatus_Success) {
-					// TODO: Return an error ...
-				} else if response.GetAttributes() != nil {
-					for _, classId := range response.GetAttributes().GetClassId() {
-						if curCipClassId, ok := readWriteModel.CIPClassIDByValue(classId); ok {
-							switch curCipClassId {
-							case readWriteModel.CIPClassID_MessageRouter:
-								c.useMessageRouter = true
-							case readWriteModel.CIPClassID_ConnectionManager:
-								c.useConnectionManager = true
-							}
+	), func(message spi.Message) bool {
+		eipPacket := message.(readWriteModel.CipRRData)
+		return eipPacket != nil
+	}, func(message spi.Message) error {
+		cipRrData := message.(readWriteModel.CipRRData)
+		if cipRrData.GetStatus() == uint32(readWriteModel.CIPStatus_Success) {
+			dataItem := cipRrData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
+			response := dataItem.GetService().(readWriteModel.GetAttributeAllResponse)
+			if response.GetStatus() != uint8(readWriteModel.CIPStatus_Success) {
+				// TODO: Return an error ...
+			} else if response.GetAttributes() != nil {
+				for _, classId := range response.GetAttributes().GetClassId() {
+					if curCipClassId, ok := readWriteModel.CIPClassIDByValue(classId); ok {
+						switch curCipClassId {
+						case readWriteModel.CIPClassID_MessageRouter:
+							c.useMessageRouter = true
+						case readWriteModel.CIPClassID_ConnectionManager:
+							c.useConnectionManager = true
 						}
 					}
 				}
-				c.log.Debug().
-					Bool("useMessageRouter", c.useMessageRouter).
-					Bool("useConnectionManager", c.useConnectionManager).
-					Msg("Connection using message router, using connection manager")
-				listAllAttributesResponseChan <- response
 			}
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			if errors.Is(err, utils.TimeoutError{}) {
-				c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				c.Close()
-			}
-			c.fireConnectionError(errors.Wrap(err, "got error processing request"), ch)
-			return nil
-		},
-		ttl,
-	); err != nil {
+			c.log.Debug().
+				Bool("useMessageRouter", c.useMessageRouter).
+				Bool("useConnectionManager", c.useConnectionManager).
+				Msg("Connection using message router, using connection manager")
+			listAllAttributesResponseChan <- response
+		}
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		if errors.Is(err, utils.TimeoutError{}) {
+			c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+			c.Close()
+		}
+		c.fireConnectionError(errors.Wrap(err, "got error processing request"), ch)
+		return nil
+	}); err != nil {
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
 	}
 
-	timeout := time.NewTimer(1 * time.Second)
 	select {
-	case <-timeout.C:
-		return errors.New("timeout")
+	case <-ctx.Done():
+		return errors.Wrap(ctx.Err(), "timeout")
 	case err := <-listAllAttributesErrorChan:
 		return errors.Wrap(err, "Error receiving of ListServices response")
 	case _ = <-listAllAttributesResponseChan:

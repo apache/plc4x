@@ -391,18 +391,13 @@ func (m *Connection) doSomethingAndClose(something func()) {
 	}
 }
 
-func (m *Connection) BlockingClose() {
-	ttlTimer := time.NewTimer(m.defaultTtl)
-	closeResults := m.Close()
+func (m *Connection) BlockingClose(ctx context.Context) error {
+	closeResult := m.Close()
 	select {
-	case <-closeResults:
-		if !ttlTimer.Stop() {
-			<-ttlTimer.C
-		}
-		return
-	case <-ttlTimer.C:
-		ttlTimer.Stop()
-		return
+	case result := <-closeResult:
+		return result.GetErr()
+	case <-ctx.Done():
+		return ctx.Err()
 	}
 }
 

@@ -79,12 +79,19 @@ func (t *plcConnectionLease) Connect(_ context.Context) <-chan plc4go.PlcConnect
 	panic("Called 'Connect' on a cached connection")
 }
 
-func (t *plcConnectionLease) BlockingClose() {
+func (t *plcConnectionLease) BlockingClose(ctx context.Context) error {
 	if t.connection == nil {
 		panic("Called 'BlockingClose' on a closed cached connection")
 	}
 	// Call close and wait for the operation to finish.
-	<-t.Close()
+	closeResult := t.Close()
+	select {
+	case result := <-closeResult:
+		return result.GetErr()
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+	return nil
 }
 
 func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {

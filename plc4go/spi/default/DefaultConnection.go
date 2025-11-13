@@ -24,7 +24,6 @@ import (
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -53,17 +52,11 @@ type DefaultConnection interface {
 	spi.TransportInstanceExposer
 	spi.HandlerExposer
 	SetConnected(connected bool)
-	GetTtl() time.Duration
 }
 
 // NewDefaultConnection is the factory for a DefaultConnection
 func NewDefaultConnection(requirements DefaultConnectionRequirements, options ...options.WithOption) DefaultConnection {
 	return buildDefaultConnection(requirements, options...)
-}
-
-// WithDefaultTtl ttl is time.Second * 10 by default
-func WithDefaultTtl(defaultTtl time.Duration) options.WithOption {
-	return withDefaultTtl{defaultTtl: defaultTtl}
 }
 
 func WithPlcTagHandler(tagHandler spi.PlcTagHandler) options.WithOption {
@@ -80,12 +73,6 @@ func WithPlcValueHandler(plcValueHandler spi.PlcValueHandler) options.WithOption
 // Internal section
 //
 
-type withDefaultTtl struct {
-	options.Option
-	// defaultTtl the time to live after a close
-	defaultTtl time.Duration
-}
-
 type withPlcTagHandler struct {
 	options.Option
 	plcTagHandler spi.PlcTagHandler
@@ -99,8 +86,6 @@ type withPlcValueHandler struct {
 //go:generate go tool plc4xGenerator -type=defaultConnection
 type defaultConnection struct {
 	DefaultConnectionRequirements `ignore:"true"`
-	// defaultTtl the time to live after a close
-	defaultTtl time.Duration
 	// connected indicates if a connection is connected
 	connected    atomic.Bool
 	tagHandler   spi.PlcTagHandler
@@ -112,14 +97,11 @@ type defaultConnection struct {
 }
 
 func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {
-	defaultTtl := 60 * time.Second
 	var tagHandler spi.PlcTagHandler
 	var valueHandler spi.PlcValueHandler
 
 	for _, option := range _options {
 		switch option.(type) {
-		case withDefaultTtl:
-			defaultTtl = option.(withDefaultTtl).defaultTtl
 		case withPlcTagHandler:
 			tagHandler = option.(withPlcTagHandler).plcTagHandler
 		case withPlcValueHandler:
@@ -130,7 +112,6 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &defaultConnection{
 		DefaultConnectionRequirements: requirements,
-		defaultTtl:                    defaultTtl,
 		tagHandler:                    tagHandler,
 		valueHandler:                  valueHandler,
 
@@ -160,20 +141,15 @@ func (d *defaultConnection) Connect(ctx context.Context) <-chan plc4go.PlcConnec
 	return ch
 }
 
-func (d *defaultConnection) BlockingClose() {
+func (d *defaultConnection) BlockingClose(ctx context.Context) error {
 	d.log.Trace().Msg("blocking close connection")
 	closeResults := d.GetConnection().Close()
-	timeout := time.NewTimer(d.GetTtl())
 	d.SetConnected(false)
 	select {
-	case <-closeResults:
-		if !timeout.Stop() {
-			<-timeout.C
-		}
-		return
-	case <-timeout.C:
-		timeout.Stop()
-		return
+	case result := <-closeResults:
+		return result.GetErr()
+	case <-ctx.Done():
+		return ctx.Err()
 	}
 }
 
@@ -222,10 +198,6 @@ func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		}
 	})
 	return ch
-}
-
-func (d *defaultConnection) GetTtl() time.Duration {
-	return d.defaultTtl
 }
 
 func (d *defaultConnection) GetMetadata() apiModel.PlcConnectionMetadata {

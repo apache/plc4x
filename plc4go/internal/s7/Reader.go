@@ -120,64 +120,52 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 			// Send the  over the wire
 			m.log.Trace().Msg("Send ")
-			ttl := 60 * time.Second
-			if deadline, ok := ctx.Deadline(); ok {
-				ttl = time.Until(deadline)
-				m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-			}
-			if err := m.messageCodec.SendRequest(
-				ctx,
-				tpktPacket,
-				func(message spi.Message) bool {
-					tpktPacket, ok := message.(readWriteModel.TPKTPacket)
-					if !ok {
-						return false
-					}
-					cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-					if !ok {
-						return false
-					}
-					payload := cotpPacketData.GetPayload()
-					if payload == nil {
-						return false
-					}
-					return payload.GetTpduReference() == tpduId
-				},
-				func(message spi.Message) error {
-					// Convert the response into an
-					m.log.Trace().Msg("convert response to ")
-					tpktPacket := message.(readWriteModel.TPKTPacket)
-					cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-					payload := cotpPacketData.GetPayload()
-					// Convert the s7 response into a PLC4X response
-					m.log.Trace().Msg("convert response to PLC4X response")
-					readResponse, err := m.ToPlc4xReadResponse(payload, readRequest)
+			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
+				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
+				if !ok {
+					return false
+				}
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+				if !ok {
+					return false
+				}
+				payload := cotpPacketData.GetPayload()
+				if payload == nil {
+					return false
+				}
+				return payload.GetTpduReference() == tpduId
+			}, func(message spi.Message) error {
+				// Convert the response into an
+				m.log.Trace().Msg("convert response to ")
+				tpktPacket := message.(readWriteModel.TPKTPacket)
+				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+				payload := cotpPacketData.GetPayload()
+				// Convert the s7 response into a PLC4X response
+				m.log.Trace().Msg("convert response to PLC4X response")
+				readResponse, err := m.ToPlc4xReadResponse(payload, readRequest)
 
-					if err != nil {
-						result <- spiModel.NewDefaultPlcReadRequestResult(
-							readRequest,
-							nil,
-							errors.Wrap(err, "Error decoding response"),
-						)
-						return transaction.EndRequest()
-					}
-					result <- spiModel.NewDefaultPlcReadRequestResult(
-						readRequest,
-						readResponse,
-						nil,
-					)
-					return transaction.EndRequest()
-				},
-				func(err error) error {
+				if err != nil {
 					result <- spiModel.NewDefaultPlcReadRequestResult(
 						readRequest,
 						nil,
-						errors.Wrap(err, "got timeout while waiting for response"),
+						errors.Wrap(err, "Error decoding response"),
 					)
 					return transaction.EndRequest()
-				},
-				ttl,
-			); err != nil {
+				}
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					readResponse,
+					nil,
+				)
+				return transaction.EndRequest()
+			}, func(err error) error {
+				result <- spiModel.NewDefaultPlcReadRequestResult(
+					readRequest,
+					nil,
+					errors.Wrap(err, "got timeout while waiting for response"),
+				)
+				return transaction.EndRequest()
+			}); err != nil {
 				result <- spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,

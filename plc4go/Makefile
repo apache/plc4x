@@ -72,6 +72,8 @@ exec:
 clean:
 	@-$(MAKE) go-clean
 
+sync-code: go-generate go-mocks go-fmt
+
 go-compile: go-get go-build
 
 go-build: go-fmt

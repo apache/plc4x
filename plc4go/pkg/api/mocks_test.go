@@ -61,9 +61,20 @@ func (_m *MockPlcConnection) EXPECT() *MockPlcConnection_Expecter {
 }
 
 // BlockingClose provides a mock function for the type MockPlcConnection
-func (_mock *MockPlcConnection) BlockingClose() {
-	_mock.Called()
-	return
+func (_mock *MockPlcConnection) BlockingClose(ctx context.Context) error {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for BlockingClose")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
 }
 
 // MockPlcConnection_BlockingClose_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'BlockingClose'
@@ -72,24 +83,31 @@ type MockPlcConnection_BlockingClose_Call struct {
 }
 
 // BlockingClose is a helper method to define mock.On call
-func (_e *MockPlcConnection_Expecter) BlockingClose() *MockPlcConnection_BlockingClose_Call {
-	return &MockPlcConnection_BlockingClose_Call{Call: _e.mock.On("BlockingClose")}
+//   - ctx context.Context
+func (_e *MockPlcConnection_Expecter) BlockingClose(ctx interface{}) *MockPlcConnection_BlockingClose_Call {
+	return &MockPlcConnection_BlockingClose_Call{Call: _e.mock.On("BlockingClose", ctx)}
 }
 
-func (_c *MockPlcConnection_BlockingClose_Call) Run(run func()) *MockPlcConnection_BlockingClose_Call {
+func (_c *MockPlcConnection_BlockingClose_Call) Run(run func(ctx context.Context)) *MockPlcConnection_BlockingClose_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
 
-func (_c *MockPlcConnection_BlockingClose_Call) Return() *MockPlcConnection_BlockingClose_Call {
-	_c.Call.Return()
+func (_c *MockPlcConnection_BlockingClose_Call) Return(err error) *MockPlcConnection_BlockingClose_Call {
+	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockPlcConnection_BlockingClose_Call) RunAndReturn(run func()) *MockPlcConnection_BlockingClose_Call {
-	_c.Run(run)
+func (_c *MockPlcConnection_BlockingClose_Call) RunAndReturn(run func(ctx context.Context) error) *MockPlcConnection_BlockingClose_Call {
+	_c.Call.Return(run)
 	return _c
 }
 

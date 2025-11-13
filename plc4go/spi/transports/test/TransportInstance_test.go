@@ -172,8 +172,8 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		writeInterceptor func(transportInstance *TransportInstance, data []byte)
 	}
 	type args struct {
-		until   func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
-		timeout time.Duration
+		ctx   context.Context
+		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
 	}
 	tests := []struct {
 		name        string
@@ -185,10 +185,14 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		{
 			name: "fill it (errors)",
 			args: args{
+				ctx: func() context.Context {
+					ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+					t.Cleanup(cancel)
+					return ctx
+				}(),
 				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 					return pos < 3
 				},
-				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -201,12 +205,12 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 				readBuffer: []byte{1, 2, 3, 4},
 			},
 			args: args{
+				ctx: t.Context(),
 				until: func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool) {
 					keepGoing = pos < 3
 					t.Logf("pos: %d, currentByte: %d: keepGoing: %t", pos, currentByte, keepGoing)
 					return keepGoing
 				},
-				timeout: 10 * time.Second,
 			},
 			manipulator: func(t *testing.T, instance *TransportInstance) {
 				instance.connected.Store(true)
@@ -227,7 +231,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.FillBuffer(t.Context(), tt.args.until); (err != nil) != tt.wantErr {
+			if err := m.FillBuffer(tt.args.ctx, tt.args.until); (err != nil) != tt.wantErr {
 				t.Errorf("FillBuffer() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

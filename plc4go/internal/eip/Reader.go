@@ -110,57 +110,45 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 				ctx, cancel := context.WithCancel(ctx)
 				context.AfterFunc(transactionContext, cancel)
-				ttl := 60 * time.Second
-				if deadline, ok := ctx.Deadline(); ok {
-					ttl = time.Until(deadline)
-					m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-				}
-				if err := m.messageCodec.SendRequest(
-					ctx,
-					request,
-					func(message spi.Message) bool {
-						eipPacket := message.(readWriteModel.EipPacket)
-						if eipPacket == nil {
-							return false
-						}
-						cipRRData := eipPacket.(readWriteModel.CipRRData)
-						if cipRRData == nil {
-							return false
-						}
-						return cipRRData.GetSessionHandle() == *m.sessionHandle
-					},
-					func(message spi.Message) error {
-						cipRRData := message.(readWriteModel.CipRRData)
-						m.log.Trace().Stringer("cipRRData", cipRRData).Msg("handling")
-						unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
-						// Convert the eip response into a PLC4X response
-						m.log.Trace().Msg("convert response to PLC4X response")
-						readResponse, err := m.ToPlc4xReadResponse(unconnectedDataItem.GetService(), readRequest)
-						if err != nil {
-							result <- spiModel.NewDefaultPlcReadRequestResult(
-								readRequest,
-								nil,
-								errors.Wrap(err, "Error decoding response"),
-							)
-							return transaction.EndRequest()
-						}
-						result <- spiModel.NewDefaultPlcReadRequestResult(
-							readRequest,
-							readResponse,
-							nil,
-						)
-						return transaction.EndRequest()
-					},
-					func(err error) error {
+				if err := m.messageCodec.SendRequest(ctx, request, func(message spi.Message) bool {
+					eipPacket := message.(readWriteModel.EipPacket)
+					if eipPacket == nil {
+						return false
+					}
+					cipRRData := eipPacket.(readWriteModel.CipRRData)
+					if cipRRData == nil {
+						return false
+					}
+					return cipRRData.GetSessionHandle() == *m.sessionHandle
+				}, func(message spi.Message) error {
+					cipRRData := message.(readWriteModel.CipRRData)
+					m.log.Trace().Stringer("cipRRData", cipRRData).Msg("handling")
+					unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
+					// Convert the eip response into a PLC4X response
+					m.log.Trace().Msg("convert response to PLC4X response")
+					readResponse, err := m.ToPlc4xReadResponse(unconnectedDataItem.GetService(), readRequest)
+					if err != nil {
 						result <- spiModel.NewDefaultPlcReadRequestResult(
 							readRequest,
 							nil,
-							errors.Wrap(err, "got timeout while waiting for response"),
+							errors.Wrap(err, "Error decoding response"),
 						)
 						return transaction.EndRequest()
-					},
-					ttl,
-				); err != nil {
+					}
+					result <- spiModel.NewDefaultPlcReadRequestResult(
+						readRequest,
+						readResponse,
+						nil,
+					)
+					return transaction.EndRequest()
+				}, func(err error) error {
+					result <- spiModel.NewDefaultPlcReadRequestResult(
+						readRequest,
+						nil,
+						errors.Wrap(err, "got timeout while waiting for response"),
+					)
+					return transaction.EndRequest()
+				}); err != nil {
 					result <- spiModel.NewDefaultPlcReadRequestResult(
 						readRequest,
 						nil,

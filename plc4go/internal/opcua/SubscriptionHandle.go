@@ -150,8 +150,6 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		createMonitoredItemsRequest,
 	)
 
-	ctx, cancel := context.WithTimeout(ctx, REQUEST_TIMEOUT)
-	defer cancel()
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		return nil, errors.Wrapf(err, "Unable to serialise the ReadRequest")

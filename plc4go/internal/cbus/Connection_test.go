@@ -1665,9 +1665,8 @@ func TestConnection_setupConnection(t *testing.T) {
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
 			c.setupConnection(tt.args.ctx, tt.args.ch)
 			assert.NotNil(t, tt.args.ch, "We always need a result channel")
-			chanTimeout := time.NewTimer(10 * time.Second)
 			select {
-			case <-chanTimeout.C:
+			case <-t.Context().Done():
 				t.Fatal("setup connection doesn't fill chan in time")
 			case result := <-tt.args.ch:
 				if tt.validator != nil {
@@ -1675,9 +1674,8 @@ func TestConnection_setupConnection(t *testing.T) {
 				}
 			}
 			// To shut down properly we always do that
-			closeTimeout := time.NewTimer(10 * time.Second)
 			select {
-			case <-closeTimeout.C:
+			case <-t.Context().Done():
 				t.Fatal("close didn't react in time")
 			case <-c.Close():
 				t.Log("connection closed")

@@ -359,80 +359,68 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(requestReset)
 
-	ttl := c.GetTtl()
-	if deadline, ok := ctx.Deadline(); ok {
-		ttl = time.Until(deadline)
-		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-	}
 	receivedResetEchoChan := make(chan bool, 1)
 	receivedResetEchoErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(
-		ctx,
-		cBusMessage,
-		func(message spi.Message) bool {
-			c.log.Trace().Msg("Checking message")
-			switch message := message.(type) {
-			case readWriteModel.CBusMessageToClient:
-				switch reply := message.GetReply().(type) {
-				case readWriteModel.ReplyOrConfirmationReply:
-					switch reply.GetReply().(type) {
-					case readWriteModel.PowerUpReply:
-						c.log.Debug().Msg("Received a PUN reply")
-						return true
-					default:
-						c.log.Trace().Type("reply", reply).Msg("not relevant")
-						return false
-					}
+	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
+		c.log.Trace().Msg("Checking message")
+		switch message := message.(type) {
+		case readWriteModel.CBusMessageToClient:
+			switch reply := message.GetReply().(type) {
+			case readWriteModel.ReplyOrConfirmationReply:
+				switch reply.GetReply().(type) {
+				case readWriteModel.PowerUpReply:
+					c.log.Debug().Msg("Received a PUN reply")
+					return true
 				default:
 					c.log.Trace().Type("reply", reply).Msg("not relevant")
 					return false
 				}
-			case readWriteModel.CBusMessageToServer:
-				switch request := message.GetRequest().(type) {
-				case readWriteModel.RequestReset:
-					c.log.Debug().Msg("Received a Reset reply")
-					return true
-				default:
-					c.log.Trace().Type("request", request).Msg("not relevant")
-					return false
-				}
 			default:
-				c.log.Trace().Type("message", message).Msg("not relevant")
+				c.log.Trace().Type("reply", reply).Msg("not relevant")
 				return false
 			}
-		},
-		func(message spi.Message) error {
-			c.log.Trace().Msg("Handling message")
-			switch message.(type) {
-			case readWriteModel.CBusMessageToClient:
-				// This is the powerup notification
-				select {
-				case receivedResetEchoChan <- false:
-					c.log.Trace().Msg("notified reset chan from message to client")
-				default:
-				}
-			case readWriteModel.CBusMessageToServer:
-				// This is the echo
-				select {
-				case receivedResetEchoChan <- true:
-					c.log.Trace().Msg("notified reset chan from message to server")
-				default:
-				}
+		case readWriteModel.CBusMessageToServer:
+			switch request := message.GetRequest().(type) {
+			case readWriteModel.RequestReset:
+				c.log.Debug().Msg("Received a Reset reply")
+				return true
 			default:
-				return errors.Errorf("Unmapped type %T", message)
+				c.log.Trace().Type("request", request).Msg("not relevant")
+				return false
 			}
-			return nil
-		},
-		func(err error) error {
+		default:
+			c.log.Trace().Type("message", message).Msg("not relevant")
+			return false
+		}
+	}, func(message spi.Message) error {
+		c.log.Trace().Msg("Handling message")
+		switch message.(type) {
+		case readWriteModel.CBusMessageToClient:
+			// This is the powerup notification
 			select {
-			case receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request"):
-				c.log.Trace().Msg("notified error chan")
+			case receivedResetEchoChan <- false:
+				c.log.Trace().Msg("notified reset chan from message to client")
 			default:
 			}
-			return nil
-		},
-		ttl,
-	); err != nil {
+		case readWriteModel.CBusMessageToServer:
+			// This is the echo
+			select {
+			case receivedResetEchoChan <- true:
+				c.log.Trace().Msg("notified reset chan from message to server")
+			default:
+			}
+		default:
+			return errors.Errorf("Unmapped type %T", message)
+		}
+		return nil
+	}, func(err error) error {
+		select {
+		case receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request"):
+			c.log.Trace().Msg("notified error chan")
+		default:
+		}
+		return nil
+	}); err != nil {
 		if sendOutErrorNotification {
 			c.fireConnectionError(errors.Wrap(err, "Error during sending of Reset Request"), ch)
 		} else {
@@ -442,7 +430,6 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	}
 
 	startTime := time.Now()
-	timer := time.NewTimer(ttl)
 	select {
 	case <-receivedResetEchoChan:
 		c.log.Debug().Msg("We received the echo")
@@ -453,11 +440,11 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 			c.log.Trace().Err(err).Msg("connect failed")
 		}
 		return false
-	case timeout := <-timer.C:
+	case <-ctx.Done():
 		if sendOutErrorNotification {
-			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
+			c.fireConnectionError(errors.Errorf("Timeout after %v", time.Since(startTime)), ch)
 		} else {
-			c.log.Trace().Dur("timeout", timeout.Sub(startTime)).Msg("Timeout")
+			c.log.Trace().Dur("timeout", time.Since(startTime)).Msg("Timeout")
 		}
 		return false
 	}
@@ -537,80 +524,67 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 	)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(directCommand)
 
-	ttl := c.GetTtl()
-	if deadline, ok := ctx.Deadline(); ok {
-		ttl = time.Until(deadline)
-		c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-	}
 	directCommandAckChan := make(chan bool, 1)
 	directCommandAckErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(
-		ctx,
-		cBusMessage,
-		func(message spi.Message) bool {
-			switch message := message.(type) {
-			case readWriteModel.CBusMessageToClient:
-				switch reply := message.GetReply().(type) {
-				case readWriteModel.ReplyOrConfirmationReply:
-					switch reply := reply.GetReply().(type) {
-					case readWriteModel.ReplyEncodedReply:
-						switch encodedReply := reply.GetEncodedReply().(type) {
-						case readWriteModel.EncodedReplyCALReply:
-							switch data := encodedReply.GetCalReply().GetCalData().(type) {
-							case readWriteModel.CALDataAcknowledge:
-								if data.GetParamNo() == paramNo {
-									return true
+	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
+		switch message := message.(type) {
+		case readWriteModel.CBusMessageToClient:
+			switch reply := message.GetReply().(type) {
+			case readWriteModel.ReplyOrConfirmationReply:
+				switch reply := reply.GetReply().(type) {
+				case readWriteModel.ReplyEncodedReply:
+					switch encodedReply := reply.GetEncodedReply().(type) {
+					case readWriteModel.EncodedReplyCALReply:
+						switch data := encodedReply.GetCalReply().GetCalData().(type) {
+						case readWriteModel.CALDataAcknowledge:
+							if data.GetParamNo() == paramNo {
+								return true
+							}
+						}
+					}
+				}
+			}
+		}
+		return false
+	}, func(message spi.Message) error {
+		switch message := message.(type) {
+		case readWriteModel.CBusMessageToClient:
+			switch reply := message.GetReply().(type) {
+			case readWriteModel.ReplyOrConfirmationReply:
+				switch reply := reply.GetReply().(type) {
+				case readWriteModel.ReplyEncodedReply:
+					switch encodedReply := reply.GetEncodedReply().(type) {
+					case readWriteModel.EncodedReplyCALReply:
+						switch data := encodedReply.GetCalReply().GetCalData().(type) {
+						case readWriteModel.CALDataAcknowledge:
+							if data.GetParamNo() == paramNo {
+								select {
+								case directCommandAckChan <- true:
+								default:
 								}
 							}
 						}
 					}
 				}
 			}
-			return false
-		},
-		func(message spi.Message) error {
-			switch message := message.(type) {
-			case readWriteModel.CBusMessageToClient:
-				switch reply := message.GetReply().(type) {
-				case readWriteModel.ReplyOrConfirmationReply:
-					switch reply := reply.GetReply().(type) {
-					case readWriteModel.ReplyEncodedReply:
-						switch encodedReply := reply.GetEncodedReply().(type) {
-						case readWriteModel.EncodedReplyCALReply:
-							switch data := encodedReply.GetCalReply().GetCalData().(type) {
-							case readWriteModel.CALDataAcknowledge:
-								if data.GetParamNo() == paramNo {
-									select {
-									case directCommandAckChan <- true:
-									default:
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			return nil
-		},
-		func(err error) error {
-			c.log.Trace().Err(err).Msg("got error processing request")
-			select {
-			case directCommandAckErrorChan <- errors.Wrap(err, "got error processing request"):
-				c.log.Trace().Msg("error redirected")
-			default:
-				c.log.Trace().Err(err).Msg("error discarded")
-			}
-			return nil
-		},
-		ttl,
-	); err != nil {
+		}
+		return nil
+	}, func(err error) error {
+		c.log.Trace().Err(err).Msg("got error processing request")
+		select {
+		case directCommandAckErrorChan <- errors.Wrap(err, "got error processing request"):
+			c.log.Trace().Msg("error redirected")
+		default:
+			c.log.Trace().Err(err).Msg("error discarded")
+		}
+		return nil
+	}); err != nil {
 		c.log.Trace().Err(err).Msg("got error sending request")
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of write request"), ch)
 		return false
 	}
 
 	startTime := time.Now()
-	timer := time.NewTimer(60 * time.Second)
 	select {
 	case <-directCommandAckChan:
 		c.log.Trace().Msg("We received the ack")
@@ -618,9 +592,9 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 		c.log.Trace().Err(err).Msg("got error processing request")
 		c.fireConnectionError(errors.Wrap(err, "Error receiving of ack"), ch)
 		return false
-	case timeout := <-timer.C:
-		c.log.Trace().Dur("timeout", timeout.Sub(startTime)).Msg("Timeout")
-		c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
+	case <-ctx.Done():
+		c.log.Trace().Dur("timeout", time.Since(startTime)).Msg("Timeout")
+		c.fireConnectionError(errors.Wrapf(ctx.Err(), "Timeout after %v", time.Since(startTime)), ch)
 		return false
 	}
 	return true

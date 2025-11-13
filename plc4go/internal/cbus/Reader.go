@@ -23,7 +23,6 @@ import (
 	"context"
 	"runtime/debug"
 	"sync"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -143,113 +142,100 @@ func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToS
 func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transactions.RequestTransaction, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
 	// Send the over the wire
 	m.log.Trace().Msg("send over the wire")
-	ttl := 60 * time.Second
-	if deadline, ok := ctx.Deadline(); ok {
-		ttl = time.Until(deadline)
-		m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-	}
-	m.log.Trace().Ctx(ctx).Interface("ctx", ctx).Msg("sending with ctx")
-	if err := m.messageCodec.SendRequest(
-		ctx,
-		messageToSend,
-		func(cbusMessage spi.Message) bool {
-			m.log.Trace().Type("cbusMessageType", cbusMessage).Msg("Checking")
-			messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClient)
-			if !ok {
-				m.log.Trace().Msg("Not a message to client")
-				return false
-			}
-			// Check if this errored
-			if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReply); ok {
-				// This means we must handle this below
-				m.log.Trace().Msg("It is a error, we will handle it")
-				return true
-			}
+	if err := m.messageCodec.SendRequest(ctx, messageToSend, func(cbusMessage spi.Message) bool {
+		m.log.Trace().Type("cbusMessageType", cbusMessage).Msg("Checking")
+		messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClient)
+		if !ok {
+			m.log.Trace().Msg("Not a message to client")
+			return false
+		}
+		// Check if this errored
+		if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReply); ok {
+			// This means we must handle this below
+			m.log.Trace().Msg("It is a error, we will handle it")
+			return true
+		}
 
-			confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmation)
-			if !ok {
-				m.log.Trace().Msg("it is not a confirmation")
-				return false
-			}
-			receivedAlpha := confirmation.GetConfirmation().GetAlpha()
-			// TODO: assert that this is a CBusMessageToServer indeed (by changing param for example)
-			alphaRetriever, ok := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha })
-			if !ok {
-				m.log.Trace().Msg("no alpha there")
-				return false
-			}
-			expectedAlpha := alphaRetriever.GetAlpha()
-			m.log.Trace().
-				Stringer("expectedAlpha", expectedAlpha).
-				Stringer("receivedAlpha", receivedAlpha).
-				Msgf("Comparing expected alpha to received alpha")
-			return receivedAlpha.GetCharacter() == expectedAlpha.GetCharacter()
-		},
-		func(receivedMessage spi.Message) error {
-			// Convert the response into an
-			m.log.Trace().Type("receivedMessage", receivedMessage).Msg("convert message")
-			messageToClient := receivedMessage.(readWriteModel.CBusMessageToClient)
-			if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReply); ok {
-				m.log.Trace().Msg("We got a server failure")
-				addResponseCode(tagName, apiModel.PlcResponseCode_INVALID_DATA)
-				return transaction.EndRequest()
-			}
-			replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmation)
-			if !replyOrConfirmationConfirmation.GetConfirmation().GetIsSuccess() {
-				var responseCode apiModel.PlcResponseCode
-				switch replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType() {
-				case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS:
-					responseCode = apiModel.PlcResponseCode_REMOTE_ERROR
-				case readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION:
-					responseCode = apiModel.PlcResponseCode_INVALID_DATA
-				case readWriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS:
-					responseCode = apiModel.PlcResponseCode_REMOTE_BUSY
-				case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG:
-					responseCode = apiModel.PlcResponseCode_INVALID_DATA
-				default:
-					return transaction.FailRequest(errors.Errorf("Every code should be mapped here: %v", replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType()))
-				}
-				m.log.Trace().
-					Str("tagName", tagName).
-					Stringer("responseCode", responseCode).
-					Msg("Was no success")
-				addResponseCode(tagName, responseCode)
-				return transaction.EndRequest()
-			}
-
-			alpha := replyOrConfirmationConfirmation.GetConfirmation().GetAlpha()
-			// TODO: it could be double confirmed but this is not implemented yet
-			embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReply)
-			if !ok {
-				m.log.Trace().
-					Stringer("alpha", alpha).
-					Msg("Is a confirm only, no data")
-				addResponseCode(tagName, apiModel.PlcResponseCode_NOT_FOUND)
-				return transaction.EndRequest()
-			}
-
-			m.log.Trace().Msg("Handling confirmed data")
-			// TODO: check if we can use a plcValueSerializer
-			encodedReply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply()
-			if err := MapEncodedReply(m.log, transaction, encodedReply, tagName, addResponseCode, addPlcValue); err != nil {
-				log.Error().Err(err).Msg("error encoding reply")
-				addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
-				return transaction.EndRequest()
-			}
+		confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmation)
+		if !ok {
+			m.log.Trace().Msg("it is not a confirmation")
+			return false
+		}
+		receivedAlpha := confirmation.GetConfirmation().GetAlpha()
+		// TODO: assert that this is a CBusMessageToServer indeed (by changing param for example)
+		alphaRetriever, ok := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha })
+		if !ok {
+			m.log.Trace().Msg("no alpha there")
+			return false
+		}
+		expectedAlpha := alphaRetriever.GetAlpha()
+		m.log.Trace().
+			Stringer("expectedAlpha", expectedAlpha).
+			Stringer("receivedAlpha", receivedAlpha).
+			Msgf("Comparing expected alpha to received alpha")
+		return receivedAlpha.GetCharacter() == expectedAlpha.GetCharacter()
+	}, func(receivedMessage spi.Message) error {
+		// Convert the response into an
+		m.log.Trace().Type("receivedMessage", receivedMessage).Msg("convert message")
+		messageToClient := receivedMessage.(readWriteModel.CBusMessageToClient)
+		if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReply); ok {
+			m.log.Trace().Msg("We got a server failure")
+			addResponseCode(tagName, apiModel.PlcResponseCode_INVALID_DATA)
 			return transaction.EndRequest()
-		},
-		func(err error) error {
-			m.log.Trace().Err(err).Msg("got and error")
+		}
+		replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmation)
+		if !replyOrConfirmationConfirmation.GetConfirmation().GetIsSuccess() {
+			var responseCode apiModel.PlcResponseCode
+			switch replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType() {
+			case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS:
+				responseCode = apiModel.PlcResponseCode_REMOTE_ERROR
+			case readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION:
+				responseCode = apiModel.PlcResponseCode_INVALID_DATA
+			case readWriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS:
+				responseCode = apiModel.PlcResponseCode_REMOTE_BUSY
+			case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG:
+				responseCode = apiModel.PlcResponseCode_INVALID_DATA
+			default:
+				return transaction.FailRequest(errors.Errorf("Every code should be mapped here: %v", replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType()))
+			}
+			m.log.Trace().
+				Str("tagName", tagName).
+				Stringer("responseCode", responseCode).
+				Msg("Was no success")
+			addResponseCode(tagName, responseCode)
+			return transaction.EndRequest()
+		}
+
+		alpha := replyOrConfirmationConfirmation.GetConfirmation().GetAlpha()
+		// TODO: it could be double confirmed but this is not implemented yet
+		embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReply)
+		if !ok {
+			m.log.Trace().
+				Stringer("alpha", alpha).
+				Msg("Is a confirm only, no data")
+			addResponseCode(tagName, apiModel.PlcResponseCode_NOT_FOUND)
+			return transaction.EndRequest()
+		}
+
+		m.log.Trace().Msg("Handling confirmed data")
+		// TODO: check if we can use a plcValueSerializer
+		encodedReply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply()
+		if err := MapEncodedReply(m.log, transaction, encodedReply, tagName, addResponseCode, addPlcValue); err != nil {
+			log.Error().Err(err).Msg("error encoding reply")
 			addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
-			return transaction.FailRequest(err)
-		},
-		ttl,
-	); err != nil {
+			return transaction.EndRequest()
+		}
+		return transaction.EndRequest()
+	}, func(err error) error {
+		m.log.Trace().Err(err).Msg("got and error")
+		addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
+		return transaction.FailRequest(err)
+	}); err != nil {
 		m.log.Debug().Err(err).
 			Str("tagName", tagName).
 			Msg("Error sending message for tag %s")
 		addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
-		if err := transaction.FailRequest(errors.Errorf("timeout after %s", ttl)); err != nil {
+		if err := transaction.FailRequest(err); err != nil {
 			m.log.Debug().Err(err).Msg("Error failing request")
 		}
 	}

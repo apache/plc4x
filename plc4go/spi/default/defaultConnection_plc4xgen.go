@@ -49,10 +49,6 @@ func (d *defaultConnection) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return err
 	}
 
-	if err := writeBuffer.WriteString("defaultTtl", uint32(len(fmt.Sprintf("%s", d.defaultTtl))*8), fmt.Sprintf("%s", d.defaultTtl)); err != nil {
-		return err
-	}
-
 	if err := writeBuffer.WriteBit("connected", d.connected.Load()); err != nil {
 		return err
 	}

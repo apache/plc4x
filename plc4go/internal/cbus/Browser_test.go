@@ -163,7 +163,9 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				connectionConnectResult := <-driver.GetConnection(t.Context(), transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				require.NoError(t, connectionConnectResult.GetErr())
 				fields.connection = connectionConnectResult.GetConnection()
-				t.Cleanup(fields.connection.BlockingClose)
+				t.Cleanup(func() {
+					assert.NoError(t, fields.connection.BlockingClose(t.Context()))
+				})
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
@@ -591,7 +593,9 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				connectionConnectResult := <-driver.GetConnection(t.Context(), transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				require.NoError(t, connectionConnectResult.GetErr())
 				fields.connection = connectionConnectResult.GetConnection()
-				t.Cleanup(fields.connection.BlockingClose)
+				t.Cleanup(func() {
+					assert.NoError(t, fields.connection.BlockingClose(t.Context()))
+				})
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc

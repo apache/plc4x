@@ -349,6 +349,7 @@ func (m *TransportInstance) appendRead(newBytes ...byte) (totalAvailableBytes ui
 
 func (m *TransportInstance) transferFromChannel(ctx context.Context) (totalAvailableBytes uint32) {
 	totalAvailableBytes = m.availableBytes()
+	m.log.Trace().Msg("waiting for transfer")
 	start := time.Now()
 	select {
 	case <-ctx.Done():

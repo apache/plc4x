@@ -137,8 +137,14 @@ func (c *Connection) Connect(_ context.Context) <-chan plc4go.PlcConnectionConne
 	return ch
 }
 
-func (c *Connection) BlockingClose() {
-	<-c.Close()
+func (c *Connection) BlockingClose(ctx context.Context) error {
+	closeResult := c.Close()
+	select {
+	case result := <-closeResult:
+		return result.GetErr()
+	case <-ctx.Done():
+		return ctx.Err()
+	}
 }
 
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {

@@ -511,7 +511,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			m.Expect(tt.args.ctx, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError, tt.args.ttl)
+			m.Expect(tt.args.ctx, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError)
 		})
 	}
 }
@@ -929,7 +929,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			tt.wantErr(t, m.SendRequest(tt.args.ctx, tt.args.message, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError, tt.args.ttl), fmt.Sprintf("SendRequest(%v, %v, func(), func(), func(), %v)", tt.args.ctx, tt.args.message, tt.args.ttl))
+			tt.wantErr(t, m.SendRequest(tt.args.ctx, tt.args.message, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError), fmt.Sprintf("SendRequest(%v, %v, func(), func(), func(), %v)", tt.args.ctx, tt.args.message, tt.args.ttl))
 		})
 	}
 }
@@ -1521,63 +1521,55 @@ func Test_defaultCodec_integration(t *testing.T) {
 	})
 	// First expect
 	var firstHandled bool
-	sut.Expect(t.Context(),
-		func(message spi.Message) bool {
-			t.Log("accepts message", message)
-			return true
-		}, func(message spi.Message) error {
-			t.Log("handle message", message)
-			firstHandled = true
-			return nil
-		}, func(err error) error {
-			t.Log("error", err)
-			return nil
-		},
-		500*time.Millisecond)
+	sut.Expect(t.Context(), func(message spi.Message) bool {
+		t.Log("accepts message", message)
+		return true
+	}, func(message spi.Message) error {
+		t.Log("handle message", message)
+		firstHandled = true
+		return nil
+	}, func(err error) error {
+		t.Log("error", err)
+		return nil
+	})
 	// Second expect
 	var secondHandled bool
-	sut.Expect(t.Context(),
-		func(message spi.Message) bool {
-			t.Log("accepts message", message)
-			return true
-		}, func(message spi.Message) error {
-			t.Log("handle message", message)
-			secondHandled = true
-			return nil
-		}, func(err error) error {
-			t.Log("error", err)
-			return nil
-		},
-		1500*time.Millisecond)
+	sut.Expect(t.Context(), func(message spi.Message) bool {
+		t.Log("accepts message", message)
+		return true
+	}, func(message spi.Message) error {
+		t.Log("handle message", message)
+		secondHandled = true
+		return nil
+	}, func(err error) error {
+		t.Log("error", err)
+		return nil
+	})
 	// Third expect
 	var thridErrorCalled bool
-	sut.Expect(t.Context(),
-		func(message spi.Message) bool {
-			t.Log("does not accept message", message)
-			return false
-		}, func(message spi.Message) error {
-			t.Error("should not be called")
-			return nil
-		}, func(err error) error {
-			thridErrorCalled = true
-			return nil
-		},
-		1500*time.Millisecond)
+	sut.Expect(t.Context(), func(message spi.Message) bool {
+		t.Log("does not accept message", message)
+		return false
+	}, func(message spi.Message) error {
+		t.Error("should not be called")
+		return nil
+	}, func(err error) error {
+		thridErrorCalled = true
+		return nil
+	})
 	// Fourth expect
 	var fourthHandled bool
-	sut.Expect(t.Context(),
-		func(message spi.Message) bool {
-			t.Log("accepts message", message)
-			return true
-		}, func(message spi.Message) error {
-			t.Log("handle message", message)
-			fourthHandled = true
-			return nil
-		}, func(err error) error {
-			t.Log("error", err)
-			return nil
-		},
-		3000*time.Millisecond)
+	sut.Expect(t.Context(), func(message spi.Message) bool {
+		t.Log("accepts message", message)
+		return true
+	}, func(message spi.Message) error {
+		t.Log("handle message", message)
+		fourthHandled = true
+		return nil
+	}, func(err error) error {
+		t.Log("error", err)
+		return nil
+	})
 
 	err := sut.Connect(t.Context())
 	assert.NoError(t, err)

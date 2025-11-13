@@ -25,7 +25,6 @@ import (
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -132,53 +131,41 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 		// Send the ADU over the wire
 		m.log.Trace().Msg("Send ADU")
-		ttl := 60 * time.Second
-		if deadline, ok := ctx.Deadline(); ok {
-			ttl = time.Until(deadline)
-			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-		}
-		if err = m.messageCodec.SendRequest(
-			ctx,
-			requestAdu,
-			func(message spi.Message) bool {
-				responseAdu := message.(readWriteModel.ModbusTcpADU)
-				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
-					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
-			},
-			func(message spi.Message) error {
-				// Convert the response into an ADU
-				m.log.Trace().Msg("convert response to ADU")
-				responseAdu := message.(readWriteModel.ModbusTcpADU)
-				// Convert the modbus response into a PLC4X response
-				m.log.Trace().Msg("convert response to PLC4X response")
-				readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
+		if err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
+			responseAdu := message.(readWriteModel.ModbusTcpADU)
+			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
+				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
+		}, func(message spi.Message) error {
+			// Convert the response into an ADU
+			m.log.Trace().Msg("convert response to ADU")
+			responseAdu := message.(readWriteModel.ModbusTcpADU)
+			// Convert the modbus response into a PLC4X response
+			m.log.Trace().Msg("convert response to PLC4X response")
+			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
-				if err != nil {
-					result <- spiModel.NewDefaultPlcReadRequestResult(
-						readRequest,
-						nil,
-						errors.Wrap(err, "Error decoding response"),
-					)
-					// TODO: should we return the error here?
-					return nil
-				}
-				result <- spiModel.NewDefaultPlcReadRequestResult(
-					readRequest,
-					readResponse,
-					nil,
-				)
-				return nil
-			},
-			func(err error) error {
+			if err != nil {
 				result <- spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,
-					errors.Wrap(err, "got timeout while waiting for response"),
+					errors.Wrap(err, "Error decoding response"),
 				)
+				// TODO: should we return the error here?
 				return nil
-			},
-			ttl,
-		); err != nil {
+			}
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				readResponse,
+				nil,
+			)
+			return nil
+		}, func(err error) error {
+			result <- spiModel.NewDefaultPlcReadRequestResult(
+				readRequest,
+				nil,
+				errors.Wrap(err, "got timeout while waiting for response"),
+			)
+			return nil
+		}); err != nil {
 			result <- spiModel.NewDefaultPlcReadRequestResult(
 				readRequest,
 				nil,

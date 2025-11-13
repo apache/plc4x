@@ -1449,8 +1449,8 @@ func (_c *MockMessageCodec_Disconnect_Call) RunAndReturn(run func() error) *Mock
 }
 
 // Expect provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Expect(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) {
-	_mock.Called(ctx, acceptsMessage, handleMessage, handleError, ttl)
+func (_mock *MockMessageCodec) Expect(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) {
+	_mock.Called(ctx, acceptsMessage, handleMessage, handleError)
 	return
 }
 
@@ -1464,12 +1464,11 @@ type MockMessageCodec_Expect_Call struct {
 //   - acceptsMessage AcceptsMessage
 //   - handleMessage HandleMessage
 //   - handleError HandleError
-//   - ttl time.Duration
-func (_e *MockMessageCodec_Expecter) Expect(ctx interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}, ttl interface{}) *MockMessageCodec_Expect_Call {
-	return &MockMessageCodec_Expect_Call{Call: _e.mock.On("Expect", ctx, acceptsMessage, handleMessage, handleError, ttl)}
+func (_e *MockMessageCodec_Expecter) Expect(ctx interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_Expect_Call {
+	return &MockMessageCodec_Expect_Call{Call: _e.mock.On("Expect", ctx, acceptsMessage, handleMessage, handleError)}
 }
 
-func (_c *MockMessageCodec_Expect_Call) Run(run func(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration)) *MockMessageCodec_Expect_Call {
+func (_c *MockMessageCodec_Expect_Call) Run(run func(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)) *MockMessageCodec_Expect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -1487,16 +1486,11 @@ func (_c *MockMessageCodec_Expect_Call) Run(run func(ctx context.Context, accept
 		if args[3] != nil {
 			arg3 = args[3].(HandleError)
 		}
-		var arg4 time.Duration
-		if args[4] != nil {
-			arg4 = args[4].(time.Duration)
-		}
 		run(
 			arg0,
 			arg1,
 			arg2,
 			arg3,
-			arg4,
 		)
 	})
 	return _c
@@ -1507,7 +1501,7 @@ func (_c *MockMessageCodec_Expect_Call) Return() *MockMessageCodec_Expect_Call {
 	return _c
 }
 
-func (_c *MockMessageCodec_Expect_Call) RunAndReturn(run func(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration)) *MockMessageCodec_Expect_Call {
+func (_c *MockMessageCodec_Expect_Call) RunAndReturn(run func(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)) *MockMessageCodec_Expect_Call {
 	_c.Run(run)
 	return _c
 }
@@ -1660,16 +1654,16 @@ func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(ctx context.Context,
 }
 
 // SendRequest provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) SendRequest(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error {
-	ret := _mock.Called(ctx, message, acceptsMessage, handleMessage, handleError, ttl)
+func (_mock *MockMessageCodec) SendRequest(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) error {
+	ret := _mock.Called(ctx, message, acceptsMessage, handleMessage, handleError)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendRequest")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, Message, AcceptsMessage, HandleMessage, HandleError, time.Duration) error); ok {
-		r0 = returnFunc(ctx, message, acceptsMessage, handleMessage, handleError, ttl)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, Message, AcceptsMessage, HandleMessage, HandleError) error); ok {
+		r0 = returnFunc(ctx, message, acceptsMessage, handleMessage, handleError)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1687,12 +1681,11 @@ type MockMessageCodec_SendRequest_Call struct {
 //   - acceptsMessage AcceptsMessage
 //   - handleMessage HandleMessage
 //   - handleError HandleError
-//   - ttl time.Duration
-func (_e *MockMessageCodec_Expecter) SendRequest(ctx interface{}, message interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}, ttl interface{}) *MockMessageCodec_SendRequest_Call {
-	return &MockMessageCodec_SendRequest_Call{Call: _e.mock.On("SendRequest", ctx, message, acceptsMessage, handleMessage, handleError, ttl)}
+func (_e *MockMessageCodec_Expecter) SendRequest(ctx interface{}, message interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_SendRequest_Call {
+	return &MockMessageCodec_SendRequest_Call{Call: _e.mock.On("SendRequest", ctx, message, acceptsMessage, handleMessage, handleError)}
 }
 
-func (_c *MockMessageCodec_SendRequest_Call) Run(run func(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration)) *MockMessageCodec_SendRequest_Call {
+func (_c *MockMessageCodec_SendRequest_Call) Run(run func(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)) *MockMessageCodec_SendRequest_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -1714,17 +1707,12 @@ func (_c *MockMessageCodec_SendRequest_Call) Run(run func(ctx context.Context, m
 		if args[4] != nil {
 			arg4 = args[4].(HandleError)
 		}
-		var arg5 time.Duration
-		if args[5] != nil {
-			arg5 = args[5].(time.Duration)
-		}
 		run(
 			arg0,
 			arg1,
 			arg2,
 			arg3,
 			arg4,
-			arg5,
 		)
 	})
 	return _c
@@ -1735,7 +1723,7 @@ func (_c *MockMessageCodec_SendRequest_Call) Return(err error) *MockMessageCodec
 	return _c
 }
 
-func (_c *MockMessageCodec_SendRequest_Call) RunAndReturn(run func(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error) *MockMessageCodec_SendRequest_Call {
+func (_c *MockMessageCodec_SendRequest_Call) RunAndReturn(run func(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) error) *MockMessageCodec_SendRequest_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -100,9 +100,12 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.WriteString("defaultIncomingMessageChannel", uint32(len(_defaultIncomingMessageChannel_plx4gen_description)*8), _defaultIncomingMessageChannel_plx4gen_description); err != nil {
 		return err
 	}
+	{
+		_value := fmt.Sprintf("%v", d.customMessageHandling)
 
-	if err := writeBuffer.WriteBit("customMessageHandling", d.customMessageHandling != nil); err != nil {
-		return err
+		if err := writeBuffer.WriteString("customMessageHandling", uint32(len(_value)*8), _value); err != nil {
+			return err
+		}
 	}
 
 	if err := writeBuffer.WriteBit("running", d.running.Load()); err != nil {
@@ -115,6 +118,44 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	if err := writeBuffer.WriteBit("traceDefaultMessageCodecWorker", d.traceDefaultMessageCodecWorker); err != nil {
 		return err
+	}
+
+	if d.ctx != nil {
+		if serializableField, ok := any(d.ctx).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("ctx"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("ctx"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.ctx)
+			if err := writeBuffer.WriteString("ctx", uint32(len(stringValue)*8), stringValue); err != nil {
+				return err
+			}
+		}
+	}
+
+	if d.ctxCancel != nil {
+		if serializableField, ok := any(d.ctxCancel).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("ctxCancel"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("ctxCancel"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.ctxCancel)
+			if err := writeBuffer.WriteString("ctxCancel", uint32(len(stringValue)*8), stringValue); err != nil {
+				return err
+			}
+		}
 	}
 	if err := writeBuffer.PopContext("defaultCodec"); err != nil {
 		return err

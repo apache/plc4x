@@ -24,7 +24,6 @@ import (
 	"fmt"
 	"runtime/debug"
 	"sync"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -78,7 +77,6 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, connecti
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
-		_default.WithDefaultTtl(5*time.Second),
 		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler(_options...)),
 	)
@@ -117,38 +115,28 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		}()
 		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 		pingRequest := readWriteModel.NewModbusTcpADU(1, c.unitIdentifier, diagnosticRequestPdu)
-		ttl := c.GetTtl()
-		if deadline, ok := ctx.Deadline(); ok {
-			ttl = time.Until(deadline)
-			c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
-		}
-		if err := c.messageCodec.SendRequest(ctx, pingRequest,
-			func(message spi.Message) bool {
-				responseAdu, ok := message.(readWriteModel.ModbusTcpADU)
-				if !ok {
-					return false
-				}
-				return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == c.unitIdentifier
-			},
-			func(message spi.Message) error {
-				c.log.Trace().Msg("Received Message")
-				if message != nil {
-					// If we got a valid response (even if it will probably contain an error, we know the remote is available)
-					c.log.Trace().Msg("got valid response")
-					result <- _default.NewDefaultPlcConnectionPingResult(nil)
-				} else {
-					c.log.Trace().Msg("got no response")
-					result <- _default.NewDefaultPlcConnectionPingResult(errors.New("no response"))
-				}
-				return nil
-			},
-			func(err error) error {
-				c.log.Trace().Msg("Received Error")
-				result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
-				return nil
-			},
-			ttl,
-		); err != nil {
+		if err := c.messageCodec.SendRequest(ctx, pingRequest, func(message spi.Message) bool {
+			responseAdu, ok := message.(readWriteModel.ModbusTcpADU)
+			if !ok {
+				return false
+			}
+			return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == c.unitIdentifier
+		}, func(message spi.Message) error {
+			c.log.Trace().Msg("Received Message")
+			if message != nil {
+				// If we got a valid response (even if it will probably contain an error, we know the remote is available)
+				c.log.Trace().Msg("got valid response")
+				result <- _default.NewDefaultPlcConnectionPingResult(nil)
+			} else {
+				c.log.Trace().Msg("got no response")
+				result <- _default.NewDefaultPlcConnectionPingResult(errors.New("no response"))
+			}
+			return nil
+		}, func(err error) error {
+			c.log.Trace().Msg("Received Error")
+			result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
+			return nil
+		}); err != nil {
 			result <- _default.NewDefaultPlcConnectionPingResult(err)
 		}
 	})

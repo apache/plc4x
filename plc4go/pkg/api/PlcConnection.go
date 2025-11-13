@@ -31,7 +31,7 @@ type PlcConnection interface {
 	// Connect Initiate the connection to the PLC
 	Connect(ctx context.Context) <-chan PlcConnectionConnectResult
 	// BlockingClose Blocking variant of Close (for usage in "defer" statements)
-	BlockingClose()
+	BlockingClose(ctx context.Context) error
 	// Close the connection to the PLC (gracefully)
 	Close() <-chan PlcConnectionCloseResult
 	// IsConnected Checks if the connection is currently still connected
