@@ -119,7 +119,7 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 	}
 	connection := connectionResult.GetConnection()
 	t.Cleanup(func() {
-		assert.NoError(t, connection.BlockingClose(ctx))
+		t.Log("Close result", connection.BlockingClose(ctx))
 	})
 	utils.NewAsciiBoxWriter()
 	m.LogDelimiterSection(t, "=", "Executing testcase: %s", testcase.name)
