@@ -248,13 +248,12 @@ func TestDefaultPlcReadRequest_Execute(t *testing.T) {
 				}
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
-				timeout := time.NewTimer(100 * time.Millisecond)
 				select {
 				case result := <-results:
 					assert.NoError(t, result.GetErr())
 					assert.NotNil(t, result.GetRequest())
 					assert.NotNil(t, result.GetResponse())
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout getting a response")
 				}
 				return true
@@ -281,13 +280,12 @@ func TestDefaultPlcReadRequest_Execute(t *testing.T) {
 				}
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
-				timeout := time.NewTimer(100 * time.Millisecond)
 				select {
 				case result := <-results:
 					assert.Error(t, result.GetErr())
 					assert.NotNil(t, result.GetRequest())
 					assert.Nil(t, result.GetResponse())
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout getting a response")
 				}
 				return true
@@ -321,13 +319,12 @@ func TestDefaultPlcReadRequest_Execute(t *testing.T) {
 				}
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
-				timeout := time.NewTimer(100 * time.Millisecond)
 				select {
 				case result := <-results:
 					assert.Error(t, result.GetErr())
 					assert.NotNil(t, result.GetRequest())
 					assert.Nil(t, result.GetResponse())
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout getting a response")
 				}
 				return true
@@ -373,13 +370,12 @@ func TestDefaultPlcReadRequest_Execute(t *testing.T) {
 				}
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
-				timeout := time.NewTimer(100 * time.Millisecond)
 				select {
 				case result := <-results:
 					assert.NoError(t, result.GetErr())
 					assert.NotNil(t, result.GetRequest())
 					assert.NotNil(t, result.GetResponse())
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout getting a response")
 				}
 				return true

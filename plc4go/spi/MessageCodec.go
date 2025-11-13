@@ -54,7 +54,7 @@ type MessageCodec interface {
 	IsRunning() bool
 
 	// Send is sending a given message
-	Send(ctx context.Context, message Message, timeout time.Duration) error
+	Send(ctx context.Context, message Message) error
 	// Expect Wait for a given timespan for a message to come in, which returns 'true' for 'acceptMessage'
 	// and is then forwarded to the 'handleMessage' function
 	Expect(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration)

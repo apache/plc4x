@@ -325,7 +325,7 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.FillBuffer(t.Context(), tt.args.until, tt.args.timeout); (err != nil) != tt.wantErr {
+			if err := m.FillBuffer(t.Context(), tt.args.until); (err != nil) != tt.wantErr {
 				t.Errorf("FillBuffer() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -503,7 +503,7 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.PeekReadableBytes(t.Context(), tt.args.numBytes, tt.args.timeout)
+			got, err := m.PeekReadableBytes(t.Context(), tt.args.numBytes)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -619,7 +619,7 @@ func TestTransportInstance_Read(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.Read(t.Context(), tt.args.numBytes, tt.args.timeout)
+			got, err := m.Read(t.Context(), tt.args.numBytes)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -759,7 +759,7 @@ func TestTransportInstance_Write(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			if err := m.Write(t.Context(), tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
+			if err := m.Write(t.Context(), tt.args.data); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

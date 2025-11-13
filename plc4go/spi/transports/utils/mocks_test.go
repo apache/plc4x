@@ -148,39 +148,39 @@ func (_c *MockDefaultBufferedTransportInstanceRequirements_IsConnected_Call) Run
 	return _c
 }
 
-// SetTimeout provides a mock function for the type MockDefaultBufferedTransportInstanceRequirements
-func (_mock *MockDefaultBufferedTransportInstanceRequirements) SetTimeout(timeout time.Duration) error {
-	ret := _mock.Called(timeout)
+// SetReadDeadline provides a mock function for the type MockDefaultBufferedTransportInstanceRequirements
+func (_mock *MockDefaultBufferedTransportInstanceRequirements) SetReadDeadline(deadline time.Time) error {
+	ret := _mock.Called(deadline)
 
 	if len(ret) == 0 {
-		panic("no return value specified for SetTimeout")
+		panic("no return value specified for SetReadDeadline")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(time.Duration) error); ok {
-		r0 = returnFunc(timeout)
+	if returnFunc, ok := ret.Get(0).(func(time.Time) error); ok {
+		r0 = returnFunc(deadline)
 	} else {
 		r0 = ret.Error(0)
 	}
 	return r0
 }
 
-// MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetTimeout'
-type MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call struct {
+// MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetReadDeadline'
+type MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call struct {
 	*mock.Call
 }
 
-// SetTimeout is a helper method to define mock.On call
-//   - timeout time.Duration
-func (_e *MockDefaultBufferedTransportInstanceRequirements_Expecter) SetTimeout(timeout interface{}) *MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call {
-	return &MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call{Call: _e.mock.On("SetTimeout", timeout)}
+// SetReadDeadline is a helper method to define mock.On call
+//   - deadline time.Time
+func (_e *MockDefaultBufferedTransportInstanceRequirements_Expecter) SetReadDeadline(deadline interface{}) *MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call {
+	return &MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call{Call: _e.mock.On("SetReadDeadline", deadline)}
 }
 
-func (_c *MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call) Run(run func(timeout time.Duration)) *MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call {
+func (_c *MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call) Run(run func(deadline time.Time)) *MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 time.Duration
+		var arg0 time.Time
 		if args[0] != nil {
-			arg0 = args[0].(time.Duration)
+			arg0 = args[0].(time.Time)
 		}
 		run(
 			arg0,
@@ -189,12 +189,12 @@ func (_c *MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call) Run(
 	return _c
 }
 
-func (_c *MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call) Return(err error) *MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call {
+func (_c *MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call) Return(err error) *MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call) RunAndReturn(run func(timeout time.Duration) error) *MockDefaultBufferedTransportInstanceRequirements_SetTimeout_Call {
+func (_c *MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call) RunAndReturn(run func(deadline time.Time) error) *MockDefaultBufferedTransportInstanceRequirements_SetReadDeadline_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -227,16 +227,16 @@ func (_m *MockDefaultBufferedTransportInstance) EXPECT() *MockDefaultBufferedTra
 }
 
 // FillBuffer provides a mock function for the type MockDefaultBufferedTransportInstance
-func (_mock *MockDefaultBufferedTransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error {
-	ret := _mock.Called(ctx, until, timeout)
+func (_mock *MockDefaultBufferedTransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)) error {
+	ret := _mock.Called(ctx, until)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FillBuffer")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), time.Duration) error); ok {
-		r0 = returnFunc(ctx, until, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)) error); ok {
+		r0 = returnFunc(ctx, until)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -251,12 +251,11 @@ type MockDefaultBufferedTransportInstance_FillBuffer_Call struct {
 // FillBuffer is a helper method to define mock.On call
 //   - ctx context.Context
 //   - until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)
-//   - timeout time.Duration
-func (_e *MockDefaultBufferedTransportInstance_Expecter) FillBuffer(ctx interface{}, until interface{}, timeout interface{}) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
-	return &MockDefaultBufferedTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", ctx, until, timeout)}
+func (_e *MockDefaultBufferedTransportInstance_Expecter) FillBuffer(ctx interface{}, until interface{}) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
+	return &MockDefaultBufferedTransportInstance_FillBuffer_Call{Call: _e.mock.On("FillBuffer", ctx, until)}
 }
 
-func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) Run(run func(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration)) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
+func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) Run(run func(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool))) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -266,14 +265,9 @@ func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) Run(run func(ctx
 		if args[1] != nil {
 			arg1 = args[1].(func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool))
 		}
-		var arg2 time.Duration
-		if args[2] != nil {
-			arg2 = args[2].(time.Duration)
-		}
 		run(
 			arg0,
 			arg1,
-			arg2,
 		)
 	})
 	return _c
@@ -284,7 +278,7 @@ func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) Return(err error
 	return _c
 }
 
-func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) RunAndReturn(run func(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
+func (_c *MockDefaultBufferedTransportInstance_FillBuffer_Call) RunAndReturn(run func(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)) error) *MockDefaultBufferedTransportInstance_FillBuffer_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -343,8 +337,8 @@ func (_c *MockDefaultBufferedTransportInstance_GetNumBytesAvailableInBuffer_Call
 }
 
 // PeekReadableBytes provides a mock function for the type MockDefaultBufferedTransportInstance
-func (_mock *MockDefaultBufferedTransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
-	ret := _mock.Called(ctx, numBytes, timeout)
+func (_mock *MockDefaultBufferedTransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32) ([]byte, error) {
+	ret := _mock.Called(ctx, numBytes)
 
 	if len(ret) == 0 {
 		panic("no return value specified for PeekReadableBytes")
@@ -352,18 +346,18 @@ func (_mock *MockDefaultBufferedTransportInstance) PeekReadableBytes(ctx context
 
 	var r0 []byte
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32, time.Duration) ([]byte, error)); ok {
-		return returnFunc(ctx, numBytes, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32) ([]byte, error)); ok {
+		return returnFunc(ctx, numBytes)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32, time.Duration) []byte); ok {
-		r0 = returnFunc(ctx, numBytes, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32) []byte); ok {
+		r0 = returnFunc(ctx, numBytes)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]byte)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, uint32, time.Duration) error); ok {
-		r1 = returnFunc(ctx, numBytes, timeout)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uint32) error); ok {
+		r1 = returnFunc(ctx, numBytes)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -378,12 +372,11 @@ type MockDefaultBufferedTransportInstance_PeekReadableBytes_Call struct {
 // PeekReadableBytes is a helper method to define mock.On call
 //   - ctx context.Context
 //   - numBytes uint32
-//   - timeout time.Duration
-func (_e *MockDefaultBufferedTransportInstance_Expecter) PeekReadableBytes(ctx interface{}, numBytes interface{}, timeout interface{}) *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call {
-	return &MockDefaultBufferedTransportInstance_PeekReadableBytes_Call{Call: _e.mock.On("PeekReadableBytes", ctx, numBytes, timeout)}
+func (_e *MockDefaultBufferedTransportInstance_Expecter) PeekReadableBytes(ctx interface{}, numBytes interface{}) *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call {
+	return &MockDefaultBufferedTransportInstance_PeekReadableBytes_Call{Call: _e.mock.On("PeekReadableBytes", ctx, numBytes)}
 }
 
-func (_c *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call) Run(run func(ctx context.Context, numBytes uint32, timeout time.Duration)) *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call {
+func (_c *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call) Run(run func(ctx context.Context, numBytes uint32)) *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -393,14 +386,9 @@ func (_c *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call) Run(run f
 		if args[1] != nil {
 			arg1 = args[1].(uint32)
 		}
-		var arg2 time.Duration
-		if args[2] != nil {
-			arg2 = args[2].(time.Duration)
-		}
 		run(
 			arg0,
 			arg1,
-			arg2,
 		)
 	})
 	return _c
@@ -411,14 +399,14 @@ func (_c *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call) Return(by
 	return _c
 }
 
-func (_c *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call) RunAndReturn(run func(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error)) *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call {
+func (_c *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call) RunAndReturn(run func(ctx context.Context, numBytes uint32) ([]byte, error)) *MockDefaultBufferedTransportInstance_PeekReadableBytes_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Read provides a mock function for the type MockDefaultBufferedTransportInstance
-func (_mock *MockDefaultBufferedTransportInstance) Read(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
-	ret := _mock.Called(ctx, numBytes, timeout)
+func (_mock *MockDefaultBufferedTransportInstance) Read(ctx context.Context, numBytes uint32) ([]byte, error) {
+	ret := _mock.Called(ctx, numBytes)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Read")
@@ -426,18 +414,18 @@ func (_mock *MockDefaultBufferedTransportInstance) Read(ctx context.Context, num
 
 	var r0 []byte
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32, time.Duration) ([]byte, error)); ok {
-		return returnFunc(ctx, numBytes, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32) ([]byte, error)); ok {
+		return returnFunc(ctx, numBytes)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32, time.Duration) []byte); ok {
-		r0 = returnFunc(ctx, numBytes, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint32) []byte); ok {
+		r0 = returnFunc(ctx, numBytes)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]byte)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, uint32, time.Duration) error); ok {
-		r1 = returnFunc(ctx, numBytes, timeout)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uint32) error); ok {
+		r1 = returnFunc(ctx, numBytes)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -452,12 +440,11 @@ type MockDefaultBufferedTransportInstance_Read_Call struct {
 // Read is a helper method to define mock.On call
 //   - ctx context.Context
 //   - numBytes uint32
-//   - timeout time.Duration
-func (_e *MockDefaultBufferedTransportInstance_Expecter) Read(ctx interface{}, numBytes interface{}, timeout interface{}) *MockDefaultBufferedTransportInstance_Read_Call {
-	return &MockDefaultBufferedTransportInstance_Read_Call{Call: _e.mock.On("Read", ctx, numBytes, timeout)}
+func (_e *MockDefaultBufferedTransportInstance_Expecter) Read(ctx interface{}, numBytes interface{}) *MockDefaultBufferedTransportInstance_Read_Call {
+	return &MockDefaultBufferedTransportInstance_Read_Call{Call: _e.mock.On("Read", ctx, numBytes)}
 }
 
-func (_c *MockDefaultBufferedTransportInstance_Read_Call) Run(run func(ctx context.Context, numBytes uint32, timeout time.Duration)) *MockDefaultBufferedTransportInstance_Read_Call {
+func (_c *MockDefaultBufferedTransportInstance_Read_Call) Run(run func(ctx context.Context, numBytes uint32)) *MockDefaultBufferedTransportInstance_Read_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -467,14 +454,9 @@ func (_c *MockDefaultBufferedTransportInstance_Read_Call) Run(run func(ctx conte
 		if args[1] != nil {
 			arg1 = args[1].(uint32)
 		}
-		var arg2 time.Duration
-		if args[2] != nil {
-			arg2 = args[2].(time.Duration)
-		}
 		run(
 			arg0,
 			arg1,
-			arg2,
 		)
 	})
 	return _c
@@ -485,7 +467,7 @@ func (_c *MockDefaultBufferedTransportInstance_Read_Call) Return(bytes []byte, e
 	return _c
 }
 
-func (_c *MockDefaultBufferedTransportInstance_Read_Call) RunAndReturn(run func(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error)) *MockDefaultBufferedTransportInstance_Read_Call {
+func (_c *MockDefaultBufferedTransportInstance_Read_Call) RunAndReturn(run func(ctx context.Context, numBytes uint32) ([]byte, error)) *MockDefaultBufferedTransportInstance_Read_Call {
 	_c.Call.Return(run)
 	return _c
 }

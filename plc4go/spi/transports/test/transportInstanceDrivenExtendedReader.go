@@ -23,14 +23,12 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"time"
 )
 
 type transportInstanceDrivenExtendedReader struct {
 	*TransportInstance
 
-	ctx     context.Context
-	timeout time.Duration
+	ctx context.Context
 }
 
 func (t *transportInstanceDrivenExtendedReader) Read(p []byte) (n int, err error) {
@@ -38,7 +36,7 @@ func (t *transportInstanceDrivenExtendedReader) Read(p []byte) (n int, err error
 	availableBytes := t.availableBytes()
 	if availableBytes < numBytes {
 		t.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
-		availableBytes = t.transferFromChannel(t.ctx, t.timeout)
+		availableBytes = t.transferFromChannel(t.ctx)
 	} else {
 		t.log.Trace().Msg("enough bytes available")
 	}
@@ -50,7 +48,7 @@ func (t *transportInstanceDrivenExtendedReader) ReadByte() (byte, error) {
 	availableBytes := t.availableBytes()
 	if availableBytes < numBytes {
 		t.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
-		availableBytes = t.transferFromChannel(t.ctx, t.timeout)
+		availableBytes = t.transferFromChannel(t.ctx)
 	} else {
 		t.log.Trace().Msg("enough bytes available")
 	}
@@ -62,7 +60,7 @@ func (t *transportInstanceDrivenExtendedReader) Peek(n int) ([]byte, error) {
 	availableBytes := t.availableBytes()
 	if availableBytes < numBytes {
 		t.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
-		availableBytes = t.transferFromChannel(t.ctx, t.timeout)
+		availableBytes = t.transferFromChannel(t.ctx)
 	} else {
 		t.log.Trace().Msg("enough bytes available")
 	}

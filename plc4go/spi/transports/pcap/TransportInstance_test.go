@@ -337,7 +337,7 @@ func TestTransportInstance_Write(t *testing.T) {
 				handle:                           tt.fields.handle,
 				reader:                           tt.fields.reader,
 			}
-			if err := m.Write(t.Context(), tt.args.in0, tt.args.in1); (err != nil) != tt.wantErr {
+			if err := m.Write(t.Context(), tt.args.in0); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

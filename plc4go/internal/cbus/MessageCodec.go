@@ -98,8 +98,8 @@ func (m *MessageCodec) Disconnect() error {
 	return err
 }
 
-func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
-	m.log.Trace().Stringer("message", message).Dur("timeout", timeout).Msg("Sending message")
+func (m *MessageCodec) Send(ctx context.Context, message spi.Message) error {
+	m.log.Trace().Stringer("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	cbusMessage, ok := message.(readWriteModel.CBusMessage)
 	if !ok {
@@ -117,15 +117,15 @@ func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout ti
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(ctx, theBytes, timeout)
+	err = m.GetTransportInstance().Write(ctx, theBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	return nil
 }
 
-func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.Message, error) {
-	m.log.Trace().Dur("timeout", timeout).Msg("Receive")
+func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
+	m.log.Trace().Msg("Receive")
 	ti := m.GetTransportInstance()
 	if !ti.IsConnected() {
 		return nil, errors.New("Transport instance not connected")
@@ -133,43 +133,37 @@ func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.
 	confirmation := false
 	// Fill the buffer
 	{
-		start := time.Now()
-		if err := ti.FillBuffer(
-			ctx,
-			func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
-				m.log.Trace().Uint("pos", pos).Uint8("byte", currentByte).Str("rune", string(rune(currentByte))).Msg("current byte")
-				switch currentByte {
-				case
-					readWriteModel.ResponseTermination_CR,
-					readWriteModel.ResponseTermination_LF:
-					m.log.Trace().Msg("Found termination byte")
-					return false
-				case byte(readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL):
-					confirmation = true
-					// In case we have directly more data in the buffer after a confirmation
-					_, err := reader.Peek(int(pos + 1))
-					m.log.Trace().Err(err).Msg("Peeking one more")
-					return err == nil
-				case
-					byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS),
-					byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION),
-					byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS),
-					byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG),
-					byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE):
-					confirmation = true
-					m.log.Trace().Msg("Found confirmation")
-					return false
-				default:
-					return true
-				}
-			},
-			timeout,
-		); err != nil {
+		if err := ti.FillBuffer(ctx, func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
+			m.log.Trace().Uint("pos", pos).Uint8("byte", currentByte).Str("rune", string(rune(currentByte))).Msg("current byte")
+			switch currentByte {
+			case
+				readWriteModel.ResponseTermination_CR,
+				readWriteModel.ResponseTermination_LF:
+				m.log.Trace().Msg("Found termination byte")
+				return false
+			case byte(readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL):
+				confirmation = true
+				// In case we have directly more data in the buffer after a confirmation
+				_, err := reader.Peek(int(pos + 1))
+				m.log.Trace().Err(err).Msg("Peeking one more")
+				return err == nil
+			case
+				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS),
+				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION),
+				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS),
+				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG),
+				byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE):
+				confirmation = true
+				m.log.Trace().Msg("Found confirmation")
+				return false
+			default:
+				return true
+			}
+		}); err != nil {
 			m.log.Debug().Err(err).Msg("Error filling buffer")
 		} else {
 			m.log.Trace().Msg("Buffer filled")
 		}
-		timeout -= time.Since(start)
 	}
 
 	// Check how many readable bytes we have
@@ -189,18 +183,14 @@ func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.
 	m.log.Trace().Uint32("readableBytes", readableBytes).Msg("readableBytes bytes available in buffer")
 
 	// Check for an isolated error
-	if bytes, err := ti.PeekReadableBytes(ctx, 1, timeout); err == nil && (bytes[0] == byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
-		start := time.Now()
-		_, _ = ti.Read(ctx, 1, timeout)
-		timeout -= time.Since(start)
+	if bytes, err := ti.PeekReadableBytes(ctx, 1); err == nil && (bytes[0] == byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
+		_, _ = ti.Read(ctx, 1)
 		// Report one Error at a time
 		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		return readWriteModel.CBusMessageParse[readWriteModel.CBusMessage](ctxForModel, bytes, true, m.requestContext, m.cbusOptions)
 	}
 
-	start := time.Now()
-	peekedBytes, err := ti.PeekReadableBytes(ctx, readableBytes, timeout)
-	timeout -= time.Since(start)
+	peekedBytes, err := ti.PeekReadableBytes(ctx, readableBytes)
 	pciResponse, requestToPci := false, false
 	indexOfCR := -1
 	indexOfLF := -1
@@ -239,9 +229,7 @@ lookingForTheEnd:
 	if indexOfCR < 0 && indexOfLF >= 0 {
 		// This means that the package is garbage as a lf is always prefixed with a cr
 		m.log.Debug().Err(err).Msg("Error reading")
-		start := time.Now()
-		garbage, err := ti.Read(ctx, readableBytes, timeout)
-		timeout -= time.Since(start)
+		garbage, err := ti.Read(ctx, readableBytes)
 		m.log.Warn().Bytes("garbage", garbage).Msg("Garbage bytes")
 		return nil, err
 	}
@@ -311,7 +299,7 @@ lookingForTheEnd:
 
 	// We need to ensure that there is no ! till the first /r
 	{
-		peekedBytes, err := ti.PeekReadableBytes(ctx, readableBytes, timeout)
+		peekedBytes, err := ti.PeekReadableBytes(ctx, readableBytes)
 		if err != nil {
 			return nil, err
 		}
@@ -351,7 +339,7 @@ lookingForTheEnd:
 	var rawInput []byte
 	{
 		m.log.Trace().Int("packetLength", packetLength).Msg("Read packet length")
-		read, err := ti.Read(ctx, uint32(packetLength), timeout)
+		read, err := ti.Read(ctx, uint32(packetLength))
 		if err != nil {
 			return nil, errors.Wrap(err, "Invalid state... If we have peeked that before we should be able to read that now")
 		}
@@ -368,9 +356,7 @@ lookingForTheEnd:
 	}
 	m.log.Debug().Bytes("sanitizedInput", sanitizedInput).Msg("Parsing")
 	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-	start = time.Now()
 	cBusMessage, err := readWriteModel.CBusMessageParse[readWriteModel.CBusMessage](ctxForModel, sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
-	m.log.Trace().TimeDiff("elapsedTime", time.Now(), start).Msg("Parsing took elapsedTime")
 	if err != nil {
 		m.log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL

@@ -261,7 +261,7 @@ func TestTransportInstance_Write(t *testing.T) {
 				serialPort:                       tt.fields.serialPort,
 				reader:                           tt.fields.reader,
 			}
-			if err := m.Write(t.Context(), tt.args.data, tt.args.timeout); (err != nil) != tt.wantErr {
+			if err := m.Write(t.Context(), tt.args.data); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

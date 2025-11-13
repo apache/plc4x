@@ -113,7 +113,7 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 	return m.messageCode.IsRunning()
 }
 
-func (m *ApplicationLayerMessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
+func (m *ApplicationLayerMessageCodec) Send(ctx context.Context, message spi.Message) error {
 	address, err := pdu.NewAddress(comp.NewArgs(m.remoteAddress))
 	if err != nil {
 		return err

@@ -178,7 +178,6 @@ func TestWriter_Write(t *testing.T) {
 			writeRequest := spiModel.NewDefaultPlcWriteRequest(tt.args.fields, tt.args.fieldNames, tt.args.values, w, nil)
 			timeBeforeWriteRequest := time.Now()
 			writeResponseChannel := w.Write(testutils.TestContext(t), writeRequest)
-			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case writeResponse := <-writeResponseChannel:
 				timeAfterWriteRequest := time.Now()
@@ -205,7 +204,7 @@ func TestWriter_Write(t *testing.T) {
 					t.Errorf("Writer.Write() Device State = %v, want %v",
 						tt.fields.device.State, tt.newState)
 				}
-			case <-timeout.C:
+			case <-t.Context().Done():
 				t.Errorf("Reader.Read() got timeout")
 			}
 		})

@@ -120,7 +120,7 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.serialPort != nil
 }
 
-func (m *TransportInstance) Write(ctx context.Context, data []byte, timeout time.Duration) error {
+func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if !m.connected.Load() {
 		return errors.New("error writing to transport. Not connected")
 	}
@@ -142,7 +142,7 @@ func (m *TransportInstance) GetReader() transports.ExtendedReader {
 	return m.reader
 }
 
-func (m *TransportInstance) SetTimeout(timeout time.Duration) error {
+func (m *TransportInstance) SetReadDeadline(deadline time.Time) error {
 	// TODO: big oof.... there is no way to set a timeout
 	return nil
 }

@@ -166,9 +166,8 @@ func TestWriter_Write(t *testing.T) {
 					t.Cleanup(cancelFunc)
 				},
 				wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
-					timeout := time.NewTimer(2 * time.Second)
 					select {
-					case <-timeout.C:
+					case <-t.Context().Done():
 						t.Error("timeout")
 						t.FailNow()
 					case result := <-results:

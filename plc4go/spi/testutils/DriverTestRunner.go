@@ -119,11 +119,10 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 	}
 	connection := connectionResult.GetConnection()
 	t.Cleanup(func() {
-		timeout := time.NewTimer(30 * time.Second)
 		select {
 		case result := <-connection.Close():
 			assert.NoError(t, result.GetErr())
-		case <-timeout.C:
+		case <-t.Context().Done():
 			t.Error("timeout closing connection")
 		}
 	})

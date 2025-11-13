@@ -167,7 +167,7 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			}
 		}()
 		c.log.Debug().Msg("Sending UnregisterSession EIP Packet")
-		ttl := 60 * time.Second
+		ttl := c.GetTtl()
 		if deadline, ok := ctx.Deadline(); ok {
 			ttl = time.Until(deadline)
 			c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")

@@ -22,7 +22,6 @@ package eip
 import (
 	"context"
 	"encoding/binary"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -56,7 +55,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
+func (m *MessageCodec) Send(ctx context.Context, message spi.Message) error {
 	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	eipPacket := message.(model.EipPacket)
@@ -68,21 +67,19 @@ func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout ti
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(ctx, wb.GetBytes(), timeout)
+	err = m.GetTransportInstance().Write(ctx, wb.GetBytes())
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	return nil
 }
 
-func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.Message, error) {
+func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	transportInstance := m.GetTransportInstance()
 	if num, err := transportInstance.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
 		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
-		start := time.Now()
-		data, err := transportInstance.PeekReadableBytes(ctx, 4, timeout)
-		timeout -= time.Since(start)
+		data, err := transportInstance.PeekReadableBytes(ctx, 4)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -94,9 +91,7 @@ func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.
 			m.log.Debug().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil
 		}
-		start = time.Now()
-		data, err = transportInstance.Read(ctx, packetSize, timeout)
-		timeout -= time.Since(start)
+		data, err = transportInstance.Read(ctx, packetSize)
 		if err != nil {
 			m.log.Debug().Err(err).Msg("Error reading")
 			// TODO: Possibly clean up ...

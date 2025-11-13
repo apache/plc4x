@@ -23,7 +23,6 @@ import (
 	"context"
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -47,7 +46,6 @@ func TestMessageCodec_Send(t *testing.T) {
 	}
 	type args struct {
 		message spi.Message
-		timeout time.Duration
 	}
 	tests := []struct {
 		name    string
@@ -72,7 +70,6 @@ func TestMessageCodec_Send(t *testing.T) {
 					),
 					nil,
 				)),
-				timeout: 10 * time.Second,
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -101,7 +98,7 @@ func TestMessageCodec_Send(t *testing.T) {
 				monitoredMMIs:  tt.fields.monitoredMMIs,
 				monitoredSALs:  tt.fields.monitoredSALs,
 			}
-			tt.wantErr(t, m.Send(t.Context(), tt.args.message, tt.args.timeout), fmt.Sprintf("Send(%v)", tt.args.message))
+			tt.wantErr(t, m.Send(t.Context(), tt.args.message), fmt.Sprintf("Send(%v)", tt.args.message))
 		})
 	}
 }
@@ -118,8 +115,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 		monitoredSALs  chan readWriteModel.MonitoredSAL
 	}
 	type args struct {
-		ctx     context.Context
-		timeout time.Duration
+		ctx context.Context
 	}
 	tests := []struct {
 		name        string
@@ -139,8 +135,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
-				ctx:     t.Context(),
-				timeout: 10 * time.Second,
+				ctx: t.Context(),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -165,8 +160,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
-				ctx:     t.Context(),
-				timeout: 10 * time.Second,
+				ctx: t.Context(),
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewServerErrorReply(
@@ -197,8 +191,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
-				ctx:     t.Context(),
-				timeout: 10 * time.Second,
+				ctx: t.Context(),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -224,8 +217,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
-				ctx:     t.Context(),
-				timeout: 10 * time.Second,
+				ctx: t.Context(),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -251,8 +243,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
-				ctx:     t.Context(),
-				timeout: 10 * time.Second,
+				ctx: t.Context(),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -286,8 +277,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
-				ctx:     t.Context(),
-				timeout: 10 * time.Second,
+				ctx: t.Context(),
 			},
 			manipulator: func(t *testing.T, messageCodec *MessageCodec) {
 				messageCodec.hashEncountered.Store(9999)
@@ -334,8 +324,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
-				ctx:     t.Context(),
-				timeout: 10 * time.Second,
+				ctx: t.Context(),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -532,8 +521,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				monitoredSALs:  nil,
 			},
 			args: args{
-				ctx:     t.Context(),
-				timeout: 10 * time.Second,
+				ctx: t.Context(),
 			},
 			manipulator: func(t *testing.T, messageCodec *MessageCodec) {
 				messageCodec.hashEncountered.Store(9999)
@@ -613,7 +601,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			got, err := m.Receive(tt.args.ctx, tt.args.timeout)
+			got, err := m.Receive(tt.args.ctx)
 			if !tt.wantErr(t, err, fmt.Sprintf("Receive()")) {
 				return
 			}
@@ -637,7 +625,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		var msg spi.Message
 		var err error
-		msg, err = codec.Receive(t.Context(), 10*time.Second)
+		msg, err = codec.Receive(t.Context())
 		// No data yet so this should return no error and no data
 		assert.NoError(t, err)
 		assert.Nil(t, msg)
@@ -645,7 +633,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		transportInstance.FillReadBuffer([]byte("i."))
 
 		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive(t.Context(), 10*time.Second)
+		msg, err = codec.Receive(t.Context())
 		assert.NoError(t, err)
 		assert.Nil(t, msg)
 
@@ -653,7 +641,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
 		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive(t.Context(), 10*time.Second)
+		msg, err = codec.Receive(t.Context())
 		assert.NoError(t, err)
 		require.NotNil(t, msg)
 
@@ -674,7 +662,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		var msg spi.Message
 		var err error
-		msg, err = codec.Receive(t.Context(), 10*time.Second)
+		msg, err = codec.Receive(t.Context())
 		// No data yet so this should return no error and no data
 		assert.NoError(t, err)
 		assert.Nil(t, msg)
@@ -684,7 +672,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		for i := 0; i < 8; i++ {
 			t.Logf("%d try", i+1)
 			// We should wait for more data, so no error, no message
-			msg, err = codec.Receive(t.Context(), 10*time.Second)
+			msg, err = codec.Receive(t.Context())
 			assert.NoError(t, err)
 			assert.Nil(t, msg)
 		}
@@ -693,7 +681,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
 		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive(t.Context(), 10*time.Second)
+		msg, err = codec.Receive(t.Context())
 		assert.NoError(t, err)
 		assert.NotNil(t, msg)
 
@@ -714,7 +702,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 
 		var msg spi.Message
 		var err error
-		msg, err = codec.Receive(t.Context(), 10*time.Second)
+		msg, err = codec.Receive(t.Context())
 		// No data yet so this should return no error and no data
 		assert.NoError(t, err)
 		assert.Nil(t, msg)
@@ -724,7 +712,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		for i := 0; i <= 15; i++ {
 			t.Logf("%d try", i+1)
 			// We should wait for more data, so no error, no message
-			msg, err = codec.Receive(t.Context(), 10*time.Second)
+			msg, err = codec.Receive(t.Context())
 			if i == 15 {
 				assert.NoError(t, err)
 				require.NotNil(t, msg)
@@ -743,7 +731,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
 		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive(t.Context(), 10*time.Second)
+		msg, err = codec.Receive(t.Context())
 		assert.NoError(t, err)
 		assert.NotNil(t, msg)
 

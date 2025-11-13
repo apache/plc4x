@@ -23,7 +23,6 @@ import (
 	"context"
 	"encoding/binary"
 	"sync"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -61,7 +60,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
+func (m *MessageCodec) Send(ctx context.Context, message spi.Message) error {
 	m.log.Trace().Stringer("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	opcuaApu, ok := message.(readWriteModel.OpcuaAPU)
@@ -81,50 +80,40 @@ func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout ti
 	theBytes := wbbb.GetBytes()
 
 	// Send it to the PLC
-	if err := m.GetTransportInstance().Write(ctx, theBytes, timeout); err != nil {
+	if err := m.GetTransportInstance().Write(ctx, theBytes); err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	m.log.Trace().Msg("bytes written to transport instance")
 	return nil
 }
 
-func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.Message, error) {
+func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	m.log.Trace().Msg("Receive")
 	ti := m.GetTransportInstance()
 	if !ti.IsConnected() {
 		return nil, errors.New("Transport instance not connected")
 	}
 
-	start := time.Now()
-	if err := ti.FillBuffer(
-		ctx,
-		func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
-			m.log.Trace().Uint("pos", pos).Uint8("currentByte", currentByte).Msg("filling")
-			numBytesAvailable, err := ti.GetNumBytesAvailableInBuffer()
-			if err != nil {
-				m.log.Debug().Err(err).Msg("error getting available bytes")
-				return false
-			}
-			m.log.Trace().Uint32("numBytesAvailable", numBytesAvailable).Msg("check available bytes < 8")
-			return numBytesAvailable < 8
-		},
-		timeout,
-	); err != nil {
+	if err := ti.FillBuffer(ctx, func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
+		m.log.Trace().Uint("pos", pos).Uint8("currentByte", currentByte).Msg("filling")
+		numBytesAvailable, err := ti.GetNumBytesAvailableInBuffer()
+		if err != nil {
+			m.log.Debug().Err(err).Msg("error getting available bytes")
+			return false
+		}
+		m.log.Trace().Uint32("numBytesAvailable", numBytesAvailable).Msg("check available bytes < 8")
+		return numBytesAvailable < 8
+	}); err != nil {
 		m.log.Debug().Err(err).Msg("error filling buffer")
 	}
-	timeout = timeout - (time.Since(start))
 
-	start = time.Now()
-	data, err := ti.PeekReadableBytes(ctx, 8, timeout)
-	timeout -= time.Since(start)
+	data, err := ti.PeekReadableBytes(ctx, 8)
 	if err != nil {
 		m.log.Debug().Err(err).Msg("error peeking")
 		return nil, nil
 	}
 	numberOfBytesToRead := binary.LittleEndian.Uint32(data[4:8])
-	start = time.Now()
-	readBytes, err := ti.Read(ctx, numberOfBytesToRead, timeout)
-	timeout -= time.Since(start)
+	readBytes, err := ti.Read(ctx, numberOfBytesToRead)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not read %d bytes", readBytes)
 	}

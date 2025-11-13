@@ -26,7 +26,6 @@ import (
 	"net"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
@@ -152,16 +151,13 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	return uint32(m.reader.Buffered()), nil
 }
 
-func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool, timeout time.Duration) error {
+func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
 	}
 	nBytes := uint32(1)
-	endTime := time.Now().Add(timeout)
-	for time.Now().Before(endTime) {
-		start := time.Now()
-		_bytes, err := m.PeekReadableBytes(ctx, nBytes, timeout)
-		timeout -= time.Since(start)
+	for ctx.Err() == nil {
+		_bytes, err := m.PeekReadableBytes(ctx, nBytes)
 		if err != nil {
 			return errors.Wrap(err, "Error while peeking")
 		}
@@ -170,34 +166,32 @@ func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint,
 		}
 		nBytes++
 	}
-	return errors.New("Timeout while filling buffer")
+	return errors.Wrap(ctx.Err(), "Timeout while filling buffer")
 }
 
-func (m *TransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
+func (m *TransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
-		timeout = deadline.Sub(time.Now())
-	}
-	if err := m.udpConn.SetReadDeadline(time.Now().Add(timeout)); err != nil {
-		return nil, errors.Wrap(err, "error setting read deadline")
+		if err := m.udpConn.SetReadDeadline(deadline); err != nil {
+			return nil, errors.Wrap(err, "error setting read deadline")
+		}
 	}
 	return m.reader.Peek(int(numBytes))
 }
 
-func (m *TransportInstance) Read(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
+func (m *TransportInstance) Read(ctx context.Context, numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
 	data := make([]byte, numBytes)
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
-		timeout = deadline.Sub(time.Now())
-	}
-	if err := m.udpConn.SetReadDeadline(time.Now().Add(timeout)); err != nil {
-		return nil, errors.Wrap(err, "error setting read deadline")
+		if err := m.udpConn.SetReadDeadline(deadline); err != nil {
+			return nil, errors.Wrap(err, "error setting read deadline")
+		}
 	}
 	for i := uint32(0); i < numBytes; i++ {
 		val, err := m.reader.ReadByte()
@@ -209,12 +203,15 @@ func (m *TransportInstance) Read(ctx context.Context, numBytes uint32, timeout t
 	return data, nil
 }
 
-func (m *TransportInstance) Write(ctx context.Context, data []byte, timeout time.Duration) error {
+func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
 	}
-	if err := m.udpConn.SetReadDeadline(time.Now().Add(timeout)); err != nil {
-		return errors.Wrap(err, "error setting write deadline")
+	if deadline, ok := ctx.Deadline(); ok {
+		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
+		if err := m.udpConn.SetReadDeadline(deadline); err != nil {
+			return errors.Wrap(err, "error setting read deadline")
+		}
 	}
 	var num int
 	var err error

@@ -178,6 +178,7 @@ func TestConnection_Connect(t *testing.T) {
 				})
 				fields.messageCodec = codec
 
+				args.ctx = t.Context()
 				var cancelFunc context.CancelFunc
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
 				t.Cleanup(cancelFunc)

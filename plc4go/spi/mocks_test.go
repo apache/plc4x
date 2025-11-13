@@ -1603,16 +1603,16 @@ func (_c *MockMessageCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockMe
 }
 
 // Send provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Send(ctx context.Context, message Message, timeout time.Duration) error {
-	ret := _mock.Called(ctx, message, timeout)
+func (_mock *MockMessageCodec) Send(ctx context.Context, message Message) error {
+	ret := _mock.Called(ctx, message)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, Message, time.Duration) error); ok {
-		r0 = returnFunc(ctx, message, timeout)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, Message) error); ok {
+		r0 = returnFunc(ctx, message)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1627,12 +1627,11 @@ type MockMessageCodec_Send_Call struct {
 // Send is a helper method to define mock.On call
 //   - ctx context.Context
 //   - message Message
-//   - timeout time.Duration
-func (_e *MockMessageCodec_Expecter) Send(ctx interface{}, message interface{}, timeout interface{}) *MockMessageCodec_Send_Call {
-	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", ctx, message, timeout)}
+func (_e *MockMessageCodec_Expecter) Send(ctx interface{}, message interface{}) *MockMessageCodec_Send_Call {
+	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", ctx, message)}
 }
 
-func (_c *MockMessageCodec_Send_Call) Run(run func(ctx context.Context, message Message, timeout time.Duration)) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) Run(run func(ctx context.Context, message Message)) *MockMessageCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -1642,14 +1641,9 @@ func (_c *MockMessageCodec_Send_Call) Run(run func(ctx context.Context, message 
 		if args[1] != nil {
 			arg1 = args[1].(Message)
 		}
-		var arg2 time.Duration
-		if args[2] != nil {
-			arg2 = args[2].(time.Duration)
-		}
 		run(
 			arg0,
 			arg1,
-			arg2,
 		)
 	})
 	return _c
@@ -1660,7 +1654,7 @@ func (_c *MockMessageCodec_Send_Call) Return(err error) *MockMessageCodec_Send_C
 	return _c
 }
 
-func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(ctx context.Context, message Message, timeout time.Duration) error) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(ctx context.Context, message Message) error) *MockMessageCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }

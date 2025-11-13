@@ -166,7 +166,6 @@ func TestReader_Read(t *testing.T) {
 			readRequest := spiModel.NewDefaultPlcReadRequest(tt.args.fields, tt.args.fieldNames, r, nil)
 			timeBeforeReadRequest := time.Now()
 			readResponseChannel := r.Read(testutils.TestContext(t), readRequest)
-			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case readResponse := <-readResponseChannel:
 				timeAfterReadRequest := time.Now()
@@ -195,7 +194,7 @@ func TestReader_Read(t *testing.T) {
 							readResponse.GetResponse().GetValue(fieldName), tt.want.GetValue(fieldName))
 					}
 				}
-			case <-timeout.C:
+			case <-t.Context().Done():
 				t.Errorf("Reader.Read() got timeout")
 			}
 		})

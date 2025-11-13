@@ -414,9 +414,8 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 				connectionString: "~:/?#[]@!$&'()*+,;=\n",
 			},
 			wantVerifier: func(t *testing.T, results <-chan PlcConnectionConnectResult) bool {
-				timeout := time.NewTimer(3 * time.Second)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 				case result := <-results:
 					assert.NotNil(t, result)
@@ -429,9 +428,8 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 		{
 			name: "get one without a driver",
 			wantVerifier: func(t *testing.T, results <-chan PlcConnectionConnectResult) bool {
-				timeout := time.NewTimer(3 * time.Second)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 				case result := <-results:
 					assert.NotNil(t, result)
@@ -463,9 +461,8 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 				fields.drivers["test"] = driver
 			},
 			wantVerifier: func(t *testing.T, results <-chan PlcConnectionConnectResult) bool {
-				timeout := time.NewTimer(3 * time.Second)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 				case result := <-results:
 					assert.NotNil(t, result)

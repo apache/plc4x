@@ -110,7 +110,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 				ctx, cancel := context.WithCancel(ctx)
 				context.AfterFunc(transactionContext, cancel)
-				ttl := 1 * time.Second
+				ttl := 60 * time.Second
 				if deadline, ok := ctx.Deadline(); ok {
 					ttl = time.Until(deadline)
 					m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")

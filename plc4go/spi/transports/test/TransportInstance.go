@@ -23,7 +23,6 @@ import (
 	"bufio"
 	"context"
 	"encoding/hex"
-	"os"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -156,14 +155,13 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	return m.availableBytes(), nil
 }
 
-func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error {
+func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
 	}
 	m.log.Trace().Msg("Fill the buffer")
 	nBytes := uint32(1)
-	start := time.Now()
-	for time.Since(start) < timeout {
+	for ctx.Err() == nil {
 		m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
 		timer := time.NewTimer(m.simulatedLatency)
 		select {
@@ -171,43 +169,35 @@ func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint,
 		case <-timer.C:
 		}
 		m.log.Trace().Uint32("nBytes", nBytes).Msg("Peeking bytes")
-		_bytes, err := m.PeekReadableBytes(ctx, nBytes, timeout)
+		_bytes, err := m.PeekReadableBytes(ctx, nBytes)
 		if err != nil {
 			return errors.Wrap(err, "Error while peeking")
 		}
 		m.log.Trace().Msg("calling until callback")
-		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], &transportInstanceDrivenExtendedReader{m, ctx, timeout}); !keepGoing {
+		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], &transportInstanceDrivenExtendedReader{m, ctx}); !keepGoing {
 			m.log.Trace().Uint32("nBytes", nBytes).Msg("Stopped after nBytes")
 			return nil
 		}
 		m.log.Trace().Uint32("nBytes", nBytes).Msg("Keep going")
 		nBytes++
 	}
-	return errors.New("Timeout while filling buffer")
+	return errors.Wrap(ctx.Err(), "Timeout while filling buffer")
 }
-func (m *TransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
+func (m *TransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
-	}
-	if timeout < m.simulatedLatency {
-		m.log.Warn().Dur("timeout", timeout).Msg("timeout exceeds simulatedLatency. Sleeping timeout")
-		timer := time.NewTimer(m.simulatedLatency)
-		select {
-		case <-ctx.Done():
-		case <-timer.C:
-		}
-		return nil, os.ErrDeadlineExceeded
 	}
 	m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
 	timer := time.NewTimer(m.simulatedLatency)
 	select {
 	case <-ctx.Done():
+		return nil, ctx.Err()
 	case <-timer.C:
 	}
 	availableBytes := m.availableBytes()
 	if availableBytes < numBytes {
 		m.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
-		availableBytes = m.transferFromChannel(ctx, timeout)
+		availableBytes = m.transferFromChannel(ctx)
 	} else {
 		m.log.Trace().Msg("enough bytes available")
 	}
@@ -226,7 +216,7 @@ func (m *TransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint
 	return peekAble[:numBytes], err
 }
 
-func (m *TransportInstance) Read(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
+func (m *TransportInstance) Read(ctx context.Context, numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
@@ -238,27 +228,15 @@ func (m *TransportInstance) Read(ctx context.Context, numBytes uint32, timeout t
 	if availableBytes < 1 {
 		return nil, errors.Errorf("Only %d bytes available. Requested %d", availableBytes, numBytes)
 	}
-	if deadline, ok := ctx.Deadline(); ok {
-		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
-		timeout = deadline.Sub(time.Now())
-	}
-	if timeout < m.simulatedLatency {
-		m.log.Warn().Dur("timeout", timeout).Msg("timeout exceeds simulatedLatency. Sleeping timeout")
-		timer := time.NewTimer(timeout)
-		select {
-		case <-ctx.Done():
-		case <-timer.C:
-		}
-		return nil, os.ErrDeadlineExceeded
-	}
 	if availableBytes < numBytes {
 		m.log.Trace().Uint32("numBytes", numBytes).Uint32("availableBytes", availableBytes).Msg("Trying transfer now")
-		availableBytes = m.transferFromChannel(ctx, timeout)
+		availableBytes = m.transferFromChannel(ctx)
 	}
 	m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
 	timer := time.NewTimer(m.simulatedLatency)
 	select {
 	case <-ctx.Done():
+		return nil, ctx.Err()
 	case <-timer.C:
 	}
 	return m.read(int(numBytes)), nil
@@ -269,7 +247,7 @@ func (m *TransportInstance) SetWriteInterceptor(writeInterceptor func(transportI
 	m.writeInterceptor = writeInterceptor
 }
 
-func (m *TransportInstance) Write(ctx context.Context, data []byte, timeout time.Duration) error {
+func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
 	}
@@ -280,19 +258,11 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte, timeout time
 			Msg("Passing data to write interceptor")
 		m.writeInterceptor(m, data)
 	}
-	if timeout < m.simulatedLatency {
-		m.log.Warn().Dur("timeout", timeout).Msg("timeout exceeds simulatedLatency. Sleeping timeout")
-		timer := time.NewTimer(timeout)
-		select {
-		case <-ctx.Done():
-		case <-timer.C:
-		}
-		return os.ErrDeadlineExceeded
-	}
 	m.log.Trace().Dur("simulatedLatency", m.simulatedLatency).Msg("Sleeping simulatedLatency")
 	timer := time.NewTimer(m.simulatedLatency)
 	select {
 	case <-ctx.Done():
+		return ctx.Err()
 	case <-timer.C:
 	}
 	m.log.Trace().
@@ -377,16 +347,12 @@ func (m *TransportInstance) appendRead(newBytes ...byte) (totalAvailableBytes ui
 	return uint32(len(m.readBuffer))
 }
 
-func (m *TransportInstance) transferFromChannel(ctx context.Context, timeout time.Duration) (totalAvailableBytes uint32) {
-	m.log.Trace().Dur("timeout", timeout).Msg("Transfer from channel")
+func (m *TransportInstance) transferFromChannel(ctx context.Context) (totalAvailableBytes uint32) {
 	totalAvailableBytes = m.availableBytes()
-	timer := time.NewTimer(timeout)
 	start := time.Now()
 	select {
 	case <-ctx.Done():
 		m.log.Trace().Msg("Context done")
-	case <-timer.C:
-		m.log.Trace().Msg("Timeout")
 	case newBytes := <-m.readChannel:
 		m.log.Trace().Dur("time", time.Since(start)).Msg("Got new bytes")
 		totalAvailableBytes = m.appendRead(newBytes...)

@@ -232,7 +232,7 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 			driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
 		searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
 		// Send the search request.
-		if err := codec.Send(ctx, searchRequestMessage, 60*time.Second /*TODO: where to get that timeout from*/); err != nil {
+		if err := codec.Send(ctx, searchRequestMessage); err != nil {
 			d.log.Debug().Err(err).Stringer("searchRequestMessage", searchRequestMessage).Msg("Error sending message")
 			return
 		}

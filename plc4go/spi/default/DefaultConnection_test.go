@@ -543,9 +543,8 @@ func Test_defaultConnection_Close(t *testing.T) {
 				fields.DefaultConnectionRequirements = requirements
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionCloseResult) bool {
-				timeout := time.NewTimer(2 * time.Second)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 				case result := <-results:
 					assert.Nil(t, result.GetErr())
@@ -601,9 +600,8 @@ func Test_defaultConnection_Connect(t *testing.T) {
 				fields.DefaultConnectionRequirements = requirements
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
-				timeout := time.NewTimer(2 * time.Second)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 				case result := <-results:
 					assert.Nil(t, result.GetErr())
@@ -845,9 +843,8 @@ func Test_defaultConnection_Ping(t *testing.T) {
 				fields.DefaultConnectionRequirements = requirements
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool {
-				timeout := time.NewTimer(2 * time.Second)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 				case result := <-results:
 					assert.NotNil(t, result.GetErr())
@@ -868,9 +865,8 @@ func Test_defaultConnection_Ping(t *testing.T) {
 			},
 			connected: true,
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool {
-				timeout := time.NewTimer(2 * time.Second)
 				select {
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 				case result := <-results:
 					assert.Nil(t, result.GetErr())

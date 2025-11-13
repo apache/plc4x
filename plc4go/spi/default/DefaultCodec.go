@@ -41,8 +41,8 @@ import (
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
 type DefaultCodecRequirements interface {
 	GetCodec() spi.MessageCodec
-	Send(ctx context.Context, message spi.Message, timeout time.Duration) error
-	Receive(ctx context.Context, timeout time.Duration) (spi.Message, error)
+	Send(ctx context.Context, message spi.Message) error
+	Receive(ctx context.Context) (spi.Message, error)
 }
 
 // DefaultCodec is a default codec implementation which has so sensitive defaults for message handling and a built-in worker
@@ -220,7 +220,7 @@ func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acc
 	}
 	m.Expect(ctx, acceptsMessage, handleMessage, handleError, ttl) // We register the expectation first to avoid getting a response between sending and adding the expect
 	m.log.Trace().Dur("ttl", ttl).Msg("Sending request")
-	return m.Send(ctx, message, ttl)
+	return m.Send(ctx, message)
 }
 
 func (m *defaultCodec) TimeoutExpectations(now time.Time) time.Duration {
@@ -446,7 +446,7 @@ mainLoop:
 					err = errors.New("not running")
 					return
 				}
-				message, err = m.Receive(m.ctx, m.receiveTimeout)
+				message, err = m.Receive(m.ctx)
 			})
 			timeoutTimer := time.NewTimer(m.receiveTimeout)
 			select {

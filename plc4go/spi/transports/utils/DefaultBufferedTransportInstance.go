@@ -34,14 +34,14 @@ import (
 type DefaultBufferedTransportInstanceRequirements interface {
 	GetReader() transports.ExtendedReader
 	IsConnected() bool
-	SetTimeout(timeout time.Duration) error
+	SetReadDeadline(deadline time.Time) error
 }
 
 type DefaultBufferedTransportInstance interface {
 	GetNumBytesAvailableInBuffer() (uint32, error)
-	FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool), timeout time.Duration) error
-	PeekReadableBytes(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error)
-	Read(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error)
+	FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)) error
+	PeekReadableBytes(ctx context.Context, numBytes uint32) ([]byte, error)
+	Read(ctx context.Context, numBytes uint32) ([]byte, error)
 }
 
 func NewDefaultBufferedTransportInstance(defaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements, _options ...options.WithOption) DefaultBufferedTransportInstance {
@@ -71,7 +71,7 @@ func (m *defaultBufferedTransportInstance) GetNumBytesAvailableInBuffer() (uint3
 	return uint32(m.GetReader().Buffered()), nil
 }
 
-func (m *defaultBufferedTransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool, timeout time.Duration) error {
+func (m *defaultBufferedTransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
 	}
@@ -79,11 +79,8 @@ func (m *defaultBufferedTransportInstance) FillBuffer(ctx context.Context, until
 		return nil
 	}
 	nBytes := uint32(1)
-	endTime := time.Now().Add(timeout)
-	for time.Now().Before(endTime) {
-		start := time.Now()
-		bytes, err := m.PeekReadableBytes(ctx, nBytes, timeout)
-		timeout -= time.Since(start)
+	for ctx.Err() == nil {
+		bytes, err := m.PeekReadableBytes(ctx, nBytes)
 		if err != nil {
 			return errors.Wrap(err, "Error while peeking")
 		}
@@ -92,10 +89,10 @@ func (m *defaultBufferedTransportInstance) FillBuffer(ctx context.Context, until
 		}
 		nBytes++
 	}
-	return errors.New("Timeout while filling buffer")
+	return errors.Wrap(ctx.Err(), "Timeout while filling buffer")
 }
 
-func (m *defaultBufferedTransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
+func (m *defaultBufferedTransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
@@ -104,15 +101,14 @@ func (m *defaultBufferedTransportInstance) PeekReadableBytes(ctx context.Context
 	}
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
-		timeout = deadline.Sub(time.Now())
-	}
-	if err := m.SetTimeout(timeout); err != nil {
-		return nil, errors.Wrap(err, "Error while setting timeout")
+		if err := m.SetReadDeadline(deadline); err != nil {
+			return nil, errors.Wrap(err, "error setting read deadline")
+		}
 	}
 	return m.GetReader().Peek(int(numBytes))
 }
 
-func (m *defaultBufferedTransportInstance) Read(ctx context.Context, numBytes uint32, timeout time.Duration) ([]byte, error) {
+func (m *defaultBufferedTransportInstance) Read(ctx context.Context, numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
@@ -121,10 +117,9 @@ func (m *defaultBufferedTransportInstance) Read(ctx context.Context, numBytes ui
 	}
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
-		timeout = deadline.Sub(time.Now())
-	}
-	if err := m.SetTimeout(timeout); err != nil {
-		return nil, errors.Wrap(err, "Error while setting timeout")
+		if err := m.SetReadDeadline(deadline); err != nil {
+			return nil, errors.Wrap(err, "error setting read deadline")
+		}
 	}
 	data := make([]byte, numBytes)
 	for i := uint32(0); i < numBytes; i++ {

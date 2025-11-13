@@ -24,7 +24,6 @@ import (
 	"fmt"
 	"runtime/debug"
 	"sync"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -117,12 +116,11 @@ func (c *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionCon
 
 func (c *Connection) passToDefaultIncomingMessageChannel() {
 	incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
-	timeout := time.NewTimer(20 * time.Millisecond)
 	select {
 	case message := <-incomingMessageChannel:
 		// TODO: implement mapping to subscribers
 		c.log.Info().Stringer("message", message).Msg("Received")
-	case <-timeout.C:
+	default:
 		c.log.Info().Msg("Message was not handled")
 	}
 }

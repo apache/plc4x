@@ -21,7 +21,6 @@ package bacnetip
 
 import (
 	"context"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -51,7 +50,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
+func (m *MessageCodec) Send(ctx context.Context, message spi.Message) error {
 	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	bvlcPacket := message.(model.BVLC)
@@ -62,20 +61,18 @@ func (m *MessageCodec) Send(ctx context.Context, message spi.Message, timeout ti
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(ctx, theBytes, timeout)
+	err = m.GetTransportInstance().Write(ctx, theBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	return nil
 }
 
-func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.Message, error) {
+func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
 		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
-		start := time.Now()
-		data, err := m.GetTransportInstance().PeekReadableBytes(ctx, 4, timeout)
-		timeout -= time.Since(start)
+		data, err := m.GetTransportInstance().PeekReadableBytes(ctx, 4)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -89,9 +86,7 @@ func (m *MessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.
 				Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil
 		}
-		start = time.Now()
-		data, err = m.GetTransportInstance().Read(ctx, packetSize, timeout)
-		timeout -= time.Since(start)
+		data, err = m.GetTransportInstance().Read(ctx, packetSize)
 		if err != nil {
 			m.log.Debug().Err(err).Msg("Error reading")
 			// TODO: Possibly clean up ...

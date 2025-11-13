@@ -132,7 +132,6 @@ func TestDriver_GetConnection(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			connectionChan := d.GetConnection(t.Context(), tt.args.in0, tt.args.in1, tt.args.options)
-			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case connectResult := <-connectionChan:
 				if tt.wantErr && (connectResult.GetErr() == nil) {
@@ -140,7 +139,7 @@ func TestDriver_GetConnection(t *testing.T) {
 				} else if connectResult.GetErr() != nil {
 					t.Errorf("PlcConnectionPool.GetConnection() error = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
 				}
-			case <-timeout.C:
+			case <-t.Context().Done():
 				t.Errorf("PlcConnectionPool.GetConnection() got timeout")
 			}
 		})

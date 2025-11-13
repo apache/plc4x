@@ -239,7 +239,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 
 func (c *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 	c.log.Debug().Msg("Closing connection cache started.")
-	ch := make(chan PlcConnectionCacheCloseResult)
+	ch := make(chan PlcConnectionCacheCloseResult, 1)
 
 	c.wg.Go(func() {
 		c.log.Trace().Msg("Acquire lock")
@@ -248,10 +248,10 @@ func (c *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 		c.log.Trace().Msg("lock acquired")
 
 		if len(c.connections) == 0 {
-			responseDeliveryTimeout := time.NewTimer(10 * time.Millisecond)
 			select {
 			case ch <- newDefaultPlcConnectionCacheCloseResult(c, nil):
-			case <-responseDeliveryTimeout.C:
+			default:
+				c.log.Trace().Msg("Channel full, dropping response")
 			}
 			c.log.Debug().Msg("Closing connection cache finished.")
 			return
@@ -289,10 +289,10 @@ func (c *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 				}
 
 				c.log.Trace().Msg("Writing response")
-				responseDeliveryTimeout := time.NewTimer(10 * time.Millisecond)
 				select {
 				case ch <- newDefaultPlcConnectionCacheCloseResult(c, nil):
-				case <-responseDeliveryTimeout.C:
+				default:
+					c.log.Trace().Msg("Channel full, dropping response")
 				}
 				c.log.Debug().Msg("Closing connection cache finished.")
 			})

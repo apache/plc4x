@@ -112,16 +112,15 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.connected.Load()
 }
 
-func (m *TransportInstance) Write(ctx context.Context, data []byte, timeout time.Duration) error {
+func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if !m.connected.Load() {
 		return errors.New("error writing to transport. Not connected")
 	}
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
-		timeout = deadline.Sub(time.Now())
-	}
-	if err := m.tcpConn.SetReadDeadline(time.Now().Add(timeout)); err != nil {
-		return errors.Wrap(err, "error setting write deadline")
+		if err := m.tcpConn.SetReadDeadline(deadline); err != nil {
+			return errors.Wrap(err, "error setting read deadline")
+		}
 	}
 	num, err := m.tcpConn.Write(data)
 	if err != nil {
@@ -137,8 +136,8 @@ func (m *TransportInstance) GetReader() transports.ExtendedReader {
 	return m.reader
 }
 
-func (m *TransportInstance) SetTimeout(timeout time.Duration) error {
-	return m.tcpConn.SetDeadline(time.Now().Add(timeout))
+func (m *TransportInstance) SetReadDeadline(deadline time.Time) error {
+	return m.tcpConn.SetDeadline(deadline)
 }
 
 func (m *TransportInstance) String() string {

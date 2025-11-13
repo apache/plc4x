@@ -21,7 +21,6 @@ package ads
 
 import (
 	"context"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -55,7 +54,7 @@ func (m *DiscoveryMessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *DiscoveryMessageCodec) Send(ctx context.Context, message spi.Message, timeout time.Duration) error {
+func (m *DiscoveryMessageCodec) Send(ctx context.Context, message spi.Message) error {
 	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	tcpPaket := message.(model.AdsDiscovery)
@@ -66,20 +65,18 @@ func (m *DiscoveryMessageCodec) Send(ctx context.Context, message spi.Message, t
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(ctx, bytes, timeout)
+	err = m.GetTransportInstance().Write(ctx, bytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	return nil
 }
 
-func (m *DiscoveryMessageCodec) Receive(ctx context.Context, timeout time.Duration) (spi.Message, error) {
+func (m *DiscoveryMessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
 		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
-		start := time.Now()
-		data, err := m.GetTransportInstance().PeekReadableBytes(ctx, 6, timeout)
-		timeout -= time.Since(start)
+		data, err := m.GetTransportInstance().PeekReadableBytes(ctx, 6)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -91,9 +88,7 @@ func (m *DiscoveryMessageCodec) Receive(ctx context.Context, timeout time.Durati
 			m.log.Debug().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil
 		}
-		start = time.Now()
-		data, err = m.GetTransportInstance().Read(ctx, packetSize, timeout)
-		timeout -= time.Since(start)
+		data, err = m.GetTransportInstance().Read(ctx, packetSize)
 		if err != nil {
 			// TODO: Possibly clean up ...
 			return nil, nil

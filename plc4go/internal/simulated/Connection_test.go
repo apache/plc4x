@@ -125,7 +125,6 @@ func TestConnection_Connect(t *testing.T) {
 			}
 			timeBeforeConnect := time.Now()
 			connectionChan := c.Connect(t.Context())
-			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case connectResult := <-connectionChan:
 				timeAfterConnect := time.Now()
@@ -146,7 +145,7 @@ func TestConnection_Connect(t *testing.T) {
 						t.Errorf("TestConnection.Connect() = %v, want %v", connectResult, tt.want)
 					}
 				}
-			case <-timeout.C:
+			case <-t.Context().Done():
 				t.Errorf("TestConnection.Connect() got timeout")
 			}
 		})
@@ -241,7 +240,6 @@ func TestConnection_Close(t *testing.T) {
 			}
 			timeBeforeClose := time.Now()
 			closeChan := c.Close()
-			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case closeResult := <-closeChan:
 				timeAfterClose := time.Now()
@@ -261,7 +259,7 @@ func TestConnection_Close(t *testing.T) {
 						t.Errorf("TestConnection.Close() = %v, want %v", closeResult, tt.want)
 					}
 				}
-			case <-timeout.C:
+			case <-t.Context().Done():
 				t.Errorf("TestConnection.Close() got timeout")
 			}
 		})
@@ -337,7 +335,6 @@ func TestConnection_BlockingClose(t *testing.T) {
 				})
 				return ch
 			}
-			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case <-executor():
 				timeAfterClose := time.Now()
@@ -349,7 +346,7 @@ func TestConnection_BlockingClose(t *testing.T) {
 						t.Errorf("TestConnection.Close() connected too fast. Expected at least %v but connected after %v", tt.delayAtLeast, connectionTime)
 					}
 				}
-			case <-timeout.C:
+			case <-t.Context().Done():
 				t.Errorf("TestConnection.Close() got timeout")
 			}
 		})
@@ -507,7 +504,6 @@ func TestConnection_Ping(t *testing.T) {
 			}
 			timeBeforePing := time.Now()
 			pingChan := c.Ping()
-			timeout := time.NewTimer(3 * time.Second)
 			select {
 			case pingResult := <-pingChan:
 				timeAfterPing := time.Now()
@@ -522,7 +518,7 @@ func TestConnection_Ping(t *testing.T) {
 				if !assert.Equal(t, tt.want, pingResult) {
 					t.Errorf("TestConnection.Ping() = %v, want %v", pingResult, tt.want)
 				}
-			case <-timeout.C:
+			case <-t.Context().Done():
 				t.Errorf("TestConnection.Ping() got timeout")
 			}
 		})

@@ -117,7 +117,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		}()
 		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 		pingRequest := readWriteModel.NewModbusTcpADU(1, c.unitIdentifier, diagnosticRequestPdu)
-		ttl := 60 * time.Second
+		ttl := c.GetTtl()
 		if deadline, ok := ctx.Deadline(); ok {
 			ttl = time.Until(deadline)
 			c.log.Debug().Dur("ttl", ttl).Msg("setting ttl")

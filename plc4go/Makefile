@@ -100,6 +100,10 @@ go-fmt: go-imports
 	@echo "  > formatting files"
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go fmt ./...
 
+go-mocks:
+	@echo "  > generating mocks"
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool mockery
+
 .PHONY: help
 all: help
 help: Makefile

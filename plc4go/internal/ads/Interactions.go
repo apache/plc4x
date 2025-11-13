@@ -42,7 +42,7 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 			}
 		}()
 		request := m.NewAdsReadDeviceInfoRequest()
-		ttl := 60 * time.Second
+		ttl := m.GetTtl()
 		if deadline, ok := ctx.Deadline(); ok {
 			ttl = time.Until(deadline)
 			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
@@ -92,7 +92,7 @@ func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint3
 			}
 		}()
 		request := m.NewAdsReadRequest(indexGroup, indexOffset, length)
-		ttl := 60 * time.Second
+		ttl := m.GetTtl()
 		if deadline, ok := ctx.Deadline(); ok {
 			ttl = time.Until(deadline)
 			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
@@ -142,7 +142,7 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 			}
 		}()
 		request := m.NewAdsWriteRequest(indexGroup, indexOffset, data)
-		ttl := 60 * time.Second
+		ttl := m.GetTtl()
 		if deadline, ok := ctx.Deadline(); ok {
 			ttl = time.Until(deadline)
 			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
@@ -192,7 +192,7 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 			}
 		}()
 		request := m.NewAdsReadWriteRequest(indexGroup, indexOffset, readLength, items, writeData)
-		ttl := 60 * time.Second
+		ttl := m.GetTtl()
 		if deadline, ok := ctx.Deadline(); ok {
 			ttl = time.Until(deadline)
 			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
@@ -232,7 +232,7 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 
 func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context, indexGroup uint32, indexOffset uint32, length uint32, transmissionMode model.AdsTransMode, maxDelay uint32, cycleTime uint32) (model.AdsAddDeviceNotificationResponse, error) {
 	responseChannel := make(chan model.AdsAddDeviceNotificationResponse, 1)
-	ttl := 60 * time.Second
+	ttl := m.GetTtl()
 	if deadline, ok := ctx.Deadline(); ok {
 		ttl = time.Until(deadline)
 		m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")
@@ -291,7 +291,7 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 			}
 		}()
 		request := m.NewAdsDeleteDeviceNotificationRequest(notificationHandle)
-		ttl := 60 * time.Second
+		ttl := m.GetTtl()
 		if deadline, ok := ctx.Deadline(); ok {
 			ttl = time.Until(deadline)
 			m.log.Debug().Dur("ttl", ttl).Msg("setting ttl")

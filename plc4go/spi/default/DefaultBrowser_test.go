@@ -78,11 +78,10 @@ func Test_defaultBrowser_Browse(t *testing.T) {
 				browseRequest: spiModel.NewDefaultPlcBrowseRequest(nil, nil, nil),
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
-				timeout := time.NewTimer(2 * time.Second)
 				select {
 				case result := <-results:
 					assert.NotNil(t, result)
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 					return false
 				}
@@ -123,11 +122,10 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 				browseRequest: spiModel.NewDefaultPlcBrowseRequest(nil, nil, nil),
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
-				timeout := time.NewTimer(2 * time.Second)
 				select {
 				case result := <-results:
 					assert.NotNil(t, result)
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 					return false
 				}
@@ -157,11 +155,10 @@ func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 				)
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcBrowseRequestResult) bool {
-				timeout := time.NewTimer(2 * time.Second)
 				select {
 				case result := <-results:
 					assert.NotNil(t, result)
-				case <-timeout.C:
+				case <-t.Context().Done():
 					t.Error("timeout")
 					return false
 				}
