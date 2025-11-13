@@ -918,7 +918,7 @@ func TestConnection_sendReset(t *testing.T) {
 
 				args.ctx = testutils.TestContext(t)
 				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
 				t.Cleanup(cancelFunc)
 			},
 			wantOk: false,
@@ -1575,7 +1575,8 @@ func TestConnection_setupConnection(t *testing.T) {
 
 				// Build the message codec
 				transport := test.NewTransport(_options...)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"10ms"}}, _options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"1ms"}}, _options...)
+				require.NoError(t, err)
 
 				type MockState uint8
 				const (
@@ -1816,7 +1817,10 @@ func TestNewConnection(t *testing.T) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)
-				codec := NewMessageCodec(test.NewTransportInstance(transport, _options...), _options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"1ms"}}, _options...)
+				require.NoError(t, err)
+
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
 					assert.Error(t, codec.Disconnect())
 				})

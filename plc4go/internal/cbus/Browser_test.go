@@ -589,6 +589,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				require.NoError(t, connectionConnectResult.GetErr())
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
+					t.Log("shutting down connection")
 					t.Log(fields.connection.BlockingClose(t.Context()))
 				})
 

@@ -234,6 +234,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	cbusOptions := &c.messageCodec.cbusOptions
 	requestContext := &c.messageCodec.requestContext
 
+	c.log.Trace().Msg("Starting connection setup")
+	c.log.Trace().Msg("Sending reset")
 	if !c.sendReset(ctx, ch, false) {
 		c.log.Warn().Msg("First reset failed")
 		// We try a second reset in case we get a power up
@@ -242,18 +244,22 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			return
 		}
 	}
+	c.log.Trace().Msg("setting application filter")
 	if !c.setApplicationFilter(ctx, ch, requestContext, cbusOptions) {
 		c.log.Trace().Msg("Set application filter failed")
 		return
 	}
+	c.log.Trace().Msg("Setting interface options 3")
 	if !c.setInterfaceOptions3(ctx, ch, requestContext, cbusOptions) {
 		c.log.Trace().Msg("Set interface options 3 failed")
 		return
 	}
+	c.log.Trace().Msg("Setting interface options 1 power up settings")
 	if !c.setInterface1PowerUpSettings(ctx, ch, requestContext, cbusOptions) {
 		c.log.Trace().Msg("Set interface options 1 power up settings failed")
 		return
 	}
+	c.log.Trace().Msg("Setting interface options 1")
 	if !c.setInterfaceOptions1(ctx, ch, requestContext, cbusOptions) {
 		c.log.Trace().Msg("Set interface options 1 failed")
 		return
