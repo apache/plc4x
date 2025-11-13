@@ -25,6 +25,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -416,7 +417,9 @@ func Test_defaultConnection_BlockingClose(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultConnectionRequirements(t)
 				connection := NewMockPlcConnection(t)
-				connection.EXPECT().Close().Return(nil)
+				ch := make(chan plc4go.PlcConnectionCloseResult, 1)
+				ch <- NewDefaultPlcConnectionCloseResult(connection, nil)
+				connection.EXPECT().Close().Return(ch)
 				requirements.EXPECT().GetConnection().Return(connection)
 				fields.DefaultConnectionRequirements = requirements
 				var cancelFunc context.CancelFunc
@@ -435,6 +438,7 @@ func Test_defaultConnection_BlockingClose(t *testing.T) {
 				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
 				tagHandler:                    tt.fields.tagHandler,
 				valueHandler:                  tt.fields.valueHandler,
+				log:                           testutils.ProduceTestingLogger(t),
 			}
 			tt.wantErr(t, d.BlockingClose(tt.args.ctx))
 		})

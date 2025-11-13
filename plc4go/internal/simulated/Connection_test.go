@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"context"
 	"sync"
 	"testing"
 	"time"
@@ -274,9 +275,13 @@ func TestConnection_BlockingClose(t *testing.T) {
 		options      map[string][]string
 		connected    bool
 	}
+	type args struct {
+		ctx context.Context
+	}
 	tests := []struct {
 		name         string
 		fields       fields
+		args         args
 		delayAtLeast time.Duration
 	}{
 		{
@@ -288,6 +293,9 @@ func TestConnection_BlockingClose(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
+			args: args{
+				ctx: t.Context(),
+			},
 			delayAtLeast: 0,
 		},
 		{
@@ -298,6 +306,9 @@ func TestConnection_BlockingClose(t *testing.T) {
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    false,
+			},
+			args: args{
+				ctx: t.Context(),
 			},
 			delayAtLeast: 0,
 		},
@@ -311,6 +322,9 @@ func TestConnection_BlockingClose(t *testing.T) {
 					"closingDelay": {"1000"},
 				},
 				connected: true,
+			},
+			args: args{
+				ctx: t.Context(),
 			},
 			delayAtLeast: 1000,
 		},
@@ -330,7 +344,7 @@ func TestConnection_BlockingClose(t *testing.T) {
 				var wg sync.WaitGroup
 				t.Cleanup(wg.Wait)
 				wg.Go(func() {
-					c.BlockingClose()
+					t.Log(c.BlockingClose(tt.args.ctx))
 					ch <- true
 				})
 				return ch

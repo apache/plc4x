@@ -190,6 +190,12 @@ func (m *defaultCodec) Disconnect() error {
 			return errors.Wrap(err, "error closing transport instance")
 		}
 	}
+	for _, expectation := range m.expectations {
+		m.wg.Go(func() {
+			_ = expectation.GetHandleError()(errors.New("disconnected"))
+		})
+	}
+	m.wg.Wait()
 	m.log.Trace().Msg("disconnected")
 	return nil
 }

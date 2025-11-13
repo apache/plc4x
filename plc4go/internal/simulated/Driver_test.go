@@ -22,7 +22,6 @@ package simulated
 import (
 	"net/url"
 	"testing"
-	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"

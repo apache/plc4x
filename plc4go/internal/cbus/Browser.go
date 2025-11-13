@@ -431,8 +431,6 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 		}
 	})
 
-	syncCtx, syncCtxCancel := context.WithTimeout(ctx, 6*time.Second)
-	defer syncCtxCancel()
 	for !blockOffset0Received || !blockOffset88Received || !blockOffset176Received {
 		select {
 		case <-blockOffset0ReceivedChan:
@@ -444,8 +442,8 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 		case <-blockOffset176ReceivedChan:
 			m.log.Trace().Msg("Offset 176 received")
 			blockOffset176Received = true
-		case <-syncCtx.Done():
-			err = syncCtx.Err()
+		case <-ctx.Done():
+			err = ctx.Err()
 			m.log.Trace().Err(err).Msg("Ending prematurely")
 			return nil, errors.Wrap(err, "error waiting for other offsets")
 		}
