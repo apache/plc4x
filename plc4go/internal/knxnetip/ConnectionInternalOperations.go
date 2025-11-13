@@ -22,7 +22,6 @@ package knxnetip
 import (
 	"context"
 	"reflect"
-	"time"
 
 	"github.com/pkg/errors"
 
@@ -77,22 +76,14 @@ func (m *Connection) sendGatewaySearchRequest(ctx context.Context) (driverModel.
 		return nil, errors.Wrap(err, "got error sending search request")
 	}
 
-	ttlTimer := time.NewTimer(m.defaultTtl)
 	select {
 	case response := <-result:
-		if !ttlTimer.Stop() {
-			<-ttlTimer.C
-		}
 		return response, nil
 	case errorResponse := <-errorResult:
-		if !ttlTimer.Stop() {
-			<-ttlTimer.C
-		}
 		return nil, errorResponse
 		// For search requests there is no timeout handler running, so we have to do it manually.
-	case <-ttlTimer.C:
-		ttlTimer.Stop()
-		return nil, errors.New("timeout")
+	case <-ctx.Done():
+		return nil, errors.Wrap(ctx.Err(), "timeout")
 	}
 }
 

@@ -58,11 +58,10 @@ func TestBacnetDriverWithPcap(t *testing.T) {
 	})
 	driverManager.RegisterDriver(bacnetip.NewDriver(optionsForTesting...))
 	driverManager.(spi.TransportAware).RegisterTransport(pcap.NewTransport(optionsForTesting...))
-	result := <-driverManager.GetConnection(t.Context(), "bacnet-ip:pcap://"+file+"?transport-type=udp&speed-factor=0")
-	if result.GetErr() != nil {
-		panic(result.GetErr())
+	connection, err := driverManager.GetConnection(t.Context(), "bacnet-ip:pcap://"+file+"?transport-type=udp&speed-factor=0")
+	if err != nil {
+		panic(err)
 	}
-	connection := result.GetConnection()
 	defer connection.Close()
 	build, err := connection.SubscriptionRequestBuilder().
 		AddEventTagAddress("furz", "*/*/*").

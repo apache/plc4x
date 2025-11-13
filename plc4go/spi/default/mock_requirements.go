@@ -60,11 +60,6 @@ type TransportInstance interface {
 }
 
 // Deprecated: don't use it in productive code
-type PlcConnectionConnectResult interface {
-	plc4go.PlcConnectionConnectResult
-}
-
-// Deprecated: don't use it in productive code
 type Expectation interface {
 	spi.Expectation
 }

@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/hex"
+	stdErrors "errors"
 	"fmt"
 	"runtime/debug"
 	"strconv"
@@ -116,8 +117,6 @@ type Connection struct {
 	valueCache      map[uint16][]byte
 	valueCacheMutex sync.RWMutex
 	metadata        *ConnectionMetadata
-	defaultTtl      time.Duration
-	connectionTtl   time.Duration
 	buildingKey     []byte
 
 	// Used for detecting connection problems
@@ -193,14 +192,12 @@ func NewConnection(transportInstance transports.TransportInstance, connectionOpt
 		valueCache:              map[uint16][]byte{},
 		valueCacheMutex:         sync.RWMutex{},
 		metadata:                &ConnectionMetadata{},
-		defaultTtl:              10 * time.Second,
 		DeviceConnections:       map[driverModel.KnxAddress]*KnxDeviceConnection{},
 		handleTunnelingRequests: true,
 		passLogToModel:          passLoggerToModel,
 		log:                     customLogger,
 		_options:                _options,
 	}
-	connection.connectionTtl = connection.defaultTtl * 2
 
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -230,232 +227,191 @@ func (m *Connection) GetTracer() tracer.Tracer {
 	return m.tracer
 }
 
-func (m *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	result := make(chan plc4go.PlcConnectionConnectResult, 1)
-	sendResult := func(connection plc4go.PlcConnection, err error) {
-		result <- _default.NewDefaultPlcConnectionConnectResult(connection, err)
-	}
-
-	m.wg.Go(func() {
-		defer func() {
-			if err := recover(); err != nil {
-				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		// Open the UDP Connection
-		err := m.messageCodec.Connect(ctx)
-		if err != nil {
-			m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error opening connection")) })
-			return
-		}
-
-		// Send a search request before connecting to the device.
-		searchResponse, err := m.sendGatewaySearchRequest(ctx)
-		if err != nil {
-			m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error discovering device capabilities")) })
-			return
-		}
-
-		// Save some important information
-		dibDeviceInfo := searchResponse.GetDibDeviceInfo()
-		m.metadata.KnxMedium = dibDeviceInfo.GetKnxMedium()
-		m.metadata.GatewayName = string(bytes.Trim(dibDeviceInfo.GetDeviceFriendlyName(), "\x00"))
-		m.GatewayKnxAddress = dibDeviceInfo.GetKnxAddress()
-		m.metadata.GatewayKnxAddress = KnxAddressToString(m.GatewayKnxAddress)
-		m.metadata.ProjectNumber = dibDeviceInfo.GetProjectInstallationIdentifier().GetProjectNumber()
-		m.metadata.InstallationNumber = dibDeviceInfo.GetProjectInstallationIdentifier().GetInstallationNumber()
-		m.metadata.DeviceSerialNumber = dibDeviceInfo.GetKnxNetIpDeviceSerialNumber()
-		m.metadata.DeviceMulticastAddress = dibDeviceInfo.GetKnxNetIpDeviceMulticastAddress().GetAddr()
-		m.metadata.DeviceMacAddress = dibDeviceInfo.GetKnxNetIpDeviceMacAddress().GetAddr()
-		m.metadata.SupportedServices = []string{}
-		supportsTunneling := false
-		for _, serviceId := range searchResponse.GetDibSuppSvcFamilies().GetServiceIds() {
-			m.metadata.SupportedServices = append(m.metadata.SupportedServices, serviceId.(interface{ GetTypeName() string }).GetTypeName())
-			// If this is an instance of the "tunneling", service, this connection supports tunneling
-			_, ok := serviceId.(driverModel.KnxNetIpTunneling)
-			if ok {
-				supportsTunneling = true
-				break
-			}
-		}
-
-		// If the current device supports tunneling, create a tunneling connection.
-		// Via this connection we then get access to the entire KNX network this Gateway is connected to.
-		if supportsTunneling {
-			// As soon as we got a successful search-response back, send a connection request.
-			connectionResponse, err := m.sendGatewayConnectionRequest(ctx)
-			if err != nil {
-				m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error connecting to device")) })
-				return
-			}
-
-			// Save the communication channel id
-			m.CommunicationChannelId = connectionResponse.GetCommunicationChannelId()
-
-			// Reset the sequence counter
-			m.SequenceCounter = -1
-
-			// If the connection was successful, the gateway will now forward any packets
-			// on the KNX bus that are broadcast packets to us, so we have to setup things
-			// to handle these incoming messages.
-			switch connectionResponse.GetStatus() {
-			case driverModel.Status_NO_ERROR:
-				// Save the KNX Address the Gateway assigned to us for this connection.
-				tunnelConnectionDataBlock := connectionResponse.GetConnectionResponseDataBlock().(driverModel.ConnectionResponseDataBlockTunnelConnection)
-				m.ClientKnxAddress = tunnelConnectionDataBlock.GetKnxAddress()
-
-				// Create a go routine to handle incoming tunneling-requests which haven't been
-				// handled by any other handler. This is where usually the GroupValueWrite messages
-				// are being handled.
-				m.log.Debug().Msg("Starting tunneling handler")
-				m.wg.Go(func() {
-					defer func() {
-						if err := recover(); err != nil {
-							m.log.Error().
-								Str("stack", string(debug.Stack())).
-								Interface("err", err).
-								Msg("panic-ed")
-						}
-					}()
-					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
-					for m.handleTunnelingRequests {
-						incomingMessage := <-defaultIncomingMessageChannel
-						tunnelingRequest, ok := incomingMessage.(driverModel.TunnelingRequest)
-						if !ok {
-							tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponse)
-							if ok {
-								m.log.Warn().Stringer("tunnelingResponse", tunnelingResponse).Msg("Got an unhandled TunnelingResponse message")
-							} else {
-								m.log.Warn().Stringer("incomingMessage", incomingMessage).Msg("Not a TunnelingRequest or TunnelingResponse message")
-							}
-							continue
-						}
-
-						if tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
-							m.log.Warn().Stringer("tunnelingRequest", tunnelingRequest).Msg("Not for this connection")
-							continue
-						}
-
-						lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataInd)
-						if !ok {
-							continue
-						}
-						// Get APDU, source and target address
-						lDataFrameData := lDataInd.GetDataFrame().(driverModel.LDataExtended)
-						sourceAddress := lDataFrameData.GetSourceAddress()
-
-						// If this is not an APDU, there is no need to further handle it.
-						if lDataFrameData.GetApdu() == nil {
-							continue
-						}
-
-						// If this is an incoming disconnect request, remove the device
-						// from the device connections, otherwise handle it as normal
-						// incoming message.
-						apduControlContainer, ok := lDataFrameData.GetApdu().(driverModel.ApduControlContainer)
-						if ok {
-							_, ok := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
-							if ok {
-								if m.DeviceConnections[sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
-									// Remove the connection
-									delete(m.DeviceConnections, sourceAddress)
-								}
-							}
-						} else {
-							m.handleIncomingTunnelingRequest(ctx, tunnelingRequest)
-						}
-					}
-					m.log.Warn().Msg("Tunneling handler shat down")
-				})
-
-				// Fire the "connected" event
-				sendResult(m, nil)
-			case driverModel.Status_NO_MORE_CONNECTIONS:
-				m.doSomethingAndClose(func() { sendResult(nil, errors.New("no more connections")) })
-			default:
-				m.doSomethingAndClose(func() { sendResult(nil, errors.Errorf("got a return status of: %s", connectionResponse.GetStatus())) })
-			}
-		} else {
-			m.doSomethingAndClose(func() { sendResult(nil, errors.New("this device doesn't support tunneling")) })
-		}
-	})
-
-	return result
-}
-
-func (m *Connection) doSomethingAndClose(something func()) {
-	something()
-	err := m.messageCodec.Disconnect()
+func (m *Connection) Connect(ctx context.Context) error {
+	// Open the UDP Connection
+	err := m.messageCodec.Connect(ctx)
 	if err != nil {
-		m.log.Warn().Err(err).Msg("error closing connection")
+		return m.doSomethingAndClose(func() error { return errors.Wrap(err, "error opening connection") })
 	}
-}
 
-func (m *Connection) BlockingClose(ctx context.Context) error {
-	closeResult := m.Close()
-	select {
-	case result := <-closeResult:
-		return result.GetErr()
-	case <-ctx.Done():
-		return ctx.Err()
+	// Send a search request before connecting to the device.
+	searchResponse, err := m.sendGatewaySearchRequest(ctx)
+	if err != nil {
+		return m.doSomethingAndClose(func() error { return errors.Wrap(err, "error discovering device capabilities") })
 	}
-}
 
-func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	ctx := context.TODO()
-	result := make(chan plc4go.PlcConnectionCloseResult, 1)
-
-	m.wg.Go(func() {
-		defer func() {
-			if err := recover(); err != nil {
-				result <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		// Stop the connection-state checker.
-		if m.connectionStateTimer != nil {
-			m.connectionStateTimer.Stop()
+	// Save some important information
+	dibDeviceInfo := searchResponse.GetDibDeviceInfo()
+	m.metadata.KnxMedium = dibDeviceInfo.GetKnxMedium()
+	m.metadata.GatewayName = string(bytes.Trim(dibDeviceInfo.GetDeviceFriendlyName(), "\x00"))
+	m.GatewayKnxAddress = dibDeviceInfo.GetKnxAddress()
+	m.metadata.GatewayKnxAddress = KnxAddressToString(m.GatewayKnxAddress)
+	m.metadata.ProjectNumber = dibDeviceInfo.GetProjectInstallationIdentifier().GetProjectNumber()
+	m.metadata.InstallationNumber = dibDeviceInfo.GetProjectInstallationIdentifier().GetInstallationNumber()
+	m.metadata.DeviceSerialNumber = dibDeviceInfo.GetKnxNetIpDeviceSerialNumber()
+	m.metadata.DeviceMulticastAddress = dibDeviceInfo.GetKnxNetIpDeviceMulticastAddress().GetAddr()
+	m.metadata.DeviceMacAddress = dibDeviceInfo.GetKnxNetIpDeviceMacAddress().GetAddr()
+	m.metadata.SupportedServices = []string{}
+	supportsTunneling := false
+	for _, serviceId := range searchResponse.GetDibSuppSvcFamilies().GetServiceIds() {
+		m.metadata.SupportedServices = append(m.metadata.SupportedServices, serviceId.(interface{ GetTypeName() string }).GetTypeName())
+		// If this is an instance of the "tunneling", service, this connection supports tunneling
+		_, ok := serviceId.(driverModel.KnxNetIpTunneling)
+		if ok {
+			supportsTunneling = true
+			break
 		}
+	}
 
-		// Disconnect from all knx devices we are still connected to.
-		for targetAddress := range m.DeviceConnections {
-			ttlTimer := time.NewTimer(m.defaultTtl)
-			disconnects := m.DeviceDisconnect(ctx, targetAddress)
-			select {
-			case _ = <-disconnects:
-				if !ttlTimer.Stop() {
-					<-ttlTimer.C
-				}
-			case <-ttlTimer.C:
-				ttlTimer.Stop()
-				// If we got a timeout here, well just continue the device will just auto disconnect.
-				m.log.Debug().Str("targetAddress", KnxAddressToString(targetAddress)).Msg("Timeout disconnecting from device")
-			}
-		}
-
-		// Send a disconnect request from the gateway.
-		_, err := m.sendGatewayDisconnectionRequest(ctx)
+	// If the current device supports tunneling, create a tunneling connection.
+	// Via this connection we then get access to the entire KNX network this Gateway is connected to.
+	if supportsTunneling {
+		// As soon as we got a successful search-response back, send a connection request.
+		connectionResponse, err := m.sendGatewayConnectionRequest(ctx)
 		if err != nil {
-			result <- _default.NewDefaultPlcConnectionCloseResult(m, errors.Wrap(err, "got an error while disconnecting"))
-		} else {
-			result <- _default.NewDefaultPlcConnectionCloseResult(m, nil)
+			return m.doSomethingAndClose(func() error { return errors.Wrap(err, "error connecting to device") })
 		}
-	})
 
-	return result
+		// Save the communication channel id
+		m.CommunicationChannelId = connectionResponse.GetCommunicationChannelId()
+
+		// Reset the sequence counter
+		m.SequenceCounter = -1
+
+		// If the connection was successful, the gateway will now forward any packets
+		// on the KNX bus that are broadcast packets to us, so we have to setup things
+		// to handle these incoming messages.
+		switch connectionResponse.GetStatus() {
+		case driverModel.Status_NO_ERROR:
+			// Save the KNX Address the Gateway assigned to us for this connection.
+			tunnelConnectionDataBlock := connectionResponse.GetConnectionResponseDataBlock().(driverModel.ConnectionResponseDataBlockTunnelConnection)
+			m.ClientKnxAddress = tunnelConnectionDataBlock.GetKnxAddress()
+
+			// Create a go routine to handle incoming tunneling-requests which haven't been
+			// handled by any other handler. This is where usually the GroupValueWrite messages
+			// are being handled.
+			m.log.Debug().Msg("Starting tunneling handler")
+			m.wg.Go(func() {
+				defer func() {
+					if err := recover(); err != nil {
+						m.log.Error().
+							Str("stack", string(debug.Stack())).
+							Interface("err", err).
+							Msg("panic-ed")
+					}
+				}()
+				defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
+				for m.handleTunnelingRequests {
+					incomingMessage := <-defaultIncomingMessageChannel
+					tunnelingRequest, ok := incomingMessage.(driverModel.TunnelingRequest)
+					if !ok {
+						tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponse)
+						if ok {
+							m.log.Warn().Stringer("tunnelingResponse", tunnelingResponse).Msg("Got an unhandled TunnelingResponse message")
+						} else {
+							m.log.Warn().Stringer("incomingMessage", incomingMessage).Msg("Not a TunnelingRequest or TunnelingResponse message")
+						}
+						continue
+					}
+
+					if tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
+						m.log.Warn().Stringer("tunnelingRequest", tunnelingRequest).Msg("Not for this connection")
+						continue
+					}
+
+					lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataInd)
+					if !ok {
+						continue
+					}
+					// Get APDU, source and target address
+					lDataFrameData := lDataInd.GetDataFrame().(driverModel.LDataExtended)
+					sourceAddress := lDataFrameData.GetSourceAddress()
+
+					// If this is not an APDU, there is no need to further handle it.
+					if lDataFrameData.GetApdu() == nil {
+						continue
+					}
+
+					// If this is an incoming disconnect request, remove the device
+					// from the device connections, otherwise handle it as normal
+					// incoming message.
+					apduControlContainer, ok := lDataFrameData.GetApdu().(driverModel.ApduControlContainer)
+					if ok {
+						_, ok := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
+						if ok {
+							if m.DeviceConnections[sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
+								// Remove the connection
+								delete(m.DeviceConnections, sourceAddress)
+							}
+						}
+					} else {
+						m.handleIncomingTunnelingRequest(ctx, tunnelingRequest)
+					}
+				}
+				m.log.Warn().Msg("Tunneling handler shat down")
+			})
+
+			// Fire the "connected" event
+		case driverModel.Status_NO_MORE_CONNECTIONS:
+			return m.doSomethingAndClose(func() error { return errors.New("no more connections") })
+		default:
+			return m.doSomethingAndClose(func() error {
+				return errors.Errorf("got a return status of: %s", connectionResponse.GetStatus())
+			})
+		}
+	} else {
+		return m.doSomethingAndClose(func() error { return errors.New("this device doesn't support tunneling") })
+	}
+
+	return nil
+}
+
+func (m *Connection) doSomethingAndClose(something func() error) error {
+	err := something()
+	return stdErrors.Join(err, m.messageCodec.Disconnect())
+}
+
+func (m *Connection) Close() error {
+	ctx := context.TODO()
+	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	defer cancelFunc()
+
+	// Stop the connection-state checker.
+	if m.connectionStateTimer != nil {
+		m.connectionStateTimer.Stop()
+	}
+
+	// Disconnect from all knx devices we are still connected to.
+	for targetAddress := range m.DeviceConnections {
+		disconnects := m.DeviceDisconnect(ctx, targetAddress)
+		select {
+		case _ = <-disconnects:
+		case <-ctx.Done():
+			// If we got a timeout here, well just continue the device will just auto disconnect.
+			m.log.Debug().Err(ctx.Err()).Str("targetAddress", KnxAddressToString(targetAddress)).Msg("Timeout disconnecting from device")
+		}
+	}
+
+	// Send a disconnect request from the gateway.
+	_, err := m.sendGatewayDisconnectionRequest(ctx)
+	if err != nil {
+		return errors.Wrap(err, "got an error while disconnecting")
+	}
+
+	return nil
 }
 
 func (m *Connection) IsConnected() bool {
+	ctx := context.TODO()
+	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	defer cancelFunc()
+
 	if m.messageCodec != nil {
-		ttlTimer := time.NewTimer(m.defaultTtl)
 		pingChannel := m.Ping()
 		select {
 		case pingResponse := <-pingChannel:
-			if !ttlTimer.Stop() {
-				<-ttlTimer.C
-			}
 			return pingResponse.GetErr() == nil
-		case <-ttlTimer.C:
-			ttlTimer.Stop()
+		case <-ctx.Done():
 			m.handleTimeout()
 			return false
 		}

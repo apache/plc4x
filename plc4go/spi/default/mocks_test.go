@@ -32,7 +32,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	mock "github.com/stretchr/testify/mock"
@@ -1194,57 +1193,6 @@ func (_m *MockDefaultConnection) EXPECT() *MockDefaultConnection_Expecter {
 	return &MockDefaultConnection_Expecter{mock: &_m.Mock}
 }
 
-// BlockingClose provides a mock function for the type MockDefaultConnection
-func (_mock *MockDefaultConnection) BlockingClose(ctx context.Context) error {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for BlockingClose")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockDefaultConnection_BlockingClose_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'BlockingClose'
-type MockDefaultConnection_BlockingClose_Call struct {
-	*mock.Call
-}
-
-// BlockingClose is a helper method to define mock.On call
-//   - ctx context.Context
-func (_e *MockDefaultConnection_Expecter) BlockingClose(ctx interface{}) *MockDefaultConnection_BlockingClose_Call {
-	return &MockDefaultConnection_BlockingClose_Call{Call: _e.mock.On("BlockingClose", ctx)}
-}
-
-func (_c *MockDefaultConnection_BlockingClose_Call) Run(run func(ctx context.Context)) *MockDefaultConnection_BlockingClose_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 context.Context
-		if args[0] != nil {
-			arg0 = args[0].(context.Context)
-		}
-		run(
-			arg0,
-		)
-	})
-	return _c
-}
-
-func (_c *MockDefaultConnection_BlockingClose_Call) Return(err error) *MockDefaultConnection_BlockingClose_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockDefaultConnection_BlockingClose_Call) RunAndReturn(run func(ctx context.Context) error) *MockDefaultConnection_BlockingClose_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // BrowseRequestBuilder provides a mock function for the type MockDefaultConnection
 func (_mock *MockDefaultConnection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
 	ret := _mock.Called()
@@ -1292,20 +1240,18 @@ func (_c *MockDefaultConnection_BrowseRequestBuilder_Call) RunAndReturn(run func
 }
 
 // Close provides a mock function for the type MockDefaultConnection
-func (_mock *MockDefaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (_mock *MockDefaultConnection) Close() error {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for Close")
 	}
 
-	var r0 <-chan plc4go.PlcConnectionCloseResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan plc4go.PlcConnectionCloseResult); ok {
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func() error); ok {
 		r0 = returnFunc()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionCloseResult)
-		}
+		r0 = ret.Error(0)
 	}
 	return r0
 }
@@ -1327,31 +1273,29 @@ func (_c *MockDefaultConnection_Close_Call) Run(run func()) *MockDefaultConnecti
 	return _c
 }
 
-func (_c *MockDefaultConnection_Close_Call) Return(plcConnectionCloseResultCh <-chan plc4go.PlcConnectionCloseResult) *MockDefaultConnection_Close_Call {
-	_c.Call.Return(plcConnectionCloseResultCh)
+func (_c *MockDefaultConnection_Close_Call) Return(err error) *MockDefaultConnection_Close_Call {
+	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockDefaultConnection_Close_Call) RunAndReturn(run func() <-chan plc4go.PlcConnectionCloseResult) *MockDefaultConnection_Close_Call {
+func (_c *MockDefaultConnection_Close_Call) RunAndReturn(run func() error) *MockDefaultConnection_Close_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Connect provides a mock function for the type MockDefaultConnection
-func (_mock *MockDefaultConnection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (_mock *MockDefaultConnection) Connect(ctx context.Context) error {
 	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Connect")
 	}
 
-	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan plc4go.PlcConnectionConnectResult); ok {
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
 		r0 = returnFunc(ctx)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
-		}
+		r0 = ret.Error(0)
 	}
 	return r0
 }
@@ -1380,12 +1324,12 @@ func (_c *MockDefaultConnection_Connect_Call) Run(run func(ctx context.Context))
 	return _c
 }
 
-func (_c *MockDefaultConnection_Connect_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnection_Connect_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
+func (_c *MockDefaultConnection_Connect_Call) Return(err error) *MockDefaultConnection_Connect_Call {
+	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockDefaultConnection_Connect_Call) RunAndReturn(run func(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultConnection_Connect_Call {
+func (_c *MockDefaultConnection_Connect_Call) RunAndReturn(run func(ctx context.Context) error) *MockDefaultConnection_Connect_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2144,22 +2088,31 @@ func (_c *MockDefaultDriverRequirements_Discover_Call) RunAndReturn(run func(ctx
 }
 
 // GetConnection provides a mock function for the type MockDefaultDriverRequirements
-func (_mock *MockDefaultDriverRequirements) GetConnection(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (_mock *MockDefaultDriverRequirements) GetConnection(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
 	ret := _mock.Called(ctx, transportUrl, transports1, driverOptions)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetConnection")
 	}
 
-	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) <-chan plc4go.PlcConnectionConnectResult); ok {
+	var r0 plc4go.PlcConnection
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) (plc4go.PlcConnection, error)); ok {
+		return returnFunc(ctx, transportUrl, transports1, driverOptions)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) plc4go.PlcConnection); ok {
 		r0 = returnFunc(ctx, transportUrl, transports1, driverOptions)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
+			r0 = ret.Get(0).(plc4go.PlcConnection)
 		}
 	}
-	return r0
+	if returnFunc, ok := ret.Get(1).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) error); ok {
+		r1 = returnFunc(ctx, transportUrl, transports1, driverOptions)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
 }
 
 // MockDefaultDriverRequirements_GetConnection_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnection'
@@ -2204,12 +2157,12 @@ func (_c *MockDefaultDriverRequirements_GetConnection_Call) Run(run func(ctx con
 	return _c
 }
 
-func (_c *MockDefaultDriverRequirements_GetConnection_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriverRequirements_GetConnection_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
+func (_c *MockDefaultDriverRequirements_GetConnection_Call) Return(plcConnection plc4go.PlcConnection, err error) *MockDefaultDriverRequirements_GetConnection_Call {
+	_c.Call.Return(plcConnection, err)
 	return _c
 }
 
-func (_c *MockDefaultDriverRequirements_GetConnection_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriverRequirements_GetConnection_Call {
+func (_c *MockDefaultDriverRequirements_GetConnection_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error)) *MockDefaultDriverRequirements_GetConnection_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2460,22 +2413,31 @@ func (_c *MockDefaultDriver_Discover_Call) RunAndReturn(run func(ctx context.Con
 }
 
 // GetConnection provides a mock function for the type MockDefaultDriver
-func (_mock *MockDefaultDriver) GetConnection(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (_mock *MockDefaultDriver) GetConnection(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) (plc4go.PlcConnection, error) {
 	ret := _mock.Called(ctx, transportUrl, transports1, options1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetConnection")
 	}
 
-	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) <-chan plc4go.PlcConnectionConnectResult); ok {
+	var r0 plc4go.PlcConnection
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) (plc4go.PlcConnection, error)); ok {
+		return returnFunc(ctx, transportUrl, transports1, options1)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) plc4go.PlcConnection); ok {
 		r0 = returnFunc(ctx, transportUrl, transports1, options1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
+			r0 = ret.Get(0).(plc4go.PlcConnection)
 		}
 	}
-	return r0
+	if returnFunc, ok := ret.Get(1).(func(context.Context, url.URL, map[string]transports.Transport, map[string][]string) error); ok {
+		r1 = returnFunc(ctx, transportUrl, transports1, options1)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
 }
 
 // MockDefaultDriver_GetConnection_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnection'
@@ -2520,12 +2482,12 @@ func (_c *MockDefaultDriver_GetConnection_Call) Run(run func(ctx context.Context
 	return _c
 }
 
-func (_c *MockDefaultDriver_GetConnection_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriver_GetConnection_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
+func (_c *MockDefaultDriver_GetConnection_Call) Return(plcConnection plc4go.PlcConnection, err error) *MockDefaultDriver_GetConnection_Call {
+	_c.Call.Return(plcConnection, err)
 	return _c
 }
 
-func (_c *MockDefaultDriver_GetConnection_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) <-chan plc4go.PlcConnectionConnectResult) *MockDefaultDriver_GetConnection_Call {
+func (_c *MockDefaultDriver_GetConnection_Call) RunAndReturn(run func(ctx context.Context, transportUrl url.URL, transports1 map[string]transports.Transport, options1 map[string][]string) (plc4go.PlcConnection, error)) *MockDefaultDriver_GetConnection_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2796,374 +2758,6 @@ func (_c *MockDefaultDriver_SupportsDiscovery_Call) RunAndReturn(run func() bool
 	return _c
 }
 
-// NewMockDefaultPlcConnectionCloseResult creates a new instance of MockDefaultPlcConnectionCloseResult. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
-// The first argument is typically a *testing.T value.
-func NewMockDefaultPlcConnectionCloseResult(t interface {
-	mock.TestingT
-	Cleanup(func())
-}) *MockDefaultPlcConnectionCloseResult {
-	mock := &MockDefaultPlcConnectionCloseResult{}
-	mock.Mock.Test(t)
-
-	t.Cleanup(func() { mock.AssertExpectations(t) })
-
-	return mock
-}
-
-// MockDefaultPlcConnectionCloseResult is an autogenerated mock type for the DefaultPlcConnectionCloseResult type
-type MockDefaultPlcConnectionCloseResult struct {
-	mock.Mock
-}
-
-type MockDefaultPlcConnectionCloseResult_Expecter struct {
-	mock *mock.Mock
-}
-
-func (_m *MockDefaultPlcConnectionCloseResult) EXPECT() *MockDefaultPlcConnectionCloseResult_Expecter {
-	return &MockDefaultPlcConnectionCloseResult_Expecter{mock: &_m.Mock}
-}
-
-// GetConnection provides a mock function for the type MockDefaultPlcConnectionCloseResult
-func (_mock *MockDefaultPlcConnectionCloseResult) GetConnection() plc4go.PlcConnection {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetConnection")
-	}
-
-	var r0 plc4go.PlcConnection
-	if returnFunc, ok := ret.Get(0).(func() plc4go.PlcConnection); ok {
-		r0 = returnFunc()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(plc4go.PlcConnection)
-		}
-	}
-	return r0
-}
-
-// MockDefaultPlcConnectionCloseResult_GetConnection_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnection'
-type MockDefaultPlcConnectionCloseResult_GetConnection_Call struct {
-	*mock.Call
-}
-
-// GetConnection is a helper method to define mock.On call
-func (_e *MockDefaultPlcConnectionCloseResult_Expecter) GetConnection() *MockDefaultPlcConnectionCloseResult_GetConnection_Call {
-	return &MockDefaultPlcConnectionCloseResult_GetConnection_Call{Call: _e.mock.On("GetConnection")}
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_GetConnection_Call) Run(run func()) *MockDefaultPlcConnectionCloseResult_GetConnection_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_GetConnection_Call) Return(plcConnection plc4go.PlcConnection) *MockDefaultPlcConnectionCloseResult_GetConnection_Call {
-	_c.Call.Return(plcConnection)
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_GetConnection_Call) RunAndReturn(run func() plc4go.PlcConnection) *MockDefaultPlcConnectionCloseResult_GetConnection_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetErr provides a mock function for the type MockDefaultPlcConnectionCloseResult
-func (_mock *MockDefaultPlcConnectionCloseResult) GetErr() error {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetErr")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func() error); ok {
-		r0 = returnFunc()
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockDefaultPlcConnectionCloseResult_GetErr_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetErr'
-type MockDefaultPlcConnectionCloseResult_GetErr_Call struct {
-	*mock.Call
-}
-
-// GetErr is a helper method to define mock.On call
-func (_e *MockDefaultPlcConnectionCloseResult_Expecter) GetErr() *MockDefaultPlcConnectionCloseResult_GetErr_Call {
-	return &MockDefaultPlcConnectionCloseResult_GetErr_Call{Call: _e.mock.On("GetErr")}
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_GetErr_Call) Run(run func()) *MockDefaultPlcConnectionCloseResult_GetErr_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_GetErr_Call) Return(err error) *MockDefaultPlcConnectionCloseResult_GetErr_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_GetErr_Call) RunAndReturn(run func() error) *MockDefaultPlcConnectionCloseResult_GetErr_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetTraces provides a mock function for the type MockDefaultPlcConnectionCloseResult
-func (_mock *MockDefaultPlcConnectionCloseResult) GetTraces() []tracer.TraceEntry {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetTraces")
-	}
-
-	var r0 []tracer.TraceEntry
-	if returnFunc, ok := ret.Get(0).(func() []tracer.TraceEntry); ok {
-		r0 = returnFunc()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]tracer.TraceEntry)
-		}
-	}
-	return r0
-}
-
-// MockDefaultPlcConnectionCloseResult_GetTraces_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetTraces'
-type MockDefaultPlcConnectionCloseResult_GetTraces_Call struct {
-	*mock.Call
-}
-
-// GetTraces is a helper method to define mock.On call
-func (_e *MockDefaultPlcConnectionCloseResult_Expecter) GetTraces() *MockDefaultPlcConnectionCloseResult_GetTraces_Call {
-	return &MockDefaultPlcConnectionCloseResult_GetTraces_Call{Call: _e.mock.On("GetTraces")}
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_GetTraces_Call) Run(run func()) *MockDefaultPlcConnectionCloseResult_GetTraces_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_GetTraces_Call) Return(traceEntrys []tracer.TraceEntry) *MockDefaultPlcConnectionCloseResult_GetTraces_Call {
-	_c.Call.Return(traceEntrys)
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_GetTraces_Call) RunAndReturn(run func() []tracer.TraceEntry) *MockDefaultPlcConnectionCloseResult_GetTraces_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// String provides a mock function for the type MockDefaultPlcConnectionCloseResult
-func (_mock *MockDefaultPlcConnectionCloseResult) String() string {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for String")
-	}
-
-	var r0 string
-	if returnFunc, ok := ret.Get(0).(func() string); ok {
-		r0 = returnFunc()
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-	return r0
-}
-
-// MockDefaultPlcConnectionCloseResult_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
-type MockDefaultPlcConnectionCloseResult_String_Call struct {
-	*mock.Call
-}
-
-// String is a helper method to define mock.On call
-func (_e *MockDefaultPlcConnectionCloseResult_Expecter) String() *MockDefaultPlcConnectionCloseResult_String_Call {
-	return &MockDefaultPlcConnectionCloseResult_String_Call{Call: _e.mock.On("String")}
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_String_Call) Run(run func()) *MockDefaultPlcConnectionCloseResult_String_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_String_Call) Return(s string) *MockDefaultPlcConnectionCloseResult_String_Call {
-	_c.Call.Return(s)
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionCloseResult_String_Call) RunAndReturn(run func() string) *MockDefaultPlcConnectionCloseResult_String_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// NewMockDefaultPlcConnectionConnectResult creates a new instance of MockDefaultPlcConnectionConnectResult. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
-// The first argument is typically a *testing.T value.
-func NewMockDefaultPlcConnectionConnectResult(t interface {
-	mock.TestingT
-	Cleanup(func())
-}) *MockDefaultPlcConnectionConnectResult {
-	mock := &MockDefaultPlcConnectionConnectResult{}
-	mock.Mock.Test(t)
-
-	t.Cleanup(func() { mock.AssertExpectations(t) })
-
-	return mock
-}
-
-// MockDefaultPlcConnectionConnectResult is an autogenerated mock type for the DefaultPlcConnectionConnectResult type
-type MockDefaultPlcConnectionConnectResult struct {
-	mock.Mock
-}
-
-type MockDefaultPlcConnectionConnectResult_Expecter struct {
-	mock *mock.Mock
-}
-
-func (_m *MockDefaultPlcConnectionConnectResult) EXPECT() *MockDefaultPlcConnectionConnectResult_Expecter {
-	return &MockDefaultPlcConnectionConnectResult_Expecter{mock: &_m.Mock}
-}
-
-// GetConnection provides a mock function for the type MockDefaultPlcConnectionConnectResult
-func (_mock *MockDefaultPlcConnectionConnectResult) GetConnection() plc4go.PlcConnection {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetConnection")
-	}
-
-	var r0 plc4go.PlcConnection
-	if returnFunc, ok := ret.Get(0).(func() plc4go.PlcConnection); ok {
-		r0 = returnFunc()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(plc4go.PlcConnection)
-		}
-	}
-	return r0
-}
-
-// MockDefaultPlcConnectionConnectResult_GetConnection_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnection'
-type MockDefaultPlcConnectionConnectResult_GetConnection_Call struct {
-	*mock.Call
-}
-
-// GetConnection is a helper method to define mock.On call
-func (_e *MockDefaultPlcConnectionConnectResult_Expecter) GetConnection() *MockDefaultPlcConnectionConnectResult_GetConnection_Call {
-	return &MockDefaultPlcConnectionConnectResult_GetConnection_Call{Call: _e.mock.On("GetConnection")}
-}
-
-func (_c *MockDefaultPlcConnectionConnectResult_GetConnection_Call) Run(run func()) *MockDefaultPlcConnectionConnectResult_GetConnection_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionConnectResult_GetConnection_Call) Return(plcConnection plc4go.PlcConnection) *MockDefaultPlcConnectionConnectResult_GetConnection_Call {
-	_c.Call.Return(plcConnection)
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionConnectResult_GetConnection_Call) RunAndReturn(run func() plc4go.PlcConnection) *MockDefaultPlcConnectionConnectResult_GetConnection_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetErr provides a mock function for the type MockDefaultPlcConnectionConnectResult
-func (_mock *MockDefaultPlcConnectionConnectResult) GetErr() error {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetErr")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func() error); ok {
-		r0 = returnFunc()
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockDefaultPlcConnectionConnectResult_GetErr_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetErr'
-type MockDefaultPlcConnectionConnectResult_GetErr_Call struct {
-	*mock.Call
-}
-
-// GetErr is a helper method to define mock.On call
-func (_e *MockDefaultPlcConnectionConnectResult_Expecter) GetErr() *MockDefaultPlcConnectionConnectResult_GetErr_Call {
-	return &MockDefaultPlcConnectionConnectResult_GetErr_Call{Call: _e.mock.On("GetErr")}
-}
-
-func (_c *MockDefaultPlcConnectionConnectResult_GetErr_Call) Run(run func()) *MockDefaultPlcConnectionConnectResult_GetErr_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionConnectResult_GetErr_Call) Return(err error) *MockDefaultPlcConnectionConnectResult_GetErr_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionConnectResult_GetErr_Call) RunAndReturn(run func() error) *MockDefaultPlcConnectionConnectResult_GetErr_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// String provides a mock function for the type MockDefaultPlcConnectionConnectResult
-func (_mock *MockDefaultPlcConnectionConnectResult) String() string {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for String")
-	}
-
-	var r0 string
-	if returnFunc, ok := ret.Get(0).(func() string); ok {
-		r0 = returnFunc()
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-	return r0
-}
-
-// MockDefaultPlcConnectionConnectResult_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
-type MockDefaultPlcConnectionConnectResult_String_Call struct {
-	*mock.Call
-}
-
-// String is a helper method to define mock.On call
-func (_e *MockDefaultPlcConnectionConnectResult_Expecter) String() *MockDefaultPlcConnectionConnectResult_String_Call {
-	return &MockDefaultPlcConnectionConnectResult_String_Call{Call: _e.mock.On("String")}
-}
-
-func (_c *MockDefaultPlcConnectionConnectResult_String_Call) Run(run func()) *MockDefaultPlcConnectionConnectResult_String_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionConnectResult_String_Call) Return(s string) *MockDefaultPlcConnectionConnectResult_String_Call {
-	_c.Call.Return(s)
-	return _c
-}
-
-func (_c *MockDefaultPlcConnectionConnectResult_String_Call) RunAndReturn(run func() string) *MockDefaultPlcConnectionConnectResult_String_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // NewMockDefaultPlcConnectionPingResult creates a new instance of MockDefaultPlcConnectionPingResult. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockDefaultPlcConnectionPingResult(t interface {
@@ -3306,57 +2900,6 @@ func (_m *MockPlcConnection) EXPECT() *MockPlcConnection_Expecter {
 	return &MockPlcConnection_Expecter{mock: &_m.Mock}
 }
 
-// BlockingClose provides a mock function for the type MockPlcConnection
-func (_mock *MockPlcConnection) BlockingClose(ctx context.Context) error {
-	ret := _mock.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for BlockingClose")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
-		r0 = returnFunc(ctx)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockPlcConnection_BlockingClose_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'BlockingClose'
-type MockPlcConnection_BlockingClose_Call struct {
-	*mock.Call
-}
-
-// BlockingClose is a helper method to define mock.On call
-//   - ctx context.Context
-func (_e *MockPlcConnection_Expecter) BlockingClose(ctx interface{}) *MockPlcConnection_BlockingClose_Call {
-	return &MockPlcConnection_BlockingClose_Call{Call: _e.mock.On("BlockingClose", ctx)}
-}
-
-func (_c *MockPlcConnection_BlockingClose_Call) Run(run func(ctx context.Context)) *MockPlcConnection_BlockingClose_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 context.Context
-		if args[0] != nil {
-			arg0 = args[0].(context.Context)
-		}
-		run(
-			arg0,
-		)
-	})
-	return _c
-}
-
-func (_c *MockPlcConnection_BlockingClose_Call) Return(err error) *MockPlcConnection_BlockingClose_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockPlcConnection_BlockingClose_Call) RunAndReturn(run func(ctx context.Context) error) *MockPlcConnection_BlockingClose_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // BrowseRequestBuilder provides a mock function for the type MockPlcConnection
 func (_mock *MockPlcConnection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
 	ret := _mock.Called()
@@ -3404,20 +2947,18 @@ func (_c *MockPlcConnection_BrowseRequestBuilder_Call) RunAndReturn(run func() m
 }
 
 // Close provides a mock function for the type MockPlcConnection
-func (_mock *MockPlcConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (_mock *MockPlcConnection) Close() error {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for Close")
 	}
 
-	var r0 <-chan plc4go.PlcConnectionCloseResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan plc4go.PlcConnectionCloseResult); ok {
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func() error); ok {
 		r0 = returnFunc()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionCloseResult)
-		}
+		r0 = ret.Error(0)
 	}
 	return r0
 }
@@ -3439,31 +2980,29 @@ func (_c *MockPlcConnection_Close_Call) Run(run func()) *MockPlcConnection_Close
 	return _c
 }
 
-func (_c *MockPlcConnection_Close_Call) Return(plcConnectionCloseResultCh <-chan plc4go.PlcConnectionCloseResult) *MockPlcConnection_Close_Call {
-	_c.Call.Return(plcConnectionCloseResultCh)
+func (_c *MockPlcConnection_Close_Call) Return(err error) *MockPlcConnection_Close_Call {
+	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockPlcConnection_Close_Call) RunAndReturn(run func() <-chan plc4go.PlcConnectionCloseResult) *MockPlcConnection_Close_Call {
+func (_c *MockPlcConnection_Close_Call) RunAndReturn(run func() error) *MockPlcConnection_Close_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Connect provides a mock function for the type MockPlcConnection
-func (_mock *MockPlcConnection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (_mock *MockPlcConnection) Connect(ctx context.Context) error {
 	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Connect")
 	}
 
-	var r0 <-chan plc4go.PlcConnectionConnectResult
-	if returnFunc, ok := ret.Get(0).(func(context.Context) <-chan plc4go.PlcConnectionConnectResult); ok {
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
 		r0 = returnFunc(ctx)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionConnectResult)
-		}
+		r0 = ret.Error(0)
 	}
 	return r0
 }
@@ -3492,12 +3031,12 @@ func (_c *MockPlcConnection_Connect_Call) Run(run func(ctx context.Context)) *Mo
 	return _c
 }
 
-func (_c *MockPlcConnection_Connect_Call) Return(plcConnectionConnectResultCh <-chan plc4go.PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
-	_c.Call.Return(plcConnectionConnectResultCh)
+func (_c *MockPlcConnection_Connect_Call) Return(err error) *MockPlcConnection_Connect_Call {
+	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockPlcConnection_Connect_Call) RunAndReturn(run func(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult) *MockPlcConnection_Connect_Call {
+func (_c *MockPlcConnection_Connect_Call) RunAndReturn(run func(ctx context.Context) error) *MockPlcConnection_Connect_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -5330,167 +4869,6 @@ func (_c *MockTransportInstance_Write_Call) Return(err error) *MockTransportInst
 }
 
 func (_c *MockTransportInstance_Write_Call) RunAndReturn(run func(ctx context.Context, data []byte) error) *MockTransportInstance_Write_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// NewMockPlcConnectionConnectResult creates a new instance of MockPlcConnectionConnectResult. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
-// The first argument is typically a *testing.T value.
-func NewMockPlcConnectionConnectResult(t interface {
-	mock.TestingT
-	Cleanup(func())
-}) *MockPlcConnectionConnectResult {
-	mock := &MockPlcConnectionConnectResult{}
-	mock.Mock.Test(t)
-
-	t.Cleanup(func() { mock.AssertExpectations(t) })
-
-	return mock
-}
-
-// MockPlcConnectionConnectResult is an autogenerated mock type for the PlcConnectionConnectResult type
-type MockPlcConnectionConnectResult struct {
-	mock.Mock
-}
-
-type MockPlcConnectionConnectResult_Expecter struct {
-	mock *mock.Mock
-}
-
-func (_m *MockPlcConnectionConnectResult) EXPECT() *MockPlcConnectionConnectResult_Expecter {
-	return &MockPlcConnectionConnectResult_Expecter{mock: &_m.Mock}
-}
-
-// GetConnection provides a mock function for the type MockPlcConnectionConnectResult
-func (_mock *MockPlcConnectionConnectResult) GetConnection() plc4go.PlcConnection {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetConnection")
-	}
-
-	var r0 plc4go.PlcConnection
-	if returnFunc, ok := ret.Get(0).(func() plc4go.PlcConnection); ok {
-		r0 = returnFunc()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(plc4go.PlcConnection)
-		}
-	}
-	return r0
-}
-
-// MockPlcConnectionConnectResult_GetConnection_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnection'
-type MockPlcConnectionConnectResult_GetConnection_Call struct {
-	*mock.Call
-}
-
-// GetConnection is a helper method to define mock.On call
-func (_e *MockPlcConnectionConnectResult_Expecter) GetConnection() *MockPlcConnectionConnectResult_GetConnection_Call {
-	return &MockPlcConnectionConnectResult_GetConnection_Call{Call: _e.mock.On("GetConnection")}
-}
-
-func (_c *MockPlcConnectionConnectResult_GetConnection_Call) Run(run func()) *MockPlcConnectionConnectResult_GetConnection_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcConnectionConnectResult_GetConnection_Call) Return(plcConnection plc4go.PlcConnection) *MockPlcConnectionConnectResult_GetConnection_Call {
-	_c.Call.Return(plcConnection)
-	return _c
-}
-
-func (_c *MockPlcConnectionConnectResult_GetConnection_Call) RunAndReturn(run func() plc4go.PlcConnection) *MockPlcConnectionConnectResult_GetConnection_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetErr provides a mock function for the type MockPlcConnectionConnectResult
-func (_mock *MockPlcConnectionConnectResult) GetErr() error {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetErr")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func() error); ok {
-		r0 = returnFunc()
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockPlcConnectionConnectResult_GetErr_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetErr'
-type MockPlcConnectionConnectResult_GetErr_Call struct {
-	*mock.Call
-}
-
-// GetErr is a helper method to define mock.On call
-func (_e *MockPlcConnectionConnectResult_Expecter) GetErr() *MockPlcConnectionConnectResult_GetErr_Call {
-	return &MockPlcConnectionConnectResult_GetErr_Call{Call: _e.mock.On("GetErr")}
-}
-
-func (_c *MockPlcConnectionConnectResult_GetErr_Call) Run(run func()) *MockPlcConnectionConnectResult_GetErr_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcConnectionConnectResult_GetErr_Call) Return(err error) *MockPlcConnectionConnectResult_GetErr_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockPlcConnectionConnectResult_GetErr_Call) RunAndReturn(run func() error) *MockPlcConnectionConnectResult_GetErr_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// String provides a mock function for the type MockPlcConnectionConnectResult
-func (_mock *MockPlcConnectionConnectResult) String() string {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for String")
-	}
-
-	var r0 string
-	if returnFunc, ok := ret.Get(0).(func() string); ok {
-		r0 = returnFunc()
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-	return r0
-}
-
-// MockPlcConnectionConnectResult_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
-type MockPlcConnectionConnectResult_String_Call struct {
-	*mock.Call
-}
-
-// String is a helper method to define mock.On call
-func (_e *MockPlcConnectionConnectResult_Expecter) String() *MockPlcConnectionConnectResult_String_Call {
-	return &MockPlcConnectionConnectResult_String_Call{Call: _e.mock.On("String")}
-}
-
-func (_c *MockPlcConnectionConnectResult_String_Call) Run(run func()) *MockPlcConnectionConnectResult_String_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPlcConnectionConnectResult_String_Call) Return(s string) *MockPlcConnectionConnectResult_String_Call {
-	_c.Call.Return(s)
-	return _c
-}
-
-func (_c *MockPlcConnectionConnectResult_String_Call) RunAndReturn(run func() string) *MockPlcConnectionConnectResult_String_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -22,18 +22,17 @@ package plc4go
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 type PlcConnection interface {
 	fmt.Stringer
+	io.Closer
+
 	// Connect Initiate the connection to the PLC
-	Connect(ctx context.Context) <-chan PlcConnectionConnectResult
-	// BlockingClose Blocking variant of Close (for usage in "defer" statements)
-	BlockingClose(ctx context.Context) error
-	// Close the connection to the PLC (gracefully)
-	Close() <-chan PlcConnectionCloseResult
+	Connect(ctx context.Context) error
 	// IsConnected Checks if the connection is currently still connected
 	IsConnected() bool
 

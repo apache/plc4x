@@ -25,7 +25,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -101,13 +100,9 @@ func (m Browser) executeDeviceQuery(ctx context.Context, query DeviceQuery, inte
 	// Parse each of these expanded addresses and handle them accordingly.
 	for _, knxAddress := range knxAddresses {
 		// Send a connection request to the device
-		connectTtlTimer := time.NewTimer(m.connection.defaultTtl)
 		deviceConnections := m.connection.DeviceConnect(ctx, knxAddress)
 		select {
 		case deviceConnection := <-deviceConnections:
-			if !connectTtlTimer.Stop() {
-				<-connectTtlTimer.C
-			}
 			// If the request returned a connection, process it,
 			// otherwise just ignore it.
 			if deviceConnection.connection != nil {
@@ -137,20 +132,14 @@ func (m Browser) executeDeviceQuery(ctx context.Context, query DeviceQuery, inte
 					queryResults = append(queryResults, queryResult)
 				}
 
-				disconnectTtlTimer := time.NewTimer(10 * m.connection.defaultTtl)
 				deviceDisconnections := m.connection.DeviceDisconnect(ctx, knxAddress)
 				select {
 				case _ = <-deviceDisconnections:
-					if !disconnectTtlTimer.Stop() {
-						<-disconnectTtlTimer.C
-					}
-				case <-disconnectTtlTimer.C:
-					disconnectTtlTimer.Stop()
+				case <-ctx.Done():
 					// Just ignore this case ...
 				}
 			}
-		case <-connectTtlTimer.C:
-			connectTtlTimer.Stop()
+		case <-ctx.Done():
 			// In this case the remote was just not responding.
 		}
 		// Just to slow things down a bit (This way we can't exceed the max number of requests per minute)

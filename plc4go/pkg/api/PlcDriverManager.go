@@ -47,7 +47,7 @@ type PlcDriverManager interface {
 	GetDriver(driverName string) (PlcDriver, error)
 
 	// GetConnection Get a connection to a remote PLC for a given plc4x connection-string
-	GetConnection(ctx context.Context, connectionString string) <-chan PlcConnectionConnectResult
+	GetConnection(ctx context.Context, connectionString string) (PlcConnection, error)
 
 	// Discover Execute all available discovery methods on all available drivers using all transports
 	Discover(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error
@@ -190,15 +190,13 @@ func (m *plcDriverManger) GetTransport(transportName string, _ string, _ map[str
 	return nil, errors.Errorf("couldn't find transport %s", transportName)
 }
 
-func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString string) <-chan PlcConnectionConnectResult {
+func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString string) (PlcConnection, error) {
 	m.log.Debug().Str("connectionString", connectionString).Msg("Getting connection for connectionString")
 	// Parse the connection string.
 	connectionUrl, err := url.Parse(connectionString)
 	if err != nil {
 		m.log.Error().Err(err).Msg("Error parsing connection")
-		ch := make(chan PlcConnectionConnectResult, 1)
-		ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
-		return ch
+		return nil, errors.Wrap(err, "error parsing connection string")
 	}
 	m.log.Debug().Stringer("connectionUrl", connectionUrl).Msg("parsed connection URL")
 
@@ -210,9 +208,7 @@ func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString st
 	driver, err := m.GetDriver(driverName)
 	if err != nil {
 		m.log.Err(err).Str("driverName", driverName).Msg("Couldn't get driver for driverName")
-		ch := make(chan PlcConnectionConnectResult, 1)
-		ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error getting driver for connection string")}
-		return ch
+		return nil, errors.Wrap(err, "error getting driver for connection string")
 	}
 	m.log.Debug().Stringer("connectionUrl", connectionUrl).Str("protocolName", driver.GetProtocolName()).Msg("got driver protocolName")
 
@@ -226,9 +222,7 @@ func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString st
 		connectionUrl, err := url.Parse(connectionUrl.Opaque)
 		if err != nil {
 			m.log.Err(err).Str("connectionUrl.Opaque", connectionUrl.Opaque).Msg("Couldn't get transport due to parsing error")
-			ch := make(chan PlcConnectionConnectResult, 1)
-			ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
-			return ch
+			return nil, errors.Wrap(err, "error parsing connection string")
 		}
 		transportName = connectionUrl.Scheme
 		transportConnectionString = connectionUrl.Host
@@ -247,9 +241,7 @@ func (m *plcDriverManger) GetConnection(ctx context.Context, connectionString st
 	// If no transport has been specified explicitly or per default, we have to abort.
 	if transportName == "" {
 		m.log.Error().Msg("got a empty transport")
-		ch := make(chan PlcConnectionConnectResult, 1)
-		ch <- &plcConnectionConnectResult{err: errors.New("no transport specified and no default defined by driver")}
-		return ch
+		return nil, errors.New("no transport specified and no default defined by driver")
 	}
 
 	// Assemble a correct transport url

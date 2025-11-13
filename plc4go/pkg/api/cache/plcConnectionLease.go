@@ -22,12 +22,10 @@ package cache
 import (
 	"context"
 	"fmt"
-	"sync"
 	"time"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
 
@@ -38,8 +36,6 @@ type plcConnectionLease struct {
 	leaseId uint32
 	// The actual connection being cached.
 	connection tracedPlcConnection
-
-	wg sync.WaitGroup // use to track spawned go routines
 }
 
 func newPlcConnectionLease(connectionContainer *connectionContainer, leaseId uint32, connection tracedPlcConnection) *plcConnectionLease {
@@ -75,79 +71,60 @@ func (t *plcConnectionLease) GetConnectionId() string {
 	return fmt.Sprintf("%s-%d", t.connection.GetConnectionId(), t.leaseId)
 }
 
-func (t *plcConnectionLease) Connect(_ context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (t *plcConnectionLease) Connect(_ context.Context) error {
 	panic("Called 'Connect' on a cached connection")
 }
 
-func (t *plcConnectionLease) BlockingClose(ctx context.Context) error {
-	if t.connection == nil {
-		panic("Called 'BlockingClose' on a closed cached connection")
-	}
-	// Call close and wait for the operation to finish.
-	closeResult := t.Close()
-	select {
-	case result := <-closeResult:
-		return result.GetErr()
-	case <-ctx.Done():
-		return ctx.Err()
-	}
-	return nil
-}
-
-func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (t *plcConnectionLease) Close() error {
 	ctx := context.TODO()
+	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	defer cancelFunc()
+
 	if t.connection == nil {
 		panic("Called 'Close' on a closed cached connection")
 	}
 
-	result := make(chan plc4go.PlcConnectionCloseResult, 1)
-
-	t.wg.Go(func() {
-		// Check if the connection is still alive, if it is, put it back into the cache
-		pingResults := t.Ping()
-		pingTimeout := time.NewTimer(5 * time.Second)
-		newState := StateIdle
-		select {
-		case pingResult := <-pingResults:
-			{
-				if pingResult.GetErr() != nil {
-					newState = StateInvalid
-				}
-			}
-		case <-pingTimeout.C:
-			{
-				// Add some trace information
-				if t.connection.IsTraceEnabled() {
-					t.connection.GetTracer().AddTrace("ping", "timeout")
-				}
-				// Mark the connection as broken ...
+	// Check if the connection is still alive, if it is, put it back into the cache
+	pingResults := t.Ping()
+	pingTimeout := time.NewTimer(5 * time.Second)
+	newState := StateIdle
+	select {
+	case pingResult := <-pingResults:
+		{
+			if pingResult.GetErr() != nil {
 				newState = StateInvalid
 			}
 		}
-
-		// Extract the trace entries from the connection.
-		var traces []tracer.TraceEntry
-		if t.IsTraceEnabled() {
-			_tracer := t.GetTracer()
-			// Save all traces.
-			traces = _tracer.GetTraces()
-			// Clear the log.
-			_tracer.ResetTraces()
-			// Reset the connection id back to the one without the lease-id.
-			_tracer.SetConnectionId(t.connection.GetConnectionId())
+	case <-pingTimeout.C:
+		{
+			// Add some trace information
+			if t.connection.IsTraceEnabled() {
+				t.connection.GetTracer().AddTrace("ping", "timeout")
+			}
+			// Mark the connection as broken ...
+			newState = StateInvalid
 		}
+	}
 
-		// Return the connection to the connection container and don't actually close it.
-		err := t.connectionContainer.returnConnection(ctx, newState)
+	// Extract the trace entries from the connection.
+	if t.IsTraceEnabled() {
+		_tracer := t.GetTracer()
+		// Save all traces.
+		traces := _tracer.GetTraces()
+		// Clear the log.
+		_tracer.ResetTraces()
+		// Reset the connection id back to the one without the lease-id.
+		_tracer.SetConnectionId(t.connection.GetConnectionId())
+		_ = traces // TODO: do something with that
+	}
 
-		// Detach the connection from this lease, so it can no longer be used by the client.
-		t.connection = nil
+	// Return the connection to the connection container and don't actually close it.
+	err := t.connectionContainer.returnConnection(ctx, newState)
 
-		// Finish closing the connection.
-		result <- _default.NewDefaultPlcConnectionCloseResultWithTraces(t, err, traces)
-	})
+	// Detach the connection from this lease, so it can no longer be used by the client.
+	t.connection = nil
 
-	return result
+	return err
 }
 
 func (t *plcConnectionLease) IsConnected() bool {

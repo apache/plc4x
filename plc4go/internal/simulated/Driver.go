@@ -23,6 +23,7 @@ import (
 	"context"
 	"net/url"
 
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -51,7 +52,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnection(ctx context.Context, _ url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (d *Driver) GetConnection(ctx context.Context, _ url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
 	connection := NewConnection(
 		NewDevice(
 			"test",
@@ -63,7 +64,10 @@ func (d *Driver) GetConnection(ctx context.Context, _ url.URL, _ map[string]tran
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	d.log.Debug().Stringer("connection", connection).Msg("Connecting and returning connection")
-	return connection.Connect(ctx)
+	if err := connection.Connect(ctx); err != nil {
+		return nil, errors.Wrap(err, "Error connecting connection")
+	}
+	return connection, nil
 }
 
 // SupportsDiscovery returns true if this driver supports discovery

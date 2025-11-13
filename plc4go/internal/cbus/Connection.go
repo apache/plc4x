@@ -126,46 +126,35 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
-func (c *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) Connect(ctx context.Context) error {
 	c.log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-	c.wg.Go(func() {
-		defer func() {
-			if err := recover(); err != nil {
-				c.fireConnectionError(errors.Errorf("panic-ed %v. Stack:\n%s", err, debug.Stack()), ch)
+	if err := c.messageCodec.Connect(ctx); err != nil {
+		return errors.Wrap(err, "Error connecting codec")
+	}
+
+	// For testing purposes we can skip the waiting for a complete connection
+	if !c.driverContext.awaitSetupComplete {
+		c.wg.Go(func() {
+			if err := c.setupConnection(ctx); err != nil {
+				c.log.Error().Err(err).Msg("Error during setup")
 			}
-		}()
-		if err := c.messageCodec.Connect(ctx); err != nil {
-			c.fireConnectionError(errors.Wrap(err, "Error connecting codec"), ch)
-			return
-		}
+		})
+		c.log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
+		// Here we write directly and don't wait till the connection is "really" connected
+		// Note: we can't use fireConnected here as it's guarded against m.driverContext.awaitSetupComplete
+		c.SetConnected(true)
+		return nil
+	}
 
-		// For testing purposes we can skip the waiting for a complete connection
-		if !c.driverContext.awaitSetupComplete {
-			go c.setupConnection(ctx, ch)
-			c.log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
-			// Here we write directly and don't wait till the connection is "really" connected
-			// Note: we can't use fireConnected here as it's guarded against m.driverContext.awaitSetupComplete
-			ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
-			c.SetConnected(true)
-			return
-		}
-
-		c.setupConnection(ctx, ch)
-	})
-	return ch
+	return c.setupConnection(ctx)
 }
 
-func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	results := make(chan plc4go.PlcConnectionCloseResult, 1)
-	c.wg.Go(func() {
-		result := <-c.DefaultConnection.Close()
-		c.log.Trace().Msg("Waiting for handlers to stop")
-		c.handlerWaitGroup.Wait()
-		c.log.Trace().Msg("handlers stopped, dispatching result")
-		results <- result
-	})
-	return results
+func (c *Connection) Close() error {
+	err := c.DefaultConnection.Close()
+	c.log.Trace().Msg("Waiting for handlers to stop")
+	c.handlerWaitGroup.Wait()
+	c.log.Trace().Msg("handlers stopped, dispatching result")
+	return err
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
@@ -230,45 +219,44 @@ func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	c.subscribers = append(c.subscribers, subscriber)
 }
 
-func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
+func (c *Connection) setupConnection(ctx context.Context) error {
 	cbusOptions := &c.messageCodec.cbusOptions
 	requestContext := &c.messageCodec.requestContext
 
 	c.log.Trace().Msg("Starting connection setup")
 	c.log.Trace().Msg("Sending reset")
-	if !c.sendReset(ctx, ch, false) {
-		c.log.Warn().Msg("First reset failed")
+	if err := c.sendReset(ctx); err != nil {
+		c.log.Warn().Err(err).Msg("First reset failed")
 		// We try a second reset in case we get a power up
-		if !c.sendReset(ctx, ch, true) {
-			c.log.Trace().Msg("Reset failed")
-			return
+		if err := c.sendReset(ctx); err != nil {
+			return errors.Wrap(err, "Error during sending of Reset Request")
 		}
 	}
 	c.log.Trace().Msg("setting application filter")
-	if !c.setApplicationFilter(ctx, ch, requestContext, cbusOptions) {
+	if err := c.setApplicationFilter(ctx, requestContext); err != nil {
 		c.log.Trace().Msg("Set application filter failed")
-		return
+		return errors.Wrap(err, "Error during sending of Application Filter")
 	}
 	c.log.Trace().Msg("Setting interface options 3")
-	if !c.setInterfaceOptions3(ctx, ch, requestContext, cbusOptions) {
+	if err := c.setInterfaceOptions3(ctx, requestContext, cbusOptions); err != nil {
 		c.log.Trace().Msg("Set interface options 3 failed")
-		return
+		return errors.Wrap(err, "Error during sending of Interface Options 3")
 	}
 	c.log.Trace().Msg("Setting interface options 1 power up settings")
-	if !c.setInterface1PowerUpSettings(ctx, ch, requestContext, cbusOptions) {
+	if err := c.setInterface1PowerUpSettings(ctx, requestContext, cbusOptions); err != nil {
 		c.log.Trace().Msg("Set interface options 1 power up settings failed")
-		return
+		return errors.Wrap(err, "Error during sending of Interface Options 1 Power Up Settings")
 	}
 	c.log.Trace().Msg("Setting interface options 1")
-	if !c.setInterfaceOptions1(ctx, ch, requestContext, cbusOptions) {
+	if err := c.setInterfaceOptions1(ctx, requestContext, cbusOptions); err != nil {
 		c.log.Trace().Msg("Set interface options 1 failed")
-		return
+		return errors.Wrap(err, "Error during sending of Interface Options 1")
 	}
 	c.log.Trace().Msg("Connection setup done")
-	c.fireConnected(ch)
-	c.log.Trace().Msg("Connect fired")
+	c.SetConnected(true)
 	c.startSubscriptionHandler()
 	c.log.Trace().Msg("subscription handler started")
+	return nil
 }
 
 func (c *Connection) startSubscriptionHandler() {
@@ -349,8 +337,8 @@ func (c *Connection) startSubscriptionHandler() {
 	})
 }
 
-func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, sendOutErrorNotification bool) (ok bool) {
-	c.log.Debug().Bool("sendOutErrorNotification", sendOutErrorNotification).Msg("Send a reset")
+func (c *Connection) sendReset(ctx context.Context) error {
+	c.log.Debug().Msg("Send a reset")
 	requestTypeReset := readWriteModel.RequestType_RESET
 	requestReset := readWriteModel.NewRequestReset(
 		requestTypeReset,
@@ -427,12 +415,7 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 		}
 		return nil
 	}); err != nil {
-		if sendOutErrorNotification {
-			c.fireConnectionError(errors.Wrap(err, "Error during sending of Reset Request"), ch)
-		} else {
-			c.log.Warn().Err(err).Msg("connect failed")
-		}
-		return false
+		return errors.Wrap(err, "Error during sending of Reset Request")
 	}
 
 	startTime := time.Now()
@@ -440,76 +423,66 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	case <-receivedResetEchoChan:
 		c.log.Debug().Msg("We received the echo")
 	case err := <-receivedResetEchoErrorChan:
-		if sendOutErrorNotification {
-			c.fireConnectionError(errors.Wrap(err, "Error receiving of Reset"), ch)
-		} else {
-			c.log.Trace().Err(err).Msg("connect failed")
-		}
-		return false
+		return errors.Wrap(err, "Error receiving of Reset")
 	case <-ctx.Done():
-		if sendOutErrorNotification {
-			c.fireConnectionError(errors.Errorf("Timeout after %v", time.Since(startTime)), ch)
-		} else {
-			c.log.Trace().Dur("timeout", time.Since(startTime)).Msg("Timeout")
-		}
-		return false
+		return errors.Errorf("Timeout after %v", time.Since(startTime))
 	}
 	c.log.Debug().Msg("Reset done")
-	return true
+	return nil
 }
 
-func (c *Connection) setApplicationFilter(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) (ok bool) {
+func (c *Connection) setApplicationFilter(ctx context.Context, requestContext *readWriteModel.RequestContext) error {
 	c.log.Debug().Msg("Set application filter to all")
 	applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(c.configuration.MonitoredApplication1), nil)
-	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
-		return false
+	if err := c.sendCalDataWrite(ctx, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext); err != nil {
+		return errors.Wrap(err, "Error during sending of Application Address 1")
 	}
 	applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(c.configuration.MonitoredApplication2), nil)
-	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext, cbusOptions) {
-		return false
+	if err := c.sendCalDataWrite(ctx, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext); err != nil {
+		return errors.New("Error during sending of Application Address 2")
 	}
 	c.log.Debug().Msg("Application filter set")
-	return true
+	return nil
 }
 
-func (c *Connection) setInterfaceOptions3(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) (ok bool) {
+func (c *Connection) setInterfaceOptions3(ctx context.Context, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) error {
 	c.log.Debug().Msg("Set interface options 3")
 	interfaceOptions3 := readWriteModel.NewParameterValueInterfaceOptions3(readWriteModel.NewInterfaceOptions3(c.configuration.Exstat, c.configuration.Pun, c.configuration.LocalSal, c.configuration.Pcn), nil)
-	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
-		return false
+	if err := c.sendCalDataWrite(ctx, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext); err != nil {
+		return errors.Wrap(err, "Error during sending of Interface Options 3")
 	}
 	// TODO: add localsal to the options
 	*cbusOptions = readWriteModel.NewCBusOptions(false, false, false, c.configuration.Exstat, false, false, c.configuration.Pun, c.configuration.Pcn, false)
 	c.log.Debug().Msg("Interface options 3 set")
-	return true
+	return nil
 }
 
-func (c *Connection) setInterface1PowerUpSettings(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) (ok bool) {
+func (c *Connection) setInterface1PowerUpSettings(ctx context.Context, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) error {
 	c.log.Debug().Msg("Set interface options 1 power up settings")
 	interfaceOptions1PowerUpSettings := readWriteModel.NewParameterValueInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect)))
-	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext, cbusOptions) {
-		return false
+	if err := c.sendCalDataWrite(ctx, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext); err != nil {
+		return errors.Wrap(err, "Error during sending of Interface Options 1 Power Up Settings")
 	}
 	// TODO: what is with monall
 	*cbusOptions = readWriteModel.NewCBusOptions(c.configuration.Connect, c.configuration.Smart, c.configuration.Idmon, c.configuration.Exstat, c.configuration.Monitor, false, c.configuration.Pun, c.configuration.Pcn, c.configuration.Srchk)
 	c.log.Debug().Msg("Interface options 1 power up settings set")
-	return true
+	return nil
 }
 
-func (c *Connection) setInterfaceOptions1(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
+func (c *Connection) setInterfaceOptions1(ctx context.Context, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) error {
 	c.log.Debug().Msg("Set interface options 1")
 	interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect), nil)
-	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
-		return false
+	if err := c.sendCalDataWrite(ctx, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext); err != nil {
+		return errors.Wrap(err, "Error during sending of Interface Options 1")
 	}
 	// TODO: what is with monall
 	*cbusOptions = readWriteModel.NewCBusOptions(c.configuration.Connect, c.configuration.Smart, c.configuration.Idmon, c.configuration.Exstat, c.configuration.Monitor, false, c.configuration.Pun, c.configuration.Pcn, c.configuration.Srchk)
 	c.log.Debug().Msg("Interface options 1 set")
-	return true
+	return nil
 }
 
 // This is used for connection setup
-func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
+func (c *Connection) sendCalDataWrite(ctx context.Context, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext) error {
 	calCommandTypeContainer := readWriteModel.CALCommandTypeContainer_CALCommandWrite_2Bytes + readWriteModel.CALCommandTypeContainer(parameterValue.GetLengthInBytes(ctx))
 	calData := readWriteModel.NewCALDataWrite(
 		*requestContext,
@@ -585,9 +558,7 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 		}
 		return nil
 	}); err != nil {
-		c.log.Trace().Err(err).Msg("got error sending request")
-		c.fireConnectionError(errors.Wrap(err, "Error during sending of write request"), ch)
-		return false
+		return errors.Wrap(err, "Error during sending of write request")
 	}
 
 	startTime := time.Now()
@@ -595,33 +566,9 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 	case <-directCommandAckChan:
 		c.log.Trace().Msg("We received the ack")
 	case err := <-directCommandAckErrorChan:
-		c.log.Trace().Err(err).Msg("got error processing request")
-		c.fireConnectionError(errors.Wrap(err, "Error receiving of ack"), ch)
-		return false
+		return errors.Wrap(err, "Error receiving of ack")
 	case <-ctx.Done():
-		c.log.Trace().Dur("timeout", time.Since(startTime)).Msg("Timeout")
-		c.fireConnectionError(errors.Wrapf(ctx.Err(), "Timeout after %v", time.Since(startTime)), ch)
-		return false
+		return errors.Wrapf(ctx.Err(), "Timeout after %v", time.Since(startTime))
 	}
-	return true
-}
-
-func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
-	if c.driverContext.awaitSetupComplete {
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
-	} else {
-		c.log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
-	}
-	if err := c.messageCodec.Disconnect(); err != nil {
-		c.log.Debug().Err(err).Msg("Error disconnecting message codec on connection error")
-	}
-}
-
-func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
-	if c.driverContext.awaitSetupComplete {
-		ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
-	} else {
-		c.log.Info().Msg("Successfully connected")
-	}
-	c.SetConnected(true)
+	return nil
 }

@@ -42,13 +42,12 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -56,56 +55,16 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(tracedPlcConnection)
-				assert.True(t, connection.IsTraceEnabled())
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'IsTraceEnabled' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.IsTraceEnabled()
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+	conn, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, conn) {
+		assert.NoError(t, conn.Close())
 	}
 
 	// The first and second connection should work fine
-	connectionResults = cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(tracedPlcConnection)
-				assert.False(t, connection.IsTraceEnabled())
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'IsTraceEnabled' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.IsTraceEnabled()
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
-	}
+	conn, err = cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100")
+	assert.Nil(t, err)
+	assert.NoError(t, conn.Close())
 }
 
 func TestLeasedPlcConnection_GetTracer(t *testing.T) {
@@ -117,13 +76,12 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -131,29 +89,10 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(tracedPlcConnection)
-				assert.NotNil(t, connection.GetTracer())
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'GetTracer' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.GetTracer()
-				}()
-			}
-		}
-	case <-time.After(2 * time.Second):
-		t.Errorf("Timeout")
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		assert.NoError(t, connection.Close())
 	}
 }
 
@@ -166,13 +105,12 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -180,30 +118,9 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(tracedPlcConnection)
-				assert.Greater(t, len(connection.GetConnectionId()), 0)
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'GetConnectionId' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.GetConnectionId()
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
-	}
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	assert.NoError(t, connection.Close())
 }
 
 func TestLeasedPlcConnection_Connect(t *testing.T) {
@@ -215,13 +132,12 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -229,28 +145,9 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(tracedPlcConnection)
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'Connect' on a cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.Connect(t.Context())
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
-	}
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	assert.NotNil(t, connection)
 }
 
 func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
@@ -262,13 +159,12 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -276,28 +172,10 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'BlockingClose' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					assert.NoError(t, connection.BlockingClose(t.Context()))
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		assert.NoError(t, connection.Close())
 	}
 }
 
@@ -310,13 +188,12 @@ func TestLeasedPlcConnection_Close(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -324,28 +201,10 @@ func TestLeasedPlcConnection_Close(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'Close' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.Close()
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		assert.NoError(t, connection.Close())
 	}
 }
 
@@ -358,13 +217,12 @@ func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -372,20 +230,12 @@ func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				assert.True(t, connection.IsConnected())
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				assert.False(t, connection.IsConnected())
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		assert.True(t, connection.IsConnected())
+		assert.NoError(t, connection.Close())
+		assert.False(t, connection.IsConnected())
 	}
 }
 
@@ -398,13 +248,12 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -412,30 +261,20 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				connection.Ping()
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'Ping' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.Ping()
-				}()
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	connection.Ping()
+	assert.NoError(t, connection.Close())
+	func() {
+		defer func() {
+			if r := recover(); r != nil {
+				assert.Equal(t, r, "Called 'Ping' on a closed cached connection")
+			} else {
+				t.Errorf("The code did not panic")
 			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
-	}
+		}()
+		connection.Ping()
+	}()
 }
 
 func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
@@ -447,13 +286,12 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -461,33 +299,25 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				metadata := connection.GetMetadata()
-				if assert.NotNil(t, metadata) {
-					attributes := metadata.GetConnectionAttributes()
-					assert.NotNil(t, attributes)
-				}
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'GetMetadata' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.GetMetadata()
-				}()
-			}
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		metadata := connection.GetMetadata()
+		if assert.NotNil(t, metadata) {
+			attributes := metadata.GetConnectionAttributes()
+			assert.NotNil(t, attributes)
 		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+		assert.NoError(t, connection.Close())
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					assert.Equal(t, r, "Called 'GetMetadata' on a closed cached connection")
+				} else {
+					t.Errorf("The code did not panic")
+				}
+			}()
+			connection.GetMetadata()
+		}()
 	}
 }
 
@@ -500,13 +330,12 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -514,30 +343,22 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				builder := connection.ReadRequestBuilder()
-				assert.NotNil(t, builder)
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'ReadRequestBuilder' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.ReadRequestBuilder()
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		builder := connection.ReadRequestBuilder()
+		assert.NotNil(t, builder)
+		assert.NoError(t, connection.Close())
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					assert.Equal(t, r, "Called 'ReadRequestBuilder' on a closed cached connection")
+				} else {
+					t.Errorf("The code did not panic")
+				}
+			}()
+			connection.ReadRequestBuilder()
+		}()
 	}
 }
 
@@ -550,13 +371,12 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -564,30 +384,22 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				builder := connection.WriteRequestBuilder()
-				assert.NotNil(t, builder)
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'WriteRequestBuilder' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.WriteRequestBuilder()
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		builder := connection.WriteRequestBuilder()
+		assert.NotNil(t, builder)
+		assert.NoError(t, connection.Close())
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					assert.Equal(t, r, "Called 'WriteRequestBuilder' on a closed cached connection")
+				} else {
+					t.Errorf("The code did not panic")
+				}
+			}()
+			connection.WriteRequestBuilder()
+		}()
 	}
 }
 
@@ -600,13 +412,12 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -614,30 +425,22 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				builder := connection.SubscriptionRequestBuilder()
-				assert.NotNil(t, builder)
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'SubscriptionRequestBuilder' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.SubscriptionRequestBuilder()
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		builder := connection.SubscriptionRequestBuilder()
+		assert.NotNil(t, builder)
+		assert.NoError(t, connection.Close())
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					assert.Equal(t, r, "Called 'SubscriptionRequestBuilder' on a closed cached connection")
+				} else {
+					t.Errorf("The code did not panic")
+				}
+			}()
+			connection.SubscriptionRequestBuilder()
+		}()
 	}
 }
 
@@ -650,13 +453,12 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -664,38 +466,30 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "not provided by simulated connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.UnsubscriptionRequestBuilder()
-				}()
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'UnsubscriptionRequestBuilder' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.UnsubscriptionRequestBuilder()
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					assert.Equal(t, r, "not provided by simulated connection")
+				} else {
+					t.Errorf("The code did not panic")
+				}
+			}()
+			connection.UnsubscriptionRequestBuilder()
+		}()
+		assert.NoError(t, connection.Close())
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					assert.Equal(t, r, "Called 'UnsubscriptionRequestBuilder' on a closed cached connection")
+				} else {
+					t.Errorf("The code did not panic")
+				}
+			}()
+			connection.UnsubscriptionRequestBuilder()
+		}()
 	}
 }
 
@@ -708,13 +502,12 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
-		driverManager:       driverManager,
-		maxLeaseTime:        1 * time.Second,
-		maxWaitTime:         5 * time.Second,
-		responseGrabTimeout: 10 * time.Millisecond,
-		cacheLock:           lock.NewCASMutex(),
-		connections:         make(map[string]*connectionContainer),
-		tracer:              nil,
+		driverManager: driverManager,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
 	}
 	t.Cleanup(func() {
 		<-cache.Close()
@@ -722,38 +515,30 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-	select {
-	case connectionResult := <-connectionResults:
-		if assert.NotNil(t, connectionResult) {
-			assert.Nil(t, connectionResult.GetErr())
-			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection()
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "not provided by simulated connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.BrowseRequestBuilder()
-				}()
-				assert.NoError(t, connection.BlockingClose(t.Context()))
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "Called 'BrowseRequestBuilder' on a closed cached connection")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.BrowseRequestBuilder()
-				}()
-			}
-		}
-	case <-time.After(1 * time.Second):
-		t.Errorf("Timeout")
+	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	assert.Nil(t, err)
+	if assert.NotNil(t, connection) {
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					assert.Equal(t, r, "not provided by simulated connection")
+				} else {
+					t.Errorf("The code did not panic")
+				}
+			}()
+			connection.BrowseRequestBuilder()
+		}()
+		assert.NoError(t, connection.Close())
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					assert.Equal(t, r, "Called 'BrowseRequestBuilder' on a closed cached connection")
+				} else {
+					t.Errorf("The code did not panic")
+				}
+			}()
+			connection.BrowseRequestBuilder()
+		}()
 	}
 }
 

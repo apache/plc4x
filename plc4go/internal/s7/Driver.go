@@ -58,7 +58,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
 	d.log.Debug().
 		Stringer("transportUrl", &transportUrl).
 		Int("nTransports", len(transports)).
@@ -71,9 +71,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 			Stringer("transportUrl", &transportUrl).
 			Str("scheme", transportUrl.Scheme).
 			Msg("We couldn't find a transport for scheme")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
-		return ch
+		return nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl)
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	driverOptions["defaultTcpPort"] = []string{"102"}
@@ -88,9 +86,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 			Stringer("transportUrl", &transportUrl).
 			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
 			Msg("We couldn't create a transport instance for port")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
-		return ch
+		return nil, errors.New("couldn't initialize transport configuration for given transport url " + transportUrl.String())
 	}
 
 	codec := NewMessageCodec(
@@ -102,17 +98,13 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	configuration, err := ParseFromOptions(d.log, driverOptions)
 	if err != nil {
 		d.log.Error().Err(err).Msg("Invalid driverOptions")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid driverOptions"))
-		return ch
+		return nil, errors.Wrap(err, "Invalid driverOptions")
 	}
 
 	driverContext, err := NewDriverContext(configuration)
 	if err != nil {
 		d.log.Error().Err(err).Msg("Invalid driverOptions")
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid driverOptions"))
-		return ch
+		return nil, errors.Wrap(err, "Invalid driverOptions")
 	}
 	driverContext.awaitSetupComplete = d.awaitSetupComplete
 	driverContext.awaitDisconnectComplete = d.awaitDisconnectComplete
@@ -128,7 +120,10 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	d.log.Debug().Msg("created connection, connecting now")
-	return connection.Connect(ctx)
+	if err := connection.Connect(ctx); err != nil {
+		return nil, errors.Wrap(err, "Error connecting connection")
+	}
+	return connection, nil
 }
 
 func (d *Driver) SetAwaitSetupComplete(awaitComplete bool) {

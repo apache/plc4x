@@ -29,7 +29,6 @@ import (
 	"github.com/viney-shih/go-lock"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	_default "github.com/apache/plc4x/plc4go/spi/default"
 )
 
 type connectionContainer struct {
@@ -43,13 +42,18 @@ type connectionContainer struct {
 	// The current state of this connection.
 	state cachedPlcConnectionState
 	// Queue of waiting clients.
-	queue []chan plc4go.PlcConnectionConnectResult
+	queue []connectionRequest
 	// Listeners for connection events.
 	listeners []connectionListener
 
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
+}
+
+type connectionRequest struct {
+	connChan chan plc4go.PlcConnection
+	errChan  chan error
 }
 
 func newConnectionContainer(log zerolog.Logger, driverManager plc4go.PlcDriverManager, connectionString string) *connectionContainer {
@@ -60,7 +64,6 @@ func newConnectionContainer(log zerolog.Logger, driverManager plc4go.PlcDriverMa
 		leaseCounter:     0,
 		closed:           false,
 		state:            StateInitialized,
-		queue:            []chan plc4go.PlcConnectionConnectResult{},
 
 		log: log,
 	}
@@ -69,17 +72,10 @@ func newConnectionContainer(log zerolog.Logger, driverManager plc4go.PlcDriverMa
 func (c *connectionContainer) connect(ctx context.Context) {
 	c.log.Debug().Str("connectionString", c.connectionString).Msg("Connecting new cached connection ...")
 	// Initialize the new connection.
-	connectionResultChan := c.driverManager.GetConnection(ctx, c.connectionString)
+	connection, err := c.driverManager.GetConnection(ctx, c.connectionString)
 
 	// Allow us to finish this function and return the lock quickly
 	// Wait for the connection to be established.
-	var connectionResult plc4go.PlcConnectionConnectResult
-	select {
-	case connectionResult = <-connectionResultChan:
-	case <-ctx.Done():
-		c.log.Err(ctx.Err()).Msg("context canceled")
-		return
-	}
 
 	// Get the lock.
 	c.lock.Lock()
@@ -87,7 +83,7 @@ func (c *connectionContainer) connect(ctx context.Context) {
 
 	// If the connection was successful, pass the active connection into the container.
 	// If something went wrong, we have to remove the connection from the cache and return the error.
-	if err := connectionResult.GetErr(); err != nil {
+	if err != nil {
 		c.log.Debug().Str("connectionString", c.connectionString).
 			Err(err).
 			Msg("Error connecting new cached connection.")
@@ -105,7 +101,10 @@ func (c *connectionContainer) connect(ctx context.Context) {
 		// Send a failure to all waiting clients.
 		if len(c.queue) > 0 {
 			for _, waitingClient := range c.queue {
-				waitingClient <- _default.NewDefaultPlcConnectionConnectResult(nil, err)
+				select {
+				case waitingClient.errChan <- err:
+				case <-ctx.Done():
+				}
 			}
 			c.queue = nil
 		}
@@ -114,7 +113,7 @@ func (c *connectionContainer) connect(ctx context.Context) {
 
 	c.log.Debug().Str("connectionString", c.connectionString).Msg("Successfully connected new cached connection.")
 	// Inject the real connection into the container.
-	if connection, ok := connectionResult.GetConnection().(tracedPlcConnection); !ok {
+	if connection, ok := connection.(tracedPlcConnection); !ok {
 		panic("Return connection doesn't implement the cache.tracedPlcConnection interface")
 	} else {
 		c.connection = connection
@@ -134,7 +133,7 @@ func (c *connectionContainer) connect(ctx context.Context) {
 		// In this case we don'c need to check for blocks
 		// as the getConnection function of the connection cache
 		// is definitely eagerly waiting for input.
-		queueHead <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
+		queueHead.connChan <- connection
 	}
 }
 
@@ -146,11 +145,12 @@ func (c *connectionContainer) addListener(listener connectionListener) {
 	c.listeners = append(c.listeners, listener)
 }
 
-func (c *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
+func (c *connectionContainer) lease() (chan plc4go.PlcConnection, chan error) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	connectionChan := make(chan plc4go.PlcConnection, 1)
+	errorChan := make(chan error, 1)
 	// Check if the connection is available.
 	switch c.state {
 	case StateIdle:
@@ -162,20 +162,18 @@ func (c *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 		// is definitely eagerly waiting for input.
 		c.log.Debug().Str("connectionString", c.connectionString).
 			Msg("Got lease instantly as connection was idle.")
-		c.wg.Go(func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
-		})
+		connectionChan <- connection
 	case StateInUse, StateInitialized:
 		// If the connection is currently busy or not finished initializing,
 		// add the new channel to the queue for this connection.
-		c.queue = append(c.queue, ch)
+		c.queue = append(c.queue, connectionRequest{connChan: connectionChan, errChan: errorChan})
 		c.log.Debug().Str("connectionString", c.connectionString).
 			Int("waiting-queue-size", len(c.queue)).
 			Msg("Added lease-request to queue.")
 	case StateInvalid:
 		c.log.Debug().Str("connectionString", c.connectionString).Msg("No lease because invalid")
 	}
-	return ch
+	return connectionChan, errorChan
 }
 
 func (c *connectionContainer) returnConnection(ctx context.Context, newState cachedPlcConnectionState) error {
@@ -215,7 +213,7 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 			// In this case we don'c need to check for blocks
 			// as the getConnection function of the connection cache
 			// is definitely eagerly waiting for input.
-			next <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
+			next.connChan <- connection
 			c.log.Debug().Str("connectionString", c.connectionString).
 				Int("waiting-queue-size", len(c.queue)).
 				Msg("Returned connection to the next client waiting.")

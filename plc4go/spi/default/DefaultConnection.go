@@ -124,36 +124,14 @@ func (d *defaultConnection) SetConnected(connected bool) {
 	d.connected.Store(connected)
 }
 
-func (d *defaultConnection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (d *defaultConnection) Connect(ctx context.Context) error {
 	d.log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-	d.wg.Go(func() {
-		defer func() {
-			if err := recover(); err != nil {
-				ch <- NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		err := d.GetMessageCodec().Connect(ctx)
-		d.SetConnected(true)
-		connection := d.GetConnection()
-		ch <- NewDefaultPlcConnectionConnectResult(connection, err)
-	})
-	return ch
+	err := d.GetMessageCodec().Connect(ctx)
+	d.SetConnected(true)
+	return err
 }
 
-func (d *defaultConnection) BlockingClose(ctx context.Context) error {
-	d.log.Trace().Msg("blocking close connection")
-	closeResults := d.GetConnection().Close()
-	d.SetConnected(false)
-	select {
-	case result := <-closeResults:
-		return result.GetErr()
-	case <-ctx.Done():
-		return ctx.Err()
-	}
-}
-
-func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (d *defaultConnection) Close() error {
 	d.log.Trace().Msg("close connection")
 	if messageCodec := d.GetMessageCodec(); messageCodec != nil {
 		d.log.Trace().Msg("disconnecting message codec")
@@ -173,9 +151,7 @@ func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		}
 	}
 	d.SetConnected(false)
-	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
-	ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), err)
-	return ch
+	return err
 }
 
 func (d *defaultConnection) IsConnected() bool {

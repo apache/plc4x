@@ -160,11 +160,11 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				t.Cleanup(func() {
 					t.Log(driver.Close())
 				})
-				connectionConnectResult := <-driver.GetConnection(t.Context(), transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
-				require.NoError(t, connectionConnectResult.GetErr())
-				fields.connection = connectionConnectResult.GetConnection()
+				connection, err := driver.GetConnection(t.Context(), transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				require.NoError(t, err)
+				fields.connection = connection
 				t.Cleanup(func() {
-					t.Log(fields.connection.BlockingClose(t.Context()))
+					t.Log(fields.connection.Close())
 				})
 
 				args.ctx = testutils.TestContext(t)
@@ -201,7 +201,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 			assert.Equalf(t, tt.wantQueryResults, got1, "BrowseQuery(%v, func(), %v, \n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
 			if m.connection != nil && m.connection.IsConnected() {
 				t.Log("Closing connection")
-				t.Log(m.connection.BlockingClose(t.Context()))
+				t.Log(m.connection.Close())
 			}
 		})
 	}
@@ -314,11 +314,11 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 				t.Cleanup(func() {
 					t.Log(driver.Close())
 				})
-				connectionConnectResult := <-driver.GetConnection(t.Context(), transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
-				require.NoError(t, connectionConnectResult.GetErr())
-				fields.connection = connectionConnectResult.GetConnection()
+				connection, err := driver.GetConnection(t.Context(), transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				require.NoError(t, err)
+				fields.connection = connection
 				t.Cleanup(func() {
-					t.Log(fields.connection.BlockingClose(t.Context()))
+					t.Log(fields.connection.Close())
 				})
 
 				args.ctx = testutils.TestContext(t)
@@ -356,7 +356,7 @@ func TestBrowser_browseUnitInfo(t *testing.T) {
 			assert.Equalf(t, tt.wantQueryResults, gotQueryResults, "browseUnitInfo(%v, %v, %v, %v)", tt.args.ctx, tt.args.interceptor != nil, tt.args.queryName, tt.args.query)
 			if m.connection != nil && m.connection.IsConnected() {
 				t.Log("Closing connection")
-				t.Log(m.connection.BlockingClose(t.Context()))
+				t.Log(m.connection.Close())
 			}
 		})
 	}
@@ -585,12 +585,12 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				t.Cleanup(func() {
 					t.Log(driver.Close())
 				})
-				connectionConnectResult := <-driver.GetConnection(t.Context(), transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
-				require.NoError(t, connectionConnectResult.GetErr())
-				fields.connection = connectionConnectResult.GetConnection()
+				connection, err := driver.GetConnection(t.Context(), transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				require.NoError(t, err)
+				fields.connection = connection
 				t.Cleanup(func() {
 					t.Log("shutting down connection")
-					t.Log(fields.connection.BlockingClose(t.Context()))
+					t.Log(fields.connection.Close())
 				})
 
 				args.ctx = testutils.TestContext(t)

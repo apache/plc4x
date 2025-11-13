@@ -27,6 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDriver_CheckQuery(t *testing.T) {
@@ -102,7 +103,7 @@ func TestDriver_GetConnection(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		wantErr bool
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "simple no options",
@@ -112,7 +113,7 @@ func TestDriver_GetConnection(t *testing.T) {
 				in1:     nil,
 				options: nil,
 			},
-			wantErr: false,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "simple with options",
@@ -124,23 +125,15 @@ func TestDriver_GetConnection(t *testing.T) {
 					"testOption": {"testValue"},
 				},
 			},
-			wantErr: false,
+			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := NewDriver(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
-			connectionChan := d.GetConnection(t.Context(), tt.args.in0, tt.args.in1, tt.args.options)
-			select {
-			case connectResult := <-connectionChan:
-				if tt.wantErr && (connectResult.GetErr() == nil) {
-					t.Errorf("PlcConnectionPool.GetConnection() = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
-				} else if connectResult.GetErr() != nil {
-					t.Errorf("PlcConnectionPool.GetConnection() error = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
-				}
-			case <-t.Context().Done():
-				t.Errorf("PlcConnectionPool.GetConnection() got timeout")
-			}
+			conn, err := d.GetConnection(t.Context(), tt.args.in0, tt.args.in1, tt.args.options)
+			tt.wantErr(t, err)
+			assert.NotNil(t, conn)
 		})
 	}
 }

@@ -126,12 +126,8 @@ func TestManualCBusBrowse(t *testing.T) {
 	})
 	driverManager.RegisterDriver(cbus.NewDriver(optionsForTesting...))
 	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
-	connectionResult := <-driverManager.GetConnection(t.Context(), connectionString)
-	if err := connectionResult.GetErr(); err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	connection := connectionResult.GetConnection()
+	connection, err := driverManager.GetConnection(t.Context(), connectionString)
+	require.NoError(t, err)
 	defer connection.Close()
 	browseRequest, err := connection.BrowseRequestBuilder().
 		AddQuery("infoQuery", "info/*/*").
@@ -158,12 +154,8 @@ func TestManualCBusRead(t *testing.T) {
 	})
 	driverManager.RegisterDriver(cbus.NewDriver(optionsForTesting...))
 	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
-	connectionResult := <-driverManager.GetConnection(t.Context(), connectionString)
-	if err := connectionResult.GetErr(); err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	connection := connectionResult.GetConnection()
+	connection, err := driverManager.GetConnection(t.Context(), connectionString)
+	require.NoError(t, err)
 	defer connection.Close()
 	readRequest, err := connection.ReadRequestBuilder().
 		AddTagAddress("asd", "cal/3/identify=OutputUnitSummary").

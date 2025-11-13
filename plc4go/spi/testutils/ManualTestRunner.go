@@ -75,8 +75,8 @@ func WithUnwrappedValue(unwrap bool) WithTestCaseOption {
 }
 
 func (m *ManualTestSuite) Run() plc4go.PlcConnection {
-	connectionResult := <-m.DriverManager.GetConnection(m.t.Context(), m.ConnectionString)
-	if err := connectionResult.GetErr(); err != nil {
+	connection, err := m.DriverManager.GetConnection(m.t.Context(), m.ConnectionString)
+	if err != nil {
 		tracer, ok := errors.Cause(err).(interface{ StackTrace() errors.StackTrace })
 		if ok {
 			stackTrace := tracer.StackTrace()
@@ -88,9 +88,8 @@ func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 		m.t.Error(err)
 		m.t.FailNow()
 	}
-	connection := connectionResult.GetConnection()
 	m.t.Cleanup(func() {
-		connection.Close()
+		m.t.Log("connection close", connection.Close())
 	})
 	m.t.Log("Reading all types in separate requests")
 	// Run all entries separately:

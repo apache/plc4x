@@ -23,9 +23,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
-	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -34,7 +32,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
@@ -217,73 +215,6 @@ func TestNewDefaultConnection(t *testing.T) {
 	}
 }
 
-func TestNewDefaultPlcConnectionCloseResult(t *testing.T) {
-	type args struct {
-		connection plc4go.PlcConnection
-		err        error
-	}
-	tests := []struct {
-		name string
-		args args
-		want plc4go.PlcConnectionCloseResult
-	}{
-		{
-			name: "create it",
-			want: &defaultPlcConnectionCloseResult{},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewDefaultPlcConnectionCloseResult(tt.args.connection, tt.args.err), "NewDefaultPlcConnectionCloseResult(%v, %v)", tt.args.connection, tt.args.err)
-		})
-	}
-}
-
-func TestNewDefaultPlcConnectionCloseResultWithTraces(t *testing.T) {
-	type args struct {
-		connection plc4go.PlcConnection
-		err        error
-		traces     []tracer.TraceEntry
-	}
-	tests := []struct {
-		name string
-		args args
-		want plc4go.PlcConnectionCloseResult
-	}{
-		{
-			name: "create it",
-			want: &defaultPlcConnectionCloseResult{},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewDefaultPlcConnectionCloseResultWithTraces(tt.args.connection, tt.args.err, tt.args.traces), "NewDefaultPlcConnectionCloseResultWithTraces(%v, %v, %v)", tt.args.connection, tt.args.err, tt.args.traces)
-		})
-	}
-}
-
-func TestNewDefaultPlcConnectionConnectResult(t *testing.T) {
-	type args struct {
-		connection plc4go.PlcConnection
-		err        error
-	}
-	tests := []struct {
-		name string
-		args args
-		want DefaultPlcConnectionConnectResult
-	}{
-		{
-			name: "create it",
-			want: &defaultPlcConnectionConnectResult{},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewDefaultPlcConnectionConnectResult(tt.args.connection, tt.args.err), "NewDefaultPlcConnectionConnectResult(%v, %v)", tt.args.connection, tt.args.err)
-		})
-	}
-}
-
 func TestNewDefaultPlcConnectionPingResult(t *testing.T) {
 	type args struct {
 		err error
@@ -393,38 +324,27 @@ func Test_buildDefaultConnection(t *testing.T) {
 	}
 }
 
-func Test_defaultConnection_BlockingClose(t *testing.T) {
+func Test_defaultConnection_Close(t *testing.T) {
 	type fields struct {
 		DefaultConnectionRequirements DefaultConnectionRequirements
 		tagHandler                    spi.PlcTagHandler
 		valueHandler                  spi.PlcValueHandler
 	}
-	type args struct {
-		ctx context.Context
-	}
 	tests := []struct {
 		name    string
 		fields  fields
-		args    args
-		setup   func(*testing.T, *fields, *args)
+		setup   func(*testing.T, *fields)
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "close",
-			args: args{
-				ctx: t.Context(),
-			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultConnectionRequirements(t)
 				connection := NewMockPlcConnection(t)
-				ch := make(chan plc4go.PlcConnectionCloseResult, 1)
-				ch <- NewDefaultPlcConnectionCloseResult(connection, nil)
-				connection.EXPECT().Close().Return(ch)
+				connection.EXPECT().Close().Return(nil)
 				requirements.EXPECT().GetConnection().Return(connection)
+				requirements.EXPECT().GetMessageCodec().Return(nil)
 				fields.DefaultConnectionRequirements = requirements
-				var cancelFunc context.CancelFunc
-				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 5*time.Second)
-				t.Cleanup(cancelFunc)
 			},
 			wantErr: assert.NoError,
 		},
@@ -432,7 +352,7 @@ func Test_defaultConnection_BlockingClose(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields, &tt.args)
+				tt.setup(t, &tt.fields)
 			}
 			d := &defaultConnection{
 				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
@@ -440,7 +360,7 @@ func Test_defaultConnection_BlockingClose(t *testing.T) {
 				valueHandler:                  tt.fields.valueHandler,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			tt.wantErr(t, d.BlockingClose(tt.args.ctx))
+			tt.wantErr(t, d.Close())
 		})
 	}
 }
@@ -486,63 +406,6 @@ func Test_defaultConnection_BrowseRequestBuilder(t *testing.T) {
 	}
 }
 
-func Test_defaultConnection_Close(t *testing.T) {
-	type fields struct {
-		DefaultConnectionRequirements DefaultConnectionRequirements
-		tagHandler                    spi.PlcTagHandler
-		valueHandler                  spi.PlcValueHandler
-	}
-	tests := []struct {
-		name         string
-		fields       fields
-		setup        func(t *testing.T, fields *fields)
-		wantAsserter func(t *testing.T, results <-chan plc4go.PlcConnectionCloseResult) bool
-	}{
-		{
-			name: "close it",
-			setup: func(t *testing.T, fields *fields) {
-				requirements := NewMockDefaultConnectionRequirements(t)
-				codec := NewMockMessageCodec(t)
-				{
-					expect := codec.EXPECT()
-					expect.Disconnect().Return(nil)
-					instance := NewMockTransportInstance(t)
-					instance.EXPECT().Close().Return(nil)
-					expect.GetTransportInstance().Return(instance)
-				}
-				{
-					expect := requirements.EXPECT()
-					expect.GetMessageCodec().Return(codec)
-					expect.GetConnection().Return(nil)
-				}
-				fields.DefaultConnectionRequirements = requirements
-			},
-			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionCloseResult) bool {
-				select {
-				case <-t.Context().Done():
-					t.Error("timeout")
-				case result := <-results:
-					assert.Nil(t, result.GetErr())
-				}
-				return true
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			d := &defaultConnection{
-				DefaultConnectionRequirements: tt.fields.DefaultConnectionRequirements,
-				tagHandler:                    tt.fields.tagHandler,
-				valueHandler:                  tt.fields.valueHandler,
-			}
-			assert.Truef(t, tt.wantAsserter(t, d.Close()), "Close()")
-		})
-	}
-}
-
 func Test_defaultConnection_Connect(t *testing.T) {
 	type fields struct {
 		DefaultConnectionRequirements DefaultConnectionRequirements
@@ -553,11 +416,11 @@ func Test_defaultConnection_Connect(t *testing.T) {
 		ctx context.Context
 	}
 	tests := []struct {
-		name         string
-		fields       fields
-		args         args
-		setup        func(t *testing.T, fields *fields, args *args)
-		wantAsserter func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "connect it",
@@ -572,15 +435,7 @@ func Test_defaultConnection_Connect(t *testing.T) {
 				expect.GetConnection().Return(NewMockPlcConnection(t))
 				fields.DefaultConnectionRequirements = requirements
 			},
-			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
-				select {
-				case <-t.Context().Done():
-					t.Error("timeout")
-				case result := <-results:
-					assert.Nil(t, result.GetErr())
-				}
-				return true
-			},
+			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
@@ -593,7 +448,8 @@ func Test_defaultConnection_Connect(t *testing.T) {
 				tagHandler:                    tt.fields.tagHandler,
 				valueHandler:                  tt.fields.valueHandler,
 			}
-			assert.Truef(t, tt.wantAsserter(t, d.Connect(tt.args.ctx)), "Connect(%v)", tt.args.ctx)
+			err := d.Connect(tt.args.ctx)
+			assert.Truef(t, tt.wantErr(t, err), "Connect(%v)", tt.args.ctx)
 		})
 	}
 }
@@ -987,153 +843,6 @@ func Test_defaultConnection_WriteRequestBuilder(t *testing.T) {
 				valueHandler:                  tt.fields.valueHandler,
 			}
 			assert.Equalf(t, tt.want, d.WriteRequestBuilder(), "WriteRequestBuilder()")
-		})
-	}
-}
-
-func Test_plcConnectionCloseResult_GetConnection(t *testing.T) {
-	type fields struct {
-		connection plc4go.PlcConnection
-		err        error
-		traces     []tracer.TraceEntry
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   plc4go.PlcConnection
-	}{
-		{
-			name: "get it",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			d := &defaultPlcConnectionCloseResult{
-				connection: tt.fields.connection,
-				err:        tt.fields.err,
-				traces:     tt.fields.traces,
-			}
-			assert.Equalf(t, tt.want, d.GetConnection(), "GetConnection()")
-		})
-	}
-}
-
-func Test_plcConnectionCloseResult_GetErr(t *testing.T) {
-	type fields struct {
-		connection plc4go.PlcConnection
-		err        error
-		traces     []tracer.TraceEntry
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		setup   func(t *testing.T, fields *fields)
-		wantErr assert.ErrorAssertionFunc
-	}{
-		{
-			name: "get it",
-			setup: func(t *testing.T, fields *fields) {
-				fields.connection = NewMockPlcConnection(t)
-			},
-			wantErr: assert.NoError,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			d := &defaultPlcConnectionCloseResult{
-				connection: tt.fields.connection,
-				err:        tt.fields.err,
-				traces:     tt.fields.traces,
-			}
-			tt.wantErr(t, d.GetErr(), fmt.Sprintf("GetErr()"))
-		})
-	}
-}
-
-func Test_plcConnectionCloseResult_GetTraces(t *testing.T) {
-	type fields struct {
-		connection plc4go.PlcConnection
-		err        error
-		traces     []tracer.TraceEntry
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   []tracer.TraceEntry
-	}{
-		{
-			name: "get it",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			d := &defaultPlcConnectionCloseResult{
-				connection: tt.fields.connection,
-				err:        tt.fields.err,
-				traces:     tt.fields.traces,
-			}
-			assert.Equalf(t, tt.want, d.GetTraces(), "GetTraces()")
-		})
-	}
-}
-
-func Test_plcConnectionConnectResult_GetConnection(t *testing.T) {
-	type fields struct {
-		connection plc4go.PlcConnection
-		err        error
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   plc4go.PlcConnection
-	}{
-		{
-			name: "get it",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			d := &defaultPlcConnectionConnectResult{
-				connection: tt.fields.connection,
-				err:        tt.fields.err,
-			}
-			assert.Equalf(t, tt.want, d.GetConnection(), "GetConnection()")
-		})
-	}
-}
-
-func Test_plcConnectionConnectResult_GetErr(t *testing.T) {
-	type fields struct {
-		connection plc4go.PlcConnection
-		err        error
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		setup   func(t *testing.T, fields *fields)
-		wantErr assert.ErrorAssertionFunc
-	}{
-		{
-			name: "get it",
-			setup: func(t *testing.T, fields *fields) {
-				fields.connection = NewMockPlcConnection(t)
-			},
-			wantErr: assert.NoError,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields)
-			}
-			d := &defaultPlcConnectionConnectResult{
-				connection: tt.fields.connection,
-				err:        tt.fields.err,
-			}
-			tt.wantErr(t, d.GetErr(), fmt.Sprintf("GetErr()"))
 		})
 	}
 }

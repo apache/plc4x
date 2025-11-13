@@ -87,31 +87,27 @@ func (c *Connection) GetTracer() tracer.Tracer {
 	return c.tracer
 }
 
-func (c *Connection) Connect(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) Connect(ctx context.Context) error {
 	c.log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+	if err := c.DefaultConnection.Connect(ctx); err != nil {
+		return errors.Wrap(err, "Error connecting default connection")
+	}
 	c.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				c.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
-		connectionConnectResult := <-c.DefaultConnection.Connect(ctx)
-		c.wg.Go(func() {
-			defer func() {
-				if err := recover(); err != nil {
-					ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-				}
-			}()
-			for c.IsConnected() {
-				c.log.Trace().Msg("Polling data")
-				c.passToDefaultIncomingMessageChannel()
-			}
-			c.log.Info().Msg("Ending incoming message transfer")
-		})
-		ch <- connectionConnectResult
+		for c.IsConnected() {
+			c.log.Trace().Msg("Polling data")
+			c.passToDefaultIncomingMessageChannel()
+		}
+		c.log.Info().Msg("Ending incoming message transfer")
 	})
-	return ch
+	return nil
 }
 
 func (c *Connection) passToDefaultIncomingMessageChannel() {

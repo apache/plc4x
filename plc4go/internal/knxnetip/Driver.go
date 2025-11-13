@@ -59,13 +59,11 @@ func (d *Driver) CheckQuery(query string) error {
 	return err
 }
 
-func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
-		return ch
+		return nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl)
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	driverOptions["defaultUdpPort"] = []string{"3671"}
@@ -76,9 +74,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	if err != nil {
-		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't initialize transport configuration for given transport url %#v", transportUrl))
-		return ch
+		return nil, errors.Errorf("couldn't initialize transport configuration for given transport url %#v", transportUrl)
 	}
 
 	// Create the new connection
@@ -89,7 +85,10 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
 	d.log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
-	return connection.Connect(ctx)
+	if err := connection.Connect(ctx); err != nil {
+		return nil, errors.Wrap(err, "Error connecting connection")
+	}
+	return connection, nil
 }
 
 func (d *Driver) SupportsDiscovery() bool {

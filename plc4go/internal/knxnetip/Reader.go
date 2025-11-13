@@ -25,7 +25,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -119,13 +118,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				case DevicePropertyAddressPlcTag:
 					propertyTag := tag.(DevicePropertyAddressPlcTag)
 
-					timeout := time.NewTimer(m.connection.defaultTtl)
 					results := m.connection.DeviceReadProperty(ctx, deviceAddress, propertyTag.ObjectId, propertyTag.PropertyId, propertyTag.PropertyIndex, propertyTag.NumElements)
 					select {
 					case result := <-results:
-						if !timeout.Stop() {
-							<-timeout.C
-						}
 						if result.err == nil {
 							responseCodes[tagName] = apiModel.PlcResponseCode_OK
 							plcValues[tagName] = result.value
@@ -133,20 +128,15 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[tagName] = nil
 						}
-					case <-timeout.C:
-						timeout.Stop()
+					case <-ctx.Done():
 						responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_BUSY
 						plcValues[tagName] = nil
 					}
 				case DeviceMemoryAddressPlcTag:
-					timeout := time.NewTimer(m.connection.defaultTtl)
 					memoryTag := tag.(DeviceMemoryAddressPlcTag)
 					results := m.connection.DeviceReadMemory(ctx, deviceAddress, memoryTag.Address, memoryTag.NumElements, memoryTag.TagType)
 					select {
 					case result := <-results:
-						if !timeout.Stop() {
-							<-timeout.C
-						}
 						if result.err == nil {
 							responseCodes[tagName] = apiModel.PlcResponseCode_OK
 							plcValues[tagName] = result.value
@@ -154,8 +144,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[tagName] = nil
 						}
-					case <-timeout.C:
-						timeout.Stop()
+					case <-ctx.Done():
 						responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_BUSY
 						plcValues[tagName] = nil
 					}

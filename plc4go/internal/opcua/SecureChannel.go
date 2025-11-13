@@ -37,7 +37,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -277,7 +276,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 	}
 }
 
-func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, ch chan plc4go.PlcConnectionConnectResult) {
+func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection) error {
 	s.log.Trace().Msg("on connect")
 	// Only the TCP transport supports login.
 	s.log.Debug().Msg("Opcua Driver running in ACTIVE mode.")
@@ -295,6 +294,8 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 		s.endpoint,
 	)
 
+	okChan := make(chan struct{}, 1)
+	errChan := make(chan error, 1)
 	requestConsumer := func(transactionId int32) {
 		s.log.Trace().Int32("transactionId", transactionId).Msg("request consumer called")
 		if err := s.codec.SendRequest(ctx, hello, func(message spi.Message) bool {
@@ -314,11 +315,13 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 			opcuaAPU := message.(readWriteModel.OpcuaAPU)
 			messagePDU := opcuaAPU.GetMessage()
 			opcuaAcknowledgeResponse := messagePDU.(readWriteModel.OpcuaAcknowledgeResponse)
-			go s.onConnectOpenSecureChannel(ctx, connection, ch, opcuaAcknowledgeResponse)
+			s.wg.Go(func() {
+				s.onConnectOpenSecureChannel(ctx, connection, okChan, errChan, opcuaAcknowledgeResponse)
+			})
 			return nil
 		}, func(err error) error {
 			s.log.Debug().Err(err).Msg("error submitting")
-			connection.fireConnectionError(err, ch)
+			connection.fireConnectionError(err, errChan)
 			return nil
 		}); err != nil {
 			s.log.Debug().Err(err).Msg("error sending")
@@ -327,9 +330,17 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 	if err := s.channelTransactionManager.submit(requestConsumer, s.channelTransactionManager.getTransactionIdentifier()); err != nil {
 		s.log.Debug().Err(err).Msg("error submitting")
 	}
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-okChan:
+		return nil
+	case err := <-errChan:
+		return err
+	}
 }
 
-func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connection *Connection, ch chan plc4go.PlcConnectionConnectResult, response readWriteModel.OpcuaAcknowledgeResponse) {
+func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connection *Connection, okChan chan struct{}, errChan chan error, response readWriteModel.OpcuaAcknowledgeResponse) {
 	transactionId := s.channelTransactionManager.getTransactionIdentifier()
 
 	requestHeader := readWriteModel.NewRequestHeader(
@@ -377,7 +388,7 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		s.log.Debug().Err(err).Msg("error serializing")
-		connection.fireConnectionError(err, ch)
+		connection.fireConnectionError(err, errChan)
 		return
 	}
 
@@ -400,13 +411,13 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 		message, err := s.encryptionHandler.encodeMessage(ctx, openRequest, buffer.GetBytes())
 		if err != nil {
 			s.log.Debug().Err(err).Msg("error encoding")
-			connection.fireConnectionError(err, ch)
+			connection.fireConnectionError(err, errChan)
 			return
 		}
 		apu, err = readWriteModel.OpcuaAPUParse(ctx, message, false, true)
 		if err != nil {
 			s.log.Debug().Err(err).Msg("error parsing")
-			connection.fireConnectionError(err, ch)
+			connection.fireConnectionError(err, errChan)
 			return
 		}
 	} else {
@@ -446,32 +457,34 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 					Uint32("statusCode", statusCode).
 					Stringer("statusCodeByValue", statusCodeByValue).
 					Msg("Failed to connect to opc ua server for the following reason")
-				connection.fireConnectionError(errors.New("service fault received"), ch)
+				connection.fireConnectionError(errors.New("service fault received"), errChan)
 				return nil
 			}
 			s.log.Debug().Msg("Got Secure Response Connection Response")
 			openSecureChannelResponse := extensionObject.GetBody().(readWriteModel.OpenSecureChannelResponse)
 			s.tokenId.Store(openSecureChannelResponse.GetSecurityToken().(readWriteModel.ChannelSecurityToken).GetTokenId())
 			s.channelId.Store(openSecureChannelResponse.GetSecurityToken().(readWriteModel.ChannelSecurityToken).GetChannelId())
-			go s.onConnectCreateSessionRequest(ctx, connection, ch)
+			s.wg.Go(func() {
+				s.onConnectCreateSessionRequest(ctx, connection, okChan, errChan)
+			})
 			return nil
 		}, func(err error) error {
 			s.log.Debug().Err(err).Msg("error submitting")
-			connection.fireConnectionError(err, ch)
+			connection.fireConnectionError(err, errChan)
 			return nil
 		}); err != nil {
 			s.log.Debug().Err(err).Msg("a error")
-			connection.fireConnectionError(err, ch)
+			connection.fireConnectionError(err, errChan)
 		}
 	}
 	s.log.Debug().Int32("transactionId", transactionId).Msg("Submitting OpenSecureChannel with id")
 	if err := s.channelTransactionManager.submit(requestConsumer, transactionId); err != nil {
 		s.log.Debug().Err(err).Msg("error submitting")
-		connection.fireConnectionError(err, ch)
+		connection.fireConnectionError(err, errChan)
 	}
 }
 
-func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, connection *Connection, ch chan plc4go.PlcConnectionConnectResult) {
+func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, connection *Connection, okChan chan struct{}, errChan chan error) {
 	requestHeader := readWriteModel.NewRequestHeader(
 		s.getAuthenticationToken(),
 		s.getCurrentDateTime(),
@@ -525,7 +538,7 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		s.log.Debug().Err(err).Msg("error serializing")
-		connection.fireConnectionError(err, ch)
+		connection.fireConnectionError(err, errChan)
 		return
 	}
 
@@ -533,7 +546,7 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 		extensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			s.log.Error().Err(err).Msg("error parsing")
-			connection.fireConnectionError(err, ch)
+			connection.fireConnectionError(err, errChan)
 			return
 		}
 		s.log.Trace().Stringer("extensionObject", extensionObject).Msg("looking at message")
@@ -544,7 +557,7 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 				Uint32("statusCode", statusCode).
 				Stringer("statusCodeByValue", statusCodeByValue).
 				Msg("Failed to connect to opc ua server for the following reason")
-			connection.fireConnectionError(errors.New("service fault received"), ch)
+			connection.fireConnectionError(errors.New("service fault received"), errChan)
 			return
 		}
 		s.log.Debug().Msg("Got Create Session Response Connection Response")
@@ -553,7 +566,9 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 		if responseMessage, ok := unknownExtensionObject.(readWriteModel.CreateSessionResponse); ok {
 			s.authenticationToken = responseMessage.GetAuthenticationToken().GetNodeId()
 
-			go s.onConnectActivateSessionRequest(ctx, connection, ch, responseMessage, responseMessage)
+			s.wg.Go(func() {
+				s.onConnectActivateSessionRequest(ctx, connection, okChan, errChan, responseMessage, responseMessage)
+			})
 		} else {
 			serviceFault := unknownExtensionObject.(readWriteModel.ServiceFault)
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
@@ -565,18 +580,18 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 
 	errorDispatcher := func(err error) {
 		s.log.Error().Err(err).Msg("Error while waiting for subscription response")
-		connection.fireConnectionError(err, ch)
+		connection.fireConnectionError(err, errChan)
 	}
 
 	s.submit(ctx, connection.messageCodec, errorDispatcher, consumer, buffer)
 }
 
-func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, connection *Connection, ch chan plc4go.PlcConnectionConnectResult, opcuaMessageResponse readWriteModel.CreateSessionResponse, sessionResponse readWriteModel.CreateSessionResponse) {
+func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, connection *Connection, okChan chan struct{}, errChan chan error, opcuaMessageResponse readWriteModel.CreateSessionResponse, sessionResponse readWriteModel.CreateSessionResponse) {
 	s.senderCertificate = sessionResponse.GetServerCertificate().GetStringValue()
 	certificate, err := s.encryptionHandler.getCertificateX509(s.senderCertificate)
 	if err != nil {
 		s.log.Error().Err(err).Msg("error getting certificate")
-		connection.fireConnectionError(err, ch)
+		connection.fireConnectionError(err, errChan)
 		return
 	}
 	s.log.Debug().Interface("senderCertificate", certificate).Msg("working with senderCertificate")
@@ -597,7 +612,7 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 
 	if s.policyId == nil {
 		s.log.Error().Msg("Unable to find endpoint - " + endpoints[1])
-		connection.fireConnectionError(err, ch)
+		connection.fireConnectionError(err, errChan)
 		return
 	}
 
@@ -640,7 +655,7 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		s.log.Debug().Err(err).Msg("error serializing")
-		connection.fireConnectionError(err, ch)
+		connection.fireConnectionError(err, errChan)
 		return
 	}
 
@@ -658,7 +673,7 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 				Uint32("statusCode", statusCode).
 				Stringer("statusCodeByValue", statusCodeByValue).
 				Msg("Failed to connect to opc ua server for the following reason")
-			connection.fireConnectionError(errors.New("service fault received"), ch)
+			connection.fireConnectionError(errors.New("service fault received"), errChan)
 			return
 		}
 		s.log.Debug().Msg("Got Activate Session Response Connection Response")
@@ -680,7 +695,7 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 
 			// Send an event that connection setup is complete.
 			s.keepAlive()
-			connection.fireConnected(ch)
+			connection.fireConnected(okChan)
 		} else {
 			serviceFault := unknownExtensionObject.(readWriteModel.ServiceFault)
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
@@ -692,7 +707,7 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 
 	errorDispatcher := func(err error) {
 		s.log.Error().Err(err).Msg("Error while waiting for subscription response")
-		connection.fireConnectionError(err, ch)
+		connection.fireConnectionError(err, errChan)
 	}
 
 	s.submit(ctx, connection.messageCodec, errorDispatcher, consumer, buffer)
