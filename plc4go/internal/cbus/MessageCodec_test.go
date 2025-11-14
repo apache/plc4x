@@ -679,6 +679,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		require.NotNil(t, msg)
 
 		// The message should have a confirmation with an alpha
+		require.Implements(t, (*readWriteModel.CBusMessageToClient)(nil), msg)
 		assert.True(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
 	})
 	t.Run("data after 6 times", func(t *testing.T) {
@@ -725,7 +726,9 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.NotNil(t, msg)
 
 		// The message should have a confirmation with an alpha
-		assert.True(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
+		require.Implements(t, (*readWriteModel.CBusMessageToClient)(nil), msg)
+		cBusMessageToClient := msg.(readWriteModel.CBusMessageToClient)
+		assert.True(t, cBusMessageToClient.GetReply().GetIsAlpha())
 	})
 	t.Run("data after 15 times", func(t *testing.T) {
 		_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -776,6 +779,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.NotNil(t, msg)
 
 		// The message should have a confirmation without an alpha
+		require.Implements(t, (*readWriteModel.CBusMessageToClient)(nil), msg)
 		assert.False(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
 	})
 }
