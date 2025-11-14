@@ -335,8 +335,8 @@ func (m *TransportInstance) peek() []byte {
 func (m *TransportInstance) read(numBytes int) []byte {
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
-	data := m.readBuffer[0:int(numBytes)]
-	m.readBuffer = m.readBuffer[int(numBytes):]
+	data := m.readBuffer[0:numBytes]
+	m.readBuffer = m.readBuffer[numBytes:]
 	return data
 }
 

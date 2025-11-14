@@ -133,7 +133,8 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	confirmation := false
 	// Fill the buffer
 	{
-		if err := ti.FillBuffer(ctx, func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
+		fillCtx, fillCtxCancel := context.WithTimeout(ctx, 100*time.Millisecond)
+		if err := ti.FillBuffer(fillCtx, func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 			switch currentByte {
 			case
 				readWriteModel.ResponseTermination_CR,
@@ -160,6 +161,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		} else {
 			m.log.Trace().Msg("Buffer filled")
 		}
+		fillCtxCancel()
 	}
 
 	// Check how many readable bytes we have

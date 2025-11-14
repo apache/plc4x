@@ -174,7 +174,7 @@ func TestConnection_Connect(t *testing.T) {
 				require.NoError(t, err)
 				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.Error(t, codec.Disconnect())
+					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 
@@ -669,11 +669,11 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 		requestContext *readWriteModel.RequestContext
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		setup  func(t *testing.T, fields *fields, args *args)
-		want   bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "send something",
@@ -693,7 +693,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
-					assert.Error(t, codec.Disconnect())
+					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 
@@ -702,7 +702,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
 				t.Cleanup(cancelFunc)
 			},
-			want: false,
+			wantErr: assert.Error,
 		},
 	}
 	for _, tt := range tests {
@@ -721,7 +721,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				log:           testutils.ProduceTestingLogger(t),
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.Equalf(t, tt.want, c.sendCalDataWrite(tt.args.ctx, tt.args.paramNo, tt.args.parameterValue, tt.args.requestContext), "sendCalDataWrite(%v, %v, %v, %v, %v, %v)", tt.args.ctx, tt.args.paramNo, tt.args.parameterValue, tt.args.requestContext)
+			assert.Truef(t, tt.wantErr(t, c.sendCalDataWrite(tt.args.ctx, tt.args.paramNo, tt.args.parameterValue, tt.args.requestContext)), "sendCalDataWrite(%v, %v, %v, %v, %v, %v)", tt.args.ctx, tt.args.paramNo, tt.args.parameterValue, tt.args.requestContext)
 		})
 	}
 }
@@ -805,11 +805,11 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 		requestContext *readWriteModel.RequestContext
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		setup  func(t *testing.T, fields *fields, args *args)
-		wantOk bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "set application filter (failing)",
@@ -830,7 +830,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
-					assert.Error(t, codec.Disconnect())
+					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 
@@ -839,7 +839,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
 				t.Cleanup(cancelFunc)
 			},
-			wantOk: false,
+			wantErr: assert.Error,
 		},
 	}
 	for _, tt := range tests {
@@ -858,7 +858,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				log:           testutils.ProduceTestingLogger(t),
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.Equalf(t, tt.wantOk, c.setApplicationFilter(tt.args.ctx, tt.args.requestContext), "setApplicationFilter(%v, %v)", tt.args.ctx, tt.args.requestContext)
+			assert.Truef(t, tt.wantErr(t, c.setApplicationFilter(tt.args.ctx, tt.args.requestContext)), "setApplicationFilter(%v, %v)", tt.args.ctx, tt.args.requestContext)
 		})
 	}
 }
@@ -878,11 +878,11 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 		cbusOptions    *readWriteModel.CBusOptions
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		setup  func(t *testing.T, fields *fields, args *args)
-		wantOk bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "set interface 1 PUN options (failing)",
@@ -908,7 +908,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
 					t.Log("disconnecting codec")
-					assert.Error(t, codec.Disconnect())
+					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 
@@ -917,7 +917,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
 				t.Cleanup(cancelFunc)
 			},
-			wantOk: false,
+			wantErr: assert.Error,
 		},
 	}
 	for _, tt := range tests {
@@ -936,7 +936,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				log:           testutils.ProduceTestingLogger(t),
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.Equalf(t, tt.wantOk, c.setInterface1PowerUpSettings(tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions), "setInterface1PowerUpSettings(%v, %v, %v)", tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions)
+			assert.Truef(t, tt.wantErr(t, c.setInterface1PowerUpSettings(tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions)), "setInterface1PowerUpSettings(%v, %v, %v)", tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions)
 		})
 	}
 }
@@ -956,11 +956,11 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 		cbusOptions    *readWriteModel.CBusOptions
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		setup  func(t *testing.T, fields *fields, args *args)
-		want   bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "set interface 1 options (failing)",
@@ -984,7 +984,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
-					assert.Error(t, codec.Disconnect())
+					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 
@@ -993,7 +993,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
 				t.Cleanup(cancelFunc)
 			},
-			want: false,
+			wantErr: assert.Error,
 		},
 	}
 	for _, tt := range tests {
@@ -1012,7 +1012,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				log:           testutils.ProduceTestingLogger(t),
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.Equalf(t, tt.want, c.setInterfaceOptions1(tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions), "setInterfaceOptions1(%v, %v, %v)", tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions)
+			assert.Truef(t, tt.wantErr(t, c.setInterfaceOptions1(tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions)), "setInterfaceOptions1(%v, %v, %v)", tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions)
 		})
 	}
 }
@@ -1032,11 +1032,11 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 		cbusOptions    *readWriteModel.CBusOptions
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		setup  func(t *testing.T, fields *fields, args *args)
-		wantOk bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "set interface 3 options (failing)",
@@ -1060,7 +1060,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				codec := NewMessageCodec(ti, _options...)
 				require.NoError(t, codec.Connect(t.Context()))
 				t.Cleanup(func() {
-					assert.Error(t, codec.Disconnect())
+					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 
@@ -1069,7 +1069,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 2*time.Second)
 				t.Cleanup(cancelFunc)
 			},
-			wantOk: false,
+			wantErr: assert.Error,
 		},
 	}
 	for _, tt := range tests {
@@ -1088,7 +1088,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				log:           testutils.ProduceTestingLogger(t),
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.Equalf(t, tt.wantOk, c.setInterfaceOptions3(tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions), "setInterfaceOptions3(%v, %v, %v)", tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions)
+			assert.Truef(t, tt.wantErr(t, c.setInterfaceOptions3(tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions)), "setInterfaceOptions3(%v, %v, %v)", tt.args.ctx, tt.args.requestContext, tt.args.cbusOptions)
 		})
 	}
 }
@@ -1480,9 +1480,7 @@ func TestConnection_setupConnection(t *testing.T) {
 			}
 			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
 			err := c.setupConnection(tt.args.ctx)
-			if tt.wantErr(t, err) {
-				t.FailNow()
-			}
+			tt.wantErr(t, err)
 		})
 	}
 }

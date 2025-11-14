@@ -105,7 +105,7 @@ func TestDriver_GetConnection(t *testing.T) {
 			},
 			wantVerifier: func(t *testing.T, conn plc4go.PlcConnection, err error) bool {
 				assert.Error(t, err)
-				assert.Equal(t, "couldn't initialize transport configuration for given transport url test:: test transport failed on purpose", err)
+				assert.ErrorContains(t, err, "couldn't initialize transport configuration for given transport url test:: test transport failed on purpose")
 				return true
 			},
 		},

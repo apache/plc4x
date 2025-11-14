@@ -695,8 +695,13 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		})
 		codec.requestContext = readWriteModel.NewRequestContext(true)
 
+		canceledCtx := func() context.Context {
+			ctx, cancelFunc := context.WithCancel(t.Context())
+			cancelFunc()
+			return ctx
+		}
 		var msg spi.Message
-		msg, err = codec.Receive(t.Context())
+		msg, err = codec.Receive(canceledCtx())
 		// No data yet so this should return no error and no data
 		assert.NoError(t, err)
 		assert.Nil(t, msg)
@@ -706,7 +711,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		for i := 0; i < 8; i++ {
 			t.Logf("%d try", i+1)
 			// We should wait for more data, so no error, no message
-			msg, err = codec.Receive(t.Context())
+			msg, err = codec.Receive(canceledCtx())
 			assert.NoError(t, err)
 			assert.Nil(t, msg)
 		}
@@ -730,7 +735,6 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		require.NoError(t, err)
 
 		require.NoError(t, ti.Connect(t.Context()))
-		ti.(*test.TransportInstance).FillReadBuffer([]byte("@A62120\r@A62120\r"))
 		codec := NewMessageCodec(ti, _options...)
 		t.Cleanup(func() {
 			assert.Error(t, codec.Disconnect())
@@ -750,7 +754,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 			// We should wait for more data, so no error, no message
 			msg, err = codec.Receive(t.Context())
 			if i == 15 {
-				assert.NoError(t, err)
+				require.NoError(t, err)
 				require.NotNil(t, msg)
 				// This should be the confirmation only ...
 				reply := msg.(readWriteModel.CBusMessageToClient).GetReply()
