@@ -371,6 +371,9 @@ func Test_defaultCodec_Connect(t *testing.T) {
 	}{
 		{
 			name: "connect it",
+			args: args{
+				ctx: testutils.TestContext(t),
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				instance := NewMockTransportInstance(t)
 				instance.EXPECT().IsConnected().Return(true)
@@ -380,6 +383,9 @@ func Test_defaultCodec_Connect(t *testing.T) {
 		},
 		{
 			name: "connect it (fails)",
+			args: args{
+				ctx: testutils.TestContext(t),
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				instance := NewMockTransportInstance(t)
 				expect := instance.EXPECT()
@@ -391,6 +397,9 @@ func Test_defaultCodec_Connect(t *testing.T) {
 		},
 		{
 			name: "connect it already connected",
+			args: args{
+				ctx: testutils.TestContext(t),
+			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				instance := NewMockTransportInstance(t)
 				instance.EXPECT().IsConnected().Return(true)
@@ -415,6 +424,8 @@ func Test_defaultCodec_Connect(t *testing.T) {
 				log:                           testutils.ProduceTestingLogger(t),
 			}
 			tt.wantErr(t, m.Connect(tt.args.ctx), fmt.Sprintf("Connect(%v)", tt.args.ctx))
+			m.running.Store(false)
+			m.wg.Wait()
 		})
 	}
 }
