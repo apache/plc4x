@@ -72,9 +72,14 @@ exec:
 clean:
 	@-$(MAKE) go-clean
 
-sync-code: go-generate go-mocks go-fmt
+sync-code: go-mod-tidy go-generate go-mocks go-fmt
 
 go-compile: go-get go-build
+
+go-mod-tidy:
+	@echo "  > go tidy..."
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go mod tidy
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go mod tidy
 
 go-build: go-fmt
 	@echo "  >  Building binary..."
