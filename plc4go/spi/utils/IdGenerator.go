@@ -20,17 +20,19 @@
 package utils
 
 import (
+	"crypto/rand"
 	"encoding/hex"
-	"math/rand"
 
-	"github.com/rs/zerolog"
+	"github.com/google/uuid"
 )
 
 var randomByteFiller = rand.Read
 
-func GenerateId(localLog zerolog.Logger, numBytes int) string {
+func GenerateId(numBytes int) string {
 	transactionIdBytes := make([]byte, numBytes)
-	n, err := randomByteFiller(transactionIdBytes)
-	localLog.Trace().Err(err).Int("n", n).Msg("Read n bytes")
+	_, err := randomByteFiller(transactionIdBytes)
+	if err != nil {
+		return err.Error() + uuid.NewString()
+	}
 	return hex.EncodeToString(transactionIdBytes)
 }

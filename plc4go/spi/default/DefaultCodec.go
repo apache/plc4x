@@ -192,7 +192,9 @@ func (m *defaultCodec) Disconnect() error {
 	}
 	for _, expectation := range m.expectations {
 		m.wg.Go(func() {
-			_ = expectation.GetHandleError()(errors.New("disconnected"))
+			err := errors.New("disconnected")
+			expectation.Cancel(err)
+			_ = expectation.GetHandleError()(err)
 		})
 	}
 	m.wg.Wait()
@@ -243,7 +245,9 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) time.Duration {
 			m.log.Debug().Stringer("expectation", expectation).Msg("timeout expectation")
 			// Call the error handler.
 			m.wg.Go(func() {
-				if err := expectation.GetHandleError()(utils.NewTimeoutError(expectation.GetExpiration().Sub(expectation.GetCreationTime()))); err != nil {
+				timeoutErr := utils.NewTimeoutError(expectation.GetExpiration().Sub(expectation.GetCreationTime()))
+				expectation.Cancel(timeoutErr)
+				if err := expectation.GetHandleError()(timeoutErr); err != nil {
 					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 			})

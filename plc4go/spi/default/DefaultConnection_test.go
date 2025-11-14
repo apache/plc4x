@@ -340,9 +340,6 @@ func Test_defaultConnection_Close(t *testing.T) {
 			name: "close",
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultConnectionRequirements(t)
-				connection := NewMockPlcConnection(t)
-				connection.EXPECT().Close().Return(nil)
-				requirements.EXPECT().GetConnection().Return(connection)
 				requirements.EXPECT().GetMessageCodec().Return(nil)
 				fields.DefaultConnectionRequirements = requirements
 			},
@@ -432,7 +429,6 @@ func Test_defaultConnection_Connect(t *testing.T) {
 				}
 				expect := requirements.EXPECT()
 				expect.GetMessageCodec().Return(codec)
-				expect.GetConnection().Return(NewMockPlcConnection(t))
 				fields.DefaultConnectionRequirements = requirements
 			},
 			wantErr: assert.NoError,
@@ -623,11 +619,9 @@ func Test_defaultConnection_Ping(t *testing.T) {
 			name: "ping it",
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultConnectionRequirements(t)
-				connection := NewMockPlcConnection(t)
 				{
-					connection.EXPECT().IsConnected().Return(false)
+					requirements.EXPECT().IsConnected().Return(false)
 				}
-				requirements.EXPECT().GetConnection().Return(connection)
 				fields.DefaultConnectionRequirements = requirements
 			},
 			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool {
@@ -644,11 +638,9 @@ func Test_defaultConnection_Ping(t *testing.T) {
 			name: "ping it connected",
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultConnectionRequirements(t)
-				connection := NewMockPlcConnection(t)
 				{
-					connection.EXPECT().IsConnected().Return(true)
+					requirements.EXPECT().IsConnected().Return(true)
 				}
-				requirements.EXPECT().GetConnection().Return(connection)
 				fields.DefaultConnectionRequirements = requirements
 			},
 			connected: true,

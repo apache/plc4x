@@ -39,8 +39,8 @@ import (
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection
 // additional options can be set using the functions returning WithOption (e.g. WithDefaultTtl, WithPlcTagHandler...)
 type DefaultConnectionRequirements interface {
-	// GetConnection should return the implementing connection when using DefaultConnection
-	GetConnection() plc4go.PlcConnection
+	// IsConnected should return the implementing connection check when using DefaultConnection
+	IsConnected() bool
 	// GetMessageCodec should return the spi.MessageCodec in use
 	GetMessageCodec() spi.MessageCodec
 }
@@ -167,7 +167,7 @@ func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 				ch <- NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
-		if d.GetConnection().IsConnected() {
+		if d.DefaultConnectionRequirements.IsConnected() {
 			ch <- NewDefaultPlcConnectionPingResult(nil)
 		} else {
 			ch <- NewDefaultPlcConnectionPingResult(errors.New("not connected"))

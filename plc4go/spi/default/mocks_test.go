@@ -1074,52 +1074,6 @@ func (_m *MockDefaultConnectionRequirements) EXPECT() *MockDefaultConnectionRequ
 	return &MockDefaultConnectionRequirements_Expecter{mock: &_m.Mock}
 }
 
-// GetConnection provides a mock function for the type MockDefaultConnectionRequirements
-func (_mock *MockDefaultConnectionRequirements) GetConnection() plc4go.PlcConnection {
-	ret := _mock.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetConnection")
-	}
-
-	var r0 plc4go.PlcConnection
-	if returnFunc, ok := ret.Get(0).(func() plc4go.PlcConnection); ok {
-		r0 = returnFunc()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(plc4go.PlcConnection)
-		}
-	}
-	return r0
-}
-
-// MockDefaultConnectionRequirements_GetConnection_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetConnection'
-type MockDefaultConnectionRequirements_GetConnection_Call struct {
-	*mock.Call
-}
-
-// GetConnection is a helper method to define mock.On call
-func (_e *MockDefaultConnectionRequirements_Expecter) GetConnection() *MockDefaultConnectionRequirements_GetConnection_Call {
-	return &MockDefaultConnectionRequirements_GetConnection_Call{Call: _e.mock.On("GetConnection")}
-}
-
-func (_c *MockDefaultConnectionRequirements_GetConnection_Call) Run(run func()) *MockDefaultConnectionRequirements_GetConnection_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultConnectionRequirements_GetConnection_Call) Return(plcConnection plc4go.PlcConnection) *MockDefaultConnectionRequirements_GetConnection_Call {
-	_c.Call.Return(plcConnection)
-	return _c
-}
-
-func (_c *MockDefaultConnectionRequirements_GetConnection_Call) RunAndReturn(run func() plc4go.PlcConnection) *MockDefaultConnectionRequirements_GetConnection_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // GetMessageCodec provides a mock function for the type MockDefaultConnectionRequirements
 func (_mock *MockDefaultConnectionRequirements) GetMessageCodec() spi.MessageCodec {
 	ret := _mock.Called()
@@ -1162,6 +1116,50 @@ func (_c *MockDefaultConnectionRequirements_GetMessageCodec_Call) Return(message
 }
 
 func (_c *MockDefaultConnectionRequirements_GetMessageCodec_Call) RunAndReturn(run func() spi.MessageCodec) *MockDefaultConnectionRequirements_GetMessageCodec_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// IsConnected provides a mock function for the type MockDefaultConnectionRequirements
+func (_mock *MockDefaultConnectionRequirements) IsConnected() bool {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for IsConnected")
+	}
+
+	var r0 bool
+	if returnFunc, ok := ret.Get(0).(func() bool); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+	return r0
+}
+
+// MockDefaultConnectionRequirements_IsConnected_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'IsConnected'
+type MockDefaultConnectionRequirements_IsConnected_Call struct {
+	*mock.Call
+}
+
+// IsConnected is a helper method to define mock.On call
+func (_e *MockDefaultConnectionRequirements_Expecter) IsConnected() *MockDefaultConnectionRequirements_IsConnected_Call {
+	return &MockDefaultConnectionRequirements_IsConnected_Call{Call: _e.mock.On("IsConnected")}
+}
+
+func (_c *MockDefaultConnectionRequirements_IsConnected_Call) Run(run func()) *MockDefaultConnectionRequirements_IsConnected_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockDefaultConnectionRequirements_IsConnected_Call) Return(b bool) *MockDefaultConnectionRequirements_IsConnected_Call {
+	_c.Call.Return(b)
+	return _c
+}
+
+func (_c *MockDefaultConnectionRequirements_IsConnected_Call) RunAndReturn(run func() bool) *MockDefaultConnectionRequirements_IsConnected_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -4898,6 +4896,46 @@ type MockExpectation_Expecter struct {
 
 func (_m *MockExpectation) EXPECT() *MockExpectation_Expecter {
 	return &MockExpectation_Expecter{mock: &_m.Mock}
+}
+
+// Cancel provides a mock function for the type MockExpectation
+func (_mock *MockExpectation) Cancel(cause error) {
+	_mock.Called(cause)
+	return
+}
+
+// MockExpectation_Cancel_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Cancel'
+type MockExpectation_Cancel_Call struct {
+	*mock.Call
+}
+
+// Cancel is a helper method to define mock.On call
+//   - cause error
+func (_e *MockExpectation_Expecter) Cancel(cause interface{}) *MockExpectation_Cancel_Call {
+	return &MockExpectation_Cancel_Call{Call: _e.mock.On("Cancel", cause)}
+}
+
+func (_c *MockExpectation_Cancel_Call) Run(run func(cause error)) *MockExpectation_Cancel_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 error
+		if args[0] != nil {
+			arg0 = args[0].(error)
+		}
+		run(
+			arg0,
+		)
+	})
+	return _c
+}
+
+func (_c *MockExpectation_Cancel_Call) Return() *MockExpectation_Cancel_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockExpectation_Cancel_Call) RunAndReturn(run func(cause error)) *MockExpectation_Cancel_Call {
+	_c.Run(run)
+	return _c
 }
 
 // GetAcceptsMessage provides a mock function for the type MockExpectation

@@ -30,8 +30,9 @@ import (
 )
 
 type defaultExpectation struct {
-	uuid           uuid.UUID
-	Context        context.Context
+	Uuid           uuid.UUID
+	Ctx            context.Context
+	CancelFunc     context.CancelCauseFunc
 	CreationTime   time.Time
 	Expiration     time.Time
 	AcceptsMessage spi.AcceptsMessage
@@ -40,9 +41,11 @@ type defaultExpectation struct {
 }
 
 func newDefaultExpectation(ctx context.Context, ttl time.Duration, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) *defaultExpectation {
+	ctx, cancelFunc := context.WithCancelCause(ctx)
 	return &defaultExpectation{
-		uuid:           uuid.New(),
-		Context:        ctx,
+		Uuid:           uuid.New(),
+		Ctx:            ctx,
+		CancelFunc:     cancelFunc,
 		CreationTime:   time.Now(),
 		Expiration:     time.Now().Add(ttl),
 		AcceptsMessage: acceptsMessage,
@@ -52,7 +55,11 @@ func newDefaultExpectation(ctx context.Context, ttl time.Duration, acceptsMessag
 }
 
 func (d *defaultExpectation) GetContext() context.Context {
-	return d.Context
+	return d.Ctx
+}
+
+func (d *defaultExpectation) Cancel(cause error) {
+	d.CancelFunc(cause)
 }
 
 func (d *defaultExpectation) GetCreationTime() time.Time {
@@ -76,5 +83,5 @@ func (d *defaultExpectation) GetHandleError() spi.HandleError {
 }
 
 func (d *defaultExpectation) String() string {
-	return fmt.Sprintf("Expectation %s (expires at %v in %s)", d.uuid, d.Expiration, time.Until(d.Expiration))
+	return fmt.Sprintf("Expectation %s (expires at %v in %s)", d.Uuid, d.Expiration, time.Until(d.Expiration))
 }

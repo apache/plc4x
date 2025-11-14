@@ -61,7 +61,7 @@ func NewConnection(device *Device, tagHandler spi.PlcTagHandler, valueHandler sp
 		valueHandler: valueHandler,
 		options:      connectionOptions,
 		connected:    false,
-		connectionId: utils.GenerateId(customLogger, 4),
+		connectionId: utils.GenerateId(4),
 
 		log: customLogger,
 	}

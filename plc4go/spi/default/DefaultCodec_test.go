@@ -40,7 +40,8 @@ import (
 
 func TestDefaultExpectation_GetAcceptsMessage(t *testing.T) {
 	type fields struct {
-		Context        context.Context
+		Ctx            context.Context
+		CancelFunc     context.CancelCauseFunc
 		Expiration     time.Time
 		AcceptsMessage spi.AcceptsMessage
 		HandleMessage  spi.HandleMessage
@@ -62,7 +63,8 @@ func TestDefaultExpectation_GetAcceptsMessage(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &defaultExpectation{
-				Context:        tt.fields.Context,
+				Ctx:            tt.fields.Ctx,
+				CancelFunc:     tt.fields.CancelFunc,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
 				HandleMessage:  tt.fields.HandleMessage,
@@ -75,7 +77,8 @@ func TestDefaultExpectation_GetAcceptsMessage(t *testing.T) {
 
 func TestDefaultExpectation_GetContext(t *testing.T) {
 	type fields struct {
-		Context        context.Context
+		Ctx            context.Context
+		CancelFunc     context.CancelCauseFunc
 		Expiration     time.Time
 		AcceptsMessage spi.AcceptsMessage
 		HandleMessage  spi.HandleMessage
@@ -93,7 +96,8 @@ func TestDefaultExpectation_GetContext(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &defaultExpectation{
-				Context:        tt.fields.Context,
+				Ctx:            tt.fields.Ctx,
+				CancelFunc:     tt.fields.CancelFunc,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
 				HandleMessage:  tt.fields.HandleMessage,
@@ -106,7 +110,8 @@ func TestDefaultExpectation_GetContext(t *testing.T) {
 
 func TestDefaultExpectation_GetExpiration(t *testing.T) {
 	type fields struct {
-		Context        context.Context
+		Ctx            context.Context
+		CancelFunc     context.CancelCauseFunc
 		Expiration     time.Time
 		AcceptsMessage spi.AcceptsMessage
 		HandleMessage  spi.HandleMessage
@@ -124,7 +129,8 @@ func TestDefaultExpectation_GetExpiration(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &defaultExpectation{
-				Context:        tt.fields.Context,
+				Ctx:            tt.fields.Ctx,
+				CancelFunc:     tt.fields.CancelFunc,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
 				HandleMessage:  tt.fields.HandleMessage,
@@ -137,7 +143,8 @@ func TestDefaultExpectation_GetExpiration(t *testing.T) {
 
 func TestDefaultExpectation_GetHandleError(t *testing.T) {
 	type fields struct {
-		Context        context.Context
+		Ctx            context.Context
+		CancelFunc     context.CancelCauseFunc
 		Expiration     time.Time
 		AcceptsMessage spi.AcceptsMessage
 		HandleMessage  spi.HandleMessage
@@ -159,7 +166,8 @@ func TestDefaultExpectation_GetHandleError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &defaultExpectation{
-				Context:        tt.fields.Context,
+				Ctx:            tt.fields.Ctx,
+				CancelFunc:     tt.fields.CancelFunc,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
 				HandleMessage:  tt.fields.HandleMessage,
@@ -172,7 +180,8 @@ func TestDefaultExpectation_GetHandleError(t *testing.T) {
 
 func TestDefaultExpectation_GetHandleMessage(t *testing.T) {
 	type fields struct {
-		Context        context.Context
+		Ctx            context.Context
+		CancelFunc     context.CancelCauseFunc
 		Expiration     time.Time
 		AcceptsMessage spi.AcceptsMessage
 		HandleMessage  spi.HandleMessage
@@ -194,7 +203,8 @@ func TestDefaultExpectation_GetHandleMessage(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &defaultExpectation{
-				Context:        tt.fields.Context,
+				Ctx:            tt.fields.Ctx,
+				CancelFunc:     tt.fields.CancelFunc,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
 				HandleMessage:  tt.fields.HandleMessage,
@@ -207,7 +217,8 @@ func TestDefaultExpectation_GetHandleMessage(t *testing.T) {
 
 func TestDefaultExpectation_String(t *testing.T) {
 	type fields struct {
-		Context        context.Context
+		Ctx            context.Context
+		CancelFunc     context.CancelCauseFunc
 		Expiration     time.Time
 		AcceptsMessage spi.AcceptsMessage
 		HandleMessage  spi.HandleMessage
@@ -226,7 +237,8 @@ func TestDefaultExpectation_String(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &defaultExpectation{
-				Context:        tt.fields.Context,
+				Ctx:            tt.fields.Ctx,
+				CancelFunc:     tt.fields.CancelFunc,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
 				HandleMessage:  tt.fields.HandleMessage,
@@ -613,13 +625,17 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 			fields: fields{
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // doesn't accept
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return false
 						},
 					},
 					&defaultExpectation{ // accepts but fails
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -631,7 +647,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts but fails and fails to handle the error
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -643,7 +661,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -652,7 +672,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -661,7 +683,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -670,7 +694,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // not accept
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return false
 						},
@@ -679,7 +705,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -710,13 +738,17 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 				})
 				fields.expectations = []spi.Expectation{
 					&defaultExpectation{ // doesn't accept
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return false
 						},
 					},
 					&defaultExpectation{ // accepts but fails // accept1
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -729,7 +761,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts but fails and fails to handle the error // accept2
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -742,7 +776,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts // accept3
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -752,7 +788,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts // accept4
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -762,7 +800,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // not accept // accept5
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -772,7 +812,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // not accept
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return false
 						},
@@ -781,7 +823,9 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 						},
 					},
 					&defaultExpectation{ // accepts // accept6
-						uuid: uuid.New(),
+						Uuid:       uuid.New(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -962,30 +1006,34 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 			fields: fields{
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // Expired
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
 					&defaultExpectation{ // Expired errors
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 					&defaultExpectation{ // Context error
-						Context: func() context.Context {
+						Ctx: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(t.Context())
 							cancelFunc() // Cancel it instantly
 							return ctx
 						}(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
@@ -1015,21 +1063,24 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 				})
 				fields.expectations = []spi.Expectation{
 					&defaultExpectation{ // Expired
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							handle1.Store(true)
 							return nil
 						},
 					},
 					&defaultExpectation{ // Expired errors
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							handle2.Store(true)
 							return errors.New("yep")
 						},
 					},
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							handle3.Store(true)
 							return errors.New("yep")
@@ -1037,11 +1088,12 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 					&defaultExpectation{ // Context error
-						Context: func() context.Context {
+						Ctx: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(t.Context())
 							cancelFunc() // Cancel it instantly
 							return ctx
 						}(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							handle4.Store(true)
 							return errors.New("yep")
@@ -1049,7 +1101,8 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							handle5.Store(true)
 							return errors.New("yep")
@@ -1090,6 +1143,8 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 		expectations                  []spi.Expectation
 		running                       bool
 		customMessageHandling         CustomMessageHandler
+		ctx                           context.Context
+		ctxCancel                     context.CancelFunc
 	}
 	tests := []struct {
 		name        string
@@ -1106,6 +1161,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				fields.DefaultCodecRequirements = requirements
+				fields.ctx, fields.ctxCancel = context.WithTimeout(t.Context(), 2*time.Second)
 			},
 		},
 		{
@@ -1113,30 +1169,34 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			fields: fields{
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // Expired
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
 					&defaultExpectation{ // Expired errors
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 					&defaultExpectation{ // Context error
-						Context: func() context.Context {
+						Ctx: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(t.Context())
 							cancelFunc() // Cancel it instantly
 							return ctx
 						}(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
@@ -1148,6 +1208,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive(mock.Anything).Return(nil, errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
+				fields.ctx, fields.ctxCancel = context.WithTimeout(t.Context(), 2*time.Second)
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
 				codec.running.Store(true)
@@ -1159,30 +1220,34 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			fields: fields{
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // Expired
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
 					&defaultExpectation{ // Expired errors
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 					&defaultExpectation{ // Context error
-						Context: func() context.Context {
+						Ctx: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(t.Context())
 							cancelFunc() // Cancel it instantly
 							return ctx
 						}(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
@@ -1194,6 +1259,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive(mock.Anything).Return(nil, nil)
 				fields.DefaultCodecRequirements = requirements
+				fields.ctx, fields.ctxCancel = context.WithTimeout(t.Context(), 2*time.Second)
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
 				codec.running.Store(true)
@@ -1205,30 +1271,34 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			fields: fields{
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // Expired
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
 					&defaultExpectation{ // Expired errors
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 					&defaultExpectation{ // Context error
-						Context: func() context.Context {
+						Ctx: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(t.Context())
 							cancelFunc() // Cancel it instantly
 							return ctx
 						}(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
@@ -1240,6 +1310,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
+				fields.ctx, fields.ctxCancel = context.WithTimeout(t.Context(), 2*time.Second)
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
 				codec.running.Store(true)
@@ -1252,7 +1323,8 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				defaultIncomingMessageChannel: make(chan spi.Message, 1),
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
@@ -1264,6 +1336,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
+				fields.ctx, fields.ctxCancel = context.WithTimeout(t.Context(), 2*time.Second)
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
 				codec.running.Store(true)
@@ -1275,30 +1348,34 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			fields: fields{
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // Expired
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
 					&defaultExpectation{ // Expired errors
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 					&defaultExpectation{ // Context error
-						Context: func() context.Context {
+						Ctx: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(t.Context())
 							cancelFunc() // Cancel it instantly
 							return ctx
 						}(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
@@ -1310,6 +1387,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive(mock.Anything).Return(nil, errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
+				fields.ctx, fields.ctxCancel = context.WithTimeout(t.Context(), 2*time.Second)
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
 				codec.running.Store(true)
@@ -1324,30 +1402,34 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				},
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // Expired
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
 					&defaultExpectation{ // Expired errors
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 					&defaultExpectation{ // Context error
-						Context: func() context.Context {
+						Ctx: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(t.Context())
 							cancelFunc() // Cancel it instantly
 							return ctx
 						}(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
@@ -1359,6 +1441,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
+				fields.ctx, fields.ctxCancel = context.WithTimeout(t.Context(), 2*time.Second)
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
 				codec.running.Store(true)
@@ -1373,30 +1456,34 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				},
 				expectations: []spi.Expectation{
 					&defaultExpectation{ // Expired
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
 					&defaultExpectation{ // Expired errors
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
 					&defaultExpectation{ // Fine
-						Context: t.Context(),
+						Ctx:        t.Context(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
 					&defaultExpectation{ // Context error
-						Context: func() context.Context {
+						Ctx: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(t.Context())
 							cancelFunc() // Cancel it instantly
 							return ctx
 						}(),
+						CancelFunc: func(_ error) {},
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
@@ -1408,6 +1495,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive(mock.Anything).Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
+				fields.ctx, fields.ctxCancel = context.WithTimeout(t.Context(), 2*time.Second)
 			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
 				codec.running.Store(true)
@@ -1428,9 +1516,10 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				notifyExpireWorker:            make(chan struct{}, 100),
 				notifyReceiveWorker:           make(chan struct{}, 100),
 				customMessageHandling:         tt.fields.customMessageHandling,
+				ctx:                           tt.fields.ctx,
+				ctxCancel:                     tt.fields.ctxCancel,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			m.ctx, m.ctxCancel = context.WithCancel(t.Context())
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}

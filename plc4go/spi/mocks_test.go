@@ -1010,6 +1010,46 @@ func (_m *MockExpectation) EXPECT() *MockExpectation_Expecter {
 	return &MockExpectation_Expecter{mock: &_m.Mock}
 }
 
+// Cancel provides a mock function for the type MockExpectation
+func (_mock *MockExpectation) Cancel(cause error) {
+	_mock.Called(cause)
+	return
+}
+
+// MockExpectation_Cancel_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Cancel'
+type MockExpectation_Cancel_Call struct {
+	*mock.Call
+}
+
+// Cancel is a helper method to define mock.On call
+//   - cause error
+func (_e *MockExpectation_Expecter) Cancel(cause interface{}) *MockExpectation_Cancel_Call {
+	return &MockExpectation_Cancel_Call{Call: _e.mock.On("Cancel", cause)}
+}
+
+func (_c *MockExpectation_Cancel_Call) Run(run func(cause error)) *MockExpectation_Cancel_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 error
+		if args[0] != nil {
+			arg0 = args[0].(error)
+		}
+		run(
+			arg0,
+		)
+	})
+	return _c
+}
+
+func (_c *MockExpectation_Cancel_Call) Return() *MockExpectation_Cancel_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockExpectation_Cancel_Call) RunAndReturn(run func(cause error)) *MockExpectation_Cancel_Call {
+	_c.Run(run)
+	return _c
+}
+
 // GetAcceptsMessage provides a mock function for the type MockExpectation
 func (_mock *MockExpectation) GetAcceptsMessage() AcceptsMessage {
 	ret := _mock.Called()
