@@ -21,7 +21,6 @@ package simulated
 
 import (
 	"context"
-	"runtime/debug"
 	"strconv"
 	"sync"
 	"time"
@@ -29,7 +28,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -165,53 +163,47 @@ func (c *Connection) IsConnected() bool {
 	return c.connected
 }
 
-func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ch := make(chan plc4go.PlcConnectionPingResult, 1)
-	c.wg.Go(func() {
-		defer func() {
-			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		// Check if the connection is connected
-		if !c.connected {
-			if c.tracer != nil {
-				c.tracer.AddTrace("ping", "error: not connected")
-			}
-			// Return an error to the user.
-			ch <- _default.NewDefaultPlcConnectionPingResult(errors.New("not connected"))
-			return
-		}
-		var txId string
+func (c *Connection) Ping(ctx context.Context) error {
+	// Check if the connection is connected
+	if !c.connected {
 		if c.tracer != nil {
-			txId = c.tracer.AddTransactionalStartTrace("ping", "started")
+			c.tracer.AddTrace("ping", "error: not connected")
 		}
-		if delayString, ok := c.options["pingDelay"]; ok {
-			// This is the length of the array, not the string
-			if len(delayString) == 1 {
-				delay, err := strconv.Atoi(delayString[0])
-				if err == nil {
-					time.Sleep(time.Duration(delay) * time.Millisecond)
-				}
+		return errors.New("not connected")
+	}
+	var txId string
+	if c.tracer != nil {
+		txId = c.tracer.AddTransactionalStartTrace("ping", "started")
+	}
+	if delayString, ok := c.options["pingDelay"]; ok {
+		// This is the length of the array, not the string
+		if len(delayString) == 1 {
+			delay, err := strconv.Atoi(delayString[0])
+			if err != nil {
+				return errors.Wrapf(err, "invalid delay '%s'", delayString[0])
+			}
+			timer := time.NewTimer(time.Duration(delay) * time.Millisecond)
+			c.log.Info().Msgf("Ping delay of %d ms", delay)
+			select {
+			case <-timer.C:
+			case <-ctx.Done():
+				return ctx.Err()
 			}
 		}
-		if errorString, ok := c.options["pingError"]; ok {
-			// If the ping operation should fail with an error, do so.
-			if len(errorString) == 1 {
-				ch <- _default.NewDefaultPlcConnectionPingResult(errors.New(errorString[0]))
-			}
-			if c.tracer != nil {
-				c.tracer.AddTransactionalTrace(txId, "ping", "error: "+errorString[0])
-			}
-		} else {
-			// Otherwise, give a positive response.
-			if c.tracer != nil {
-				c.tracer.AddTransactionalTrace(txId, "ping", "success")
-			}
-			ch <- _default.NewDefaultPlcConnectionPingResult(nil)
+	}
+	if errorString, ok := c.options["pingError"]; ok {
+		// If the ping operation should fail with an error, do so.
+		if c.tracer != nil {
+			c.tracer.AddTransactionalTrace(txId, "ping", "error: "+errorString[0])
 		}
-	})
-	return ch
+		return errors.New(errorString[0])
+	} else {
+		// Otherwise, give a positive response.
+		if c.tracer != nil {
+			c.tracer.AddTransactionalTrace(txId, "ping", "success")
+		}
+		return nil
+	}
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {

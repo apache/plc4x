@@ -37,7 +37,7 @@ type PlcConnection interface {
 	IsConnected() bool
 
 	// Ping Executes a no-op operation to check if the current connection is still able to communicate
-	Ping() <-chan PlcConnectionPingResult
+	Ping(ctx context.Context) error
 
 	// GetMetadata Get some metadata regarding the current connection
 	GetMetadata() model.PlcConnectionMetadata

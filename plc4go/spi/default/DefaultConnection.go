@@ -21,7 +21,6 @@ package _default
 
 import (
 	"context"
-	"runtime/debug"
 	"sync"
 	"sync/atomic"
 
@@ -159,21 +158,11 @@ func (d *defaultConnection) IsConnected() bool {
 	return d.connected.Load()
 }
 
-func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ch := make(chan plc4go.PlcConnectionPingResult, 1)
-	d.wg.Go(func() {
-		defer func() {
-			if err := recover(); err != nil {
-				ch <- NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		if d.DefaultConnectionRequirements.IsConnected() {
-			ch <- NewDefaultPlcConnectionPingResult(nil)
-		} else {
-			ch <- NewDefaultPlcConnectionPingResult(errors.New("not connected"))
-		}
-	})
-	return ch
+func (d *defaultConnection) Ping(_ context.Context) error {
+	if !d.DefaultConnectionRequirements.IsConnected() {
+		return errors.New("not connected")
+	}
+	return nil
 }
 
 func (d *defaultConnection) GetMetadata() apiModel.PlcConnectionMetadata {

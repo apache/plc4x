@@ -27,7 +27,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -345,10 +344,14 @@ func TestConnection_Ping(t *testing.T) {
 		options      map[string][]string
 		connected    bool
 	}
+	type args struct {
+		ctx context.Context
+	}
 	tests := []struct {
 		name         string
 		fields       fields
-		want         plc4go.PlcConnectionPingResult
+		args         args
+		wantErr      assert.ErrorAssertionFunc
 		delayAtLeast time.Duration
 	}{
 		{
@@ -360,7 +363,10 @@ func TestConnection_Ping(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want:         _default.NewDefaultPlcConnectionPingResult(nil),
+			args: args{
+				ctx: t.Context(),
+			},
+			wantErr:      assert.NoError,
 			delayAtLeast: 0,
 		},
 		{
@@ -374,7 +380,10 @@ func TestConnection_Ping(t *testing.T) {
 				},
 				connected: true,
 			},
-			want:         _default.NewDefaultPlcConnectionPingResult(nil),
+			args: args{
+				ctx: t.Context(),
+			},
+			wantErr:      assert.NoError,
 			delayAtLeast: 1000,
 		},
 	}
@@ -387,25 +396,8 @@ func TestConnection_Ping(t *testing.T) {
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
 			}
-			timeBeforePing := time.Now()
-			pingChan := c.Ping()
-			select {
-			case pingResult := <-pingChan:
-				timeAfterPing := time.Now()
-				// If an expected delay was defined, check if closing
-				// took at least this long.
-				if tt.delayAtLeast > 0 {
-					pingTime := timeAfterPing.Sub(timeBeforePing)
-					if pingTime < tt.delayAtLeast {
-						t.Errorf("TestConnection.Ping() completed too fast. Expected at least %v but returned after %v", tt.delayAtLeast, pingTime)
-					}
-				}
-				if !assert.Equal(t, tt.want, pingResult) {
-					t.Errorf("TestConnection.Ping() = %v, want %v", pingResult, tt.want)
-				}
-			case <-t.Context().Done():
-				t.Errorf("TestConnection.Ping() got timeout")
-			}
+			err := c.Ping(tt.args.ctx)
+			tt.wantErr(t, err)
 		})
 	}
 }

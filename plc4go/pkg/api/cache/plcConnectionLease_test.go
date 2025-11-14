@@ -263,7 +263,7 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 	// The first and second connection should work fine
 	connection, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	assert.Nil(t, err)
-	connection.Ping()
+	_ = connection.Ping(t.Context())
 	assert.NoError(t, connection.Close())
 	func() {
 		defer func() {
@@ -273,7 +273,7 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 				t.Errorf("The code did not panic")
 			}
 		}()
-		connection.Ping()
+		_ = connection.Ping(t.Context())
 	}()
 }
 

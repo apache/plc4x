@@ -292,20 +292,18 @@ func (_c *MockPlcConnection_IsConnected_Call) RunAndReturn(run func() bool) *Moc
 }
 
 // Ping provides a mock function for the type MockPlcConnection
-func (_mock *MockPlcConnection) Ping() <-chan PlcConnectionPingResult {
-	ret := _mock.Called()
+func (_mock *MockPlcConnection) Ping(ctx context.Context) error {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Ping")
 	}
 
-	var r0 <-chan PlcConnectionPingResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan PlcConnectionPingResult); ok {
-		r0 = returnFunc()
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = returnFunc(ctx)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan PlcConnectionPingResult)
-		}
+		r0 = ret.Error(0)
 	}
 	return r0
 }
@@ -316,23 +314,30 @@ type MockPlcConnection_Ping_Call struct {
 }
 
 // Ping is a helper method to define mock.On call
-func (_e *MockPlcConnection_Expecter) Ping() *MockPlcConnection_Ping_Call {
-	return &MockPlcConnection_Ping_Call{Call: _e.mock.On("Ping")}
+//   - ctx context.Context
+func (_e *MockPlcConnection_Expecter) Ping(ctx interface{}) *MockPlcConnection_Ping_Call {
+	return &MockPlcConnection_Ping_Call{Call: _e.mock.On("Ping", ctx)}
 }
 
-func (_c *MockPlcConnection_Ping_Call) Run(run func()) *MockPlcConnection_Ping_Call {
+func (_c *MockPlcConnection_Ping_Call) Run(run func(ctx context.Context)) *MockPlcConnection_Ping_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
 
-func (_c *MockPlcConnection_Ping_Call) Return(plcConnectionPingResultCh <-chan PlcConnectionPingResult) *MockPlcConnection_Ping_Call {
-	_c.Call.Return(plcConnectionPingResultCh)
+func (_c *MockPlcConnection_Ping_Call) Return(err error) *MockPlcConnection_Ping_Call {
+	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockPlcConnection_Ping_Call) RunAndReturn(run func() <-chan PlcConnectionPingResult) *MockPlcConnection_Ping_Call {
+func (_c *MockPlcConnection_Ping_Call) RunAndReturn(run func(ctx context.Context) error) *MockPlcConnection_Ping_Call {
 	_c.Call.Return(run)
 	return _c
 }

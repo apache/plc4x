@@ -24,7 +24,8 @@ import (
 	"fmt"
 	"time"
 
-	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
@@ -87,25 +88,15 @@ func (t *plcConnectionLease) Close() error {
 	}
 
 	// Check if the connection is still alive, if it is, put it back into the cache
-	pingResults := t.Ping()
-	pingTimeout := time.NewTimer(5 * time.Second)
 	newState := StateIdle
-	select {
-	case pingResult := <-pingResults:
-		{
-			if pingResult.GetErr() != nil {
-				newState = StateInvalid
-			}
-		}
-	case <-pingTimeout.C:
-		{
+	if err := t.Ping(ctx); err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
 			// Add some trace information
 			if t.connection.IsTraceEnabled() {
 				t.connection.GetTracer().AddTrace("ping", "timeout")
 			}
-			// Mark the connection as broken ...
-			newState = StateInvalid
 		}
+		newState = StateInvalid
 	}
 
 	// Extract the trace entries from the connection.
@@ -139,11 +130,11 @@ func (t *plcConnectionLease) IsConnected() bool {
 	return t.connection.IsConnected()
 }
 
-func (t *plcConnectionLease) Ping() <-chan plc4go.PlcConnectionPingResult {
+func (t *plcConnectionLease) Ping(ctx context.Context) error {
 	if t.connection == nil {
 		panic("Called 'Ping' on a closed cached connection")
 	}
-	return t.connection.Ping()
+	return t.connection.Ping(ctx)
 }
 
 func (t *plcConnectionLease) GetMetadata() apiModel.PlcConnectionMetadata {

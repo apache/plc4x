@@ -21,14 +21,12 @@ package _default
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -211,27 +209,6 @@ func TestNewDefaultConnection(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.want, NewDefaultConnection(tt.args.requirements, tt.args.options...), "NewDefaultConnection(%v, %v)", tt.args.requirements, tt.args.options)
-		})
-	}
-}
-
-func TestNewDefaultPlcConnectionPingResult(t *testing.T) {
-	type args struct {
-		err error
-	}
-	tests := []struct {
-		name string
-		args args
-		want plc4go.PlcConnectionPingResult
-	}{
-		{
-			name: "create it",
-			want: &defaultPlcConnectionPingResult{},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewDefaultPlcConnectionPingResult(tt.args.err), "NewDefaultPlcConnectionPingResult(%v)", tt.args.err)
 		})
 	}
 }
@@ -608,15 +585,22 @@ func Test_defaultConnection_Ping(t *testing.T) {
 		tagHandler                    spi.PlcTagHandler
 		valueHandler                  spi.PlcValueHandler
 	}
+	type args struct {
+		ctx context.Context
+	}
 	tests := []struct {
-		name         string
-		fields       fields
-		setup        func(t *testing.T, fields *fields)
-		connected    bool
-		wantAsserter func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool
+		name      string
+		fields    fields
+		args      args
+		setup     func(t *testing.T, fields *fields)
+		connected bool
+		wantErr   assert.ErrorAssertionFunc
 	}{
 		{
 			name: "ping it",
+			args: args{
+				ctx: t.Context(),
+			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultConnectionRequirements(t)
 				{
@@ -624,18 +608,13 @@ func Test_defaultConnection_Ping(t *testing.T) {
 				}
 				fields.DefaultConnectionRequirements = requirements
 			},
-			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool {
-				select {
-				case <-t.Context().Done():
-					t.Error("timeout")
-				case result := <-results:
-					assert.NotNil(t, result.GetErr())
-				}
-				return true
-			},
+			wantErr: assert.Error,
 		},
 		{
 			name: "ping it connected",
+			args: args{
+				ctx: t.Context(),
+			},
 			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultConnectionRequirements(t)
 				{
@@ -644,15 +623,7 @@ func Test_defaultConnection_Ping(t *testing.T) {
 				fields.DefaultConnectionRequirements = requirements
 			},
 			connected: true,
-			wantAsserter: func(t *testing.T, results <-chan plc4go.PlcConnectionPingResult) bool {
-				select {
-				case <-t.Context().Done():
-					t.Error("timeout")
-				case result := <-results:
-					assert.Nil(t, result.GetErr())
-				}
-				return true
-			},
+			wantErr:   assert.NoError,
 		},
 	}
 	for _, tt := range tests {
@@ -668,7 +639,7 @@ func Test_defaultConnection_Ping(t *testing.T) {
 			if tt.connected {
 				d.connected.Store(true)
 			}
-			assert.Truef(t, tt.wantAsserter(t, d.Ping()), "Ping()")
+			assert.Truef(t, tt.wantErr(t, d.Ping(tt.args.ctx)), "Ping()")
 		})
 	}
 }
@@ -835,30 +806,6 @@ func Test_defaultConnection_WriteRequestBuilder(t *testing.T) {
 				valueHandler:                  tt.fields.valueHandler,
 			}
 			assert.Equalf(t, tt.want, d.WriteRequestBuilder(), "WriteRequestBuilder()")
-		})
-	}
-}
-
-func Test_plcConnectionPingResult_GetErr(t *testing.T) {
-	type fields struct {
-		err error
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		wantErr assert.ErrorAssertionFunc
-	}{
-		{
-			name:    "get it",
-			wantErr: assert.NoError,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			d := &defaultPlcConnectionPingResult{
-				err: tt.fields.err,
-			}
-			tt.wantErr(t, d.GetErr(), fmt.Sprintf("GetErr()"))
 		})
 	}
 }

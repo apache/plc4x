@@ -704,20 +704,18 @@ func (_c *mocktracedPlcConnection_IsTraceEnabled_Call) RunAndReturn(run func() b
 }
 
 // Ping provides a mock function for the type mocktracedPlcConnection
-func (_mock *mocktracedPlcConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ret := _mock.Called()
+func (_mock *mocktracedPlcConnection) Ping(ctx context.Context) error {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Ping")
 	}
 
-	var r0 <-chan plc4go.PlcConnectionPingResult
-	if returnFunc, ok := ret.Get(0).(func() <-chan plc4go.PlcConnectionPingResult); ok {
-		r0 = returnFunc()
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = returnFunc(ctx)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan plc4go.PlcConnectionPingResult)
-		}
+		r0 = ret.Error(0)
 	}
 	return r0
 }
@@ -728,23 +726,30 @@ type mocktracedPlcConnection_Ping_Call struct {
 }
 
 // Ping is a helper method to define mock.On call
-func (_e *mocktracedPlcConnection_Expecter) Ping() *mocktracedPlcConnection_Ping_Call {
-	return &mocktracedPlcConnection_Ping_Call{Call: _e.mock.On("Ping")}
+//   - ctx context.Context
+func (_e *mocktracedPlcConnection_Expecter) Ping(ctx interface{}) *mocktracedPlcConnection_Ping_Call {
+	return &mocktracedPlcConnection_Ping_Call{Call: _e.mock.On("Ping", ctx)}
 }
 
-func (_c *mocktracedPlcConnection_Ping_Call) Run(run func()) *mocktracedPlcConnection_Ping_Call {
+func (_c *mocktracedPlcConnection_Ping_Call) Run(run func(ctx context.Context)) *mocktracedPlcConnection_Ping_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
 
-func (_c *mocktracedPlcConnection_Ping_Call) Return(plcConnectionPingResultCh <-chan plc4go.PlcConnectionPingResult) *mocktracedPlcConnection_Ping_Call {
-	_c.Call.Return(plcConnectionPingResultCh)
+func (_c *mocktracedPlcConnection_Ping_Call) Return(err error) *mocktracedPlcConnection_Ping_Call {
+	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *mocktracedPlcConnection_Ping_Call) RunAndReturn(run func() <-chan plc4go.PlcConnectionPingResult) *mocktracedPlcConnection_Ping_Call {
+func (_c *mocktracedPlcConnection_Ping_Call) RunAndReturn(run func(ctx context.Context) error) *mocktracedPlcConnection_Ping_Call {
 	_c.Call.Return(run)
 	return _c
 }

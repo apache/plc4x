@@ -34,12 +34,10 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -407,39 +405,22 @@ func (m *Connection) IsConnected() bool {
 	defer cancelFunc()
 
 	if m.messageCodec != nil {
-		pingChannel := m.Ping()
-		select {
-		case pingResponse := <-pingChannel:
-			return pingResponse.GetErr() == nil
-		case <-ctx.Done():
-			m.handleTimeout()
+		if err := m.Ping(ctx); err != nil {
+			if errors.Is(err, context.DeadlineExceeded) {
+				m.handleTimeout()
+			}
 			return false
 		}
 	}
 	return false
 }
 
-func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ctx := context.TODO()
-	result := make(chan plc4go.PlcConnectionPingResult, 1)
-
-	m.wg.Go(func() {
-		defer func() {
-			if err := recover(); err != nil {
-				result <- _default.NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		// Send the connection state request
-		_, err := m.sendConnectionStateRequest(ctx)
-		if err != nil {
-			result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got an error"))
-		} else {
-			result <- _default.NewDefaultPlcConnectionPingResult(nil)
-		}
-		return
-	})
-
-	return result
+func (m *Connection) Ping(ctx context.Context) error {
+	// Send the connection state request
+	if _, err := m.sendConnectionStateRequest(ctx); err != nil {
+		return errors.Wrap(err, "got an error")
+	}
+	return nil
 }
 
 func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {

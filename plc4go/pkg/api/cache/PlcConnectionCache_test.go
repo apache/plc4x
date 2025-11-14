@@ -20,6 +20,8 @@
 package cache
 
 import (
+	"context"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -182,7 +184,7 @@ func TestPlcConnectionCache_Close(t *testing.T) {
 	}
 }
 
-func readFromPlc(t *testing.T, c *plcConnectionCache, preConnectJob func(), connectionString string, resourceString string) <-chan []tracer.TraceEntry {
+func readFromPlc(t *testing.T, ctx context.Context, c *plcConnectionCache, preConnectJob func(), connectionString string, resourceString string) <-chan []tracer.TraceEntry {
 	t.Helper()
 	t.Log("readFromPlc")
 	t.Log("Creating tracer channel")
@@ -194,7 +196,7 @@ func readFromPlc(t *testing.T, c *plcConnectionCache, preConnectJob func(), conn
 	}
 	t.Log("Getting connection from cache")
 	// Get a connection
-	connection, err := c.GetConnection(t.Context(), connectionString)
+	connection, err := c.GetConnection(ctx, connectionString)
 	if err != nil {
 		t.Errorf("PlcConnectionCache.GetConnection() error = %v", err)
 		return nil
@@ -205,7 +207,8 @@ func readFromPlc(t *testing.T, c *plcConnectionCache, preConnectJob func(), conn
 		if err := connection.Close(); err != nil {
 			t.Log("Error closing connection", err)
 		}
-		tracerChan <- connection.(interface{ GetLastTraces() []tracer.TraceEntry }).GetLastTraces()
+		leasedConnection := connection.(*plcConnectionLease)
+		tracerChan <- leasedConnection.GetLastTraces()
 		t.Log("Closed connection")
 	}()
 
@@ -219,7 +222,7 @@ func readFromPlc(t *testing.T, c *plcConnectionCache, preConnectJob func(), conn
 
 	// Execute the read request.
 	t.Log("Executing read request")
-	execution := readRequest.Execute(t.Context())
+	execution := readRequest.Execute(ctx)
 	select {
 	case readRequestResult := <-execution:
 		err := readRequestResult.GetErr()
@@ -232,7 +235,7 @@ func readFromPlc(t *testing.T, c *plcConnectionCache, preConnectJob func(), conn
 	return tracerChan
 }
 
-func executeAndTestReadFromPlc(t *testing.T, c *plcConnectionCache, preConnectJob func(), connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan struct{} {
+func executeAndTestReadFromPlc(t *testing.T, ctx context.Context, c *plcConnectionCache, preConnectJob func(), connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan struct{} {
 	t.Helper()
 	ch := make(chan struct{}, 1)
 	c.wg.Go(func() {
@@ -241,26 +244,31 @@ func executeAndTestReadFromPlc(t *testing.T, c *plcConnectionCache, preConnectJo
 		t.Log("Reading from the cache")
 		var traces []tracer.TraceEntry
 		select {
-		case traces = <-readFromPlc(t, c, preConnectJob, connectionString, resourceString):
+		case traces = <-readFromPlc(t, ctx, c, preConnectJob, connectionString, resourceString):
+		case <-ctx.Done():
+			t.Log("Context done", t.Context().Err())
+			ch <- struct{}{}
+			return
 		case <-t.Context().Done():
 			t.Log("Context done", t.Context().Err())
+			ch <- struct{}{}
 			return
 		}
 
 		t.Log("Finished reading from the cache")
 
-		// In the log we should see one "Successfully connected" entry.
-		if len(traces) != len(expectedTraceEntries) {
-			t.Errorf("Expected %d 'Successfully connected' entries in the log but got %d", len(expectedTraceEntries), len(traces))
-			ch <- struct{}{}
-			return
-		}
 		t.Log("Checking trace entries")
-		for i, expectedTraceEntry := range expectedTraceEntries {
-			currentTraceEntry := traces[i].Operation + "-" + traces[i].Message
-			if expectedTraceEntry != currentTraceEntry {
-				t.Errorf("Expected %s as trace entry but got %s", expectedTraceEntry, currentTraceEntry)
+		t.Log("actual, expected")
+		for i := 0; i < max(len(traces), len(expectedTraceEntries)); i++ {
+			actual, expected := "\t\t\t\t\t", "\t\t\t\t\t"
+			if i < len(traces)-1 {
+				actual = fmt.Sprintf("%s-%s", traces[i].Operation, traces[i].Message)
 			}
+			if i < len(expectedTraceEntries)-1 {
+				expected = fmt.Sprintf("%v", expectedTraceEntries[i])
+			}
+			t.Logf("%s\t\t%s", actual, expected)
+			assert.Equal(t, actual, expected)
 		}
 		t.Log("Trace entries are as expected")
 		t.Log("Checking number of connections in the cache")
@@ -299,6 +307,7 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 	// Read once from the cache.
 	finishedChan := executeAndTestReadFromPlc(
 		t,
+		t.Context(),
 		cache,
 		nil,
 		"simulated://1.2.3.4:42?traceEnabled=true",
@@ -322,6 +331,7 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 	// Request the same connection for a second time.
 	finishedChan = executeAndTestReadFromPlc(
 		t,
+		t.Context(),
 		cache,
 		nil,
 		"simulated://1.2.3.4:42?traceEnabled=true",
@@ -381,6 +391,7 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 	// Read once from the cache.
 	firstRun := executeAndTestReadFromPlc(
 		t,
+		t.Context(),
 		cache,
 		func() {
 			floodGate.RLock()
@@ -405,6 +416,7 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 	// to wait for the first operation to be finished first.
 	secondRun := executeAndTestReadFromPlc(
 		t,
+		t.Context(),
 		cache,
 		func() {
 			floodGate.RLock()
@@ -511,10 +523,7 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 	// In the connection string, we tell the driver to return an error with
 	// the given message on executing a ping operation.
 	conn, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?pingError=hurz&traceEnabled=true")
-	if err != nil {
-		t.Errorf("PlcConnectionCache.GetConnection() error = %v", err)
-		t.FailNow()
-	}
+	require.NoError(t, err, "Error getting connection from cache: %s", err)
 	connection := conn.(*plcConnectionLease)
 	if err := connection.Close(); err != nil {
 		traces := connection.GetLastTraces()
@@ -559,9 +568,13 @@ func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 		t.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
+	ctx, cancelFunc := context.WithTimeout(t.Context(), 100*time.Millisecond)
+	t.Cleanup(cancelFunc)
+
 	// Read once from the cache.
 	firstRun := executeAndTestReadFromPlc(
 		t,
+		ctx,
 		cache,
 		nil,
 		"simulated://1.2.3.4:42?pingDelay=10000&traceEnabled=true",
@@ -581,7 +594,7 @@ func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 	case <-time.After(20 * time.Second * time.Duration(debugTimeout)):
 		t.Errorf("Timeout")
 	}
-
+	t.Log("done")
 }
 
 // In this test there are multiple requests for the same connection but the first operation fails at returning
@@ -609,9 +622,13 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 		t.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
+	ctx, cancelFunc := context.WithTimeout(t.Context(), 10*time.Second)
+	t.Cleanup(cancelFunc)
+
 	// Read once from the cache.
 	firstRun := executeAndTestReadFromPlc(
 		t,
+		ctx,
 		cache,
 		nil,
 		"simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true",
@@ -627,12 +644,16 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 
 	time.Sleep(time.Millisecond * 1)
 
+	ctx, cancelFunc = context.WithTimeout(t.Context(), 10*time.Second)
+	t.Cleanup(cancelFunc)
+
 	// Almost instantly request the same connection for a second time.
 	// As the connection takes 100ms, the second connection request will come
 	// in while the first is still not finished. So in theory it would have
 	// to wait for the first operation to be finished first.
 	secondRun := executeAndTestReadFromPlc(
 		t,
+		ctx,
 		cache,
 		nil,
 		"simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true",
@@ -654,13 +675,12 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 		case <-time.After(20 * time.Second * time.Duration(debugTimeout)):
 			t.Errorf("Timeout")
 		}
-		break
 	case <-time.After(30 * time.Second * time.Duration(debugTimeout)):
 		t.Errorf("Timeout")
 	}
 
 	// This should be quite equal to the serial case as the connections are requested serially.
-	assert.NotNil(t, cache.GetTracer(), "Tracer should be available")
+	require.NotNil(t, cache.GetTracer(), "Tracer should be available")
 	traces := cache.GetTracer().GetTraces()
 	require.Equal(t, 5, len(traces), "Unexpected number of trace entries")
 	// First is needs to create a new container for this connection
