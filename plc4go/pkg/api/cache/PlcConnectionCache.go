@@ -37,7 +37,7 @@ import (
 
 type PlcConnectionCache interface {
 	GetConnection(ctx context.Context, connectionString string) (plc4go.PlcConnection, error)
-	Close() <-chan PlcConnectionCacheCloseResult
+	Close() error
 }
 
 func NewPlcConnectionCache(driverManager plc4go.PlcDriverManager, withConnectionCacheOptions ...WithConnectionCacheOption) PlcConnectionCache {
@@ -177,7 +177,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 	if c.tracer != nil {
 		txId = c.tracer.AddTransactionalStartTrace("get-connection", "lease")
 	}
-	connChan, errChan := connection.lease()
+	connChan, errChan := connection.lease(ctx)
 	maximumWaitTimeout := time.NewTimer(c.maxWaitTime)
 	select {
 	case <-ctx.Done(): // abort on context cancel
@@ -216,71 +216,58 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 	}
 }
 
-func (c *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
+func (c *plcConnectionCache) Close() error {
 	c.log.Debug().Msg("Closing connection cache started.")
-	ch := make(chan PlcConnectionCacheCloseResult, 1)
+	c.log.Trace().Msg("Acquire lock")
+	c.cacheLock.Lock()
+	defer c.cacheLock.Unlock()
+	c.log.Trace().Msg("lock acquired")
 
-	c.wg.Go(func() {
-		c.log.Trace().Msg("Acquire lock")
-		c.cacheLock.Lock()
-		defer c.cacheLock.Unlock()
-		c.log.Trace().Msg("lock acquired")
+	if len(c.connections) == 0 {
+		c.log.Debug().Msg("Closing connection cache finished.")
+		return nil
+	}
 
-		if len(c.connections) == 0 {
-			select {
-			case ch <- newDefaultPlcConnectionCacheCloseResult(c, nil):
-			default:
-				c.log.Trace().Msg("Channel full, dropping response")
+	for _, connectionContainer := range c.connections {
+		ccLog := c.log.With().Stringer("connectionContainer", connectionContainer).Logger()
+		ccLog.Trace().Msg("Closing connection")
+		// Mark the connection as being closed to not try to re-establish it.
+		connectionContainer.closed = true
+		// Try to get a lease as this way we kow we're not closing the connection
+		// while some go func is still using it.
+		ccLog.Trace().Msg("getting a lease")
+		ctx, cancel := context.WithTimeout(context.TODO(), c.maxWaitTime)
+		connChan, errChan := connectionContainer.lease(ctx)
+		select {
+		// We're just getting the lease as this way we can be sure nobody else is using it.
+		// We also really don't care if it worked, or not ... it's just an attempt of being
+		// nice.
+		case _ = <-connChan:
+			ccLog.Debug().Msg("Gracefully closing connection ...")
+			// Give back the connection.
+			if connectionContainer.connection != nil {
+				ccLog.Trace().Msg("closing actual connection")
+				if err := connectionContainer.connection.Close(); err != nil {
+					ccLog.Debug().Err(err).Msg("Error while closing connection")
+				}
 			}
-			c.log.Debug().Msg("Closing connection cache finished.")
-			return
-		}
-
-		for _, connectionContainer := range c.connections {
-			ccLog := c.log.With().Stringer("connectionContainer", connectionContainer).Logger()
-			ccLog.Trace().Msg("Closing connection")
-			// Mark the connection as being closed to not try to re-establish it.
-			connectionContainer.closed = true
-			// Try to get a lease as this way we kow we're not closing the connection
-			// while some go func is still using it.
-			c.wg.Go(func() {
-				ccLog.Trace().Msg("getting a lease")
-				connChan, errChan := connectionContainer.lease()
-				closeTimeout := time.NewTimer(c.maxWaitTime)
-				select {
-				// We're just getting the lease as this way we can be sure nobody else is using it.
-				// We also really don't care if it worked, or not ... it's just an attempt of being
-				// nice.
-				case _ = <-connChan:
-					ccLog.Debug().Msg("Gracefully closing connection ...")
-					// Give back the connection.
-					if connectionContainer.connection != nil {
-						ccLog.Trace().Msg("closing actual connection")
-						connectionContainer.connection.Close()
-					}
-				case err := <-errChan:
-					ccLog.Debug().Err(err).Msg("Error while trying to get lease on connection, ignoring.")
-				// If we're timing out brutally kill the connection.
-				case <-closeTimeout.C:
-					ccLog.Debug().Msg("Forcefully closing connection ...")
-					// Forcefully close this connection.
-					if connectionContainer.connection != nil {
-						connectionContainer.connection.Close()
-					}
+		case err := <-errChan:
+			ccLog.Debug().Err(err).Msg("Error while trying to get lease on connection, ignoring.")
+		// If we're timing out brutally kill the connection.
+		case <-ctx.Done():
+			ccLog.Debug().Msg("Forcefully closing connection ...")
+			// Forcefully close this connection.
+			if connectionContainer.connection != nil {
+				if err := connectionContainer.connection.Close(); err != nil {
+					ccLog.Debug().Err(err).Msg("Error while closing connection")
 				}
-
-				c.log.Trace().Msg("Writing response")
-				select {
-				case ch <- newDefaultPlcConnectionCacheCloseResult(c, nil):
-				default:
-					c.log.Trace().Msg("Channel full, dropping response")
-				}
-				c.log.Debug().Msg("Closing connection cache finished.")
-			})
+			}
 		}
-	})
+		cancel()
 
-	return ch
+		c.log.Debug().Msg("Closing connection cache finished.")
+	}
+	return nil
 }
 
 func (c *plcConnectionCache) String() string {

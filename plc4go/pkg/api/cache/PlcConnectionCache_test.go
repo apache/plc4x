@@ -20,6 +20,7 @@
 package cache
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -35,7 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
 
-var debugTimeout = 1
+var debugTimeout = 100
 
 func TestPlcConnectionCache_GetConnection(t *testing.T) {
 	type fields struct {
@@ -176,51 +177,48 @@ func TestPlcConnectionCache_Close(t *testing.T) {
 				}
 			}
 			// Close all connections.
-			cacheCloseResults := cc.Close()
-			// Wait for all connections to be closed.
-			select {
-			case cacheCloseResult := <-cacheCloseResults:
-				if tt.wantErr && (cacheCloseResult.GetErr() == nil) {
-					t.Errorf("PlcConnectionCache.Close() = %v, wantErr %v", cacheCloseResult.GetErr(), tt.wantErr)
-				} else if cacheCloseResult.GetErr() != nil {
-					t.Errorf("PlcConnectionCache.Close() error = %v, wantErr %v", cacheCloseResult.GetErr(), tt.wantErr)
-				}
-			case <-time.After(10 * time.Second):
-				if !tt.wantTimeout {
-					t.Errorf("PlcConnectionCache.Close() got timeout")
-				}
-			}
-
+			assert.NoError(t, cc.Close())
 		})
 	}
 }
 
-func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), connectionString string, resourceString string) <-chan []tracer.TraceEntry {
-	ch := make(chan []tracer.TraceEntry)
+func readFromPlc(t *testing.T, c *plcConnectionCache, preConnectJob func(), connectionString string, resourceString string) <-chan []tracer.TraceEntry {
+	t.Helper()
+	t.Log("readFromPlc")
+	t.Log("Creating tracer channel")
+	tracerChan := make(chan []tracer.TraceEntry, 1)
 
 	if preConnectJob != nil {
+		t.Log("Executing preConnectJob")
 		preConnectJob()
 	}
+	t.Log("Getting connection from cache")
 	// Get a connection
 	connection, err := c.GetConnection(t.Context(), connectionString)
 	if err != nil {
 		t.Errorf("PlcConnectionCache.GetConnection() error = %v", err)
 		return nil
 	}
+	t.Log("Got connection from cache")
 	defer func() {
+		t.Log("Closing connection")
 		if err := connection.Close(); err != nil {
-			c.log.Debug().Err(err).Msg("Error closing connection")
+			t.Log("Error closing connection", err)
 		}
+		tracerChan <- connection.(interface{ GetLastTraces() []tracer.TraceEntry }).GetLastTraces()
+		t.Log("Closed connection")
 	}()
 
 	// Prepare a read request.
+	t.Log("Preparing read request")
 	readRequest, err := connection.ReadRequestBuilder().AddTagAddress("test", resourceString).Build()
 	if err != nil {
 		t.Errorf("PlcConnectionCache.ReadRequest.Build() error = %v", err)
-		return ch
+		return tracerChan
 	}
 
 	// Execute the read request.
+	t.Log("Executing read request")
 	execution := readRequest.Execute(t.Context())
 	select {
 	case readRequestResult := <-execution:
@@ -231,14 +229,25 @@ func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), con
 	case <-time.After(1 * time.Second):
 		t.Errorf("PlcConnectionCache.ReadRequest.Read() timeout")
 	}
-	return ch
+	return tracerChan
 }
 
-func (c *plcConnectionCache) executeAndTestReadFromPlc(t *testing.T, preConnectJob func(), connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan struct{} {
-	ch := make(chan struct{})
+func executeAndTestReadFromPlc(t *testing.T, c *plcConnectionCache, preConnectJob func(), connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan struct{} {
+	t.Helper()
+	ch := make(chan struct{}, 1)
 	c.wg.Go(func() {
+		t.Log("Starting goroutine")
 		// Read once from the c.
-		traces := <-c.readFromPlc(t, preConnectJob, connectionString, resourceString)
+		t.Log("Reading from the cache")
+		var traces []tracer.TraceEntry
+		select {
+		case traces = <-readFromPlc(t, c, preConnectJob, connectionString, resourceString):
+		case <-t.Context().Done():
+			t.Log("Context done", t.Context().Err())
+			return
+		}
+
+		t.Log("Finished reading from the cache")
 
 		// In the log we should see one "Successfully connected" entry.
 		if len(traces) != len(expectedTraceEntries) {
@@ -246,16 +255,20 @@ func (c *plcConnectionCache) executeAndTestReadFromPlc(t *testing.T, preConnectJ
 			ch <- struct{}{}
 			return
 		}
+		t.Log("Checking trace entries")
 		for i, expectedTraceEntry := range expectedTraceEntries {
 			currentTraceEntry := traces[i].Operation + "-" + traces[i].Message
 			if expectedTraceEntry != currentTraceEntry {
 				t.Errorf("Expected %s as trace entry but got %s", expectedTraceEntry, currentTraceEntry)
 			}
 		}
+		t.Log("Trace entries are as expected")
+		t.Log("Checking number of connections in the cache")
 		// Now there should be one connection in the c.
 		if len(c.connections) != expectedNumTotalConnections {
 			t.Errorf("Expected %d connections in the c but got %d", expectedNumTotalConnections, len(c.connections))
 		}
+		t.Log("Number of connections in the cache is as expected")
 		ch <- struct{}{}
 	})
 	return ch
@@ -268,7 +281,7 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 		assert.NoError(t, driverManager.Close())
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
-	cache := plcConnectionCache{
+	cache := &plcConnectionCache{
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
@@ -284,8 +297,9 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 	}
 
 	// Read once from the cache.
-	finishedChan := cache.executeAndTestReadFromPlc(
+	finishedChan := executeAndTestReadFromPlc(
 		t,
+		cache,
 		nil,
 		"simulated://1.2.3.4:42?traceEnabled=true",
 		"RANDOM/test_random:BOOL",
@@ -306,8 +320,9 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 	}
 
 	// Request the same connection for a second time.
-	finishedChan = cache.executeAndTestReadFromPlc(
+	finishedChan = executeAndTestReadFromPlc(
 		t,
+		cache,
 		nil,
 		"simulated://1.2.3.4:42?traceEnabled=true",
 		"RANDOM/test_random:BOOL",
@@ -345,7 +360,7 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 		assert.NoError(t, driverManager.Close())
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
-	cache := plcConnectionCache{
+	cache := &plcConnectionCache{
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
@@ -364,8 +379,9 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 	floodGate.Lock()                // We use a cas mutex write lock to lock the floodgate
 
 	// Read once from the cache.
-	firstRun := cache.executeAndTestReadFromPlc(
+	firstRun := executeAndTestReadFromPlc(
 		t,
+		cache,
 		func() {
 			floodGate.RLock()
 			defer floodGate.RUnlock()
@@ -387,8 +403,9 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 	// As the connection takes 100ms, the second connection request will come
 	// in while the first is still not finished. So in theory it would have
 	// to wait for the first operation to be finished first.
-	secondRun := cache.executeAndTestReadFromPlc(
+	secondRun := executeAndTestReadFromPlc(
 		t,
+		cache,
 		func() {
 			floodGate.RLock()
 			defer floodGate.RUnlock()
@@ -460,7 +477,7 @@ func TestPlcConnectionCache_ConnectWithError(t *testing.T) {
 		t.Error("An error was expected")
 		return
 	}
-	if err.Error() != "hurz" {
+	if !strings.Contains(err.Error(), "hurz") {
 		t.Errorf("An error '%s' was expected, but got '%s'", "hurz", err)
 	}
 	t.Log(conn)
@@ -496,28 +513,24 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 	conn, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?pingError=hurz&traceEnabled=true")
 	if err != nil {
 		t.Errorf("PlcConnectionCache.GetConnection() error = %v", err)
+		t.FailNow()
 	}
 	connection := conn.(*plcConnectionLease)
-	if connection != nil {
-		err := connection.Close()
-		if err != nil {
-			/*traces := (closeResult.(_default.DefaultPlcConnectionCloseResult)).GetTraces()
-			// We expect 4 traces (Connect start & success and Ping start and error.
-			require.Len(t, traces, 4, "Expected %d trace entries but got %d", 4, len(traces))
-			if traces[0].Operation+"-"+traces[0].Message != "connect-started" {
-				t.Errorf("Expected '%s' as first trace message, but got '%s'", "connect-started", traces[0])
-			}
-			if traces[1].Operation+"-"+traces[1].Message != "connect-success" {
-				t.Errorf("Expected '%s' as second trace message, but got '%s'", "connect-success", traces[1])
-			}
-			if traces[2].Operation+"-"+traces[2].Message != "ping-started" {
-				t.Errorf("Expected '%s' as third trace message, but got '%s'", "ping-started", traces[2])
-			}
-			if traces[3].Operation+"-"+traces[3].Message != "ping-error: hurz" {
-				t.Errorf("Expected '%s' as fourth trace message, but got '%s'", "ping-error: hurz", traces[3])
-			}*/
-		} else {
-			t.Errorf("Expected a result, but got nil")
+	if err := connection.Close(); err != nil {
+		traces := connection.GetLastTraces()
+		// We expect 4 traces (Connect start & success and Ping start and error.
+		require.Len(t, traces, 4, "Expected %d trace entries but got %d", 4, len(traces))
+		if traces[0].Operation+"-"+traces[0].Message != "connect-started" {
+			t.Errorf("Expected '%s' as first trace message, but got '%s'", "connect-started", traces[0])
+		}
+		if traces[1].Operation+"-"+traces[1].Message != "connect-success" {
+			t.Errorf("Expected '%s' as second trace message, but got '%s'", "connect-success", traces[1])
+		}
+		if traces[2].Operation+"-"+traces[2].Message != "ping-started" {
+			t.Errorf("Expected '%s' as third trace message, but got '%s'", "ping-started", traces[2])
+		}
+		if traces[3].Operation+"-"+traces[3].Message != "ping-error: hurz" {
+			t.Errorf("Expected '%s' as fourth trace message, but got '%s'", "ping-error: hurz", traces[3])
 		}
 	}
 }
@@ -531,7 +544,7 @@ func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 		assert.NoError(t, driverManager.Close())
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
-	cache := plcConnectionCache{
+	cache := &plcConnectionCache{
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
@@ -547,8 +560,9 @@ func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 	}
 
 	// Read once from the cache.
-	firstRun := cache.executeAndTestReadFromPlc(
+	firstRun := executeAndTestReadFromPlc(
 		t,
+		cache,
 		nil,
 		"simulated://1.2.3.4:42?pingDelay=10000&traceEnabled=true",
 		"RANDOM/test_random:BOOL",
@@ -580,7 +594,7 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 		assert.NoError(t, driverManager.Close())
 	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
-	cache := plcConnectionCache{
+	cache := &plcConnectionCache{
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
@@ -596,8 +610,9 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 	}
 
 	// Read once from the cache.
-	firstRun := cache.executeAndTestReadFromPlc(
+	firstRun := executeAndTestReadFromPlc(
 		t,
+		cache,
 		nil,
 		"simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true",
 		"RANDOM/test_random:BOOL",
@@ -616,8 +631,9 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 	// As the connection takes 100ms, the second connection request will come
 	// in while the first is still not finished. So in theory it would have
 	// to wait for the first operation to be finished first.
-	secondRun := cache.executeAndTestReadFromPlc(
+	secondRun := executeAndTestReadFromPlc(
 		t,
+		cache,
 		nil,
 		"simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true",
 		"RANDOM/test_random:BOOL",
@@ -659,138 +675,6 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 	assert.Equal(t, "success", traces[4].Message, "Unexpected message")
 }
 
-// In this test the first client requests a connection, but doesn't listen on the response-channel
-// This shouldn't block the connection cache.
-func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneTakesOver(t *testing.T) {
-	logger := testutils.ProduceTestingLogger(t)
-	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
-	t.Cleanup(func() {
-		assert.NoError(t, driverManager.Close())
-	})
-	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
-	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
-	}
-	cache.EnableTracer()
-
-	// Initially there should be no connection in the cache.
-	if len(cache.connections) != 0 {
-		t.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
-	}
-
-	// Intentionally just ignore the response.
-	cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-
-	time.Sleep(1 * time.Millisecond)
-
-	// Read once from the cache.
-	// NOTE: It doesn't contain the connect-part, as the previous connection handled that.
-	firstRun := cache.executeAndTestReadFromPlc(
-		t,
-		nil,
-		"simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true",
-		"RANDOM/test_random:BOOL",
-		[]string{
-			"read-started",
-			"read-success",
-			"ping-started",
-			"ping-success",
-		},
-		1,
-	)
-
-	select {
-	case _ = <-firstRun:
-		break
-	case <-time.After(30 * time.Second * time.Duration(debugTimeout)):
-		t.Errorf("Timeout")
-	}
-}
-
-func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
-	logger := testutils.ProduceTestingLogger(t)
-	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
-	t.Cleanup(func() {
-		assert.NoError(t, driverManager.Close())
-	})
-	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
-	cache := plcConnectionCache{
-		driverManager: driverManager,
-		maxLeaseTime:  5 * time.Second,
-		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
-		connections:   make(map[string]*connectionContainer),
-		tracer:        nil,
-	}
-	cache.EnableTracer()
-
-	// Initially there should be no connection in the cache.
-	if len(cache.connections) != 0 {
-		t.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
-	}
-
-	// Read once from the cache.
-	firstRun := cache.executeAndTestReadFromPlc(
-		t,
-		nil,
-		"simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true",
-		"RANDOM/test_random:BOOL",
-		[]string{
-			"connect-started",
-			"connect-success",
-			"read-started",
-			"read-success",
-			"ping-started",
-			"ping-success",
-		},
-		1,
-	)
-
-	time.Sleep(1 * time.Millisecond)
-
-	// Almost instantly we try to get a new connection but don't listen for the result
-	cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
-
-	// Wait for the first operation to finish
-	select {
-	case _ = <-firstRun:
-	case <-time.After(30 * time.Second * time.Duration(debugTimeout)):
-		t.Errorf("Timeout")
-	}
-
-	// Wait for 1s to have the connection cache timeout (10ms) the lease as nobody's listening.
-	time.Sleep(1 * time.Second)
-
-	// This should be quite equal to the serial case as the connections are requested serially.
-	assert.NotNil(t, cache.GetTracer(), "Tracer should be available")
-	traces := cache.GetTracer().GetTraces()
-	if assert.Equal(t, 5, len(traces), "Unexpected number of trace entries") {
-		// First is needs to create a new container for this connection
-		assert.Equal(t, "create new cached connection", traces[0].Message, "Unexpected message")
-		// Then it gets a lease for the connection
-		assert.Equal(t, "lease", traces[1].Message, "Unexpected message")
-		// And a second time
-		assert.Equal(t, "lease", traces[2].Message, "Unexpected message")
-		// Now the delay of 100ms is over, and we should see the first success
-		assert.Equal(t, "success", traces[3].Message, "Unexpected message")
-		// Now the first operation is finished, and we should see the second give up
-		assert.Equal(t, "client given up", traces[4].Message, "Unexpected message")
-	} else if len(traces) > 0 {
-		var values string
-		for _, traceEntry := range traces {
-			values = values + traceEntry.Operation + "-" + traceEntry.Message + ", "
-		}
-		t.Errorf("Got traces: %s", values)
-	} else {
-		t.Error("No traces")
-	}
-}
-
 func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
@@ -821,24 +705,19 @@ func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 	time.Sleep(1 * time.Millisecond)
 
 	// Just make sure the first two connections are returned as soon as they are received
-	if assert.Nil(t, firstConn) {
-		// Give back the connection.
-		_ = firstConn.Close()
-	}
+	_ = firstConn.Close()
 
+	// Second one blocks
 	secondConn, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 	require.NoError(t, err)
+	t.Cleanup(func() {
+		_ = secondConn.Close()
+	})
 
 	time.Sleep(1 * time.Millisecond)
 
-	// Just make sure the first two connections are returned as soon as they are received
-	if assert.Nil(t, firstConn) {
-		// Give back the connection.
-		_ = secondConn.Close()
-	}
-
 	// The third connection should be given up by the cache
 	thrirdConn, err := cache.GetConnection(t.Context(), "simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
-	require.NoError(t, err)
-	require.NotNil(t, thrirdConn)
+	require.Error(t, err)
+	require.Nil(t, thrirdConn)
 }

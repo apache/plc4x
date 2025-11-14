@@ -36,6 +36,8 @@ type plcConnectionLease struct {
 	leaseId uint32
 	// The actual connection being cached.
 	connection tracedPlcConnection
+	// the last traces of this connection
+	lastTraces []tracer.TraceEntry
 }
 
 func newPlcConnectionLease(connectionContainer *connectionContainer, leaseId uint32, connection tracedPlcConnection) *plcConnectionLease {
@@ -110,12 +112,11 @@ func (t *plcConnectionLease) Close() error {
 	if t.IsTraceEnabled() {
 		_tracer := t.GetTracer()
 		// Save all traces.
-		traces := _tracer.GetTraces()
+		t.lastTraces = _tracer.GetTraces()
 		// Clear the log.
 		_tracer.ResetTraces()
 		// Reset the connection id back to the one without the lease-id.
 		_tracer.SetConnectionId(t.connection.GetConnectionId())
-		_ = traces // TODO: do something with that
 	}
 
 	// Return the connection to the connection container and don't actually close it.
@@ -125,6 +126,10 @@ func (t *plcConnectionLease) Close() error {
 	t.connection = nil
 
 	return err
+}
+
+func (t *plcConnectionLease) GetLastTraces() []tracer.TraceEntry {
+	return t.lastTraces
 }
 
 func (t *plcConnectionLease) IsConnected() bool {

@@ -20,6 +20,7 @@
 package cache
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -200,9 +201,13 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 		queue            []connectionRequest
 		listeners        []connectionListener
 	}
+	type args struct {
+		ctx context.Context
+	}
 	tests := []struct {
 		name   string
 		fields fields
+		args   args
 		setup  func(t *testing.T, fields *fields)
 	}{
 		{
@@ -210,6 +215,9 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 			fields: fields{
 				connectionString: "simulated://1.2.3.4:42",
 				lock:             lock.NewCASMutex(),
+			},
+			args: args{
+				ctx: t1.Context(),
 			},
 			setup: func(t *testing.T, fields *fields) {
 				logger := testutils.ProduceTestingLogger(t)
@@ -241,7 +249,7 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 				queue:            tt.fields.queue,
 				listeners:        tt.fields.listeners,
 			}
-			lease, errors := c.lease()
+			lease, errors := c.lease(tt.args.ctx)
 			assert.NotNil(t, lease)
 			assert.NotNil(t, errors)
 		})

@@ -50,7 +50,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -84,7 +84,7 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -113,7 +113,7 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -140,7 +140,7 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -167,7 +167,7 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -196,7 +196,7 @@ func TestLeasedPlcConnection_Close(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -225,7 +225,7 @@ func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -256,7 +256,7 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -294,7 +294,7 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -338,7 +338,7 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -379,7 +379,7 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -420,7 +420,7 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -461,7 +461,7 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 
@@ -510,7 +510,7 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 		tracer:        nil,
 	}
 	t.Cleanup(func() {
-		<-cache.Close()
+		_ = cache.Close()
 	})
 	cache.EnableTracer()
 

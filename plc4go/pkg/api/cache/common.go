@@ -19,11 +19,6 @@
 
 package cache
 
-type PlcConnectionCacheCloseResult interface {
-	GetConnectionCache() PlcConnectionCache
-	GetErr() error
-}
-
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -83,33 +78,3 @@ func (c *connectionErrorEvent) getConnectionContainer() *connectionContainer {
 func (c *connectionErrorEvent) getError() error {
 	return c.err
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// PlcConnectionCacheCloseResult / plcConnectionCacheCloseResult
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-type plcConnectionCacheCloseResult struct {
-	connectionCache PlcConnectionCache
-	err             error
-}
-
-func newDefaultPlcConnectionCacheCloseResult(connectionCache PlcConnectionCache, err error) PlcConnectionCacheCloseResult {
-	return &plcConnectionCacheCloseResult{
-		connectionCache: connectionCache,
-		err:             err,
-	}
-}
-
-func (p plcConnectionCacheCloseResult) GetConnectionCache() PlcConnectionCache {
-	return p.connectionCache
-}
-
-func (p plcConnectionCacheCloseResult) GetErr() error {
-	return p.err
-}
-
-//
-// Internal section
-//
-///////////////////////////////////////
-///////////////////////////////////////
