@@ -38,7 +38,7 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3  # v2.1.1
+      - uses: dorny/test-reporter@7b7927aa7da8b82e81e755810cb51f39941a2cc7  # v2.2.0
         with:
           artifact: "java-test-report-${{ matrix.os }}-java-${{ matrix.java }}"
           name: "Java Tests (OS: ${{ matrix.os }}, Java: ${{ matrix.java }})"
