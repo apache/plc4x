@@ -34,6 +34,7 @@ import (
 
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
+	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -308,11 +309,18 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 			return r.String()
 		}
 	})
+	interfaceMarshallerSetter.Do(func() {
+		logging.ZerologInterfacePLCMessageFormat = logging.PLCMessageAsString
+		zerolog.InterfaceMarshalFunc = logging.ZerologMessageInterfaceMarshalFunc
+	})
 	logger = logger.With().Stack().Logger()
 	return logger
 }
 
-var stackSetter sync.Once
+var (
+	stackSetter               sync.Once
+	interfaceMarshallerSetter sync.Once
+)
 
 // EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
 func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOption) []options.WithOption {
