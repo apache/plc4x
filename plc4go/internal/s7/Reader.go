@@ -120,7 +120,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 			// Send the  over the wire
 			m.log.Trace().Msg("Send ")
-			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
+			if err := m.messageCodec.SendRequest(ctx, "read", tpktPacket, func(message spi.Message) bool {
 				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false

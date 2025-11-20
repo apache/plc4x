@@ -261,80 +261,84 @@ func (c *Connection) setupConnection(ctx context.Context) error {
 
 func (c *Connection) startSubscriptionHandler() {
 	c.log.Debug().Msg("Starting SAL handler")
-	c.handlerWaitGroup.Go(func() {
-		salLogger := c.log.With().Str("handlerType", "SAL").Logger()
-		defer func() {
-			if err := recover(); err != nil {
-				salLogger.Error().
-					Str("stack", string(debug.Stack())).
-					Interface("err", err).
-					Msg("panic-ed")
+	c.handlerWaitGroup.Go(c.handleSAL)
+	c.log.Debug().Msg("Starting MMI handler")
+	c.handlerWaitGroup.Go(c.handleMMI)
+}
+
+func (c *Connection) handleSAL() {
+	salLogger := c.log.With().Str("handlerType", "SAL").Logger()
+	defer func() {
+		if err := recover(); err != nil {
+			salLogger.Error().
+				Str("stack", string(debug.Stack())).
+				Interface("err", err).
+				Msg("panic-ed")
+		}
+	}()
+	salLogger.Debug().Msg("SAL handler started")
+	for c.IsConnected() && c.messageCodec.IsRunning() {
+		for monitoredSal := range c.messageCodec.monitoredSALs {
+			if monitoredSal == nil {
+				salLogger.Trace().Msg("monitoredSal chan closed")
+				break
 			}
-		}()
-		salLogger.Debug().Msg("SAL handler started")
-		for c.IsConnected() && c.messageCodec.IsRunning() {
-			for monitoredSal := range c.messageCodec.monitoredSALs {
-				if monitoredSal == nil {
-					salLogger.Trace().Msg("monitoredSal chan closed")
-					break
-				}
-				salLogger.Trace().
-					Stringer("monitoredSal", monitoredSal).
-					Msg("got a SAL")
-				handled := false
-				for _, subscriber := range c.subscribers {
-					if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
-						salLogger.Debug().
-							Stringer("monitoredSal", monitoredSal).
-							Stringer("subscriber", subscriber).
-							Msg("handled")
-						handled = true
-					}
-				}
-				if !handled {
+			salLogger.Trace().
+				Stringer("monitoredSal", monitoredSal).
+				Msg("got a SAL")
+			handled := false
+			for _, subscriber := range c.subscribers {
+				if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
 					salLogger.Debug().
 						Stringer("monitoredSal", monitoredSal).
-						Msg("SAL was not handled")
+						Stringer("subscriber", subscriber).
+						Msg("handled")
+					handled = true
 				}
+			}
+			if !handled {
+				salLogger.Debug().
+					Stringer("monitoredSal", monitoredSal).
+					Msg("SAL was not handled")
 			}
 		}
-		salLogger.Info().Msg("handler ended")
-	})
-	c.log.Debug().Msg("Starting MMI handler")
-	c.handlerWaitGroup.Go(func() {
-		mmiLogger := c.log.With().Str("handlerType", "MMI").Logger()
-		defer func() {
-			if err := recover(); err != nil {
-				mmiLogger.Error().
-					Str("stack", string(debug.Stack())).
-					Interface("err", err).
-					Msg("panic-ed")
+	}
+	salLogger.Info().Msg("handler ended")
+}
+
+func (c *Connection) handleMMI() {
+	mmiLogger := c.log.With().Str("handlerType", "MMI").Logger()
+	defer func() {
+		if err := recover(); err != nil {
+			mmiLogger.Error().
+				Str("stack", string(debug.Stack())).
+				Interface("err", err).
+				Msg("panic-ed")
+		}
+	}()
+	mmiLogger.Debug().Msg("default MMI started")
+	for c.IsConnected() && c.messageCodec.IsRunning() {
+		for calReply := range c.messageCodec.monitoredMMIs {
+			if calReply == nil {
+				mmiLogger.Trace().Msg("channel closed")
+				break
 			}
-		}()
-		mmiLogger.Debug().Msg("default MMI started")
-		for c.IsConnected() && c.messageCodec.IsRunning() {
-			for calReply := range c.messageCodec.monitoredMMIs {
-				if calReply == nil {
-					mmiLogger.Trace().Msg("channel closed")
-					break
+			mmiLogger.Trace().Msg("got a MMI")
+			handled := false
+			for _, subscriber := range c.subscribers {
+				if ok := subscriber.handleMonitoredMMI(calReply); ok {
+					mmiLogger.Debug().
+						Stringer("subscriber", subscriber).
+						Msg("handled")
+					handled = true
 				}
-				mmiLogger.Trace().Msg("got a MMI")
-				handled := false
-				for _, subscriber := range c.subscribers {
-					if ok := subscriber.handleMonitoredMMI(calReply); ok {
-						mmiLogger.Debug().
-							Stringer("subscriber", subscriber).
-							Msg("handled")
-						handled = true
-					}
-				}
-				if !handled {
-					mmiLogger.Debug().Msg("MMI was not handled")
-				}
+			}
+			if !handled {
+				mmiLogger.Debug().Msg("MMI was not handled")
 			}
 		}
-		mmiLogger.Info().Msg("handler ended")
-	})
+	}
+	mmiLogger.Info().Msg("handler ended")
 }
 
 func (c *Connection) sendReset(ctx context.Context) error {
@@ -355,7 +359,7 @@ func (c *Connection) sendReset(ctx context.Context) error {
 
 	receivedResetEchoChan := make(chan bool, 1)
 	receivedResetEchoErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
+	if err := c.messageCodec.SendRequest(ctx, "send_reset", cBusMessage, func(message spi.Message) bool {
 		c.log.Trace().Msg("Checking message")
 		switch message := message.(type) {
 		case readWriteModel.CBusMessageToClient:
@@ -505,7 +509,7 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, paramNo readWriteMode
 
 	directCommandAckChan := make(chan bool, 1)
 	directCommandAckErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
+	if err := c.messageCodec.SendRequest(ctx, "send_cal_data_write", cBusMessage, func(message spi.Message) bool {
 		switch message := message.(type) {
 		case readWriteModel.CBusMessageToClient:
 			switch reply := message.GetReply().(type) {

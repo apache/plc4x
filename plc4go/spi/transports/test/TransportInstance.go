@@ -355,7 +355,7 @@ func (m *TransportInstance) transferFromChannel(ctx context.Context) (totalAvail
 	case <-ctx.Done():
 		m.log.Trace().Msg("Context done")
 	case newBytes := <-m.readChannel:
-		m.log.Trace().Dur("time", time.Since(start)).Msg("Got new bytes")
+		m.log.Trace().Dur("time", time.Since(start)).Int("nBytes", len(newBytes)).Msg("Got new bytes")
 		totalAvailableBytes = m.appendRead(newBytes...)
 	}
 	return totalAvailableBytes

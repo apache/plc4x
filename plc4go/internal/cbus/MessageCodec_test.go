@@ -48,7 +48,9 @@ func TestMessageCodec_Send(t *testing.T) {
 		monitoredSALs  chan readWriteModel.MonitoredSAL
 	}
 	type args struct {
-		message spi.Message
+		ctx           context.Context
+		interactionId string
+		message       spi.Message
 	}
 	tests := []struct {
 		name    string
@@ -105,7 +107,7 @@ func TestMessageCodec_Send(t *testing.T) {
 				monitoredMMIs:  tt.fields.monitoredMMIs,
 				monitoredSALs:  tt.fields.monitoredSALs,
 			}
-			tt.wantErr(t, m.Send(t.Context(), tt.args.message), fmt.Sprintf("Send(%v)", tt.args.message))
+			tt.wantErr(t, m.Send(t.Context(), t.Name(), tt.args.message), fmt.Sprintf("Send(%v)", tt.args.message))
 		})
 	}
 }

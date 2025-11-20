@@ -118,7 +118,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				context.AfterFunc(transactionContext, cancel)
 				// Send the  over the wire
 				m.log.Trace().Msg("Send ")
-				if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {
+				if err := m.messageCodec.SendRequest(ctx, "write", messageToSend, func(receivedMessage spi.Message) bool {
 					cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessage)
 					if !ok {
 						return false

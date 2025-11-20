@@ -1489,8 +1489,8 @@ func (_c *MockMessageCodec_Disconnect_Call) RunAndReturn(run func() error) *Mock
 }
 
 // Expect provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Expect(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) {
-	_mock.Called(ctx, acceptsMessage, handleMessage, handleError)
+func (_mock *MockMessageCodec) Expect(ctx context.Context, interactionId string, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) {
+	_mock.Called(ctx, interactionId, acceptsMessage, handleMessage, handleError)
 	return
 }
 
@@ -1501,36 +1501,42 @@ type MockMessageCodec_Expect_Call struct {
 
 // Expect is a helper method to define mock.On call
 //   - ctx context.Context
+//   - interactionId string
 //   - acceptsMessage AcceptsMessage
 //   - handleMessage HandleMessage
 //   - handleError HandleError
-func (_e *MockMessageCodec_Expecter) Expect(ctx interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_Expect_Call {
-	return &MockMessageCodec_Expect_Call{Call: _e.mock.On("Expect", ctx, acceptsMessage, handleMessage, handleError)}
+func (_e *MockMessageCodec_Expecter) Expect(ctx interface{}, interactionId interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_Expect_Call {
+	return &MockMessageCodec_Expect_Call{Call: _e.mock.On("Expect", ctx, interactionId, acceptsMessage, handleMessage, handleError)}
 }
 
-func (_c *MockMessageCodec_Expect_Call) Run(run func(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)) *MockMessageCodec_Expect_Call {
+func (_c *MockMessageCodec_Expect_Call) Run(run func(ctx context.Context, interactionId string, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)) *MockMessageCodec_Expect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 AcceptsMessage
+		var arg1 string
 		if args[1] != nil {
-			arg1 = args[1].(AcceptsMessage)
+			arg1 = args[1].(string)
 		}
-		var arg2 HandleMessage
+		var arg2 AcceptsMessage
 		if args[2] != nil {
-			arg2 = args[2].(HandleMessage)
+			arg2 = args[2].(AcceptsMessage)
 		}
-		var arg3 HandleError
+		var arg3 HandleMessage
 		if args[3] != nil {
-			arg3 = args[3].(HandleError)
+			arg3 = args[3].(HandleMessage)
+		}
+		var arg4 HandleError
+		if args[4] != nil {
+			arg4 = args[4].(HandleError)
 		}
 		run(
 			arg0,
 			arg1,
 			arg2,
 			arg3,
+			arg4,
 		)
 	})
 	return _c
@@ -1541,7 +1547,7 @@ func (_c *MockMessageCodec_Expect_Call) Return() *MockMessageCodec_Expect_Call {
 	return _c
 }
 
-func (_c *MockMessageCodec_Expect_Call) RunAndReturn(run func(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)) *MockMessageCodec_Expect_Call {
+func (_c *MockMessageCodec_Expect_Call) RunAndReturn(run func(ctx context.Context, interactionId string, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)) *MockMessageCodec_Expect_Call {
 	_c.Run(run)
 	return _c
 }
@@ -1637,16 +1643,16 @@ func (_c *MockMessageCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockMe
 }
 
 // Send provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Send(ctx context.Context, message Message) error {
-	ret := _mock.Called(ctx, message)
+func (_mock *MockMessageCodec) Send(ctx context.Context, interactionId string, message Message) error {
+	ret := _mock.Called(ctx, interactionId, message)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, Message) error); ok {
-		r0 = returnFunc(ctx, message)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, Message) error); ok {
+		r0 = returnFunc(ctx, interactionId, message)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1660,24 +1666,30 @@ type MockMessageCodec_Send_Call struct {
 
 // Send is a helper method to define mock.On call
 //   - ctx context.Context
+//   - interactionId string
 //   - message Message
-func (_e *MockMessageCodec_Expecter) Send(ctx interface{}, message interface{}) *MockMessageCodec_Send_Call {
-	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", ctx, message)}
+func (_e *MockMessageCodec_Expecter) Send(ctx interface{}, interactionId interface{}, message interface{}) *MockMessageCodec_Send_Call {
+	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", ctx, interactionId, message)}
 }
 
-func (_c *MockMessageCodec_Send_Call) Run(run func(ctx context.Context, message Message)) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) Run(run func(ctx context.Context, interactionId string, message Message)) *MockMessageCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 Message
+		var arg1 string
 		if args[1] != nil {
-			arg1 = args[1].(Message)
+			arg1 = args[1].(string)
+		}
+		var arg2 Message
+		if args[2] != nil {
+			arg2 = args[2].(Message)
 		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -1688,22 +1700,22 @@ func (_c *MockMessageCodec_Send_Call) Return(err error) *MockMessageCodec_Send_C
 	return _c
 }
 
-func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(ctx context.Context, message Message) error) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(ctx context.Context, interactionId string, message Message) error) *MockMessageCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SendRequest provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) SendRequest(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) error {
-	ret := _mock.Called(ctx, message, acceptsMessage, handleMessage, handleError)
+func (_mock *MockMessageCodec) SendRequest(ctx context.Context, interactionId string, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) error {
+	ret := _mock.Called(ctx, interactionId, message, acceptsMessage, handleMessage, handleError)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendRequest")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, Message, AcceptsMessage, HandleMessage, HandleError) error); ok {
-		r0 = returnFunc(ctx, message, acceptsMessage, handleMessage, handleError)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, Message, AcceptsMessage, HandleMessage, HandleError) error); ok {
+		r0 = returnFunc(ctx, interactionId, message, acceptsMessage, handleMessage, handleError)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1717,35 +1729,40 @@ type MockMessageCodec_SendRequest_Call struct {
 
 // SendRequest is a helper method to define mock.On call
 //   - ctx context.Context
+//   - interactionId string
 //   - message Message
 //   - acceptsMessage AcceptsMessage
 //   - handleMessage HandleMessage
 //   - handleError HandleError
-func (_e *MockMessageCodec_Expecter) SendRequest(ctx interface{}, message interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_SendRequest_Call {
-	return &MockMessageCodec_SendRequest_Call{Call: _e.mock.On("SendRequest", ctx, message, acceptsMessage, handleMessage, handleError)}
+func (_e *MockMessageCodec_Expecter) SendRequest(ctx interface{}, interactionId interface{}, message interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_SendRequest_Call {
+	return &MockMessageCodec_SendRequest_Call{Call: _e.mock.On("SendRequest", ctx, interactionId, message, acceptsMessage, handleMessage, handleError)}
 }
 
-func (_c *MockMessageCodec_SendRequest_Call) Run(run func(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)) *MockMessageCodec_SendRequest_Call {
+func (_c *MockMessageCodec_SendRequest_Call) Run(run func(ctx context.Context, interactionId string, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)) *MockMessageCodec_SendRequest_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 Message
+		var arg1 string
 		if args[1] != nil {
-			arg1 = args[1].(Message)
+			arg1 = args[1].(string)
 		}
-		var arg2 AcceptsMessage
+		var arg2 Message
 		if args[2] != nil {
-			arg2 = args[2].(AcceptsMessage)
+			arg2 = args[2].(Message)
 		}
-		var arg3 HandleMessage
+		var arg3 AcceptsMessage
 		if args[3] != nil {
-			arg3 = args[3].(HandleMessage)
+			arg3 = args[3].(AcceptsMessage)
 		}
-		var arg4 HandleError
+		var arg4 HandleMessage
 		if args[4] != nil {
-			arg4 = args[4].(HandleError)
+			arg4 = args[4].(HandleMessage)
+		}
+		var arg5 HandleError
+		if args[5] != nil {
+			arg5 = args[5].(HandleError)
 		}
 		run(
 			arg0,
@@ -1753,6 +1770,7 @@ func (_c *MockMessageCodec_SendRequest_Call) Run(run func(ctx context.Context, m
 			arg2,
 			arg3,
 			arg4,
+			arg5,
 		)
 	})
 	return _c
@@ -1763,7 +1781,7 @@ func (_c *MockMessageCodec_SendRequest_Call) Return(err error) *MockMessageCodec
 	return _c
 }
 
-func (_c *MockMessageCodec_SendRequest_Call) RunAndReturn(run func(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) error) *MockMessageCodec_SendRequest_Call {
+func (_c *MockMessageCodec_SendRequest_Call) RunAndReturn(run func(ctx context.Context, interactionId string, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) error) *MockMessageCodec_SendRequest_Call {
 	_c.Call.Return(run)
 	return _c
 }

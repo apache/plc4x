@@ -112,7 +112,7 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 	return m.messageCode.IsRunning()
 }
 
-func (m *ApplicationLayerMessageCodec) Send(ctx context.Context, message spi.Message) error {
+func (m *ApplicationLayerMessageCodec) Send(ctx context.Context, interactionId string, message spi.Message) error {
 	address, err := pdu.NewAddress(comp.NewArgs(m.remoteAddress))
 	if err != nil {
 		return err
@@ -141,12 +141,12 @@ func (m *ApplicationLayerMessageCodec) Send(ctx context.Context, message spi.Mes
 	return nil
 }
 
-func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
+func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, interactionId string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
 	// TODO: implement me
 	panic("not yet implemented")
 }
 
-func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
+func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, interactionId string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
 	address, err := pdu.NewAddress(comp.NewArgs(m.remoteAddress))
 	if err != nil {
 		return err

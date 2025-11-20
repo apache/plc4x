@@ -158,7 +158,7 @@ func (c *Connection) setupConnection(ctx context.Context) error {
 	// Open the session on ISO Transport Protocol first.
 	cotpConnectionResult := make(chan readWriteModel.COTPPacketConnectionResponse, 1)
 	cotpConnectionErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewTPKTPacket(c.createCOTPConnectionRequest()), func(message spi.Message) bool {
+	if err := c.messageCodec.SendRequest(ctx, "setup_connection", readWriteModel.NewTPKTPacket(c.createCOTPConnectionRequest()), func(message spi.Message) bool {
 		tpktPacket := message.(readWriteModel.TPKTPacket)
 		if tpktPacket == nil {
 			return false
@@ -190,7 +190,7 @@ func (c *Connection) setupConnection(ctx context.Context) error {
 		// Send an S7 login message.
 		s7ConnectionResult := make(chan readWriteModel.S7ParameterSetupCommunication, 1)
 		s7ConnectionErrorChan := make(chan error, 1)
-		if err := c.messageCodec.SendRequest(ctx, c.createS7ConnectionRequest(cotpPacketConnectionResponse), func(message spi.Message) bool {
+		if err := c.messageCodec.SendRequest(ctx, "setup_connection_connection_request", c.createS7ConnectionRequest(cotpPacketConnectionResponse), func(message spi.Message) bool {
 			tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 			if !ok {
 				return false
@@ -254,7 +254,7 @@ func (c *Connection) setupConnection(ctx context.Context) error {
 			c.log.Debug().Msg("Sending S7 Identification Request")
 			s7IdentificationResult := make(chan readWriteModel.S7PayloadUserData, 1)
 			s7IdentificationErrorChan := make(chan error, 1)
-			if err := c.messageCodec.SendRequest(ctx, c.createIdentifyRemoteMessage(), func(message spi.Message) bool {
+			if err := c.messageCodec.SendRequest(ctx, "setup_connection_identify_remote_message", c.createIdentifyRemoteMessage(), func(message spi.Message) bool {
 				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false

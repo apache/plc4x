@@ -110,7 +110,7 @@ func (c *Connection) Ping(ctx context.Context) error {
 	successChan := make(chan struct{}, 1)
 	diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 	pingRequest := readWriteModel.NewModbusTcpADU(1, c.unitIdentifier, diagnosticRequestPdu)
-	if err := c.messageCodec.SendRequest(ctx, pingRequest, func(message spi.Message) bool {
+	if err := c.messageCodec.SendRequest(ctx, "ping", pingRequest, func(message spi.Message) bool {
 		responseAdu, ok := message.(readWriteModel.ModbusTcpADU)
 		if !ok {
 			return false

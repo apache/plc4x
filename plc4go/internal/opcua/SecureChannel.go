@@ -214,7 +214,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 
 	requestConsumer := func(transactionId int32) {
 		var messageBuffer []byte
-		if err := codec.SendRequest(ctx, apu, func(message spi.Message) bool {
+		if err := codec.SendRequest(ctx, "submis", apu, func(message spi.Message) bool {
 			opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
 			if !ok {
 				s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -298,7 +298,7 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection) e
 	errChan := make(chan error, 1)
 	requestConsumer := func(transactionId int32) {
 		s.log.Trace().Int32("transactionId", transactionId).Msg("request consumer called")
-		if err := s.codec.SendRequest(ctx, hello, func(message spi.Message) bool {
+		if err := s.codec.SendRequest(ctx, "hello", hello, func(message spi.Message) bool {
 			opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
 			if !ok {
 				s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -425,7 +425,7 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 	}
 
 	requestConsumer := func(transactionId int32) {
-		if err := s.codec.SendRequest(ctx, apu, func(message spi.Message) bool {
+		if err := s.codec.SendRequest(ctx, "open_secure_channel", apu, func(message spi.Message) bool {
 			opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
 			if !ok {
 				s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -834,7 +834,7 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, conn
 	apu := readWriteModel.NewOpcuaAPU(closeRequest)
 
 	requestConsumer := func(transactionId int32) {
-		if err := connection.messageCodec.SendRequest(ctx, apu, func(message spi.Message) bool {
+		if err := connection.messageCodec.SendRequest(ctx, "disconnect_secure_channel", apu, func(message spi.Message) bool {
 			opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
 			if !ok {
 				s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -886,7 +886,7 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 	apu := readWriteModel.NewOpcuaAPU(hello)
 
 	requestConsumer := func(transactionId int32) {
-		if err := codec.SendRequest(ctx, apu, func(message spi.Message) bool {
+		if err := codec.SendRequest(ctx, "on_discover_hello", apu, func(message spi.Message) bool {
 			opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
 			if !ok {
 				s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -977,7 +977,7 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 	apu := readWriteModel.NewOpcuaAPU(openRequest)
 
 	requestConsumer := func(transactionId int32) {
-		if err := codec.SendRequest(ctx, apu, func(message spi.Message) bool {
+		if err := codec.SendRequest(ctx, "on_discover_open_secure_channes", apu, func(message spi.Message) bool {
 			opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
 			if !ok {
 				s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -1093,7 +1093,7 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 	apu := readWriteModel.NewOpcuaAPU(messageRequest)
 
 	requestConsumer := func(transactionId int32) {
-		if err := codec.SendRequest(ctx, apu, func(message spi.Message) bool {
+		if err := codec.SendRequest(ctx, "get_endpoints_request", apu, func(message spi.Message) bool {
 			opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
 			if !ok {
 				s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -1196,7 +1196,7 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 	apu := readWriteModel.NewOpcuaAPU(closeRequest)
 
 	requestConsumer := func(transactionId int32) {
-		if err := codec.SendRequest(ctx, apu, func(message spi.Message) bool {
+		if err := codec.SendRequest(ctx, "on_discover_close_secure_channel", apu, func(message spi.Message) bool {
 			opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
 			if !ok {
 				s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -1324,7 +1324,7 @@ func (s *SecureChannel) keepAlive() {
 			}
 
 			requestConsumer := func(transactionId int32) {
-				if err := s.codec.SendRequest(ctx, apu, func(message spi.Message) bool {
+				if err := s.codec.SendRequest(ctx, "keep_alive", apu, func(message spi.Message) bool {
 					opcuaAPU, ok := message.(readWriteModel.OpcuaAPU)
 					if !ok {
 						s.log.Debug().Type("type", message).Msg("Not relevant")

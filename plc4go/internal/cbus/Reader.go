@@ -142,7 +142,7 @@ func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToS
 func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transactions.RequestTransaction, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
 	// Send the over the wire
 	m.log.Trace().Msg("send over the wire")
-	if err := m.messageCodec.SendRequest(ctx, messageToSend, func(cbusMessage spi.Message) bool {
+	if err := m.messageCodec.SendRequest(ctx, "send_generic_read_message", messageToSend, func(cbusMessage spi.Message) bool {
 		m.log.Trace().Type("cbusMessageType", cbusMessage).Msg("Checking")
 		messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClient)
 		if !ok {

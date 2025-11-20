@@ -62,8 +62,8 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Send(ctx context.Context, message spi.Message) error {
-	m.log.Trace().Msg("Sending message")
+func (m *MessageCodec) Send(ctx context.Context, interactionId string, message spi.Message) error {
+	m.log.Trace().Str("interactionId", interactionId).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	knxMessage := message.(model.KnxNetIpMessage)
 	// Serialize the request
@@ -134,7 +134,7 @@ func CustomMessageHandling(localLog zerolog.Logger) _default.CustomMessageHandle
 					tunnelingRequest.GetTunnelingRequestDataBlock().GetSequenceCounter(),
 					model.Status_NO_ERROR),
 			)
-			err := codec.Send(ctx, response) // TODO: where is a good place to get this timeout from?
+			err := codec.Send(ctx, "tunneling_request", response) // TODO: where is a good place to get this timeout from?
 			if err != nil {
 				localLog.Warn().Err(err).Msg("got an error sending ACK from transport")
 			}

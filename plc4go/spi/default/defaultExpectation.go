@@ -31,6 +31,7 @@ import (
 
 type defaultExpectation struct {
 	Uuid           uuid.UUID
+	InteractionId  string
 	Ctx            context.Context
 	CancelFunc     context.CancelCauseFunc
 	CreationTime   time.Time
@@ -40,10 +41,11 @@ type defaultExpectation struct {
 	HandleError    spi.HandleError
 }
 
-func newDefaultExpectation(ctx context.Context, ttl time.Duration, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) *defaultExpectation {
+func newDefaultExpectation(ctx context.Context, interactionId string, ttl time.Duration, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) *defaultExpectation {
 	ctx, cancelFunc := context.WithCancelCause(ctx)
 	return &defaultExpectation{
 		Uuid:           uuid.New(),
+		InteractionId:  interactionId,
 		Ctx:            ctx,
 		CancelFunc:     cancelFunc,
 		CreationTime:   time.Now(),
@@ -83,5 +85,5 @@ func (d *defaultExpectation) GetHandleError() spi.HandleError {
 }
 
 func (d *defaultExpectation) String() string {
-	return fmt.Sprintf("Expectation %s (expires at %v in %s)", d.Uuid, d.Expiration, time.Until(d.Expiration))
+	return fmt.Sprintf("Expectation '%s' %s (expires at %v in %s)", d.InteractionId, d.Uuid, d.Expiration, time.Until(d.Expiration))
 }

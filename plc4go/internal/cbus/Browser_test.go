@@ -538,7 +538,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				currentState.Store(RESET)
 				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-					t.Logf("reacting to\n%s", hex.Dump(data))
+					t.Logf("reacting to \n%s", hex.Dump(data))
 					t.Logf("current state %d", currentState.Load())
 					stateChangeMutex.Lock()
 					defer stateChangeMutex.Unlock()

@@ -110,7 +110,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 				ctx, cancel := context.WithCancel(ctx)
 				context.AfterFunc(transactionContext, cancel)
-				if err := m.messageCodec.SendRequest(ctx, request, func(message spi.Message) bool {
+				if err := m.messageCodec.SendRequest(ctx, "read", request, func(message spi.Message) bool {
 					eipPacket := message.(readWriteModel.EipPacket)
 					if eipPacket == nil {
 						return false

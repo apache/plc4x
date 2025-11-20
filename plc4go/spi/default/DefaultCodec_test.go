@@ -498,6 +498,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 	}
 	type args struct {
 		ctx            context.Context
+		interactionId  string
 		acceptsMessage spi.AcceptsMessage
 		handleMessage  spi.HandleMessage
 		handleError    spi.HandleError
@@ -513,6 +514,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 			name: "expect it",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
+				args.interactionId = t.Name()
 				var cancelFunc context.CancelFunc
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
@@ -534,7 +536,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			m.Expect(tt.args.ctx, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError)
+			m.Expect(tt.args.ctx, tt.args.interactionId, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError)
 		})
 	}
 }
@@ -916,6 +918,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 	}
 	type args struct {
 		ctx            context.Context
+		interactionId  string
 		message        spi.Message
 		acceptsMessage spi.AcceptsMessage
 		handleMessage  spi.HandleMessage
@@ -933,10 +936,11 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 			name: "send it",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Send(mock.Anything, mock.Anything).Return(nil)
+				requirements.EXPECT().Send(mock.Anything, mock.Anything, mock.Anything).Return(nil)
 				fields.DefaultCodecRequirements = requirements
 
 				args.ctx = testutils.TestContext(t)
+				args.interactionId = t.Name()
 				var cancelFunc context.CancelFunc
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
@@ -951,6 +955,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 				ctx, cancelFunc := context.WithCancel(testutils.TestContext(t))
 				cancelFunc()
 				args.ctx = ctx
+				args.interactionId = t.Name()
 			},
 			wantErr: assert.Error,
 		},
@@ -958,10 +963,11 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 			name: "send it errors",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)
-				requirements.EXPECT().Send(mock.Anything, mock.Anything).Return(errors.New("nope"))
+				requirements.EXPECT().Send(mock.Anything, mock.Anything, mock.Anything).Return(errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
 
 				args.ctx = testutils.TestContext(t)
+				args.interactionId = t.Name()
 				var cancelFunc context.CancelFunc
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
@@ -984,7 +990,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			tt.wantErr(t, m.SendRequest(tt.args.ctx, tt.args.message, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError), fmt.Sprintf("SendRequest(%v, %v, func(), func(), func(), %v)", tt.args.ctx, tt.args.message, tt.args.ttl))
+			tt.wantErr(t, m.SendRequest(tt.args.ctx, tt.args.interactionId, tt.args.message, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError), fmt.Sprintf("SendRequest(%v, %v, func(), func(), func(), %v)", tt.args.ctx, tt.args.message, tt.args.ttl))
 		})
 	}
 }
@@ -1622,7 +1628,7 @@ func Test_defaultCodec_integration(t *testing.T) {
 	})
 	// First expect
 	var firstHandled bool
-	sut.Expect(t.Context(), func(message spi.Message) bool {
+	sut.Expect(t.Context(), "first", func(message spi.Message) bool {
 		t.Log("accepts message", message)
 		return true
 	}, func(message spi.Message) error {
@@ -1635,7 +1641,7 @@ func Test_defaultCodec_integration(t *testing.T) {
 	})
 	// Second expect
 	var secondHandled bool
-	sut.Expect(t.Context(), func(message spi.Message) bool {
+	sut.Expect(t.Context(), "second", func(message spi.Message) bool {
 		t.Log("accepts message", message)
 		return true
 	}, func(message spi.Message) error {
@@ -1648,7 +1654,7 @@ func Test_defaultCodec_integration(t *testing.T) {
 	})
 	// Third expect
 	var thridErrorCalled bool
-	sut.Expect(t.Context(), func(message spi.Message) bool {
+	sut.Expect(t.Context(), "third", func(message spi.Message) bool {
 		t.Log("does not accept message", message)
 		return false
 	}, func(message spi.Message) error {
@@ -1660,7 +1666,7 @@ func Test_defaultCodec_integration(t *testing.T) {
 	})
 	// Fourth expect
 	var fourthHandled bool
-	sut.Expect(t.Context(), func(message spi.Message) bool {
+	sut.Expect(t.Context(), "fourth", func(message spi.Message) bool {
 		t.Log("accepts message", message)
 		return true
 	}, func(message spi.Message) error {

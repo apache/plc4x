@@ -157,7 +157,7 @@ func (c *Connection) Close() error {
 	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
 	defer cancelFunc()
 	c.log.Debug().Msg("Sending UnregisterSession EIP Packet")
-	if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewEipDisconnectRequest(c.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
+	if err := c.messageCodec.SendRequest(ctx, "close_eip_disconnect_request", readWriteModel.NewEipDisconnectRequest(c.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
 		return true
 	}, func(message spi.Message) error {
 		return nil
@@ -203,7 +203,7 @@ func (c *Connection) listServiceRequest(ctx context.Context) error {
 	c.log.Debug().Msg("Sending ListServices Request")
 	listServicesResultChan := make(chan readWriteModel.ListServicesResponse, 1)
 	listServicesResultErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewListServicesRequest(
+	if err := c.messageCodec.SendRequest(ctx, "list_service_request", readWriteModel.NewListServicesRequest(
 		EmptySessionHandle,
 		uint32(readWriteModel.CIPStatus_Success),
 		[]byte(DefaultSenderContext),
@@ -251,7 +251,7 @@ func (c *Connection) connectRegisterSession(ctx context.Context) error {
 	c.log.Debug().Msg("Sending EipConnectionRequest")
 	connectionResponseChan := make(chan readWriteModel.EipConnectionResponse, 1)
 	connectionResponseErrorChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewEipConnectionRequest(
+	if err := c.messageCodec.SendRequest(ctx, "connect_register_session", readWriteModel.NewEipConnectionRequest(
 		EmptySessionHandle,
 		uint32(readWriteModel.CIPStatus_Success),
 		[]byte(DefaultSenderContext),
@@ -299,7 +299,7 @@ func (c *Connection) connectRegisterSession(ctx context.Context) error {
 				0,
 				typeIds,
 			)
-			if err := c.messageCodec.SendRequest(ctx, eipWrapper, func(message spi.Message) bool {
+			if err := c.messageCodec.SendRequest(ctx, "todo_what_is_this", eipWrapper, func(message spi.Message) bool {
 				eipPacket := message.(readWriteModel.EipPacket)
 				if eipPacket == nil {
 					return false
@@ -364,7 +364,7 @@ func (c *Connection) listAllAttributes(ctx context.Context) error {
 	listAllAttributesErrorChan := make(chan error, 1)
 	classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(uint8(0), uint8(2)))
 	instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(uint8(0), uint8(1)))
-	if err := c.messageCodec.SendRequest(ctx, readWriteModel.NewCipRRData(
+	if err := c.messageCodec.SendRequest(ctx, "list_all_attributes", readWriteModel.NewCipRRData(
 		c.sessionHandle,
 		uint32(readWriteModel.CIPStatus_Success),
 		c.senderContext,

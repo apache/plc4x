@@ -131,7 +131,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 		// Send the ADU over the wire
 		m.log.Trace().Msg("Send ADU")
-		if err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
+		if err = m.messageCodec.SendRequest(ctx, "read", requestAdu, func(message spi.Message) bool {
 			responseAdu := message.(readWriteModel.ModbusTcpADU)
 			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
 				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier

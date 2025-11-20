@@ -41,7 +41,7 @@ import (
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
 type DefaultCodecRequirements interface {
 	GetCodec() spi.MessageCodec
-	Send(ctx context.Context, message spi.Message) error
+	Send(ctx context.Context, interactionId string, message spi.Message) error
 	Receive(ctx context.Context) (spi.Message, error)
 }
 
@@ -206,16 +206,16 @@ func (m *defaultCodec) IsRunning() bool {
 	return m.running.Load()
 }
 
-func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
+func (m *defaultCodec) Expect(ctx context.Context, interactionId string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
 	m.expectationsChangeMutex.Lock()
 	defer m.expectationsChangeMutex.Unlock()
 	ttl := m.receiveTimeout
 	if deadline, ok := ctx.Deadline(); ok {
 		ttl = time.Until(deadline)
 	}
-	expectation := newDefaultExpectation(ctx, ttl, acceptsMessage, handleMessage, handleError)
+	expectation := newDefaultExpectation(ctx, interactionId, ttl, acceptsMessage, handleMessage, handleError)
 	m.expectations = append(m.expectations, expectation)
-	m.log.Debug().Interface("expectation", expectation).Msg("Added expectation")
+	m.log.Debug().Str("interactionId", interactionId).Stringer("expectation", expectation).Msg("Added expectation")
 	select {
 	case m.notifyExpireWorker <- struct{}{}:
 	default:
@@ -226,13 +226,13 @@ func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMes
 	}
 }
 
-func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
+func (m *defaultCodec) SendRequest(ctx context.Context, interactionId string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
 	if err := ctx.Err(); err != nil {
 		return errors.Wrap(err, "Not sending message as context is aborted")
 	}
-	m.Expect(ctx, acceptsMessage, handleMessage, handleError) // We register the expectation first to avoid getting a response between sending and adding the expect
-	m.log.Trace().Msg("Sending request")
-	return m.Send(ctx, message)
+	m.Expect(ctx, interactionId, acceptsMessage, handleMessage, handleError) // We register the expectation first to avoid getting a response between sending and adding the expect
+	m.log.Trace().Str("interactionId", interactionId).Msg("Sending request")
+	return m.Send(ctx, interactionId, message)
 }
 
 func (m *defaultCodec) TimeoutExpectations(now time.Time) time.Duration {
@@ -281,12 +281,12 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	messageHandled := false
 	m.log.Trace().Int("nExpectations", len(m.expectations)).Msg("Current number of expectations")
 	m.expectations = slices.DeleteFunc(m.expectations, func(expectation spi.Expectation) bool {
-		expectationLog := m.log.With().Interface("expectation", expectation).Logger()
+		expectationLog := m.log.With().Stringer("expectation", expectation).Logger()
 		expectationLog.Trace().Msg("Checking expectation")
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
 		if accepts := expectation.GetAcceptsMessage()(message); accepts {
-			expectationLog.Debug().Msg("accepts message")
+			expectationLog.Trace().Interface("handleMessage", message).Msg("accepts message")
 			// TODO: decouple from worker thread
 			if err := expectation.GetHandleMessage()(message); err != nil {
 				expectationLog.Debug().Err(err).Msg("errored handling the message")
@@ -302,7 +302,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 			messageHandled = true
 			return true
 		} else {
-			expectationLog.Trace().Msg("doesn't accept message")
+			expectationLog.Trace().Interface("handleMessage", message).Msg("doesn't accept message")
 			return false
 		}
 	})

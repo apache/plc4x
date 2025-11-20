@@ -111,7 +111,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			ctx, cancel := context.WithCancel(ctx)
 			context.AfterFunc(transactionContext, cancel)
 			// Send the over the wire
-			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
+			if err := m.messageCodec.SendRequest(ctx, "write", tpktPacket, func(message spi.Message) bool {
 				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false
