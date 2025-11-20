@@ -21,6 +21,7 @@ package test_network
 
 import (
 	"testing"
+	"testing/synctest"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -150,141 +151,149 @@ func (t *TNetwork2) Run(timeLimit time.Duration) {
 func TestNet2(t *testing.T) {
 	t.Run("TestSimple", func(t *testing.T) {
 		t.Run("testIdle", func(t *testing.T) {
-			// create a network
-			ExclusiveGlobalTimeMachine(t)
-			tnet := NewTNetwork2(t)
+			synctest.Test(t, func(t *testing.T) {
+				// create a network
+				ExclusiveGlobalTimeMachine(t)
+				tnet := NewTNetwork2(t)
 
-			// all start states are successful
-			tnet.td.GetStartState().Success("")
-			tnet.sniffer1.GetStartState().Success("")
-			tnet.sniffer2.GetStartState().Success("")
-			tnet.sniffer3.GetStartState().Success("")
+				// all start states are successful
+				tnet.td.GetStartState().Success("")
+				tnet.sniffer1.GetStartState().Success("")
+				tnet.sniffer2.GetStartState().Success("")
+				tnet.sniffer3.GetStartState().Success("")
 
-			// run the group
-			tnet.Run(0)
+				// run the group
+				tnet.Run(0)
+			})
 		})
 	})
 	t.Run("TestWhoIsRouterToNetwork", func(t *testing.T) {
 		t.Run("test_01", func(t *testing.T) {
-			//Test broadcast for any router.
-			ExclusiveGlobalTimeMachine(t)
+			synctest.Test(t, func(t *testing.T) {
+				//Test broadcast for any router.
+				ExclusiveGlobalTimeMachine(t)
 
-			// create a network
-			tnet := NewTNetwork2(t)
+				// create a network
+				tnet := NewTNetwork2(t)
 
-			// test device sends request, sees response
-			whois, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil)))
-			require.NoError(t, err)
-			tnet.td.GetStartState().Doc("1-1-0").
-				Send(whois, nil).Doc("1-1-1").
-				Receive(NA((*IAmRouterToNetwork)(nil)), NKW(KWIartnNetworkList, []uint16{2})).Doc("1-1-2").
-				Success("")
+				// test device sends request, sees response
+				whois, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil)))
+				require.NoError(t, err)
+				tnet.td.GetStartState().Doc("1-1-0").
+					Send(whois, nil).Doc("1-1-1").
+					Receive(NA((*IAmRouterToNetwork)(nil)), NKW(KWIartnNetworkList, []uint16{2})).Doc("1-1-2").
+					Success("")
 
-			// sniffer on network 1 sees the request and the response
-			tnet.sniffer1.GetStartState().Doc("1-2-0").
-				Receive(NA(PDUMatcher),
-					NKW(KWTestPDUData, xtob(
-						"01.80"+ //version, network layer
-							"00", //message type, no network
-					)),
-				).Doc("1-2-1").
-				Receive(NA(PDUMatcher),
-					NKW(KWTestPDUData, xtob(
-						"01.80"+ //version, network layer
-							"01 0002", //message type and network list
-					)),
-				).Doc("1-2-2").
-				Success("")
+				// sniffer on network 1 sees the request and the response
+				tnet.sniffer1.GetStartState().Doc("1-2-0").
+					Receive(NA(PDUMatcher),
+						NKW(KWTestPDUData, xtob(
+							"01.80"+ //version, network layer
+								"00", //message type, no network
+						)),
+					).Doc("1-2-1").
+					Receive(NA(PDUMatcher),
+						NKW(KWTestPDUData, xtob(
+							"01.80"+ //version, network layer
+								"01 0002", //message type and network list
+						)),
+					).Doc("1-2-2").
+					Success("")
 
-			// nothing received on network 2
-			tnet.sniffer2.GetStartState().Doc("1-3-0").
-				Timeout(3*time.Second, nil).Doc("1-3-1").
-				Success("")
+				// nothing received on network 2
+				tnet.sniffer2.GetStartState().Doc("1-3-0").
+					Timeout(3*time.Second, nil).Doc("1-3-1").
+					Success("")
 
-			// nothing received on network 3
-			tnet.sniffer3.GetStartState().Doc("1-4-0").
-				Timeout(3*time.Second, nil).Doc("1-4-1").
-				Success("")
+				// nothing received on network 3
+				tnet.sniffer3.GetStartState().Doc("1-4-0").
+					Timeout(3*time.Second, nil).Doc("1-4-1").
+					Success("")
 
-			// run the group
-			tnet.Run(0)
+				// run the group
+				tnet.Run(0)
+			})
 		})
 		t.Run("test_02", func(t *testing.T) {
-			//Test broadcast for existing router.
-			ExclusiveGlobalTimeMachine(t)
-			// create a network
-			tnet := NewTNetwork2(t)
+			synctest.Test(t, func(t *testing.T) {
+				//Test broadcast for existing router.
+				ExclusiveGlobalTimeMachine(t)
+				// create a network
+				tnet := NewTNetwork2(t)
 
-			// test device sends request, sees response
-			whois, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil)), WithWhoIsRouterToNetworkNet(2))
-			require.NoError(t, err)
-			tnet.td.GetStartState().Doc("2-1-0").
-				Send(whois, nil).Doc("2-1-1").
-				Receive(NA((*IAmRouterToNetwork)(nil)), NKW(KWIartnNetworkList, []uint16{2})).Doc("2-1-2").
-				Success("")
+				// test device sends request, sees response
+				whois, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil)), WithWhoIsRouterToNetworkNet(2))
+				require.NoError(t, err)
+				tnet.td.GetStartState().Doc("2-1-0").
+					Send(whois, nil).Doc("2-1-1").
+					Receive(NA((*IAmRouterToNetwork)(nil)), NKW(KWIartnNetworkList, []uint16{2})).Doc("2-1-2").
+					Success("")
 
-			tnet.sniffer1.GetStartState().Success("")
+				tnet.sniffer1.GetStartState().Success("")
 
-			// nothing received on network 2
-			tnet.sniffer2.GetStartState().Doc("2-2-0").
-				Timeout(3*time.Second, nil).Doc("2-2-1").
-				Success("")
+				// nothing received on network 2
+				tnet.sniffer2.GetStartState().Doc("2-2-0").
+					Timeout(3*time.Second, nil).Doc("2-2-1").
+					Success("")
 
-			// nothing received on network 2
-			tnet.sniffer3.GetStartState().Doc("2-3-0").
-				Timeout(3*time.Second, nil).Doc("2-3-1").
-				Success("")
+				// nothing received on network 2
+				tnet.sniffer3.GetStartState().Doc("2-3-0").
+					Timeout(3*time.Second, nil).Doc("2-3-1").
+					Success("")
 
-			// run the group
-			tnet.Run(0)
+				// run the group
+				tnet.Run(0)
+			})
 		})
 		t.Run("test_03", func(t *testing.T) {
-			//Test broadcast for non-existing router.
-			ExclusiveGlobalTimeMachine(t)
-			// create a network
-			tnet := NewTNetwork2(t)
+			synctest.Test(t, func(t *testing.T) {
+				//Test broadcast for non-existing router.
+				ExclusiveGlobalTimeMachine(t)
+				// create a network
+				tnet := NewTNetwork2(t)
 
-			// test device sends request, sees response
-			whois, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil)), WithWhoIsRouterToNetworkNet(4))
-			require.NoError(t, err)
-			tnet.td.GetStartState().Doc("3-1-0").
-				Send(whois, nil).Doc("3-1-1").
-				Timeout(3*time.Second, nil).Doc("3-1-2").
-				Success("")
+				// test device sends request, sees response
+				whois, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil)), WithWhoIsRouterToNetworkNet(4))
+				require.NoError(t, err)
+				tnet.td.GetStartState().Doc("3-1-0").
+					Send(whois, nil).Doc("3-1-1").
+					Timeout(3*time.Second, nil).Doc("3-1-2").
+					Success("")
 
-			// sniffer on network 1 sees the request and the response
-			tnet.sniffer1.GetStartState().Doc("3-2-0").
-				Receive(NA(PDUMatcher),
-					NKW(KWTestPDUData, xtob(
-						"01.80"+ //version, network layer
-							"00 0004", //message type, and network
-					)),
-				).Doc("3-2-1").
-				Success("")
+				// sniffer on network 1 sees the request and the response
+				tnet.sniffer1.GetStartState().Doc("3-2-0").
+					Receive(NA(PDUMatcher),
+						NKW(KWTestPDUData, xtob(
+							"01.80"+ //version, network layer
+								"00 0004", //message type, and network
+						)),
+					).Doc("3-2-1").
+					Success("")
 
-			// sniffer on network 2 sees request forwarded by router
-			tnet.sniffer2.GetStartState().Doc("3-3-0").
-				Receive(NA(PDUMatcher),
-					NKW(KWTestPDUData, xtob(
-						"01.88"+ //version, network layer
-							"0001 01 01"+ // snet/slen/sadr
-							"00 0004", //message type, and network
-					)),
-				).Doc("3-3-1").
-				Success("")
+				// sniffer on network 2 sees request forwarded by router
+				tnet.sniffer2.GetStartState().Doc("3-3-0").
+					Receive(NA(PDUMatcher),
+						NKW(KWTestPDUData, xtob(
+							"01.88"+ //version, network layer
+								"0001 01 01"+ // snet/slen/sadr
+								"00 0004", //message type, and network
+						)),
+					).Doc("3-3-1").
+					Success("")
 
-			tnet.sniffer3.GetStartState().Doc("3-4-0").
-				Receive(NA(PDUMatcher),
-					NKW(KWTestPDUData, xtob(
-						"01.88"+ //version, network layer
-							"0001 01 01"+ // snet/slen/sadr
-							"00 0004", //message type, and network
-					)),
-				).Doc("3-4-1").
-				Success("")
+				tnet.sniffer3.GetStartState().Doc("3-4-0").
+					Receive(NA(PDUMatcher),
+						NKW(KWTestPDUData, xtob(
+							"01.88"+ //version, network layer
+								"0001 01 01"+ // snet/slen/sadr
+								"00 0004", //message type, and network
+						)),
+					).Doc("3-4-1").
+					Success("")
 
-			// run the group
-			tnet.Run(0)
+				// run the group
+				tnet.Run(0)
+			})
 		})
 	})
 }

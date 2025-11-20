@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"net/url"
 	"testing"
+	"testing/synctest"
 	"time"
 
 	"github.com/stretchr/testify/assert"
@@ -639,148 +640,154 @@ func TestMessageCodec_Receive(t *testing.T) {
 
 func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 	t.Run("instant data", func(t *testing.T) {
-		_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+		synctest.Test(t, func(t *testing.T) {
+			_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-		transport := test.NewTransport(_options...)
-		ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"1ms"}}, _options...)
-		require.NoError(t, err)
-		require.NoError(t, ti.Connect(t.Context()))
-		codec := NewMessageCodec(ti, _options...)
-		t.Cleanup(func() {
-			assert.Error(t, codec.Disconnect())
-		})
-		codec.requestContext = readWriteModel.NewRequestContext(true)
+			transport := test.NewTransport(_options...)
+			ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"1ms"}}, _options...)
+			require.NoError(t, err)
+			require.NoError(t, ti.Connect(t.Context()))
+			codec := NewMessageCodec(ti, _options...)
+			t.Cleanup(func() {
+				assert.Error(t, codec.Disconnect())
+			})
+			codec.requestContext = readWriteModel.NewRequestContext(true)
 
-		timeoutCtx := func(timeout time.Duration) context.Context {
-			withTimeout, cancelFunc := context.WithTimeout(t.Context(), timeout)
-			t.Cleanup(cancelFunc)
-			return withTimeout
-		}
+			timeoutCtx := func(timeout time.Duration) context.Context {
+				withTimeout, cancelFunc := context.WithTimeout(t.Context(), timeout)
+				t.Cleanup(cancelFunc)
+				return withTimeout
+			}
 
-		var msg spi.Message
-		msg, err = codec.Receive(timeoutCtx(1 * time.Second))
-		// No data yet so this should return no error and no data
-		assert.NoError(t, err)
-		assert.Nil(t, msg)
-		// Now we add a confirmation
-		ti.(*test.TransportInstance).FillReadBuffer([]byte("i."))
-
-		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive(timeoutCtx(1 * time.Second))
-		assert.NoError(t, err)
-		assert.Nil(t, msg)
-
-		// Now we fill in the payload
-		ti.(*test.TransportInstance).FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
-
-		// We should wait for more data, so no error
-		msg, err = codec.Receive(timeoutCtx(2 * time.Second))
-		assert.NoError(t, err)
-		require.NotNil(t, msg)
-
-		// The message should have a confirmation with an alpha
-		require.Implements(t, (*readWriteModel.CBusMessageToClient)(nil), msg)
-		assert.True(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
-	})
-	t.Run("data after 6 times", func(t *testing.T) {
-		_options := testutils.EnrichOptionsWithOptionsForTesting(t)
-
-		transport := test.NewTransport(_options...)
-		ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"1ms"}}, _options...)
-		require.NoError(t, err)
-
-		require.NoError(t, ti.Connect(t.Context()))
-		codec := NewMessageCodec(ti, _options...)
-		t.Cleanup(func() {
-			assert.Error(t, codec.Disconnect())
-		})
-		codec.requestContext = readWriteModel.NewRequestContext(true)
-
-		canceledCtx := func() context.Context {
-			ctx, cancelFunc := context.WithCancel(t.Context())
-			cancelFunc()
-			return ctx
-		}
-		var msg spi.Message
-		msg, err = codec.Receive(canceledCtx())
-		// No data yet so this should return no error and no data
-		assert.NoError(t, err)
-		assert.Nil(t, msg)
-		// Now we add a confirmation
-		ti.(*test.TransportInstance).FillReadBuffer([]byte("i."))
-
-		for i := 0; i < 8; i++ {
-			t.Logf("%d try", i+1)
-			// We should wait for more data, so no error, no message
-			msg, err = codec.Receive(canceledCtx())
+			var msg spi.Message
+			msg, err = codec.Receive(timeoutCtx(1 * time.Second))
+			// No data yet so this should return no error and no data
 			assert.NoError(t, err)
 			assert.Nil(t, msg)
-		}
+			// Now we add a confirmation
+			ti.(*test.TransportInstance).FillReadBuffer([]byte("i."))
 
-		// Now we fill in the payload
-		ti.(*test.TransportInstance).FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
+			// We should wait for more data, so no error, no message
+			msg, err = codec.Receive(timeoutCtx(1 * time.Second))
+			assert.NoError(t, err)
+			assert.Nil(t, msg)
 
-		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive(t.Context())
-		assert.NoError(t, err)
-		assert.NotNil(t, msg)
+			// Now we fill in the payload
+			ti.(*test.TransportInstance).FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
-		// The message should have a confirmation with an alpha
-		require.Implements(t, (*readWriteModel.CBusMessageToClient)(nil), msg)
-		cBusMessageToClient := msg.(readWriteModel.CBusMessageToClient)
-		assert.True(t, cBusMessageToClient.GetReply().GetIsAlpha())
-	})
-	t.Run("data after 15 times", func(t *testing.T) {
-		_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+			// We should wait for more data, so no error
+			msg, err = codec.Receive(timeoutCtx(2 * time.Second))
+			assert.NoError(t, err)
+			require.NotNil(t, msg)
 
-		transport := test.NewTransport(_options...)
-		ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"1ms"}}, _options...)
-		require.NoError(t, err)
-
-		require.NoError(t, ti.Connect(t.Context()))
-		codec := NewMessageCodec(ti, _options...)
-		t.Cleanup(func() {
-			assert.Error(t, codec.Disconnect())
+			// The message should have a confirmation with an alpha
+			require.Implements(t, (*readWriteModel.CBusMessageToClient)(nil), msg)
+			assert.True(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
 		})
-		codec.requestContext = readWriteModel.NewRequestContext(true)
+	})
+	t.Run("data after 6 times", func(t *testing.T) {
+		t.Run("instant data", func(t *testing.T) {
+			_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-		var msg spi.Message
-		msg, err = codec.Receive(t.Context())
-		// No data yet so this should return no error and no data
-		assert.NoError(t, err)
-		assert.Nil(t, msg)
-		// Now we add a confirmation
-		ti.(*test.TransportInstance).FillReadBuffer([]byte("i."))
+			transport := test.NewTransport(_options...)
+			ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"1ms"}}, _options...)
+			require.NoError(t, err)
 
-		for i := 0; i <= 15; i++ {
-			t.Logf("%d try", i+1)
+			require.NoError(t, ti.Connect(t.Context()))
+			codec := NewMessageCodec(ti, _options...)
+			t.Cleanup(func() {
+				assert.Error(t, codec.Disconnect())
+			})
+			codec.requestContext = readWriteModel.NewRequestContext(true)
+
+			canceledCtx := func() context.Context {
+				ctx, cancelFunc := context.WithCancel(t.Context())
+				cancelFunc()
+				return ctx
+			}
+			var msg spi.Message
+			msg, err = codec.Receive(canceledCtx())
+			// No data yet so this should return no error and no data
+			assert.NoError(t, err)
+			assert.Nil(t, msg)
+			// Now we add a confirmation
+			ti.(*test.TransportInstance).FillReadBuffer([]byte("i."))
+
+			for i := 0; i < 8; i++ {
+				t.Logf("%d try", i+1)
+				// We should wait for more data, so no error, no message
+				msg, err = codec.Receive(canceledCtx())
+				assert.NoError(t, err)
+				assert.Nil(t, msg)
+			}
+
+			// Now we fill in the payload
+			ti.(*test.TransportInstance).FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
+
 			// We should wait for more data, so no error, no message
 			msg, err = codec.Receive(t.Context())
-			if i == 15 {
-				require.NoError(t, err)
-				require.NotNil(t, msg)
-				// This should be the confirmation only ...
-				reply := msg.(readWriteModel.CBusMessageToClient).GetReply()
-				assert.True(t, reply.GetIsAlpha())
-				// ... and no content
-				assert.Nil(t, reply.(readWriteModel.ReplyOrConfirmationConfirmation).GetEmbeddedReply())
-			} else {
-				assert.NoError(t, err)
-				assert.Nil(t, msg, "Got message at %d try", i+1)
+			assert.NoError(t, err)
+			assert.NotNil(t, msg)
+
+			// The message should have a confirmation with an alpha
+			require.Implements(t, (*readWriteModel.CBusMessageToClient)(nil), msg)
+			cBusMessageToClient := msg.(readWriteModel.CBusMessageToClient)
+			assert.True(t, cBusMessageToClient.GetReply().GetIsAlpha())
+		})
+	})
+	t.Run("data after 15 times", func(t *testing.T) {
+		t.Run("instant data", func(t *testing.T) {
+			_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+
+			transport := test.NewTransport(_options...)
+			ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, map[string][]string{"simulatedLatency": {"1ms"}}, _options...)
+			require.NoError(t, err)
+
+			require.NoError(t, ti.Connect(t.Context()))
+			codec := NewMessageCodec(ti, _options...)
+			t.Cleanup(func() {
+				assert.Error(t, codec.Disconnect())
+			})
+			codec.requestContext = readWriteModel.NewRequestContext(true)
+
+			var msg spi.Message
+			msg, err = codec.Receive(t.Context())
+			// No data yet so this should return no error and no data
+			assert.NoError(t, err)
+			assert.Nil(t, msg)
+			// Now we add a confirmation
+			ti.(*test.TransportInstance).FillReadBuffer([]byte("i."))
+
+			for i := 0; i <= 15; i++ {
+				t.Logf("%d try", i+1)
+				// We should wait for more data, so no error, no message
+				msg, err = codec.Receive(t.Context())
+				if i == 15 {
+					require.NoError(t, err)
+					require.NotNil(t, msg)
+					// This should be the confirmation only ...
+					reply := msg.(readWriteModel.CBusMessageToClient).GetReply()
+					assert.True(t, reply.GetIsAlpha())
+					// ... and no content
+					assert.Nil(t, reply.(readWriteModel.ReplyOrConfirmationConfirmation).GetEmbeddedReply())
+				} else {
+					assert.NoError(t, err)
+					assert.Nil(t, msg, "Got message at %d try", i+1)
+				}
 			}
-		}
 
-		// Now we fill in the payload
-		ti.(*test.TransportInstance).FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
+			// Now we fill in the payload
+			ti.(*test.TransportInstance).FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
-		// We should wait for more data, so no error, no message
-		msg, err = codec.Receive(t.Context())
-		assert.NoError(t, err)
-		assert.NotNil(t, msg)
+			// We should wait for more data, so no error, no message
+			msg, err = codec.Receive(t.Context())
+			assert.NoError(t, err)
+			assert.NotNil(t, msg)
 
-		// The message should have a confirmation without an alpha
-		require.Implements(t, (*readWriteModel.CBusMessageToClient)(nil), msg)
-		assert.False(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
+			// The message should have a confirmation without an alpha
+			require.Implements(t, (*readWriteModel.CBusMessageToClient)(nil), msg)
+			assert.False(t, msg.(readWriteModel.CBusMessageToClient).GetReply().GetIsAlpha())
+		})
 	})
 }
 

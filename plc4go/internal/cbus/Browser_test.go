@@ -27,6 +27,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"testing"
+	"testing/synctest"
 	"time"
 
 	"github.com/pkg/errors"
@@ -613,21 +614,23 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields, &tt.args)
-			}
-			m := Browser{
-				DefaultBrowser:  tt.fields.DefaultBrowser,
-				connection:      tt.fields.connection,
-				sequenceCounter: tt.fields.sequenceCounter,
-				log:             testutils.ProduceTestingLogger(t),
-			}
-			got, err := m.getInstalledUnitAddressBytes(tt.args.ctx)
-			if !tt.wantErr(t, err, fmt.Sprintf("getInstalledUnitAddressBytes(%v)", tt.args.ctx)) {
-				return
-			}
-			assert.Equalf(t, tt.want, got, "getInstalledUnitAddressBytes(%v)", tt.args.ctx)
-			t.Log("Banananaaaa")
+			synctest.Test(t, func(t *testing.T) {
+				if tt.setup != nil {
+					tt.setup(t, &tt.fields, &tt.args)
+				}
+				m := Browser{
+					DefaultBrowser:  tt.fields.DefaultBrowser,
+					connection:      tt.fields.connection,
+					sequenceCounter: tt.fields.sequenceCounter,
+					log:             testutils.ProduceTestingLogger(t),
+				}
+				got, err := m.getInstalledUnitAddressBytes(tt.args.ctx)
+				if !tt.wantErr(t, err, fmt.Sprintf("getInstalledUnitAddressBytes(%v)", tt.args.ctx)) {
+					return
+				}
+				assert.Equalf(t, tt.want, got, "getInstalledUnitAddressBytes(%v)", tt.args.ctx)
+				t.Log("Banananaaaa")
+			})
 		})
 	}
 }

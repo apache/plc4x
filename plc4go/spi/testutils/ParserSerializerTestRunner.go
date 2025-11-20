@@ -28,6 +28,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"testing/synctest"
 
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -207,9 +208,11 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, parser Parser, 
 				return
 			}
 			t.Logf("Running testcase %s", testcase.name)
-			if err := testsuite.Run(t, testcase); err != nil {
-				t.Fatalf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
-			}
+			synctest.Test(t, func(t *testing.T) {
+				if err := testsuite.Run(t, testcase); err != nil {
+					t.Fatalf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
+				}
+			})
 		})
 	}
 	t.Log("Done running testcases")

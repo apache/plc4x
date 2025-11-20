@@ -21,6 +21,7 @@ package test_bvll
 
 import (
 	"testing"
+	"testing/synctest"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -121,197 +122,207 @@ func (t *TFNetwork) Run(timeLimit time.Duration) {
 
 func TestForeign(t *testing.T) {
 	t.Run("test_idle", func(t *testing.T) { //Test an idle network, nothing happens is success.
-		ExclusiveGlobalTimeMachine(t)
+		synctest.Test(t, func(t *testing.T) {
+			ExclusiveGlobalTimeMachine(t)
 
-		tnet := NewTFNetwork(t)
+			tnet := NewTFNetwork(t)
 
-		// all start state are successful
-		tnet.fd.GetStartState().Success("")
-		tnet.bbmd.GetStartState().Success("")
+			// all start state are successful
+			tnet.fd.GetStartState().Success("")
+			tnet.bbmd.GetStartState().Success("")
 
-		// run the group
-		tnet.Run(0)
+			// run the group
+			tnet.Run(0)
+		})
 	})
 	t.Run("test_registration", func(t *testing.T) {
-		ExclusiveGlobalTimeMachine(t)
-		testingLogger := testutils.ProduceTestingLogger(t)
+		synctest.Test(t, func(t *testing.T) {
+			ExclusiveGlobalTimeMachine(t)
+			testingLogger := testutils.ProduceTestingLogger(t)
 
-		// create a network
-		tnet := NewTFNetwork(t)
+			// create a network
+			tnet := NewTFNetwork(t)
 
-		// tell the B/IP layer of the foreign device to register
-		tnet.fd.GetStartState().
-			Call(func(args Args, _ KWArgs) error {
-				return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
-			}, NA(tnet.bbmd.address, uint16(30)), NoKWArgs()).
-			Success("")
+			// tell the B/IP layer of the foreign device to register
+			tnet.fd.GetStartState().
+				Call(func(args Args, _ KWArgs) error {
+					return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
+				}, NA(tnet.bbmd.address, uint16(30)), NoKWArgs()).
+				Success("")
 
-		// remote sniffer node
-		remoteSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.6.254/24", tnet.vlan6)
-		require.NoError(t, err)
-		tnet.Append(remoteSniffer)
+			// remote sniffer node
+			remoteSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.6.254/24", tnet.vlan6)
+			require.NoError(t, err)
+			tnet.Append(remoteSniffer)
 
-		// sniffer traffic
-		remoteSniffer.GetStartState().Doc("1-1-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("1-1-1").
-			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("1-1-2").
-			SetEvent("fd-registered").Doc("1-1-3").
-			Success("")
+			// sniffer traffic
+			remoteSniffer.GetStartState().Doc("1-1-0").
+				Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("1-1-1").
+				Receive(NA((*Result)(nil)), NoKWArgs()).Doc("1-1-2").
+				SetEvent("fd-registered").Doc("1-1-3").
+				Success("")
 
-		// the bbmd is idle
-		tnet.bbmd.GetStartState().Success("")
+			// the bbmd is idle
+			tnet.bbmd.GetStartState().Success("")
 
-		// home snooper node
-		homeSnooper, err := NewBIPStateMachine(testingLogger, "192.168.5.2/24", tnet.vlan5)
-		tnet.Append(homeSnooper)
+			// home snooper node
+			homeSnooper, err := NewBIPStateMachine(testingLogger, "192.168.5.2/24", tnet.vlan5)
+			tnet.Append(homeSnooper)
 
-		// snooper will read foreign device table
-		homeSnooper.GetStartState().Doc("1-2-0").
-			WaitEvent("fd-registered", nil).Doc("1-2-1").
-			Send(quick.ReadForeignDeviceTable(tnet.bbmd.address), nil).Doc("1-2-2").
-			Receive(NA((*ReadForeignDeviceTableAck)(nil)), NoKWArgs()).Doc("1-2-3").
-			Success("")
+			// snooper will read foreign device table
+			homeSnooper.GetStartState().Doc("1-2-0").
+				WaitEvent("fd-registered", nil).Doc("1-2-1").
+				Send(quick.ReadForeignDeviceTable(tnet.bbmd.address), nil).Doc("1-2-2").
+				Receive(NA((*ReadForeignDeviceTableAck)(nil)), NoKWArgs()).Doc("1-2-3").
+				Success("")
 
-		// home sniffer node
-		homeSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.5.254/24", tnet.vlan5)
-		require.NoError(t, err)
-		tnet.Append(homeSniffer)
+			// home sniffer node
+			homeSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.5.254/24", tnet.vlan5)
+			require.NoError(t, err)
+			tnet.Append(homeSniffer)
 
-		// sniffer traffic
-		homeSniffer.GetStartState().Doc("1-3-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("1-3-1").
-			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("1-3-2").
-			Receive(NA((*ReadForeignDeviceTable)(nil)), NoKWArgs()).Doc("1-3-3").
-			Receive(NA((*ReadForeignDeviceTableAck)(nil)), NoKWArgs()).Doc("1-3-4").
-			Success("")
+			// sniffer traffic
+			homeSniffer.GetStartState().Doc("1-3-0").
+				Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("1-3-1").
+				Receive(NA((*Result)(nil)), NoKWArgs()).Doc("1-3-2").
+				Receive(NA((*ReadForeignDeviceTable)(nil)), NoKWArgs()).Doc("1-3-3").
+				Receive(NA((*ReadForeignDeviceTableAck)(nil)), NoKWArgs()).Doc("1-3-4").
+				Success("")
 
-		//  run the group
-		tnet.Run(0)
+			//  run the group
+			tnet.Run(0)
+		})
 	})
 	t.Run("test_refresh_registration", func(t *testing.T) {
-		ExclusiveGlobalTimeMachine(t)
-		testingLogger := testutils.ProduceTestingLogger(t)
+		synctest.Test(t, func(t *testing.T) {
+			ExclusiveGlobalTimeMachine(t)
+			testingLogger := testutils.ProduceTestingLogger(t)
 
-		// create a network
-		tnet := NewTFNetwork(t)
+			// create a network
+			tnet := NewTFNetwork(t)
 
-		// tell the B/IP layer of the foreign device to register
-		tnet.fd.GetStartState().
-			Call(func(args Args, _ KWArgs) error {
-				return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
-			}, NA(tnet.bbmd.address, uint16(10)), NoKWArgs()).
-			Success("")
+			// tell the B/IP layer of the foreign device to register
+			tnet.fd.GetStartState().
+				Call(func(args Args, _ KWArgs) error {
+					return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
+				}, NA(tnet.bbmd.address, uint16(10)), NoKWArgs()).
+				Success("")
 
-		// the bbmd is idle
-		tnet.bbmd.GetStartState().Success("")
+			// the bbmd is idle
+			tnet.bbmd.GetStartState().Success("")
 
-		// remote sniffer node
-		remoteSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.6.254/24", tnet.vlan6)
-		require.NoError(t, err)
-		tnet.Append(remoteSniffer)
+			// remote sniffer node
+			remoteSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.6.254/24", tnet.vlan6)
+			require.NoError(t, err)
+			tnet.Append(remoteSniffer)
 
-		// sniffer traffic
-		remoteSniffer.GetStartState().Doc("2-1-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("2-1-1").
-			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("2-1-1").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("2-1-3").
-			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("2-1-4").
-			Success("")
+			// sniffer traffic
+			remoteSniffer.GetStartState().Doc("2-1-0").
+				Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("2-1-1").
+				Receive(NA((*Result)(nil)), NoKWArgs()).Doc("2-1-1").
+				Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("2-1-3").
+				Receive(NA((*Result)(nil)), NoKWArgs()).Doc("2-1-4").
+				Success("")
 
-		//  run the group
-		tnet.Run(0)
+			//  run the group
+			tnet.Run(0)
+		})
 	})
 	t.Run("test_unicast", func(t *testing.T) { //Test a unicast message from TD to IUT.
-		ExclusiveGlobalTimeMachine(t)
-		testingLogger := testutils.ProduceTestingLogger(t)
+		synctest.Test(t, func(t *testing.T) {
+			ExclusiveGlobalTimeMachine(t)
+			testingLogger := testutils.ProduceTestingLogger(t)
 
-		tnet := NewTFNetwork(t)
+			tnet := NewTFNetwork(t)
 
-		//make a PDU from node 1 to node 2
-		pduData, err := Xtob("dead.beef")
-		require.NoError(t, err)
-		pdu := NewPDU(NA(pduData), NKW(KWCPCISource, tnet.fd.address, KWCPCIDestination, tnet.bbmd.address))
-		t.Logf("    - pdu: %s", pdu)
+			//make a PDU from node 1 to node 2
+			pduData, err := Xtob("dead.beef")
+			require.NoError(t, err)
+			pdu := NewPDU(NA(pduData), NKW(KWCPCISource, tnet.fd.address, KWCPCIDestination, tnet.bbmd.address))
+			t.Logf("    - pdu: %s", pdu)
 
-		// register, wait for ack, send some beef
-		tnet.fd.GetStartState().Doc("3-1-0").
-			Call(func(args Args, _ KWArgs) error {
-				return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
-			}, NA(tnet.bbmd.address, uint16(60)), NoKWArgs()).Doc("3-1-1").
-			WaitEvent("3-registered", nil).Doc("3-1-2").
-			Send(pdu, nil).Doc("3-1-3").
-			Success("")
+			// register, wait for ack, send some beef
+			tnet.fd.GetStartState().Doc("3-1-0").
+				Call(func(args Args, _ KWArgs) error {
+					return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
+				}, NA(tnet.bbmd.address, uint16(60)), NoKWArgs()).Doc("3-1-1").
+				WaitEvent("3-registered", nil).Doc("3-1-2").
+				Send(pdu, nil).Doc("3-1-3").
+				Success("")
 
-		// the bbmd is happy when it gets the pdu
-		tnet.bbmd.GetStartState().
-			Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWTestPDUData, pduData)).
-			Success("")
+			// the bbmd is happy when it gets the pdu
+			tnet.bbmd.GetStartState().
+				Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWTestPDUData, pduData)).
+				Success("")
 
-		// remote sniffer node
-		remoteSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.6.254/24", tnet.vlan6)
-		require.NoError(t, err)
-		tnet.Append(remoteSniffer)
+			// remote sniffer node
+			remoteSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.6.254/24", tnet.vlan6)
+			require.NoError(t, err)
+			tnet.Append(remoteSniffer)
 
-		// sniffer traffic
-		remoteSniffer.GetStartState().Doc("3-2-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("3-2-1").
-			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("3-2-2").
-			SetEvent("3-registered").Doc("3-2-3").
-			Receive(NA((*OriginalUnicastNPDU)(nil)), NoKWArgs()).Doc("3-2-4").
-			Success("")
+			// sniffer traffic
+			remoteSniffer.GetStartState().Doc("3-2-0").
+				Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("3-2-1").
+				Receive(NA((*Result)(nil)), NoKWArgs()).Doc("3-2-2").
+				SetEvent("3-registered").Doc("3-2-3").
+				Receive(NA((*OriginalUnicastNPDU)(nil)), NoKWArgs()).Doc("3-2-4").
+				Success("")
 
-		// run the group
-		tnet.Run(0)
+			// run the group
+			tnet.Run(0)
+		})
 	})
 	t.Run("test_broadcast", func(t *testing.T) { //Test a broadcast message from TD to IUT.
-		ExclusiveGlobalTimeMachine(t)
-		testingLogger := testutils.ProduceTestingLogger(t)
+		synctest.Test(t, func(t *testing.T) {
+			ExclusiveGlobalTimeMachine(t)
+			testingLogger := testutils.ProduceTestingLogger(t)
 
-		tnet := NewTFNetwork(t)
+			tnet := NewTFNetwork(t)
 
-		//make a PDU from node 1 to node 2
-		pduData, err := Xtob("dead.beef")
-		require.NoError(t, err)
-		pdu := NewPDU(NA(pduData), NKW(KWCPCISource, tnet.fd.address, KWCPCIDestination, NewLocalBroadcast(nil)))
-		t.Logf("pdu: %v", pdu)
+			//make a PDU from node 1 to node 2
+			pduData, err := Xtob("dead.beef")
+			require.NoError(t, err)
+			pdu := NewPDU(NA(pduData), NKW(KWCPCISource, tnet.fd.address, KWCPCIDestination, NewLocalBroadcast(nil)))
+			t.Logf("pdu: %v", pdu)
 
-		// register, wait for ack, send some beef
-		tnet.fd.GetStartState().Doc("4-1-0").
-			Call(func(args Args, _ KWArgs) error {
-				return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
-			}, NA(tnet.bbmd.address, uint16(60)), NoKWArgs()).Doc("4-1-1").
-			WaitEvent("4-registered", nil).Doc("4-1-2").
-			Send(pdu, nil).Doc("4-1-3").
-			Success("")
+			// register, wait for ack, send some beef
+			tnet.fd.GetStartState().Doc("4-1-0").
+				Call(func(args Args, _ KWArgs) error {
+					return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
+				}, NA(tnet.bbmd.address, uint16(60)), NoKWArgs()).Doc("4-1-1").
+				WaitEvent("4-registered", nil).Doc("4-1-2").
+				Send(pdu, nil).Doc("4-1-3").
+				Success("")
 
-		// the bbmd is happy when it gets the pdu
-		tnet.bbmd.GetStartState().
-			Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWTestPDUData, pduData)).Doc("4-2-1").
-			Success("")
+			// the bbmd is happy when it gets the pdu
+			tnet.bbmd.GetStartState().
+				Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWTestPDUData, pduData)).Doc("4-2-1").
+				Success("")
 
-		// home simple node
-		homeNode, err := NewBIPSimpleStateMachine(testingLogger, "192.168.5.254/24", tnet.vlan5)
-		require.NoError(t, err)
+			// home simple node
+			homeNode, err := NewBIPSimpleStateMachine(testingLogger, "192.168.5.254/24", tnet.vlan5)
+			require.NoError(t, err)
 
-		// home node happy when getting the pdu, broadcast by the bbmd
-		homeNode.GetStartState().Doc("4-3-0").
-			Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWTestPDUData, pduData)).Doc("4-3-1").
-			Success("")
+			// home node happy when getting the pdu, broadcast by the bbmd
+			homeNode.GetStartState().Doc("4-3-0").
+				Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWTestPDUData, pduData)).Doc("4-3-1").
+				Success("")
 
-		// remote sniffer node
-		remoteSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.6.254/24", tnet.vlan6)
-		require.NoError(t, err)
-		tnet.Append(remoteSniffer)
+			// remote sniffer node
+			remoteSniffer, err := NewSnifferStateMachine(testingLogger, "192.168.6.254/24", tnet.vlan6)
+			require.NoError(t, err)
+			tnet.Append(remoteSniffer)
 
-		// sniffer traffic
-		remoteSniffer.GetStartState().Doc("4-4-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("4-4-1").
-			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("4-4-2").
-			SetEvent("4-registered").
-			Receive(NA((*DistributeBroadcastToNetwork)(nil)), NoKWArgs()).Doc("4-4-3").
-			Success("")
+			// sniffer traffic
+			remoteSniffer.GetStartState().Doc("4-4-0").
+				Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("4-4-1").
+				Receive(NA((*Result)(nil)), NoKWArgs()).Doc("4-4-2").
+				SetEvent("4-registered").
+				Receive(NA((*DistributeBroadcastToNetwork)(nil)), NoKWArgs()).Doc("4-4-3").
+				Success("")
 
-		// run the group
-		tnet.Run(0)
+			// run the group
+			tnet.Run(0)
+		})
 	})
 }

@@ -26,6 +26,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"testing"
+	"testing/synctest"
 	"time"
 
 	"github.com/stretchr/testify/assert"
@@ -1465,22 +1466,24 @@ func TestConnection_setupConnection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.setup != nil {
-				tt.setup(t, &tt.fields, &tt.args)
-			}
-			c := &Connection{
-				messageCodec:  tt.fields.messageCodec,
-				subscribers:   tt.fields.subscribers,
-				tm:            tt.fields.tm,
-				configuration: tt.fields.configuration,
-				driverContext: driverContextForTesting(),
-				connectionId:  tt.fields.connectionId,
-				tracer:        tt.fields.tracer,
-				log:           testutils.ProduceTestingLogger(t),
-			}
-			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			err := c.setupConnection(tt.args.ctx)
-			tt.wantErr(t, err)
+			synctest.Test(t, func(t *testing.T) {
+				if tt.setup != nil {
+					tt.setup(t, &tt.fields, &tt.args)
+				}
+				c := &Connection{
+					messageCodec:  tt.fields.messageCodec,
+					subscribers:   tt.fields.subscribers,
+					tm:            tt.fields.tm,
+					configuration: tt.fields.configuration,
+					driverContext: driverContextForTesting(),
+					connectionId:  tt.fields.connectionId,
+					tracer:        tt.fields.tracer,
+					log:           testutils.ProduceTestingLogger(t),
+				}
+				c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
+				err := c.setupConnection(tt.args.ctx)
+				tt.wantErr(t, err)
+			})
 		})
 	}
 }
