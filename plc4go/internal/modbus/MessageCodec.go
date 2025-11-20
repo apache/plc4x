@@ -58,8 +58,8 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Send(ctx context.Context, interactionId string, message spi.Message) error {
-	m.log.Trace().Str("interactionId", interactionId).Msg("Sending message")
+func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
+	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	tcpAdu := message.(model.ModbusTcpADU)
 	// Serialize the request

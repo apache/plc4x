@@ -106,7 +106,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				0,
 				typeIds,
 			)
-			transaction := m.tm.StartTransaction()
+			transaction := m.tm.StartTransaction("read")
 			transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 				ctx, cancel := context.WithCancel(ctx)
 				context.AfterFunc(transactionContext, cancel)

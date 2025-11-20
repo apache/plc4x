@@ -106,7 +106,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		)
 
 		// Start a new request-transaction (Is ended in the response-handler)
-		transaction := m.tm.StartTransaction()
+		transaction := m.tm.StartTransaction("write")
 		transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 			ctx, cancel := context.WithCancel(ctx)
 			context.AfterFunc(transactionContext, cancel)

@@ -431,8 +431,8 @@ func (_c *MockDefaultCodecRequirements_Receive_Call) RunAndReturn(run func(ctx c
 }
 
 // Send provides a mock function for the type MockDefaultCodecRequirements
-func (_mock *MockDefaultCodecRequirements) Send(ctx context.Context, interactionId string, message spi.Message) error {
-	ret := _mock.Called(ctx, interactionId, message)
+func (_mock *MockDefaultCodecRequirements) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
+	ret := _mock.Called(ctx, interactionInfo, message)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
@@ -440,7 +440,7 @@ func (_mock *MockDefaultCodecRequirements) Send(ctx context.Context, interaction
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(context.Context, string, spi.Message) error); ok {
-		r0 = returnFunc(ctx, interactionId, message)
+		r0 = returnFunc(ctx, interactionInfo, message)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -454,13 +454,13 @@ type MockDefaultCodecRequirements_Send_Call struct {
 
 // Send is a helper method to define mock.On call
 //   - ctx context.Context
-//   - interactionId string
+//   - interactionInfo string
 //   - message spi.Message
-func (_e *MockDefaultCodecRequirements_Expecter) Send(ctx interface{}, interactionId interface{}, message interface{}) *MockDefaultCodecRequirements_Send_Call {
-	return &MockDefaultCodecRequirements_Send_Call{Call: _e.mock.On("Send", ctx, interactionId, message)}
+func (_e *MockDefaultCodecRequirements_Expecter) Send(ctx interface{}, interactionInfo interface{}, message interface{}) *MockDefaultCodecRequirements_Send_Call {
+	return &MockDefaultCodecRequirements_Send_Call{Call: _e.mock.On("Send", ctx, interactionInfo, message)}
 }
 
-func (_c *MockDefaultCodecRequirements_Send_Call) Run(run func(ctx context.Context, interactionId string, message spi.Message)) *MockDefaultCodecRequirements_Send_Call {
+func (_c *MockDefaultCodecRequirements_Send_Call) Run(run func(ctx context.Context, interactionInfo string, message spi.Message)) *MockDefaultCodecRequirements_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -488,7 +488,7 @@ func (_c *MockDefaultCodecRequirements_Send_Call) Return(err error) *MockDefault
 	return _c
 }
 
-func (_c *MockDefaultCodecRequirements_Send_Call) RunAndReturn(run func(ctx context.Context, interactionId string, message spi.Message) error) *MockDefaultCodecRequirements_Send_Call {
+func (_c *MockDefaultCodecRequirements_Send_Call) RunAndReturn(run func(ctx context.Context, interactionInfo string, message spi.Message) error) *MockDefaultCodecRequirements_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -616,8 +616,8 @@ func (_c *MockDefaultCodec_Disconnect_Call) RunAndReturn(run func() error) *Mock
 }
 
 // Expect provides a mock function for the type MockDefaultCodec
-func (_mock *MockDefaultCodec) Expect(ctx context.Context, interactionId string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
-	_mock.Called(ctx, interactionId, acceptsMessage, handleMessage, handleError)
+func (_mock *MockDefaultCodec) Expect(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
+	_mock.Called(ctx, interactionInfo, acceptsMessage, handleMessage, handleError)
 	return
 }
 
@@ -628,15 +628,15 @@ type MockDefaultCodec_Expect_Call struct {
 
 // Expect is a helper method to define mock.On call
 //   - ctx context.Context
-//   - interactionId string
+//   - interactionInfo string
 //   - acceptsMessage spi.AcceptsMessage
 //   - handleMessage spi.HandleMessage
 //   - handleError spi.HandleError
-func (_e *MockDefaultCodec_Expecter) Expect(ctx interface{}, interactionId interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockDefaultCodec_Expect_Call {
-	return &MockDefaultCodec_Expect_Call{Call: _e.mock.On("Expect", ctx, interactionId, acceptsMessage, handleMessage, handleError)}
+func (_e *MockDefaultCodec_Expecter) Expect(ctx interface{}, interactionInfo interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockDefaultCodec_Expect_Call {
+	return &MockDefaultCodec_Expect_Call{Call: _e.mock.On("Expect", ctx, interactionInfo, acceptsMessage, handleMessage, handleError)}
 }
 
-func (_c *MockDefaultCodec_Expect_Call) Run(run func(ctx context.Context, interactionId string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockDefaultCodec_Expect_Call {
+func (_c *MockDefaultCodec_Expect_Call) Run(run func(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockDefaultCodec_Expect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -674,7 +674,7 @@ func (_c *MockDefaultCodec_Expect_Call) Return() *MockDefaultCodec_Expect_Call {
 	return _c
 }
 
-func (_c *MockDefaultCodec_Expect_Call) RunAndReturn(run func(ctx context.Context, interactionId string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockDefaultCodec_Expect_Call {
+func (_c *MockDefaultCodec_Expect_Call) RunAndReturn(run func(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockDefaultCodec_Expect_Call {
 	_c.Run(run)
 	return _c
 }
@@ -816,8 +816,8 @@ func (_c *MockDefaultCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockDe
 }
 
 // Send provides a mock function for the type MockDefaultCodec
-func (_mock *MockDefaultCodec) Send(ctx context.Context, interactionId string, message spi.Message) error {
-	ret := _mock.Called(ctx, interactionId, message)
+func (_mock *MockDefaultCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
+	ret := _mock.Called(ctx, interactionInfo, message)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
@@ -825,7 +825,7 @@ func (_mock *MockDefaultCodec) Send(ctx context.Context, interactionId string, m
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(context.Context, string, spi.Message) error); ok {
-		r0 = returnFunc(ctx, interactionId, message)
+		r0 = returnFunc(ctx, interactionInfo, message)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -839,13 +839,13 @@ type MockDefaultCodec_Send_Call struct {
 
 // Send is a helper method to define mock.On call
 //   - ctx context.Context
-//   - interactionId string
+//   - interactionInfo string
 //   - message spi.Message
-func (_e *MockDefaultCodec_Expecter) Send(ctx interface{}, interactionId interface{}, message interface{}) *MockDefaultCodec_Send_Call {
-	return &MockDefaultCodec_Send_Call{Call: _e.mock.On("Send", ctx, interactionId, message)}
+func (_e *MockDefaultCodec_Expecter) Send(ctx interface{}, interactionInfo interface{}, message interface{}) *MockDefaultCodec_Send_Call {
+	return &MockDefaultCodec_Send_Call{Call: _e.mock.On("Send", ctx, interactionInfo, message)}
 }
 
-func (_c *MockDefaultCodec_Send_Call) Run(run func(ctx context.Context, interactionId string, message spi.Message)) *MockDefaultCodec_Send_Call {
+func (_c *MockDefaultCodec_Send_Call) Run(run func(ctx context.Context, interactionInfo string, message spi.Message)) *MockDefaultCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -873,14 +873,14 @@ func (_c *MockDefaultCodec_Send_Call) Return(err error) *MockDefaultCodec_Send_C
 	return _c
 }
 
-func (_c *MockDefaultCodec_Send_Call) RunAndReturn(run func(ctx context.Context, interactionId string, message spi.Message) error) *MockDefaultCodec_Send_Call {
+func (_c *MockDefaultCodec_Send_Call) RunAndReturn(run func(ctx context.Context, interactionInfo string, message spi.Message) error) *MockDefaultCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SendRequest provides a mock function for the type MockDefaultCodec
-func (_mock *MockDefaultCodec) SendRequest(ctx context.Context, interactionId string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
-	ret := _mock.Called(ctx, interactionId, message, acceptsMessage, handleMessage, handleError)
+func (_mock *MockDefaultCodec) SendRequest(ctx context.Context, interactionInfo string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
+	ret := _mock.Called(ctx, interactionInfo, message, acceptsMessage, handleMessage, handleError)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendRequest")
@@ -888,7 +888,7 @@ func (_mock *MockDefaultCodec) SendRequest(ctx context.Context, interactionId st
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(context.Context, string, spi.Message, spi.AcceptsMessage, spi.HandleMessage, spi.HandleError) error); ok {
-		r0 = returnFunc(ctx, interactionId, message, acceptsMessage, handleMessage, handleError)
+		r0 = returnFunc(ctx, interactionInfo, message, acceptsMessage, handleMessage, handleError)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -902,16 +902,16 @@ type MockDefaultCodec_SendRequest_Call struct {
 
 // SendRequest is a helper method to define mock.On call
 //   - ctx context.Context
-//   - interactionId string
+//   - interactionInfo string
 //   - message spi.Message
 //   - acceptsMessage spi.AcceptsMessage
 //   - handleMessage spi.HandleMessage
 //   - handleError spi.HandleError
-func (_e *MockDefaultCodec_Expecter) SendRequest(ctx interface{}, interactionId interface{}, message interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockDefaultCodec_SendRequest_Call {
-	return &MockDefaultCodec_SendRequest_Call{Call: _e.mock.On("SendRequest", ctx, interactionId, message, acceptsMessage, handleMessage, handleError)}
+func (_e *MockDefaultCodec_Expecter) SendRequest(ctx interface{}, interactionInfo interface{}, message interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockDefaultCodec_SendRequest_Call {
+	return &MockDefaultCodec_SendRequest_Call{Call: _e.mock.On("SendRequest", ctx, interactionInfo, message, acceptsMessage, handleMessage, handleError)}
 }
 
-func (_c *MockDefaultCodec_SendRequest_Call) Run(run func(ctx context.Context, interactionId string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockDefaultCodec_SendRequest_Call {
+func (_c *MockDefaultCodec_SendRequest_Call) Run(run func(ctx context.Context, interactionInfo string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockDefaultCodec_SendRequest_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -954,7 +954,7 @@ func (_c *MockDefaultCodec_SendRequest_Call) Return(err error) *MockDefaultCodec
 	return _c
 }
 
-func (_c *MockDefaultCodec_SendRequest_Call) RunAndReturn(run func(ctx context.Context, interactionId string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error) *MockDefaultCodec_SendRequest_Call {
+func (_c *MockDefaultCodec_SendRequest_Call) RunAndReturn(run func(ctx context.Context, interactionInfo string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error) *MockDefaultCodec_SendRequest_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -3730,8 +3730,8 @@ func (_c *MockMessageCodec_Disconnect_Call) RunAndReturn(run func() error) *Mock
 }
 
 // Expect provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Expect(ctx context.Context, interactionId string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
-	_mock.Called(ctx, interactionId, acceptsMessage, handleMessage, handleError)
+func (_mock *MockMessageCodec) Expect(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
+	_mock.Called(ctx, interactionInfo, acceptsMessage, handleMessage, handleError)
 	return
 }
 
@@ -3742,15 +3742,15 @@ type MockMessageCodec_Expect_Call struct {
 
 // Expect is a helper method to define mock.On call
 //   - ctx context.Context
-//   - interactionId string
+//   - interactionInfo string
 //   - acceptsMessage spi.AcceptsMessage
 //   - handleMessage spi.HandleMessage
 //   - handleError spi.HandleError
-func (_e *MockMessageCodec_Expecter) Expect(ctx interface{}, interactionId interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_Expect_Call {
-	return &MockMessageCodec_Expect_Call{Call: _e.mock.On("Expect", ctx, interactionId, acceptsMessage, handleMessage, handleError)}
+func (_e *MockMessageCodec_Expecter) Expect(ctx interface{}, interactionInfo interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_Expect_Call {
+	return &MockMessageCodec_Expect_Call{Call: _e.mock.On("Expect", ctx, interactionInfo, acceptsMessage, handleMessage, handleError)}
 }
 
-func (_c *MockMessageCodec_Expect_Call) Run(run func(ctx context.Context, interactionId string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockMessageCodec_Expect_Call {
+func (_c *MockMessageCodec_Expect_Call) Run(run func(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockMessageCodec_Expect_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -3788,7 +3788,7 @@ func (_c *MockMessageCodec_Expect_Call) Return() *MockMessageCodec_Expect_Call {
 	return _c
 }
 
-func (_c *MockMessageCodec_Expect_Call) RunAndReturn(run func(ctx context.Context, interactionId string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockMessageCodec_Expect_Call {
+func (_c *MockMessageCodec_Expect_Call) RunAndReturn(run func(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockMessageCodec_Expect_Call {
 	_c.Run(run)
 	return _c
 }
@@ -3930,8 +3930,8 @@ func (_c *MockMessageCodec_IsRunning_Call) RunAndReturn(run func() bool) *MockMe
 }
 
 // Send provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) Send(ctx context.Context, interactionId string, message spi.Message) error {
-	ret := _mock.Called(ctx, interactionId, message)
+func (_mock *MockMessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
+	ret := _mock.Called(ctx, interactionInfo, message)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Send")
@@ -3939,7 +3939,7 @@ func (_mock *MockMessageCodec) Send(ctx context.Context, interactionId string, m
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(context.Context, string, spi.Message) error); ok {
-		r0 = returnFunc(ctx, interactionId, message)
+		r0 = returnFunc(ctx, interactionInfo, message)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -3953,13 +3953,13 @@ type MockMessageCodec_Send_Call struct {
 
 // Send is a helper method to define mock.On call
 //   - ctx context.Context
-//   - interactionId string
+//   - interactionInfo string
 //   - message spi.Message
-func (_e *MockMessageCodec_Expecter) Send(ctx interface{}, interactionId interface{}, message interface{}) *MockMessageCodec_Send_Call {
-	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", ctx, interactionId, message)}
+func (_e *MockMessageCodec_Expecter) Send(ctx interface{}, interactionInfo interface{}, message interface{}) *MockMessageCodec_Send_Call {
+	return &MockMessageCodec_Send_Call{Call: _e.mock.On("Send", ctx, interactionInfo, message)}
 }
 
-func (_c *MockMessageCodec_Send_Call) Run(run func(ctx context.Context, interactionId string, message spi.Message)) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) Run(run func(ctx context.Context, interactionInfo string, message spi.Message)) *MockMessageCodec_Send_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -3987,14 +3987,14 @@ func (_c *MockMessageCodec_Send_Call) Return(err error) *MockMessageCodec_Send_C
 	return _c
 }
 
-func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(ctx context.Context, interactionId string, message spi.Message) error) *MockMessageCodec_Send_Call {
+func (_c *MockMessageCodec_Send_Call) RunAndReturn(run func(ctx context.Context, interactionInfo string, message spi.Message) error) *MockMessageCodec_Send_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SendRequest provides a mock function for the type MockMessageCodec
-func (_mock *MockMessageCodec) SendRequest(ctx context.Context, interactionId string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
-	ret := _mock.Called(ctx, interactionId, message, acceptsMessage, handleMessage, handleError)
+func (_mock *MockMessageCodec) SendRequest(ctx context.Context, interactionInfo string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
+	ret := _mock.Called(ctx, interactionInfo, message, acceptsMessage, handleMessage, handleError)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendRequest")
@@ -4002,7 +4002,7 @@ func (_mock *MockMessageCodec) SendRequest(ctx context.Context, interactionId st
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(context.Context, string, spi.Message, spi.AcceptsMessage, spi.HandleMessage, spi.HandleError) error); ok {
-		r0 = returnFunc(ctx, interactionId, message, acceptsMessage, handleMessage, handleError)
+		r0 = returnFunc(ctx, interactionInfo, message, acceptsMessage, handleMessage, handleError)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -4016,16 +4016,16 @@ type MockMessageCodec_SendRequest_Call struct {
 
 // SendRequest is a helper method to define mock.On call
 //   - ctx context.Context
-//   - interactionId string
+//   - interactionInfo string
 //   - message spi.Message
 //   - acceptsMessage spi.AcceptsMessage
 //   - handleMessage spi.HandleMessage
 //   - handleError spi.HandleError
-func (_e *MockMessageCodec_Expecter) SendRequest(ctx interface{}, interactionId interface{}, message interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_SendRequest_Call {
-	return &MockMessageCodec_SendRequest_Call{Call: _e.mock.On("SendRequest", ctx, interactionId, message, acceptsMessage, handleMessage, handleError)}
+func (_e *MockMessageCodec_Expecter) SendRequest(ctx interface{}, interactionInfo interface{}, message interface{}, acceptsMessage interface{}, handleMessage interface{}, handleError interface{}) *MockMessageCodec_SendRequest_Call {
+	return &MockMessageCodec_SendRequest_Call{Call: _e.mock.On("SendRequest", ctx, interactionInfo, message, acceptsMessage, handleMessage, handleError)}
 }
 
-func (_c *MockMessageCodec_SendRequest_Call) Run(run func(ctx context.Context, interactionId string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockMessageCodec_SendRequest_Call {
+func (_c *MockMessageCodec_SendRequest_Call) Run(run func(ctx context.Context, interactionInfo string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError)) *MockMessageCodec_SendRequest_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -4068,7 +4068,7 @@ func (_c *MockMessageCodec_SendRequest_Call) Return(err error) *MockMessageCodec
 	return _c
 }
 
-func (_c *MockMessageCodec_SendRequest_Call) RunAndReturn(run func(ctx context.Context, interactionId string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error) *MockMessageCodec_SendRequest_Call {
+func (_c *MockMessageCodec_SendRequest_Call) RunAndReturn(run func(ctx context.Context, interactionInfo string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error) *MockMessageCodec_SendRequest_Call {
 	_c.Call.Return(run)
 	return _c
 }

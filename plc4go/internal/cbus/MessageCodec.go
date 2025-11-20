@@ -98,8 +98,8 @@ func (m *MessageCodec) Disconnect() error {
 	return err
 }
 
-func (m *MessageCodec) Send(ctx context.Context, interactionId string, message spi.Message) error {
-	m.log.Trace().Str("interactionId", interactionId).Interface("message", message).Msg("Sending message")
+func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
+	m.log.Trace().Str("interactionInfo", interactionInfo).Interface("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	cbusMessage, ok := message.(readWriteModel.CBusMessage)
 	if !ok {

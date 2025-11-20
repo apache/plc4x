@@ -54,8 +54,8 @@ func (m *DiscoveryMessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *DiscoveryMessageCodec) Send(ctx context.Context, interactionId string, message spi.Message) error {
-	m.log.Trace().Str("interactionId", interactionId).Msg("Sending message")
+func (m *DiscoveryMessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
+	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	tcpPaket := message.(model.AdsDiscovery)
 	// Serialize the request

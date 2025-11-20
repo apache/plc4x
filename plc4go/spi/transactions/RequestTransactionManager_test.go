@@ -218,7 +218,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, r)
 			}
-			if got := r.StartTransaction(); !assert.True(t, tt.wantAssert(t, got)) {
+			if got := r.StartTransaction("defaultTransation"); !assert.True(t, tt.wantAssert(t, got)) {
 				t.Errorf("StartTransaction() = %v", got)
 			}
 		})

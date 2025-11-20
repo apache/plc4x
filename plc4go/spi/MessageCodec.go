@@ -55,12 +55,12 @@ type MessageCodec interface {
 	IsRunning() bool
 
 	// Send is sending a given message
-	Send(ctx context.Context, interactionId string, message Message) error
+	Send(ctx context.Context, interactionInfo string, message Message) error
 	// Expect Wait for a given timespan (defined by ctx or defaulting to default receive timeout) for a message to come
 	// in, which returns 'true' for 'acceptMessage' and is then forwarded to the 'handleMessage' function
-	Expect(ctx context.Context, interactionId string, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)
+	Expect(ctx context.Context, interactionInfo string, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError)
 	// SendRequest A combination that sends a message first and then waits for a response. !!!Important note: the callbacks are blocking calls
-	SendRequest(ctx context.Context, interactionId string, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) error
+	SendRequest(ctx context.Context, interactionInfo string, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError) error
 
 	// GetDefaultIncomingMessageChannel gives back the chan where unexpected messages arrive
 	GetDefaultIncomingMessageChannel() chan Message

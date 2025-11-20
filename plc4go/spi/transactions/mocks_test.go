@@ -495,7 +495,7 @@ func (_c *MockRequestTransactionManager_SetNumberOfConcurrentRequests_Call) RunA
 }
 
 // StartTransaction provides a mock function for the type MockRequestTransactionManager
-func (_mock *MockRequestTransactionManager) StartTransaction() RequestTransaction {
+func (_mock *MockRequestTransactionManager) StartTransaction(string) RequestTransaction {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {

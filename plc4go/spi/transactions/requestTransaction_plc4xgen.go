@@ -53,6 +53,10 @@ func (d *requestTransaction) SerializeWithWriteBuffer(ctx context.Context, write
 		return err
 	}
 
+	if err := writeBuffer.WriteString("transactionInfo", uint32(len(d.transactionInfo)*8), d.transactionInfo); err != nil {
+		return err
+	}
+
 	if completionFutureLoaded := d.completionFuture.Load(); completionFutureLoaded != nil && *completionFutureLoaded != nil {
 		completionFuture := *completionFutureLoaded
 		if serializableField, ok := completionFuture.(utils.Serializable); ok {

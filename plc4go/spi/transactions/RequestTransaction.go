@@ -56,8 +56,9 @@ type RequestTransaction interface {
 
 //go:generate go tool plc4xGenerator -type=requestTransaction
 type requestTransaction struct {
-	parent        *requestTransactionManager `ignore:"true"`
-	transactionId int32
+	parent          *requestTransactionManager `ignore:"true"`
+	transactionId   int32
+	transactionInfo string
 
 	/** The initial operation to perform to kick off the request */
 	operation        pool.Runnable `ignore:"true"` // TODO: maybe we can treat this as a function some day if we are able to check the definition in gen
@@ -69,11 +70,12 @@ type requestTransaction struct {
 	log zerolog.Logger
 }
 
-func newRequestTransaction(localLog zerolog.Logger, parent *requestTransactionManager, transactionId int32) *requestTransaction {
+func newRequestTransaction(localLog zerolog.Logger, parent *requestTransactionManager, transactionId int32, transactionInfo string) *requestTransaction {
 	return &requestTransaction{
-		parent:        parent,
-		transactionId: transactionId,
-		log:           localLog.With().Int32("transactionId", transactionId).Logger(),
+		parent:          parent,
+		transactionId:   transactionId,
+		transactionInfo: transactionInfo,
+		log:             localLog.With().Int32("transactionId", transactionId).Str("transactionInfo", transactionInfo).Logger(),
 	}
 }
 

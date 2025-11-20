@@ -497,12 +497,12 @@ func Test_defaultCodec_Expect(t *testing.T) {
 		customMessageHandling         CustomMessageHandler
 	}
 	type args struct {
-		ctx            context.Context
-		interactionId  string
-		acceptsMessage spi.AcceptsMessage
-		handleMessage  spi.HandleMessage
-		handleError    spi.HandleError
-		ttl            time.Duration
+		ctx             context.Context
+		interactionInfo string
+		acceptsMessage  spi.AcceptsMessage
+		handleMessage   spi.HandleMessage
+		handleError     spi.HandleError
+		ttl             time.Duration
 	}
 	tests := []struct {
 		name   string
@@ -514,7 +514,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 			name: "expect it",
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.ctx = testutils.TestContext(t)
-				args.interactionId = t.Name()
+				args.interactionInfo = t.Name()
 				var cancelFunc context.CancelFunc
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
@@ -536,7 +536,7 @@ func Test_defaultCodec_Expect(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			m.Expect(tt.args.ctx, tt.args.interactionId, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError)
+			m.Expect(tt.args.ctx, tt.args.interactionInfo, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError)
 		})
 	}
 }
@@ -917,13 +917,13 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 		customMessageHandling         CustomMessageHandler
 	}
 	type args struct {
-		ctx            context.Context
-		interactionId  string
-		message        spi.Message
-		acceptsMessage spi.AcceptsMessage
-		handleMessage  spi.HandleMessage
-		handleError    spi.HandleError
-		ttl            time.Duration
+		ctx             context.Context
+		interactionInfo string
+		message         spi.Message
+		acceptsMessage  spi.AcceptsMessage
+		handleMessage   spi.HandleMessage
+		handleError     spi.HandleError
+		ttl             time.Duration
 	}
 	tests := []struct {
 		name    string
@@ -940,7 +940,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 				fields.DefaultCodecRequirements = requirements
 
 				args.ctx = testutils.TestContext(t)
-				args.interactionId = t.Name()
+				args.interactionInfo = t.Name()
 				var cancelFunc context.CancelFunc
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
@@ -955,7 +955,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 				ctx, cancelFunc := context.WithCancel(testutils.TestContext(t))
 				cancelFunc()
 				args.ctx = ctx
-				args.interactionId = t.Name()
+				args.interactionInfo = t.Name()
 			},
 			wantErr: assert.Error,
 		},
@@ -967,7 +967,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 				fields.DefaultCodecRequirements = requirements
 
 				args.ctx = testutils.TestContext(t)
-				args.interactionId = t.Name()
+				args.interactionInfo = t.Name()
 				var cancelFunc context.CancelFunc
 				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
 				t.Cleanup(cancelFunc)
@@ -990,7 +990,7 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
-			tt.wantErr(t, m.SendRequest(tt.args.ctx, tt.args.interactionId, tt.args.message, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError), fmt.Sprintf("SendRequest(%v, %v, func(), func(), func(), %v)", tt.args.ctx, tt.args.message, tt.args.ttl))
+			tt.wantErr(t, m.SendRequest(tt.args.ctx, tt.args.interactionInfo, tt.args.message, tt.args.acceptsMessage, tt.args.handleMessage, tt.args.handleError), fmt.Sprintf("SendRequest(%v, %v, func(), func(), func(), %v)", tt.args.ctx, tt.args.message, tt.args.ttl))
 		})
 	}
 }

@@ -70,7 +70,7 @@ type RequestTransactionManager interface {
 	// SetNumberOfConcurrentRequests sets the number of concurrent requests that will be sent out to a device
 	SetNumberOfConcurrentRequests(numberOfConcurrentRequests int)
 	// StartTransaction starts a RequestTransaction
-	StartTransaction() RequestTransaction
+	StartTransaction(transactionInfo string) RequestTransaction
 }
 
 // NewRequestTransactionManager creates a new RequestTransactionManager
@@ -198,7 +198,7 @@ func (r *requestTransactionManager) processWorklog() {
 	}
 }
 
-func (r *requestTransactionManager) StartTransaction() RequestTransaction {
+func (r *requestTransactionManager) StartTransaction(transactionInfo string) RequestTransaction {
 	r.transactionMutex.Lock()
 	defer r.transactionMutex.Unlock()
 	currentTransactionId := r.currentTransactionId
@@ -207,7 +207,7 @@ func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	if !r.traceTransactionManagerTransactions {
 		transactionLogger = zerolog.Nop()
 	}
-	transaction := newRequestTransaction(transactionLogger, r, currentTransactionId)
+	transaction := newRequestTransaction(transactionLogger, r, currentTransactionId, transactionInfo)
 	if r.shutdown.Load() {
 		transaction.completed = true
 		transaction.setCompletionFuture(&completedFuture{errors.New("request transaction manager in shutdown")})
