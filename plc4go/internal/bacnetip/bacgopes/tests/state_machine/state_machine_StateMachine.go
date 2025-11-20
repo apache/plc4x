@@ -690,7 +690,7 @@ func (s *stateMachine) Receive(args Args, kwArgs KWArgs) error {
 }
 
 func (s *stateMachine) AfterReceive(pdu PDU) {
-	s.log.Trace().Stringer("pdu", pdu).Msg("AfterReceive")
+	s.log.Trace().Interface("pdu", pdu).Msg("AfterReceive")
 }
 
 func (s *stateMachine) UnexpectedReceive(pdu PDU) {
@@ -698,7 +698,7 @@ func (s *stateMachine) UnexpectedReceive(pdu PDU) {
 		_debug("unexpected_receive(%s) %r", s.name, pdu)
 		_debug("    - current_state: %r", s.currentState)
 	}
-	s.log.Trace().Stringer("pdu", pdu).Msg("UnexpectedReceive")
+	s.log.Trace().Interface("pdu", pdu).Msg("UnexpectedReceive")
 	s.log.Trace().Stringer("currentState", s.currentState).Msg("currentState")
 	if err := s.gotoState(s.unexpectedReceiveState); err != nil {
 		s.log.Error().Err(err).Msg("error going to unexpected state")
@@ -810,7 +810,7 @@ func (s *stateMachine) MatchPDU(pdu PDU, criteria criteria) bool {
 	if _debug != nil {
 		_debug("match_pdu(%s) %r %r", s.name, pdu, criteria)
 	}
-	s.log.Debug().Stringer("pdu", pdu).Stringer("criteria", criteria).Msg("MatchPDU")
+	s.log.Debug().Interface("pdu", pdu).Stringer("criteria", criteria).Msg("MatchPDU")
 	return MatchPdu(s.log, pdu, criteria.pduType, criteria.pduAttrs)
 }
 

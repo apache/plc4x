@@ -202,7 +202,7 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range c.subscribers {
 		if sub == subscriber {
-			c.log.Debug().Stringer("subscriber", subscriber).Msg("Subscriber already added")
+			c.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber already added")
 			return
 		}
 	}

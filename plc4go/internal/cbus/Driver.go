@@ -100,7 +100,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		transportInstance,
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
+	d.log.Debug().Interface("codec", codec).Msg("working with codec")
 
 	driverContext := NewDriverContext(configuration)
 	driverContext.awaitSetupComplete = d.awaitSetupComplete

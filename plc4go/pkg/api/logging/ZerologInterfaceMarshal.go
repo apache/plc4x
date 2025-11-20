@@ -44,7 +44,7 @@ const (
 )
 
 // ZerologInterfacePLCMessageFormat defines the format of the PLCMessage that is logged by the zerolog interface marshal function
-var ZerologInterfacePLCMessageFormat = PLCMessageAsString
+var ZerologInterfacePLCMessageFormat = PLCMessageAsJSON
 
 // ZerologDefaultInterfaceMarshalFunc is the default marshal function used by zerolog
 var ZerologDefaultInterfaceMarshalFunc = zerolog.InterfaceMarshalFunc

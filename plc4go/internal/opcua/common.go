@@ -248,7 +248,7 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 			} else {
 				responseCode = apiModel.PlcResponseCode_UNSUPPORTED
 			}
-			localLog.Error().Stringer("statusCode", results[count].GetStatusCode()).Msg("Error while reading value from OPC UA server error code")
+			localLog.Error().Interface("statusCode", results[count].GetStatusCode()).Msg("Error while reading value from OPC UA server error code")
 		}
 		count++
 		responseCodes[tagName] = responseCode

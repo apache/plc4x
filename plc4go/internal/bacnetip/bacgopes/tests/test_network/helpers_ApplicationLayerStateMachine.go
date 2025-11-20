@@ -81,7 +81,7 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	}
 
 	if LogTestNetwork {
-		a.log.Debug().Stringer("address", a.address).Msg("address")
+		a.log.Debug().Interface("address", a.address).Msg("address")
 	}
 
 	// continue with initialization
@@ -144,7 +144,7 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 		return nil, errors.Wrap(err, "error creating node")
 	}
 	if LogTestNetwork {
-		a.log.Debug().Stringer("node", a.node).Msg("node")
+		a.log.Debug().Interface("node", a.node).Msg("node")
 	}
 
 	//  bind the stack to the local network

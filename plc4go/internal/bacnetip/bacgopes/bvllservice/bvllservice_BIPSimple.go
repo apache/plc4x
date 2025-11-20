@@ -97,7 +97,7 @@ func (b *BIPSimple) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
 		return b.Request(NA(xpdu), NoKWArgs())
@@ -111,7 +111,7 @@ func (b *BIPSimple) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
 		return b.Request(NA(xpdu), NoKWArgs())
@@ -144,7 +144,7 @@ func (b *BIPSimple) Confirmation(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
 		return b.Response(NA(xpdu), kwArgs)
@@ -154,7 +154,7 @@ func (b *BIPSimple) Confirmation(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
 		return b.Response(NA(xpdu), kwArgs)
@@ -164,7 +164,7 @@ func (b *BIPSimple) Confirmation(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
 		return b.Response(NA(xpdu), kwArgs)

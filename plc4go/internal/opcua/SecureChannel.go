@@ -227,7 +227,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 				opcuaAPU = decodedOpcuaAPU.(readWriteModel.OpcuaAPU)
 			}
 			messagePDU := opcuaAPU.GetMessage()
-			s.log.Trace().Stringer("messagePDU", messagePDU).Msg("looking at messagePDU")
+			s.log.Trace().Interface("messagePDU", messagePDU).Msg("looking at messagePDU")
 			opcuaResponse, ok := messagePDU.(readWriteModel.OpcuaMessageResponse)
 			if !ok {
 				s.log.Debug().Type("type", message).Msg("Not relevant")
@@ -251,7 +251,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 			opcuaAPU := message.(readWriteModel.OpcuaAPU)
 			opcuaAPU, _ = s.encryptionHandler.decodeMessage(ctx, opcuaAPU)
 			messagePDU := opcuaAPU.GetMessage()
-			s.log.Trace().Stringer("messagePDU", messagePDU).Msg("looking at messagePDU")
+			s.log.Trace().Interface("messagePDU", messagePDU).Msg("looking at messagePDU")
 			opcuaResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
 			if opcuaResponse.GetChunk() == (readWriteModel.ChunkType_FINAL) {
 				s.tokenId.Store(opcuaResponse.GetSecurityHeader().GetSecureTokenId())
@@ -259,7 +259,7 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 
 				consumer(messageBuffer)
 			} else {
-				s.log.Warn().Stringer("chunk", opcuaResponse.GetChunk()).Msg("Message discarded")
+				s.log.Warn().Interface("chunk", opcuaResponse.GetChunk()).Msg("Message discarded")
 			}
 			return nil
 		}, func(err error) error {
@@ -549,13 +549,13 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 			connection.fireConnectionError(err, errChan)
 			return
 		}
-		s.log.Trace().Stringer("extensionObject", extensionObject).Msg("looking at message")
+		s.log.Trace().Interface("extensionObject", extensionObject).Msg("looking at message")
 		if fault, ok := extensionObject.GetBody().(readWriteModel.ServiceFault); ok {
 			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
 			s.log.Error().
 				Uint32("statusCode", statusCode).
-				Stringer("statusCodeByValue", statusCodeByValue).
+				Interface("statusCodeByValue", statusCodeByValue).
 				Msg("Failed to connect to opc ua server for the following reason")
 			connection.fireConnectionError(errors.New("service fault received"), errChan)
 			return
@@ -665,13 +665,13 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 			s.log.Error().Err(err).Msg("error parsing")
 			return
 		}
-		s.log.Trace().Stringer("message", message).Msg("looking at message")
+		s.log.Trace().Interface("message", message).Msg("looking at message")
 		if fault, ok := message.GetBody().(readWriteModel.ServiceFault); ok {
 			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
 			s.log.Error().
 				Uint32("statusCode", statusCode).
-				Stringer("statusCodeByValue", statusCodeByValue).
+				Interface("statusCodeByValue", statusCodeByValue).
 				Msg("Failed to connect to opc ua server for the following reason")
 			connection.fireConnectionError(errors.New("service fault received"), errChan)
 			return
@@ -760,13 +760,13 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, connection *Connection
 			s.log.Error().Err(err).Msg("error parsing")
 			return
 		}
-		s.log.Trace().Stringer("message", message).Msg("looking at message")
+		s.log.Trace().Interface("message", message).Msg("looking at message")
 		if fault, ok := message.GetBody().(readWriteModel.ServiceFault); ok {
 			statusCode := fault.GetResponseHeader().(readWriteModel.ResponseHeader).GetServiceResult().GetStatusCode()
 			statusCodeByValue, _ := readWriteModel.OpcuaStatusCodeByValue(statusCode)
 			s.log.Error().
 				Uint32("statusCode", statusCode).
-				Stringer("statusCodeByValue", statusCodeByValue).
+				Interface("statusCodeByValue", statusCodeByValue).
 				Msg("Failed to connect to opc ua server for the following reason")
 			return
 		}
@@ -851,7 +851,7 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, conn
 			opcuaAPU := message.(readWriteModel.OpcuaAPU)
 			messagePDU := opcuaAPU.GetMessage()
 			opcuaMessageResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
-			s.log.Trace().Stringer("opcuaMessageResponse", opcuaMessageResponse).Msg("Got close secure channel response")
+			s.log.Trace().Interface("opcuaMessageResponse", opcuaMessageResponse).Msg("Got close secure channel response")
 			return nil
 		}, func(err error) error {
 			s.log.Debug().Err(err).Msg("error submitting")
@@ -903,7 +903,7 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 			opcuaAPU := message.(readWriteModel.OpcuaAPU)
 			messagePDU := opcuaAPU.GetMessage()
 			opcuaAcknowledgeResponse := messagePDU.(readWriteModel.OpcuaAcknowledgeResponse)
-			s.log.Trace().Stringer("opcuaAcknowledgeResponse", opcuaAcknowledgeResponse).Msg("Got Hello Response Connection Response")
+			s.log.Trace().Interface("opcuaAcknowledgeResponse", opcuaAcknowledgeResponse).Msg("Got Hello Response Connection Response")
 			go s.onDiscoverOpenSecureChannel(ctx, codec, opcuaAcknowledgeResponse)
 			return nil
 		}, func(err error) error {
@@ -1213,7 +1213,7 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 			opcuaAPU := message.(readWriteModel.OpcuaAPU)
 			messagePDU := opcuaAPU.GetMessage()
 			opcuaMessageResponse := messagePDU.(readWriteModel.OpcuaMessageResponse)
-			s.log.Trace().Stringer("opcuaMessageResponse", opcuaMessageResponse).Msg("Got close secure channel response")
+			s.log.Trace().Interface("opcuaMessageResponse", opcuaMessageResponse).Msg("Got close secure channel response")
 			return nil
 		}, func(err error) error {
 			s.log.Debug().Err(err).Msg("error submitting")
@@ -1445,7 +1445,7 @@ func (s *SecureChannel) isEndpoint(endpoint readWriteModel.EndpointDescription) 
 	// Split up the connection string into its individual segments.
 	matches := utils.GetSubgroupMatches(URI_PATTERN, *endpoint.GetEndpointUrl().GetStringValue())
 	if len(matches) == 0 {
-		s.log.Error().Stringer("endpoint", endpoint).Msg("Endpoint returned from the server doesn't match the format '{protocol-code}:({transport-code})?//{transport-host}(:{transport-port})(/{transport-endpoint})'")
+		s.log.Error().Interface("endpoint", endpoint).Msg("Endpoint returned from the server doesn't match the format '{protocol-code}:({transport-code})?//{transport-host}(:{transport-port})(/{transport-endpoint})'")
 		return false
 	}
 	s.log.Trace().

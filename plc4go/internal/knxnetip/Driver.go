@@ -84,7 +84,10 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		d.GetPlcTagHandler(),
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
+	d.log.Trace().
+		Str("transport", transportUrl.String()).
+		Interface("connection", connection).
+		Msg("created new connection instance, trying to connect now")
 	if err := connection.Connect(ctx); err != nil {
 		return nil, errors.Wrap(err, "Error connecting connection")
 	}

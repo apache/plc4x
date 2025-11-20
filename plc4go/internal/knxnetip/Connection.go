@@ -305,15 +305,15 @@ func (m *Connection) Connect(ctx context.Context) error {
 					if !ok {
 						tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponse)
 						if ok {
-							m.log.Warn().Stringer("tunnelingResponse", tunnelingResponse).Msg("Got an unhandled TunnelingResponse message")
+							m.log.Warn().Interface("tunnelingResponse", tunnelingResponse).Msg("Got an unhandled TunnelingResponse message")
 						} else {
-							m.log.Warn().Stringer("incomingMessage", incomingMessage).Msg("Not a TunnelingRequest or TunnelingResponse message")
+							m.log.Warn().Interface("incomingMessage", incomingMessage).Msg("Not a TunnelingRequest or TunnelingResponse message")
 						}
 						continue
 					}
 
 					if tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
-						m.log.Warn().Stringer("tunnelingRequest", tunnelingRequest).Msg("Not for this connection")
+						m.log.Warn().Interface("tunnelingRequest", tunnelingRequest).Msg("Not for this connection")
 						continue
 					}
 

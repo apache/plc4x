@@ -133,7 +133,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		portAddition += ":" + transportPort
 	}
 	configuration.Endpoint = "opc." + transportCode + "://" + transportHost + portAddition + "" + transportEndpoint
-	d.log.Debug().Stringer("configuration", &configuration).Msg("working with configuration")
+	d.log.Debug().Interface("configuration", &configuration).Msg("working with configuration")
 
 	if securityPolicy := configuration.SecurityPolicy; securityPolicy != "" && securityPolicy != "None" {
 		d.log.Trace().Str("securityPolicy", securityPolicy).Msg("working with security policy")
@@ -152,7 +152,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		transportInstance,
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
+	d.log.Debug().Interface("codec", codec).Msg("working with codec")
 
 	// Create the new connection
 	connection := NewConnection(

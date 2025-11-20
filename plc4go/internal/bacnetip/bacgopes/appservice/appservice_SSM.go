@@ -238,7 +238,7 @@ func (s *SSM) setState(newState SSMState, timer *uint) error {
 
 // setSegmentationContext This function is called to set the segmentation context
 func (s *SSM) setSegmentationContext(apdu readWriteModel.APDU) error {
-	s.log.Debug().Stringer("apdu", apdu).Msg("setSegmentationContext")
+	s.log.Debug().Interface("apdu", apdu).Msg("setSegmentationContext")
 	switch apdu := apdu.(type) {
 	case readWriteModel.APDUConfirmedRequest:
 		if apdu.GetSegmentedMessage() || apdu.GetMoreFollows() {
@@ -343,7 +343,7 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU PDU, moreFollows bool, err er
 //
 //	the context
 func (s *SSM) appendSegment(apdu PDU) error {
-	s.log.Debug().Stringer("apdu", apdu).Msg("appendSegment")
+	s.log.Debug().Interface("apdu", apdu).Msg("appendSegment")
 	switch apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequest:
 		if apdu.GetSegmentedMessage() || apdu.GetMoreFollows() {

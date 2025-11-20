@@ -119,7 +119,7 @@ func (t *TimeMachine) InstallTask(task TaskRequirements) {
 	if _debug != nil {
 		_debug("install_task @ %r: %r @ %r", t.currentTime, task, task.GetTaskTime())
 	}
-	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("InstallTask")
+	t.log.Debug().Time("currentTime", t.currentTime).Interface("task", task).Msg("InstallTask")
 	t.TaskManager.InstallTask(task)
 }
 
@@ -127,7 +127,7 @@ func (t *TimeMachine) SuspendTask(task TaskRequirements) {
 	if _debug != nil {
 		_debug("suspend_task @ %r: %r", t.currentTime, task)
 	}
-	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("SuspendTask")
+	t.log.Debug().Time("currentTime", t.currentTime).Interface("task", task).Msg("SuspendTask")
 	t.TaskManager.SuspendTask(task)
 }
 
@@ -135,7 +135,7 @@ func (t *TimeMachine) ResumeTask(task TaskRequirements) {
 	if _debug != nil {
 		_debug("resume_task @ %r: %r", t.currentTime, task)
 	}
-	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("ResumeTask")
+	t.log.Debug().Time("currentTime", t.currentTime).Interface("task", task).Msg("ResumeTask")
 	t.TaskManager.ResumeTask(task)
 }
 
@@ -196,7 +196,7 @@ func (t *TimeMachine) MoreToDo() bool {
 	if _debug != nil {
 		_debug("    - task: %r", task)
 	}
-	t.log.Debug().Stringer("task", task).Msg("task")
+	t.log.Debug().Interface("task", task).Msg("task")
 	return true
 }
 
@@ -248,7 +248,7 @@ func (t *TimeMachine) GetNextTask() (TaskRequirements, *time.Duration) {
 			if _debug != nil {
 				_debug("    - when, task: %r, %s", task.GetTaskTime(), task)
 			}
-			t.log.Debug().Stringer("task", task).Msg("when, task")
+			t.log.Debug().Interface("task", task).Msg("when, task")
 
 			// mark that it is no longer scheduled
 			task.SetIsScheduled(false)
@@ -270,7 +270,7 @@ func (t *TimeMachine) ProcessTask(task TaskRequirements) {
 	if _debug != nil {
 		_debug("process_task @ %r: %r", t.currentTime, task)
 	}
-	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("ProcessTask")
+	t.log.Debug().Time("currentTime", t.currentTime).Interface("task", task).Msg("ProcessTask")
 	t.TaskManager.ProcessTask(task)
 }
 

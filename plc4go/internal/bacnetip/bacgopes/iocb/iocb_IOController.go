@@ -84,7 +84,7 @@ func (i *IOController) Abort(err error) error {
 
 // RequestIO Called by a client to start processing a request.
 func (i *IOController) RequestIO(iocb IOCBContract) error {
-	i.log.Debug().Stringer("iocb", iocb).Msg("RequestIO")
+	i.log.Debug().Interface("iocb", iocb).Msg("RequestIO")
 
 	// bind the iocb to this controller
 	iocb.setIOController(i)
@@ -112,7 +112,7 @@ func (i *IOController) ProcessIO(IOCBContract) error {
 
 // ActiveIO Called by a handler to notify the controller that a request is being processed
 func (i *IOController) ActiveIO(iocb IOCBContract) error {
-	i.log.Debug().Stringer("iocb", iocb).Msg("ActiveIO")
+	i.log.Debug().Interface("iocb", iocb).Msg("ActiveIO")
 
 	// requests should be idle or pending before coming active
 	if iocb.getIOState() != IOCBState_IDLE && iocb.getIOState() != IOCBState_PENDING {
@@ -127,8 +127,8 @@ func (i *IOController) ActiveIO(iocb IOCBContract) error {
 // CompleteIO Called by a handler to return data to the client
 func (i *IOController) CompleteIO(iocb IOCBContract, apdu PDU) error {
 	i.log.Debug().
-		Stringer("iocb", iocb).
-		Stringer("apdu", apdu).
+		Interface("iocb", iocb).
+		Interface("apdu", apdu).
 		Msg("ActiveIO")
 
 	// if it completed, leave it alone
@@ -153,7 +153,7 @@ func (i *IOController) CompleteIO(iocb IOCBContract, apdu PDU) error {
 
 // AbortIO Called by a handler or a client to abort a transaction
 func (i *IOController) AbortIO(iocb IOCBContract, err error) error {
-	i.log.Debug().Stringer("iocb", iocb).Msg("AbortIO")
+	i.log.Debug().Interface("iocb", iocb).Msg("AbortIO")
 
 	// if it completed, leave it alone
 	if iocb.getIOState() == IOCBState_COMPLETED {

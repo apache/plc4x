@@ -141,7 +141,7 @@ func WithUDPDirectorReuse(reuse bool) GenericApplier[*UDPDirector] {
 
 // AddActor adds an actor when a new one is connected
 func (d *UDPDirector) AddActor(actor *UDPActor) {
-	d.log.Debug().Stringer("actor", actor).Msg("AddActor %v")
+	d.log.Debug().Interface("actor", actor).Msg("AddActor %v")
 
 	d.peers[actor.peer] = actor
 
@@ -155,7 +155,7 @@ func (d *UDPDirector) AddActor(actor *UDPActor) {
 
 // DelActor removes an actor when the socket is closed.
 func (d *UDPDirector) DelActor(actor *UDPActor) {
-	d.log.Debug().Stringer("actor", actor).Msg("DelActor")
+	d.log.Debug().Interface("actor", actor).Msg("DelActor")
 
 	delete(d.peers, actor.peer)
 
@@ -190,7 +190,7 @@ func (d *UDPDirector) readable() {
 
 func (d *UDPDirector) handleRead() {
 	ctx := context.TODO()
-	d.log.Debug().Stringer("address", &d.address).Msg("handleRead")
+	d.log.Debug().Interface("address", &d.address).Msg("handleRead")
 
 	readBytes := make([]byte, 1500) // TODO: check if that is sufficient
 	var sourceAddr *net.UDPAddr
@@ -278,7 +278,7 @@ func (d *UDPDirector) Indication(args Args, kwArgs KWArgs) error {
 
 // _response Incoming datagrams are routed through an actor.
 func (d *UDPDirector) _response(pdu PDU) error {
-	d.log.Debug().Stringer("pdu", pdu).Msg("_response")
+	d.log.Debug().Interface("pdu", pdu).Msg("_response")
 
 	// get the destination
 	addr := pdu.GetPDUSource()

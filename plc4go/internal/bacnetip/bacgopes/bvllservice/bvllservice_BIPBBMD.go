@@ -119,7 +119,7 @@ func (b *BIPBBMD) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - original unicast xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("original unicast xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("original unicast xpdu")
 
 		// send it downstream
 		return b.Request(NA(xpdu), NoKWArgs())
@@ -136,7 +136,7 @@ func (b *BIPBBMD) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - original broadcast xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("original broadcast xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("original broadcast xpdu")
 
 		// send it downstream
 		err = b.Request(NA(xpdu), NoKWArgs())
@@ -156,7 +156,7 @@ func (b *BIPBBMD) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - forwarded xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("forwarded xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("forwarded xpdu")
 
 		// send it to the peers
 		for _, bdte := range b.bbmdBDT {
@@ -166,7 +166,7 @@ func (b *BIPBBMD) Indication(args Args, kwArgs KWArgs) error {
 					return errors.Wrap(err, "error creating address tuple")
 				}
 				xpdu.SetPDUDestination(dest)
-				b.log.Debug().Stringer("pduDestination", xpdu.GetPDUDestination()).Msg("sending to peer")
+				b.log.Debug().Interface("pduDestination", xpdu.GetPDUDestination()).Msg("sending to peer")
 				if err := b.Request(NA(xpdu), NoKWArgs()); err != nil {
 					return errors.Wrap(err, "error sending request")
 				}
@@ -179,7 +179,7 @@ func (b *BIPBBMD) Indication(args Args, kwArgs KWArgs) error {
 			if _debug != nil {
 				_debug("    - sending to foreign device: %r", xpdu.GetPDUDestination())
 			}
-			b.log.Debug().Stringer("pduDestination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
+			b.log.Debug().Interface("pduDestination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
 			if err := b.Request(NA(xpdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error sending request")
 			}
@@ -244,7 +244,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 			if _debug != nil {
 				_debug("    - upstream xpdu: %r", xpdu)
 			}
-			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
+			b.log.Debug().Interface("xpdu", xpdu).Msg("upstream xpdu")
 
 			return b.Response(NA(xpdu), NoKWArgs())
 		}
@@ -257,7 +257,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - forwarded xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("forwarded xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("forwarded xpdu")
 
 		// if this was unicast to us, do next hop
 		if pdu.GetPDUDestination().AddrType == LOCAL_STATION_ADDRESS {
@@ -282,7 +282,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 			}
 			b.log.Trace().Msg("directed broadcast message")
 		} else {
-			b.log.Warn().Stringer("destination", pdu.GetPDUDestination()).Msg("invalid destination address")
+			b.log.Warn().Interface("destination", pdu.GetPDUDestination()).Msg("invalid destination address")
 		}
 
 		// send it to the registered foreign devices
@@ -291,7 +291,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 			if _debug != nil {
 				_debug("    - sending to foreign device: %r", xpdu.GetPDUDestination())
 			}
-			b.log.Warn().Stringer("destination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
+			b.log.Warn().Interface("destination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
 			if err := b.Request(NA(xpdu), NoKWArgs()); err != nil {
 				return errors.Wrapf(err, "error sending request to destination %s", xpdu.GetPDUDestination())
 			}
@@ -312,7 +312,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
 		return b.Request(NA(xpdu), NoKWArgs())
@@ -361,7 +361,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 			if _debug != nil {
 				_debug("    - upstream xpdu: %r", xpdu)
 			}
-			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
+			b.log.Debug().Interface("xpdu", xpdu).Msg("upstream xpdu")
 
 			return b.Response(NA(xpdu), NoKWArgs())
 		}
@@ -374,7 +374,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - forwarded xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("forwarded xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("forwarded xpdu")
 
 		// send it to the peers
 		for _, bdte := range b.bbmdBDT {
@@ -397,7 +397,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 				if _debug != nil {
 					_debug("    - sending to peer: %r", xpdu.GetPDUDestination())
 				}
-				b.log.Debug().Stringer("designation", xpdu.GetPDUDestination()).Msg("sending to peer")
+				b.log.Debug().Interface("designation", xpdu.GetPDUDestination()).Msg("sending to peer")
 				err = b.Request(NA(xpdu), NoKWArgs())
 				if err != nil {
 					return errors.Wrap(err, "error sending")
@@ -412,7 +412,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 				if _debug != nil {
 					_debug("    - sending to foreign device: %r", xpdu.GetPDUDestination())
 				}
-				b.log.Warn().Stringer("destination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
+				b.log.Warn().Interface("destination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
 				if err := b.Request(NA(xpdu), NoKWArgs()); err != nil {
 					return errors.Wrapf(err, "error sending request to destination %s", xpdu.GetPDUDestination())
 				}
@@ -431,7 +431,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 			)
 			//               if settings.route_aware:
 			//                   xpdu.pduSource.addrRoute = PDUSource
-			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
+			b.log.Debug().Interface("xpdu", xpdu).Msg("upstream xpdu")
 
 			return b.Response(NA(xpdu), NoKWArgs())
 		}
@@ -450,7 +450,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 			if _debug != nil {
 				_debug("    - upstream xpdu: %r", xpdu)
 			}
-			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
+			b.log.Debug().Interface("xpdu", xpdu).Msg("upstream xpdu")
 
 			if err := b.Response(NA(xpdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error sending local broadcast")
@@ -465,7 +465,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - forwarded xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("forwarded xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("forwarded xpdu")
 
 		// send it to the peers
 		for _, bdte := range b.bbmdBDT {
@@ -478,7 +478,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 				if _debug != nil {
 					_debug("    - sending to peer: %r", xpdu.GetPDUDestination())
 				}
-				b.log.Debug().Stringer("designation", xpdu.GetPDUDestination()).Msg("sending to peer")
+				b.log.Debug().Interface("designation", xpdu.GetPDUDestination()).Msg("sending to peer")
 				err = b.Request(NA(xpdu), NoKWArgs())
 				if err != nil {
 					return errors.Wrap(err, "error sending")
@@ -492,7 +492,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 			if _debug != nil {
 				_debug("    - sending to foreign device: %r", xpdu.GetPDUDestination())
 			}
-			b.log.Warn().Stringer("destination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
+			b.log.Warn().Interface("destination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
 			if err := b.Request(NA(xpdu), NoKWArgs()); err != nil {
 				return errors.Wrapf(err, "error sending request to destination %s", xpdu.GetPDUDestination())
 			}
@@ -592,7 +592,7 @@ func (b *BIPBBMD) ProcessTask() error {
 			if _debug != nil {
 				_debug("foreign device expired: %r", fdte.FDAddress)
 			}
-			b.log.Debug().Stringer("addr", fdte.FDAddress).Msg("foreign device expired")
+			b.log.Debug().Interface("addr", fdte.FDAddress).Msg("foreign device expired")
 			return true
 		}
 		return false

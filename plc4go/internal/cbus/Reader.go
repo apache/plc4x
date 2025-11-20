@@ -130,7 +130,7 @@ func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToS
 	transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 		ctx, cancel := context.WithCancel(ctx)
 		context.AfterFunc(transactionContext, cancel)
-		m.log.Trace().Stringer("transaction", transaction).Msg("Transaction getting handled")
+		m.log.Trace().Interface("transaction", transaction).Msg("Transaction getting handled")
 		m.sendMessageOverTheWire(ctx, transaction, messageToSend, addResponseCode, tagName, addPlcValue)
 	})
 	if err := transaction.AwaitCompletion(ctx); err != nil {

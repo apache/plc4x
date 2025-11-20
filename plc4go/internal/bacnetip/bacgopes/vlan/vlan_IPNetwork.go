@@ -51,7 +51,7 @@ func (n *IPNetwork) AddNode(node NetworkNode) {
 	if _debug != nil {
 		_debug("add_node %r", node)
 	}
-	n.log.Debug().Stringer("node", node).Msg("Adding node")
+	n.log.Debug().Interface("node", node).Msg("Adding node")
 
 	ipNode := node.(*IPNode)
 

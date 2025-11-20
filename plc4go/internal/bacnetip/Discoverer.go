@@ -264,12 +264,12 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 			_ = npdu
 			if apdu := npdu.GetApdu(); apdu == nil {
 				nlm := npdu.GetNlm()
-				d.log.Debug().Stringer("nlm", nlm).Msg("Got nlm")
+				d.log.Debug().Interface("nlm", nlm).Msg("Got nlm")
 				continue
 			}
 			apdu := npdu.GetApdu()
 			if _, ok := apdu.(driverModel.APDUConfirmedRequest); ok {
-				d.log.Debug().Stringer("apdu", apdu).Msg("Got apdu")
+				d.log.Debug().Interface("apdu", apdu).Msg("Got apdu")
 				continue
 			}
 			apduUnconfirmedRequest := apdu.(driverModel.APDUUnconfirmedRequest)

@@ -133,7 +133,7 @@ func (a *Application) GetDeviceInfoCache() *appservice.DeviceInfoCache {
 
 // AddObject adds an object to the local collection
 func (a *Application) AddObject(obj LocalDeviceObject) error {
-	a.log.Debug().Stringer("obj", obj).Msg("AddObject")
+	a.log.Debug().Interface("obj", obj).Msg("AddObject")
 	if _debug != nil {
 		_debug("add_object %r", obj)
 	}

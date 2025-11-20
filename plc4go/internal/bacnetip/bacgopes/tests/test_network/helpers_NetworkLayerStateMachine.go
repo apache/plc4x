@@ -62,7 +62,7 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 		return nil, errors.Wrap(err, "error creating codec")
 	}
 	if LogTestNetwork {
-		n.log.Debug().Stringer("codec", n.codec).Msg("codec")
+		n.log.Debug().Interface("codec", n.codec).Msg("codec")
 	}
 
 	// create a node, added to the network
@@ -71,7 +71,7 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 		return nil, errors.Wrap(err, "error creating node")
 	}
 	if LogTestNetwork {
-		n.log.Debug().Stringer("node", n.node).Msg("node")
+		n.log.Debug().Interface("node", n.node).Msg("node")
 	}
 
 	// bind this to the node

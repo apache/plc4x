@@ -84,7 +84,7 @@ func (m *Browser) browseUnitInfo(ctx context.Context, interceptor func(result ap
 	}
 unitLoop:
 	for _, unit := range units {
-		unitLog := m.log.With().Stringer("unit", unit).Logger()
+		unitLog := m.log.With().Interface("unit", unit).Logger()
 		unitLog.Trace().Msg("checking unit")
 		if err := ctx.Err(); err != nil {
 			unitLog.Info().Err(err).Msg("Aborting scan at unit")
@@ -128,7 +128,7 @@ unitLoop:
 				Dur("timeout", timeout).
 				Msg("Executing readRequest with timeout")
 			requestResult := <-readRequest.Execute(timeoutCtx)
-			m.log.Trace().Stringer("requestResult", requestResult).Msg("got a response")
+			m.log.Trace().Interface("requestResult", requestResult).Msg("got a response")
 			timeoutCancel()
 			if err := requestResult.GetErr(); err != nil {
 				if allUnits || allAttributes {
@@ -244,14 +244,14 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 	blockOffset176ReceivedChan := make(chan any, 100) // We only expect one, but we make it a bit bigger to no clog up
 	result := make(map[byte]any)
 	plcConsumerRegistration := subscriptionHandle.Register(func(event apiModel.PlcSubscriptionEvent) {
-		m.log.Trace().Stringer("event", event).Msg("handling event")
+		m.log.Trace().Interface("event", event).Msg("handling event")
 		if responseCode := event.GetResponseCode("installationMMIMonitor"); responseCode != apiModel.PlcResponseCode_OK {
-			m.log.Warn().Stringer("event", event).Msg("Ignoring")
+			m.log.Warn().Interface("event", event).Msg("Ignoring")
 			return
 		}
 		rootValue := event.GetValue("installationMMIMonitor")
 		if !rootValue.IsStruct() {
-			m.log.Warn().Stringer("rootValue", rootValue).Msg("Ignoring rootValue should be a struct")
+			m.log.Warn().Interface("rootValue", rootValue).Msg("Ignoring rootValue should be a struct")
 			return
 		}
 		rootStruct := rootValue.GetStruct()
@@ -349,7 +349,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 			}
 		}()
 		defer readCtxCancel()
-		m.log.Debug().Stringer("readRequest", readRequest).Msg("sending read request")
+		m.log.Debug().Interface("readRequest", readRequest).Msg("sending read request")
 		readRequestResult := <-readRequest.Execute(readCtx)
 		if err := readRequestResult.GetErr(); err != nil {
 			m.log.Warn().Err(err).Msg("Error reading the mmi")
@@ -359,7 +359,7 @@ func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]an
 		if responseCode := response.GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
 			rootValue := response.GetValue("installationMMI")
 			if !rootValue.IsStruct() {
-				m.log.Warn().Err(err).Stringer("rootValue", rootValue).Msg("%v should be a struct")
+				m.log.Warn().Err(err).Interface("rootValue", rootValue).Msg("%v should be a struct")
 				return
 			}
 			rootStruct := rootValue.GetStruct()

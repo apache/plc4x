@@ -63,7 +63,7 @@ func (s *StateMachineGroup) Append(machine StateMachine) {
 	if _debug != nil {
 		_debug("append %r", machine)
 	}
-	s.log.Debug().Stringer("stateMachine", machine).Msg("Append")
+	s.log.Debug().Interface("stateMachine", machine).Msg("Append")
 	if machine.getMachineGroup() != nil {
 		panic("state machine group already contains this machine")
 	}
@@ -78,7 +78,7 @@ func (s *StateMachineGroup) Remove(machine StateMachine) {
 	if _debug != nil {
 		_debug("remove %r", machine)
 	}
-	s.log.Debug().Stringer("stateMachine", machine).Msg("Remove")
+	s.log.Debug().Interface("stateMachine", machine).Msg("Remove")
 	if machine.getMachineGroup() != s {
 		panic("state machine is not a member of this group")
 	}
@@ -102,7 +102,7 @@ func (s *StateMachineGroup) Reset() {
 		if _debug != nil {
 			_debug("    - resetting: %r", machine)
 		}
-		s.log.Debug().Stringer("stateMachine", machine).Msg("Resetting")
+		s.log.Debug().Interface("stateMachine", machine).Msg("Resetting")
 		machine.Reset()
 	}
 
@@ -129,7 +129,7 @@ func (s *StateMachineGroup) SetEvent(id string) {
 		if _debug != nil {
 			_debug("    - state_machine: %r", machine)
 		}
-		s.log.Debug().Stringer("stateMachine", machine).Msg("Setting")
+		s.log.Debug().Interface("stateMachine", machine).Msg("Setting")
 		machine.EventSet(id)
 	}
 }
@@ -165,7 +165,7 @@ func (s *StateMachineGroup) Run() error {
 		if _debug != nil {
 			_debug("    - starting: %r", machine)
 		}
-		s.log.Debug().Stringer("stateMachine", machine).Msg("starting")
+		s.log.Debug().Interface("stateMachine", machine).Msg("starting")
 		if err := machine.Run(); err != nil {
 			return errors.Wrap(err, "failed to start machine")
 		}
@@ -198,7 +198,7 @@ func (s *StateMachineGroup) Started(machine StateMachine) {
 	if _debug != nil {
 		_debug("started %r", machine)
 	}
-	s.log.Debug().Stringer("stateMachine", machine).Msg("started")
+	s.log.Debug().Interface("stateMachine", machine).Msg("started")
 }
 
 // Stopped Called by a state machine after it has halted and its Success()
@@ -208,7 +208,7 @@ func (s *StateMachineGroup) Stopped(machine StateMachine) {
 	if _debug != nil {
 		_debug("stopped %r", machine)
 	}
-	s.log.Debug().Stringer("stateMachine", machine).Msg("stopped")
+	s.log.Debug().Interface("stateMachine", machine).Msg("stopped")
 	if s.startupFlag {
 		if _debug != nil {
 			_debug("    - still starting up")
@@ -247,7 +247,7 @@ func (s *StateMachineGroup) CheckForSuccess() (allSuccess bool, someFailed bool)
 			if _debug != nil {
 				_debug("    - running: %r", machine)
 			}
-			s.log.Trace().Stringer("machine", machine).Msg("running")
+			s.log.Trace().Interface("machine", machine).Msg("running")
 			allSuccess = false
 			someFailed = false
 			break
@@ -257,7 +257,7 @@ func (s *StateMachineGroup) CheckForSuccess() (allSuccess bool, someFailed bool)
 			if _debug != nil {
 				_debug("    - not started: %r", machine)
 			}
-			s.log.Trace().Stringer("machine", machine).Msg("not started")
+			s.log.Trace().Interface("machine", machine).Msg("not started")
 			allSuccess = false
 			someFailed = false
 			break

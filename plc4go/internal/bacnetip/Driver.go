@@ -107,7 +107,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting application layer message codec")
 	}
-	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
+	d.log.Debug().Interface("codec", codec).Msg("working with codec")
 
 	// Create the new connection
 	connection := NewConnection(codec, d.GetPlcTagHandler(), d.tm, driverOptions)

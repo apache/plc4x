@@ -177,7 +177,7 @@ func (m *Connection) getGroupAddressNumLevels() uint8 {
 func (m *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range m.subscribers {
 		if sub == subscriber {
-			m.log.Debug().Stringer("subscriber", subscriber).Msg("Subscriber %v already added")
+			m.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber %v already added")
 			return
 		}
 	}

@@ -159,7 +159,7 @@ func (a *ApplicationNetwork) Run(timeLimit time.Duration) error {
 	if a.log.Debug().Enabled() {
 		a.log.Debug().Msg("time machine finished")
 		for _, machine := range a.GetStateMachines() {
-			a.log.Debug().Stringer("machine", machine).Stringers("entries", ToStringers(machine.GetTransactionLog())).Msg("machine")
+			a.log.Debug().Interface("machine", machine).Stringers("entries", ToStringers(machine.GetTransactionLog())).Msg("machine")
 		}
 
 		a.trafficLog.Dump(a._debug)
@@ -218,7 +218,7 @@ func NewSnifferNode(localLog zerolog.Logger, vlan *Network) (*SnifferNode, error
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
-	s.log.Debug().Stringer("node", s.node).Msg("node")
+	s.log.Debug().Interface("node", s.node).Msg("node")
 
 	// bind the node
 	err = Bind(s.log, s, s.node)
@@ -242,7 +242,7 @@ func (s *SnifferNode) Confirmation(args Args, kwArgs KWArgs) error {
 
 	// filter out network layer traffic if there is any, probably not
 	if nlm := npdu.GetNlm(); nlm != nil {
-		s.log.Debug().Stringer("nlm", nlm).Msg("network message")
+		s.log.Debug().Interface("nlm", nlm).Msg("network message")
 		return nil
 	}
 
@@ -304,7 +304,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, vlan *Network, options ...O
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
-	s.log.Debug().Stringer("node", s.node).Msg("node")
+	s.log.Debug().Interface("node", s.node).Msg("node")
 
 	// bind the node
 	err = Bind(s.log, s, s.node)
@@ -328,7 +328,7 @@ func (s *SnifferStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
 
 	// filter out network layer traffic if there is any, probably not
 	if nlm := npdu.GetNlm(); nlm != nil {
-		s.log.Debug().Stringer("nlm", nlm).Msg("network message")
+		s.log.Debug().Interface("nlm", nlm).Msg("network message")
 		return nil
 	}
 
@@ -384,7 +384,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice LocalDevice
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
-	a.log.Debug().Stringer("address", a.address).Msg("address")
+	a.log.Debug().Interface("address", a.address).Msg("address")
 
 	// continue with initialization
 	a.ApplicationIOController, err = NewApplicationIOController(a.log, Combine(optionsForParent, WithApplicationLocalDeviceObject(localDevice))...)

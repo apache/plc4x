@@ -131,7 +131,7 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 	if _debug != nil {
 		_debug("    - whoIs: %r", whoIs)
 	}
-	w.log.Debug().Stringer("whoIs", whoIs).Msg("WhoIs")
+	w.log.Debug().Interface("whoIs", whoIs).Msg("WhoIs")
 
 	return w._requirements.Request(NA(whoIs), NoKWArgs())
 }
@@ -141,7 +141,7 @@ func (w *WhoIsIAmServices) DoWhoIsRequest(apdu APDU) error {
 	if _debug != nil {
 		_debug("do_WhoIsRequest %r", apdu)
 	}
-	w.log.Debug().Stringer("apdu", apdu).Msg("DoWhoIsRequest")
+	w.log.Debug().Interface("apdu", apdu).Msg("DoWhoIsRequest")
 
 	// ignore this if there's no local device
 	if w.localDevice == nil {
@@ -235,7 +235,7 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 	if _debug != nil {
 		_debug("    - iAm: %r", iAm)
 	}
-	w.log.Debug().Stringer("iAm", iAm).Msg("")
+	w.log.Debug().Interface("iAm", iAm).Msg("")
 
 	return w._requirements.Request(NA(iAm), NoKWArgs())
 }

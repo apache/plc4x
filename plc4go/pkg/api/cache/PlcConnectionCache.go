@@ -232,7 +232,7 @@ func (c *plcConnectionCache) Close() error {
 
 	var wg sync.WaitGroup
 	for _, connectionContainer := range c.connections {
-		ccLog := c.log.With().Stringer("connectionContainer", connectionContainer).Logger()
+		ccLog := c.log.With().Interface("connectionContainer", connectionContainer).Logger()
 		ccLog.Trace().Msg("Closing connection")
 		// Mark the connection as being closed to not try to re-establish it.
 		connectionContainer.closed = true

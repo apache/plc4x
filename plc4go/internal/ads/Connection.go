@@ -183,10 +183,10 @@ func (m *Connection) setupConnection(ctx context.Context) error {
 					m.handleIncomingDeviceNotificationRequest(
 						amsTCPPacket.GetUserdata().(readWriteModel.AdsDeviceNotificationRequest))
 				default:
-					m.log.Warn().Stringer("message", message).Msg("Got unexpected type of incoming ADS message")
+					m.log.Warn().Interface("message", message).Msg("Got unexpected type of incoming ADS message")
 				}
 			default:
-				m.log.Warn().Stringer("message", message).Msg("Got unexpected type of incoming ADS message")
+				m.log.Warn().Interface("message", message).Msg("Got unexpected type of incoming ADS message")
 			}
 		}
 		m.log.Info().Msg("Done waiting for messages ...")

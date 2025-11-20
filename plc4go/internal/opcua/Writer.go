@@ -146,9 +146,9 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 		} else {
 			if serviceFault, ok := reply.(readWriteModel.ServiceFault); ok {
 				header := serviceFault.GetResponseHeader()
-				m.log.Error().Stringer("header", header).Msg("Read request ended up with ServiceFault")
+				m.log.Error().Interface("header", header).Msg("Read request ended up with ServiceFault")
 			} else {
-				m.log.Error().Stringer("reply", reply).Msg("Remote party returned an error")
+				m.log.Error().Interface("reply", reply).Msg("Remote party returned an error")
 			}
 
 			responseCodes := map[string]apiModel.PlcResponseCode{}

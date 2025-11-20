@@ -189,7 +189,7 @@ func (m *UDPMultiplexer) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - requesting local broadcast: %r", dest)
 		}
-		m.log.Debug().Stringer("dest", dest).Msg("requesting local broadcast")
+		m.log.Debug().Interface("dest", dest).Msg("requesting local broadcast")
 	} else if pduDestination.AddrType == LOCAL_STATION_ADDRESS {
 		// unicast  message
 		if _debug != nil {
@@ -255,7 +255,7 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
 	if _debug != nil {
 		_debug("    - dest: %r", dest)
 	}
-	m.log.Debug().Stringer("dest", dest).Msg("dest")
+	m.log.Debug().Interface("dest", dest).Msg("dest")
 
 	// must have at least one octet
 	if pdu.GetRootMessage() == nil {

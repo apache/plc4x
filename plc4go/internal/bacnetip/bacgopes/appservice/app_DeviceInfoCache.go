@@ -80,7 +80,7 @@ func (d *DeviceInfoCache) HasDeviceInfo(key DeviceInfoCacheKey) bool {
 
 // IAmDeviceInfo Create a device information record based on the contents of an IAmRequest and put it in the cache.
 func (d *DeviceInfoCache) IAmDeviceInfo(iAm readWriteModel.BACnetUnconfirmedServiceRequestIAm, pduSource Address) {
-	d.log.Debug().Stringer("iAm", iAm).Msg("IAmDeviceInfo")
+	d.log.Debug().Interface("iAm", iAm).Msg("IAmDeviceInfo")
 	if _debug != nil {
 		_debug("iam_device_info %r", iAm)
 	}
@@ -123,7 +123,7 @@ func (d *DeviceInfoCache) GetDeviceInfo(key DeviceInfoCacheKey) (DeviceInfo, boo
 
 	// get the info if it's there
 	deviceInfo, ok := d.cache[key.HashKey()]
-	d.log.Debug().Stringer("deviceInfo", &deviceInfo).Msg("deviceInfo")
+	d.log.Debug().Interface("deviceInfo", &deviceInfo).Msg("deviceInfo")
 	if _debug != nil {
 		_debug("    - device_info: %r", deviceInfo)
 	}
@@ -136,7 +136,7 @@ func (d *DeviceInfoCache) GetDeviceInfo(key DeviceInfoCacheKey) (DeviceInfo, boo
 //	to be updated to reflect the changes.  If this is a cached version of a persistent record then this is the
 //	opportunity to update the database.
 func (d *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
-	d.log.Debug().Stringer("deviceInfo", &deviceInfo).Msg("UpdateDeviceInfo")
+	d.log.Debug().Interface("deviceInfo", &deviceInfo).Msg("UpdateDeviceInfo")
 	if _debug != nil {
 		_debug("update_device_info %r", deviceInfo)
 	}

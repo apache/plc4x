@@ -91,7 +91,7 @@ func (n *Network) AddNode(node NetworkNode) {
 	if _debug != nil {
 		_debug("add_node %r", node)
 	}
-	n.log.Debug().Stringer("node", node).Msg("Adding node")
+	n.log.Debug().Interface("node", node).Msg("Adding node")
 	n.nodes = append(n.nodes, node)
 	node.setLan(n)
 
@@ -106,7 +106,7 @@ func (n *Network) RemoveNode(node NetworkNode) {
 	if _debug != nil {
 		_debug("remove_node %r", node)
 	}
-	n.log.Debug().Stringer("node", node).Msg("Remove node")
+	n.log.Debug().Interface("node", node).Msg("Remove node")
 	for i, _node := range n.nodes {
 		if _node == node {
 			n.nodes = append(n.nodes[:i], n.nodes[i+1:]...)
@@ -120,7 +120,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 	if _debug != nil {
 		_debug("process_pdu(%s) %r", n.name, pdu)
 	}
-	n.log.Debug().Stringer("pdu", pdu).Msg("processing pdu")
+	n.log.Debug().Interface("pdu", pdu).Msg("processing pdu")
 
 	// if there is a traffic log call it with the network name and PDU
 	if tl := n.trafficLogger; tl != nil {
@@ -148,7 +148,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 				if _debug != nil {
 					_debug("    - match: %r", node)
 				}
-				n.log.Debug().Stringer("node", node).Msg("match")
+				n.log.Debug().Interface("node", node).Msg("match")
 				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs()); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")
 				}
@@ -164,7 +164,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 				if _debug != nil {
 					_debug("    - match: %r", node)
 				}
-				n.log.Debug().Stringer("node", node).Msg("match")
+				n.log.Debug().Interface("node", node).Msg("match")
 				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs()); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")
 				}

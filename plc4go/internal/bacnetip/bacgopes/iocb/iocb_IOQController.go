@@ -95,7 +95,7 @@ func (i *IOQController) Abort(err error) error {
 		if iocb == nil {
 			break
 		}
-		i.log.Debug().Stringer("iocb", iocb).Msg("working with iocb")
+		i.log.Debug().Interface("iocb", iocb).Msg("working with iocb")
 
 		// change the state
 		iocb.setIOState(IOCBState_ABORTED)
@@ -114,7 +114,7 @@ func (i *IOQController) Abort(err error) error {
 
 // RequestIO Called by a client to start processing a request
 func (i *IOQController) RequestIO(iocb IOCBContract) error {
-	i.log.Debug().Stringer("iocb", iocb).Msg("RequestIO")
+	i.log.Debug().Interface("iocb", iocb).Msg("RequestIO")
 
 	// bind the iocb to this controller
 	iocb.setIOController(i)
@@ -150,7 +150,7 @@ func (i *IOQController) ProcessIO(IOCBContract) error {
 
 // ActiveIO Called by a handler to notify the controller that a request is being processed
 func (i *IOQController) ActiveIO(iocb IOCBContract) error {
-	i.log.Debug().Stringer("iocb", iocb).Msg("ActiveIO")
+	i.log.Debug().Interface("iocb", iocb).Msg("ActiveIO")
 
 	// base class work first, setting iocb state and timer data
 	if err := i.IOController.ActiveIO(iocb); err != nil {
@@ -168,7 +168,7 @@ func (i *IOQController) ActiveIO(iocb IOCBContract) error {
 
 // CompleteIO Called by a handler to return data to the client
 func (i *IOQController) CompleteIO(iocb IOCBContract, msg PDU) error {
-	i.log.Debug().Stringer("iocb", iocb).Stringer("msg", msg).Msg("CompleteIO")
+	i.log.Debug().Interface("iocb", iocb).Stringer("msg", msg).Msg("CompleteIO")
 
 	// check to see if it is completing the active one
 	if iocb != i.ActiveIOCB {
@@ -205,7 +205,7 @@ func (i *IOQController) CompleteIO(iocb IOCBContract, msg PDU) error {
 
 // AbortIO Called by a handler or a client to abort a transaction
 func (i *IOQController) AbortIO(iocb IOCBContract, err error) error {
-	i.log.Debug().Err(err).Stringer("iocb", iocb).Msg("AbortIO")
+	i.log.Debug().Err(err).Interface("iocb", iocb).Msg("AbortIO")
 
 	// Normal abort
 	if err := i.IOController.ActiveIO(iocb); err != nil {

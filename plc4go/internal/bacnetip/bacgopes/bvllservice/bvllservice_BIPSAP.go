@@ -63,7 +63,6 @@ func NewBIPSAP(localLog zerolog.Logger, requirements BIPSAPRequirements, options
 	}
 	localLog.Debug().
 		Interface("sapID", b.GetServiceElement()).
-		Interface("requirements", requirements).
 		Msg("NewBIPSAP")
 	return b, nil
 }

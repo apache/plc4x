@@ -72,7 +72,7 @@ func (n *NPDUCodec) Indication(args Args, kwArgs KWArgs) error {
 	if err := xpdu.Encode(ypdu); err != nil {
 		return errors.Wrap(err, "error decoding xpdu")
 	}
-	n.log.Debug().Stringer("ypdu", ypdu).Msg("encoded")
+	n.log.Debug().Interface("ypdu", ypdu).Msg("encoded")
 
 	// send it downstream
 	return n.Request(NA(ypdu), NoKWArgs())

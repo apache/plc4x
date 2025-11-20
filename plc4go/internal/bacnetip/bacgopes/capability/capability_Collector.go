@@ -90,7 +90,7 @@ func (c *collector) CapabilityFunctions(fn string) iter.Seq[GenericFunction] {
 	var fns []fnEntry
 	for _, _capability := range c.capabilities {
 		xfn := _capability.getFN(fn)
-		c.log.Trace().Stringer("capability", _capability).Bool("xfn", xfn != nil).Msg("cap")
+		c.log.Trace().Interface("capability", _capability).Bool("xfn", xfn != nil).Msg("cap")
 		if xfn != nil {
 			fns = append(fns, fnEntry{_zindex: _capability.getZIndex(), fn: xfn})
 		}
@@ -111,7 +111,7 @@ func (c *collector) CapabilityFunctions(fn string) iter.Seq[GenericFunction] {
 }
 
 func (c *collector) AddCapability(cls Capability) {
-	c.log.Debug().Stringer("cls", cls).Msg("AddCapability")
+	c.log.Debug().Interface("cls", cls).Msg("AddCapability")
 	c.capabilities = append(c.capabilities, cls)
 	// TODO: not sure what to do here
 	return

@@ -158,7 +158,7 @@ func (b *BIPForeign) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
 		return b.Request(NA(xpdu), NoKWArgs())
@@ -180,7 +180,7 @@ func (b *BIPForeign) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - xpdu: %r", xpdu)
 		}
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
 		return b.Request(NA(xpdu), NoKWArgs())
@@ -227,7 +227,7 @@ func (b *BIPForeign) Confirmation(args Args, kwArgs KWArgs) error {
 	case *OriginalUnicastNPDU:
 		// build a vanilla _PDU
 		xpdu := NewPDU(NA(pdu.GetPduData()), NKW(KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, pdu.GetPDUDestination(), KWCPCIUserData, pdu.GetPDUUserData()))
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
 		return b.Response(NA(xpdu), NoKWArgs())
@@ -252,7 +252,7 @@ func (b *BIPForeign) Confirmation(args Args, kwArgs KWArgs) error {
 
 		// build a _PDU with the source from the real source
 		xpdu := NewPDU(NA(pdu.GetPduData()), NKW(KWCPCISource, pdu.GetBvlciAddress(), KWCPCIDestination, NewLocalBroadcast(nil), KWCPCIUserData, pdu.GetPDUUserData()))
-		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+		b.log.Debug().Interface("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
 		return b.Response(NA(xpdu), NoKWArgs())

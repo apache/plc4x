@@ -61,7 +61,7 @@ func OverwriteTaskManager(localLog zerolog.Logger, manager TaskManager) (oldMana
 	if _taskManager != nil {
 		oldManager = _taskManager
 		if oldManager.CountTasks() > 0 {
-			localLog.Warn().Stringer("oldManager", oldManager).Msg("Overwriting task manager with pending tasks")
+			localLog.Warn().Interface("oldManager", oldManager).Msg("Overwriting task manager with pending tasks")
 		}
 		_taskManager.ClearTasks()
 	}
@@ -77,7 +77,7 @@ func ClearTaskManager(localLog zerolog.Logger) {
 		return
 	}
 	if _taskManager.CountTasks() > 0 {
-		localLog.Warn().Stringer("taskManager", _taskManager).Msg("Clearing task manager with pending tasks")
+		localLog.Warn().Interface("taskManager", _taskManager).Msg("Clearing task manager with pending tasks")
 	}
 	_taskManager.ClearTasks()
 }
@@ -150,7 +150,7 @@ func (t *taskManager) InstallTask(task TaskRequirements) {
 	if _debug != nil {
 		_debug("install_task %r @ %r", task, task.GetTaskTime())
 	}
-	t.log.Debug().Stringer("task", task).Msg("InstallTask")
+	t.log.Debug().Interface("task", task).Msg("InstallTask")
 	t.Lock()
 	defer t.Unlock()
 
@@ -175,7 +175,7 @@ func (t *taskManager) InstallTask(task TaskRequirements) {
 	if _debug != nil {
 		_debug("    - tasks: %r", t.tasks)
 	}
-	t.log.Debug().Stringer("tasks", t.tasks).Msg("tasks")
+	t.log.Debug().Interface("tasks", t.tasks).Msg("tasks")
 
 	task.SetIsScheduled(true)
 }
@@ -184,7 +184,7 @@ func (t *taskManager) SuspendTask(task TaskRequirements) {
 	if _debug != nil {
 		_debug("suspend_task %r", task)
 	}
-	t.log.Debug().Stringer("task", task).Msg("SuspendTask ")
+	t.log.Debug().Interface("task", task).Msg("SuspendTask ")
 	t.Lock()
 	defer t.Unlock()
 
@@ -217,7 +217,7 @@ func (t *taskManager) ResumeTask(task TaskRequirements) {
 	if _debug != nil {
 		_debug("resume_task %r", task)
 	}
-	t.log.Debug().Stringer("task", task).Msg("ResumeTask")
+	t.log.Debug().Interface("task", task).Msg("ResumeTask")
 	t.Lock()
 	defer t.Unlock()
 
@@ -276,7 +276,7 @@ func (t *taskManager) ProcessTask(task TaskRequirements) {
 	if _debug != nil {
 		_debug("process_task %r", task)
 	}
-	t.log.Debug().Stringer("task", task).Msg("ProcessTask")
+	t.log.Debug().Interface("task", task).Msg("ProcessTask")
 
 	// process the task
 	if err := task.ProcessTask(); err != nil {

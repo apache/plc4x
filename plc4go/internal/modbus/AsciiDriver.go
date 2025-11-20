@@ -101,14 +101,14 @@ func (d *AsciiDriver) GetConnection(ctx context.Context, transportUrl url.URL, t
 		for {
 			msg := <-defaultChanel
 			adu := msg.(model.ModbusTcpADU)
-			d.log.Debug().Stringer("adu", adu).Msg("got message in the default handler %s\n")
+			d.log.Debug().Interface("adu", adu).Msg("got message in the default handler %s\n")
 		}
 	})
 	codec := NewMessageCodec(
 		transportInstance,
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
+	d.log.Debug().Interface("codec", codec).Msg("working with codec")
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
@@ -129,7 +129,7 @@ func (d *AsciiDriver) GetConnection(ctx context.Context, transportUrl url.URL, t
 		d.GetPlcTagHandler(),
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
+	d.log.Debug().Interface("connection", connection).Msg("created connection, connecting now")
 	if err := connection.Connect(ctx); err != nil {
 		return nil, errors.Wrap(err, "Error connecting connection")
 	}

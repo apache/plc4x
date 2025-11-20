@@ -292,7 +292,7 @@ func (s *state) Send(pdu PDU, nextState State) State {
 	if _debug != nil {
 		_debug("send(%s) %r next_state=%r", s.docString, pdu, nextState)
 	}
-	s.log.Debug().Stringer("pdu", pdu).Msg("Send")
+	s.log.Debug().Interface("pdu", pdu).Msg("Send")
 	if nextState == nil {
 		nextState = s.stateMachine.NewState("")
 		s.log.Debug().Stringer("nextState", nextState).Msg("new nextState")
@@ -409,7 +409,7 @@ func (s *state) UnexpectedReceive(pdu PDU) {
 	if _debug != nil {
 		_debug("unexpected_receive(%s) %r", s.docString, pdu)
 	}
-	s.log.Debug().Stringer("pdu", pdu).Msg("UnexpectedReceive")
+	s.log.Debug().Interface("pdu", pdu).Msg("UnexpectedReceive")
 	s.stateMachine.UnexpectedReceive(pdu)
 }
 

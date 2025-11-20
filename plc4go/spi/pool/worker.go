@@ -83,7 +83,7 @@ func (w *worker) start() {
 		return
 	}
 	if w.executor.isTraceWorkers() {
-		w.log.Debug().Stringer("worker", w).Msg("Starting worker")
+		w.log.Debug().Interface("worker", w).Msg("Starting worker")
 	}
 	w.running.Store(true)
 	w.executor.getWorkerWaitGroup().Go(w.work)
@@ -98,7 +98,7 @@ func (w *worker) stop(interrupt bool) {
 	}
 
 	if w.executor.isTraceWorkers() {
-		w.log.Debug().Stringer("worker", w).Msg("Stopping worker")
+		w.log.Debug().Interface("worker", w).Msg("Stopping worker")
 	}
 	w.shutdown.Store(true)
 	if interrupt {
@@ -131,7 +131,7 @@ func (w *worker) work() {
 		select {
 		case _workItem := <-w.executor.getWorksItems():
 			w.lastReceived.Store(time.Now())
-			workItemLog := workerLog.With().Stringer("workItem", &_workItem).Logger()
+			workItemLog := workerLog.With().Interface("workItem", &_workItem).Logger()
 			workItemLog.Debug().Msg("Got work item")
 			if _workItem.completionFuture.cancelRequested.Load() || (w.shutdown.Load() && w.interrupted.Load()) {
 				workerLog.Debug().Msg("We need to stop")

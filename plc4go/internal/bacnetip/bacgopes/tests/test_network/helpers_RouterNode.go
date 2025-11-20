@@ -63,7 +63,7 @@ func NewRouterNode(localLog zerolog.Logger) (*RouterNode, error) {
 }
 
 func (r *RouterNode) AddNetwork(address string, vlan *Network, net uint16) error {
-	r.log.Debug().Str("address", address).Stringer("vlan", vlan).Uint16("net", net).Msg("AddNetwork")
+	r.log.Debug().Interface("address", address).Stringer("vlan", vlan).Uint16("net", net).Msg("AddNetwork")
 
 	// convert the address to an Address
 	addr, err := NewAddress(NA(address))

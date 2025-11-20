@@ -86,7 +86,7 @@ func (n *IPRouterNode) Confirmation(args Args, kwArgs KWArgs) error {
 	if _debug != nil {
 		_debug("confirmation %r", pdu)
 	}
-	n.log.Debug().Stringer("pdu", pdu).Msg("confirmation")
+	n.log.Debug().Interface("pdu", pdu).Msg("confirmation")
 	n.router.ProcessPDU(n, pdu)
 	return nil
 }
@@ -95,7 +95,7 @@ func (n *IPRouterNode) ProcessPDU(pdu PDU) error {
 	if _debug != nil {
 		_debug("process_pdu %r", pdu)
 	}
-	n.log.Debug().Stringer("pdu", pdu).Msg("ProcessPDU")
+	n.log.Debug().Interface("pdu", pdu).Msg("ProcessPDU")
 	return n.Request(NA(pdu), NoKWArgs())
 }
 

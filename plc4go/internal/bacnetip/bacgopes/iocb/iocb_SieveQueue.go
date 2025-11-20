@@ -50,7 +50,7 @@ func NewSieveQueue(localLog zerolog.Logger, fn func(apdu PDU), address *Address)
 }
 
 func (s *SieveQueue) ProcessIO(iocb IOCBContract) error {
-	s.log.Debug().Stringer("iocb", iocb).Msg("ProcessIO")
+	s.log.Debug().Interface("iocb", iocb).Msg("ProcessIO")
 
 	// this is now an active request
 	if err := s.ActiveIO(iocb); err != nil {

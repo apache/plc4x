@@ -1592,6 +1592,7 @@ func Test_defaultCodec_integration(t *testing.T) {
 		{
 			expect := message.EXPECT()
 			expect.String().Return("message for " + t.Name())
+			expect.SerializeWithWriteBuffer(mock.Anything, mock.Anything).Return(nil)
 		}
 		expect.Receive(mock.Anything).RunAndReturn(func(_ context.Context) (spi.Message, error) {
 			// Simulate a bit read delay

@@ -93,7 +93,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		transportInstance,
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Debug().Stringer("codec", codec).Msg("working with codec")
+	d.log.Debug().Interface("codec", codec).Msg("working with codec")
 
 	configuration, err := model.ParseFromOptions(d.log, driverOptions)
 	if err != nil {
@@ -106,7 +106,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't create connection")
 	}
-	d.log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
+	d.log.Debug().Interface("connection", connection).Msg("created connection, connecting now")
 	if err := connection.Connect(ctx); err != nil {
 		return nil, errors.Wrap(err, "Error connecting connection")
 	}

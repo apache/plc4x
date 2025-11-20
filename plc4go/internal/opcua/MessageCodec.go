@@ -61,7 +61,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 }
 
 func (m *MessageCodec) Send(ctx context.Context, message spi.Message) error {
-	m.log.Trace().Stringer("message", message).Msg("Sending message")
+	m.log.Trace().Interface("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	opcuaApu, ok := message.(readWriteModel.OpcuaAPU)
 	if !ok {
@@ -123,6 +123,6 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	if err != nil {
 		return nil, errors.New("Could not parse pdu")
 	}
-	m.log.Debug().Stringer("opcuaAPU", opcuaAPU).Msg("got message")
+	m.log.Debug().Interface("opcuaAPU", opcuaAPU).Msg("got message")
 	return opcuaAPU, nil
 }

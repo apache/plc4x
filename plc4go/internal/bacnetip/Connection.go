@@ -115,7 +115,7 @@ func (c *Connection) passToDefaultIncomingMessageChannel() {
 	select {
 	case message := <-incomingMessageChannel:
 		// TODO: implement mapping to subscribers
-		c.log.Info().Stringer("message", message).Msg("Received")
+		c.log.Info().Interface("message", message).Msg("Received")
 	default:
 		c.log.Info().Msg("Message was not handled")
 	}
@@ -155,7 +155,7 @@ func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range c.subscribers {
 		if sub == subscriber {
-			c.log.Debug().Stringer("subscriber", subscriber).Msg("Subscriber already added")
+			c.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber already added")
 			return
 		}
 	}

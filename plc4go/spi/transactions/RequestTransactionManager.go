@@ -182,9 +182,13 @@ func (r *requestTransactionManager) processWorklog() {
 		Msg("Processing work log with size of workLogLen (numberOfConcurrentRequests concurrent requests allowed)")
 	for len(r.runningRequests) < r.numberOfConcurrentRequests && r.workLog.Len() > 0 {
 		front := r.workLog.Front()
+		if front == nil {
+			r.log.Error().Msg("workLog front is nil")
+			break
+		}
 		next := front.Value.(*requestTransaction)
 		r.log.Debug().
-			Stringer("next", next).
+			Interface("next", next).
 			Int("nRunningRequests", len(r.runningRequests)).
 			Msg("Handling next. (Adding to running requests (length: nRunningRequests))")
 		r.runningRequests = append(r.runningRequests, next)

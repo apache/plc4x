@@ -128,7 +128,7 @@ func RunOnce(localLog zerolog.Logger) {
 		if delta != nil {
 			displayDelta = *delta
 		}
-		localLog.Debug().Stringer("task", task).Dur("delta", displayDelta).Msg("task")
+		localLog.Debug().Interface("task", task).Dur("delta", displayDelta).Msg("task")
 
 		// if there is a task to process, do it
 		if task != nil {

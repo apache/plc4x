@@ -98,7 +98,7 @@ func (s *FauxMultiplexer) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - requesting local broadcast: %r", dest)
 		}
-		s.log.Debug().Stringer("dest", dest).Msg("Requesting local broadcast")
+		s.log.Debug().Interface("dest", dest).Msg("Requesting local broadcast")
 	} else if pdu.GetPDUDestination().AddrType == LOCAL_STATION_ADDRESS {
 		var err error
 		dest, err = NewAddress(NA(pdu.GetPDUDestination().AddrAddress))
@@ -108,7 +108,7 @@ func (s *FauxMultiplexer) Indication(args Args, kwArgs KWArgs) error {
 		if _debug != nil {
 			_debug("    - requesting local station: %r", dest)
 		}
-		s.log.Debug().Stringer("dest", dest).Msg("Requesting local station")
+		s.log.Debug().Interface("dest", dest).Msg("Requesting local station")
 	} else {
 		return errors.New("unknown destination type")
 	}

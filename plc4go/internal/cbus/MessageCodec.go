@@ -99,7 +99,7 @@ func (m *MessageCodec) Disconnect() error {
 }
 
 func (m *MessageCodec) Send(ctx context.Context, message spi.Message) error {
-	m.log.Trace().Stringer("message", message).Msg("Sending message")
+	m.log.Trace().Interface("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	cbusMessage, ok := message.(readWriteModel.CBusMessage)
 	if !ok {
@@ -108,7 +108,7 @@ func (m *MessageCodec) Send(ctx context.Context, message spi.Message) error {
 
 	// Set the right request context
 	m.requestContext = CreateRequestContext(cbusMessage)
-	m.log.Debug().Stringer("requestContext", m.requestContext).Msg("Created request context")
+	m.log.Debug().Interface("requestContext", m.requestContext).Msg("Created request context")
 
 	// Serialize the request
 	theBytes, err := cbusMessage.Serialize()

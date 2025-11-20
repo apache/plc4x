@@ -122,7 +122,7 @@ func (s *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 }
 
 func (s *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
-	s.log.Debug().Stringer("calReply", calReply).Msg("handling")
+	s.log.Debug().Interface("calReply", calReply).Msg("handling")
 	var unitAddressString string
 	switch calReply := calReply.(type) {
 	case readWriteModel.CALReplyLong:
@@ -150,7 +150,7 @@ func (s *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 			Interface("consumer", consumer).
 			Msg("Checking with registration and consumer")
 		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
-			s.log.Debug().Stringer("subscriptionHandle", subscriptionHandle).Msg("offering to")
+			s.log.Debug().Interface("subscriptionHandle", subscriptionHandle).Msg("offering to")
 			handleHandled := s.offerMMI(unitAddressString, calData, subscriptionHandle.(*SubscriptionHandle), consumer)
 			s.log.Debug().Bool("handleHandled", handleHandled).Msg("handle handled")
 			handled = handled || handleHandled

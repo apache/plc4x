@@ -130,7 +130,7 @@ func (t TPDU) Serialize() ([]byte, error) {
 }
 
 func (t TPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	panic("implement me")
+	return nil
 }
 
 func (t TPDU) GetLengthInBytes(ctx context.Context) uint16 {

@@ -120,7 +120,7 @@ func (t *TNetwork3) Run(timeLimit time.Duration) {
 	RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
-		t.log.Debug().Stringer("machine", machine).Stringers("transactionLog", ToStringers(machine.GetTransactionLog())).Msg("Machine:")
+		t.log.Debug().Interface("machine", machine).Interface("transactionLog", ToStringers(machine.GetTransactionLog())).Msg("Machine:")
 	}
 
 	// check for success

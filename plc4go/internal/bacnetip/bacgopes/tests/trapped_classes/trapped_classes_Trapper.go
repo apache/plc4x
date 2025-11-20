@@ -78,7 +78,7 @@ func (t *Trapper) BeforeSend(pdu PDU) {
 	if _debug != nil {
 		_debug("before_send %r", pdu)
 	}
-	t.log.Debug().Stringer("pdu", pdu).Msg("BeforeSend")
+	t.log.Debug().Interface("pdu", pdu).Msg("BeforeSend")
 	//keep a copy
 	t.beforeSendPdu = pdu
 
@@ -95,7 +95,7 @@ func (t *Trapper) AfterSend(pdu PDU) {
 	if _debug != nil {
 		_debug("after_send %r", pdu)
 	}
-	t.log.Debug().Stringer("pdu", pdu).Msg("AfterSend")
+	t.log.Debug().Interface("pdu", pdu).Msg("AfterSend")
 	//keep a copy
 	t.afterSendPdu = pdu
 
@@ -112,7 +112,7 @@ func (t *Trapper) BeforeReceive(pdu PDU) {
 	if _debug != nil {
 		_debug("before_receive %r", pdu)
 	}
-	t.log.Debug().Stringer("pdu", pdu).Msg("BeforeReceive")
+	t.log.Debug().Interface("pdu", pdu).Msg("BeforeReceive")
 	//keep a copy
 	t.beforeReceivePdu = pdu
 
@@ -129,7 +129,7 @@ func (t *Trapper) AfterReceive(pdu PDU) {
 	if _debug != nil {
 		_debug("after_receive %r", pdu)
 	}
-	t.log.Debug().Stringer("pdu", pdu).Msg("AfterReceive")
+	t.log.Debug().Interface("pdu", pdu).Msg("AfterReceive")
 	//keep a copy
 	t.afterReceivePdu = pdu
 
@@ -146,7 +146,7 @@ func (t *Trapper) UnexpectedReceive(pdu PDU) {
 	if _debug != nil {
 		_debug("unexpected_receive %r", pdu)
 	}
-	t.log.Debug().Stringer("pdu", pdu).Msg("UnexpectedReceive")
+	t.log.Debug().Interface("pdu", pdu).Msg("UnexpectedReceive")
 	//keep a copy
 	t.unexpectedReceivePdu = pdu
 

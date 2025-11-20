@@ -46,7 +46,7 @@ func (n *IPRouter) AddNetwork(addr *Address, lan *IPNetwork) {
 	if _debug != nil {
 		_debug("add_network %r %r", addr, lan)
 	}
-	n.log.Debug().Stringer("addr", addr).Stringer("lan", lan).Msg("adding network")
+	n.log.Debug().Interface("addr", addr).Interface("lan", lan).Msg("adding network")
 
 	node, err := NewIPRouterNode(n.log, n, addr, lan)
 	if err != nil {
@@ -56,7 +56,7 @@ func (n *IPRouter) AddNetwork(addr *Address, lan *IPNetwork) {
 	if _debug != nil {
 		_debug("    - node: %r", node)
 	}
-	n.log.Debug().Stringer("node", node).Msg("node")
+	n.log.Debug().Interface("node", node).Msg("node")
 
 	n.nodes = append(n.nodes, node)
 }
@@ -65,7 +65,7 @@ func (n *IPRouter) ProcessPDU(node *IPRouterNode, pdu PDU) {
 	if _debug != nil {
 		_debug("process_pdu %r %r", node, pdu)
 	}
-	n.log.Debug().Stringer("node", node).Stringer("pdu", pdu).Msg("processing PDU")
+	n.log.Debug().Interface("node", node).Interface("pdu", pdu).Msg("processing PDU")
 
 	// unpack the address part of the destination
 	addrstr := *pdu.GetPDUDestination().AddrIP //TODO: check if this is the right way here.
@@ -82,7 +82,7 @@ func (n *IPRouter) ProcessPDU(node *IPRouterNode, pdu PDU) {
 				if _debug != nil {
 					_debug("    - inode: %r", inode)
 				}
-				n.log.Debug().Stringer("inode", inode).Msg("inode")
+				n.log.Debug().Interface("inode", inode).Msg("inode")
 				if err := inode.ProcessPDU(pdu); err != nil {
 					n.log.Debug().Err(err).Msg("error processing inode")
 				}

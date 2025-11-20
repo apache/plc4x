@@ -123,9 +123,9 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		} else {
 			if serviceFault, ok := extensionObjectDefinition.(readWriteModel.ServiceFault); ok {
 				header := serviceFault.GetResponseHeader()
-				m.log.Error().Stringer("header", header).Msg("Read request ended up with ServiceFault")
+				m.log.Error().Interface("header", header).Msg("Read request ended up with ServiceFault")
 			} else {
-				m.log.Error().Stringer("extensionObjectDefinition", extensionObjectDefinition).Msg("Remote party returned an error")
+				m.log.Error().Interface("extensionObjectDefinition", extensionObjectDefinition).Msg("Remote party returned an error")
 			}
 
 			responseCodes := map[string]apiModel.PlcResponseCode{}

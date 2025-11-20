@@ -61,7 +61,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *Netwo
 		return nil, errors.Wrap(err, "error creating node")
 	}
 	if LogTestNetwork {
-		s.log.Debug().Stringer("node", s.node).Msg("node")
+		s.log.Debug().Interface("node", s.node).Msg("node")
 	}
 
 	// bind the stack together

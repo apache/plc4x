@@ -130,7 +130,7 @@ func (n *Node) bind(lan NodeNetworkReference) {
 	if _debug != nil {
 		_debug("bind %r", lan)
 	}
-	n.log.Debug().Stringer("lan", lan).Msg("binding lan")
+	n.log.Debug().Interface("lan", lan).Msg("binding lan")
 	lan.AddNode(n)
 }
 

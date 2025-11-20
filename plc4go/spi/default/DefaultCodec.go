@@ -215,7 +215,7 @@ func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMes
 	}
 	expectation := newDefaultExpectation(ctx, ttl, acceptsMessage, handleMessage, handleError)
 	m.expectations = append(m.expectations, expectation)
-	m.log.Debug().Stringer("expectation", expectation).Msg("Added expectation")
+	m.log.Debug().Interface("expectation", expectation).Msg("Added expectation")
 	select {
 	case m.notifyExpireWorker <- struct{}{}:
 	default:
@@ -242,7 +242,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) time.Duration {
 		// Check if this expectation has expired.
 		if now.After(expectation.GetExpiration()) {
 			// Remove this expectation from the list.
-			m.log.Debug().Stringer("expectation", expectation).Msg("timeout expectation")
+			m.log.Debug().Interface("expectation", expectation).Msg("timeout expectation")
 			// Call the error handler.
 			m.wg.Go(func() {
 				timeoutErr := utils.NewTimeoutError(expectation.GetExpiration().Sub(expectation.GetCreationTime()))
@@ -254,7 +254,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) time.Duration {
 			return true
 		}
 		if err := expectation.GetContext().Err(); err != nil {
-			m.log.Debug().Err(err).Stringer("expectation", expectation).Msg("expectation canceled")
+			m.log.Debug().Err(err).Interface("expectation", expectation).Msg("expectation canceled")
 			// Remove this expectation from the list.
 			m.wg.Go(func() {
 				if err := expectation.GetHandleError()(err); err != nil {
@@ -281,7 +281,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	messageHandled := false
 	m.log.Trace().Int("nExpectations", len(m.expectations)).Msg("Current number of expectations")
 	m.expectations = slices.DeleteFunc(m.expectations, func(expectation spi.Expectation) bool {
-		expectationLog := m.log.With().Stringer("expectation", expectation).Logger()
+		expectationLog := m.log.With().Interface("expectation", expectation).Logger()
 		expectationLog.Trace().Msg("Checking expectation")
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
@@ -421,10 +421,10 @@ mainLoop:
 		if processingTime := time.Since(lastLoopTime); processingTime < cycleTime {
 			// Ensure that we leave at least 10ms between loops to not burn cycles
 			sleepTime := cycleTime - processingTime
-			workerLog.Trace().Stringer("sleepTime", sleepTime).Msg("sleeping") // we use stringer instead of Dur to have it a bit more readable
+			workerLog.Trace().Dur("sleepTime", sleepTime).Msg("sleeping")
 			time.Sleep(sleepTime)
 		} else {
-			workerLog.Debug().Stringer("processingTime", processingTime).Stringer("cycleTime", cycleTime).Msg("no need to sleep") // we use stringer instead of Dur to have it a bit more readable
+			workerLog.Debug().Dur("processingTime", processingTime).Dur("cycleTime", cycleTime).Msg("no need to sleep")
 		}
 		workerLog.Trace().Msg("receive mainloop cycle")
 		lastLoopTime = time.Now()
@@ -482,7 +482,7 @@ mainLoop:
 			workerLog.Trace().Msg("Not enough data yet")
 			continue mainLoop
 		}
-		workerLog.Trace().Stringer("message", message).Msg("got message")
+		workerLog.Trace().Interface("message", message).Msg("got message")
 
 		if m.customMessageHandling != nil {
 			workerLog.Trace().Msg("Executing custom handling")
@@ -512,6 +512,6 @@ func (m *defaultCodec) passToDefaultIncomingMessageChannel(workerLog zerolog.Log
 	select {
 	case m.defaultIncomingMessageChannel <- message:
 	default:
-		workerLog.Warn().Stringer("message", message).Msg("Message discarded")
+		workerLog.Warn().Interface("message", message).Msg("Message discarded")
 	}
 }

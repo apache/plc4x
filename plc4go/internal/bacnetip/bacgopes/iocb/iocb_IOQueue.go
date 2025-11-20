@@ -54,7 +54,7 @@ func NewIOQueue(localLog zerolog.Logger, name string) *IOQueue {
 //
 //	correct processing thread.
 func (i *IOQueue) Put(iocb IOCBContract) error {
-	i.log.Debug().Stringer("iocb", iocb).Msg("Put")
+	i.log.Debug().Interface("iocb", iocb).Msg("Put")
 
 	// requests should be pending before being queued
 	if iocb.getIOState() != IOCBState_PENDING {

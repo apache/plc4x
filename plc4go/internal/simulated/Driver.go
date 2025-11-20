@@ -63,11 +63,11 @@ func (d *Driver) GetConnection(ctx context.Context, _ url.URL, _ map[string]tran
 		driverOptions,
 		append(d._options, options.WithCustomLogger(d.log))...,
 	)
-	d.log.Trace().Stringer("connection", connection).Msg("Connecting")
+	d.log.Trace().Interface("connection", connection).Msg("Connecting")
 	if err := connection.Connect(ctx); err != nil {
 		return nil, errors.Wrap(err, "Error connecting connection")
 	}
-	d.log.Trace().Stringer("connection", connection).Msg("Connected")
+	d.log.Trace().Interface("connection", connection).Msg("Connected")
 	return connection, nil
 }
 

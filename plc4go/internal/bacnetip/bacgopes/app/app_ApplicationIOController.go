@@ -65,7 +65,7 @@ func (a *ApplicationIOController) ProcessIO(iocb IOCBContract) error {
 
 	// get the destination address from the pdu
 	destinationAddress := iocb.GetDestination()
-	a.log.Debug().Stringer("destinationAddress", destinationAddress).Msg("working with destinationAddress")
+	a.log.Debug().Interface("destinationAddress", destinationAddress).Msg("working with destinationAddress")
 
 	// look up the queue
 	queue, ok := a.queueByAddress[destinationAddress.String()]
@@ -74,7 +74,7 @@ func (a *ApplicationIOController) ProcessIO(iocb IOCBContract) error {
 		queue = newQueue
 		a.queueByAddress[destinationAddress.String()] = queue
 	}
-	a.log.Debug().Stringer("queue", queue).Msg("working with queue")
+	a.log.Debug().Interface("queue", queue).Msg("working with queue")
 
 	// ask the queue to process the request
 	return queue.RequestIO(iocb)
@@ -89,14 +89,14 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu PDU) error
 	// look up the queue
 	queue, ok := a.queueByAddress[address.String()]
 	if !ok {
-		a.log.Debug().Stringer("address", address).Msg("no queue for")
+		a.log.Debug().Interface("address", address).Msg("no queue for")
 		return nil
 	}
 	a.log.Debug().Stringer("queue", queue).Msg("working with queue")
 
 	// make sure it has an active iocb
 	if queue.ActiveIOCB == nil {
-		a.log.Debug().Stringer("address", address).Msg("no active request for")
+		a.log.Debug().Interface("address", address).Msg("no active request for")
 		return nil
 	}
 
@@ -123,7 +123,7 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu PDU) error
 }
 
 func (a *ApplicationIOController) _AppRequest(apdu PDU) {
-	a.log.Debug().Stringer("apdu", apdu).Msg("_AppRequest")
+	a.log.Debug().Interface("apdu", apdu).Msg("_AppRequest")
 
 	// send it downstream, bypass the guard
 	if err := a.Application.Request(NA(apdu), NoKWArgs()); err != nil {

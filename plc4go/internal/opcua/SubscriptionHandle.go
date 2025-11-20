@@ -411,7 +411,7 @@ func (h *SubscriptionHandle) stopSubscriber() {
 				Msg("Subscription ServiceFault returned from server with error code, ignoring as it is probably just a result of a Delete Subscription Request")
 			return
 		}
-		h.log.Debug().Stringer("responseMessage", responseMessage).Msg("Received response")
+		h.log.Debug().Interface("responseMessage", responseMessage).Msg("Received response")
 	}
 
 	errorDispatcher := func(err error) {

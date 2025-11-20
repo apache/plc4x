@@ -233,7 +233,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 
 	// get the local adapter
 	localAdapter := n.localAdapter
-	n.log.Debug().Stringer("localAdapter", localAdapter).Msg("localAdapter")
+	n.log.Debug().Interface("localAdapter", localAdapter).Msg("localAdapter")
 	if _debug != nil {
 		_debug("    - local_adapter: %r", localAdapter)
 	}
@@ -246,7 +246,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 	if err := pdu.(Encoder).Encode(apdu); err != nil {
 		return errors.Wrap(err, "error encoding APDU")
 	}
-	n.log.Debug().Stringer("_APDU", apdu).Msg("apdu")
+	n.log.Debug().Interface("_APDU", apdu).Msg("apdu")
 	if _debug != nil {
 		_debug("    - apdu: %r", apdu)
 	}
@@ -259,7 +259,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 	if err = apdu.Encode(npdu); err != nil {
 		return errors.Wrap(err, "error encoding NPDU")
 	}
-	n.log.Debug().Stringer("npdu", npdu).Msg("npdu")
+	n.log.Debug().Interface("npdu", npdu).Msg("npdu")
 	if _debug != nil {
 		_debug("    - npdu: %r", npdu)
 	}
@@ -287,7 +287,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 			}
 			npdu.SetNpduDADR(apdu.GetPDUDestination())
 		default:
-			n.log.Trace().Stringer("addrType", pdu.GetPDUDestination().AddrType).Msg("unknown destination type")
+			n.log.Trace().Interface("addrType", pdu.GetPDUDestination().AddrType).Msg("unknown destination type")
 		}
 
 		npdu.SetPDUDestination(npdu.GetPDUDestination().AddrRoute)
@@ -382,7 +382,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 
 	// if there is info, we have a path
 	if routerInfo != nil {
-		n.log.Debug().Stringer("routerInfo", routerInfo).Msg("routerInfo found")
+		n.log.Debug().Interface("routerInfo", routerInfo).Msg("routerInfo found")
 		if _debug != nil {
 			_debug("    - router_info found: %r", routerInfo)
 		}
@@ -510,7 +510,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 		processLocally = true
 		forwardMessage = true
 	default:
-		n.log.Warn().Stringer("addrType", npdu.GetNpduDADR().AddrType).Msg("invalid destination address type:")
+		n.log.Warn().Interface("addrType", npdu.GetNpduDADR().AddrType).Msg("invalid destination address type:")
 		return nil
 	}
 
@@ -541,7 +541,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			if err := apdu.Decode(DeepCopy[NPDU](npdu)); err != nil {
 				return errors.Wrap(err, "error decoding APDU")
 			}
-			n.log.Debug().Stringer("apdu", apdu).Msg("apdu")
+			n.log.Debug().Interface("apdu", apdu).Msg("apdu")
 			if _debug != nil {
 				_debug("    - apdu: %r", apdu)
 			}
@@ -595,8 +595,8 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 				}
 			}
 
-			n.log.Debug().Stringer("pduSource", apdu.GetPDUSource()).Msg("apdu.pduSource")
-			n.log.Debug().Stringer("pduDestination", apdu.GetPDUDestination()).Msg("apdu.pduDestination")
+			n.log.Debug().Interface("pduSource", apdu.GetPDUSource()).Msg("apdu.pduSource")
+			n.log.Debug().Interface("pduDestination", apdu.GetPDUDestination()).Msg("apdu.pduDestination")
 			if _debug != nil {
 				_debug("    - apdu.pduSource: %r", apdu.GetPDUSource())
 				_debug("    - apdu.pduDestination: %r", apdu.GetPDUDestination())
@@ -728,7 +728,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 				}
 				return nil
 			}
-			n.log.Debug().Stringer("adapter", adapter).Msg("found path via")
+			n.log.Debug().Interface("adapter", adapter).Msg("found path via")
 			if _debug != nil {
 				_debug("    - found path via %r", xadapter)
 			}
@@ -764,7 +764,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 
 		// found a path
 		if routerInfo != nil {
-			n.log.Debug().Stringer("routerInfo", routerInfo).Msg("found path via routerInfo")
+			n.log.Debug().Interface("routerInfo", routerInfo).Msg("found path via routerInfo")
 			if _debug != nil {
 				_debug("    - found path via %r", routerInfo)
 			}

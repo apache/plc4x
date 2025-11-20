@@ -102,7 +102,7 @@ func (t *TBNetwork) Run(timeLimit time.Duration) {
 	RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
-		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
+		t.log.Debug().Interface("machine", machine).Msg("Machine:")
 		for _, s := range machine.GetTransactionLog() {
 			t.log.Debug().Stringer("logEntry", s).Msg("logEntry")
 		}
@@ -241,7 +241,7 @@ func TestBBMD(t *testing.T) {
 		// implementation under test
 		iut, err := NewBIPBBMDApplication(testLogger, "192.168.1.2/24", tnet.vlan[0])
 		require.NoError(t, err)
-		testLogger.Debug().Stringer("iutbip", iut.bip).Msg("iut.bip")
+		testLogger.Debug().Interface("iutbip", iut.bip).Msg("iut.bip")
 
 		// BBMD on net 2
 		bbmd1, err := NewBIPBBMDNode(testLogger, "192.168.2.2/24", tnet.vlan[1])
@@ -250,7 +250,7 @@ func TestBBMD(t *testing.T) {
 		// add the IUT as a one-hop peer
 		err = bbmd1.bip.AddPeer(quick.Address("192.168.1.2/24"))
 		require.NoError(t, err)
-		testLogger.Debug().Stringer("bbmd1bip", bbmd1.bip).Msg("bbmd1.bip")
+		testLogger.Debug().Interface("bbmd1bip", bbmd1.bip).Msg("bbmd1.bip")
 
 		// test device
 		td, err := NewBIPSimpleApplicationLayerStateMachine(testLogger, "192.168.2.3/24", tnet.vlan[1])
@@ -291,7 +291,7 @@ func TestBBMD(t *testing.T) {
 		// implementation under test
 		iut, err := NewBIPBBMDApplication(testLogger, "192.168.1.2/24", tnet.vlan[0])
 		require.NoError(t, err)
-		testLogger.Debug().Stringer("iutbip", iut.bip).Msg("iut.bip")
+		testLogger.Debug().Interface("iutbip", iut.bip).Msg("iut.bip")
 
 		// BBMD on net 2
 		bbmd1, err := NewBIPBBMDNode(testLogger, "192.168.2.2/24", tnet.vlan[1])
@@ -300,7 +300,7 @@ func TestBBMD(t *testing.T) {
 		// add the IUT as a two-hop peer
 		err = bbmd1.bip.AddPeer(quick.Address("192.168.1.2/32"))
 		require.NoError(t, err)
-		testLogger.Debug().Stringer("bbmd1bip", bbmd1.bip).Msg("bbmd1.bip")
+		testLogger.Debug().Interface("bbmd1bip", bbmd1.bip).Msg("bbmd1.bip")
 
 		// test device
 		td, err := NewBIPSimpleApplicationLayerStateMachine(testLogger, "192.168.2.3/24", tnet.vlan[1])

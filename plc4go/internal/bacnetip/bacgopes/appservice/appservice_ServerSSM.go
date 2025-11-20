@@ -276,7 +276,7 @@ func (s *ServerSSM) ProcessTask() error {
 
 // abort This function is called when the transaction should be aborted
 func (s *ServerSSM) abort(reason readWriteModel.BACnetAbortReason) (PDU, error) {
-	s.log.Debug().Stringer("apdu", reason).Msg("abort")
+	s.log.Debug().Interface("apdu", reason).Msg("abort")
 
 	// change the state to aborted
 	if err := s.setState(SSMState_ABORTED, nil); err != nil {
@@ -290,7 +290,7 @@ func (s *ServerSSM) abort(reason readWriteModel.BACnetAbortReason) (PDU, error) 
 }
 
 func (s *ServerSSM) idle(apdu PDU) error {
-	s.log.Debug().Stringer("apdu", apdu).Msg("idle")
+	s.log.Debug().Interface("apdu", apdu).Msg("idle")
 
 	// make sure we're getting confirmed requests
 	var apduConfirmedRequest readWriteModel.APDUConfirmedRequest
@@ -341,7 +341,7 @@ func (s *ServerSSM) idle(apdu PDU) error {
 			s.maxApduLengthAccepted = *s.deviceInfo.MaximumApduLengthAccepted
 		}
 	}
-	s.log.Debug().Stringer("maxApduLengthAccepted", s.maxApduLengthAccepted).Msg("maxApduLengthAccepted")
+	s.log.Debug().Interface("maxApduLengthAccepted", s.maxApduLengthAccepted).Msg("maxApduLengthAccepted")
 
 	// save the number of segments the client is willing to accept in the ack, if this is None then the value is unknown or more than 64
 	getMaxSegmentsAccepted := apduConfirmedRequest.GetMaxSegmentsAccepted()
@@ -389,13 +389,13 @@ func (s *ServerSSM) idle(apdu PDU) error {
 
 	// send back a segment ack
 	segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize)
-	s.log.Debug().Stringer("segack", segack).Msg("segAck")
+	s.log.Debug().Interface("segack", segack).Msg("segAck")
 	return s.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(segack))), NoKWArgs())
 }
 
 func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 	ctx := context.TODO()
-	s.log.Debug().Stringer("apdu", apdu).Msg("segmentedRequest")
+	s.log.Debug().Interface("apdu", apdu).Msg("segmentedRequest")
 
 	// some kind of problem
 	if _, ok := apdu.(readWriteModel.APDUAbort); ok {
@@ -515,7 +515,7 @@ func (s *ServerSSM) segmentedRequestTimeout() error {
 }
 
 func (s *ServerSSM) awaitResponse(apdu PDU) error {
-	s.log.Debug().Stringer("apdu", apdu).Msg("awaitResponse")
+	s.log.Debug().Interface("apdu", apdu).Msg("awaitResponse")
 
 	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequest:
@@ -553,7 +553,7 @@ func (s *ServerSSM) awaitResponseTimeout() error {
 }
 
 func (s *ServerSSM) segmentedResponse(apdu PDU) error {
-	s.log.Debug().Stringer("apdu", apdu).Msg("segmentedResponse")
+	s.log.Debug().Interface("apdu", apdu).Msg("segmentedResponse")
 
 	// client is ready for the next segment
 	switch _apdu := apdu.GetRootMessage().(type) {

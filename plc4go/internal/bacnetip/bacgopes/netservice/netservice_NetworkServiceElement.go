@@ -87,14 +87,14 @@ func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {
 
 	// reference the service access point
 	sap := n.GetElementService().(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters appears first in network service access point (so hard binding)
-	n.log.Debug().Stringer("sap", sap).Msg("sap")
+	n.log.Debug().Interface("sap", sap).Msg("sap")
 	if _debug != nil {
 		_debug("    - sap: %r", sap)
 	}
 
 	// loop through all the adapters
 	for _, adapter := range sap.adapters {
-		n.log.Debug().Stringer("adapter", adapter).Msg("adapter")
+		n.log.Debug().Interface("adapter", adapter).Msg("adapter")
 		if _debug != nil {
 			_debug("    - adapter: %r", adapter)
 		}
@@ -184,7 +184,7 @@ func (n *NetworkServiceElement) Indication(args Args, kwArgs KWArgs) error {
 		case model.NLMNetworkNumberIs:
 			return n.NetworkNumberIs(adapter, npdu, nlm)
 		default:
-			n.log.Debug().Stringer("nlm", nlm).Msg("Unhandled")
+			n.log.Debug().Interface("nlm", nlm).Msg("Unhandled")
 		}
 	default:
 		n.log.Trace().Msg("can only handle NPDU")
@@ -229,7 +229,7 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
 		case model.NLMNetworkNumberIs:
 			return n.NetworkNumberIs(adapter, npdu, nlm)
 		default:
-			n.log.Debug().Stringer("nlm", nlm).Msg("Unhandled")
+			n.log.Debug().Interface("nlm", nlm).Msg("Unhandled")
 		}
 	default:
 		n.log.Trace().Msg("can only handle NPDU")
@@ -241,7 +241,11 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 	adapter, _ := GAO[*NetworkAdapter](args, 0, nil)
 	destination, _ := GAO[*Address](args, 1, nil)
 	network, _ := GAO[[]*uint16](args, 2, nil)
-	n.log.Debug().Stringer("adapter", adapter).Stringer("destination", destination).Interface("network", network).Msg("IamRouterToNetwork")
+	n.log.Debug().
+		Interface("adapter", adapter).
+		Interface("destination", destination).
+		Interface("network", network).
+		Msg("IamRouterToNetwork")
 	if _debug != nil {
 		_debug("i_am_router_to_network %r %r %r", adapter, destination, network)
 	}
@@ -309,7 +313,11 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 			return errors.New("invalid destination address")
 		}
 	}
-	n.log.Debug().Stringer("adapter", adapter).Stringer("destination", destination).Interface("network", network).Msg("adapter, destination, network")
+	n.log.Debug().
+		Interface("adapter", adapter).
+		Interface("destination", destination).
+		Interface("network", network).
+		Msg("adapter, destination, network")
 	if _debug != nil {
 		_debug("    - adapter, destination, network: %r, %r, %r", adapter, destination, network)
 	}
@@ -350,7 +358,7 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 			return errors.Wrap(err, "error creating IAM router to network")
 		}
 		iamrtn.SetPDUDestination(destination)
-		n.log.Debug().Stringer("adapter", adapter).Stringer("iamrtn", iamrtn).Msg("adapter, iamrtn")
+		n.log.Debug().Interface("adapter", adapter).Interface("iamrtn", iamrtn).Msg("adapter, iamrtn")
 		if _debug != nil {
 			_debug("    - adapter, iamrtn: %r, %r", adapter, iamrtn)
 		}
@@ -365,14 +373,14 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 }
 
 func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMWhoIsRouterToNetwork) error {
-	n.log.Debug().Stringer("adapter", adapter).Stringer("npdu", npdu).Stringer("nlm", nlm).Msg("WhoIsRouteToNetwork")
+	n.log.Debug().Interface("adapter", adapter).Interface("npdu", npdu).Interface("nlm", nlm).Msg("WhoIsRouteToNetwork")
 	if _debug != nil {
 		_debug("WhoIsRouterToNetwork %r %r", adapter, npdu)
 	}
 
 	// reference the service access point
 	sap := n.GetElementService().(*NetworkServiceAccessPoint) // TODO: check hard cast here...
-	n.log.Debug().Stringer("sap", sap).Msg("sap")
+	n.log.Debug().Interface("sap", sap).Msg("sap")
 	if _debug != nil {
 		_debug("    - sap: %r", sap)
 	}
@@ -474,7 +482,7 @@ func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, np
 
 		// found a path
 		if routerInfo != nil {
-			n.log.Debug().Stringer("routerInfo", routerInfo).Msg("router round")
+			n.log.Debug().Interface("routerInfo", routerInfo).Msg("router round")
 			if _debug != nil {
 				_debug("    - router found: %r", routerInfo)
 			}
@@ -525,7 +533,7 @@ func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, np
 			// send it to all (other) adapters
 			for _, xadapter := range sap.adapters {
 				if xadapter != adapter {
-					n.log.Debug().Stringer("xadapter", xadapter).Msg("Sending to adapter")
+					n.log.Debug().Interface("xadapter", xadapter).Msg("Sending to adapter")
 					if _debug != nil {
 						_debug("    - sending on adapter: %r", xadapter)
 					}
@@ -540,14 +548,14 @@ func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, np
 }
 
 func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMIAmRouterToNetwork) error {
-	n.log.Debug().Stringer("adapter", adapter).Stringer("npdu", npdu).Stringer("nlm", nlm).Msg("IAmRouterToNetwork")
+	n.log.Debug().Interface("adapter", adapter).Interface("npdu", npdu).Interface("nlm", nlm).Msg("IAmRouterToNetwork")
 	if _debug != nil {
 		_debug("IAmRouterToNetwork %r %r", adapter, npdu)
 	}
 
 	// reference the service access point
 	sap := n.GetElementService().(*NetworkServiceAccessPoint) // TODO: check hard cast here...
-	n.log.Debug().Stringer("sap", sap).Msg("sap")
+	n.log.Debug().Interface("sap", sap).Msg("sap")
 	if _debug != nil {
 		_debug("    - sap: %r", sap)
 	}
@@ -579,7 +587,7 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 		// send it to all the connected adapters
 		for _, xadapter := range sap.adapters {
 			if xadapter != adapter {
-				n.log.Debug().Stringer("xadapter", xadapter).Msg("Sending to adapter")
+				n.log.Debug().Interface("xadapter", xadapter).Msg("Sending to adapter")
 				if _debug != nil {
 					_debug("    - sending on adapter: %r", xadapter)
 				}
@@ -604,7 +612,7 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 
 			// now reprocess them
 			for _, pendingNPDU := range pendingNpdus {
-				n.log.Debug().Stringer("pendingNPDU", pendingNPDU).Msg("sending")
+				n.log.Debug().Interface("pendingNPDU", pendingNPDU).Msg("sending")
 				if _debug != nil {
 					_debug("    - sending %r", pendingNPDU)
 				}

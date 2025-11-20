@@ -202,7 +202,7 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 			d.log.Debug().Err(err).Msg("Error Connecting")
 			return
 		}
-		d.log.Debug().Stringer("transportInstance", transportInstance).Msg("Adding transport instance to scan %v")
+		d.log.Debug().Interface("transportInstance", transportInstance).Msg("Adding transport instance to scan %v")
 		transportInstances <- transportInstance
 	}
 }
@@ -211,7 +211,7 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 	return func(workerCtx context.Context) {
 		ctx, cancel := context.WithCancel(ctx)
 		context.AfterFunc(workerCtx, cancel)
-		d.log.Debug().Stringer("udpTransportInstance", udpTransportInstance).Msg("Scanning")
+		d.log.Debug().Interface("udpTransportInstance", udpTransportInstance).Msg("Scanning")
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(
 			udpTransportInstance,
@@ -233,7 +233,7 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 		searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
 		// Send the search request.
 		if err := codec.Send(ctx, searchRequestMessage); err != nil {
-			d.log.Debug().Err(err).Stringer("searchRequestMessage", searchRequestMessage).Msg("Error sending message")
+			d.log.Debug().Err(err).Interface("searchRequestMessage", searchRequestMessage).Msg("Error sending message")
 			return
 		}
 		// Keep on reading responses till the timeout is done.

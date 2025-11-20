@@ -86,7 +86,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 		// Look up the struct associated with the service
 		cr, ok := ConfirmedRequestTypes[apduService]
 		if !ok {
-			a.log.Debug().Stringer("apduService", apduService).Msg("unknown service type")
+			a.log.Debug().Interface("apduService", apduService).Msg("unknown service type")
 			if _debug != nil {
 				_debug("    - no confirmed request decoder")
 			}
@@ -132,7 +132,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 		// Look up the struct associated with the service
 		ur, ok := UnconfirmedRequestTypes[apduService]
 		if !ok {
-			a.log.Debug().Stringer("apduService", apduService).Msg("unknown service type")
+			a.log.Debug().Interface("apduService", apduService).Msg("unknown service type")
 			return nil
 		}
 
