@@ -127,7 +127,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
 	// Start a new request-transaction (Is ended in the response-handler)
 	transaction := m.tm.StartTransaction("read")
-	transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
+	transaction.Submit("readOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 		ctx, cancel := context.WithCancel(ctx)
 		context.AfterFunc(transactionContext, cancel)
 		m.log.Trace().Interface("transaction", transaction).Msg("Transaction getting handled")

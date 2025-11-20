@@ -231,7 +231,7 @@ func TestDefaultExpectation_String(t *testing.T) {
 	}{
 		{
 			name: "string it",
-			want: "Expectation 00000000-0000-0000-0000-000000000000 (expires at 0001-01-01 00:00:00 +0000 UTC in -2562047h47m16.854775808s)",
+			want: "Expectation '' 00000000-0000-0000-0000-000000000000 (expires at 0001-01-01 00:00:00 +0000 UTC in -2562047h47m16.854775808s)",
 		},
 	}
 	for _, tt := range tests {

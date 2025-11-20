@@ -4236,7 +4236,7 @@ func (_c *MockRequestTransaction_String_Call) RunAndReturn(run func() string) *M
 }
 
 // Submit provides a mock function for the type MockRequestTransaction
-func (_mock *MockRequestTransaction) Submit(operation transactions.RequestTransactionRunnable) {
+func (_mock *MockRequestTransaction) Submit(operationInfo string, operation transactions.RequestTransactionRunnable) {
 	_mock.Called(operation)
 	return
 }

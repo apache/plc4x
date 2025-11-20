@@ -1425,7 +1425,7 @@ func TestMapEncodedReply(t *testing.T) {
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
 				t.Logf("Submitting No-Op to transaction\n%v", transaction)
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -1502,7 +1502,7 @@ func TestMapEncodedReply(t *testing.T) {
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
 				t.Logf("Submitting No-Op to transaction %v", transaction)
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 					t.Log("No op-ing")
 				})
@@ -1595,7 +1595,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -1678,7 +1678,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -1744,7 +1744,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -1813,7 +1813,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -1901,7 +1901,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2007,7 +2007,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2077,7 +2077,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2143,7 +2143,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2209,7 +2209,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2275,7 +2275,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2341,7 +2341,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2427,7 +2427,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2493,7 +2493,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2559,7 +2559,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2625,7 +2625,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2691,7 +2691,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2757,7 +2757,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2839,7 +2839,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2905,7 +2905,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction
@@ -2971,7 +2971,7 @@ func TestMapEncodedReply(t *testing.T) {
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction(t.Name())
-				transaction.Submit(func(context.Context, transactions.RequestTransaction) {
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
 					// NO-OP
 				})
 				args.transaction = transaction

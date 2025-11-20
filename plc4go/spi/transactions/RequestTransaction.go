@@ -41,7 +41,7 @@ type RequestTransaction interface {
 	// EndRequest signals that this transaction is done
 	EndRequest() error
 	// Submit submits a RequestTransactionRunnable to the RequestTransactionManager
-	Submit(operation RequestTransactionRunnable)
+	Submit(operationInfo string, operation RequestTransactionRunnable)
 	// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
 	AwaitCompletion(ctx context.Context) error
 	// IsCompleted indicates that the that this RequestTransaction is completed
@@ -120,7 +120,7 @@ func (t *requestTransaction) EndRequest() error {
 	return t.parent.endRequest(t)
 }
 
-func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
+func (t *requestTransaction) Submit(operationInfo string, operation RequestTransactionRunnable) {
 	t.stateChangeMutex.Lock()
 	defer t.stateChangeMutex.Unlock()
 	if t.completed {
@@ -130,17 +130,17 @@ func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
 	if t.operation != nil {
 		t.log.Warn().Msg("Operation already set")
 	}
-	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Submission")
+	t.log.Trace().Msg("Submission")
 	t.operation = func(ctx context.Context) {
-		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Start operation")
+		t.log.Trace().Str("operationInfo", operationInfo).Msg("Start operation")
 		operation(ctx, t)
-		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Completed operation")
+		t.log.Trace().Str("operationInfo", operationInfo).Msg("Completed operation")
 	}
 	t.parent.submitTransaction(t)
 }
 
 func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
-	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Awaiting completion")
+	t.log.Trace().Msg("Awaiting completion")
 	timeout, cancelFunc := context.WithTimeout(ctx, time.Minute*30) // This is intentionally set very high
 	defer cancelFunc()
 	for t.getCompletionFuture() == nil {
@@ -151,7 +151,7 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 	}
 	if err := t.getCompletionFuture().AwaitCompletion(ctx); err != nil {
-		t.log.Trace().Int32("transactionId", t.transactionId).Msg("Errored")
+		t.log.Trace().Msg("Errored")
 		return err
 	}
 	stillActive := true
@@ -166,7 +166,7 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		}
 		t.parent.runningRequestMutex.RUnlock()
 	}
-	t.log.Trace().Int32("transactionId", t.transactionId).Msg("Completed")
+	t.log.Trace().Msg("Completed")
 	return nil
 }
 

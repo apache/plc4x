@@ -35,9 +35,10 @@ import (
 
 func Test_newRequestTransaction(t *testing.T) {
 	type args struct {
-		localLog      zerolog.Logger
-		parent        *requestTransactionManager
-		transactionId int32
+		localLog        zerolog.Logger
+		parent          *requestTransactionManager
+		transactionId   int32
+		transactionInfo string
 	}
 	tests := []struct {
 		name string
@@ -47,13 +48,13 @@ func Test_newRequestTransaction(t *testing.T) {
 		{
 			name: "create it",
 			want: &requestTransaction{
-				log: zerolog.Logger{}.With().Int32("transactionId", 0).Logger(),
+				log: zerolog.Logger{}.With().Int32("transactionId", 0).Str("transactionInfo", "").Logger(),
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, newRequestTransaction(tt.args.localLog, tt.args.parent, tt.args.transactionId), "newRequestTransaction(%v, %v, %v)", tt.args.localLog, tt.args.parent, tt.args.transactionId)
+			assert.Equalf(t, tt.want, newRequestTransaction(tt.args.localLog, tt.args.parent, tt.args.transactionId, tt.args.transactionInfo), "newRequestTransaction(%v, %v, %v, %v)", tt.args.localLog, tt.args.parent, tt.args.transactionId, tt.args.transactionInfo)
 		})
 	}
 }
@@ -275,7 +276,7 @@ func Test_requestTransaction_Submit(t1 *testing.T) {
 				log:           tt.fields.transactionLog,
 				completed:     tt.fields.completed,
 			}
-			rt.Submit(tt.args.operation)
+			rt.Submit(t.Name(), tt.args.operation)
 			rt.operation(t.Context())
 		})
 	}
