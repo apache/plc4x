@@ -488,10 +488,14 @@ func countChars(s string) int {
 	return len([]rune(ANSI_PATTERN.ReplaceAllString(s, "")))
 }
 
+var controlStripRegex = regexp.MustCompile(`\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])`)
+
 // cleanString returns the strings minus the control sequences
 func cleanString(s string) string {
-	regex, _ := regexp.Compile(`\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])`)
-	return regex.ReplaceAllString(s, "")
+	if s == "" {
+		return s
+	}
+	return controlStripRegex.ReplaceAllString(s, "")
 }
 
 //
