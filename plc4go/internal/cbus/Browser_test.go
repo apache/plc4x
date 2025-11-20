@@ -519,7 +519,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 
 				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, map[string][]string{"simulatedLatency": {"10ms"}}, _options...)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, map[string][]string{"simulatedLatency": {"0ms"}}, _options...)
 				require.NoError(t, err)
 				t.Cleanup(func() {
 					t.Log(transportInstance.Close())
@@ -629,7 +629,6 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 					return
 				}
 				assert.Equalf(t, tt.want, got, "getInstalledUnitAddressBytes(%v)", tt.args.ctx)
-				t.Log("Banananaaaa")
 			})
 		})
 	}

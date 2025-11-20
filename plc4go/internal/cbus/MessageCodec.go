@@ -134,7 +134,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// Fill the buffer
 	{
 		fillCtx, fillCtxCancel := context.WithTimeout(ctx, 100*time.Millisecond)
-		if err := ti.FillBuffer(fillCtx, func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
+		if err := ti.FillBuffer(fillCtx, func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool) {
 			switch currentByte {
 			case
 				readWriteModel.ResponseTermination_CR,
@@ -144,7 +144,10 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 				confirmation = true
 				// In case we have directly more data in the buffer after a confirmation
 				_, err := reader.Peek(int(pos + 1))
-				return err == nil
+				if err != nil {
+					return false
+				}
+				return true
 			case
 				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS),
 				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION),

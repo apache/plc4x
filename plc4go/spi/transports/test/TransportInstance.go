@@ -166,6 +166,8 @@ func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint,
 		timer := time.NewTimer(m.simulatedLatency)
 		select {
 		case <-ctx.Done():
+			m.log.Trace().Msg("Context done")
+			return ctx.Err()
 		case <-timer.C:
 		}
 		m.log.Trace().Uint32("nBytes", nBytes).Msg("Peeking bytes")
