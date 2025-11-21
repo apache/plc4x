@@ -101,6 +101,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		connectionLog.Error().Err(err).Msg("Invalid driverOptions")
 		return nil, errors.Wrap(err, "invalid configuration")
 	}
+	// TODO: check if we want to attach the configuration to the logger
 
 	// Create the new connection
 	connection, err := NewConnection(codec, configuration, driverOptions)

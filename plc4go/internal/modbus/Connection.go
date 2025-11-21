@@ -40,6 +40,7 @@ import (
 
 type Connection struct {
 	_default.DefaultConnection
+
 	unitIdentifier     uint8
 	messageCodec       spi.MessageCodec
 	options            map[string][]string
