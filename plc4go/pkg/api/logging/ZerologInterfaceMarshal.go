@@ -65,7 +65,12 @@ var ZerologMessageInterfaceMarshalFunc = func(v interface{}) ([]byte, error) {
 			if err != nil {
 				return nil, errors.Wrapf(err, "error getting JSON string from PLCMessage")
 			}
-			return []byte(jsonString), nil
+			b := []byte(jsonString)
+			if len(b) > 0 {
+				// Remove trailing \n which is added by Encode.
+				return b[:len(b)-1], nil
+			}
+			return b, nil
 		case PLCMessageAsString:
 			boxWriteBuffer := utils.NewWriteBufferBoxBased(
 				utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
