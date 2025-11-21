@@ -30,38 +30,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewConfiguredXmlWriteBuffer(t *testing.T) {
-	type args struct {
-		renderLists bool
-		renderAttr  bool
-	}
-	tests := []struct {
-		name string
-		args args
-		want WriteBufferXmlBased
-	}{
-		{
-			name: "create it",
-			want: func() WriteBufferXmlBased {
-				var xmlString strings.Builder
-				encoder := xml.NewEncoder(&xmlString)
-				encoder.Indent("", "  ")
-				return &xmlWriteBuffer{
-					xmlString:     &xmlString,
-					Encoder:       encoder,
-					doRenderLists: false,
-					doRenderAttr:  false,
-				}
-			}(),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewConfiguredXmlWriteBuffer(tt.args.renderLists, tt.args.renderAttr), "NewConfiguredXmlWriteBuffer(%v, %v)", tt.args.renderLists, tt.args.renderAttr)
-		})
-	}
-}
-
 func TestNewXmlWriteBuffer(t *testing.T) {
 	tests := []struct {
 		name string

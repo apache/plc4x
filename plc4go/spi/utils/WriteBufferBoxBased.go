@@ -61,6 +61,30 @@ func WithWriteBufferBoxBasedOmitEmptyBoxes() func(*boxedWriteBuffer) {
 	}
 }
 
+// WithWriteBufferBoxBasedDesiredWidth sets the desired width of the output.
+// If the output exceeds this width, it will be wrapped.
+func WithWriteBufferBoxBasedDesiredWidth(width int) func(*boxedWriteBuffer) {
+	return func(wb *boxedWriteBuffer) {
+		wb.desiredWidth = width
+		wb.currentWidth = width - 2
+	}
+}
+
+// WithWriteBufferBoxBasedAsciiBoxWriter sets the AsciiBoxWriter to use for rendering the output.
+func WithWriteBufferBoxBasedAsciiBoxWriter(writer AsciiBoxWriter) func(*boxedWriteBuffer) {
+	return func(wb *boxedWriteBuffer) {
+		wb.asciiBoxWriter = writer
+	}
+}
+
+// WithWriteBufferBoxBasedAsciiBoxWriterLight sets the AsciiBoxWriter to use for rendering the light output.
+func WithWriteBufferBoxBasedAsciiBoxWriterLight(writer AsciiBoxWriter) func(*boxedWriteBuffer) {
+	return func(wb *boxedWriteBuffer) {
+		wb.asciiBoxWriterLight = writer
+	}
+}
+
+// WithWriteBufferBoxBasedPrintPosLengthFooter enables printing the position and length of the current box at the end of the box.
 func WithWriteBufferBoxBasedPrintPosLengthFooter() func(*boxedWriteBuffer) {
 	return func(wb *boxedWriteBuffer) {
 		wb.printPosLengthFooter = true

@@ -35,28 +35,52 @@ type WriteBufferXmlBased interface {
 }
 
 // NewXmlWriteBuffer returns a WriteBufferXmlBased which renders all information into xml
-func NewXmlWriteBuffer() WriteBufferXmlBased {
+func NewXmlWriteBuffer(opts ...func(*xmlWriteBuffer)) WriteBufferXmlBased {
 	var xmlString strings.Builder
 	encoder := xml.NewEncoder(&xmlString)
 	encoder.Indent("", "  ")
-	return &xmlWriteBuffer{
+	x := &xmlWriteBuffer{
 		xmlString:     &xmlString,
 		Encoder:       encoder,
 		doRenderLists: true,
 		doRenderAttr:  true,
 	}
+	for _, opt := range opts {
+		opt(x)
+	}
+	return x
 }
 
-// NewConfiguredXmlWriteBuffer returns a WriteBufferXmlBased which renders configured information into xml
-func NewConfiguredXmlWriteBuffer(renderLists bool, renderAttr bool) WriteBufferXmlBased {
-	var xmlString strings.Builder
-	encoder := xml.NewEncoder(&xmlString)
-	encoder.Indent("", "  ")
-	return &xmlWriteBuffer{
-		xmlString:     &xmlString,
-		Encoder:       encoder,
-		doRenderLists: renderLists,
-		doRenderAttr:  renderAttr,
+// WithXmlWriteBufferDefaultIdent configures the xmlWriteBuffer to use default indentation
+func WithXmlWriteBufferDefaultIdent(defaultIndent bool) func(*xmlWriteBuffer) {
+	return func(x *xmlWriteBuffer) {
+		if defaultIndent {
+			x.Encoder.Indent("", "  ")
+			return
+		} else {
+			x.Encoder.Indent("", "")
+		}
+	}
+}
+
+// WithXmlWriteBufferIdent configures the xmlWriteBuffer to use the given indentation
+func WithXmlWriteBufferIdent(indent string) func(*xmlWriteBuffer) {
+	return func(x *xmlWriteBuffer) {
+		x.Encoder.Indent("", indent)
+	}
+}
+
+// WithXmlWriteBufferRenderLists configures the xmlWriteBuffer to render lists
+func WithXmlWriteBufferRenderLists(renderLists bool) func(*xmlWriteBuffer) {
+	return func(x *xmlWriteBuffer) {
+		x.doRenderLists = renderLists
+	}
+}
+
+// WithXmlWriteBufferRenderAttr configures the xmlWriteBuffer to render attributes
+func WithXmlWriteBufferRenderAttr(renderAttr bool) func(*xmlWriteBuffer) {
+	return func(x *xmlWriteBuffer) {
+		x.doRenderAttr = renderAttr
 	}
 }
 

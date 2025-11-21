@@ -35,18 +35,45 @@ type WriteBufferJsonBased interface {
 	GetJsonString() (string, error)
 }
 
-func NewJsonWriteBuffer() WriteBufferJsonBased {
-	return NewJsonWriteBufferWithOptions(true)
-}
-
-func NewJsonWriteBufferWithOptions(renderAttr bool) WriteBufferJsonBased {
+// NewJsonWriteBuffer creates a new WriteBufferJsonBased with renders all information into json
+func NewJsonWriteBuffer(opts ...func(*jsonWriteBuffer)) WriteBufferJsonBased {
 	var jsonString strings.Builder
 	encoder := json.NewEncoder(&jsonString)
 	encoder.SetIndent("", "  ")
-	return &jsonWriteBuffer{
+	j := &jsonWriteBuffer{
 		jsonString:   &jsonString,
 		Encoder:      encoder,
-		doRenderAttr: renderAttr,
+		doRenderAttr: true,
+	}
+	for _, opt := range opts {
+		opt(j)
+	}
+	return j
+}
+
+// WithJsonWriteBufferDefaultIdent configures the jsonWriteBuffer to use default indentation
+func WithJsonWriteBufferDefaultIdent(defaultIndent bool) func(*jsonWriteBuffer) {
+	return func(x *jsonWriteBuffer) {
+		if defaultIndent {
+			x.Encoder.SetIndent("", "  ")
+			return
+		} else {
+			x.Encoder.SetIndent("", "")
+		}
+	}
+}
+
+// WithJsonWriteBufferIdent configures the jsonWriteBuffer to use the given indentation
+func WithJsonWriteBufferIdent(indent string) func(*jsonWriteBuffer) {
+	return func(x *jsonWriteBuffer) {
+		x.Encoder.SetIndent("", indent)
+	}
+}
+
+// WithJsonWriteBufferRenderAttr configures the jsonWriteBuffer to render attributes
+func WithJsonWriteBufferRenderAttr(renderAttr bool) func(*jsonWriteBuffer) {
+	return func(x *jsonWriteBuffer) {
+		x.doRenderAttr = renderAttr
 	}
 }
 

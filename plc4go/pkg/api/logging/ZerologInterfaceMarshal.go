@@ -55,7 +55,9 @@ var ZerologMessageInterfaceMarshalFunc = func(v interface{}) ([]byte, error) {
 	if plcMessage, ok := v.(utils.Serializable); ok {
 		switch ZerologInterfacePLCMessageFormat {
 		case PLCMessageAsJSON:
-			jsonWriteBuffer := utils.NewJsonWriteBuffer()
+			jsonWriteBuffer := utils.NewJsonWriteBuffer(
+				utils.WithJsonWriteBufferDefaultIdent(false),
+			)
 			if err := plcMessage.SerializeWithWriteBuffer(context.Background(), jsonWriteBuffer); err != nil {
 				return nil, errors.Wrap(err, "error serializing PLCMessage")
 			}
@@ -67,14 +69,19 @@ var ZerologMessageInterfaceMarshalFunc = func(v interface{}) ([]byte, error) {
 		case PLCMessageAsString:
 			boxWriteBuffer := utils.NewWriteBufferBoxBased(
 				utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
-				utils.WithWriteBufferBoxBasedOmitEmptyBoxes())
+				utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+				utils.WithWriteBufferBoxBasedDesiredWidth(200),
+				utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+			)
 			if err := plcMessage.SerializeWithWriteBuffer(context.Background(), boxWriteBuffer); err != nil {
 				return nil, errors.Wrap(err, "error serializing PLCMessage")
 			}
 			boxString := boxWriteBuffer.GetBox().String()
 			return json.Marshal(boxString)
 		case PLCMessageAsXML:
-			xmlWriteBuffer := utils.NewXmlWriteBuffer()
+			xmlWriteBuffer := utils.NewXmlWriteBuffer(
+				utils.WithXmlWriteBufferDefaultIdent(false),
+			)
 			if err := plcMessage.SerializeWithWriteBuffer(context.Background(), xmlWriteBuffer); err != nil {
 				return nil, errors.Wrap(err, "error serializing PLCMessage")
 			}

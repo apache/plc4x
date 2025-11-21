@@ -56,36 +56,6 @@ func TestNewJsonWriteBuffer(t *testing.T) {
 	}
 }
 
-func TestNewJsonWriteBufferWithOptions(t *testing.T) {
-	type args struct {
-		renderAttr bool
-	}
-	tests := []struct {
-		name string
-		args args
-		want WriteBufferJsonBased
-	}{
-		{
-			name: "create it",
-			want: func() WriteBufferJsonBased {
-				var jsonString strings.Builder
-				encoder := json.NewEncoder(&jsonString)
-				encoder.SetIndent("", "  ")
-				return &jsonWriteBuffer{
-					jsonString:   &jsonString,
-					Encoder:      encoder,
-					doRenderAttr: false,
-				}
-			}(),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewJsonWriteBufferWithOptions(tt.args.renderAttr), "NewJsonWriteBufferWithOptions(%v)", tt.args.renderAttr)
-		})
-	}
-}
-
 func Test_jsonWriteBuffer_GetJsonString(t *testing.T) {
 	type fields struct {
 		BufferCommons BufferCommons
