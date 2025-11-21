@@ -61,15 +61,15 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 }
 
 func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
-	d.log.Debug().
-		Stringer("transportUrl", &transportUrl).
+	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
+	connectionLog.Debug().
 		Int("nTransports", len(transports)).
 		Int("nDriverOptions", len(driverOptions)).
 		Msg("Get connection for transport url with nTransports transport(s) and nDriverOptions option(s)")
 	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		d.log.Error().
+		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Str("scheme", transportUrl.Scheme).
 			Msg("We couldn't find a transport for scheme")
@@ -81,26 +81,26 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	transportInstance, err := transport.CreateTransportInstance(
 		transportUrl,
 		driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
 	if err != nil {
-		d.log.Error().
+		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
 			Msg("We couldn't create a transport instance for port")
 		return nil, errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String())
 	}
 
-	configuration, err := ParseFromOptions(d.log, driverOptions)
+	configuration, err := ParseFromOptions(connectionLog, driverOptions)
 	if err != nil {
-		d.log.Error().Err(err).Msg("Invalid options")
+		connectionLog.Error().Err(err).Msg("Invalid options")
 		return nil, errors.Wrap(err, "Invalid options")
 	}
 	codec := NewMessageCodec(
 		transportInstance,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Debug().Interface("codec", codec).Msg("working with codec")
+	connectionLog.Debug().Interface("codec", codec).Msg("working with codec")
 
 	driverContext := NewDriverContext(configuration)
 	driverContext.awaitSetupComplete = d.awaitSetupComplete
@@ -112,9 +112,9 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		driverContext,
 		d.GetPlcTagHandler(),
 		d.tm, driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Debug().Msg("created connection, connecting now")
+	connectionLog.Debug().Msg("created connection, connecting now")
 	if err := connection.Connect(ctx); err != nil {
 		return nil, errors.Wrap(err, "Error connecting connection")
 	}

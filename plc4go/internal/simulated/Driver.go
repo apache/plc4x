@@ -52,22 +52,23 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnection(ctx context.Context, _ url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, _ map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
+	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
 	connection := NewConnection(
 		NewDevice(
 			"test",
-			append(d._options, options.WithCustomLogger(d.log))...,
+			append(d._options, options.WithCustomLogger(connectionLog))...,
 		),
 		d.GetPlcTagHandler(),
 		d.valueHandler,
 		driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Trace().Interface("connection", connection).Msg("Connecting")
+	connectionLog.Trace().Interface("connection", connection).Msg("Connecting")
 	if err := connection.Connect(ctx); err != nil {
 		return nil, errors.Wrap(err, "Error connecting connection")
 	}
-	d.log.Trace().Interface("connection", connection).Msg("Connected")
+	connectionLog.Trace().Interface("connection", connection).Msg("Connected")
 	return connection, nil
 }
 

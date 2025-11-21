@@ -60,6 +60,7 @@ func (d *Driver) CheckQuery(query string) error {
 }
 
 func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
+	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
@@ -71,7 +72,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	transportInstance, err := transport.CreateTransportInstance(
 		transportUrl,
 		driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
 	if err != nil {
 		return nil, errors.Errorf("couldn't initialize transport configuration for given transport url %#v", transportUrl)
@@ -82,9 +83,9 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		transportInstance,
 		driverOptions,
 		d.GetPlcTagHandler(),
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Trace().
+	connectionLog.Trace().
 		Str("transport", transportUrl.String()).
 		Interface("connection", connection).
 		Msg("created new connection instance, trying to connect now")

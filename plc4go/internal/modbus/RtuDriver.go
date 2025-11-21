@@ -56,15 +56,15 @@ func NewModbusRtuDriver(_options ...options.WithOption) *RtuDriver {
 }
 
 func (d *RtuDriver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
-	d.log.Debug().
-		Stringer("transportUrl", &transportUrl).
+	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
+	connectionLog.Debug().
 		Int("nTransports", len(transports)).
 		Int("nDriverOptions", len(driverOptions)).
 		Msg("Get connection for transport url with nTransports transport(s) and nDriverOptions option(s)")
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		d.log.Error().
+		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Str("scheme", transportUrl.Scheme).
 			Msg("We couldn't find a transport for scheme")
@@ -76,10 +76,10 @@ func (d *RtuDriver) GetConnection(ctx context.Context, transportUrl url.URL, tra
 	transportInstance, err := transport.CreateTransportInstance(
 		transportUrl,
 		driverOptions,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
 	if err != nil {
-		d.log.Error().
+		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
 			Msg("We couldn't create a transport instance for port")
@@ -92,7 +92,7 @@ func (d *RtuDriver) GetConnection(ctx context.Context, transportUrl url.URL, tra
 	d.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				d.log.Error().
+				connectionLog.Error().
 					Str("stack", string(debug.Stack())).
 					Interface("err", err).
 					Msg("panic-ed")
@@ -101,14 +101,14 @@ func (d *RtuDriver) GetConnection(ctx context.Context, transportUrl url.URL, tra
 		for {
 			msg := <-defaultChanel
 			adu := msg.(model.ModbusTcpADU)
-			d.log.Debug().Interface("adu", adu).Msg("got message in the default handler")
+			connectionLog.Debug().Interface("adu", adu).Msg("got message in the default handler")
 		}
 	})
 	codec := NewMessageCodec(
 		transportInstance,
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Debug().Interface("codec", codec).Msg("working with codec")
+	connectionLog.Debug().Interface("codec", codec).Msg("working with codec")
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
@@ -119,16 +119,16 @@ func (d *RtuDriver) GetConnection(ctx context.Context, transportUrl url.URL, tra
 			unitIdentifier = uint8(intValue)
 		}
 	}
-	d.log.Debug().Uint8("unitIdentifier", unitIdentifier).Msg("using unit identifier")
+	connectionLog.Debug().Uint8("unitIdentifier", unitIdentifier).Msg("using unit identifier")
 
 	// Create the new connection
 	connection := NewConnection(
 		unitIdentifier,
 		codec, driverOptions,
 		d.GetPlcTagHandler(),
-		append(d._options, options.WithCustomLogger(d.log))...,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
-	d.log.Debug().Interface("connection", connection).Msg("created connection, connecting now")
+	connectionLog.Debug().Interface("connection", connection).Msg("created connection, connecting now")
 	if err := connection.Connect(ctx); err != nil {
 		return nil, errors.Wrap(err, "Error connecting connection")
 	}
