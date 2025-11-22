@@ -21,13 +21,14 @@ package modbus
 
 import (
 	"context"
+	"encoding/base64"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/default"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -120,7 +121,11 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		tcpAdu, err := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, data, model.DriverType_MODBUS_TCP, true)
 		if err != nil {
-			m.log.Warn().Err(err).Msg("error parsing")
+			dataStr := base64.StdEncoding.EncodeToString(data)
+			m.log.Warn().Err(err).
+				Str("data", dataStr). // Max PDU size is 253 bytes, and catching parse errors for inspection is important
+				Uint32("packetSize", packetSize).
+				Msg("error parsing")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
