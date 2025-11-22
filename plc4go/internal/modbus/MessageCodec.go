@@ -22,6 +22,7 @@ package modbus
 import (
 	"context"
 	"encoding/base64"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -97,43 +98,115 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	}
 
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := ti.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
-		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
-		data, err := ti.PeekReadableBytes(ctx, 6)
-		if err != nil {
-			m.log.Warn().Err(err).Msg("error peeking")
-			// TODO: Possibly clean up ...
+	num, err := ti.GetNumBytesAvailableInBuffer()
+	if err == nil {
+		if num < 6 {
+			// Don't have enough data yet...
 			return nil, nil
 		}
-		// Get the size of the entire packet
-		packetSize := (uint32(data[4]) << 8) + uint32(data[5]) + 6
+		m.log.Trace().Uint32("num", num).Msgf("we got %d readable bytes", num)
+
+		// Peek the MBAP header to extract the txcnid, protocol, and length
+		header, err := ti.PeekReadableBytes(ctx, 6)
+		if err != nil {
+			m.log.Warn().Err(err).Msg("error peeking header")
+			return nil, nil
+		}
+
+		// Interpret the length field (big endian) to determine the full packet size
+		packetSize := (uint32(header[4]) << 8) + uint32(header[5]) + 6
 		if num < packetSize {
 			m.log.Debug().
 				Uint32("num", num).
-				Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
+				Uint32("packetSize", packetSize).Msgf("Not enough bytes. Got: %d Need: %d. Waiting for more data...", num, packetSize)
 			return nil, nil
 		}
-		data, err = ti.Read(ctx, packetSize)
+
+		// Peek read the entire frame
+		frameSlice, err := ti.PeekReadableBytes(ctx, packetSize)
 		if err != nil {
-			// TODO: Possibly clean up ...
+			m.log.Warn().Err(err).Uint32("packetSize", packetSize).Msg("error peeking packet")
 			return nil, nil
 		}
+
+		// Parse the frame
 		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		tcpAdu, err := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, data, model.DriverType_MODBUS_TCP, true)
+		tcpAdu, err := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, frameSlice, model.DriverType_MODBUS_TCP, true)
 		if err != nil {
-			dataStr := base64.StdEncoding.EncodeToString(data)
+			if errors.Is(err, io.EOF) {
+				// Incomplete frame, keep waiting for the remaining bytes.
+				m.log.Trace().Uint32("packetSize", packetSize).Msg("partial packet detected, awaiting more data")
+				return nil, nil
+			}
+
+			// Did we perhaps only read part of a bigger frame?
+			if num > packetSize {
+				// Try reading everything
+				extendedSlice, extendedErr := ti.PeekReadableBytes(ctx, num)
+				if extendedErr == nil {
+					// Try parsing it all
+					extendedAdu, extendedParseErr := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, extendedSlice, model.DriverType_MODBUS_TCP, true)
+					if extendedParseErr == nil {
+						// Parse succeded...
+						// NOTE: MBAP length errors are rare in well-behaved devices, but they happen when
+						// firmware miscomputes the length field (or hard-codes to 6), mixes RTU framing
+						// with TCP transport, or when intermediate gateways/proxies truncate or merge
+						// frames. Duplicate reads and out-of-order slicing in buggy drivers can also leave
+						// stale data that makes the reported length disagree with the actual payload.
+
+						// What is the actual ADU size parsed?
+						actualSize := uint32(extendedAdu.GetLengthInBytes(ctxForModel))
+						if actualSize > num {
+							// We still need more data
+							m.log.Trace().
+								Uint32("available", num).
+								Uint32("required", actualSize).
+								Msg("extended parsed frame requires more bytes, awaiting more data")
+							return nil, nil
+						}
+
+						// Consume the actual size in bytes from the buffer (all peeks to here)
+						if _, consumeErr := ti.Read(ctx, actualSize); consumeErr != nil {
+							m.log.Debug().Err(consumeErr).Uint32("actualSize", actualSize).Msg("error consuming parsed frame")
+							return nil, nil
+						}
+
+						// Success
+						m.log.Debug().
+							Uint32("reportedSize", packetSize).
+							Uint32("actualSize", actualSize).
+							Msg("consumed extended frame with corrected size")
+						return extendedAdu, nil
+					}
+					if errors.Is(extendedParseErr, io.EOF) {
+						m.log.Trace().Uint32("buffered", num).Msg("extended parse incomplete, awaiting more data")
+						return nil, nil
+					}
+				}
+			}
+
+			// Seems unparsable - log and discard
+			dataStr := base64.StdEncoding.EncodeToString(frameSlice)
 			m.log.Warn().Err(err).
-				Str("data", dataStr). // Max PDU size is 253 bytes, and catching parse errors for inspection is important
+				Str("data", dataStr).
 				Uint32("packetSize", packetSize).
-				Msg("error parsing")
-			// TODO: Possibly clean up ...
+				Msg("error parsing frame, discarding")
+
+			// Discard the unparsable frame from the buffer
+			if _, discardErr := ti.Read(ctx, packetSize); discardErr != nil {
+				m.log.Debug().Err(discardErr).Uint32("packetSize", packetSize).Msg("error discarding unparsable frame")
+			}
+			return nil, nil
+		}
+
+		// First parse attempt successful, consume the bytes from the buffer
+		if _, consumeErr := ti.Read(ctx, packetSize); consumeErr != nil {
+			m.log.Debug().Err(consumeErr).Uint32("packetSize", packetSize).Msg("error consuming parsed frame")
 			return nil, nil
 		}
 		return tcpAdu, nil
-	} else if err != nil {
-		m.log.Warn().Err(err).Msg("Got error reading")
-		return nil, nil
 	}
-	// TODO: maybe we return here a not enough error error
+
+	m.log.Warn().Err(err).Msg("Got error reading")
 	return nil, nil
 }
