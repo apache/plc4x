@@ -115,15 +115,9 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 
 		// --- SANITY CHECK 1: Validate Protocol ID ---
 		// Modbus TCP Protocol ID (bytes 2 and 3) must be 0x0000.
-		// If it is not, we are desynchronized. Discard 1 byte and retry to find alignment.
 		if header[2] != 0x00 || header[3] != 0x00 {
-			m.log.Warn().
-				Hex("proto", header[2:4]).
-				Msg("Invalid Protocol ID (expected 0). Stream desynchronized. Discarding 1 byte to realign.")
-
-			// Burn 1 byte to shift the window and try again next cycle
-			ti.Read(ctx, 1)
-			return nil, nil
+			// Connection is desynchronized. Attempt to resync or discard the connection.
+			return m.attemptResync(ctx, ti, header, num)
 		}
 
 		// Interpret the length field (big endian) to determine the full packet size
@@ -134,13 +128,8 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		// Payload must contain at least UnitID (1 byte) + FunctionCode (1 byte).
 		// Any length < 2 is invalid (e.g. 0 or 1).
 		if payloadLength < 2 {
-			m.log.Warn().
-				Uint32("len", payloadLength).
-				Msg("Invalid packet length (<2). Stream desynchronized. Discarding 1 byte to realign.")
-
-			// Burn 1 byte to shift the window and try again next cycle
-			ti.Read(ctx, 1)
-			return nil, nil
+			// Connection is desynchronized. Attempt to resync or discard the connection.
+			return m.attemptResync(ctx, ti, header, num)
 		}
 
 		// --- SANITY CHECK 3: High-Probablity Garbage Detection ---
@@ -155,20 +144,13 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 				extendedPeek, _ := ti.PeekReadableBytes(ctx, 8)
 				functionCode := extendedPeek[7]
 				if functionCode == 0 || (functionCode&0x80 == 0x80 && payloadLength != 3) {
-					m.log.Warn().
-						Stringer("data", utils.Base64Stringer(extendedPeek)).
-						Uint32("len", payloadLength).
-						Uint8("func", functionCode).
-						Msg("Huge packet with Invalid Function Code (0). Garbage detected. Discarding 1 byte.")
-
-					// Burn 1 byte to shift the window and try again next cycle
-					ti.Read(ctx, 1)
-					return nil, nil
+					// Connection is desynchronized. Attempt to resync or discard the connection.
+					return m.attemptResync(ctx, ti, header, num)
 				}
 			}
 		}
 
-		// Check for TCP fragmentation
+		// Yield on TCP fragmentation
 		if num < packetSize {
 			// Wait for more data (standard TCP fragmentation handling)
 			var peekedBytes []byte
@@ -207,6 +189,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 						// with TCP transport, or when intermediate gateways/proxies truncate or merge
 						// frames. Duplicate reads and out-of-order slicing in buggy drivers can also leave
 						// stale data that makes the reported length disagree with the actual payload.
+						// ... looking at you old Moxa and Lantronix "transparent" serial-to-tcp gateways.
 
 						// What is the actual ADU size parsed?
 						actualSize := uint32(extendedAdu.GetLengthInBytes(ctxForModel))
@@ -233,9 +216,6 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 							Stringer("consumedData", utils.Base64Stringer(extendedSlice[:actualSize])).
 							Msg("consumed extended frame with corrected size")
 
-						// Check for trailing CRC garbage
-						m.trailingCRCGarbageCheck(ctx, ti, extendedSlice[:actualSize])
-
 						return extendedAdu, nil
 					}
 					if errors.Is(extendedParseErr, io.EOF) {
@@ -249,27 +229,21 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			m.log.Warn().Err(err).
 				Stringer("data", utils.Base64Stringer(frameSlice)).
 				Uint32("packetSize", packetSize).
-				Msg("error parsing frame, discarding")
+				Msg("Error parsing frame. Discarding invalid frame.")
 
 			// Discard the unparsable frame from the buffer
 			if _, discardErr := ti.Read(ctx, packetSize); discardErr != nil {
 				m.log.Debug().Err(discardErr).Uint32("packetSize", packetSize).Msg("error discarding unparsable frame")
 			}
 
-			// Check if the unparsable junk also had a CRC tail
-			m.trailingCRCGarbageCheck(ctx, ti, frameSlice)
-
 			return nil, nil
 		}
 
-		// First parse attempt successful, consume the bytes from the buffer
+		// First parse attempt successful, double check we used all the bytes
 		if _, consumeErr := ti.Read(ctx, packetSize); consumeErr != nil {
 			m.log.Debug().Err(consumeErr).Uint32("packetSize", packetSize).Msg("error consuming parsed frame")
 			return nil, nil
 		}
-
-		// Check for trailing CRC garbage
-		m.trailingCRCGarbageCheck(ctx, ti, frameSlice)
 
 		return tcpAdu, nil
 	}
@@ -278,52 +252,62 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	return nil, nil
 }
 
-// trailingCRCGarbageCheck checks for trailing Modbus RTU CRC bytes that may have leaked
-// into the TCP stream, and discards them to maintain synchronization.
-func (m *MessageCodec) trailingCRCGarbageCheck(ctx context.Context, ti transports.TransportInstance, consumedBytes []byte) {
-	// We only check if we have consumed at least 7 bytes (Header 6 + UnitID 1)
-	// and if there are at least 2 bytes waiting in the buffer.
-	if len(consumedBytes) > 6 {
-		bytesAvailable, err := ti.GetNumBytesAvailableInBuffer()
-		if err == nil && bytesAvailable >= 2 {
-			// Peek the next 2 bytes
-			nextTwoBytes, peekErr := ti.PeekReadableBytes(ctx, 2)
-			if peekErr == nil {
-				// Calculate what the CRC *would* be for the RTU portion of the frame we just read.
-				// RTU Frame = [UnitID] + [PDU]
-				// This corresponds to consumedBytes[6:] (Skipping 6-byte MBAP header)
-				rtuPayload := consumedBytes[6:]
-				expectedCRC := m.calculateModbusCRC(rtuPayload)
+func (m *MessageCodec) attemptResync(ctx context.Context, ti transports.TransportInstance, peekedBytes []byte, availableBytes uint32) (spi.Message, error) {
+	// Can we peek more?
+	if availableBytes > uint32(len(peekedBytes)) {
+		peekedBytes, _ = ti.PeekReadableBytes(ctx, availableBytes)
+	}
 
-				// Compare: If the next 2 bytes in the buffer match the calculated CRC, it's garbage.
-				if nextTwoBytes[0] == expectedCRC[0] && nextTwoBytes[1] == expectedCRC[1] {
+	// Some kernels leak tcp keep alive ethernet frame padding ot the stream.
+	// If we see a series of zero bytes, just discard them.
+	if allZeros(peekedBytes) {
+		len := len(peekedBytes)
+		m.log.Warn().
+			Int("length", len).
+			Msgf("Stream desynchronized. Discarding %d byte NIL packet to to realign.", len)
+
+		// Discard all zero bytes
+		ti.Read(ctx, uint32(len))
+
+		// Keep using the stream
+		return nil, nil
+	}
+
+	// Search for a valid-ish MBAP header in the stream
+	for i := 1; i < len(peekedBytes)-8; i++ {
+		// Check Protocol ID
+		if peekedBytes[i+2] == 0x00 && peekedBytes[i+3] == 0x00 {
+			// Check Length field
+			payloadLength := (uint32(peekedBytes[i+4]) << 8) + uint32(peekedBytes[i+5])
+			if payloadLength >= 2 {
+				// Check for a valid Function Code
+				functionCode := peekedBytes[i+7]
+				if functionCode != 0 && (functionCode < 0x80 || payloadLength == 3) {
 					m.log.Warn().
-						Stringer("data", utils.Base64Stringer(consumedBytes)).
-						Hex("crc", nextTwoBytes).
-						Msg("Detected leaked Modbus RTU CRC at end of TCP frame. Discarding to maintain sync.")
+						Int("offset", i).
+						Uint32("len", payloadLength).
+						Uint8("func", functionCode).
+						Msgf("Stream desynchronized. Found potential MBAP header at offset %d. Discarding %d bytes to realign.", i, i)
 
-					// Discard the 2 CRC bytes
-					if _, discardErr := ti.Read(ctx, 2); discardErr != nil {
-						m.log.Warn().Err(discardErr).Msg("Error discarding CRC bytes")
-					}
+					// Discard up to the found header
+					ti.Read(ctx, uint32(i))
+
+					// Keep using the stream
+					return nil, nil
 				}
 			}
 		}
 	}
+
+	m.log.Warn().Msgf("Stream desynchronized. No valid MBAP header found. Giving up on connection.")
+	return nil, errors.New("stream desynchronized")
 }
 
-func (m *MessageCodec) calculateModbusCRC(data []byte) []byte {
-	crc := uint16(0xFFFF)
-	for _, b := range data {
-		crc ^= uint16(b)
-		for i := 0; i < 8; i++ {
-			if (crc & 0x0001) != 0 {
-				crc = (crc >> 1) ^ 0xA001
-			} else {
-				crc >>= 1
-			}
+func allZeros(b []byte) bool {
+	for _, v := range b {
+		if v != 0 {
+			return false
 		}
 	}
-	// Return as Little Endian (Low Byte, High Byte) as per Modbus RTU
-	return []byte{uint8(crc & 0xFF), uint8(crc >> 8)}
+	return true
 }
