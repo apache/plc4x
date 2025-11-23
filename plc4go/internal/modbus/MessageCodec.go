@@ -21,7 +21,6 @@ package modbus
 
 import (
 	"context"
-	"encoding/base64"
 	"io"
 
 	"github.com/pkg/errors"
@@ -32,6 +31,7 @@ import (
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 //go:generate go tool plc4xGenerator -type=MessageCodec
@@ -113,10 +113,27 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			return nil, nil
 		}
 
+		// Modbus TCP Protocol ID (bytes 2 and 3) must be 0x0000.
+		// If it is not, we are desynchronized. Discard 1 byte and retry to find alignment.
+		if header[2] != 0x00 || header[3] != 0x00 {
+			m.log.Warn().
+				Hex("proto", header[2:4]).
+				Msg("Invalid Protocol ID (expected 0). Stream desynchronized. Discarding 1 byte to realign.")
+
+			// Burn 1 byte to shift the window and try again next cycle
+			ti.Read(ctx, 1)
+			return nil, nil
+		}
+
 		// Interpret the length field (big endian) to determine the full packet size
 		packetSize := (uint32(header[4]) << 8) + uint32(header[5]) + 6
 		if num < packetSize {
+			var peekedBytes []byte
+			if m.log.Debug().Enabled() {
+				peekedBytes, _ = ti.PeekReadableBytes(ctx, num)
+			}
 			m.log.Debug().
+				Stringer("currentData", utils.Base64Stringer(peekedBytes)).
 				Uint32("num", num).
 				Uint32("packetSize", packetSize).Msgf("Not enough bytes. Got: %d Need: %d. Waiting for more data...", num, packetSize)
 			return nil, nil
@@ -135,7 +152,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		if err != nil {
 			if errors.Is(err, io.EOF) {
 				// Incomplete frame, keep waiting for the remaining bytes.
-				m.log.Trace().Uint32("packetSize", packetSize).Msg("partial packet detected, awaiting more data")
+				m.log.Debug().Uint32("packetSize", packetSize).Stringer("data", utils.Base64Stringer(frameSlice)).Msg("partial packet detected, awaiting more data")
 				return nil, nil
 			}
 
@@ -172,10 +189,16 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 						}
 
 						// Success
-						m.log.Debug().
+						m.log.Warn().
 							Uint32("reportedSize", packetSize).
 							Uint32("actualSize", actualSize).
+							Stringer("extendedData", utils.Base64Stringer(extendedSlice)).
+							Stringer("consumedData", utils.Base64Stringer(extendedSlice[:actualSize])).
 							Msg("consumed extended frame with corrected size")
+
+						// Check for trailing CRC garbage
+						m.trailingCRCGarbageCheck(ctx, ti, extendedSlice[:actualSize])
+
 						return extendedAdu, nil
 					}
 					if errors.Is(extendedParseErr, io.EOF) {
@@ -186,9 +209,8 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			}
 
 			// Seems unparsable - log and discard
-			dataStr := base64.StdEncoding.EncodeToString(frameSlice)
 			m.log.Warn().Err(err).
-				Str("data", dataStr).
+				Stringer("data", utils.Base64Stringer(frameSlice)).
 				Uint32("packetSize", packetSize).
 				Msg("error parsing frame, discarding")
 
@@ -196,6 +218,10 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			if _, discardErr := ti.Read(ctx, packetSize); discardErr != nil {
 				m.log.Debug().Err(discardErr).Uint32("packetSize", packetSize).Msg("error discarding unparsable frame")
 			}
+
+			// Check if the unparsable junk also had a CRC tail
+			m.trailingCRCGarbageCheck(ctx, ti, frameSlice)
+
 			return nil, nil
 		}
 
@@ -204,9 +230,63 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			m.log.Debug().Err(consumeErr).Uint32("packetSize", packetSize).Msg("error consuming parsed frame")
 			return nil, nil
 		}
+
+		// Check for trailing CRC garbage
+		m.trailingCRCGarbageCheck(ctx, ti, frameSlice)
+
 		return tcpAdu, nil
 	}
 
 	m.log.Warn().Err(err).Msg("Got error reading")
 	return nil, nil
+}
+
+// trailingCRCGarbageCheck checks for trailing Modbus RTU CRC bytes that may have leaked
+// into the TCP stream, and discards them to maintain synchronization.
+func (m *MessageCodec) trailingCRCGarbageCheck(ctx context.Context, ti transports.TransportInstance, consumedBytes []byte) {
+	// We only check if we have consumed at least 7 bytes (Header 6 + UnitID 1)
+	// and if there are at least 2 bytes waiting in the buffer.
+	if len(consumedBytes) > 6 {
+		bytesAvailable, err := ti.GetNumBytesAvailableInBuffer()
+		if err == nil && bytesAvailable >= 2 {
+			// Peek the next 2 bytes
+			nextTwoBytes, peekErr := ti.PeekReadableBytes(ctx, 2)
+			if peekErr == nil {
+				// Calculate what the CRC *would* be for the RTU portion of the frame we just read.
+				// RTU Frame = [UnitID] + [PDU]
+				// This corresponds to consumedBytes[6:] (Skipping 6-byte MBAP header)
+				rtuPayload := consumedBytes[6:]
+				expectedCRC := m.calculateModbusCRC(rtuPayload)
+
+				// Compare: If the next 2 bytes in the buffer match the calculated CRC, it's garbage.
+				if nextTwoBytes[0] == expectedCRC[0] && nextTwoBytes[1] == expectedCRC[1] {
+					m.log.Warn().
+						Stringer("data", utils.Base64Stringer(consumedBytes)).
+						Hex("crc", nextTwoBytes).
+						Msg("Detected leaked Modbus RTU CRC at end of TCP frame. Discarding to maintain sync.")
+
+					// Discard the 2 CRC bytes
+					if _, discardErr := ti.Read(ctx, 2); discardErr != nil {
+						m.log.Warn().Err(discardErr).Msg("Error discarding CRC bytes")
+					}
+				}
+			}
+		}
+	}
+}
+
+func (m *MessageCodec) calculateModbusCRC(data []byte) []byte {
+	crc := uint16(0xFFFF)
+	for _, b := range data {
+		crc ^= uint16(b)
+		for i := 0; i < 8; i++ {
+			if (crc & 0x0001) != 0 {
+				crc = (crc >> 1) ^ 0xA001
+			} else {
+				crc >>= 1
+			}
+		}
+	}
+	// Return as Little Endian (Low Byte, High Byte) as per Modbus RTU
+	return []byte{uint8(crc & 0xFF), uint8(crc >> 8)}
 }
