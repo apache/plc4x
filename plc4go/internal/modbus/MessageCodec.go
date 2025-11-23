@@ -21,7 +21,7 @@ package modbus
 
 import (
 	"context"
-	"io"
+	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -84,6 +84,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		return nil, errors.New("Transport instance not connected")
 	}
 
+	// 1. Fill the buffer
 	if err := ti.FillBuffer(ctx, func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 		m.log.Trace().Uint("pos", pos).Uint8("currentByte", currentByte).Msg("filling")
 		numBytesAvailable, err := ti.GetNumBytesAvailableInBuffer()
@@ -91,223 +92,265 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			m.log.Debug().Err(err).Msg("error getting available bytes")
 			return false
 		}
-		m.log.Trace().Uint32("numBytesAvailable", numBytesAvailable).Msg("check available bytes < 6")
 		return numBytesAvailable < 6
 	}); err != nil {
 		m.log.Debug().Err(err).Msg("error filling buffer")
 	}
 
-	// We need at least 6 bytes in order to know how big the packet is in total
-	num, err := ti.GetNumBytesAvailableInBuffer()
-	if err == nil {
-		if num < 6 {
-			// Don't have enough data yet...
-			return nil, nil
-		}
-		m.log.Trace().Uint32("num", num).Msgf("we got %d readable bytes", num)
+	// 2. Check buffer status
+	numBytesAvail, err := ti.GetNumBytesAvailableInBuffer()
+	if err != nil {
+		m.log.Warn().Err(err).Msg("Error getting bytes in buffer")
+		return nil, nil
+	}
 
-		// Peek the MBAP header to extract the txcnid, protocol, and length
+	// -------------------------------------------------------------------------
+	// Discard NIL Packets (Keep-Alives w/padding that leaked into stream)
+	// -------------------------------------------------------------------------
+	for {
+		if numBytesAvail < 6 {
+			break
+		}
 		header, err := ti.PeekReadableBytes(ctx, 6)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking header")
 			return nil, nil
 		}
 
-		// --- SANITY CHECK 1: Validate Protocol ID ---
-		// Modbus TCP Protocol ID (bytes 2 and 3) must be 0x0000.
-		if header[2] != 0x00 || header[3] != 0x00 {
-			// Connection is desynchronized. Attempt to resync or discard the connection.
-			return m.attemptResync(ctx, ti, header, num)
-		}
+		// Check for 6 bytes of zeros
+		if header[0] == 0 && header[1] == 0 && header[2] == 0 &&
+			header[3] == 0 && header[4] == 0 && header[5] == 0 {
 
-		// Interpret the length field (big endian) to determine the full packet size
-		payloadLength := (uint32(header[4]) << 8) + uint32(header[5])
-		packetSize := payloadLength + 6
-
-		// --- SANITY CHECK 2: Minimum Length ---
-		// Payload must contain at least UnitID (1 byte) + FunctionCode (1 byte).
-		// Any length < 2 is invalid (e.g. 0 or 1).
-		if payloadLength < 2 {
-			// Connection is desynchronized. Attempt to resync or discard the connection.
-			return m.attemptResync(ctx, ti, header, num)
-		}
-
-		// --- SANITY CHECK 3: High-Probablity Garbage Detection ---
-		// If the packet is "Huge" (larger than standard Modbus TCP frame), we verify the Function Code.
-		// Valid Modbus functions are 1-127 (requests) or 129-255 (exceptions). 0 is never valid.
-		// If we see a huge length AND Function Code 0, it is 100% garbage masquerading as a header.
-		// Similarly, exceptions are always 9 bytes, so we check that as well.
-		if payloadLength > 260 {
-			// Peek the Function Code (Byte 7 of the full frame, or Byte 7 of the header peek if we had enough)
-			// We already peeked 6 bytes. We need to peek the next 2 (UnitID + Func) to check validity.
-			if num >= 8 {
-				extendedPeek, _ := ti.PeekReadableBytes(ctx, 8)
-				functionCode := extendedPeek[7]
-				if functionCode == 0 || (functionCode&0x80 == 0x80 && payloadLength != 3) {
-					// Connection is desynchronized. Attempt to resync or discard the connection.
-					return m.attemptResync(ctx, ti, header, num)
-				}
-			}
-		}
-
-		// Yield on TCP fragmentation
-		if num < packetSize {
-			// Wait for more data (standard TCP fragmentation handling)
-			var peekedBytes []byte
-			if m.log.Debug().Enabled() {
-				peekedBytes, _ = ti.PeekReadableBytes(ctx, num)
-			}
-			m.log.Debug().
-				Stringer("currentData", utils.Base64Stringer(peekedBytes)).
-				Uint32("num", num).
-				Uint32("packetSize", packetSize).Msgf("Not enough bytes. Got: %d Need: %d. Waiting for more data...", num, packetSize)
-			return nil, nil
-		}
-
-		// Peek read the entire frame
-		frameSlice, err := ti.PeekReadableBytes(ctx, packetSize)
-		if err != nil {
-			m.log.Warn().Err(err).Uint32("packetSize", packetSize).Msg("error peeking packet")
-			return nil, nil
-		}
-
-		// Parse the frame
-		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		tcpAdu, err := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, frameSlice, model.DriverType_MODBUS_TCP, true)
-		if err != nil {
-			// Did we perhaps only read part of a bigger frame?
-			if num > packetSize {
-				// Try reading everything
-				extendedSlice, extendedErr := ti.PeekReadableBytes(ctx, num)
-				if extendedErr == nil {
-					// Try parsing it all
-					extendedAdu, extendedParseErr := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, extendedSlice, model.DriverType_MODBUS_TCP, true)
-					if extendedParseErr == nil {
-						// Parse succeded...
-						// NOTE: MBAP length errors are rare in well-behaved devices, but they happen when
-						// firmware miscomputes the length field (or hard-codes to 6), mixes RTU framing
-						// with TCP transport, or when intermediate gateways/proxies truncate or merge
-						// frames. Duplicate reads and out-of-order slicing in buggy drivers can also leave
-						// stale data that makes the reported length disagree with the actual payload.
-						// ... looking at you old Moxa and Lantronix "transparent" serial-to-tcp gateways.
-
-						// What is the actual ADU size parsed?
-						actualSize := uint32(extendedAdu.GetLengthInBytes(ctxForModel))
-						if actualSize > num {
-							// We still need more data
-							m.log.Trace().
-								Uint32("available", num).
-								Uint32("required", actualSize).
-								Msg("extended parsed frame requires more bytes, awaiting more data")
-							return nil, nil
-						}
-
-						// Consume the actual size in bytes from the buffer (all peeks to here)
-						if _, consumeErr := ti.Read(ctx, actualSize); consumeErr != nil {
-							m.log.Debug().Err(consumeErr).Uint32("actualSize", actualSize).Msg("error consuming parsed frame")
-							return nil, nil
-						}
-
-						// Success
-						m.log.Warn().
-							Uint32("reportedSize", packetSize).
-							Uint32("actualSize", actualSize).
-							Stringer("extendedData", utils.Base64Stringer(extendedSlice)).
-							Stringer("consumedData", utils.Base64Stringer(extendedSlice[:actualSize])).
-							Msg("consumed extended frame with corrected size")
-
-						return extendedAdu, nil
-					}
-					if errors.Is(extendedParseErr, io.EOF) {
-						m.log.Trace().Uint32("buffered", num).Msg("extended parse incomplete, awaiting more data")
-						return nil, nil
-					}
-				}
+			m.log.Debug().Msg("Detected NIL Packet (Keep-Alive). Discarding 6 bytes.")
+			if _, err := ti.Read(ctx, 6); err != nil {
+				m.log.Warn().Err(err).Msg("Error discarding NIL packet")
+				return nil, nil
 			}
 
-			// Seems unparsable - log and discard
-			m.log.Warn().Err(err).
-				Stringer("data", utils.Base64Stringer(frameSlice)).
-				Uint32("packetSize", packetSize).
-				Msg("Error parsing frame. Discarding invalid frame.")
-
-			// Discard the unparsable frame from the buffer
-			if _, discardErr := ti.Read(ctx, packetSize); discardErr != nil {
-				m.log.Debug().Err(discardErr).Uint32("packetSize", packetSize).Msg("error discarding unparsable frame")
+			// Refresh num and loop
+			numBytesAvail, err = ti.GetNumBytesAvailableInBuffer()
+			if err != nil {
+				return nil, nil
 			}
-
-			return nil, nil
+			continue
 		}
-
-		// First parse attempt successful, double check we used all the bytes
-		if _, consumeErr := ti.Read(ctx, packetSize); consumeErr != nil {
-			m.log.Debug().Err(consumeErr).Uint32("packetSize", packetSize).Msg("error consuming parsed frame")
-			return nil, nil
-		}
-
-		return tcpAdu, nil
+		break
 	}
 
-	m.log.Warn().Err(err).Msg("Got error reading")
-	return nil, nil
-}
-
-func (m *MessageCodec) attemptResync(ctx context.Context, ti transports.TransportInstance, peekedBytes []byte, availableBytes uint32) (spi.Message, error) {
-	// Can we peek more?
-	if availableBytes > uint32(len(peekedBytes)) {
-		peekedBytes, _ = ti.PeekReadableBytes(ctx, availableBytes)
-	}
-
-	// Some kernels leak tcp keep alive ethernet frame padding ot the stream.
-	// If we see a series of zero bytes, just discard them.
-	if allZeros(peekedBytes) {
-		len := len(peekedBytes)
-		m.log.Warn().
-			Int("length", len).
-			Msgf("Stream desynchronized. Discarding %d byte NIL packet to to realign.", len)
-
-		// Discard all zero bytes
-		ti.Read(ctx, uint32(len))
-
-		// Keep using the stream
+	if numBytesAvail < 6 {
 		return nil, nil
 	}
 
-	// Search for a valid-ish MBAP header in the stream
-	for i := 1; i < len(peekedBytes)-8; i++ {
-		// Check Protocol ID
-		if peekedBytes[i+2] == 0x00 && peekedBytes[i+3] == 0x00 {
-			// Check Length field
-			payloadLength := (uint32(peekedBytes[i+4]) << 8) + uint32(peekedBytes[i+5])
-			if payloadLength >= 2 {
-				// Check for a valid Function Code
-				functionCode := peekedBytes[i+7]
-				if functionCode != 0 && (functionCode < 0x80 || payloadLength == 3) {
-					m.log.Warn().
-						Int("offset", i).
-						Uint32("len", payloadLength).
-						Uint8("func", functionCode).
-						Msgf("Stream desynchronized. Found potential MBAP header at offset %d. Discarding %d bytes to realign.", i, i)
+	// Re-peek the header at the current head
+	header, err := ti.PeekReadableBytes(ctx, 6)
+	if err != nil {
+		m.log.Warn().Err(err).Msg("error peeking header")
+		return nil, nil
+	}
 
-					// Discard up to the found header
-					ti.Read(ctx, uint32(i))
+	// -------------------------------------------------------------------------
+	// MBAP SANITY CHECKS
+	// -------------------------------------------------------------------------
 
-					// Keep using the stream
-					return nil, nil
+	// --- CHECK 1: Protocol ID Validation ---
+	if header[2] != 0x00 || header[3] != 0x00 {
+		return m.handleDesync(ctx, "Invalid Protocol ID", map[string]interface{}{
+			"p1":   header[2],
+			"p2":   header[3],
+			"data": utils.Base64Stringer(header),
+		})
+	}
+
+	// Length field is big endian encoded WORD
+	payloadLength := (uint32(header[4]) << 8) + uint32(header[5])
+	packetSize := payloadLength + 6
+
+	// --- CHECK 2: Minimum Length ---
+	if payloadLength < 2 {
+		return m.handleDesync(ctx, "Invalid packet length (<2)", map[string]interface{}{
+			"len":  payloadLength,
+			"data": utils.Base64Stringer(header),
+		})
+	}
+
+	// --- CHECK 3: Function Code 0 (False Header) ---
+	if numBytesAvail >= 8 {
+		peekBytes, err := ti.PeekReadableBytes(ctx, 8)
+		if err == nil && peekBytes[7] == 0 {
+			return m.handleDesync(ctx, "Invalid Function Code (0)", map[string]interface{}{
+				"len":  payloadLength,
+				"data": utils.Base64Stringer(peekBytes),
+			})
+		}
+	}
+
+	// -------------------------------------------------------------------------
+	// PARSING
+	// -------------------------------------------------------------------------
+
+	// Yield on TCP fragmentation
+	if numBytesAvail < packetSize {
+		// Wait for more data (standard TCP fragmentation handling)
+		var peekedBytes []byte
+		if m.log.Debug().Enabled() {
+			peekedBytes, _ = ti.PeekReadableBytes(ctx, numBytesAvail)
+		}
+		m.log.Debug().
+			Stringer("dataFragment", utils.Base64Stringer(peekedBytes)).
+			Uint32("num", numBytesAvail).
+			Uint32("packetSize", packetSize).Msgf("Received fragment. Got: %d Need: %d. Waiting for more data...", numBytesAvail, packetSize)
+		return nil, nil
+	}
+
+	// Read the entire frame
+	frameSlice, err := ti.PeekReadableBytes(ctx, packetSize)
+	if err != nil {
+		m.log.Warn().Err(err).Msg("Error peeking frame slice")
+		return nil, nil
+	}
+
+	// Parse the frame
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	tcpAdu, err := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, frameSlice, model.DriverType_MODBUS_TCP, true)
+	if err != nil {
+		// Parser wasn't happy at packetSize, if there is more available, try parsing all of it
+		if numBytesAvail > packetSize {
+			extendedSlice, extendedErr := ti.PeekReadableBytes(ctx, numBytesAvail)
+			if extendedErr == nil {
+				// Try parsing it all
+				extendedAdu, extendedParseErr := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, extendedSlice, model.DriverType_MODBUS_TCP, true)
+				if extendedParseErr == nil {
+					// Parse succeded...
+					// NOTE: MBAP length errors are rare in well-behaved devices, but they happen when
+					// firmware miscomputes the length field (or hard-codes to 6), mixes RTU framing
+					// with TCP transport, or when intermediate gateways/proxies truncate or merge
+					// frames. Duplicate reads and out-of-order slicing in buggy drivers can also leave
+					// stale data that makes the reported length disagree with the actual payload.
+					// ... looking at you old Moxa and Lantronix "transparent" serial-to-tcp gateways.
+
+					// What is the actual ADU size parsed?
+					actualSize := uint32(extendedAdu.GetLengthInBytes(ctxForModel))
+					if actualSize > numBytesAvail {
+						return nil, nil
+					}
+
+					m.log.Info().
+						Uint32("reportedSize", packetSize).
+						Uint32("actualSize", actualSize).
+						Stringer("extendedData", utils.Base64Stringer(extendedSlice)).
+						Stringer("consumedData", utils.Base64Stringer(extendedSlice[:actualSize])).
+						Msg("MBAP had wrong/hardcoded length. Consumed extended frame with corrected size")
+					if _, consumeErr := ti.Read(ctx, actualSize); consumeErr != nil {
+						m.log.Debug().Err(consumeErr).Msg("error consuming extended frame")
+						return nil, nil
+					}
+					return extendedAdu, nil
 				}
+			}
+		}
+
+		// Seems unparsable - log and discard
+		m.log.Warn().Err(err).
+			Stringer("data", utils.Base64Stringer(frameSlice)).
+			Uint32("packetSize", packetSize).
+			Msg("Error parsing frame. Discarding invalid frame.")
+
+		// Discard the unparsable frame from the buffer
+		if _, discardErr := ti.Read(ctx, packetSize); discardErr != nil {
+			m.log.Debug().Err(discardErr).Uint32("packetSize", packetSize).Msg("error discarding unparsable frame")
+		}
+
+		// Yield
+		return nil, nil
+	}
+
+	// -------------------------------------------------------------------------
+	// SUCCESS
+	// -------------------------------------------------------------------------
+	if _, consumeErr := ti.Read(ctx, packetSize); consumeErr != nil {
+		m.log.Debug().Err(consumeErr).Msg("error consuming parsed frame")
+		return nil, nil
+	}
+
+	return tcpAdu, nil
+}
+
+// handleDesync handles stream realignment when an invalid header is detected at the head.
+// It strictly scans the available buffer for a valid MBAP header.
+// If one is found, it realigns the stream.
+// If NO valid header is found in the *entire* buffer, it treats the connection as dead.
+func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields map[string]interface{}) (spi.Message, error) {
+	ti := m.GetTransportInstance()
+
+	// Get total available bytes
+	numBytesAvail, err := ti.GetNumBytesAvailableInBuffer()
+	if err != nil {
+		return nil, nil // Yield if we can't check buffer
+	}
+
+	// Create a logger with context
+	fields["reason"] = reason
+	fields["bytesAvail"] = numBytesAvail
+	opLog := m.log.With().
+		Interface("desyncContext", fields).
+		Logger()
+
+	opLog.Warn().Msg("Desync detected at stream head.")
+
+	// CASE 1: Small Buffer (< 10 bytes).
+	// We don't have enough data to scan for a full header+function (need ~8-9 bytes min).
+	// We can't definitively say the stream is dead, so we just Discard 1 and Yield.
+	if numBytesAvail < 10 {
+		opLog.Trace().Msg("Small buffer desync. Discarding 1 byte.")
+		if _, err := ti.Read(ctx, 1); err != nil {
+			opLog.Debug().Err(err).Msg("Error reading byte during discard")
+		}
+		return nil, nil
+	}
+
+	// CASE 2: Scan for Recovery.
+	// We peek everything we have.
+	allBytes, err := ti.PeekReadableBytes(ctx, numBytesAvail)
+	if err != nil {
+		return nil, nil
+	}
+
+	// Scan Loop: Start at offset 1 (since offset 0 is known bad).
+	// We must stop at (num - 8) because we need to inspect the Function Code at (i + 7).
+	// Index 'i' is the start of the candidate MBAP Header.
+	for i := uint32(1); i <= numBytesAvail-8; i++ {
+		// Check Protocol ID (Bytes 2-3 of the candidate header)
+		if allBytes[i+2] == 0x00 && allBytes[i+3] == 0x00 {
+			// Check Length (Bytes 4-5)
+			length := (uint32(allBytes[i+4]) << 8) + uint32(allBytes[i+5])
+
+			// Check Function Code (Byte 7)
+			// MBAP(6) + UnitID(1) + FuncCode(1) -> Offset 7
+			fc := allBytes[i+7]
+
+			// VALIDATION LOGIC:
+			// 1. Length >= 2 (Must have UnitID + FuncCode)
+			// 2. FuncCode != 0 (Modbus function 0 doesn't exist)
+			// 3. Strict Packet Structure:
+			//    - Standard Function (< 0x80): Allow any length.
+			//    - Exception Function (>= 0x80): PDU is always 2 bytes (Func + Code).
+			//      Modbus TCP Length = UnitID(1) + PDU(2) = 3 bytes.
+			if length >= 2 && fc != 0 && (fc < 0x80 || length == 3) {
+				opLog.Debug().Uint32("offset", i).Msg("Found MBAP candidate in stream. Discarding garbage prefix.")
+
+				// Discard 'i' bytes to align the stream to this candidate
+				if _, err := ti.Read(ctx, i); err != nil {
+					opLog.Debug().Err(err).Msg("Error discarding garbage during recovery")
+				}
+
+				// Yield. Next Receive() will pick up this valid header.
+				return nil, nil
 			}
 		}
 	}
 
-	m.log.Warn().Msgf("Stream desynchronized. No valid MBAP header found. Giving up on connection.")
-	return nil, errors.New("stream desynchronized")
-}
-
-func allZeros(b []byte) bool {
-	for _, v := range b {
-		if v != 0 {
-			return false
-		}
-	}
-	return true
+	// CASE 3: Connection is unrecoverable with the tools we have...
+	// We scanned the entire available buffer and found NO valid candidates.
+	// The connection is sending garbage. Destroy it.
+	return nil, fmt.Errorf("stream desynchronized: %d bytes of garbage with no valid MBAP header found", numBytesAvail)
 }
