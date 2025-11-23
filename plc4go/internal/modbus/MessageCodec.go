@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,6 +22,7 @@ package modbus
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -100,8 +101,11 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// 2. Check buffer status
 	numBytesAvail, err := ti.GetNumBytesAvailableInBuffer()
 	if err != nil {
-		m.log.Warn().Err(err).Msg("Error getting bytes in buffer")
-		return nil, nil
+		// Yield if we can't check buffer
+		if err == io.EOF {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("error getting buffer length")
 	}
 
 	// -------------------------------------------------------------------------
@@ -152,37 +156,24 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// MBAP SANITY CHECKS
 	// -------------------------------------------------------------------------
 
-	// --- CHECK 1: Protocol ID Validation ---
-	if header[2] != 0x00 || header[3] != 0x00 {
-		return m.handleDesync(ctx, "Invalid Protocol ID", map[string]interface{}{
-			"p1":   header[2],
-			"p2":   header[3],
-			"data": utils.Base64Stringer(header),
+	// We now peek up to 9 bytes to perform the full Consistency Check used in recovery.
+	// This catches "False Headers" (like the 04 Func example) immediately.
+	var checkBytes []byte
+	if numBytesAvail >= 9 {
+		checkBytes, _ = ti.PeekReadableBytes(ctx, 9)
+	} else {
+		checkBytes = header // Just the 6 bytes we have
+	}
+
+	if !m.checkPacketConsistency(checkBytes) {
+		return m.handleDesync(ctx, "Sanity Check Failed", map[string]interface{}{
+			"data": utils.Base64Stringer(checkBytes),
 		})
 	}
 
 	// Length field is big endian encoded WORD
 	payloadLength := (uint32(header[4]) << 8) + uint32(header[5])
 	packetSize := payloadLength + 6
-
-	// --- CHECK 2: Minimum Length ---
-	if payloadLength < 2 {
-		return m.handleDesync(ctx, "Invalid packet length (<2)", map[string]interface{}{
-			"len":  payloadLength,
-			"data": utils.Base64Stringer(header),
-		})
-	}
-
-	// --- CHECK 3: Function Code 0 (False Header) ---
-	if numBytesAvail >= 8 {
-		peekBytes, err := ti.PeekReadableBytes(ctx, 8)
-		if err == nil && peekBytes[7] == 0 {
-			return m.handleDesync(ctx, "Invalid Function Code (0)", map[string]interface{}{
-				"len":  payloadLength,
-				"data": utils.Base64Stringer(peekBytes),
-			})
-		}
-	}
 
 	// -------------------------------------------------------------------------
 	// PARSING
@@ -250,6 +241,9 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		}
 
 		// Seems unparsable - log and discard
+		// If the packet PASSED checkPacketConsistency but failed parsing, it is likely a Valid MBAP
+		// with invalid content (e.g. unsupported function, bad data).
+		// We should DISCARD it to maintain sync, NOT trigger Desync Recovery.
 		m.log.Warn().Err(err).
 			Stringer("data", utils.Base64Stringer(frameSlice)).
 			Uint32("packetSize", packetSize).
@@ -275,8 +269,111 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	return tcpAdu, nil
 }
 
+// checkPacketConsistency validates a candidate Modbus TCP packet against the protocol spec.
+// It enforces strict relationship rules between the MBAP Header Length and the PDU content (Function Code & Byte Count).
+// Returns true if the packet looks valid, false if it is definitely garbage.
+// NOTE: When new functions are added to the mspec, this needs to be updated to reflect their structure.
+func (m *MessageCodec) checkPacketConsistency(data []byte) bool {
+	// 1. Check Protocol ID immediately (Need 4 bytes)
+	if len(data) < 4 {
+		return false
+	}
+	// Modbus TCP Protocol ID must be 0
+	if data[2] != 0x00 || data[3] != 0x00 {
+		return false
+	}
+
+	// 2. Check Header Length (Need 6 bytes)
+	if len(data) < 6 {
+		// Not enough data to check length, but Protocol ID was OK.
+		// We shouldn't reject yet if we just don't have the bytes.
+		// However, this function is typically called with a slice that *should* contain the header.
+		return false
+	}
+
+	length := (uint32(data[4]) << 8) + uint32(data[5])
+	if length < 2 {
+		return false
+	}
+
+	// 3. Check Function Code (Need 8 bytes: 6 Header + 1 Unit + 1 Func)
+	if len(data) < 8 {
+		// We have a valid ProtoID and Length, but not enough data to check content.
+		// Return true (benefit of the doubt) because we can't prove it's bad yet.
+		return true
+	}
+
+	fc := data[7]
+	if fc == 0 {
+		return false
+	}
+
+	// VALIDATION: Check Internal Consistency of Response Structure
+	// NOTE: These rules are primarily for Modbus TCP RESPONSES (Client Mode).
+	// If acting as a Server (receiving Requests), some rules (like Write Multiple) would be different.
+
+	if fc >= 0x80 {
+		// --- EXCEPTION ---
+		// Structure: [UnitID] [FuncCode+0x80] [ExceptionCode]
+		// Length must be exactly 3.
+		return length == 3
+	}
+
+	// --- STANDARD FUNCTIONS ---
+	switch fc {
+	case 0x01, 0x02, 0x03, 0x04, 0x17, 0x14, 0x15:
+		// Variable Length Responses
+		// Rule: Header Length == ByteCount + 3
+		// We need 9 bytes to see the ByteCount at offset 8.
+		if len(data) >= 9 {
+			byteCount := uint32(data[8])
+			if length != byteCount+3 {
+				return false
+			}
+		}
+		// Implicit Max Check: Max ByteCount 255 -> Max Length 258.
+		if length > 258 {
+			return false
+		}
+
+	case 0x05, 0x06, 0x0F, 0x10:
+		// Fixed Length Responses (Write Single, Write Multi)
+		// Structure: [UnitID] [FuncCode] [AddrHi] [AddrLo] [ValHi] [ValLo]
+		// Length must be exactly 6.
+		if length != 6 {
+			// SERVER MODE CAVEAT:
+			// If we are a Server receiving a Write Multiple Request (FC 15/16),
+			// the length will be > 6. If we strictly return false here, we break Server mode.
+			// As a heuristic, if length is > 6 for these codes, we treat it as potentially valid
+			// (assuming it's a Request) to be safe, unless it's huge.
+			if length > 260 {
+				return false
+			}
+			// Ideally we would enforce Request structure (Len = ByteCount + 7),
+			// but that requires more bytes than we might have peeked.
+			return true
+		}
+
+	case 0x16:
+		// Mask Write Register
+		// Length must be exactly 8.
+		if length != 8 {
+			return false
+		}
+
+	default:
+		// Other/Custom Functions.
+		// Max PDU size is 253 -> Length 254. Allow margin.
+		if length > 260 {
+			return false
+		}
+	}
+
+	return true
+}
+
 // handleDesync handles stream realignment when an invalid header is detected at the head.
-// It strictly scans the available buffer for a valid MBAP header.
+// It strictly scans the available buffer for a valid MBAP header using checkPacketConsistency.
 // If one is found, it realigns the stream.
 // If NO valid header is found in the *entire* buffer, it treats the connection as dead.
 func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields map[string]interface{}) (spi.Message, error) {
@@ -312,40 +409,29 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 	// We peek everything we have.
 	allBytes, err := ti.PeekReadableBytes(ctx, numBytesAvail)
 	if err != nil {
-		return nil, nil
+		return nil, fmt.Errorf("error peeking bytes during desync recovery")
 	}
 
 	// Scan Loop: Start at offset 1 (since offset 0 is known bad).
-	// We must stop at (num - 8) because we need to inspect the Function Code at (i + 7).
-	// Index 'i' is the start of the candidate MBAP Header.
-	for i := uint32(1); i <= numBytesAvail-8; i++ {
-		// Check Protocol ID (Bytes 2-3 of the candidate header)
-		if allBytes[i+2] == 0x00 && allBytes[i+3] == 0x00 {
-			// Check Length (Bytes 4-5)
-			length := (uint32(allBytes[i+4]) << 8) + uint32(allBytes[i+5])
+	// We verify candidates up to the end of the buffer.
+	// We stop when we don't have enough bytes left to even check the Protocol ID (4 bytes).
+	limit := uint32(0)
+	if numBytesAvail >= 4 {
+		limit = numBytesAvail - 4
+	}
 
-			// Check Function Code (Byte 7)
-			// MBAP(6) + UnitID(1) + FuncCode(1) -> Offset 7
-			fc := allBytes[i+7]
+	for i := uint32(1); i <= limit; i++ {
+		// Use our robust consistency check on the slice starting at i
+		if m.checkPacketConsistency(allBytes[i:]) {
+			opLog.Debug().Uint32("offset", i).Msg("Found MBAP candidate in stream. Discarding garbage prefix.")
 
-			// VALIDATION LOGIC:
-			// 1. Length >= 2 (Must have UnitID + FuncCode)
-			// 2. FuncCode != 0 (Modbus function 0 doesn't exist)
-			// 3. Strict Packet Structure:
-			//    - Standard Function (< 0x80): Allow any length.
-			//    - Exception Function (>= 0x80): PDU is always 2 bytes (Func + Code).
-			//      Modbus TCP Length = UnitID(1) + PDU(2) = 3 bytes.
-			if length >= 2 && fc != 0 && (fc < 0x80 || length == 3) {
-				opLog.Debug().Uint32("offset", i).Msg("Found MBAP candidate in stream. Discarding garbage prefix.")
-
-				// Discard 'i' bytes to align the stream to this candidate
-				if _, err := ti.Read(ctx, i); err != nil {
-					opLog.Debug().Err(err).Msg("Error discarding garbage during recovery")
-				}
-
-				// Yield. Next Receive() will pick up this valid header.
-				return nil, nil
+			// Discard 'i' bytes to align the stream to this candidate
+			if _, err := ti.Read(ctx, i); err != nil {
+				opLog.Debug().Err(err).Msg("Error discarding garbage during recovery")
 			}
+
+			// Yield. Next Receive() will pick up this valid header.
+			return nil, nil
 		}
 	}
 
