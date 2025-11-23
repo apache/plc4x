@@ -113,6 +113,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			return nil, nil
 		}
 
+		// --- SANITY CHECK 1: Validate Protocol ID ---
 		// Modbus TCP Protocol ID (bytes 2 and 3) must be 0x0000.
 		// If it is not, we are desynchronized. Discard 1 byte and retry to find alignment.
 		if header[2] != 0x00 || header[3] != 0x00 {
@@ -126,8 +127,50 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		}
 
 		// Interpret the length field (big endian) to determine the full packet size
-		packetSize := (uint32(header[4]) << 8) + uint32(header[5]) + 6
+		payloadLength := (uint32(header[4]) << 8) + uint32(header[5])
+		packetSize := payloadLength + 6
+
+		// --- SANITY CHECK 2: Minimum Length ---
+		// Payload must contain at least UnitID (1 byte) + FunctionCode (1 byte).
+		// Any length < 2 is invalid (e.g. 0 or 1).
+		if payloadLength < 2 {
+			m.log.Warn().
+				Uint32("len", payloadLength).
+				Msg("Invalid packet length (<2). Stream desynchronized. Discarding 1 byte to realign.")
+
+			// Burn 1 byte to shift the window and try again next cycle
+			ti.Read(ctx, 1)
+			return nil, nil
+		}
+
+		// --- SANITY CHECK 3: High-Probablity Garbage Detection ---
+		// If the packet is "Huge" (larger than standard Modbus TCP frame), we verify the Function Code.
+		// Valid Modbus functions are 1-127 (requests) or 129-255 (exceptions). 0 is never valid.
+		// If we see a huge length AND Function Code 0, it is 100% garbage masquerading as a header.
+		// Similarly, exceptions are always 9 bytes, so we check that as well.
+		if payloadLength > 260 {
+			// Peek the Function Code (Byte 7 of the full frame, or Byte 7 of the header peek if we had enough)
+			// We already peeked 6 bytes. We need to peek the next 2 (UnitID + Func) to check validity.
+			if num >= 8 {
+				extendedPeek, _ := ti.PeekReadableBytes(ctx, 8)
+				functionCode := extendedPeek[7]
+				if functionCode == 0 || (functionCode&0x80 == 0x80 && payloadLength != 3) {
+					m.log.Warn().
+						Stringer("data", utils.Base64Stringer(extendedPeek)).
+						Uint32("len", payloadLength).
+						Uint8("func", functionCode).
+						Msg("Huge packet with Invalid Function Code (0). Garbage detected. Discarding 1 byte.")
+
+					// Burn 1 byte to shift the window and try again next cycle
+					ti.Read(ctx, 1)
+					return nil, nil
+				}
+			}
+		}
+
+		// Check for TCP fragmentation
 		if num < packetSize {
+			// Wait for more data (standard TCP fragmentation handling)
 			var peekedBytes []byte
 			if m.log.Debug().Enabled() {
 				peekedBytes, _ = ti.PeekReadableBytes(ctx, num)
@@ -150,12 +193,6 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		tcpAdu, err := model.ModbusADUParse[model.ModbusTcpADU](ctxForModel, frameSlice, model.DriverType_MODBUS_TCP, true)
 		if err != nil {
-			if errors.Is(err, io.EOF) {
-				// Incomplete frame, keep waiting for the remaining bytes.
-				m.log.Debug().Uint32("packetSize", packetSize).Stringer("data", utils.Base64Stringer(frameSlice)).Msg("partial packet detected, awaiting more data")
-				return nil, nil
-			}
-
 			// Did we perhaps only read part of a bigger frame?
 			if num > packetSize {
 				// Try reading everything
