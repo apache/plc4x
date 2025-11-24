@@ -40,6 +40,10 @@ type MessageCodec struct {
 	log            zerolog.Logger
 }
 
+var (
+	_ spi.TransportInstanceExposer = (*MessageCodec)(nil)
+)
+
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
 	codec := &MessageCodec{}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, append(_options, _default.WithCustomMessageHandler(codec.handleCustomMessage))...)

@@ -24,9 +24,10 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // PLCMessageFormat defines the format of the PLCMessage that is logged

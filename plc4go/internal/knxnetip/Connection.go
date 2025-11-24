@@ -143,6 +143,10 @@ type Connection struct {
 	_options       []options.WithOption // Used to pass them downstream
 }
 
+var (
+	_ spi.TransportInstanceExposer = (*Connection)(nil)
+)
+
 func (m *Connection) String() string {
 	return fmt.Sprintf("knx.Connection{}")
 }

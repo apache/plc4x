@@ -318,6 +318,10 @@ func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) []byte {
 	return data
 }
 
+func (m *TransportInstance) Reset() {
+	// No-Op
+}
+
 func (m *TransportInstance) String() string {
 	return "test"
 }

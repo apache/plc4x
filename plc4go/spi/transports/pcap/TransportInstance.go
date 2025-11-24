@@ -169,6 +169,10 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 	return nil
 }
 
+func (m *TransportInstance) Reset() {
+	// No-Op
+}
+
 func (m *TransportInstance) Close() error {
 	defer utils.StopWarn(m.log)()
 	m.stateChangeMutex.Lock()

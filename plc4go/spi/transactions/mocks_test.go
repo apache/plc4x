@@ -294,7 +294,7 @@ func (_c *MockRequestTransaction_String_Call) RunAndReturn(run func() string) *M
 
 // Submit provides a mock function for the type MockRequestTransaction
 func (_mock *MockRequestTransaction) Submit(operationInfo string, operation RequestTransactionRunnable) {
-	_mock.Called(operation)
+	_mock.Called(operationInfo, operation)
 	return
 }
 
@@ -304,19 +304,25 @@ type MockRequestTransaction_Submit_Call struct {
 }
 
 // Submit is a helper method to define mock.On call
+//   - operationInfo string
 //   - operation RequestTransactionRunnable
-func (_e *MockRequestTransaction_Expecter) Submit(operation interface{}) *MockRequestTransaction_Submit_Call {
-	return &MockRequestTransaction_Submit_Call{Call: _e.mock.On("Submit", operation)}
+func (_e *MockRequestTransaction_Expecter) Submit(operationInfo interface{}, operation interface{}) *MockRequestTransaction_Submit_Call {
+	return &MockRequestTransaction_Submit_Call{Call: _e.mock.On("Submit", operationInfo, operation)}
 }
 
-func (_c *MockRequestTransaction_Submit_Call) Run(run func(operation RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
+func (_c *MockRequestTransaction_Submit_Call) Run(run func(operationInfo string, operation RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 RequestTransactionRunnable
+		var arg0 string
 		if args[0] != nil {
-			arg0 = args[0].(RequestTransactionRunnable)
+			arg0 = args[0].(string)
+		}
+		var arg1 RequestTransactionRunnable
+		if args[1] != nil {
+			arg1 = args[1].(RequestTransactionRunnable)
 		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -327,7 +333,7 @@ func (_c *MockRequestTransaction_Submit_Call) Return() *MockRequestTransaction_S
 	return _c
 }
 
-func (_c *MockRequestTransaction_Submit_Call) RunAndReturn(run func(operation RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
+func (_c *MockRequestTransaction_Submit_Call) RunAndReturn(run func(operationInfo string, operation RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
 	_c.Run(run)
 	return _c
 }
@@ -495,16 +501,16 @@ func (_c *MockRequestTransactionManager_SetNumberOfConcurrentRequests_Call) RunA
 }
 
 // StartTransaction provides a mock function for the type MockRequestTransactionManager
-func (_mock *MockRequestTransactionManager) StartTransaction(string) RequestTransaction {
-	ret := _mock.Called()
+func (_mock *MockRequestTransactionManager) StartTransaction(transactionInfo string) RequestTransaction {
+	ret := _mock.Called(transactionInfo)
 
 	if len(ret) == 0 {
 		panic("no return value specified for StartTransaction")
 	}
 
 	var r0 RequestTransaction
-	if returnFunc, ok := ret.Get(0).(func() RequestTransaction); ok {
-		r0 = returnFunc()
+	if returnFunc, ok := ret.Get(0).(func(string) RequestTransaction); ok {
+		r0 = returnFunc(transactionInfo)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(RequestTransaction)
@@ -519,13 +525,20 @@ type MockRequestTransactionManager_StartTransaction_Call struct {
 }
 
 // StartTransaction is a helper method to define mock.On call
-func (_e *MockRequestTransactionManager_Expecter) StartTransaction() *MockRequestTransactionManager_StartTransaction_Call {
-	return &MockRequestTransactionManager_StartTransaction_Call{Call: _e.mock.On("StartTransaction")}
+//   - transactionInfo string
+func (_e *MockRequestTransactionManager_Expecter) StartTransaction(transactionInfo interface{}) *MockRequestTransactionManager_StartTransaction_Call {
+	return &MockRequestTransactionManager_StartTransaction_Call{Call: _e.mock.On("StartTransaction", transactionInfo)}
 }
 
-func (_c *MockRequestTransactionManager_StartTransaction_Call) Run(run func()) *MockRequestTransactionManager_StartTransaction_Call {
+func (_c *MockRequestTransactionManager_StartTransaction_Call) Run(run func(transactionInfo string)) *MockRequestTransactionManager_StartTransaction_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		var arg0 string
+		if args[0] != nil {
+			arg0 = args[0].(string)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -535,7 +548,7 @@ func (_c *MockRequestTransactionManager_StartTransaction_Call) Return(requestTra
 	return _c
 }
 
-func (_c *MockRequestTransactionManager_StartTransaction_Call) RunAndReturn(run func() RequestTransaction) *MockRequestTransactionManager_StartTransaction_Call {
+func (_c *MockRequestTransactionManager_StartTransaction_Call) RunAndReturn(run func(transactionInfo string) RequestTransaction) *MockRequestTransactionManager_StartTransaction_Call {
 	_c.Call.Return(run)
 	return _c
 }

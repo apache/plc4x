@@ -37,10 +37,15 @@ import (
 //go:generate go tool plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
+
 	none bool // TODO: just a empty field to satisfy generator (needs fixing because in this case here we have the delegate)
 
 	log zerolog.Logger
 }
+
+var (
+	_ spi.TransportInstanceExposer = (*MessageCodec)(nil)
+)
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)

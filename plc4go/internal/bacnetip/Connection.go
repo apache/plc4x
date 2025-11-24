@@ -40,6 +40,7 @@ import (
 
 type Connection struct {
 	_default.DefaultConnection
+
 	invokeIdGenerator InvokeIdGenerator
 	messageCodec      spi.MessageCodec
 	subscribers       []*Subscriber
@@ -53,6 +54,10 @@ type Connection struct {
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
 }
+
+var (
+	_ spi.TransportInstanceExposer = (*Connection)(nil)
+)
 
 func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)

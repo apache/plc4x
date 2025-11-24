@@ -26,6 +26,7 @@ import (
 	"net"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
@@ -119,6 +120,17 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 	m.connected.Store(true)
 
 	return nil
+}
+
+func (m *TransportInstance) Reset() {
+	if m.udpConn == nil {
+		m.log.Trace().Msg("No connection to reset")
+		return
+	}
+	_ = m.udpConn.SetReadDeadline(time.Now().Add(1))
+	_, _, _ = m.udpConn.ReadFromUDP(make([]byte, 4096))
+	m.reader = bufio.NewReader(m.udpConn)
+	m.log.Trace().Msg("Connection reset")
 }
 
 func (m *TransportInstance) Close() error {
