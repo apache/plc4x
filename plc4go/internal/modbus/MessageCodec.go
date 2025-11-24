@@ -128,7 +128,8 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			m.log.Debug().Msg("Detected NIL Packet (Keep-Alive). Discarding 6 bytes.")
 			if _, err := ti.Read(ctx, 6); err != nil {
 				m.log.Warn().Err(err).Msg("Error discarding NIL packet")
-				return nil, nil
+				// If we can't read, we are dead.
+				return nil, err
 			}
 
 			// Refresh num and loop
@@ -165,6 +166,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		checkBytes = header // Just the 6 bytes we have
 	}
 
+	// Perform Consistency Check
 	if !m.checkPacketConsistency(checkBytes) {
 		return m.handleDesync(ctx, "Sanity Check Failed", map[string]interface{}{
 			"data": utils.Base64Stringer(checkBytes),
@@ -241,9 +243,11 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		}
 
 		// Seems unparsable - log and discard
-		// If the packet PASSED checkPacketConsistency but failed parsing, it is likely a Valid MBAP
-		// with invalid content (e.g. unsupported function, bad data).
-		// We should DISCARD it to maintain sync, NOT trigger Desync Recovery.
+		// NOTE: If checkPacketConsistency PASSED, but Parse FAILED, it means the header
+		// structure is valid (Length, Proto, Func), but the Content is bad.
+		// We MUST discard this frame to advance the stream.
+		// We DO NOT call handleDesync here because we don't want to scan ahead;
+		// we just want to eat the bad packet and try the next one.
 		m.log.Warn().Err(err).
 			Stringer("data", utils.Base64Stringer(frameSlice)).
 			Uint32("packetSize", packetSize).
@@ -252,6 +256,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		// Discard the unparsable frame from the buffer
 		if _, discardErr := ti.Read(ctx, packetSize); discardErr != nil {
 			m.log.Debug().Err(discardErr).Uint32("packetSize", packetSize).Msg("error discarding unparsable frame")
+			return nil, discardErr
 		}
 
 		// Yield
@@ -382,7 +387,7 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 	// Get total available bytes
 	numBytesAvail, err := ti.GetNumBytesAvailableInBuffer()
 	if err != nil {
-		return nil, nil // Yield if we can't check buffer
+		return nil, err // Yield if we can't check buffer
 	}
 
 	// Create a logger with context
@@ -401,6 +406,7 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 		opLog.Trace().Msg("Small buffer desync. Discarding 1 byte.")
 		if _, err := ti.Read(ctx, 1); err != nil {
 			opLog.Debug().Err(err).Msg("Error reading byte during discard")
+			return nil, err // Return error to kill connection if we can't consume
 		}
 		return nil, nil
 	}
@@ -428,6 +434,7 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 			// Discard 'i' bytes to align the stream to this candidate
 			if _, err := ti.Read(ctx, i); err != nil {
 				opLog.Debug().Err(err).Msg("Error discarding garbage during recovery")
+				return nil, err // Return error to kill connection
 			}
 
 			// Yield. Next Receive() will pick up this valid header.
@@ -437,6 +444,13 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 
 	// CASE 3: Connection is unrecoverable with the tools we have...
 	// We scanned the entire available buffer and found NO valid candidates.
-	// The connection is sending garbage. Destroy it.
+	// The connection is sending garbage. Would be nice to destroy it, but DefaultCodec
+	// doesn't have any such ability. For now we'll just consume all available bytes
+	// and return to make sure we don't spin endlessly.
+	if _, err := ti.Read(ctx, numBytesAvail); err != nil {
+		opLog.Debug().Err(err).Msg("Error discarding garbage during recovery")
+		return nil, err // Return error to kill connection
+	}
+
 	return nil, fmt.Errorf("stream desynchronized: %d bytes of garbage with no valid MBAP header found", numBytesAvail)
 }
