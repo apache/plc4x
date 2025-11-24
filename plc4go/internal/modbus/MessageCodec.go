@@ -95,7 +95,10 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		}
 		return numBytesAvailable < 6
 	}); err != nil {
-		m.log.Debug().Err(err).Msg("error filling buffer")
+		if err != io.EOF {
+			m.log.Debug().Err(err).Msg("error filling buffer")
+		}
+		// Fall through on errors, we might have enough data...
 	}
 
 	// 2. Check buffer status
@@ -157,14 +160,16 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// MBAP SANITY CHECKS
 	// -------------------------------------------------------------------------
 
-	// We now peek up to 9 bytes to perform the full Consistency Check used in recovery.
-	// This catches "False Headers" (like the 04 Func example) immediately.
+	// We now peek up to 9 bytes (or whatever is available) to perform the full Consistency Check.
+	// IMPORTANT: If we have 8 bytes (Header + Unit + Func), we MUST pass all 8 bytes
+	// so that checkPacketConsistency can validate the Function Code and Length limits.
+	// If we only pass 6, it will skip the Function check and potentially accept huge lengths.
 	var checkBytes []byte
-	if numBytesAvail >= 9 {
-		checkBytes, _ = ti.PeekReadableBytes(ctx, 9)
-	} else {
-		checkBytes = header // Just the 6 bytes we have
+	peekLen := uint32(9)
+	if numBytesAvail < 9 {
+		peekLen = numBytesAvail
 	}
+	checkBytes, _ = ti.PeekReadableBytes(ctx, peekLen)
 
 	// Perform Consistency Check
 	if !m.checkPacketConsistency(checkBytes) {
@@ -397,13 +402,19 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 		Interface("desyncContext", fields).
 		Logger()
 
-	opLog.Warn().Msg("Desync detected at stream head.")
+	// Log on the way out to minimize log spam
+	dispMsg := ""
+	dispLevel := zerolog.WarnLevel
+	defer func() {
+		opLog.WithLevel(dispLevel).Msg("Desync detected at stream head: " + dispMsg)
+	}()
 
 	// CASE 1: Small Buffer (< 10 bytes).
 	// We don't have enough data to scan for a full header+function (need ~8-9 bytes min).
 	// We can't definitively say the stream is dead, so we just Discard 1 and Yield.
 	if numBytesAvail < 10 {
-		opLog.Trace().Msg("Small buffer desync. Discarding 1 byte.")
+		dispMsg = "Small buffer - Discard 1"
+		dispLevel = zerolog.DebugLevel
 		if _, err := ti.Read(ctx, 1); err != nil {
 			opLog.Debug().Err(err).Msg("Error reading byte during discard")
 			return nil, err // Return error to kill connection if we can't consume
@@ -429,7 +440,8 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 	for i := uint32(1); i <= limit; i++ {
 		// Use our robust consistency check on the slice starting at i
 		if m.checkPacketConsistency(allBytes[i:]) {
-			opLog.Debug().Uint32("offset", i).Msg("Found MBAP candidate in stream. Discarding garbage prefix.")
+			dispMsg = fmt.Sprintf("Found MBAP candidate at +%d", i)
+			dispLevel = zerolog.DebugLevel
 
 			// Discard 'i' bytes to align the stream to this candidate
 			if _, err := ti.Read(ctx, i); err != nil {
@@ -447,6 +459,8 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 	// The connection is sending garbage. Would be nice to destroy it, but DefaultCodec
 	// doesn't have any such ability. For now we'll just consume all available bytes
 	// and return to make sure we don't spin endlessly.
+	dispMsg = fmt.Sprintf("No MBAP candidate found. Discarding all (%d) available bytes", numBytesAvail)
+	dispLevel = zerolog.InfoLevel
 	if _, err := ti.Read(ctx, numBytesAvail); err != nil {
 		opLog.Debug().Err(err).Msg("Error discarding garbage during recovery")
 		return nil, err // Return error to kill connection
