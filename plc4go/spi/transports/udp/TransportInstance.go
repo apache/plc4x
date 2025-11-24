@@ -209,7 +209,7 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	}
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
-		if err := m.udpConn.SetReadDeadline(deadline); err != nil {
+		if err := m.udpConn.SetWriteDeadline(deadline); err != nil {
 			return errors.Wrap(err, "error setting read deadline")
 		}
 	}
