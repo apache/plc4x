@@ -423,17 +423,21 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 		}
 	}
 
-	// CASE 3: Connection is unrecoverable with the tools we have...
-	// We scanned the entire available buffer and found NO valid candidates.
-	// The connection is sending garbage. Would be nice to destroy it, but DefaultCodec
-	// doesn't have any such ability. For now we'll just consume all available bytes
-	// and return to make sure we don't spin endlessly.
-	dispMsg = fmt.Sprintf("No MBAP candidate found. Discarding all (%d) available bytes", numBytesAvail)
+	// CASE 3: We scanned the entire available buffer and found NO valid candidates.
+	// We want to keep the last 5 bytes, as they might be the start of a header
+	// (TransID[2] + ProtoID[2] + Len[1 here, 1 missing]) that completes in the
+	// next TCP packet of at least 1 byte.
+	bytesToDiscard := numBytesAvail
+	if numBytesAvail > 5 {
+		bytesToDiscard = numBytesAvail - 5
+	}
+
+	dispMsg = fmt.Sprintf("No MBAP candidate found. Discarding (%d) bytes, keeping 5-byte tail", bytesToDiscard)
 	dispLevel = zerolog.InfoLevel
-	if _, err := ti.Read(ctx, numBytesAvail); err != nil {
+	if _, err := ti.Read(ctx, bytesToDiscard); err != nil {
 		opLog.Debug().Err(err).Msg("Error discarding garbage during recovery")
 		return nil, err // Return error to kill connection
 	}
 
-	return nil, fmt.Errorf("stream desynchronized: %d bytes of garbage with no valid MBAP header found", numBytesAvail)
+	return nil, fmt.Errorf("stream desynchronized: discarded %d bytes of garbage", bytesToDiscard)
 }
