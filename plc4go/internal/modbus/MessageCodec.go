@@ -111,40 +111,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		return nil, fmt.Errorf("error getting buffer length")
 	}
 
-	// -------------------------------------------------------------------------
-	// Discard NIL Packets (Keep-Alives w/padding that leaked into stream)
-	// -------------------------------------------------------------------------
-	for {
-		if numBytesAvail < 6 {
-			break
-		}
-		header, err := ti.PeekReadableBytes(ctx, 6)
-		if err != nil {
-			m.log.Warn().Err(err).Msg("error peeking header")
-			return nil, nil
-		}
-
-		// Check for 6 bytes of zeros
-		if header[0] == 0 && header[1] == 0 && header[2] == 0 &&
-			header[3] == 0 && header[4] == 0 && header[5] == 0 {
-
-			m.log.Debug().Msg("Detected NIL Packet (Keep-Alive). Discarding 6 bytes.")
-			if _, err := ti.Read(ctx, 6); err != nil {
-				m.log.Warn().Err(err).Msg("Error discarding NIL packet")
-				// If we can't read, we are dead.
-				return nil, err
-			}
-
-			// Refresh num and loop
-			numBytesAvail, err = ti.GetNumBytesAvailableInBuffer()
-			if err != nil {
-				return nil, nil
-			}
-			continue
-		}
-		break
-	}
-
+	// Need at least 6 bytes for MBAP header
 	if numBytesAvail < 6 {
 		return nil, nil
 	}
@@ -178,13 +145,13 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		})
 	}
 
-	// Length field is big endian encoded WORD
-	payloadLength := (uint32(header[4]) << 8) + uint32(header[5])
-	packetSize := payloadLength + 6
-
 	// -------------------------------------------------------------------------
 	// PARSING
 	// -------------------------------------------------------------------------
+
+	// Length field is big endian encoded WORD
+	payloadLength := (uint32(header[4]) << 8) + uint32(header[5])
+	packetSize := payloadLength + 6
 
 	// Yield on TCP fragmentation
 	if numBytesAvail < packetSize {
@@ -432,6 +399,8 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 	// Scan Loop: Start at offset 1 (since offset 0 is known bad).
 	// We verify candidates up to the end of the buffer.
 	// We stop when we don't have enough bytes left to even check the Protocol ID (4 bytes).
+	// ... This deals with any gateway forwarding RTU CRC16 extra bytes or leaky kernels that
+	// shove TCP keep-alive Ethernet II frame padding bytes into the stream.
 	limit := uint32(0)
 	if numBytesAvail >= 4 {
 		limit = numBytesAvail - 4
