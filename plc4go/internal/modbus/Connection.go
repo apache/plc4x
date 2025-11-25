@@ -55,6 +55,10 @@ type Connection struct {
 	_options []options.WithOption // Used to pass them downstream
 }
 
+var (
+	_ spi.TransportInstanceExposer = (*Connection)(nil)
+)
+
 func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, connectionOptions map[string][]string, tagHandler spi.PlcTagHandler, _options ...options.WithOption) *Connection {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	connection := &Connection{

@@ -4237,7 +4237,7 @@ func (_c *MockRequestTransaction_String_Call) RunAndReturn(run func() string) *M
 
 // Submit provides a mock function for the type MockRequestTransaction
 func (_mock *MockRequestTransaction) Submit(operationInfo string, operation transactions.RequestTransactionRunnable) {
-	_mock.Called(operation)
+	_mock.Called(operationInfo, operation)
 	return
 }
 
@@ -4247,19 +4247,25 @@ type MockRequestTransaction_Submit_Call struct {
 }
 
 // Submit is a helper method to define mock.On call
+//   - operationInfo string
 //   - operation transactions.RequestTransactionRunnable
-func (_e *MockRequestTransaction_Expecter) Submit(operation interface{}) *MockRequestTransaction_Submit_Call {
-	return &MockRequestTransaction_Submit_Call{Call: _e.mock.On("Submit", operation)}
+func (_e *MockRequestTransaction_Expecter) Submit(operationInfo interface{}, operation interface{}) *MockRequestTransaction_Submit_Call {
+	return &MockRequestTransaction_Submit_Call{Call: _e.mock.On("Submit", operationInfo, operation)}
 }
 
-func (_c *MockRequestTransaction_Submit_Call) Run(run func(operation transactions.RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
+func (_c *MockRequestTransaction_Submit_Call) Run(run func(operationInfo string, operation transactions.RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 transactions.RequestTransactionRunnable
+		var arg0 string
 		if args[0] != nil {
-			arg0 = args[0].(transactions.RequestTransactionRunnable)
+			arg0 = args[0].(string)
+		}
+		var arg1 transactions.RequestTransactionRunnable
+		if args[1] != nil {
+			arg1 = args[1].(transactions.RequestTransactionRunnable)
 		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -4270,7 +4276,7 @@ func (_c *MockRequestTransaction_Submit_Call) Return() *MockRequestTransaction_S
 	return _c
 }
 
-func (_c *MockRequestTransaction_Submit_Call) RunAndReturn(run func(operation transactions.RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
+func (_c *MockRequestTransaction_Submit_Call) RunAndReturn(run func(operationInfo string, operation transactions.RequestTransactionRunnable)) *MockRequestTransaction_Submit_Call {
 	_c.Run(run)
 	return _c
 }

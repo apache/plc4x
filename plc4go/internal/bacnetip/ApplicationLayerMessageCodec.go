@@ -56,6 +56,10 @@ type ApplicationLayerMessageCodec struct {
 	log zerolog.Logger
 }
 
+var (
+	_ spi.TransportInstanceExposer = (*MessageCodec)(nil)
+)
+
 func NewApplicationLayerMessageCodec(localLog zerolog.Logger, udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, remoteAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
 	// TODO: currently this is done by the BIP down below
 	// Have the transport create a new transport-instance.

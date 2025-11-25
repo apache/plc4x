@@ -94,6 +94,17 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 	return nil
 }
 
+func (m *TransportInstance) Reset() {
+	if m.tcpConn == nil {
+		m.log.Trace().Msg("No connection to reset")
+		return
+	}
+	_ = m.tcpConn.SetReadDeadline(time.Now().Add(1))
+	_, _ = m.tcpConn.Read(make([]byte, 4096))
+	m.reader = bufio.NewReader(m.tcpConn)
+	m.log.Trace().Msg("Connection reset")
+}
+
 func (m *TransportInstance) Close() error {
 	defer utils.StopWarn(m.log)()
 	m.stateChangeMutex.Lock()

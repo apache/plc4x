@@ -50,7 +50,7 @@ type connectionContainer struct {
 
 type connectionRequest struct {
 	ctx      context.Context
-	connChan chan plc4go.PlcConnection
+	connChan chan *plcConnectionLease
 	errChan  chan error
 }
 
@@ -153,11 +153,11 @@ func (c *connectionContainer) addListener(listener connectionListener) {
 	c.listeners = append(c.listeners, listener)
 }
 
-func (c *connectionContainer) lease(ctx context.Context) (chan plc4go.PlcConnection, chan error) {
+func (c *connectionContainer) lease(ctx context.Context) (chan *plcConnectionLease, chan error) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	connectionChan := make(chan plc4go.PlcConnection, 1)
+	connectionChan := make(chan *plcConnectionLease, 1)
 	errorChan := make(chan error, 1)
 	// Check if the connection is available.
 	switch c.state {

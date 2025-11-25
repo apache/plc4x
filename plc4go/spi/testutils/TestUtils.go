@@ -34,7 +34,6 @@ import (
 
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
-	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -42,6 +41,7 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transactions"

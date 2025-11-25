@@ -45,4 +45,6 @@ type TransportInstance interface {
 	Read(ctx context.Context, numBytes uint32) ([]byte, error)
 	// Write writes data to the transport
 	Write(ctx context.Context, data []byte) error
+	// Reset resets the transport instance
+	Reset()
 }

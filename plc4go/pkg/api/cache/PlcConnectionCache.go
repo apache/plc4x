@@ -32,6 +32,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
@@ -191,6 +192,10 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 			Msg("Successfully got lease to connection")
 		if c.tracer != nil {
 			c.tracer.AddTransactionalTrace(txId, "get-connection", "success")
+		}
+		if tie, ok := conn.connection.(spi.TransportInstanceExposer); ok {
+			c.log.Trace().Msg("Resetting transport instance")
+			tie.GetTransportInstance().Reset()
 		}
 		return conn, nil
 

@@ -39,6 +39,7 @@ import (
 //go:generate go tool plc4xGenerator -type=Connection
 type Connection struct {
 	_default.DefaultConnection
+
 	messageCodec *MessageCodec
 	subscribers  []*Subscriber
 
@@ -60,6 +61,10 @@ type Connection struct {
 	log      zerolog.Logger       `ignore:"true"`
 	_options []options.WithOption `ignore:"true"` // Used to pass them downstream
 }
+
+var (
+	_ spi.TransportInstanceExposer = (*Connection)(nil)
+)
 
 func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
