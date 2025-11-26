@@ -2,6 +2,7 @@ package transports
 
 import (
 	stdErrors "errors"
+	"fmt"
 	"syscall"
 )
 
@@ -20,6 +21,54 @@ const (
 
 // TransportErrorHandler is invoked when callers classify a transport error.
 type TransportErrorHandler func(kind TransportErrorKind, err error)
+
+// TransportError wraps an underlying error with its classified transport severity.
+type TransportError struct {
+	kind TransportErrorKind
+	err  error
+}
+
+// NewTransportError creates a new TransportError with the given kind and cause.
+func NewTransportError(kind TransportErrorKind, err error) error {
+	if err == nil {
+		return nil
+	}
+	var existing *TransportError
+	if stdErrors.As(err, &existing) {
+		return err
+	}
+	return &TransportError{kind: kind, err: err}
+}
+
+// AsTransportError retrieves a TransportError from the provided error chain.
+func AsTransportError(err error) (*TransportError, bool) {
+	if err == nil {
+		return nil, false
+	}
+	var transportErr *TransportError
+	if stdErrors.As(err, &transportErr) {
+		return transportErr, true
+	}
+	return nil, false
+}
+
+// Error implements the error interface.
+func (t *TransportError) Error() string {
+	if t.err == nil {
+		return fmt.Sprintf("transport error (%s)", t.kind.String())
+	}
+	return fmt.Sprintf("transport error (%s): %v", t.kind.String(), t.err)
+}
+
+// Unwrap exposes the underlying cause.
+func (t *TransportError) Unwrap() error {
+	return t.err
+}
+
+// Kind reports the TransportErrorKind associated with the error.
+func (t *TransportError) Kind() TransportErrorKind {
+	return t.kind
+}
 
 // IsFatal reports whether the error kind signals an unusable transport.
 func (k TransportErrorKind) IsFatal() bool {

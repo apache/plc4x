@@ -83,6 +83,14 @@ func (m *MessageCodec) isFatalTransportError(err error) bool {
 	return m.classifyTransportError(err) == transports.TransportErrorFatal
 }
 
+func (m *MessageCodec) wrapFatalTransportError(err error, msg string) error {
+	if err == nil {
+		return nil
+	}
+	// TODO: Any additional context?
+	return transports.NewTransportError(transports.TransportErrorFatal, errors.Wrap(err, msg))
+}
+
 func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
 	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending message")
 	// Cast the message to the correct type of struct
@@ -119,7 +127,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	}); err != nil {
 		if m.isFatalTransportError(err) {
 			m.log.Debug().Err(err).Msg("error filling buffer")
-			return nil, errors.Wrap(err, "error filling buffer")
+			return nil, m.wrapFatalTransportError(err, "error filling buffer")
 		}
 		// Fall through on non-fatal errors, we might have enough data...
 	}
@@ -133,7 +141,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			return nil, nil
 		}
 		m.log.Warn().Err(err).Msg("error getting buffer length")
-		return nil, errors.Wrap(err, "error getting buffer length")
+		return nil, m.wrapFatalTransportError(err, "error getting buffer length")
 	}
 
 	// Need at least 6 bytes for MBAP header
@@ -146,7 +154,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	if err != nil {
 		m.log.Warn().Err(err).Msg("error peeking header")
 		if m.isFatalTransportError(err) {
-			return nil, errors.Wrap(err, "error peeking header")
+			return nil, m.wrapFatalTransportError(err, "error peeking header")
 		}
 		return nil, nil
 	}
@@ -200,7 +208,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	if err != nil {
 		m.log.Warn().Err(err).Msg("error peeking frame slice")
 		if m.isFatalTransportError(err) {
-			return nil, errors.Wrap(err, "error peeking frame slice")
+			return nil, m.wrapFatalTransportError(err, "error peeking frame slice")
 		}
 		return nil, nil
 	}

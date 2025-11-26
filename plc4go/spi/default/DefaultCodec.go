@@ -22,7 +22,6 @@ package _default
 import (
 	"context"
 	stdErrors "errors"
-	"fmt"
 	"runtime/debug"
 	"slices"
 	"sync"
@@ -552,7 +551,7 @@ func (m *defaultCodec) handleTransportError(workerLog zerolog.Logger, err error)
 	switch kind {
 	case transports.TransportErrorTransient:
 		workerLog.Debug().Err(err).Msg("transient transport error; keeping worker alive")
-		m.emitTransportError(kind, fmt.Errorf("transport error (%s): %w", kind.String(), err))
+		m.emitTransportError(kind, transports.NewTransportError(kind, err))
 		return true
 	case transports.TransportErrorRetryable:
 		workerLog.Warn().Err(err).Msg("retryable transport error; resetting transport instance")
@@ -564,11 +563,11 @@ func (m *defaultCodec) handleTransportError(workerLog zerolog.Logger, err error)
 			}()
 			m.transportInstance.Reset()
 		}
-		m.emitTransportError(kind, fmt.Errorf("transport error (%s): %w", kind.String(), err))
+		m.emitTransportError(kind, transports.NewTransportError(kind, err))
 		return true
 	case transports.TransportErrorFatal:
 		workerLog.Error().Err(err).Msg("fatal transport error; shutting down codec")
-		wrappedErr := fmt.Errorf("transport error (%s): %w", kind.String(), err)
+		wrappedErr := transports.NewTransportError(kind, err)
 		m.failAllExpectations(wrappedErr)
 		if m.transportInstance != nil {
 			if closeErr := m.transportInstance.Close(); closeErr != nil {
@@ -583,7 +582,7 @@ func (m *defaultCodec) handleTransportError(workerLog zerolog.Logger, err error)
 		return false
 	default:
 		workerLog.Error().Err(err).Msg("unexpected transport error classification; treating as fatal")
-		wrappedErr := fmt.Errorf("transport error (%s): %w", kind.String(), err)
+		wrappedErr := transports.NewTransportError(transports.TransportErrorFatal, err)
 		m.failAllExpectations(wrappedErr)
 		if m.transportInstance != nil {
 			if closeErr := m.transportInstance.Close(); closeErr != nil {

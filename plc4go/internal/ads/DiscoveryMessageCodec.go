@@ -28,7 +28,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/protocols/ads/discovery/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/default"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -72,6 +72,14 @@ func (m *DiscoveryMessageCodec) isFatalTransportError(err error) bool {
 	return m.classifyTransportError(err) == transports.TransportErrorFatal
 }
 
+func (m *DiscoveryMessageCodec) wrapFatalTransportError(err error, msg string) error {
+	if err == nil {
+		return nil
+	}
+	// TODO: Any additional context?
+	return transports.NewTransportError(transports.TransportErrorFatal, errors.Wrap(err, msg))
+}
+
 func (m *DiscoveryMessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
 	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending message")
 	// Cast the message to the correct type of struct
@@ -98,7 +106,7 @@ func (m *DiscoveryMessageCodec) Receive(ctx context.Context) (spi.Message, error
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
 			if m.isFatalTransportError(err) {
-				return nil, errors.Wrap(err, "error peeking header")
+				return nil, m.wrapFatalTransportError(err, "error peeking header")
 			}
 			return nil, nil
 		}
@@ -112,7 +120,7 @@ func (m *DiscoveryMessageCodec) Receive(ctx context.Context) (spi.Message, error
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error reading packet data")
 			if m.isFatalTransportError(err) {
-				return nil, errors.Wrap(err, "error reading packet data")
+				return nil, m.wrapFatalTransportError(err, "error reading packet data")
 			}
 			return nil, nil
 		}
@@ -127,7 +135,7 @@ func (m *DiscoveryMessageCodec) Receive(ctx context.Context) (spi.Message, error
 	} else if err != nil {
 		m.log.Warn().Err(err).Msg("Got error reading")
 		if m.isFatalTransportError(err) {
-			return nil, errors.Wrap(err, "error getting readable bytes")
+			return nil, m.wrapFatalTransportError(err, "error getting readable bytes")
 		}
 		return nil, nil
 	}

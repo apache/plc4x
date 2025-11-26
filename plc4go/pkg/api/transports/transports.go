@@ -20,14 +20,20 @@
 package transports
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
+	spiTransports "github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/serial"
 	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )
+
+// Re-exported transport error types for easier access wthout a long TransportInstanceExposer access path
+// that requires knowledge of the internal structure of the transport packages.
+type TransportError = spiTransports.TransportError
+type TransportErrorKind = spiTransports.TransportErrorKind
 
 func RegisterTcpTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
 	driverManager.(spi.TransportAware).RegisterTransport(tcp.NewTransport(converter.WithOptionToInternal(_options...)...))
