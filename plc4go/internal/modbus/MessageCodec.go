@@ -21,6 +21,7 @@ package modbus
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 	"io"
 
@@ -77,7 +78,7 @@ func (m *MessageCodec) classifyTransportError(err error) transports.TransportErr
 }
 
 func (m *MessageCodec) isFatalTransportError(err error) bool {
-	if err == nil || err == io.EOF {
+	if err == nil || stdErrors.Is(err, io.EOF) {
 		return false
 	}
 	return m.classifyTransportError(err) == transports.TransportErrorFatal
@@ -136,7 +137,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	numBytesAvail, err := ti.GetNumBytesAvailableInBuffer()
 	if err != nil && numBytesAvail < 6 {
 		// Yield if we can't check buffer
-		if err == io.EOF {
+		if stdErrors.Is(err, io.EOF) {
 			m.log.Debug().Msg("transport buffer exhausted while checking availability")
 			return nil, nil
 		}
@@ -391,7 +392,7 @@ func (m *MessageCodec) checkPacketConsistency(data []byte) bool {
 // handleDesync handles stream realignment when an invalid header is detected at the head.
 // It strictly scans the available buffer for a valid MBAP header using checkPacketConsistency.
 // If one is found, it realigns the stream.
-// If NO valid header is found in the *entire* buffer, it treats the connection as dead.
+// If NO valid header is found in the *entire* buffer, it trims the garbage and waits for more data.
 func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields map[string]interface{}) (spi.Message, error) {
 	ti := m.GetTransportInstance()
 
@@ -478,5 +479,5 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 		return nil, err // Return error to kill connection
 	}
 
-	return nil, fmt.Errorf("stream desynchronized: discarded %d bytes of garbage", bytesToDiscard)
+	return nil, nil
 }
