@@ -30,6 +30,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	stdErrors "errors"
+
 	"github.com/gopacket/gopacket"
 	"github.com/gopacket/gopacket/layers"
 	"github.com/gopacket/gopacket/pcap"
@@ -207,4 +209,17 @@ func (m *TransportInstance) SetReadDeadline(deadline time.Time) error {
 
 func (m *TransportInstance) String() string {
 	return fmt.Sprintf("pcap:%s(%s)x%f", m.transportFile, m.portRange, m.speedFactor)
+}
+
+func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKind {
+	if err == nil {
+		return transports.TransportErrorUnknown
+	}
+	if stdErrors.Is(err, io.EOF) {
+		return transports.TransportErrorFatal
+	}
+	if stdErrors.Is(err, context.Canceled) || stdErrors.Is(err, context.DeadlineExceeded) {
+		return transports.TransportErrorTransient
+	}
+	return transports.TransportErrorFatal
 }

@@ -23,10 +23,14 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
+
+	stdErrors "errors"
 
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
@@ -244,4 +248,39 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 
 func (m *TransportInstance) String() string {
 	return fmt.Sprintf("udp:%s->%s", m.LocalAddress, m.RemoteAddress)
+}
+
+func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKind {
+	if err == nil {
+		return transports.TransportErrorUnknown
+	}
+	if stdErrors.Is(err, io.EOF) || stdErrors.Is(err, net.ErrClosed) || stdErrors.Is(err, syscall.EPIPE) {
+		return transports.TransportErrorFatal
+	}
+	if netErr, ok := err.(net.Error); ok {
+		if netErr.Timeout() {
+			return transports.TransportErrorRetryable
+		}
+	}
+	if transports.IsTransientSyscallError(err) {
+		return transports.TransportErrorTransient
+	}
+	var opErr *net.OpError
+	if stdErrors.As(err, &opErr) {
+		if opErr.Timeout() {
+			return transports.TransportErrorRetryable
+		}
+		if transports.IsTransientSyscallError(opErr.Err) {
+			return transports.TransportErrorTransient
+		}
+		if syscallErr, ok := opErr.Err.(syscall.Errno); ok {
+			switch syscallErr {
+			case syscall.ECONNRESET, syscall.ECONNREFUSED, syscall.ENETDOWN, syscall.ENETUNREACH:
+				return transports.TransportErrorFatal
+			case syscall.ETIMEDOUT:
+				return transports.TransportErrorRetryable
+			}
+		}
+	}
+	return transports.TransportErrorFatal
 }

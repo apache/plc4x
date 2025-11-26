@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	"hash/crc32"
+	"reflect"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -75,6 +76,16 @@ func NewMessageCodec(transportInstance transports.TransportInstance, _options ..
 
 func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
+}
+
+func (m *MessageCodec) SetTransportErrorHandler(handler transports.TransportErrorHandler) {
+	if m.DefaultCodec == nil {
+		return
+	}
+	if value := reflect.ValueOf(m.DefaultCodec); value.Kind() == reflect.Pointer && value.IsNil() {
+		return
+	}
+	m.DefaultCodec.SetTransportErrorHandler(handler)
 }
 
 func (m *MessageCodec) Connect(ctx context.Context) error {

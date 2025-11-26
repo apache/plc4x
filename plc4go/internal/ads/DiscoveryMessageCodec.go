@@ -21,6 +21,7 @@ package ads
 
 import (
 	"context"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -54,6 +55,23 @@ func (m *DiscoveryMessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
+func (m *DiscoveryMessageCodec) classifyTransportError(err error) transports.TransportErrorKind {
+	if err == nil {
+		return transports.TransportErrorUnknown
+	}
+	if transport := m.GetTransportInstance(); transport != nil {
+		return transport.ClassifyError(err)
+	}
+	return transports.TransportErrorUnknown
+}
+
+func (m *DiscoveryMessageCodec) isFatalTransportError(err error) bool {
+	if err == nil || err == io.EOF {
+		return false
+	}
+	return m.classifyTransportError(err) == transports.TransportErrorFatal
+}
+
 func (m *DiscoveryMessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
 	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending message")
 	// Cast the message to the correct type of struct
@@ -79,7 +97,9 @@ func (m *DiscoveryMessageCodec) Receive(ctx context.Context) (spi.Message, error
 		data, err := m.GetTransportInstance().PeekReadableBytes(ctx, 6)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")
-			// TODO: Possibly clean up ...
+			if m.isFatalTransportError(err) {
+				return nil, errors.Wrap(err, "error peeking header")
+			}
 			return nil, nil
 		}
 		// Get the size of the entire packet little endian plus size of header
@@ -90,7 +110,10 @@ func (m *DiscoveryMessageCodec) Receive(ctx context.Context) (spi.Message, error
 		}
 		data, err = m.GetTransportInstance().Read(ctx, packetSize)
 		if err != nil {
-			// TODO: Possibly clean up ...
+			m.log.Warn().Err(err).Msg("error reading packet data")
+			if m.isFatalTransportError(err) {
+				return nil, errors.Wrap(err, "error reading packet data")
+			}
 			return nil, nil
 		}
 		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
@@ -103,6 +126,9 @@ func (m *DiscoveryMessageCodec) Receive(ctx context.Context) (spi.Message, error
 		return tcpPacket, nil
 	} else if err != nil {
 		m.log.Warn().Err(err).Msg("Got error reading")
+		if m.isFatalTransportError(err) {
+			return nil, errors.Wrap(err, "error getting readable bytes")
+		}
 		return nil, nil
 	}
 	// TODO: maybe we return here a not enough error error

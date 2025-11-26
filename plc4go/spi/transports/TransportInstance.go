@@ -47,4 +47,7 @@ type TransportInstance interface {
 	Write(ctx context.Context, data []byte) error
 	// Reset resets the transport instance
 	Reset()
+
+	// ClassifyError maps a transport-specific error to a severity to support recovery decisions.
+	ClassifyError(err error) TransportErrorKind
 }

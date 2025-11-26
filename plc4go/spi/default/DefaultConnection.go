@@ -21,6 +21,7 @@ package _default
 
 import (
 	"context"
+	"reflect"
 	"sync"
 	"sync/atomic"
 
@@ -111,13 +112,42 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 	}
 
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	return &defaultConnection{
+	conn := &defaultConnection{
 		DefaultConnectionRequirements: requirements,
 		tagHandler:                    tagHandler,
 		valueHandler:                  valueHandler,
 
 		log: customLogger,
 	}
+
+	var codec spi.MessageCodec
+	if requirements != nil {
+		codec = requirements.GetMessageCodec()
+	}
+	if codec != nil {
+		if codecValue := reflect.ValueOf(codec); codecValue.Kind() == reflect.Pointer && codecValue.IsNil() {
+			codec = nil
+		}
+	}
+	if codec != nil {
+		if setter, ok := codec.(spi.TransportErrorHandlerSetter); ok {
+			setter.SetTransportErrorHandler(func(kind transports.TransportErrorKind, err error) {
+				switch kind {
+				case transports.TransportErrorFatal:
+					conn.log.Error().Err(err).Msg("transport reported fatal error; invalidating connection")
+					conn.Invalidate()
+				case transports.TransportErrorRetryable:
+					conn.log.Warn().Err(err).Msg("transport reported retryable error")
+				case transports.TransportErrorTransient:
+					conn.log.Debug().Err(err).Msg("transport reported transient error")
+				default:
+					conn.log.Warn().Err(err).Msg("transport reported unknown error classification")
+				}
+			})
+		}
+	}
+
+	return conn
 }
 
 func (d *defaultConnection) SetConnected(connected bool) {

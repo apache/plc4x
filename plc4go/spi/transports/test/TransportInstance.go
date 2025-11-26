@@ -23,6 +23,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/hex"
+	stdErrors "errors"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -324,6 +325,20 @@ func (m *TransportInstance) Reset() {
 
 func (m *TransportInstance) String() string {
 	return "test"
+}
+
+// ClassifyError maps test-transport specific error values to the shared severity enum.
+func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKind {
+	if err == nil {
+		return transports.TransportErrorUnknown
+	}
+	if stdErrors.Is(err, context.Canceled) {
+		return transports.TransportErrorTransient
+	}
+	if stdErrors.Is(err, context.DeadlineExceeded) || stdErrors.Is(err, bufio.ErrBufferFull) {
+		return transports.TransportErrorRetryable
+	}
+	return transports.TransportErrorFatal
 }
 
 func (m *TransportInstance) availableBytes() uint32 {
