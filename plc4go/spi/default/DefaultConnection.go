@@ -27,7 +27,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -51,6 +51,7 @@ type DefaultConnection interface {
 	spi.TransportInstanceExposer
 	spi.HandlerExposer
 	SetConnected(connected bool)
+	IsInvalidated() bool
 }
 
 // NewDefaultConnection is the factory for a DefaultConnection
@@ -87,6 +88,7 @@ type defaultConnection struct {
 	DefaultConnectionRequirements `ignore:"true"`
 	// connected indicates if a connection is connected
 	connected    atomic.Bool
+	invalidated  atomic.Bool
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 
@@ -121,6 +123,9 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 func (d *defaultConnection) SetConnected(connected bool) {
 	d.log.Trace().Bool("connected", connected).Msg("set connected")
 	d.connected.Store(connected)
+	if connected {
+		d.invalidated.Store(false)
+	}
 }
 
 func (d *defaultConnection) Connect(ctx context.Context) error {
@@ -155,14 +160,31 @@ func (d *defaultConnection) Close() error {
 
 func (d *defaultConnection) IsConnected() bool {
 	// TODO: should we check here if the transport is connected?
-	return d.connected.Load()
+	return d.connected.Load() && !d.invalidated.Load()
 }
 
 func (d *defaultConnection) Ping(_ context.Context) error {
+	if d.invalidated.Load() {
+		return errors.New("connection has been invalidated")
+	}
 	if !d.DefaultConnectionRequirements.IsConnected() {
 		return errors.New("not connected")
 	}
 	return nil
+}
+
+func (d *defaultConnection) Invalidate() {
+	if d.invalidated.Swap(true) {
+		return
+	}
+	d.log.Debug().Msg("invalidating connection")
+	if err := d.Close(); err != nil {
+		d.log.Warn().Err(err).Msg("error closing invalidated connection")
+	}
+}
+
+func (d *defaultConnection) IsInvalidated() bool {
+	return d.invalidated.Load()
 }
 
 func (d *defaultConnection) GetMetadata() apiModel.PlcConnectionMetadata {

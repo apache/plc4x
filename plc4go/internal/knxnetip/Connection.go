@@ -29,6 +29,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/pkg/errors"
@@ -141,6 +142,8 @@ type Connection struct {
 	passLogToModel bool
 	log            zerolog.Logger
 	_options       []options.WithOption // Used to pass them downstream
+
+	invalidated atomic.Bool
 }
 
 var (
@@ -230,6 +233,9 @@ func (m *Connection) GetTracer() tracer.Tracer {
 }
 
 func (m *Connection) Connect(ctx context.Context) error {
+	// Reset invalidation state before we start a new connection attempt.
+	m.invalidated.Store(false)
+
 	// Open the UDP Connection
 	err := m.messageCodec.Connect(ctx)
 	if err != nil {
@@ -365,6 +371,7 @@ func (m *Connection) Connect(ctx context.Context) error {
 		return m.doSomethingAndClose(func() error { return errors.New("this device doesn't support tunneling") })
 	}
 
+	m.invalidated.Store(false)
 	return nil
 }
 
@@ -420,11 +427,28 @@ func (m *Connection) IsConnected() bool {
 }
 
 func (m *Connection) Ping(ctx context.Context) error {
+	if m.IsInvalidated() {
+		return errors.New("connection has been invalidated")
+	}
 	// Send the connection state request
 	if _, err := m.sendConnectionStateRequest(ctx); err != nil {
 		return errors.Wrap(err, "got an error")
 	}
 	return nil
+}
+
+func (m *Connection) Invalidate() {
+	if m.invalidated.Swap(true) {
+		return
+	}
+	m.log.Debug().Msg("invalidating connection")
+	if err := m.Close(); err != nil {
+		m.log.Warn().Err(err).Msg("error closing invalidated connection")
+	}
+}
+
+func (m *Connection) IsInvalidated() bool {
+	return m.invalidated.Load()
 }
 
 func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
