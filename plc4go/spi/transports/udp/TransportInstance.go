@@ -254,7 +254,7 @@ func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKi
 	if err == nil {
 		return transports.TransportErrorUnknown
 	}
-	if stdErrors.Is(err, io.EOF) || stdErrors.Is(err, net.ErrClosed) || stdErrors.Is(err, syscall.EPIPE) {
+	if transports.ErrorIs(err, io.EOF) || transports.ErrorIs(err, net.ErrClosed) || transports.ErrorIs(err, syscall.EPIPE) {
 		return transports.TransportErrorFatal
 	}
 	if netErr, ok := err.(net.Error); ok {

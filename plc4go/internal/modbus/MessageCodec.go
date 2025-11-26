@@ -21,7 +21,6 @@ package modbus
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 	"io"
 
@@ -78,7 +77,7 @@ func (m *MessageCodec) classifyTransportError(err error) transports.TransportErr
 }
 
 func (m *MessageCodec) isFatalTransportError(err error) bool {
-	if err == nil || stdErrors.Is(err, io.EOF) {
+	if err == nil || isEOF(err) {
 		return false
 	}
 	return m.classifyTransportError(err) == transports.TransportErrorFatal
@@ -90,6 +89,13 @@ func (m *MessageCodec) wrapFatalTransportError(err error, msg string) error {
 	}
 	// TODO: Any additional context?
 	return transports.NewTransportError(transports.TransportErrorFatal, errors.Wrap(err, msg))
+}
+
+func isEOF(err error) (matched bool) {
+	if err == nil {
+		return false
+	}
+	return transports.ErrorIs(err, io.EOF)
 }
 
 func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
@@ -137,7 +143,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	numBytesAvail, err := ti.GetNumBytesAvailableInBuffer()
 	if err != nil && numBytesAvail < 6 {
 		// Yield if we can't check buffer
-		if stdErrors.Is(err, io.EOF) {
+		if isEOF(err) {
 			m.log.Debug().Msg("transport buffer exhausted while checking availability")
 			return nil, nil
 		}

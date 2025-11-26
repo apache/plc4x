@@ -29,8 +29,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	stdErrors "errors"
-
 	"github.com/jacobsa/go-serial/serial"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -165,7 +163,7 @@ func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKi
 	if transports.IsTransientSyscallError(err) {
 		return transports.TransportErrorTransient
 	}
-	if stdErrors.Is(err, io.EOF) {
+	if transports.ErrorIs(err, io.EOF) {
 		return transports.TransportErrorFatal
 	}
 	lower := strings.ToLower(err.Error())

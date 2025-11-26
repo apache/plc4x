@@ -22,7 +22,6 @@ package ads
 import (
 	"context"
 	"encoding/binary"
-	stdErrors "errors"
 	"io"
 
 	"github.com/pkg/errors"
@@ -84,7 +83,7 @@ func (m *MessageCodec) classifyTransportError(err error) transports.TransportErr
 }
 
 func (m *MessageCodec) isFatalTransportError(err error) bool {
-	if err == nil || stdErrors.Is(err, io.EOF) {
+	if err == nil || transports.ErrorIs(err, io.EOF) {
 		return false
 	}
 	return m.classifyTransportError(err) == transports.TransportErrorFatal

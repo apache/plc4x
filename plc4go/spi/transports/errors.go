@@ -70,6 +70,19 @@ func (t *TransportError) Kind() TransportErrorKind {
 	return t.kind
 }
 
+// ErrorIs mirrors errors.Is but guards against panics triggered by improperly constructed error values.
+func ErrorIs(err error, target error) (matched bool) {
+	if err == nil || target == nil {
+		return false
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			matched = false
+		}
+	}()
+	return stdErrors.Is(err, target)
+}
+
 // IsFatal reports whether the error kind signals an unusable transport.
 func (k TransportErrorKind) IsFatal() bool {
 	return k == TransportErrorFatal
