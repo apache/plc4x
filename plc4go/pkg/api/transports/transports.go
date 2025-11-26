@@ -30,19 +30,39 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )
 
-// Re-exported transport error types for easier access wthout a long TransportInstanceExposer access path
-// that requires knowledge of the internal structure of the transport packages.
+// TransportError exposes the SPI transport error wrapper on the public API so callers can perform
+// errors.As checks and inspect transport severity without importing SPI internals.
 type TransportError = spiTransports.TransportError
+
+// TransportErrorKind mirrors the SPI severity enumeration so API users can make decisions based on
+// transport error classification.
 type TransportErrorKind = spiTransports.TransportErrorKind
 
+const (
+	// TransportErrorUnknown represents an error the transport could not classify; treat as fatal when unsure.
+	TransportErrorUnknown TransportErrorKind = spiTransports.TransportErrorUnknown
+
+	// TransportErrorTransient signals a short-lived transport hiccup that usually succeeds if re-tried immediately.
+	TransportErrorTransient TransportErrorKind = spiTransports.TransportErrorTransient
+
+	// TransportErrorRetryable indicates the caller should retry the operation after resetting or reconnecting the transport.
+	TransportErrorRetryable TransportErrorKind = spiTransports.TransportErrorRetryable
+
+	// TransportErrorFatal marks the transport as unusable for further work; callers must tear down and rebuild the connection.
+	TransportErrorFatal TransportErrorKind = spiTransports.TransportErrorFatal
+)
+
+// RegisterTcpTransport registers the TCP transport implementation with the supplied driver manager using the provided options.
 func RegisterTcpTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
 	driverManager.(spi.TransportAware).RegisterTransport(tcp.NewTransport(converter.WithOptionToInternal(_options...)...))
 }
 
+// RegisterUdpTransport registers the UDP transport implementation with the supplied driver manager using the provided options.
 func RegisterUdpTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
 	driverManager.(spi.TransportAware).RegisterTransport(udp.NewTransport(converter.WithOptionToInternal(_options...)...))
 }
 
+// RegisterSerialTransport registers the serial transport implementation with the supplied driver manager using the provided options.
 func RegisterSerialTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
 	driverManager.(spi.TransportAware).RegisterTransport(serial.NewTransport(converter.WithOptionToInternal(_options...)...))
 }
