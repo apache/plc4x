@@ -264,7 +264,7 @@ func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKi
 		return transports.TransportErrorTransient
 	}
 	var opErr *net.OpError
-	if transports.ErrorAs(err, &opErr) {
+	if transports.ErrorAs(err, &opErr) && opErr != nil {
 		if opErr.Timeout() {
 			return transports.TransportErrorRetryable
 		}

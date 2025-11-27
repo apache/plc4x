@@ -23,7 +23,6 @@ import (
 	"bufio"
 	"context"
 	"encoding/hex"
-	stdErrors "errors"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -332,10 +331,10 @@ func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKi
 	if err == nil {
 		return transports.TransportErrorUnknown
 	}
-	if stdErrors.Is(err, context.Canceled) {
+	if transports.ErrorIs(err, context.Canceled) {
 		return transports.TransportErrorTransient
 	}
-	if stdErrors.Is(err, context.DeadlineExceeded) || stdErrors.Is(err, bufio.ErrBufferFull) {
+	if transports.ErrorIs(err, context.DeadlineExceeded) || transports.ErrorIs(err, bufio.ErrBufferFull) {
 		return transports.TransportErrorRetryable
 	}
 	return transports.TransportErrorFatal

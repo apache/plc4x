@@ -30,8 +30,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	stdErrors "errors"
-
 	"github.com/gopacket/gopacket"
 	"github.com/gopacket/gopacket/layers"
 	"github.com/gopacket/gopacket/pcap"
@@ -215,10 +213,10 @@ func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKi
 	if err == nil {
 		return transports.TransportErrorUnknown
 	}
-	if stdErrors.Is(err, io.EOF) {
+	if transports.ErrorIs(err, io.EOF) {
 		return transports.TransportErrorFatal
 	}
-	if stdErrors.Is(err, context.Canceled) || stdErrors.Is(err, context.DeadlineExceeded) {
+	if transports.ErrorIs(err, context.Canceled) || transports.ErrorIs(err, context.DeadlineExceeded) {
 		return transports.TransportErrorTransient
 	}
 	return transports.TransportErrorFatal
