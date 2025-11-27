@@ -30,8 +30,6 @@ import (
 	"syscall"
 	"time"
 
-	stdErrors "errors"
-
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -266,7 +264,7 @@ func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKi
 		return transports.TransportErrorTransient
 	}
 	var opErr *net.OpError
-	if stdErrors.As(err, &opErr) {
+	if transports.ErrorAs(err, &opErr) {
 		if opErr.Timeout() {
 			return transports.TransportErrorRetryable
 		}

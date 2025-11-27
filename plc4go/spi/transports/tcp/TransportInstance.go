@@ -30,8 +30,6 @@ import (
 	"syscall"
 	"time"
 
-	stdErrors "errors"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
@@ -180,7 +178,7 @@ func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKi
 		return transports.TransportErrorTransient
 	}
 	var opErr *net.OpError
-	if stdErrors.As(err, &opErr) {
+	if transports.ErrorAs(err, &opErr) {
 		if opErr.Timeout() {
 			return transports.TransportErrorRetryable
 		}
@@ -188,7 +186,7 @@ func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKi
 			return transports.TransportErrorTransient
 		}
 		var syscallErr syscall.Errno
-		if stdErrors.As(opErr.Err, &syscallErr) {
+		if transports.ErrorAs(opErr.Err, &syscallErr) {
 			switch syscallErr {
 			case syscall.ECONNREFUSED, syscall.ECONNRESET, syscall.EPIPE, syscall.ENETDOWN, syscall.ENETUNREACH:
 				return transports.TransportErrorFatal

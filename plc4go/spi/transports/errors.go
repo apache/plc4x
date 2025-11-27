@@ -4,6 +4,8 @@ import (
 	stdErrors "errors"
 	"fmt"
 	"syscall"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // TransportErrorKind represents the transport-level severity of an error.
@@ -30,11 +32,11 @@ type TransportError struct {
 
 // NewTransportError creates a new TransportError with the given kind and cause.
 func NewTransportError(kind TransportErrorKind, err error) error {
-	if err == nil {
+	if utils.IsNil(err) {
 		return nil
 	}
 	var existing *TransportError
-	if stdErrors.As(err, &existing) {
+	if ErrorAs(err, &existing) {
 		return err
 	}
 	return &TransportError{kind: kind, err: err}
@@ -42,11 +44,11 @@ func NewTransportError(kind TransportErrorKind, err error) error {
 
 // AsTransportError retrieves a TransportError from the provided error chain.
 func AsTransportError(err error) (*TransportError, bool) {
-	if err == nil {
+	if utils.IsNil(err) {
 		return nil, false
 	}
 	var transportErr *TransportError
-	if stdErrors.As(err, &transportErr) {
+	if ErrorAs(err, &transportErr) {
 		return transportErr, true
 	}
 	return nil, false
@@ -72,7 +74,7 @@ func (t *TransportError) Kind() TransportErrorKind {
 
 // ErrorIs mirrors errors.Is but guards against panics triggered by improperly constructed error values.
 func ErrorIs(err error, target error) (matched bool) {
-	if err == nil || target == nil {
+	if err == nil || target == nil || utils.IsNil(err) {
 		return false
 	}
 	defer func() {
@@ -81,6 +83,19 @@ func ErrorIs(err error, target error) (matched bool) {
 		}
 	}()
 	return stdErrors.Is(err, target)
+}
+
+// ErrorAs mirrors errors.As but guards against panics triggered by improperly constructed error values.
+func ErrorAs(err error, target any) (matched bool) {
+	if err == nil || target == nil || utils.IsNil(err) {
+		return false
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			matched = false
+		}
+	}()
+	return stdErrors.As(err, target)
 }
 
 // IsFatal reports whether the error kind signals an unusable transport.
@@ -95,11 +110,11 @@ func (k TransportErrorKind) IsRetryable() bool {
 
 // IsTransientSyscallError checks for errno values that are commonly treated as transient.
 func IsTransientSyscallError(err error) bool {
-	if err == nil {
+	if err == nil || utils.IsNil(err) {
 		return false
 	}
 	var errno syscall.Errno
-	if !stdErrors.As(err, &errno) {
+	if !ErrorAs(err, &errno) {
 		return false
 	}
 	switch errno {
