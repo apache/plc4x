@@ -38,7 +38,7 @@
   </properties>
 
   <modules>
-    <module>can</module>
+    <!--module>can</module>
     <module>pcap-replay</module>
     <module>pcap-shared</module>
     <module>raw-socket</module>
@@ -47,7 +47,7 @@
     <module>tcp</module>
     <module>udp</module>
     <module>virtualcan</module>
-    <module>test</module>
+    <module>test</module-->
   </modules>
 
 </project>
