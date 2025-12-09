@@ -316,6 +316,7 @@
         <configuration>
           <goVersion>${go.version}</goVersion>
           <workDir>${project.basedir}</workDir>
+          <sdkSite>GOSDK_SITE</sdkSite>
         </configuration>
       </plugin>
 
