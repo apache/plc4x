@@ -160,6 +160,15 @@
             <goals>
               <goal>report</goal>
             </goals>
+            <configuration>
+              <!-- Exclude multi-release classes and generated code -->
+              <excludes>
+                <exclude>META-INF/versions/**</exclude>
+                <exclude>module-info.class</exclude>
+                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
+                <exclude>**/readwrite/*.class</exclude>
+              </excludes>
+            </configuration>
           </execution>
           <!--
               Check if the unit-test-coverage is at least a certain minimum.
@@ -171,8 +180,18 @@
               <goal>check</goal>
             </goals>
             <configuration>
-              <!-- TODO: Turn this on as soon as possible. -->
-              <haltOnFailure>false</haltOnFailure>
+              <haltOnFailure>true</haltOnFailure>
+              <!-- Exclude multi-release classes, functional interfaces, and generated code -->
+              <excludes>
+                <exclude>META-INF/versions/**</exclude>
+                <exclude>module-info.class</exclude>
+                <!-- Exclude functional interfaces that can't be directly covered -->
+                <exclude>**/*$*Listener.class</exclude>
+                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
+                <exclude>**/readwrite/*.class</exclude>
+                <!-- Exclude functional marker interfaces (hard to test directly) -->
+                <exclude>**/with*.class</exclude>
+              </excludes>
               <rules>
                 <rule implementation="org.jacoco.maven.RuleConfiguration">
                   <element>BUNDLE</element>
@@ -181,7 +200,7 @@
                     <limit implementation="org.jacoco.report.check.Limit">
                       <counter>INSTRUCTION</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.50</minimum>
+                      <minimum>0.80</minimum>
                     </limit>
                     <!-- Fail the build if there are classes without any coverage. -->
                     <limit implementation="org.jacoco.report.check.Limit">
