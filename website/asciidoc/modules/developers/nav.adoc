@@ -52,6 +52,8 @@
 *** xref:release/validation.adoc[]
 *** xref:release/build-tools.adoc[]
 
+** xref:testing/index.adoc[]
+
 ** xref:tools.adoc[]
 ** xref:team.adoc[]
 ** xref:decisions.adoc[]
