@@ -25,7 +25,7 @@ import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.ascii.AsciiBox;
 import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.ascii.AsciiBoxWriter;
 import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.hex.Hex;
-import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.lang3.StringUtils;
+import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.utils.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

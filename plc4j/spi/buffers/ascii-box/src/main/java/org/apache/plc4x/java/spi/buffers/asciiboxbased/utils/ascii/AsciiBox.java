@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.ascii;
 
-import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.lang3.StringUtils;
+import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.utils.StringUtils;
 
 import java.util.Objects;
 import java.util.regex.Matcher;

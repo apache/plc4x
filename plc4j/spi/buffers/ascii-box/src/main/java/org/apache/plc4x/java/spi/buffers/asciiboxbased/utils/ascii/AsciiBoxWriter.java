@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.ascii;
 
 import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.hex.Hex;
-import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.lang3.StringUtils;
+import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
