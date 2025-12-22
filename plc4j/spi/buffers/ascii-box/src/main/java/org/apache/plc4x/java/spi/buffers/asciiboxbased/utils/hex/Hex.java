@@ -18,16 +18,16 @@
  */
 package org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.hex;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -84,9 +84,9 @@ public class Hex {
         // We copy the array to avoid mutations
         data = Arrays.copyOf(data, data.length);
         StringBuilder hexString = new StringBuilder();
-        Pair<Integer, Integer> rowIndexCalculation = calculateBytesPerRowAndIndexWidth(data.length, desiredCharWidth);
-        int maxBytesPerRow = rowIndexCalculation.getLeft();
-        int indexWidth = rowIndexCalculation.getRight();
+        Map.Entry<Integer, Integer> rowIndexCalculation = calculateBytesPerRowAndIndexWidth(data.length, desiredCharWidth);
+        int maxBytesPerRow = rowIndexCalculation.getKey();
+        int indexWidth = rowIndexCalculation.getValue();
         for (int byteIndex = 0, rowIndex = 0; byteIndex < data.length; byteIndex = byteIndex + maxBytesPerRow, rowIndex = rowIndex + 1) {
             String indexString = String.format("%1$" + indexWidth + "s|", byteIndex).replace(' ', '0');
             hexString.append(indexString);
@@ -109,7 +109,7 @@ public class Hex {
             if (endIndex >= data.length) {
                 endIndex = data.length;
             }
-            String stringRepresentation = maskString(ArrayUtils.subarray(data, byteIndex, endIndex));
+            String stringRepresentation = maskString(Arrays.copyOfRange(data, byteIndex, endIndex));
             if (stringRepresentation.length() < maxBytesPerRow) {
                 stringRepresentation += StringUtils.repeat(" ", (maxBytesPerRow - stringRepresentation.length()) % maxBytesPerRow);
             }
@@ -120,7 +120,7 @@ public class Hex {
     }
 
 
-    static Pair<Integer, Integer> calculateBytesPerRowAndIndexWidth(int numberOfBytes, int desiredStringWidth) {
+    static Map.Entry<Integer, Integer> calculateBytesPerRowAndIndexWidth(int numberOfBytes, int desiredStringWidth) {
         if (DebugHex) {
             LOGGER.debug("Calculating max row and index for {} number of bytes and a desired string width of {}", numberOfBytes, desiredStringWidth);
         }
@@ -159,7 +159,7 @@ public class Hex {
         if (DebugHex) {
             LOGGER.debug("Calculated number of bytes per row {} in int {}", x, (int) x);
         }
-        return Pair.of((int) x, indexDigits);
+        return new AbstractMap.SimpleEntry<>((int) x, indexDigits);
     }
 
     static String maskString(byte[] data) {

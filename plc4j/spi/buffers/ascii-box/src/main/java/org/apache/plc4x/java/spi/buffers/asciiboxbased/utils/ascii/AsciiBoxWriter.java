@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.ascii;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.hex.Hex;
+import org.apache.plc4x.java.spi.buffers.asciiboxbased.utils.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,7 +128,7 @@ public class AsciiBoxWriter {
      * @return the aligned box.
      */
     public AsciiBox alignBoxes(Collection<AsciiBox> boxes, int desiredWidth) {
-        if (boxes.size() == 0) {
+        if (boxes.isEmpty()) {
             return new AsciiBox(this, "");
         }
         int actualWidth = desiredWidth;
@@ -157,7 +157,7 @@ public class AsciiBoxWriter {
             }
             currentBoxRow.add(box);
         }
-        if (currentBoxRow.size() > 0) {
+        if (!currentBoxRow.isEmpty()) {
             // Special case where all boxes fit into one row
             AsciiBox mergedBoxes = mergeHorizontal(currentBoxRow);
             if (StringUtils.isBlank(bigBox.toString())) {
@@ -184,9 +184,7 @@ public class AsciiBoxWriter {
         String[] box2Lines = box2.lines();
         int maxRows = Math.max(box1Lines.length, box2Lines.length);
         for (int row = 0; row < maxRows; row++) {
-            boolean ranOutOfLines = false;
             if (row >= box1Lines.length) {
-                ranOutOfLines = true;
                 aggregateBox.append(StringUtils.repeat(" ", box1Width));
             } else {
                 String split1Row = box1Lines[row];
@@ -194,9 +192,6 @@ public class AsciiBoxWriter {
                 aggregateBox.append(split1Row).append(StringUtils.repeat(" ", padding));
             }
             if (row >= box2Lines.length) {
-                if (ranOutOfLines) {
-                    break;
-                }
                 aggregateBox.append(StringUtils.repeat(" ", box2Width));
             } else {
                 String split2Row = box2Lines[row];
@@ -204,7 +199,7 @@ public class AsciiBoxWriter {
                 aggregateBox.append(split2Row).append(StringUtils.repeat(" ", padding));
             }
             if (row < maxRows - 1) {
-                // Only write newline if we are not the last line
+                // Only write a new-line if we are not the last line
                 aggregateBox.append('\n');
             }
         }
@@ -234,16 +229,12 @@ public class AsciiBoxWriter {
     }
 
     AsciiBox mergeHorizontal(List<AsciiBox> boxes) {
-        switch (boxes.size()) {
-            case 0:
-                return new AsciiBox("");
-            case 1:
-                return boxes.get(0);
-            case 2:
-                return boxSideBySide(boxes.get(0), boxes.get(1));
-            default:
-                return boxSideBySide(boxes.get(0), mergeHorizontal(new ArrayList<>(boxes).subList(1, boxes.size())));
-        }
+        return switch (boxes.size()) {
+            case 0 -> new AsciiBox("");
+            case 1 -> boxes.get(0);
+            case 2 -> boxSideBySide(boxes.get(0), boxes.get(1));
+            default -> boxSideBySide(boxes.get(0), mergeHorizontal(new ArrayList<>(boxes).subList(1, boxes.size())));
+        };
     }
 
     AsciiBox expandBox(AsciiBox box, int desiredWidth) {
