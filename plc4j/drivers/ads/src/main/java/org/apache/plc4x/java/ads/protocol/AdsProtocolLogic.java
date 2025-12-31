@@ -492,7 +492,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
-        return browseWithInterceptor(browseRequest, (query, item) -> true);
+        return browseWithInterceptor(browseRequest, (queryName, query, item) -> true);
     }
 
     public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
@@ -540,7 +540,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     true, !symbol.getFlagReadOnly(), true, false, itemArrayInfo, childMap, options);
 
                 // Check if this item should be added to the result
-                if (interceptor.intercept(query, item)) {
+                if (interceptor.intercept(queryName, query, item)) {
                     // Add the type itself.
                     resultsForQuery.add(item);
                 }

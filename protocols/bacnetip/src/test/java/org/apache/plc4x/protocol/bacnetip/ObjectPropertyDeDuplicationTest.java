@@ -27,8 +27,6 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ValidationField;
 import org.junit.jupiter.api.*;
 import org.opentest4j.TestAbortedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.regex.Matcher;

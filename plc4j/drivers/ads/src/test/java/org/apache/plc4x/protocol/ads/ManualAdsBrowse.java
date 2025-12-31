@@ -31,7 +31,7 @@ public class ManualAdsBrowse {
             PlcBrowseResponse plcBrowseResponse = connection.browseRequestBuilder()
                 //.addQuery("all", "**")
                 .addQuery("allMain", "MAIN.*")
-                .build().executeWithInterceptor((tag, item) -> {
+                .build().executeWithInterceptor((gueryName, query, item) -> {
                     outputItem(item, 0);
                     return true;
                 }).get();
