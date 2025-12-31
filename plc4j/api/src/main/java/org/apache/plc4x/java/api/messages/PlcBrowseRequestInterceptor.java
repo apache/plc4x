@@ -22,6 +22,6 @@ import org.apache.plc4x.java.api.model.PlcQuery;
 
 public interface PlcBrowseRequestInterceptor {
 
-    boolean intercept(PlcQuery query, PlcBrowseItem item);
+    boolean intercept(String queryName, PlcQuery query, PlcBrowseItem item);
 
 }
