@@ -10,6 +10,7 @@ New Features
 - Subscription of change-of-state values now supports
   providing a min time interval to prevent excessive
   notifications.
+- Added a new PlcCertificateAuthentication to the API module.
 
 Incompatible changes
 --------------------
