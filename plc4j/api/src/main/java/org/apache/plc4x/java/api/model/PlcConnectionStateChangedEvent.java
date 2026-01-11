@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,15 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.api.listener;
 
-import org.apache.plc4x.java.api.model.PlcConnectionStateChangedEvent;
+package org.apache.plc4x.java.api.model;
 
-/**
- * Additional helper for tracking connection state.
- */
-public interface ConnectionStateListener extends EventListener {
+import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 
-    void onConnectionStateChanged(PlcConnectionStateChangedEvent event);
+public class PlcConnectionStateChangedEvent {
+
+    private final ConnectionStateChangeType changeType;
+    private final String details;
+
+    public PlcConnectionStateChangedEvent(ConnectionStateChangeType changeType, String details) {
+        this.changeType = changeType;
+        this.details = details;
+    }
+
+    public ConnectionStateChangeType getChangeType() {
+        return changeType;
+    }
+
+    public String getDetails() {
+        return details;
+    }
 
 }
