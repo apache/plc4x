@@ -23,6 +23,12 @@ Incompatible changes
 - Updated the signature of the PlcBrowseRequestInterceptor to
   also accept a queryName, query and item instead of just an
   item.
+- The ConnectionStateListener interface was updated to no longer
+  have a connected() and disconnected() method, but use a
+  onConnectionStateChanged method instead that accepts
+  PlcConnectionStateChangedEvent events which have many more
+  state change options beyond a simple connected and disconnected
+  event.
 
 Bug Fixes
 ---------
