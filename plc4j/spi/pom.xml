@@ -38,6 +38,9 @@
 
   <modules>
     <module>buffers</module>
+    <module>fields</module>
+    <module>utils</module>
+    <module>values</module>
   </modules>
 
 </project>

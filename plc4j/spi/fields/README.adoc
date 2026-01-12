@@ -1,0 +1,15 @@
+== Fields
+
+In the fields module the behaviour of reading and writing fields is implemented.
+In general there are two main classes of types:
+- Data Readers/Writers
+- Field Readers/Writers
+
+=== Data Readers/Writers
+
+Data Readers/Writers encapsulate all behavior of actually reading and writing data.
+As this functionality is generally implemented via the various types of ReadBuffers and WriteBuffers, the logic for the DataReaders and DataWriters are generally just forwarding them to the current buffer implementation.
+
+=== Field Readers/Writers
+
+The various field readers/writers encapsulate the individual logic for reading and writing the various types of fields.
