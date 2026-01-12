@@ -28,7 +28,7 @@
     [array APDU apdus terminated 'STATIC_CALL("finished", readBuffer)']
 ]
 
-[discriminatedType APDU                                                                        byteOrder='LITTLE_ENDIAN'
+[discriminatedType APDU                                                                      byteOrder='"LITTLE_ENDIAN"'
     [const         uint 8  startByte    0x68               ]
     [implicit      uint 8  apciLength   'lengthInBytes - 2']
     [simple        uint 16 command                         ]
@@ -70,7 +70,7 @@
     ]
 ]
 
-[type ASDU                                                                                     byteOrder='LITTLE_ENDIAN'
+[type ASDU                                                                                   byteOrder='"LITTLE_ENDIAN"'
     [simple   TypeIdentification                      typeIdentification                             ]
     [simple   bit                                     structureQualifier                             ]
     [implicit uint 7                                  numberOfObjects     'COUNT(informationObjects)']
@@ -84,7 +84,7 @@
 
 // http://ijlalhaider.pbworks.com/w/file/fetch/64131148/Practical%20Modern%20SCADA%20Protocols.pdf
 
-[discriminatedType InformationObject(TypeIdentification typeIdentification, uint 7 numTimeByte)                    byteOrder='LITTLE_ENDIAN'
+[discriminatedType InformationObject(TypeIdentification typeIdentification, uint 7 numTimeByte)                    byteOrder='"LITTLE_ENDIAN"'
     [simple uint 24 address]
     [typeSwitch numTimeByte
         ['0' *WithoutTime
@@ -368,7 +368,7 @@
 //////////////////////////////////////////////////////////
 
 // SIQ
-[type SinglePointInformation                                                                   byteOrder='LITTLE_ENDIAN'
+[type SinglePointInformation                                                                 byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -378,7 +378,7 @@
 ]
 
 // DIQ
-[type DoublePointInformation                                                                   byteOrder='LITTLE_ENDIAN'
+[type DoublePointInformation                                                                 byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -388,17 +388,17 @@
 ]
 
 // BSI
-[type BinaryStateInformation                                                                   byteOrder='LITTLE_ENDIAN'
+[type BinaryStateInformation                                                                 byteOrder='"LITTLE_ENDIAN"'
     [simple uint 32 bits] // TODO: Possibly bit-string
 ]
 
 // SCD
-[type StatusChangeDetection                                                                    byteOrder='LITTLE_ENDIAN'
+[type StatusChangeDetection                                                                  byteOrder='"LITTLE_ENDIAN"'
     [simple uint 32 bits] // TODO: Possibly bit-string
 ]
 
 // QDS
-[type QualityDescriptor                                                                        byteOrder='LITTLE_ENDIAN'
+[type QualityDescriptor                                                                      byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -408,28 +408,28 @@
 ]
 
 // VTI
-[type ValueWithTransientStateIndication                                                        byteOrder='LITTLE_ENDIAN'
+[type ValueWithTransientStateIndication                                                      byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    transientState     ]
     [simple   uint 7 value              ]
 ]
 
 // NVA
-[type NormalizedValue                                                                          byteOrder='LITTLE_ENDIAN'
+[type NormalizedValue                                                                        byteOrder='"LITTLE_ENDIAN"'
     [simple uint 16 value]     // TODO: F16 (16 bit floating-point number)
 ]
 
 // SVA
-[type ScaledValue                                                                              byteOrder='LITTLE_ENDIAN'
+[type ScaledValue                                                                            byteOrder='"LITTLE_ENDIAN"'
     [simple   int 16 value               ]
 ]
 
 // R32
-[type ShortFloatingPointNumber                                                                 byteOrder='LITTLE_ENDIAN'
+[type ShortFloatingPointNumber                                                               byteOrder='"LITTLE_ENDIAN"'
     [simple uint 16 value]     // TODO: F16 (16 bit floating-point number)
 ]
 
 // BCR
-[type BinaryCounterReading                                                                     byteOrder='LITTLE_ENDIAN'
+[type BinaryCounterReading                                                                   byteOrder='"LITTLE_ENDIAN"'
     [simple   uint 32 counterValue       ]
     [simple   bit     counterValid       ]
     [simple   bit     counterAdjusted    ]
@@ -438,7 +438,7 @@
 ]
 
 // SEP
-[type SingleEventOfProtectionEquipment                                                         byteOrder='LITTLE_ENDIAN'
+[type SingleEventOfProtectionEquipment                                                       byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -449,7 +449,7 @@
 ]
 
 // SPE
-[type StartEventsOfProtectionEquipment                                                         byteOrder='LITTLE_ENDIAN'
+[type StartEventsOfProtectionEquipment                                                       byteOrder='"LITTLE_ENDIAN"'
     [reserved uint 2 '0'                    ]
     [simple   bit    startOfOperationInReverseDirection]
     [simple   bit    startOfOperationIE     ]
@@ -460,7 +460,7 @@
 ]
 
 // OCI
-[type OutputCircuitInformation                                                                 byteOrder='LITTLE_ENDIAN'
+[type OutputCircuitInformation                                                               byteOrder='"LITTLE_ENDIAN"'
     [reserved uint 4 '0'                    ]
     [simple   bit    stateOfOperationPhaseL3]
     [simple   bit    stateOfOperationPhaseL2]
@@ -469,7 +469,7 @@
 ]
 
 // QDP
-[type QualityDescriptorForPointsOfProtectionEquipment                                          byteOrder='LITTLE_ENDIAN'
+[type QualityDescriptorForPointsOfProtectionEquipment                                        byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    invalid            ]
     [simple   bit    notTopical         ]
     [simple   bit    substituted        ]
@@ -483,20 +483,20 @@
 //////////////////////////////////////////////////////////
 
 // SCO
-[type SingleCommand                                                                            byteOrder='LITTLE_ENDIAN'
+[type SingleCommand                                                                          byteOrder='"LITTLE_ENDIAN"'
     [simple   QualifierOfCommand qoc      ]
     [reserved uint 1             '0'      ]
     [simple   bit                commandOn]
 ]
 
 // DCO
-[type DoubleCommand                                                                            byteOrder='LITTLE_ENDIAN'
+[type DoubleCommand                                                                          byteOrder='"LITTLE_ENDIAN"'
     [simple   QualifierOfCommand qoc]
     [simple   uint 2             dcs] // TODO: Possible Enum
 ]
 
 // RCO
-[type RegulatingStepCommand                                                                    byteOrder='LITTLE_ENDIAN'
+[type RegulatingStepCommand                                                                  byteOrder='"LITTLE_ENDIAN"'
     [simple   QualifierOfCommand qoc]
     [simple   uint 2             rcs] // TODO: Possible Enum
 ]
@@ -506,7 +506,7 @@
 //////////////////////////////////////////////////////////
 
 // CP56Time2a
-[type SevenOctetBinaryTime                                                                     byteOrder='LITTLE_ENDIAN'
+[type SevenOctetBinaryTime                                                                   byteOrder='"LITTLE_ENDIAN"'
     [simple   uint 16 milliseconds  ]
     [simple   bit     invalid       ]
     [simple   bit     substituted   ]
@@ -523,7 +523,7 @@
 ]
 
 // CP24Time2a
-[type ThreeOctetBinaryTime                                                                     byteOrder='LITTLE_ENDIAN'
+[type ThreeOctetBinaryTime                                                                   byteOrder='"LITTLE_ENDIAN"'
     [simple   uint 16 milliseconds]
     [simple   bit     invalid     ]
     [reserved uint 1  '0x00'      ]
@@ -531,7 +531,7 @@
 ]
 
 // CP16Time2av
-[type TwoOctetBinaryTime                                                                       byteOrder='LITTLE_ENDIAN'
+[type TwoOctetBinaryTime                                                                     byteOrder='"LITTLE_ENDIAN"'
     [simple uint 16 milliseconds]
 ]
 
@@ -540,41 +540,41 @@
 //////////////////////////////////////////////////////////
 
 // QOI
-[type QualifierOfInterrogation                                                                 byteOrder='LITTLE_ENDIAN'
+[type QualifierOfInterrogation                                                               byteOrder='"LITTLE_ENDIAN"'
     [simple   uint 8 qualifierOfCommand         ] // TODO: Possible ENUM
 ]
 
 // QCC
-[type QualifierOfCounterInterrogationCommand                                                   byteOrder='LITTLE_ENDIAN'
+[type QualifierOfCounterInterrogationCommand                                                 byteOrder='"LITTLE_ENDIAN"'
     [simple   uint 2 freeze         ] // TODO: Possible ENUM
     [simple   uint 6 request        ] // TODO: Possible ENUM
 ]
 
 // QPM
-[type QualifierOfParameterOfMeasuredValues                                                     byteOrder='LITTLE_ENDIAN'
+[type QualifierOfParameterOfMeasuredValues                                                   byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    parameterInOperation]
     [simple   bit    localParameterChange]
     [simple   uint 6 kindOfParameter     ] // TODO: Possible ENUM
 ]
 
 // QPA
-[type QualifierOfParameterActivation                                                           byteOrder='LITTLE_ENDIAN'
+[type QualifierOfParameterActivation                                                         byteOrder='"LITTLE_ENDIAN"'
     [simple   uint 8 qualifier         ] // TODO: Possible ENUM
 ]
 
 // QOC: Only 6 bit long (as part of a command)
-[type QualifierOfCommand                                                                       byteOrder='LITTLE_ENDIAN'
+[type QualifierOfCommand                                                                     byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    select]
     [simple   uint 5 qualifier         ] // TODO: Possible ENUM
 ]
 
 // QRP
-[type QualifierOfResetProcessCommand                                                           byteOrder='LITTLE_ENDIAN'
+[type QualifierOfResetProcessCommand                                                         byteOrder='"LITTLE_ENDIAN"'
     [simple   uint 8 qualifier         ] // TODO: Possible ENUM
 ]
 
 // QOS
-[type QualifierOfSetPointCommand                                                               byteOrder='LITTLE_ENDIAN'
+[type QualifierOfSetPointCommand                                                             byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    select]
     [simple   uint 7 qualifier         ] // TODO: Possible ENUM
 ]
@@ -584,56 +584,56 @@
 //////////////////////////////////////////////////////////
 
 // FRQ
-[type FileReadyQualifier                                                                       byteOrder='LITTLE_ENDIAN'
+[type FileReadyQualifier                                                                     byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
 // SRQ
-[type SectionReadyQualifier                                                                    byteOrder='LITTLE_ENDIAN'
+[type SectionReadyQualifier                                                                  byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
 // SCQ
-[type SelectAndCallQualifier                                                                   byteOrder='LITTLE_ENDIAN'
+[type SelectAndCallQualifier                                                                 byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
 // LSQ
-[type LastSectionOrSegmentQualifier                                                            byteOrder='LITTLE_ENDIAN'
+[type LastSectionOrSegmentQualifier                                                          byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
 // AFQ
-[type AcknowledgeFileOrSectionQualifier                                                        byteOrder='LITTLE_ENDIAN'
+[type AcknowledgeFileOrSectionQualifier                                                      byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
 // NOF
-[type NameOfFile                                                                               byteOrder='LITTLE_ENDIAN'
+[type NameOfFile                                                                             byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
 // NOS
-[type NameOfSection                                                                            byteOrder='LITTLE_ENDIAN'
+[type NameOfSection                                                                          byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
 // LOF
-[type LengthOfFile                                                                             byteOrder='LITTLE_ENDIAN'
+[type LengthOfFile                                                                           byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
 // LOS
-[type LengthOfSegment                                                                          byteOrder='LITTLE_ENDIAN'
+[type LengthOfSegment                                                                        byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
 // CHS
-[type Checksum                                                                                 byteOrder='LITTLE_ENDIAN'
+[type Checksum                                                                               byteOrder='"LITTLE_ENDIAN"'
     // TODO: Implement
 ]
 
-// SOF                                                                                         byteOrder='LITTLE_ENDIAN'
+// SOF                                                                                       byteOrder='"LITTLE_ENDIAN"'
 [type StatusOfFile
     // TODO: Implement
 ]
@@ -643,13 +643,13 @@
 //////////////////////////////////////////////////////////
 
 // COI
-[type CauseOfInitialization                                                                    byteOrder='LITTLE_ENDIAN'
+[type CauseOfInitialization                                                                  byteOrder='"LITTLE_ENDIAN"'
     [simple   bit    select]
     [simple   uint 7 qualifier         ] // TODO: Possible ENUM
 ]
 
 // FBP
-[type FixedTestBitPatternTwoOctet                                                              byteOrder='LITTLE_ENDIAN'
+[type FixedTestBitPatternTwoOctet                                                            byteOrder='"LITTLE_ENDIAN"'
     [simple uint 16 pattern] // TODO: Possibly bit-string
 ]
 

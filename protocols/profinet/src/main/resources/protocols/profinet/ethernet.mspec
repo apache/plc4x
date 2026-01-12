@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type Ethernet_Frame byteOrder='BIG_ENDIAN'
+[type Ethernet_Frame byteOrder='"BIG_ENDIAN"'
     // When sending to the mac address prefix of 01:0e:cf are multicast packets
     [simple MacAddress            destination]
     [simple MacAddress            source     ]

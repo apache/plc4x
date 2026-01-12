@@ -270,7 +270,7 @@
     // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
     [virtual    uint     16                  actualLengthInBit 'actualLength * 8 - 8']
     // TODO: call to string on encoding or add type conversion so we can use the enum above
-    [simple     vstring 'actualLengthInBit'  value                 encoding='"UTF-8"']
+    [simple     vstring 'actualLengthInBit'  value                 stringEncoding='"UTF8"']
 ]
 
 [type BACnetTagPayloadBitString(uint 32 actualLength)

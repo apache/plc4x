@@ -75,7 +75,7 @@
     [const          uint 8     protocolVersion 0]
 ]
 
-[type OpcuaAPU(bit response, bit binaryEncoding) byteOrder='LITTLE_ENDIAN'
+[type OpcuaAPU(bit response, bit binaryEncoding) byteOrder='"LITTLE_ENDIAN"'
     [simple MessagePDU('response', 'binaryEncoding') message]
 ]
 
@@ -195,7 +195,7 @@
     [array  byte    data5 count '6']
 ]
 
-[type ExpandedNodeId
+[type ExpandedNodeId unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple bit namespaceURISpecified]
     [simple bit serverIndexSpecified]
     [simple NodeIdTypeDefinition nodeId]
@@ -205,14 +205,14 @@
 
 
 
-[type ExtensionObjectEncodingMask
+[type ExtensionObjectEncodingMask unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [reserved int 5 '0x00']
     [simple bit typeIdSpecified]
     [simple bit xmlBody]
     [simple bit binaryBody]
 ]
 
-[discriminatedType ExtensionObject(bit includeEncodingMask)
+[discriminatedType ExtensionObject(bit includeEncodingMask) unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [abstract ExtensionObjectDefinition body]
     [simple ExpandedNodeId typeId]
     [virtual int 32 extensionId 'typeId == null ? 0 : STATIC_CALL("extensionId", typeId)']
@@ -235,7 +235,7 @@
     ]
 ]
 
-[discriminatedType ExtensionObjectDefinition(int 32 extensionId)
+[discriminatedType ExtensionObjectDefinition(int 32 extensionId) unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch extensionId
         ['0' NullExtension
         ]

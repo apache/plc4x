@@ -21,7 +21,7 @@
 // IsoOnTcp/TPKT
 ////////////////////////////////////////////////////////////////
 
-[type TPKTPacket byteOrder='BIG_ENDIAN'
+[type TPKTPacket byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [const    uint 8                 protocolId 0x03]
     [reserved uint 8                 '0x00']
     [implicit uint 16                len       'payload.lengthInBytes + 4']

@@ -26,7 +26,7 @@
 ///EthernetIP Header of size 24
 /////////////////////////////////////////////////////////////////
 
-[discriminatedType EipPacket (bit response)
+[discriminatedType EipPacket (bit response)  unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [discriminator uint 16 command                                                                                     ]
     [implicit      uint 16 packetLength 'lengthInBytes - 24'                                                           ]
     [simple        uint 32 sessionHandle                                                                               ]
@@ -288,9 +288,9 @@
     [typeSwitch itemType
         ['0x000C' CipIdentity
             [implicit uint 16 itemLength                   '34 + productNameLength'                       ]
-            [simple   uint 16 encapsulationProtocolVersion                          byteOrder='BIG_ENDIAN']
-            [simple   uint 16 socketAddressFamily                                   byteOrder='BIG_ENDIAN']
-            [simple   uint 16 socketAddressPort                                     byteOrder='BIG_ENDIAN']
+            [simple   uint 16 encapsulationProtocolVersion                        byteOrder='"BIG_ENDIAN"']
+            [simple   uint 16 socketAddressFamily                                 byteOrder='"BIG_ENDIAN"']
+            [simple   uint 16 socketAddressPort                                   byteOrder='"BIG_ENDIAN"']
             [array    uint 8  socketAddressAddress         count        '4'                               ]
             [const    uint 32 zeroes1                      0x00000000                                     ]
             [const    uint 32 zeroes2                      0x00000000                                     ]
