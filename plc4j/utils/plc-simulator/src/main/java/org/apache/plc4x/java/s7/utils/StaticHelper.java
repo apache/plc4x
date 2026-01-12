@@ -20,10 +20,10 @@ package org.apache.plc4x.java.s7.utils;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,10 +34,10 @@ public class StaticHelper {
 
     public static LocalTime parseTiaTime(ReadBuffer io) {
         try {
-            int millisSinceMidnight = io.readInt(32);
+            int millisSinceMidnight = io.readSignedInt(32);
             return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
                 millisSinceMidnight, ChronoUnit.MILLIS);
-        } catch (ParseException e) {
+        } catch (BufferException e) {
             return null;
         }
     }
@@ -48,10 +48,10 @@ public class StaticHelper {
 
     public static LocalTime parseS5Time(ReadBuffer io) {
         try {
-            int stuff = io.readInt(16);
+            int stuff = io.readSignedInt(16);
             // TODO: Implement this correctly.
             throw new NotImplementedException("S5TIME not implemented");
-        } catch (ParseException e) {
+        } catch (BufferException e) {
             return null;
         }
     }
@@ -74,7 +74,7 @@ public class StaticHelper {
             long millisSinceMidnight = io.readUnsignedLong(32);
             return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
                 millisSinceMidnight, ChronoUnit.MILLIS);
-        } catch (ParseException e) {
+        } catch (BufferException e) {
             return null;
         }
     }
@@ -87,7 +87,7 @@ public class StaticHelper {
         try {
             int daysSince1990 = io.readUnsignedInt(16);
             return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
-        } catch (ParseException e) {
+        } catch (BufferException e) {
             return null;
         }
     }
@@ -102,10 +102,10 @@ public class StaticHelper {
             int month = io.readUnsignedInt(8);
             int day = io.readUnsignedInt(8);
             // Skip day-of-week
-            io.readByte();
-            int hour = io.readByte();
-            int minute = io.readByte();
-            int second = io.readByte();
+            io.readSignedByte(8);
+            int hour = io.readSignedByte(8);
+            int minute = io.readSignedByte(8);
+            int second = io.readSignedByte(8);
             int nanosecond = io.readUnsignedInt(24);
 
             return LocalDateTime.of(year, month, day, hour, minute, second, nanosecond);
@@ -123,12 +123,12 @@ public class StaticHelper {
             // This is the maximum number of bytes a string can be long.
             short maxLength = io.readUnsignedShort(8);
             // This is the total length of the string on the PLC (Not necessarily the number of characters read)
-            short totalStringLength = io.readShort(8);
+            short totalStringLength = io.readSignedShort(8);
             // Read the full size of the string.
             String str = io.readString(stringLength * 8, WithOption.WithEncoding((String) encoding));
             // Cut off the parts that don't belong to it.
             return str.substring(0, totalStringLength);
-        } catch (ParseException e) {
+        } catch (BufferException e) {
             return null;
         }
     }
@@ -138,7 +138,7 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing STRING not implemented");
     }
 
-    public static String parseS7Char(ReadBuffer io, Object encoding) throws ParseException {
+    public static String parseS7Char(ReadBuffer io, Object encoding) throws BufferException {
         // Read the full size of the string.
         return io.readString(8, WithOption.WithEncoding((String) encoding));
     }
