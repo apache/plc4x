@@ -25,10 +25,7 @@ import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultDataIoTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultBooleanTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultUndefinedTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultVstringTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
@@ -398,15 +395,8 @@ public abstract class BaseGenerator<T> {
             StringBuilder paramsString = new StringBuilder();
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
             ComplexTypeDefinition typeDefinition = complexTypeReference.getTypeDefinition();
-            TypeName parserCallString = getLanguageTypeNameForTypeReference(typeReference, false);
-            // In case of DataIo we actually need to use the type name and not what above returns.
-            // (In this case the mspec type name and the result type name differ)
-            /*if (typeReference.isDataIoTypeReference()) {
-                parserCallString = typeReference.asDataIoTypeReference().orElseThrow().getName();
-            }
-            if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
-                parserCallString = "(" + parserCallString + ") " + typeDefinition.getParentType().orElseThrow().getName();
-            }*/
+            TypeName parserResultTypeString = getLanguageTypeNameForTypeReference(typeReference, false);
+            TypeName parserTypeString = complexTypeReference.isDataIoTypeReference() ? ClassName.get(targetPackage, complexTypeReference.getName()) : getLanguageTypeNameForTypeReference(typeReference, false);
             List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
             for (int i = 0; i < paramTerms.size(); i++) {
                 Term paramTerm = paramTerms.get(i);
@@ -418,7 +408,7 @@ public abstract class BaseGenerator<T> {
                     .append(toParseExpression(null, null, argumentType, paramTerm, null))
                     .append(")");
             }
-            return CodeBlock.of("$T.readComplex(() -> ($T) $T.staticParse(readBuffer" + paramsString + "), readBuffer)", dataReaderFactory, parserCallString, parserCallString);
+            return CodeBlock.of("$T.readComplex(() -> ($T) $T.staticParse(readBuffer" + paramsString + "), readBuffer)", dataReaderFactory, parserResultTypeString, parserTypeString);
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -624,7 +614,7 @@ public abstract class BaseGenerator<T> {
 
     private CodeBlock toLiteralTermExpression(TypeDefinition typeDefinition, Field field, TypeReference resultType, Literal literal, ThrowingFunction<VariableLiteral, CodeBlock, BufferException> variableExpressionGenerator, boolean isParse) throws BufferException {
         switch (literal) {
-            case NullLiteral nullLiteral -> {
+            case NullLiteral ignored -> {
                 return CodeBlock.of("null");
             }
             case BooleanLiteral booleanLiteral -> {
@@ -1643,7 +1633,11 @@ public abstract class BaseGenerator<T> {
         } else if (optionalField.getConditionExpression().isPresent()) {
             parseBlockBuilder.add("// Optional Field (conditional): $L\n", fieldName);
             CodeBlock conditionExpression = toParseExpression(typeDefinition, optionalField, BOOL_TYPE_REFERENCE, optionalField.getConditionExpression().get(), parserArguments);
-            parseBlockBuilder.addStatement("$T $L = $T.readOptionalField($L, $L, $L)", fieldTypeClassName, optionalField.getName(), fieldReaderFactory, readBlock, conditionExpression, attributesCodeBlock);
+            if (fieldType.isDataIoTypeReference()) {
+                parseBlockBuilder.addStatement("$T $L = $T.readOptionalField($L, $L, $L)", fieldTypeClassName, optionalField.getName(), fieldReaderFactory, readBlock, conditionExpression, attributesCodeBlock);
+            } else {
+                parseBlockBuilder.addStatement("$T $L = $T.readOptionalField($L, $L, $L)", fieldTypeClassName, optionalField.getName(), fieldReaderFactory, readBlock, conditionExpression, attributesCodeBlock);
+            }
         } else {
             parseBlockBuilder.add("// Optional Field: $L\n", fieldName);
             parseBlockBuilder.addStatement("$T $L = $T.readOptionalField($L, $L)", fieldTypeClassName, optionalField.getName(), fieldReaderFactory, readBlock, attributesCodeBlock);
@@ -1659,6 +1653,20 @@ public abstract class BaseGenerator<T> {
             serializeCodeBlockBuilder.add("// Optional Field (enum): $L\n", fieldName);
             TypeName typeClassName = getLanguageTypeNameForTypeReference(enumTypeReference.getBaseTypeReference().orElseThrow(), true);
             serializeCodeBlockBuilder.addStatement("$T.writeOptionalField(($T) $L.getValue(), $L, $L)", fieldWriterFactory, typeClassName, getValueBlock, writeBlock, attributesCodeBlock);
+        } else if (fieldType.isDataIoTypeReference()) {
+            DataIoTypeReference dataIoTypeReference = fieldType.asDataIoTypeReference().orElseThrow();
+            serializeCodeBlockBuilder.add("// Optional Field: $L\n", fieldName);
+            // Build parameter string from DataIoTypeReference params
+            StringBuilder paramsBuilder = new StringBuilder();
+            paramsBuilder.append("writeBuffer, ").append(optionalField.getName());
+            List<Term> paramTerms = dataIoTypeReference.getParams().orElse(Collections.emptyList());
+            for (int i = 0; i < paramTerms.size(); i++) {
+                Term paramTerm = paramTerms.get(i);
+                final TypeReference argumentType = getArgumentType(dataIoTypeReference, i);
+                paramsBuilder.append(", (").append(getLanguageTypeNameForTypeReference(argumentType, true)).append(") (")
+                    .append(toSerializationExpression(typeDefinition, optionalField, argumentType, paramTerm, parserArguments)).append(")");
+            }
+            serializeCodeBlockBuilder.addStatement("$T.staticSerialize($L)", ClassName.get(targetPackage, dataIoTypeReference.getName()), paramsBuilder.toString());
         } else {
             serializeCodeBlockBuilder.add("// Optional Field: $L\n", fieldName);
             serializeCodeBlockBuilder.addStatement("$T.writeOptionalField(($T) $L, $L, $L)", fieldWriterFactory, fieldTypeClassName, getValueBlock, writeBlock, attributesCodeBlock);
@@ -1671,7 +1679,8 @@ public abstract class BaseGenerator<T> {
         CodeBlock.Builder getLengthInBitsCodeBlockBuilder = CodeBlock.builder();
         getLengthInBitsCodeBlockBuilder.add("// Optional Field: $L\n", fieldName);
         // Optional fields with "nullBytesHex"-attribute always have a size.
-        if (nullBytesHexAttribute.isEmpty()) {
+        // DataIoTypeReference fields use try-catch instead of if-block.
+        if (nullBytesHexAttribute.isEmpty() && !fieldType.isDataIoTypeReference()) {
             getLengthInBitsCodeBlockBuilder.beginControlFlow("if($L != null)", fieldName);
         }
         if (fieldType.isSimpleTypeReference()) {
@@ -1687,11 +1696,26 @@ public abstract class BaseGenerator<T> {
             // TODO: Generate dynamic type length values here.
             getLengthInBitsCodeBlockBuilder.addStatement("lengthInBits += $L", getEnumBaseTypeReference(optionalField.getType()).getSizeInBits());
         } else if (fieldType.isDataIoTypeReference()) {
-            throw new RuntimeException("Optional fields of type dataIo are not supported.");
+            DataIoTypeReference dataIoTypeReference = fieldType.asDataIoTypeReference().orElseThrow();
+            // Build parameter string from DataIoTypeReference params
+            StringBuilder paramsBuilder = new StringBuilder();
+            paramsBuilder.append(optionalField.getName());
+            List<Term> paramTerms = dataIoTypeReference.getParams().orElse(Collections.emptyList());
+            for (int i = 0; i < paramTerms.size(); i++) {
+                Term paramTerm = paramTerms.get(i);
+                final TypeReference argumentType = getArgumentType(dataIoTypeReference, i);
+                paramsBuilder.append(", (").append(getLanguageTypeNameForTypeReference(argumentType, true)).append(") (")
+                    .append(toSerializationExpression(typeDefinition, optionalField, argumentType, paramTerm, parserArguments)).append(")");
+            }
+            getLengthInBitsCodeBlockBuilder.beginControlFlow("try");
+            getLengthInBitsCodeBlockBuilder.addStatement("lengthInBits += ($L != null) ? $T.getLengthInBits($L) : 0", optionalField.getName(), ClassName.get(targetPackage, dataIoTypeReference.getName()), paramsBuilder.toString());
+            getLengthInBitsCodeBlockBuilder.nextControlFlow("catch ($T e)", ClassName.get("org.apache.plc4x.java.spi.buffers.api.exceptions", "BufferException"));
+            getLengthInBitsCodeBlockBuilder.add("// Ignore\n");
+            getLengthInBitsCodeBlockBuilder.endControlFlow();
         } else {
             getLengthInBitsCodeBlockBuilder.addStatement("lengthInBits += $L.getLengthInBits()", optionalField.getName());
         }
-        if (nullBytesHexAttribute.isEmpty()) {
+        if (nullBytesHexAttribute.isEmpty() && !fieldType.isDataIoTypeReference()) {
             getLengthInBitsCodeBlockBuilder.endControlFlow();
         }
 
