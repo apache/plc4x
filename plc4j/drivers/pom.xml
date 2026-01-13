@@ -38,7 +38,7 @@
   </properties>
 
   <modules>
-    <!--module>ab-eth</module>
+    <module>ab-eth</module>
     <module>ads</module>
     <module>bacnet</module>
     <module>c-bus</module>
@@ -58,7 +58,13 @@
     <module>profinet-ng</module>
     <module>s7</module>
     <module>simulated</module>
-    <module>all</module-->
+    <module>all</module>
   </modules>
+
+  <!-- TODO: Remove this when porting the drivers themselves to SPI3 -->
+  <build>
+    <sourceDirectory>src/main/temp</sourceDirectory>
+    <testSourceDirectory>lalala</testSourceDirectory>
+  </build>
 
 </project>
