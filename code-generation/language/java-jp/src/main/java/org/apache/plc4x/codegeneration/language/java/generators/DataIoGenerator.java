@@ -33,6 +33,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.ArrayTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
@@ -675,6 +676,30 @@ public class DataIoGenerator extends BaseGenerator<DataIoTypeDefinition> {
                     typeName = CodeBlock.of("$L", StaticHelper.CAPITALIZE(languageTypeNameForTypeReference.toString()));
                 }
                 return CodeBlock.of("_value.getStruct().get($S).get$L()", fieldName, typeName);
+            }
+        }
+        // For simple type references, use the actual type size to determine the getter
+        // This handles cases like ULINT where the case name suggests BigInteger,
+        // but the actual field type (e.g., UINT 40/48/56 bits) should use long
+        if (typeReference != null && typeReference.isSimpleTypeReference()) {
+            SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
+            int sizeInBits = simpleTypeReference.getSizeInBits();
+            switch (simpleTypeReference.getBaseType()) {
+                case UINT:
+                    if (sizeInBits <= 7) return CodeBlock.of("_value.getByte()");
+                    if (sizeInBits <= 15) return CodeBlock.of("_value.getShort()");
+                    if (sizeInBits <= 31) return CodeBlock.of("_value.getInteger()");
+                    if (sizeInBits <= 63) return CodeBlock.of("_value.getLong()");
+                    return CodeBlock.of("_value.getBigInteger()");
+                case INT:
+                    if (sizeInBits <= 8) return CodeBlock.of("_value.getByte()");
+                    if (sizeInBits <= 16) return CodeBlock.of("_value.getShort()");
+                    if (sizeInBits <= 32) return CodeBlock.of("_value.getInteger()");
+                    if (sizeInBits <= 64) return CodeBlock.of("_value.getLong()");
+                    return CodeBlock.of("_value.getBigInteger()");
+                default:
+                    // Fall through to PlcValueType-based resolution
+                    break;
             }
         }
         PlcValueType plcValueType = PlcValueType.valueOf(caseName);

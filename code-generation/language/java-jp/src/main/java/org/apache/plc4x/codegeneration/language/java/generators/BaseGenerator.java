@@ -853,7 +853,7 @@ public abstract class BaseGenerator<T> {
         ClassName staticHelper = ClassName.get(packageName, "StaticHelper");
 
         // Check if we have at least one argument, as this contains the name of the function we want to call.
-        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() ->new RuntimeException("A STATIC_CALL expression needs arguments"));
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A STATIC_CALL expression needs arguments"));
         if (arguments.isEmpty()) {
             throw new RuntimeException("A STATIC_CALL expression expects at least one argument.");
         }
