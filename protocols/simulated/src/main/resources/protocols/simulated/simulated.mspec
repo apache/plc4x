@@ -19,11 +19,11 @@
 
 // Remark: The different fields are encoded in Big-endian.
 
-[type  Dummy byteOrder='BIG_ENDIAN'
+[type  Dummy byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple uint        16  dummy]
 ]
 
-[dataIo DataItem(vstring dataType, uint 16 numberOfValues)
+[dataIo DataItem(vstring dataType, uint 16 numberOfValues) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch dataType,numberOfValues
         ['"BOOL"','1' BOOL
             [simple   bit    value]
@@ -136,7 +136,7 @@
     ]
 ]
 
-[enum uint 8 SimulatedDataTypeSizes(uint 8 dataTypeSize)
+[enum uint 8 SimulatedDataTypeSizes(uint 8 dataTypeSize) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     ['1' BOOL ['1']]
     ['2' BYTE ['1']]
     ['3' WORD ['2']]

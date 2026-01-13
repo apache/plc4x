@@ -1527,8 +1527,10 @@
     ['772' M_TEKNOLINE ['833', '"TEKNOLINE"']]
     ['773' M_HIMEL_HONG_KONG_LIMITED ['834', '"HIMEL HONG KONG LIMITED"']]
     ['774' M_MICRONIC_KOREA_CO___LTD_ ['835', '"Micronic Korea Co., Ltd."']]
-    ['775' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['776' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['775' M_ROBUSTEL_LIMITED ['836', '"Robustel Limited"']]
+    ['776' M_LEXA_LIFESTYLE ['837', '"Lexa LIFESTYLE"']]
+    ['777' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['778' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
