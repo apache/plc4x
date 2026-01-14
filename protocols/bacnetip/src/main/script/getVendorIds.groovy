@@ -50,6 +50,9 @@ if (update) {
         println "Successfully updated BACnet Vendor IDs.htm"
     } catch (Exception e) {
         println "Got an error updating BACnet Vendor IDs.htm. Intentionally not failing the build as we might just be offline: " + e.getMessage()
+        // If we can't update the vendor id file, it may be older and we run the risk of incorrectly updating the repo with an older version.
+        // The vendor id website also has a cloudfare check which depending on the location may fail the build.
+        return
     }
 } else {
     println "Skipped updating BACnet Vendor IDs.htm as it's fresh enough"
