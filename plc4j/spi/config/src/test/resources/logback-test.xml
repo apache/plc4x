@@ -17,31 +17,20 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<configuration xmlns="http://ch.qos.logback/xml/ns/logback"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                  http://ch.qos.logback/xml/ns/logback
+                  https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
 
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
-    <version>0.14.0-SNAPSHOT</version>
-  </parent>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
 
-  <artifactId>plc4j-spi</artifactId>
-  <packaging>pom</packaging>
+  <root level="warn">
+    <appender-ref ref="STDOUT"/>
+  </root>
 
-  <name>PLC4J: SPI</name>
-  <description>Internal API Module.</description>
-
-  <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
-  </properties>
-
-  <modules>
-    <module>buffers</module>
-    <module>config</module>
-    <module>fields</module>
-    <module>utils</module>
-    <module>values</module>
-  </modules>
-
-</project>
+</configuration>
