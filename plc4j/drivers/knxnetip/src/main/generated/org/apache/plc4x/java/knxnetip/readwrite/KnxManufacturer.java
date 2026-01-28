@@ -29,7 +29,7 @@ public enum KnxManufacturer {
 
   M_SIEMENS((int) 1, (int) 1, "Siemens"),
 
-  M_ABB_AG_STOTZ___KONTAKT((int) 2, (int) 2, "ABB AG (Stotz - Kontakt)"),
+  M_ABB_AG___STOTZ_KONTAKT((int) 2, (int) 2, "ABB AG - STOTZ-KONTAKT"),
 
   M_ALBRECHT_JUNG((int) 3, (int) 4, "Albrecht Jung"),
 
@@ -37,7 +37,7 @@ public enum KnxManufacturer {
 
   M_BERKER((int) 5, (int) 6, "Berker"),
 
-  M_ABB_AG_BUSCH___JAEGER((int) 6, (int) 7, "ABB AG (Busch - Jaeger)"),
+  M_ABB_AG___BUSCH_JAEGER((int) 6, (int) 7, "ABB AG - BUSCH-JAEGER"),
 
   M_GIRA_GIERSIEPEN((int) 7, (int) 8, "GIRA Giersiepen"),
 
@@ -1579,9 +1579,19 @@ public enum KnxManufacturer {
 
   M_LEXA_LIFESTYLE((int) 776, (int) 837, "Lexa LIFESTYLE"),
 
-  M_ABB___RESERVED((int) 777, (int) 43954, "ABB - reserved"),
+  M_CASAMBI((int) 777, (int) 838, "casambi"),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 778, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_BELCAB_UK_LTD((int) 778, (int) 839, "BELCAB UK LTD"),
+
+  M_CHANNEL_SMART_BUILDINGS((int) 779, (int) 840, "Channel Smart Buildings"),
+
+  M_NANJING_KLEVEN_ELECTRONIC_TECHNOLOGY_CO___LTD((int) 780, (int) 841, "Nanjing Kleven Electronic Technology Co., Ltd"),
+
+  M_ZHEJIANG_CHATNOW_NEW_MATERIAL_TECHNOLOGY_CO___LTD((int) 781, (int) 842, "Zhejiang Chatnow New Material Technology Co., Ltd"),
+
+  M_ABB___RESERVED((int) 782, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 783, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 
