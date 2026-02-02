@@ -38,6 +38,7 @@
   </properties>
 
   <modules>
+    <module>api</module>
     <!--module>can</module>
     <module>pcap-replay</module>
     <module>pcap-shared</module>

@@ -483,6 +483,13 @@
         <version>${mockito.version}</version>
       </dependency>
 
+      <!-- OSGi Dependencies -->
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.service.component.annotations</artifactId>
+        <version>1.5.1</version>
+      </dependency>
+
       <!-- TODO: Eliminate the usage of AssertJ (OPM and OPC-UA Driver) -->
       <dependency>
         <groupId>org.assertj</groupId>
