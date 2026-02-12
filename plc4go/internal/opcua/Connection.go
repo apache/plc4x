@@ -21,6 +21,7 @@ package opcua
 
 import (
 	"context"
+	"slices"
 	"sync"
 	"time"
 
@@ -205,11 +206,9 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
-	for _, sub := range c.subscribers {
-		if sub == subscriber {
-			c.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber already added")
-			return
-		}
+	if slices.Contains(c.subscribers, subscriber) {
+		c.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber already added")
+		return
 	}
 	c.subscribers = append(c.subscribers, subscriber)
 }

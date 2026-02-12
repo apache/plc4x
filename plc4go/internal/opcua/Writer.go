@@ -201,7 +201,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// Simple boolean values
 	case apiValues.BOOL:
 		tmpBOOL := make([]byte, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpBOOL[i] = valueObject.GetIndex(i).GetByte()
 		}
 		var arrayLength *int32
@@ -214,7 +214,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 8-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.BYTE:
 		tmpBYTE := make([]byte, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpBYTE[i] = valueObject.GetIndex(i).GetByte()
 		}
 		var arrayLength *int32
@@ -227,7 +227,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 16-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.WORD:
 		tmpWORD := make([]uint16, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpWORD[i] = valueObject.GetIndex(i).GetUint16()
 		}
 		var arrayLength *int32
@@ -240,7 +240,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 32-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.DWORD:
 		tmpDWORD := make([]uint32, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpDWORD[i] = valueObject.GetIndex(i).GetUint32()
 		}
 		var arrayLength *int32
@@ -253,7 +253,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 64-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.LWORD:
 		tmpLWORD := make([]uint64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpLWORD[i] = valueObject.GetIndex(i).GetUint64()
 		}
 		var arrayLength *int32
@@ -266,7 +266,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 8-Bit Unsigned Integers
 	case apiValues.USINT:
 		tmpUSINT := make([]byte, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpUSINT[i] = valueObject.GetIndex(i).GetByte()
 		}
 		var arrayLength *int32
@@ -279,7 +279,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 8-Bit Signed Integers
 	case apiValues.SINT:
 		tmpSINT := make([]byte, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpSINT[i] = valueObject.GetIndex(i).GetByte()
 		}
 		var arrayLength *int32
@@ -292,7 +292,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 16-Bit Unsigned Integers
 	case apiValues.UINT:
 		tmpUINT := make([]uint16, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpUINT[i] = valueObject.GetIndex(i).GetUint16()
 		}
 		var arrayLength *int32
@@ -305,7 +305,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 16-Bit Signed Integers
 	case apiValues.INT:
 		tmpINT := make([]int16, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpINT[i] = valueObject.GetIndex(i).GetInt16()
 		}
 		var arrayLength *int32
@@ -318,7 +318,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 32-Bit Unsigned Integers
 	case apiValues.UDINT:
 		tmpUDINT := make([]uint32, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpUDINT[i] = valueObject.GetIndex(i).GetUint32()
 		}
 		var arrayLength *int32
@@ -331,7 +331,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 32-Bit Signed Integers
 	case apiValues.DINT:
 		tmpDINT := make([]int32, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpDINT[i] = valueObject.GetIndex(i).GetInt32()
 		}
 		var arrayLength *int32
@@ -344,7 +344,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 64-Bit Unsigned Integers
 	case apiValues.ULINT:
 		tmpULINT := make([]uint64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpULINT[i] = valueObject.GetIndex(i).GetUint64()
 		}
 		var arrayLength *int32
@@ -357,7 +357,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 64-Bit Signed Integers
 	case apiValues.LINT:
 		tmpUINT := make([]int64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpUINT[i] = valueObject.GetIndex(i).GetInt64()
 		}
 		var arrayLength *int32
@@ -370,7 +370,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 32-Bit Floating Point Values
 	case apiValues.REAL:
 		tmpREAL := make([]float32, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpREAL[i] = valueObject.GetIndex(i).GetFloat32()
 		}
 		var arrayLength *int32
@@ -383,7 +383,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	// 64-Bit Floating Point Values
 	case apiValues.LREAL:
 		tmpLREAL := make([]float64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpLREAL[i] = valueObject.GetIndex(i).GetFloat64()
 		}
 		var arrayLength *int32
@@ -403,8 +403,8 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 		fallthrough
 	case apiValues.WSTRING:
 		tmpString := make([]readWriteModel.PascalString, length)
-		for i := uint32(0); i < length; i++ {
-			tmpString[i] = readWriteModel.NewPascalString(utils.ToPtr(valueObject.GetIndex(i).GetString()))
+		for i := range length {
+			tmpString[i] = readWriteModel.NewPascalString(new(valueObject.GetIndex(i).GetString()))
 		}
 		var arrayLength *int32
 		if length != 1 {
@@ -415,7 +415,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 
 	case apiValues.DATE_AND_TIME:
 		tmpDateTime := make([]int64, length)
-		for i := uint32(0); i < length; i++ {
+		for i := range length {
 			tmpDateTime[i] = valueObject.GetIndex(i).GetDateTime().UnixMilli() / 1000
 		}
 		var arrayLength *int32

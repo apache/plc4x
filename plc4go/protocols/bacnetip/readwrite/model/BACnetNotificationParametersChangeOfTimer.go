@@ -590,15 +590,15 @@ func (m *_BACnetNotificationParametersChangeOfTimer) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'updateTime' field")
 		}
 
-		if err := WriteOptionalField[BACnetTimerTransitionTagged](ctx, "lastStateChange", GetRef(m.GetLastStateChange()), WriteComplex[BACnetTimerTransitionTagged](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetTimerTransitionTagged](ctx, "lastStateChange", new(m.GetLastStateChange()), WriteComplex[BACnetTimerTransitionTagged](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastStateChange' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "initialTimeout", GetRef(m.GetInitialTimeout()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "initialTimeout", new(m.GetInitialTimeout()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'initialTimeout' field")
 		}
 
-		if err := WriteOptionalField[BACnetDateTimeEnclosed](ctx, "expirationTime", GetRef(m.GetExpirationTime()), WriteComplex[BACnetDateTimeEnclosed](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetDateTimeEnclosed](ctx, "expirationTime", new(m.GetExpirationTime()), WriteComplex[BACnetDateTimeEnclosed](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'expirationTime' field")
 		}
 

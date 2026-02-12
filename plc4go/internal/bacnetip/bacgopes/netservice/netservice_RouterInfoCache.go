@@ -25,7 +25,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -108,7 +107,7 @@ func (n *RouterInfoCache) GetRouterInfo(snet, dnet netKey) *RouterInfo {
 
 func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets []uint16, status *RouterStatus) error {
 	if status == nil {
-		status = ToPtr(ROUTER_AVAILABLE)
+		status = new(ROUTER_AVAILABLE)
 	}
 	n.log.Debug().Stringer("snet", snet).Stringer("dnet", address).Uints16("dnets", dnets).Msg("UpdateRouterInfo")
 	if _debug != nil {

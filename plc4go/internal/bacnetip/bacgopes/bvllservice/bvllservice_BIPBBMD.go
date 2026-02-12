@@ -203,7 +203,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwArgs KWArgs) error {
 		return b.SapResponse(NA(pdu), NoKWArgs())
 	case *WriteBroadcastDistributionTable:
 		// build a response
-		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK), NoArgs, NoKWArgs())
+		xpdu, err := NewResult(new(model.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK), NoArgs, NoKWArgs())
 		if err != nil {
 			return errors.Wrap(err, "error creating Result")
 		}

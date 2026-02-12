@@ -22,6 +22,7 @@ package primitivedata
 import (
 	"encoding/binary"
 	"fmt"
+	"maps"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -126,9 +127,7 @@ func NewEnumerated(args Args) (*Enumerated, error) {
 		e.value = arg.value
 		e.valueString = arg.valueString
 		e._xlateTable = make(map[any]any)
-		for k, v := range arg._xlateTable {
-			e._xlateTable[k] = v
-		}
+		maps.Copy(e._xlateTable, arg._xlateTable)
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}

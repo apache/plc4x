@@ -20,6 +20,7 @@
 package state_machine
 
 import (
+	"strings"
 	"time"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -47,11 +48,12 @@ func (t *TrafficLog) Dump(handlerFn func(format string, args Args)) {
 		return
 	}
 	for _, args := range t.traffic {
-		argFormat := "   %6.3f:"
+		var argFormat strings.Builder
+		argFormat.WriteString("   %6.3f:")
 		for _, arg := range args.Args[1:] {
 			_ = arg
-			argFormat += " %v"
+			argFormat.WriteString(" %v")
 		}
-		handlerFn(argFormat, args.Args)
+		handlerFn(argFormat.String(), args.Args)
 	}
 }

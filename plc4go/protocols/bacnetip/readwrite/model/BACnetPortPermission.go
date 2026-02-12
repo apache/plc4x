@@ -298,7 +298,7 @@ func (m *_BACnetPortPermission) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(err, "Error serializing 'port' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "enable", GetRef(m.GetEnable()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "enable", new(m.GetEnable()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'enable' field")
 	}
 

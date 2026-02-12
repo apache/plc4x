@@ -25,7 +25,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-var inheritanceDebug = func(_ string, _ ...interface{}) {}
+var inheritanceDebug = func(_ string, _ ...any) {}
 
 type Initializer interface {
 	Init(Args, KWArgs) error

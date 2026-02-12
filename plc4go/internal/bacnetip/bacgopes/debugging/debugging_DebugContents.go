@@ -64,7 +64,7 @@ func (d *DebugContents) AddDebugContents(debuggable Debuggable, contents ...stri
 }
 
 func (d *DebugContents) StructHeader() []byte {
-	return []byte(fmt.Sprintf("<%s object at %p>", d.LeafNameOrFallback(), d))
+	return fmt.Appendf(nil, "<%s object at %p>", d.LeafNameOrFallback(), d)
 }
 
 func (d *DebugContents) Format(s fmt.State, v rune) {
@@ -304,7 +304,7 @@ func isString(input any) bool {
 
 func TypeName(anything any) string {
 	typeOf := reflect.TypeOf(anything)
-	if typeOf.Kind() == reflect.Ptr {
+	if typeOf.Kind() == reflect.Pointer {
 		typeOf = typeOf.Elem()
 	}
 	return typeOf.Name()
@@ -312,7 +312,7 @@ func TypeName(anything any) string {
 
 func QualifiedTypeName(anything any) string {
 	typeOf := reflect.TypeOf(anything)
-	if typeOf.Kind() == reflect.Ptr {
+	if typeOf.Kind() == reflect.Pointer {
 		typeOf = typeOf.Elem()
 	}
 	typeNameString := projectName + "." + typeOf.String()

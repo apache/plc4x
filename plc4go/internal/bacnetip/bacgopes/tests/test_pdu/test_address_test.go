@@ -606,10 +606,12 @@ func TestAddressEqualityRouted(t *testing.T) {
 	assert.True(t, Address("*:*@0x06070809BAC1").Equals(GlobalBroadcast(Address("6.7.8.9:47809"))))
 }
 
+//go:fix inline
 func n(n uint16) *uint16 {
-	return &n
+	return new(n)
 }
 
+//go:fix inline
 func l(l uint8) *uint8 {
-	return &l
+	return new(l)
 }

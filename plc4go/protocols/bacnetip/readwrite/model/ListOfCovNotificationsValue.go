@@ -380,7 +380,7 @@ func (m *_ListOfCovNotificationsValue) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 	}
 
@@ -388,7 +388,7 @@ func (m *_ListOfCovNotificationsValue) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(err, "Error serializing 'propertyValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagTime](ctx, "timeOfChange", GetRef(m.GetTimeOfChange()), WriteComplex[BACnetContextTagTime](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagTime](ctx, "timeOfChange", new(m.GetTimeOfChange()), WriteComplex[BACnetContextTagTime](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'timeOfChange' field")
 	}
 

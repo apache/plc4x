@@ -378,7 +378,7 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(err, "Error serializing 'nodeId' field")
 	}
 
-	if err := WriteOptionalField[PascalString](ctx, "namespaceURI", GetRef(m.GetNamespaceURI()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[PascalString](ctx, "namespaceURI", new(m.GetNamespaceURI()), WriteComplex[PascalString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'namespaceURI' field")
 	}
 

@@ -615,7 +615,7 @@ func (pm *_CALData) serializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteOptionalField[CALData](ctx, "additionalData", GetRef(m.GetAdditionalData()), WriteComplex[CALData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[CALData](ctx, "additionalData", new(m.GetAdditionalData()), WriteComplex[CALData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'additionalData' field")
 	}
 

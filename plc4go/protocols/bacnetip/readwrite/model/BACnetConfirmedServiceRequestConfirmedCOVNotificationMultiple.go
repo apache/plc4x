@@ -464,7 +464,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Seriali
 			return errors.Wrap(err, "Error serializing 'timeRemaining' field")
 		}
 
-		if err := WriteOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", GetRef(m.GetTimestamp()), WriteComplex[BACnetTimeStampEnclosed](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", new(m.GetTimestamp()), WriteComplex[BACnetTimeStampEnclosed](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 

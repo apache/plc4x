@@ -363,7 +363,7 @@ func (m *_CipReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(err, "Error serializing 'extStatus' field")
 		}
 
-		if err := WriteOptionalField[CIPData](ctx, "data", GetRef(m.GetData()), WriteComplex[CIPData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[CIPData](ctx, "data", new(m.GetData()), WriteComplex[CIPData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

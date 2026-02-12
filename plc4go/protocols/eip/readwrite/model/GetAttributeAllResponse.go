@@ -363,7 +363,7 @@ func (m *_GetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(err, "Error serializing 'extStatus' field")
 		}
 
-		if err := WriteOptionalField[CIPAttributes](ctx, "attributes", GetRef(m.GetAttributes()), WriteComplex[CIPAttributes](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[CIPAttributes](ctx, "attributes", new(m.GetAttributes()), WriteComplex[CIPAttributes](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'attributes' field")
 		}
 

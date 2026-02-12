@@ -25,6 +25,7 @@ import (
 	"math"
 	"net"
 	"runtime/debug"
+	"slices"
 	"strconv"
 	"sync/atomic"
 	"time"
@@ -175,11 +176,9 @@ func (m *Connection) getGroupAddressNumLevels() uint8 {
 }
 
 func (m *Connection) addSubscriber(subscriber *Subscriber) {
-	for _, sub := range m.subscribers {
-		if sub == subscriber {
-			m.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber %v already added")
-			return
-		}
+	if slices.Contains(m.subscribers, subscriber) {
+		m.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber %v already added")
+		return
 	}
 	m.subscribers = append(m.subscribers, subscriber)
 }

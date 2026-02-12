@@ -21,6 +21,7 @@ package primitivedata
 
 import (
 	"fmt"
+	"maps"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -118,9 +119,7 @@ func NewObjectType(args Args) (*ObjectType, error) {
 		switch arg0 := arg0.(type) {
 		case *ObjectType:
 			o.Enumerated, _ = NewEnumerated(NA(arg0.Enumerated))
-			for k, v := range arg0.enumerations {
-				o.enumerations[k] = v
-			}
+			maps.Copy(o.enumerations, arg0.enumerations)
 			return o, nil
 		}
 	case 2:

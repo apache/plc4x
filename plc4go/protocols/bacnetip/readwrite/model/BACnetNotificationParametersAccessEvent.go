@@ -599,7 +599,7 @@ func (m *_BACnetNotificationParametersAccessEvent) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(err, "Error serializing 'accessCredential' field")
 		}
 
-		if err := WriteOptionalField[BACnetAuthenticationFactorTypeTagged](ctx, "authenticationFactor", GetRef(m.GetAuthenticationFactor()), WriteComplex[BACnetAuthenticationFactorTypeTagged](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetAuthenticationFactorTypeTagged](ctx, "authenticationFactor", new(m.GetAuthenticationFactor()), WriteComplex[BACnetAuthenticationFactorTypeTagged](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'authenticationFactor' field")
 		}
 

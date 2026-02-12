@@ -280,7 +280,7 @@ func (m *_BACnetLogRecordLogDatumAnyValue) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumAnyValue")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", GetRef(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", new(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'anyValue' field")
 		}
 

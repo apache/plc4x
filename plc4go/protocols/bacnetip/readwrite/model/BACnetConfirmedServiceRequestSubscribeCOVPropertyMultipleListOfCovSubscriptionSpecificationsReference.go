@@ -339,7 +339,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubs
 		return errors.Wrap(err, "Error serializing 'monitoredProperty' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", new(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'covIncrement' field")
 	}
 

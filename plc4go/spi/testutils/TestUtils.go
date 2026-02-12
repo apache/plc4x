@@ -192,8 +192,8 @@ func shouldNoColor() bool {
 }
 
 type TestingLog interface {
-	Log(args ...interface{})
-	Logf(format string, args ...interface{})
+	Log(args ...any)
+	Logf(format string, args ...any)
 	Helper()
 }
 
@@ -214,7 +214,7 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 			}
 		},
 		func(w *zerolog.ConsoleWriter) {
-			w.FormatFieldValue = func(i interface{}) string {
+			w.FormatFieldValue = func(i any) string {
 				switch i := i.(type) {
 				case string:
 					if strings.Contains(i, "\\n") {
@@ -235,7 +235,7 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 				}
 				return fmt.Sprintf("%s", i)
 			}
-			w.FormatExtra = func(m map[string]interface{}, buffer *bytes.Buffer) error {
+			w.FormatExtra = func(m map[string]any, buffer *bytes.Buffer) error {
 				for key, i := range m {
 					switch i := i.(type) {
 					case string:
@@ -290,7 +290,7 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 		logger = logger.With().Timestamp().Logger()
 	}
 	stackSetter.Do(func() {
-		zerolog.ErrorStackMarshaler = func(err error) interface{} {
+		zerolog.ErrorStackMarshaler = func(err error) any {
 			if err == nil {
 				return nil
 			}

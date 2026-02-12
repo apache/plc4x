@@ -575,11 +575,11 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(err, "Error serializing 'valueSpecified' field")
 	}
 
-	if err := WriteOptionalField[Variant](ctx, "value", GetRef(m.GetValue()), WriteComplex[Variant](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[Variant](ctx, "value", new(m.GetValue()), WriteComplex[Variant](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
-	if err := WriteOptionalField[StatusCode](ctx, "statusCode", GetRef(m.GetStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[StatusCode](ctx, "statusCode", new(m.GetStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'statusCode' field")
 	}
 

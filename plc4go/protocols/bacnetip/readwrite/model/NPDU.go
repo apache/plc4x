@@ -709,11 +709,11 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(_payloadSubtractionErr, "Error serializing 'payloadSubtraction' field")
 	}
 
-	if err := WriteOptionalField[NLM](ctx, "nlm", GetRef(m.GetNlm()), WriteComplex[NLM](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[NLM](ctx, "nlm", new(m.GetNlm()), WriteComplex[NLM](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'nlm' field")
 	}
 
-	if err := WriteOptionalField[APDU](ctx, "apdu", GetRef(m.GetApdu()), WriteComplex[APDU](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[APDU](ctx, "apdu", new(m.GetApdu()), WriteComplex[APDU](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'apdu' field")
 	}
 

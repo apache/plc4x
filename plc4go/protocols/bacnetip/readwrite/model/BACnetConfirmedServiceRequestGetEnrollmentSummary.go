@@ -498,23 +498,23 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 			return errors.Wrap(err, "Error serializing 'acknowledgmentFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetRecipientProcessEnclosed](ctx, "enrollmentFilter", GetRef(m.GetEnrollmentFilter()), WriteComplex[BACnetRecipientProcessEnclosed](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetRecipientProcessEnclosed](ctx, "enrollmentFilter", new(m.GetEnrollmentFilter()), WriteComplex[BACnetRecipientProcessEnclosed](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'enrollmentFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](ctx, "eventStateFilter", GetRef(m.GetEventStateFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](ctx, "eventStateFilter", new(m.GetEventStateFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventStateFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetEventTypeTagged](ctx, "eventTypeFilter", GetRef(m.GetEventTypeFilter()), WriteComplex[BACnetEventTypeTagged](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetEventTypeTagged](ctx, "eventTypeFilter", new(m.GetEventTypeFilter()), WriteComplex[BACnetEventTypeTagged](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventTypeFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](ctx, "priorityFilter", GetRef(m.GetPriorityFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](ctx, "priorityFilter", new(m.GetPriorityFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'priorityFilter' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", GetRef(m.GetNotificationClassFilter()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", new(m.GetNotificationClassFilter()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'notificationClassFilter' field")
 		}
 

@@ -139,11 +139,11 @@ func TestApplyGenericOption(t *testing.T) {
 }
 
 func TestExtractIfPresent(t *testing.T) {
-	type A interface{}
+	type A any
 	type B interface{ A }
 	type C interface{ A }
 	type D struct{}
-	type E interface{}
+	type E any
 	someA := genericOption[A]{value: "string"}
 	someB := genericOption[B]{value: 2}
 	someC := genericOption[C]{value: true}

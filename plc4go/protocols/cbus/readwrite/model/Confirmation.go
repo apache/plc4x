@@ -349,7 +349,7 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(err, "Error serializing 'alpha' field")
 	}
 
-	if err := WriteOptionalField[Alpha](ctx, "secondAlpha", GetRef(m.GetSecondAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[Alpha](ctx, "secondAlpha", new(m.GetSecondAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'secondAlpha' field")
 	}
 

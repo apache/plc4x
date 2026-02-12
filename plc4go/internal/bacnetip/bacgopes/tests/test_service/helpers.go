@@ -486,8 +486,7 @@ func (a *ApplicationStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
 	return a.ApplicationIOController.Confirmation(args, kwArgs)
 }
 
-type COVTestClientServicesRequirements interface {
-}
+type COVTestClientServicesRequirements any
 
 type COVTestClientServices struct {
 	COVTestClientServicesRequirements

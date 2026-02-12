@@ -330,7 +330,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'objectSpecifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetPropertyValues](ctx, "listOfValues", GetRef(m.GetListOfValues()), WriteComplex[BACnetPropertyValues](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetPropertyValues](ctx, "listOfValues", new(m.GetListOfValues()), WriteComplex[BACnetPropertyValues](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'listOfValues' field")
 		}
 

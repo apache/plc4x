@@ -298,7 +298,7 @@ func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(err, "Error serializing 'bbmdAddress' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", GetRef(m.GetBroadcastMask()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", new(m.GetBroadcastMask()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'broadcastMask' field")
 	}
 

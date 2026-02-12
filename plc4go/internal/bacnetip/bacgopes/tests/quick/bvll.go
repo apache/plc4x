@@ -27,7 +27,7 @@ import (
 )
 
 func Result(i uint16) *bvll.Result {
-	result, err := bvll.NewResult(ToPtr(readWriteModel.BVLCResultCode(i)), NoArgs, NoKWArgs())
+	result, err := bvll.NewResult(new(readWriteModel.BVLCResultCode(i)), NoArgs, NoKWArgs())
 	if err != nil {
 		panic(err)
 	}

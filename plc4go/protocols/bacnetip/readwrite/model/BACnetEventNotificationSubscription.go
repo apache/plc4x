@@ -384,7 +384,7 @@ func (m *_BACnetEventNotificationSubscription) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", new(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 	}
 

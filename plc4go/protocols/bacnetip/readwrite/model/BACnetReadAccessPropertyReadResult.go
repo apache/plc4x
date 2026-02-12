@@ -382,11 +382,11 @@ func (m *_BACnetReadAccessPropertyReadResult) SerializeWithWriteBuffer(ctx conte
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
-	if err := WriteOptionalField[BACnetConstructedData](ctx, "propertyValue", GetRef(m.GetPropertyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "propertyValue", new(m.GetPropertyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'propertyValue' field")
 	}
 
-	if err := WriteOptionalField[ErrorEnclosed](ctx, "propertyAccessError", GetRef(m.GetPropertyAccessError()), WriteComplex[ErrorEnclosed](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[ErrorEnclosed](ctx, "propertyAccessError", new(m.GetPropertyAccessError()), WriteComplex[ErrorEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'propertyAccessError' field")
 	}
 

@@ -253,7 +253,7 @@ func (m *_BACnetSetpointReference) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetSetpointReference")
 	}
 
-	if err := WriteOptionalField[BACnetObjectPropertyReferenceEnclosed](ctx, "setPointReference", GetRef(m.GetSetPointReference()), WriteComplex[BACnetObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetObjectPropertyReferenceEnclosed](ctx, "setPointReference", new(m.GetSetPointReference()), WriteComplex[BACnetObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'setPointReference' field")
 	}
 

@@ -264,7 +264,7 @@ func (b *BIPForeign) Confirmation(args Args, kwArgs KWArgs) error {
 		return b.SapResponse(args, NoKWArgs())
 	case *WriteBroadcastDistributionTable:
 		// build a response
-		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
+		xpdu, err := NewResult(new(model.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building a result")
 		}
@@ -274,7 +274,7 @@ func (b *BIPForeign) Confirmation(args Args, kwArgs KWArgs) error {
 		return b.Request(NA(xpdu), NoKWArgs())
 	case *ReadBroadcastDistributionTable:
 		// build a response
-		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
+		xpdu, err := NewResult(new(model.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building a result")
 		}
@@ -284,7 +284,7 @@ func (b *BIPForeign) Confirmation(args Args, kwArgs KWArgs) error {
 		return b.Request(NA(xpdu), NoKWArgs())
 	case *RegisterForeignDevice:
 		// build a response
-		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
+		xpdu, err := NewResult(new(model.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building a result")
 		}
@@ -294,7 +294,7 @@ func (b *BIPForeign) Confirmation(args Args, kwArgs KWArgs) error {
 		return b.Request(NA(xpdu), NoKWArgs())
 	case *ReadForeignDeviceTable:
 		// build a response
-		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
+		xpdu, err := NewResult(new(model.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building a result")
 		}
@@ -304,7 +304,7 @@ func (b *BIPForeign) Confirmation(args Args, kwArgs KWArgs) error {
 		return b.Request(NA(xpdu), NoKWArgs())
 	case *DeleteForeignDeviceTableEntry:
 		// build a response
-		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
+		xpdu, err := NewResult(new(model.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building a result")
 		}
@@ -314,7 +314,7 @@ func (b *BIPForeign) Confirmation(args Args, kwArgs KWArgs) error {
 		return b.Request(NA(xpdu), NoKWArgs())
 	case *DistributeBroadcastToNetwork:
 		// build a response
-		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
+		xpdu, err := NewResult(new(model.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building a result")
 		}
@@ -351,7 +351,7 @@ func (b *BIPForeign) Register(addr *Address, ttl uint16) error {
 	// install this task to do registration renewal according to the TTL
 	// and stop tracking any active registration timeouts
 	b.InstallTask(WithInstallTaskOptionsWhen(time.Time{}))
-	b.stopTrackRegistration()
+	b.snewackRegistration()
 	return nil
 }
 
@@ -378,7 +378,7 @@ func (b *BIPForeign) Unregister() {
 	// unschedule registration renewal & timeout tracking if previously
 	// scheduled
 	b.SuspendTask()
-	b.stopTrackRegistration()
+	b.snewackRegistration()
 }
 
 // ProcessTask is called when the registration request should be sent to the BBMD.
@@ -410,13 +410,13 @@ func (b *BIPForeign) startTrackRegistration() {
 	b.registrationTimeoutTask.InstallTask(WithInstallTaskOptionsDelta(time.Duration(*b.bbmdTimeToLive)*time.Second + (30 * time.Second)))
 }
 
-func (b *BIPForeign) stopTrackRegistration() {
+func (b *BIPForeign) snewackRegistration() {
 	b.registrationTimeoutTask.SuspendTask()
 }
 
 // _registration_expired is called when detecting that foreign device registration has definitely expired.
 func (b *BIPForeign) registrationExpired(_ Args, _ KWArgs) error {
 	b.registrationStatus = -1 // Unregistered
-	b.stopTrackRegistration()
+	b.snewackRegistration()
 	return nil
 }

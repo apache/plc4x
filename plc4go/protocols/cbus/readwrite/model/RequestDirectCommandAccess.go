@@ -385,7 +385,7 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}
 
-		if err := WriteOptionalField[Alpha](ctx, "alpha", GetRef(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[Alpha](ctx, "alpha", new(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'alpha' field")
 		}
 

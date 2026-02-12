@@ -558,7 +558,7 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 	} else if strings.HasPrefix(segment, "[") && strings.HasSuffix(segment, "]") {
 		segment = strings.TrimPrefix(segment, "[")
 		segment = strings.TrimSuffix(segment, "]")
-		for _, segment := range strings.Split(segment, ",") {
+		for segment := range strings.SplitSeq(segment, ",") {
 			if strings.Contains(segment, "-") {
 				split := strings.Split(segment, "-")
 				localMin, err := strconv.ParseUint(split[0], 10, 8)

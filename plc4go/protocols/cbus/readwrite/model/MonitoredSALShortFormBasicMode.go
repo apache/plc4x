@@ -423,7 +423,7 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		if err := WriteOptionalField[SALData](ctx, "salData", GetRef(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[SALData](ctx, "salData", new(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'salData' field")
 		}
 

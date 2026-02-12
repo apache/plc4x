@@ -414,7 +414,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) SerializeWithWriteB
 			return errors.Wrap(err, "Error serializing 'textMessageSourceDevice' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", GetRef(m.GetMessageClass()), WriteComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", new(m.GetMessageClass()), WriteComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageClass' field")
 		}
 

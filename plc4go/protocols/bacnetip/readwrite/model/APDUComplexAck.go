@@ -569,7 +569,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
 
-		if err := WriteOptionalField[BACnetServiceAck](ctx, "serviceAck", GetRef(m.GetServiceAck()), WriteComplex[BACnetServiceAck](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetServiceAck](ctx, "serviceAck", new(m.GetServiceAck()), WriteComplex[BACnetServiceAck](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceAck' field")
 		}
 

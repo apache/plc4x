@@ -66,7 +66,7 @@ func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolo
 		opt(e)
 	}
 	workers := make([]*worker, numberOfInitialWorkers)
-	for i := 0; i < numberOfInitialWorkers; i++ {
+	for i := range numberOfInitialWorkers {
 		w := newWorker(customLogger, fmt.Sprintf("%s-worker-%d", e.name, i), e)
 		workers[i] = w
 	}

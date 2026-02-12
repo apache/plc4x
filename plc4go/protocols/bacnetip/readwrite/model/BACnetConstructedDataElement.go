@@ -504,15 +504,15 @@ func (m *_BACnetConstructedDataElement) SerializeWithWriteBuffer(ctx context.Con
 		return errors.Wrap(_isContextTagErr, "Error serializing 'isContextTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTag](ctx, "applicationTag", GetRef(m.GetApplicationTag()), WriteComplex[BACnetApplicationTag](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTag](ctx, "applicationTag", new(m.GetApplicationTag()), WriteComplex[BACnetApplicationTag](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'applicationTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTag](ctx, "contextTag", GetRef(m.GetContextTag()), WriteComplex[BACnetContextTag](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTag](ctx, "contextTag", new(m.GetContextTag()), WriteComplex[BACnetContextTag](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'contextTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetConstructedData](ctx, "constructedData", GetRef(m.GetConstructedData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "constructedData", new(m.GetConstructedData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'constructedData' field")
 	}
 

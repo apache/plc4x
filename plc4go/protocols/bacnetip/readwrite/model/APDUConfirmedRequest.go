@@ -653,7 +653,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", GetRef(m.GetServiceRequest()), WriteComplex[BACnetConfirmedServiceRequest](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", new(m.GetServiceRequest()), WriteComplex[BACnetConfirmedServiceRequest](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceRequest' field")
 		}
 

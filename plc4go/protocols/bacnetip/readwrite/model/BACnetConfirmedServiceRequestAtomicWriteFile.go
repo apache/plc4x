@@ -456,7 +456,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetOpeningTag](ctx, "openingTag", GetRef(m.GetOpeningTag()), WriteComplex[BACnetOpeningTag](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetOpeningTag](ctx, "openingTag", new(m.GetOpeningTag()), WriteComplex[BACnetOpeningTag](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
@@ -468,7 +468,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(err, "Error serializing 'fileData' field")
 		}
 
-		if err := WriteOptionalField[BACnetClosingTag](ctx, "closingTag", GetRef(m.GetClosingTag()), WriteComplex[BACnetClosingTag](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetClosingTag](ctx, "closingTag", new(m.GetClosingTag()), WriteComplex[BACnetClosingTag](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 

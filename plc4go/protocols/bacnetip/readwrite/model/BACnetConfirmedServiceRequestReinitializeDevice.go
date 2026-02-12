@@ -330,7 +330,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuf
 			return errors.Wrap(err, "Error serializing 'reinitializedStateOfDevice' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", GetRef(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", new(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'password' field")
 		}
 

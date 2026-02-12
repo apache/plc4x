@@ -60,6 +60,6 @@ func (t *TimeoutTask) ProcessTask() error {
 func (t *TimeoutTask) Format(s fmt.State, c rune) {
 	switch c {
 	case 's', 'v', 'r':
-		_, _ = s.Write([]byte(fmt.Sprintf("process_task %p", t.fn)))
+		_, _ = s.Write(fmt.Appendf(nil, "process_task %p", t.fn))
 	}
 }

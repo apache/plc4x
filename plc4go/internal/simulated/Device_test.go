@@ -294,6 +294,7 @@ func TestNewDevice(t *testing.T) {
 	}
 }
 
+//go:fix inline
 func ToReference(value apiValues.PlcValue) *apiValues.PlcValue {
-	return &value
+	return new(value)
 }

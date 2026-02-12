@@ -422,7 +422,7 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) SerializeWithWriteBu
 			return errors.Wrap(err, "Error serializing 'request' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", new(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 

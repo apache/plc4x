@@ -43,7 +43,7 @@ func TestSizingWorksProperly(t *testing.T) {
 	})
 	t.Run("custom sizing", func(t *testing.T) {
 		wb := NewWriteBufferByteBased(WithInitialSizeForByteBasedBuffer(23432342))
-		for i := 0; i < 14; i++ {
+		for range 14 {
 			_ = wb.WriteByte("nasd", 12)
 		}
 

@@ -284,7 +284,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestGetEventInformation")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", GetRef(m.GetLastReceivedObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", new(m.GetLastReceivedObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastReceivedObjectIdentifier' field")
 		}
 

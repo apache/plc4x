@@ -135,7 +135,7 @@ func (rb *byteReadBuffer) ReadByte(_ string, _ ...WithReaderArgs) (byte, error) 
 
 func (rb *byteReadBuffer) ReadByteArray(_ string, numberOfBytes int, _ ...WithReaderArgs) ([]byte, error) {
 	byteArray := make([]byte, numberOfBytes)
-	for i := 0; i < numberOfBytes; i++ {
+	for i := range numberOfBytes {
 		rb.pos += 8
 		readByte, err := rb.reader.ReadByte()
 		if err != nil {

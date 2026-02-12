@@ -544,11 +544,11 @@ func (pm *_S7Message) serializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteOptionalField[S7Parameter](ctx, "parameter", GetRef(m.GetParameter()), WriteComplex[S7Parameter](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[S7Parameter](ctx, "parameter", new(m.GetParameter()), WriteComplex[S7Parameter](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'parameter' field")
 	}
 
-	if err := WriteOptionalField[S7Payload](ctx, "payload", GetRef(m.GetPayload()), WriteComplex[S7Payload](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[S7Payload](ctx, "payload", new(m.GetPayload()), WriteComplex[S7Payload](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 

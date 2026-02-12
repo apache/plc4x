@@ -326,7 +326,7 @@ func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(err, "Error serializing 'confirmation' field")
 		}
 
-		if err := WriteOptionalField[ReplyOrConfirmation](ctx, "embeddedReply", GetRef(m.GetEmbeddedReply()), WriteComplex[ReplyOrConfirmation](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[ReplyOrConfirmation](ctx, "embeddedReply", new(m.GetEmbeddedReply()), WriteComplex[ReplyOrConfirmation](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'embeddedReply' field")
 		}
 

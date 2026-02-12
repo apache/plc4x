@@ -69,7 +69,7 @@ func DumpFixedWidth(data []byte, desiredCharWidth int, highlights ...int) string
 	for byteIndex, rowIndex := 0, 0; byteIndex < len(data); byteIndex, rowIndex = byteIndex+maxBytesPerRow, rowIndex+1 {
 		indexString := fmt.Sprintf("%0*d|", indexWidth, byteIndex)
 		hexString += indexString
-		for columnIndex := 0; columnIndex < maxBytesPerRow; columnIndex++ {
+		for columnIndex := range maxBytesPerRow {
 			absoluteIndex := byteIndex + columnIndex
 			if absoluteIndex < len(data) {
 				if _, ok := highlightsSet[absoluteIndex]; ok {
@@ -84,10 +84,7 @@ func DumpFixedWidth(data []byte, desiredCharWidth int, highlights ...int) string
 				hexString += strings.Repeat(" ", byteWidth)
 			}
 		}
-		endIndex := byteIndex + maxBytesPerRow
-		if endIndex >= len(data) {
-			endIndex = len(data)
-		}
+		endIndex := min(byteIndex+maxBytesPerRow, len(data))
 		stringRepresentation := maskString(data[byteIndex:endIndex])
 		if len([]rune(stringRepresentation)) < maxBytesPerRow {
 			stringRepresentation += strings.Repeat(" ", (maxBytesPerRow-len([]rune(stringRepresentation)))%maxBytesPerRow)
@@ -103,7 +100,7 @@ func DiffHex(expectedBytes, actualBytes []byte) AsciiBox {
 	numBytes := int(math.Min(float64(len(expectedBytes)), float64(len(actualBytes))))
 	brokenAt := -1
 	var diffIndexes []int
-	for i := 0; i < numBytes; i++ {
+	for i := range numBytes {
 		if expectedBytes[i] != actualBytes[i] {
 			if brokenAt < 0 {
 				brokenAt = i

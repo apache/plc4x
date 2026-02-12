@@ -384,11 +384,11 @@ func (m *_ConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(err, "Error serializing 'status' field")
 		}
 
-		if err := WriteOptionalField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", GetRef(m.GetHpaiDataEndpoint()), WriteComplex[HPAIDataEndpoint](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteOptionalField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", new(m.GetHpaiDataEndpoint()), WriteComplex[HPAIDataEndpoint](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'hpaiDataEndpoint' field")
 		}
 
-		if err := WriteOptionalField[ConnectionResponseDataBlock](ctx, "connectionResponseDataBlock", GetRef(m.GetConnectionResponseDataBlock()), WriteComplex[ConnectionResponseDataBlock](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteOptionalField[ConnectionResponseDataBlock](ctx, "connectionResponseDataBlock", new(m.GetConnectionResponseDataBlock()), WriteComplex[ConnectionResponseDataBlock](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'connectionResponseDataBlock' field")
 		}
 

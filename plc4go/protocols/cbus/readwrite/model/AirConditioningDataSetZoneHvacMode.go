@@ -512,15 +512,15 @@ func (m *_AirConditioningDataSetZoneHvacMode) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(err, "Error serializing 'hvacType' field")
 		}
 
-		if err := WriteOptionalField[HVACTemperature](ctx, "level", GetRef(m.GetLevel()), WriteComplex[HVACTemperature](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACTemperature](ctx, "level", new(m.GetLevel()), WriteComplex[HVACTemperature](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", GetRef(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", new(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'rawLevel' field")
 		}
 
-		if err := WriteOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", GetRef(m.GetAuxLevel()), WriteComplex[HVACAuxiliaryLevel](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", new(m.GetAuxLevel()), WriteComplex[HVACAuxiliaryLevel](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'auxLevel' field")
 		}
 

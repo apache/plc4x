@@ -816,7 +816,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 			return errors.Wrap(err, "Error serializing 'eventType' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "messageText", GetRef(m.GetMessageText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "messageText", new(m.GetMessageText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageText' field")
 		}
 
@@ -824,11 +824,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 			return errors.Wrap(err, "Error serializing 'notifyType' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "ackRequired", GetRef(m.GetAckRequired()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "ackRequired", new(m.GetAckRequired()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'ackRequired' field")
 		}
 
-		if err := WriteOptionalField[BACnetEventStateTagged](ctx, "fromState", GetRef(m.GetFromState()), WriteComplex[BACnetEventStateTagged](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetEventStateTagged](ctx, "fromState", new(m.GetFromState()), WriteComplex[BACnetEventStateTagged](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'fromState' field")
 		}
 
@@ -836,7 +836,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 			return errors.Wrap(err, "Error serializing 'toState' field")
 		}
 
-		if err := WriteOptionalField[BACnetNotificationParameters](ctx, "eventValues", GetRef(m.GetEventValues()), WriteComplex[BACnetNotificationParameters](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetNotificationParameters](ctx, "eventValues", new(m.GetEventValues()), WriteComplex[BACnetNotificationParameters](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventValues' field")
 		}
 

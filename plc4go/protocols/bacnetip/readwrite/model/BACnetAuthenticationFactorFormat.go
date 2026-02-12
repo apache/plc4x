@@ -339,11 +339,11 @@ func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(ctx context
 		return errors.Wrap(err, "Error serializing 'formatType' field")
 	}
 
-	if err := WriteOptionalField[BACnetVendorIdTagged](ctx, "vendorId", GetRef(m.GetVendorId()), WriteComplex[BACnetVendorIdTagged](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetVendorIdTagged](ctx, "vendorId", new(m.GetVendorId()), WriteComplex[BACnetVendorIdTagged](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'vendorId' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", GetRef(m.GetVendorFormat()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", new(m.GetVendorFormat()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'vendorFormat' field")
 	}
 

@@ -339,11 +339,11 @@ func (m *_BACnetReadAccessProperty) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 	}
 
-	if err := WriteOptionalField[BACnetReadAccessPropertyReadResult](ctx, "readResult", GetRef(m.GetReadResult()), WriteComplex[BACnetReadAccessPropertyReadResult](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetReadAccessPropertyReadResult](ctx, "readResult", new(m.GetReadResult()), WriteComplex[BACnetReadAccessPropertyReadResult](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'readResult' field")
 	}
 

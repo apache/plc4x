@@ -282,7 +282,7 @@ func (m *Connection) readDataTypeTable(ctx context.Context, dataTableSize uint32
 	// Parse and process the response
 	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	dataTypes := map[string]readWriteModel.AdsDataTypeTableEntry{}
-	for i := uint32(0); i < numDataTypes; i++ {
+	for range numDataTypes {
 		dataType, err := readWriteModel.AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table: %v", err)
@@ -301,7 +301,7 @@ func (m *Connection) readSymbolTable(ctx context.Context, symbolTableSize uint32
 	// Parse and process the response
 	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	symbols := map[string]readWriteModel.AdsSymbolTableEntry{}
-	for i := uint32(0); i < numSymbols; i++ {
+	for range numSymbols {
 		symbol, err := readWriteModel.AdsSymbolTableEntryParseWithBuffer(ctx, readBuffer)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table")

@@ -1069,59 +1069,59 @@ func (m *_BACnetNotificationParametersExtendedParameters) SerializeWithWriteBuff
 		return errors.Wrap(_isClosingTagErr, "Error serializing 'isClosingTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagNull](ctx, "nullValue", GetRef(m.GetNullValue()), WriteComplex[BACnetApplicationTagNull](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagNull](ctx, "nullValue", new(m.GetNullValue()), WriteComplex[BACnetApplicationTagNull](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'nullValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagReal](ctx, "realValue", GetRef(m.GetRealValue()), WriteComplex[BACnetApplicationTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagReal](ctx, "realValue", new(m.GetRealValue()), WriteComplex[BACnetApplicationTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'realValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", GetRef(m.GetUnsignedValue()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", new(m.GetUnsignedValue()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'unsignedValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagBoolean](ctx, "booleanValue", GetRef(m.GetBooleanValue()), WriteComplex[BACnetApplicationTagBoolean](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagBoolean](ctx, "booleanValue", new(m.GetBooleanValue()), WriteComplex[BACnetApplicationTagBoolean](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'booleanValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagSignedInteger](ctx, "integerValue", GetRef(m.GetIntegerValue()), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagSignedInteger](ctx, "integerValue", new(m.GetIntegerValue()), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'integerValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagDouble](ctx, "doubleValue", GetRef(m.GetDoubleValue()), WriteComplex[BACnetApplicationTagDouble](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagDouble](ctx, "doubleValue", new(m.GetDoubleValue()), WriteComplex[BACnetApplicationTagDouble](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'doubleValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagOctetString](ctx, "octetStringValue", GetRef(m.GetOctetStringValue()), WriteComplex[BACnetApplicationTagOctetString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagOctetString](ctx, "octetStringValue", new(m.GetOctetStringValue()), WriteComplex[BACnetApplicationTagOctetString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'octetStringValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", GetRef(m.GetCharacterStringValue()), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", new(m.GetCharacterStringValue()), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'characterStringValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagBitString](ctx, "bitStringValue", GetRef(m.GetBitStringValue()), WriteComplex[BACnetApplicationTagBitString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagBitString](ctx, "bitStringValue", new(m.GetBitStringValue()), WriteComplex[BACnetApplicationTagBitString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'bitStringValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", GetRef(m.GetEnumeratedValue()), WriteComplex[BACnetApplicationTagEnumerated](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", new(m.GetEnumeratedValue()), WriteComplex[BACnetApplicationTagEnumerated](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'enumeratedValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagDate](ctx, "dateValue", GetRef(m.GetDateValue()), WriteComplex[BACnetApplicationTagDate](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagDate](ctx, "dateValue", new(m.GetDateValue()), WriteComplex[BACnetApplicationTagDate](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'dateValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagTime](ctx, "timeValue", GetRef(m.GetTimeValue()), WriteComplex[BACnetApplicationTagTime](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagTime](ctx, "timeValue", new(m.GetTimeValue()), WriteComplex[BACnetApplicationTagTime](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'timeValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", new(m.GetObjectIdentifier()), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", GetRef(m.GetReference()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", new(m.GetReference()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'reference' field")
 	}
 

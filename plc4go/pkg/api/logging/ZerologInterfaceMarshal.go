@@ -52,7 +52,7 @@ var ZerologDefaultInterfaceMarshalFunc = zerolog.InterfaceMarshalFunc
 
 // ZerologMessageInterfaceMarshalFunc is the marshal function used by zerolog to serialize PLCMessages.
 // To use it just do a zerolog.InterfaceMarshalFunc = ZerologMessageInterfaceMarshalFunc in a init function.
-var ZerologMessageInterfaceMarshalFunc = func(v interface{}) ([]byte, error) {
+var ZerologMessageInterfaceMarshalFunc = func(v any) ([]byte, error) {
 	if plcMessage, ok := v.(utils.Serializable); ok {
 		switch ZerologInterfacePLCMessageFormat {
 		case PLCMessageAsJSON:

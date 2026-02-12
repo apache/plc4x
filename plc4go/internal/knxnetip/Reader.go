@@ -322,7 +322,7 @@ func (m *Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16)
 	} else if strings.HasPrefix(pattern, "[") && strings.HasSuffix(pattern, "]") {
 		// If the pattern starts and ends with square brackets, it's a list of values or range queries
 		// Multiple options are separated by ","
-		for _, segment := range strings.Split(pattern[1:len(pattern)-1], ",") {
+		for segment := range strings.SplitSeq(pattern[1:len(pattern)-1], ",") {
 			// If the segment contains a "-", then it's a range query,
 			// otherwise it's just a normal value.
 			if strings.Contains(segment, "-") {

@@ -343,7 +343,7 @@ func (m *_BACnetLogRecord) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(err, "Error serializing 'logDatum' field")
 	}
 
-	if err := WriteOptionalField[BACnetStatusFlagsTagged](ctx, "statusFlags", GetRef(m.GetStatusFlags()), WriteComplex[BACnetStatusFlagsTagged](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetStatusFlagsTagged](ctx, "statusFlags", new(m.GetStatusFlags()), WriteComplex[BACnetStatusFlagsTagged](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'statusFlags' field")
 	}
 

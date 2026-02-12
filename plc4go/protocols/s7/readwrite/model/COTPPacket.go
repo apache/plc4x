@@ -484,7 +484,7 @@ func (pm *_COTPPacket) serializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(err, "Error serializing 'parameters' field")
 	}
 
-	if err := WriteOptionalField[S7Message](ctx, "payload", GetRef(m.GetPayload()), WriteComplex[S7Message](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[S7Message](ctx, "payload", new(m.GetPayload()), WriteComplex[S7Message](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 

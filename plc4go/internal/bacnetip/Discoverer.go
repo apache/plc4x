@@ -578,8 +578,8 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 	for key, value := range keyDependencies {
 		if _, ok := filteredOptionMap[key]; ok {
 			for _, otherKey := range value {
-				if strings.HasSuffix(otherKey.key, "*") {
-					prefix := strings.TrimSuffix(otherKey.key, "*")
+				if before, ok0 := strings.CutSuffix(otherKey.key, "*"); ok0 {
+					prefix := before
 					mustBePresent := otherKey.mustBePresent
 					var found bool
 					for key := range filteredOptionMap {

@@ -58,7 +58,7 @@ func (f *FieldReaderArray[T]) ReadFieldCount(ctx context.Context, logicalName st
 	if itemCount == 0 {
 		result = nil
 	}
-	for curItem := 0; curItem < itemCount; curItem++ {
+	for curItem := range itemCount {
 		// Make some variables available that would be otherwise challenging to forward.
 		ctx := codegen.NewContextCurItem(ctx, curItem)
 		ctx = codegen.NewContextLastItem(ctx, curItem == itemCount-1)

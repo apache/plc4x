@@ -45,7 +45,7 @@ func NewConfirmedRequestPDU(args Args, kwArgs KWArgs, options ...Option) (*Confi
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}
 	c.___APDU = apdu.(*___APDU)
-	c.apduType = ToPtr(readWriteModel.ApduType_CONFIRMED_REQUEST_PDU)
+	c.apduType = new(readWriteModel.ApduType_CONFIRMED_REQUEST_PDU)
 	if ok {
 		serviceChoice := uint8(*choice)
 		c.apduService = &serviceChoice
@@ -55,7 +55,7 @@ func NewConfirmedRequestPDU(args Args, kwArgs KWArgs, options ...Option) (*Confi
 	case readWriteModel.BACnetConfirmedServiceRequest:
 		c.serviceRequest = rm
 		serviceChoice := rm.GetServiceChoice()
-		c.apduService = ToPtr(uint8(serviceChoice))
+		c.apduService = new(uint8(serviceChoice))
 	}
 	c.SetRootMessage(c.buildConfirmedRequest(c.serviceRequest))
 

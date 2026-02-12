@@ -48,7 +48,7 @@ func NewErrorPDU(args Args, kwArgs KWArgs, options ...Option) (*ErrorPDU, error)
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}
 	e.___APDU = apdu.(*___APDU)
-	e.apduType = ToPtr(readWriteModel.ApduType_ERROR_PDU)
+	e.apduType = new(readWriteModel.ApduType_ERROR_PDU)
 	if ok {
 		serviceChoice := uint8(*choice)
 		e.apduService = &serviceChoice
@@ -65,7 +65,7 @@ func NewErrorPDU(args Args, kwArgs KWArgs, options ...Option) (*ErrorPDU, error)
 	case readWriteModel.BACnetError:
 		e.bacnetError = rm
 		serviceChoice := rm.GetErrorChoice()
-		e.apduService = ToPtr(uint8(serviceChoice))
+		e.apduService = new(uint8(serviceChoice))
 	}
 	e.SetRootMessage(e.buildConfirmedRequest(e.bacnetError))
 

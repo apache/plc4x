@@ -82,13 +82,13 @@ func VerbForType(value any, printVerb rune) rune {
 }
 
 // clone from comp to avoid circular dependencies // TODO: maybe move Btox somewhere else or come up with something smarter there
-func isNil(v interface{}) bool {
+func isNil(v any) bool {
 	if v == nil {
 		return true
 	}
 	valueOf := reflect.ValueOf(v)
 	switch valueOf.Kind() {
-	case reflect.Ptr, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
+	case reflect.Pointer, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
 		return valueOf.IsNil()
 	default:
 		return false

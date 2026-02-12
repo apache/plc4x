@@ -46,7 +46,7 @@ func NewUnconfirmedRequestPDU(args Args, kwArgs KWArgs, options ...Option) (*Unc
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}
 	u.___APDU = apdu.(*___APDU)
-	u.apduType = ToPtr(readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU)
+	u.apduType = new(readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU)
 	if ok {
 		serviceChoice := uint8(*choice)
 		u.apduService = &serviceChoice
@@ -55,7 +55,7 @@ func NewUnconfirmedRequestPDU(args Args, kwArgs KWArgs, options ...Option) (*Unc
 	case readWriteModel.BACnetUnconfirmedServiceRequest:
 		u.serviceRequest = rm
 		serviceChoice := rm.GetServiceChoice()
-		u.apduService = ToPtr(uint8(serviceChoice))
+		u.apduService = new(uint8(serviceChoice))
 	}
 	u.SetRootMessage(u.buildUnconfirmedServiceRequest(u.serviceRequest))
 	return u, nil

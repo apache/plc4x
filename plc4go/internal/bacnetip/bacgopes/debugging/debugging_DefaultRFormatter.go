@@ -44,8 +44,8 @@ func NewDefaultRFormatter(extraPrinters ...DebugContentPrinter) *DefaultRFormatt
 	prefix := strings.TrimSuffix(base, ".go")
 	prefix = strings.TrimPrefix(prefix, dirPrefix)
 	qualifier := strings.ReplaceAll(dirPrefix, "_", ".")
-	if strings.HasPrefix(qualifier, "test.") {
-		qualifier = "tests.test_" + strings.TrimPrefix(qualifier, "test.")
+	if after, ok0 := strings.CutPrefix(qualifier, "test."); ok0 {
+		qualifier = "tests.test_" + after
 	} else {
 		qualifier = projectName + "." + qualifier
 	}

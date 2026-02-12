@@ -343,7 +343,7 @@ func (m *_BACnetLandingCallStatus) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(err, "Error serializing 'command' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "floorText", GetRef(m.GetFloorText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "floorText", new(m.GetFloorText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'floorText' field")
 	}
 

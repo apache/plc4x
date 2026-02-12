@@ -298,7 +298,7 @@ func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetReadAccessResultListOfResults](ctx, "listOfResults", GetRef(m.GetListOfResults()), WriteComplex[BACnetReadAccessResultListOfResults](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetReadAccessResultListOfResults](ctx, "listOfResults", new(m.GetListOfResults()), WriteComplex[BACnetReadAccessResultListOfResults](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'listOfResults' field")
 	}
 

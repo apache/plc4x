@@ -205,7 +205,7 @@ func (m *TransportInstance) Read(ctx context.Context, numBytes uint32) ([]byte, 
 			return nil, errors.Wrap(err, "error setting read deadline")
 		}
 	}
-	for i := uint32(0); i < numBytes; i++ {
+	for i := range numBytes {
 		val, err := m.reader.ReadByte()
 		if err != nil {
 			return nil, errors.Wrap(err, "error reading")

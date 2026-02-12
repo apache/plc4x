@@ -36,7 +36,7 @@ var customReplaces map[string]string
 
 func init() {
 	customReplaces = map[string]string{}
-	for _, replace := range strings.Split(os.Getenv("BACGOPES_DEBUG_CUSTOM_REPLACES"), ",") {
+	for replace := range strings.SplitSeq(os.Getenv("BACGOPES_DEBUG_CUSTOM_REPLACES"), ",") {
 		if replace == "" || !strings.Contains(replace, "=") {
 			continue
 		}

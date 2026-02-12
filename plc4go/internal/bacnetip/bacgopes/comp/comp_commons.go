@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"iter"
 	"reflect"
-	"sort"
+	"slices"
 )
 
 // NillableKey is a key which can be used in maps
@@ -80,7 +80,7 @@ func SortedMapIterator[K cmp.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
 		keys[i] = k
 		i++
 	}
-	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
+	slices.Sort(keys)
 	return func(yield func(K, V) bool) {
 		for _, k := range keys {
 			if !yield(k, m[k]) {
@@ -92,16 +92,11 @@ func SortedMapIterator[K cmp.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
 
 // OR returns a or b
 func OR[T comparable](a T, b T) T {
-	if reflect.ValueOf(a).IsNil() || (reflect.ValueOf(a).Kind() == reflect.Ptr && reflect.ValueOf(a).IsNil()) { // TODO: check if there is another way than using reflect
+	if reflect.ValueOf(a).IsNil() || (reflect.ValueOf(a).Kind() == reflect.Pointer && reflect.ValueOf(a).IsNil()) { // TODO: check if there is another way than using reflect
 		return b
 	} else {
 		return a
 	}
-}
-
-// ToPtr gives a Ptr
-func ToPtr[T any](value T) *T {
-	return &value
 }
 
 // Try something and return panic as error
@@ -125,13 +120,13 @@ func Try1[T any](f func() (T, error)) (v T, err error) {
 }
 
 // IsNil when nil checks aren't enough
-func IsNil(v interface{}) bool {
+func IsNil(v any) bool {
 	if v == nil {
 		return true
 	}
 	valueOf := reflect.ValueOf(v)
 	switch valueOf.Kind() {
-	case reflect.Ptr, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
+	case reflect.Pointer, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
 		return valueOf.IsNil()
 	default:
 		return false
