@@ -18,7 +18,7 @@
 //
 module github.com/apache/plc4x/plc4go
 
-go 1.23
+go 1.26
 
 require (
     github.com/ajankovic/xdiff v0.0.1
