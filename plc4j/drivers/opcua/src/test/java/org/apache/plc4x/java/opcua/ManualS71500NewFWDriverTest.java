@@ -37,27 +37,27 @@ public class ManualS71500NewFWDriverTest extends ManualTest {
     public static void main(String[] args) throws Exception {
         boolean testArrays = true;
         ManualS71500NewFWDriverTest test = new ManualS71500NewFWDriverTest("opcua://192.168.23.28:4840");
-        test.addTestCase(/*"g_b1",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b1\"",          new PlcBOOL(true));
-        test.addTestCase(/*"g_b8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b8\"",	         new PlcBYTE(0xAB));
-        test.addTestCase(/*"g_s8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s8\"",	         new PlcSINT(-12));
-        test.addTestCase(/*"g_u8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u8\"",	         new PlcUSINT(250));
-        test.addTestCase(/*"g_b16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b16\"",	     new PlcWORD(0xBEEF));
-        test.addTestCase(/*"g_s16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s16\"",         new PlcINT(-1234));
-        test.addTestCase(/*"g_u16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u16\"",         new PlcUINT(54321));
-        test.addTestCase(/*"g_b32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b32\"",         new PlcDWORD(0xDEADBEEFL));
-        test.addTestCase(/*"g_s32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s32\"",         new PlcDINT(-12345678));
-        test.addTestCase(/*"g_u32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u32\"",         new PlcUDINT(305419896));
-        test.addTestCase(/*"g_b64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b64\"",         new PlcLWORD(0x0123_4567_89AB_CDEFL));
-        test.addTestCase(/*"g_s64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s64\"",         new PlcLINT(-9223372036854770000L));
-        test.addTestCase(/*"g_u64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u64\"",         new PlcULINT(new BigDecimal("18446744073709551000")));
-        test.addTestCase(/*"g_r32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r32\"",         new PlcREAL(3.14159));
-        test.addTestCase(/*"g_r64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r64\"",         new PlcLREAL(2.71828182845905));
-        test.addTestCase(/*"g_tim",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_tim\";TIME",         new PlcTIME(2500)); // Is returned as Int32
-        test.addTestCase(/*"g_dat",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_dat\";DATE",         new PlcDATE(LocalDate.of(2025, 11, 12))); // Is returned as UInt16
-        test.addTestCase(/*"g_timoday",*/       "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_timoday\";TIME_OF_DAY", 	 new PlcTIME_OF_DAY(LocalTime.of(14, 33, 21, 250000000))); // Is returned as UInt32
-//        test.addTestCase(/*"g_dattim",*/        "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_dattim\";LTIME",      new PlcDATE_AND_LTIME(LocalDateTime.of(2025, 11, 12, 14, 33, 21, 500_000_000))); // TODO: Getting a class cast error, because OpcuaMessageResponse cannot be cast to OpcuaAPU
-        test.addTestCase(/*"g_str",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_str\"",         new PlcSTRING("Hello PLC4X"));
-        test.addTestCase(/*"g_wstr",*/          "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_wstr\"",        new PlcWSTRING("Grüße von PLC4X"));
+        test.addTestCase(/*"g_b1",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b1\"",                   new PlcBOOL(true));
+        test.addTestCase(/*"g_b8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b8\"",	                new PlcBYTE(0xAB));
+        test.addTestCase(/*"g_s8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s8\"",	                new PlcSINT(-12));
+        test.addTestCase(/*"g_u8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u8\"",	                new PlcUSINT(250));
+        test.addTestCase(/*"g_b16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b16\"",	                new PlcWORD(0xBEEF));
+        test.addTestCase(/*"g_s16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s16\"",                  new PlcINT(-1234));
+        test.addTestCase(/*"g_u16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u16\"",                  new PlcUINT(54321));
+        test.addTestCase(/*"g_b32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b32\"",                  new PlcDWORD(0xDEADBEEFL));
+        test.addTestCase(/*"g_s32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s32\"",                  new PlcDINT(-12345678));
+        test.addTestCase(/*"g_u32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u32\"",                  new PlcUDINT(305419896));
+        test.addTestCase(/*"g_b64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b64\"",                  new PlcLWORD(0x0123_4567_89AB_CDEFL));
+        test.addTestCase(/*"g_s64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s64\"",                  new PlcLINT(-9223372036854770000L));
+        test.addTestCase(/*"g_u64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u64\"",                  new PlcULINT(new BigDecimal("18446744073709551000")));
+        test.addTestCase(/*"g_r32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r32\"",                  new PlcREAL(3.14159));
+        test.addTestCase(/*"g_r64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r64\"",                  new PlcLREAL(2.71828182845905));
+        test.addTestCase(/*"g_tim",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_tim\";TIME",             new PlcTIME(2500)); // Is returned as Int32
+        test.addTestCase(/*"g_dat",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_dat\";DATE",             new PlcDATE(LocalDate.of(2025, 11, 12))); // Is returned as UInt16
+        test.addTestCase(/*"g_timoday",*/       "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_timoday\";TIME_OF_DAY", 	new PlcTIME_OF_DAY(LocalTime.of(14, 33, 21, 250000000))); // Is returned as UInt32
+//        test.addTestCase(/*"g_dattim",*/        "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_dattim\";LTIME",         new PlcDATE_AND_LTIME(LocalDateTime.of(2025, 11, 12, 14, 33, 21, 500_000_000))); // TODO: Getting a class cast error, because OpcuaMessageResponse cannot be cast to OpcuaAPU
+        test.addTestCase(/*"g_str",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_str\"",                  new PlcSTRING("Hello PLC4X"));
+        test.addTestCase(/*"g_wstr",*/          "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_wstr\"",                 new PlcWSTRING("Grüße von PLC4X"));
         if(testArrays) {
             test.addTestCase(/*"g_arrBool",*/       "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_arrBool\"", new PlcList(List.of(
                 new PlcBOOL(true), new PlcBOOL(false), new PlcBOOL(true), new PlcBOOL(true),
