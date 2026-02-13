@@ -50,7 +50,7 @@ public class VariantUInt16 extends Variant implements Message {
       boolean arrayLengthSpecified,
       boolean arrayDimensionsSpecified,
       Integer noOfArrayDimensions,
-      List<Boolean> arrayDimensions,
+      List<Integer> arrayDimensions,
       Integer arrayLength,
       List<Integer> value) {
     super(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions);
@@ -138,7 +138,7 @@ public class VariantUInt16 extends Variant implements Message {
         boolean arrayLengthSpecified,
         boolean arrayDimensionsSpecified,
         Integer noOfArrayDimensions,
-        List<Boolean> arrayDimensions) {
+        List<Integer> arrayDimensions) {
       VariantUInt16 variantUInt16 =
           new VariantUInt16(
               arrayLengthSpecified,

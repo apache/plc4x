@@ -50,7 +50,7 @@ public class VariantByteString extends Variant implements Message {
       boolean arrayLengthSpecified,
       boolean arrayDimensionsSpecified,
       Integer noOfArrayDimensions,
-      List<Boolean> arrayDimensions,
+      List<Integer> arrayDimensions,
       Integer arrayLength,
       List<ByteStringArray> value) {
     super(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions);
@@ -142,7 +142,7 @@ public class VariantByteString extends Variant implements Message {
         boolean arrayLengthSpecified,
         boolean arrayDimensionsSpecified,
         Integer noOfArrayDimensions,
-        List<Boolean> arrayDimensions) {
+        List<Integer> arrayDimensions) {
       VariantByteString variantByteString =
           new VariantByteString(
               arrayLengthSpecified,

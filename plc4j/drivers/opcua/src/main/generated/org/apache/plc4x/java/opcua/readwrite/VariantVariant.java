@@ -50,7 +50,7 @@ public class VariantVariant extends Variant implements Message {
       boolean arrayLengthSpecified,
       boolean arrayDimensionsSpecified,
       Integer noOfArrayDimensions,
-      List<Boolean> arrayDimensions,
+      List<Integer> arrayDimensions,
       Integer arrayLength,
       List<Variant> value) {
     super(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions);
@@ -142,7 +142,7 @@ public class VariantVariant extends Variant implements Message {
         boolean arrayLengthSpecified,
         boolean arrayDimensionsSpecified,
         Integer noOfArrayDimensions,
-        List<Boolean> arrayDimensions) {
+        List<Integer> arrayDimensions) {
       VariantVariant variantVariant =
           new VariantVariant(
               arrayLengthSpecified,

@@ -50,7 +50,6 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
@@ -59,9 +58,7 @@ import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager.RequestTransaction;
-import org.apache.plc4x.java.spi.values.LegacyPlcValueHandler;
-import org.apache.plc4x.java.spi.values.PlcList;
-import org.apache.plc4x.java.spi.values.PlcSTRING;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -314,65 +311,147 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         PlcValue value = null;
         if (variant instanceof VariantBoolean) {
             byte[] array = ((VariantBoolean) variant).getValue();
-            int length = array.length;
-            Boolean[] tmpValue = new Boolean[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = array[i] != 0;
+            if (array.length == 1) {
+                value = new PlcBOOL(array[0] != 0);
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.length);
+                for (byte b : array) {
+                    values.add(new PlcBOOL(b != 0));
+                }
+                value = new PlcList(values);
             }
-            value = LegacyPlcValueHandler.of(tmpValue);
         } else if (variant instanceof VariantSByte) {
             byte[] array = ((VariantSByte) variant).getValue();
-            value = LegacyPlcValueHandler.of(tag, array);
+            if (array.length == 1) {
+                value = new PlcSINT(array[0]);
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.length);
+                for (byte b : array) {
+                    values.add(new PlcSINT(b));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantByte) {
             List<Short> array = ((VariantByte) variant).getValue();
-            Short[] tmpValue = array.toArray(new Short[0]);
-            value = LegacyPlcValueHandler.of(tmpValue);
+            if (array.size() == 1) {
+                value = new PlcUSINT(array.getFirst());
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Short s : array) {
+                    values.add(new PlcUSINT(s));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantInt16) {
             List<Short> array = ((VariantInt16) variant).getValue();
-            Short[] tmpValue = array.toArray(new Short[0]);
-            value = LegacyPlcValueHandler.of(tmpValue);
+            if (array.size() == 1) {
+                value = new PlcINT(array.getFirst());
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Short s : array) {
+                    values.add(new PlcINT(s));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantUInt16) {
             List<Integer> array = ((VariantUInt16) variant).getValue();
-            Integer[] tmpValue = array.toArray(new Integer[0]);
-            value = LegacyPlcValueHandler.of(tmpValue);
+            if (array.size() == 1) {
+                value = new PlcUINT(array.getFirst());
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Integer i : array) {
+                    values.add(new PlcUINT(i));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantInt32) {
             List<Integer> array = ((VariantInt32) variant).getValue();
-            Integer[] tmpValue = array.toArray(new Integer[0]);
-            value = LegacyPlcValueHandler.of(tmpValue);
+            if (array.size() == 1) {
+                value = new PlcDINT(array.getFirst());
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Integer i : array) {
+                    values.add(new PlcDINT(i));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantUInt32) {
             List<Long> array = ((VariantUInt32) variant).getValue();
-            Long[] tmpValue = array.toArray(new Long[0]);
-            value = LegacyPlcValueHandler.of(tmpValue);
+            if (array.size() == 1) {
+                value = new PlcUDINT(array.getFirst());
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Long l : array) {
+                    values.add(new PlcUDINT(l));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantInt64) {
             List<Long> array = ((VariantInt64) variant).getValue();
-            Long[] tmpValue = array.toArray(new Long[0]);
-            value = LegacyPlcValueHandler.of(tmpValue);
+            if (array.size() == 1) {
+                value = new PlcLINT(array.getFirst());
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Long l : array) {
+                    values.add(new PlcLINT(l));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantUInt64) {
-            value = LegacyPlcValueHandler.of(((VariantUInt64) variant).getValue());
+            List<BigInteger> array = ((VariantUInt64) variant).getValue();
+            if (array.size() == 1) {
+                value = new PlcULINT(array.getFirst());
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (BigInteger bi : array) {
+                    values.add(new PlcULINT(bi));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantFloat) {
             List<Float> array = ((VariantFloat) variant).getValue();
-            Float[] tmpValue = array.toArray(new Float[0]);
-            value = LegacyPlcValueHandler.of(tmpValue);
+            if (array.size() == 1) {
+                value = new PlcREAL(array.getFirst());
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Float f : array) {
+                    values.add(new PlcREAL(f));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantDouble) {
             List<Double> array = ((VariantDouble) variant).getValue();
-            Double[] tmpValue = array.toArray(new Double[0]);
-            value = LegacyPlcValueHandler.of(tmpValue);
-        } else if (variant instanceof VariantString) {
-            int length = ((VariantString) variant).getValue().size();
-            List<PascalString> stringArray = ((VariantString) variant).getValue();
-            String[] tmpValue = new String[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = stringArray.get(i).getStringValue();
+            if (array.size() == 1) {
+                value = new PlcLREAL(array.getFirst());
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Double d : array) {
+                    values.add(new PlcLREAL(d));
+                }
+                value = new PlcList(values);
             }
-            value = LegacyPlcValueHandler.of(tmpValue);
+        } else if (variant instanceof VariantString) {
+            List<PascalString> stringArray = ((VariantString) variant).getValue();
+            if (stringArray.size() == 1) {
+                value = new PlcSTRING(stringArray.getFirst().getStringValue());
+            } else {
+                List<PlcValue> values = new ArrayList<>(stringArray.size());
+                for (PascalString ps : stringArray) {
+                    values.add(new PlcSTRING(ps.getStringValue()));
+                }
+                value = new PlcList(values);
+            }
         } else if (variant instanceof VariantDateTime) {
             List<Long> array = ((VariantDateTime) variant).getValue();
-            int length = array.size();
-            LocalDateTime[] tmpValue = new LocalDateTime[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(array.get(i))), ZoneOffset.UTC);
+            if (array.size() == 1) {
+                value = LegacyPlcValueHandler.of(LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(array.getFirst())), ZoneOffset.UTC));
+            } else {
+                List<PlcValue> values = new ArrayList<>(array.size());
+                for (Long l : array) {
+                    values.add(LegacyPlcValueHandler.of(LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(l)), ZoneOffset.UTC)));
+                }
+                value = new PlcList(values);
             }
-            value = LegacyPlcValueHandler.of(tmpValue);
         } else if (variant instanceof VariantGuid) {
             List<GuidValue> array = ((VariantGuid) variant).getValue();
             int length = array.size();
@@ -495,21 +574,21 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         List<PlcValue> plcValueList = valueObject.getList();
         PlcValueType dataType = tag.getPlcValueType();
         if (dataType.equals(PlcValueType.NULL)) {
-            if (plcValueList.get(0).getObject() instanceof Boolean) {
+            if (plcValueList.getFirst().getObject() instanceof Boolean) {
                 dataType = PlcValueType.BOOL;
-            } else if (plcValueList.get(0).getObject() instanceof Byte) {
+            } else if (plcValueList.getFirst().getObject() instanceof Byte) {
                 dataType = PlcValueType.SINT;
-            } else if (plcValueList.get(0).getObject() instanceof Short) {
+            } else if (plcValueList.getFirst().getObject() instanceof Short) {
                 dataType = PlcValueType.INT;
-            } else if (plcValueList.get(0).getObject() instanceof Integer) {
+            } else if (plcValueList.getFirst().getObject() instanceof Integer) {
                 dataType = PlcValueType.DINT;
-            } else if (plcValueList.get(0).getObject() instanceof Long) {
+            } else if (plcValueList.getFirst().getObject() instanceof Long) {
                 dataType = PlcValueType.LINT;
-            } else if (plcValueList.get(0).getObject() instanceof Float) {
+            } else if (plcValueList.getFirst().getObject() instanceof Float) {
                 dataType = PlcValueType.REAL;
-            } else if (plcValueList.get(0).getObject() instanceof Double) {
+            } else if (plcValueList.getFirst().getObject() instanceof Double) {
                 dataType = PlcValueType.LREAL;
-            } else if (plcValueList.get(0).getObject() instanceof String) {
+            } else if (plcValueList.getFirst().getObject() instanceof String) {
                 dataType = PlcValueType.STRING;
             }
         }
@@ -802,7 +881,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         List<String> tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
-        long cycleTime = (subscriptionRequest.getTag(tagNames.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
+        long cycleTime = (subscriptionRequest.getTag(tagNames.getFirst())).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
 
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
         RequestTransaction transaction = tm.startRequest();
@@ -823,7 +902,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 subscriptions.put(handle.getSubscriptionId(), handle);
                 return handle;
             })
-            .thenCompose(handle -> handle.onSubscribeCreateMonitoredItemsRequest())
+            .thenCompose(OpcuaSubscriptionHandle::onSubscribeCreateMonitoredItemsRequest)
             .thenApply(handle -> {
                 Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
                 for (String tagName : subscriptionRequest.getTagNames()) {

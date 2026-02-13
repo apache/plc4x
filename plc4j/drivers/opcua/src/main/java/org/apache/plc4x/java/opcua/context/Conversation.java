@@ -337,7 +337,13 @@ public class Conversation {
 
                             if (extensionObjectBody instanceof ServiceFault) {
                                 ServiceFault fault = (ServiceFault) extensionObjectBody;
-                                future.completeExceptionally(toProtocolException(fault));
+                                // If we write the same data a tag already had, Siemens devices return an error.
+                                if (fault.getResponseHeader().getServiceResult().getStatusCode() == OpcuaStatusCode.BadNothingToDo.getValue()) {
+                                    // TODO: Here we need to fake a WriteResponse.
+                                    future.complete(extensionObjectBody);
+                                } else {
+                                    future.completeExceptionally(toProtocolException(fault));
+                                }
                             } else {
                                 future.complete(extensionObjectBody);
                             }

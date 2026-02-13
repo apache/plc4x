@@ -50,7 +50,7 @@ public class VariantDateTime extends Variant implements Message {
       boolean arrayLengthSpecified,
       boolean arrayDimensionsSpecified,
       Integer noOfArrayDimensions,
-      List<Boolean> arrayDimensions,
+      List<Integer> arrayDimensions,
       Integer arrayLength,
       List<Long> value) {
     super(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions);
@@ -136,7 +136,7 @@ public class VariantDateTime extends Variant implements Message {
         boolean arrayLengthSpecified,
         boolean arrayDimensionsSpecified,
         Integer noOfArrayDimensions,
-        List<Boolean> arrayDimensions) {
+        List<Integer> arrayDimensions) {
       VariantDateTime variantDateTime =
           new VariantDateTime(
               arrayLengthSpecified,

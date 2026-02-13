@@ -355,7 +355,7 @@
         ]
     ]
     [optional int 32 noOfArrayDimensions 'arrayDimensionsSpecified']
-    [array bit arrayDimensions count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
+    [array int 32 arrayDimensions count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
 ]
 
 // node type, with two leading reserved bytes
