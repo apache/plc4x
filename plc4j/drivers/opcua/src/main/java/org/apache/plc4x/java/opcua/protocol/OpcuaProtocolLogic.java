@@ -64,8 +64,10 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -87,6 +89,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         new ExtensionObjectEncodingMask(false, false, false));
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
+    // IEC 61131-3 date types use 1990-01-01 as epoch, PlcDATE etc. use Unix epoch (1970-01-01).
+    private static final long IEC_DATE_EPOCH_OFFSET_DAYS = LocalDate.of(1990, 1, 1).toEpochDay();
     private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new ConcurrentHashMap<>();
     private final RequestTransactionManager tm = new RequestTransactionManager();
 
@@ -472,7 +476,62 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             }
             value = structurePlcValues(values, variant);
         }
+
+        // If the tag declares a specific type (via suffix like :TIME, :DATE, etc.),
+        // re-interpret the raw numeric value as the correct IEC 61131-3 type.
+        if (value != null && tag != null) {
+            PlcValueType targetType = tag.getPlcValueType();
+            if (targetType != PlcValueType.NULL) {
+                value = applyTypeOverride(value, targetType);
+            }
+        }
+
         return value;
+    }
+
+    /**
+     * Recursively applies a type override to a PlcValue.
+     * For PlcList values, each element is converted individually.
+     * For scalar values, the raw numeric is re-interpreted as the target type.
+     */
+    private static PlcValue applyTypeOverride(PlcValue value, PlcValueType targetType) {
+        if (value instanceof PlcList) {
+            PlcList list = (PlcList) value;
+            List<PlcValue> converted = new ArrayList<>(list.getLength());
+            for (PlcValue item : list.getList()) {
+                converted.add(applyTypeOverride(item, targetType));
+            }
+            return new PlcList(converted);
+        }
+        long raw = value.getLong();
+        switch (targetType) {
+            case TIME:
+                return new PlcTIME(raw);
+            case LTIME:
+                return new PlcLTIME(raw);
+            case DATE:
+                // S7/IEC value is days since 1990-01-01, PlcDATE expects days since 1970-01-01
+                return new PlcDATE(raw + IEC_DATE_EPOCH_OFFSET_DAYS);
+            case LDATE:
+                // PlcLDATE expects seconds since 1970-01-01
+                return new PlcLDATE(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L);
+            case TIME_OF_DAY:
+                // S7/IEC value is milliseconds since midnight
+                return new PlcTIME_OF_DAY(LocalTime.ofNanoOfDay(raw * 1_000_000L));
+            case LTIME_OF_DAY:
+                return new PlcLTIME_OF_DAY(raw);
+            case DATE_AND_TIME:
+                // PlcDATE_AND_TIME expects seconds since 1970-01-01
+                return new PlcDATE_AND_TIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L);
+            case DATE_AND_LTIME:
+                // PlcDATE_AND_LTIME expects nanoseconds since 1970-01-01
+                return new PlcDATE_AND_LTIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L * 1_000_000_000L);
+            case LDATE_AND_TIME:
+                // PlcLDATE_AND_TIME expects milliseconds since 1970-01-01
+                return new PlcLDATE_AND_TIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L * 1000L);
+            default:
+                return value;
+        }
     }
 
     /**

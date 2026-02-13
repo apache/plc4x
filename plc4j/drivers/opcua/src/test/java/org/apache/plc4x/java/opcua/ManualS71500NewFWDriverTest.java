@@ -52,10 +52,10 @@ public class ManualS71500NewFWDriverTest extends ManualTest {
         test.addTestCase(/*"g_u64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u64\"",         new PlcULINT(new BigDecimal("18446744073709551000")));
         test.addTestCase(/*"g_r32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r32\"",         new PlcREAL(3.14159));
         test.addTestCase(/*"g_r64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r64\"",         new PlcLREAL(2.71828182845905));
-//        test.addTestCase(/*"g_tim",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_tim\"",         new PlcTIME(2500)); // TODO: Is returned as Int32
-//        test.addTestCase(/*"g_dat",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_dat\"",         new PlcDATE(LocalDate.of(2025, 11, 12))); // TODO: Is returned as UInt16
-//        test.addTestCase(/*"g_timoday",*/       "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_timoday\"", 	 new PlcTIME_OF_DAY(LocalTime.of(14, 33, 21, 250000000))); // TODO: Is returned as UInt32
-//        test.addTestCase(/*"g_dattim",*/        "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_dattim\"",      new PlcDATE_AND_LTIME(LocalDateTime.of(2025, 11, 12, 14, 33, 21, 500_000_000))); // TODO: Getting a class cast error, because OpcuaMessageResponse cannot be cast to OpcuaAPU
+        test.addTestCase(/*"g_tim",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_tim\";TIME",         new PlcTIME(2500)); // Is returned as Int32
+        test.addTestCase(/*"g_dat",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_dat\";DATE",         new PlcDATE(LocalDate.of(2025, 11, 12))); // Is returned as UInt16
+        test.addTestCase(/*"g_timoday",*/       "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_timoday\";TIME_OF_DAY", 	 new PlcTIME_OF_DAY(LocalTime.of(14, 33, 21, 250000000))); // Is returned as UInt32
+//        test.addTestCase(/*"g_dattim",*/        "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_dattim\";LTIME",      new PlcDATE_AND_LTIME(LocalDateTime.of(2025, 11, 12, 14, 33, 21, 500_000_000))); // TODO: Getting a class cast error, because OpcuaMessageResponse cannot be cast to OpcuaAPU
         test.addTestCase(/*"g_str",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_str\"",         new PlcSTRING("Hello PLC4X"));
         test.addTestCase(/*"g_wstr",*/          "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_wstr\"",        new PlcWSTRING("Grüße von PLC4X"));
         if(testArrays) {
@@ -82,16 +82,16 @@ public class ManualS71500NewFWDriverTest extends ManualTest {
             test.addTestCase(/*"g_arrLReal",*/      "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_arrLReal\"", new PlcList(List.of(
                 new PlcLREAL(1.5), new PlcLREAL(-2.0), new PlcLREAL(0.125))
             ));
-//            test.addTestCase(/*"g_arrTime",*/       "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_arrTime\"", new PlcList(List.of(
-//                new PlcTIME(Duration.ofMillis(10)), new PlcTIME(Duration.ofSeconds(1)), new PlcTIME(Duration.ofSeconds(10)))
-//            ));
+            test.addTestCase(/*"g_arrTime",*/       "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_arrTime\";TIME", new PlcList(List.of(
+                new PlcTIME(Duration.ofMillis(10)), new PlcTIME(Duration.ofSeconds(1)), new PlcTIME(Duration.ofSeconds(10)))
+            ));
             test.addTestCase(/*"g_arrString",*/     "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_arrString\"", new PlcList(List.of(
                 new PlcSTRING("alpha"), new PlcSTRING("beta"), new PlcSTRING("gamma"))
             ));
             test.addTestCase(/*"g_arrWString",*/     "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_arrWString\"", new PlcList(List.of(
                 new PlcWSTRING("Äpfel"), new PlcWSTRING("Öl"))
             ));
-            test.addTestCase(/*"g_matI16_2x3",*/    "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_matI16_2x3\"", new PlcList(List.of( // TODO: Getting a class cast error, because OpcuaMessageResponse cannot be cast to OpcuaAPU
+            test.addTestCase(/*"g_matI16_2x3",*/    "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_matI16_2x3\"", new PlcList(List.of(
                 new PlcList(List.of(
                     new PlcINT(10), new PlcINT(11), new PlcINT(12)
                 )),
