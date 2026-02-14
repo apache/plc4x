@@ -155,6 +155,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         future.whenComplete((response, error) -> {
             if (error != null) {
                 LOGGER.error("Failed to establish connection", error);
+                context.fireDisconnected();
                 return;
             }
             LOGGER.info("Established connection to server");
