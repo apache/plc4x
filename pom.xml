@@ -1000,7 +1000,7 @@
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.9</version>
+          <version>4.4.10</version>
         </plugin>
 
         <plugin>
