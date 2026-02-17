@@ -73,8 +73,13 @@ public class BinaryExtensionObjectWithMask extends ExtensionObjectWithMask imple
     int bodyLength = (int) ((((getBody()) == (null)) ? 0 : getBody().getLengthInBytes()));
     writeImplicitField("bodyLength", bodyLength, writeSignedInt(writeBuffer, 32));
 
-    // Simple Field (body)
-    writeSimpleField("body", body, writeComplex(writeBuffer));
+    // Manual Field (body)
+    writeManualField(
+        "body",
+        () ->
+            org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper.serializeExtensionObjectBody(
+                writeBuffer, body),
+        writeBuffer);
 
     writeBuffer.popContext("BinaryExtensionObjectWithMask");
   }
@@ -93,8 +98,8 @@ public class BinaryExtensionObjectWithMask extends ExtensionObjectWithMask imple
     // Implicit Field (bodyLength)
     lengthInBits += 32;
 
-    // Simple field (body)
-    lengthInBits += body.getLengthInBits();
+    // Manual Field (body)
+    lengthInBits += (((body) == (null)) ? 0 : body.getLengthInBits());
 
     return lengthInBits;
   }
@@ -109,11 +114,13 @@ public class BinaryExtensionObjectWithMask extends ExtensionObjectWithMask imple
     int bodyLength = readImplicitField("bodyLength", readSignedInt(readBuffer, 32));
 
     ExtensionObjectDefinition body =
-        readSimpleField(
+        readManualField(
             "body",
-            readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (int) (extensionId)),
-                readBuffer));
+            readBuffer,
+            () ->
+                (ExtensionObjectDefinition)
+                    (org.apache.plc4x.java.opcua.readwrite.utils.StaticHelper
+                        .parseExtensionObjectBody(readBuffer, extensionId, bodyLength)));
 
     readBuffer.closeContext("BinaryExtensionObjectWithMask");
     // Create the instance

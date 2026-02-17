@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.opcua.protocol;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
@@ -259,11 +260,11 @@ public class OpcuaSubscriptionHandleTest {
             Arguments.of(INT32_IDENTIFIER_READ_WRITE, Integer.class),
             Arguments.of(INT64_IDENTIFIER_READ_WRITE, Long.class),
             Arguments.of(INTEGER_IDENTIFIER_READ_WRITE, Integer.class),
-            Arguments.of(SBYTE_IDENTIFIER_READ_WRITE, byte[].class),
+            Arguments.of(SBYTE_IDENTIFIER_READ_WRITE, Byte.class),
             Arguments.of(STRING_IDENTIFIER_READ_WRITE, String.class),
             Arguments.of(UINT16_IDENTIFIER_READ_WRITE, Integer.class),
             Arguments.of(UINT32_IDENTIFIER_READ_WRITE, Long.class),
-            Arguments.of(UINT64_IDENTIFIER_READ_WRITE, Long.class),
+            Arguments.of(UINT64_IDENTIFIER_READ_WRITE, BigInteger.class),
             Arguments.of(UINTEGER_IDENTIFIER_READ_WRITE, Long.class)
         );
     }

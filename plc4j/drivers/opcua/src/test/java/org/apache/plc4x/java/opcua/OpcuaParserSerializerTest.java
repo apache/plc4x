@@ -23,7 +23,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class OpcuaParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
     public OpcuaParserSerializerTest() {
-        super("/protocols/opcua/ParserSerializerTestsuite.xml");
+        super("/protocols/opcua/ParserSerializerTestsuite.xml", true);
     }
 
 }

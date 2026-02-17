@@ -450,7 +450,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             List<ExtensionObject> objects = ((VariantExtensionObject) variant).getValue();
             List<PlcValue> values = new ArrayList<>(objects.size());
             for (ExtensionObject eo : objects) {
-                values.add(new PlcSTRING(eo.toString()));
+                PlcValue eoValue = extensionObjectToPlcValue(eo);
+                values.add(eoValue != null ? eoValue : new PlcSTRING(eo.toString()));
             }
             value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantNodeId) {
@@ -490,13 +491,50 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     }
 
     /**
+     * Tries to convert an ExtensionObject with an unknown body type to a PlcValue.
+     * Handles vendor-specific types like Siemens TE_DTL (Date_And_Time_Long).
+     * Returns null if the type is not recognized.
+     */
+    private static PlcValue extensionObjectToPlcValue(ExtensionObject eo) {
+        ExtensionObjectDefinition body = eo.getBody();
+        if (!(body instanceof UnknownExtensionObject)) {
+            return null;
+        }
+        byte[] rawBytes = ((UnknownExtensionObject) body).getBodyBytes();
+        String typeId = eo.getTypeId().getNodeId().getIdentifier();
+
+        // Siemens DTL (Date_And_Time_Long): 12 bytes
+        // uint16 year, uint8 month, uint8 day, uint8 weekday,
+        // uint8 hour, uint8 minute, uint8 second, uint32 nanoseconds (LE)
+        if ("TE_DTL".equals(typeId) && rawBytes.length == 12) {
+            ByteBuffer buf = ByteBuffer.wrap(rawBytes).order(ByteOrder.LITTLE_ENDIAN);
+            int year = buf.getShort(0) & 0xFFFF;
+            int month = buf.get(2) & 0xFF;
+            int day = buf.get(3) & 0xFF;
+            // byte 4 = weekday, skip
+            int hour = buf.get(5) & 0xFF;
+            int minute = buf.get(6) & 0xFF;
+            int second = buf.get(7) & 0xFF;
+            int nanoseconds = buf.getInt(8);
+            return new PlcDATE_AND_LTIME(LocalDateTime.of(year, month, day, hour, minute, second, nanoseconds));
+        }
+
+        return null;
+    }
+
+    /**
      * Recursively applies a type override to a PlcValue.
      * For PlcList values, each element is converted individually.
      * For scalar values, the raw numeric is re-interpreted as the target type.
      */
     private static PlcValue applyTypeOverride(PlcValue value, PlcValueType targetType) {
-        if (value instanceof PlcList) {
-            PlcList list = (PlcList) value;
+        // If the value is already a properly typed temporal value (e.g., from DTL
+        // conversion), skip the override to avoid corrupting it.
+        PlcValueType currentType = value.getPlcValueType();
+        if (currentType == targetType || isTemporalType(currentType)) {
+            return value;
+        }
+        if (value instanceof PlcList list) {
             List<PlcValue> converted = new ArrayList<>(list.getLength());
             for (PlcValue item : list.getList()) {
                 converted.add(applyTypeOverride(item, targetType));
@@ -504,34 +542,38 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             return new PlcList(converted);
         }
         long raw = value.getLong();
-        switch (targetType) {
-            case TIME:
-                return new PlcTIME(raw);
-            case LTIME:
-                return new PlcLTIME(raw);
-            case DATE:
+        return switch (targetType) {
+            case TIME -> new PlcTIME(raw);
+            case LTIME -> new PlcLTIME(raw);
+            case DATE ->
                 // S7/IEC value is days since 1990-01-01, PlcDATE expects days since 1970-01-01
-                return new PlcDATE(raw + IEC_DATE_EPOCH_OFFSET_DAYS);
-            case LDATE:
+                new PlcDATE(raw + IEC_DATE_EPOCH_OFFSET_DAYS);
+            case LDATE ->
                 // PlcLDATE expects seconds since 1970-01-01
-                return new PlcLDATE(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L);
-            case TIME_OF_DAY:
+                new PlcLDATE(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L);
+            case TIME_OF_DAY ->
                 // S7/IEC value is milliseconds since midnight
-                return new PlcTIME_OF_DAY(LocalTime.ofNanoOfDay(raw * 1_000_000L));
-            case LTIME_OF_DAY:
-                return new PlcLTIME_OF_DAY(raw);
-            case DATE_AND_TIME:
+                new PlcTIME_OF_DAY(LocalTime.ofNanoOfDay(raw * 1_000_000L));
+            case LTIME_OF_DAY -> new PlcLTIME_OF_DAY(raw);
+            case DATE_AND_TIME ->
                 // PlcDATE_AND_TIME expects seconds since 1970-01-01
-                return new PlcDATE_AND_TIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L);
-            case DATE_AND_LTIME:
+                new PlcDATE_AND_TIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L);
+            case DATE_AND_LTIME ->
                 // PlcDATE_AND_LTIME expects nanoseconds since 1970-01-01
-                return new PlcDATE_AND_LTIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L * 1_000_000_000L);
-            case LDATE_AND_TIME:
+                new PlcDATE_AND_LTIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L * 1_000_000_000L);
+            case LDATE_AND_TIME ->
                 // PlcLDATE_AND_TIME expects milliseconds since 1970-01-01
-                return new PlcLDATE_AND_TIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L * 1000L);
-            default:
-                return value;
-        }
+                new PlcLDATE_AND_TIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L * 1000L);
+            default -> value;
+        };
+    }
+
+    private static boolean isTemporalType(PlcValueType type) {
+        return switch (type) {
+            case TIME, LTIME, DATE, LDATE, TIME_OF_DAY, LTIME_OF_DAY, DATE_AND_TIME, DATE_AND_LTIME, LDATE_AND_TIME ->
+                true;
+            default -> false;
+        };
     }
 
     /**

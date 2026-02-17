@@ -225,7 +225,7 @@
             [typeSwitch encodingMask.xmlBody, encodingMask.binaryBody
                 ['false', 'true' BinaryExtensionObjectWithMask
                     [implicit int 32 bodyLength 'body == null ? 0 : body.lengthInBytes']
-                    [simple ExtensionObjectDefinition('extensionId') body]
+                    [manual ExtensionObjectDefinition body 'STATIC_CALL("parseExtensionObjectBody", readBuffer, extensionId, bodyLength)' 'STATIC_CALL("serializeExtensionObjectBody", writeBuffer, body)' 'body == null ? 0 : body.lengthInBits']
                 ]
                 ['false', 'false' NullExtensionObjectWithMask
                     [virtual ExtensionObjectDefinition('0') body 'null']

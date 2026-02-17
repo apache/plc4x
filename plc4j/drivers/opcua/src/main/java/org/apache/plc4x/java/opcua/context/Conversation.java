@@ -75,7 +75,6 @@ import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.ConversationContext.SendRequestContext;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -243,16 +242,14 @@ public class Conversation {
                     .unwrap(OpcuaAPU::getMessage)
                     .check(replyType::isInstance)
                     .unwrap(replyType::cast)
-                    .unwrap(msg -> encryptionHandler.decodeMessage(msg))
+                    .unwrap(encryptionHandler::decodeMessage)
                     .check(replyType::isInstance)
                     .unwrap(replyType::cast)
                     .check(reply -> requestId == sequenceHeaderExtractor.apply(reply).getRequestId())
                     .check(reply -> sequenceValidator.test(sequenceHeaderExtractor.apply(reply), future))
                     .check(msg -> accumulateChunkUntilFinal(chunkStorage, msg.getChunk(), chunkExtractor.apply(msg)))
                     .unwrap(msg -> mergeChunks(chunkStorage, msg, sequenceHeaderExtractor.apply(msg), chunkAssembler))
-                    .handle(response -> {
-                        future.complete(response);
-                    });
+                    .handle(future::complete);
             } else {
                 context.sendToWire(new OpcuaAPU(chunks.get(index)));
             }
@@ -270,7 +267,7 @@ public class Conversation {
     }
 
     private CompletableFuture<Object> submit(ExtensionObjectDefinition requestDefinition) {
-        Integer requestId = tm.getTransactionIdentifier();
+        int requestId = tm.getTransactionIdentifier();
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(
             false,           //Namespace Uri Specified
@@ -303,7 +300,7 @@ public class Conversation {
                     .unwrap(OpcuaAPU::getMessage)
                     .check(OpcuaMessageResponse.class::isInstance)
                     .unwrap(OpcuaMessageResponse.class::cast)
-                    .unwrap(msg -> encryptionHandler.decodeMessage(msg))
+                    .unwrap(encryptionHandler::decodeMessage)
                     .check(OpcuaMessageResponse.class::isInstance)
                     .unwrap(OpcuaMessageResponse.class::cast)
                     .check(OpcuaMessageResponse.class::isInstance)
@@ -329,14 +326,13 @@ public class Conversation {
                                     BinaryPayload binary = (BinaryPayload) message;
                                     ReadBufferByteBased buffer = new ReadBufferByteBased(binary.getPayload(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                                     extensionObjectBody = ExtensionObject.staticParse(buffer, false).getBody();
-                                } catch (ParseException e) {
+                                } catch (Exception e) {
                                     future.completeExceptionally(e);
                                     return;
                                 }
                             }
 
-                            if (extensionObjectBody instanceof ServiceFault) {
-                                ServiceFault fault = (ServiceFault) extensionObjectBody;
+                            if (extensionObjectBody instanceof ServiceFault fault) {
                                 // If we write the same data a tag already had, Siemens devices return an error.
                                 if (fault.getResponseHeader().getServiceResult().getStatusCode() == OpcuaStatusCode.BadNothingToDo.getValue()) {
                                     // TODO: Here we need to fake a WriteResponse.
@@ -361,7 +357,7 @@ public class Conversation {
         return context.sendRequest(new OpcuaAPU(messagePDU))
             .onError((req, err) -> future.completeExceptionally(err))
             .expectResponse(OpcuaAPU.class, Duration.ofMillis(timeout))
-            .onTimeout((e) -> future.completeExceptionally(e));
+            .onTimeout(future::completeExceptionally);
     }
 
     private <T> T mergeChunks(ChunkStorage chunkStorage, T source, SequenceHeader sequenceHeader, BiFunction<T, BinaryPayload, T> producer) {
@@ -419,7 +415,7 @@ public class Conversation {
     }
 
     static PlcProtocolException toProtocolException(ServiceFault fault) {
-        if (fault.getResponseHeader() instanceof ResponseHeader) {
+        if (fault.getResponseHeader() != null) {
             ResponseHeader responseHeader = (ResponseHeader) fault.getResponseHeader();
             long statusCode = responseHeader.getServiceResult().getStatusCode();
             String statusName = OpcuaStatusCode.isDefined(statusCode) ? OpcuaStatusCode.enumForValue(statusCode).name() : "<unknown>";

@@ -198,7 +198,9 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                     logger.trace("Failure while processing payload {} with handler {}", message, registration, e);
                     BiConsumer biConsumer = registration.getErrorConsumer();
                     if(biConsumer != null) {
-                        biConsumer.accept(message, e);
+                        // Use the original payload rather than the transformed message,
+                        // as the error consumer expects the original message type.
+                        biConsumer.accept(payload, e);
                     }
                     registration.confirmError();
                 }

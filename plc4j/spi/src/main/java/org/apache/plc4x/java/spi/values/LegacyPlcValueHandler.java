@@ -123,6 +123,10 @@ public class LegacyPlcValueHandler implements PlcValueHandler {
 
     public static PlcValue of(PlcTag tag, Object[] values) {
         if (values.length == 1) {
+            if (values[0] instanceof PlcValue) {
+                return (PlcValue) values[0];
+            }
+
             Object value = values[0];
             if(tag.getPlcValueType() == null) {
                 // TODO: This is a hacky shortcut ..

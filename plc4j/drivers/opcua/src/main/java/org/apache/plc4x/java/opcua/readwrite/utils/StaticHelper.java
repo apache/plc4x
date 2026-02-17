@@ -19,8 +19,13 @@
 package org.apache.plc4x.java.opcua.readwrite.utils;
 
 import java.nio.charset.StandardCharsets;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.opcua.readwrite.ExpandedNodeId;
+import org.apache.plc4x.java.opcua.readwrite.ExtensionObjectDefinition;
+import org.apache.plc4x.java.opcua.readwrite.UnknownExtensionObject;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class StaticHelper {
 
@@ -40,7 +45,34 @@ public class StaticHelper {
         try {
             return Integer.parseInt(expandedNodeId.getNodeId().getIdentifier());
         } catch (NumberFormatException e) {
-            throw new PlcRuntimeException("Invalid node id, expected number, found " + expandedNodeId.getNodeId().getClass().getName());
+            // Non-numeric NodeIds (e.g., vendor-specific types like Siemens TE_DTL)
+            // are not known to the parser. Return 0 to signal an unknown type.
+            return 0;
         }
+    }
+
+    public static ExtensionObjectDefinition parseExtensionObjectBody(
+            ReadBuffer readBuffer, int extensionId, int bodyLength) throws ParseException {
+        // Maintain the same "body" context that a simple field would produce,
+        // so the XML roundtrip tests stay consistent.
+        readBuffer.pullContext("body");
+        ExtensionObjectDefinition result;
+        if (extensionId < 1 && bodyLength > 0) {
+            // Unknown extension object type (e.g., vendor-specific like Siemens TE_DTL).
+            // Read the raw body bytes so the buffer position stays correct.
+            byte[] rawBytes = readBuffer.readByteArray("unknownBody", bodyLength);
+            result = new UnknownExtensionObject(rawBytes);
+        } else {
+            result = ExtensionObjectDefinition.staticParse(readBuffer, extensionId);
+        }
+        readBuffer.closeContext("body");
+        return result;
+    }
+
+    public static void serializeExtensionObjectBody(
+            WriteBuffer writeBuffer, ExtensionObjectDefinition body) throws SerializationException {
+        writeBuffer.pushContext("body");
+        body.serialize(writeBuffer);
+        writeBuffer.popContext("body");
     }
 }
