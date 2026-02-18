@@ -22,9 +22,9 @@
 As, especially for the raw socket functionality of PLC4X, our project had higher demands on the infrastructure as other projects.
 Apache Infra kindly provided us with a dedicated VM.
 
-This is included as build agent into Apache's Jenkins with the label `plc4x2` and is marked for exclusive usage by our project.
+This is included as build agent into Apache's Jenkins with the label `plc4x1` and is marked for exclusive usage by our project.
 
-The host name of this machine is: `plc4x-vm2.apache.org`
+The host name of this machine is: `plc4x1-ec2-or.apache.org`
 
 On this machine we can even `sudo` to perform operations only available to `root`.
 
@@ -56,7 +56,7 @@ As soon as that's handled by the Infra team, you should be ready to log-in on th
 
 Using SSH we should now be able to log in to the VM.
 
-   ssh apacheId@plc4x-vm2.apache.org
+   ssh apacheId@plc4x1-ec2-or.apache.org
 
 Be sure to use the username matching your Apache ID or the login will fail.
 
@@ -69,7 +69,7 @@ Providing a sudo password directly would increase the danger of having this inte
 
 Instead of now entering a password, a challenge is displayed:
 
-    myid@plc4x-vm2:~$ sudo apt-get update
+    myid@plc4x1-ec2-or:~$ sudo apt-get update
     otp-md5 496 pl8230
     Password:
 
