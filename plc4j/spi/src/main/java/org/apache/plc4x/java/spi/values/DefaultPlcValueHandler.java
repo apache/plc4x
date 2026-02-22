@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -82,7 +83,7 @@ public class DefaultPlcValueHandler implements PlcValueHandler {
     }
 
     private static PlcValue ofElements(PlcValueType type, List<ArrayInfo> arrayInfos, Object[] values) {
-        ArrayInfo arrayInfo = arrayInfos.get(0);
+        ArrayInfo arrayInfo = arrayInfos.getFirst();
 
         if(values.length == 1) {
             if(values[0] instanceof Object[]) {
@@ -91,8 +92,7 @@ public class DefaultPlcValueHandler implements PlcValueHandler {
                 values = ((Collection<?>) values[0]).toArray();
             } else if(values[0] instanceof PlcList) {
                 values = ((PlcList) values[0]).getList().toArray();
-            } else if(values[0] instanceof PlcRawByteArray) {
-                PlcRawByteArray plcRawByteArray = (PlcRawByteArray) values[0];
+            } else if(values[0] instanceof PlcRawByteArray plcRawByteArray) {
                 if(plcRawByteArray.getRaw().length != arrayInfo.getSize()) {
                     throw new PlcRuntimeException(String.format("Expecting %d items, but got %d", arrayInfo.getSize(), plcRawByteArray.getRaw().length));
                 }
@@ -126,6 +126,18 @@ public class DefaultPlcValueHandler implements PlcValueHandler {
         if(type == null) {
             return of(value);
         }
+
+        // If this is not a List type, and we're passing in an array or a collection with exactly one element,
+        // get that element instead.
+        if (type != PlcValueType.List) {
+            if(value.getClass().isArray() && (Array.getLength(value) == 1)) {
+                value = Array.get(value, 0);
+            }
+            else if((value instanceof Collection<?> col) && (col.size() == 1)) {
+                value = col.iterator().next();
+            }
+        }
+
         switch (type) {
             case BOOL:
                 return PlcBOOL.of(value);
