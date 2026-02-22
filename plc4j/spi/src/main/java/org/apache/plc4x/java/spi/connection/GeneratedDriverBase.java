@@ -400,6 +400,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         return new DefaultNettyPlcConnection(
+            protocolCode, getProtocolName(), transport.getTransportCode(), transport.getTransportName(),
             canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
             getValueHandler(),
             configuration,

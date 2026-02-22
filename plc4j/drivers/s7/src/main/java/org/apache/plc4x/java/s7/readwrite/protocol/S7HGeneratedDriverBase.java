@@ -158,7 +158,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             awaitDiscoverComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE));
         }
 
-        return new S7HPlcConnection(
+        return new S7HPlcConnection(getProtocolCode(), getProtocolName(), transport.getTransportCode(), transport.getTransportName(),
             canPing(),
             canRead(), canWrite(), canSubscribe(), canBrowse(),
             getValueHandler(),

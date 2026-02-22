@@ -62,21 +62,33 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractPlcConnection.class);
 
-    private boolean canPing = false;
-    private boolean canRead = false;
-    private boolean canWrite = false;
-    private boolean canSubscribe = false;
-    private boolean canBrowse = false;
+    private final String protocolCode;
+    private final String protocolName;
+    private final String transportCode;
+    private final String transportName;
+    private final boolean canPing;
+    private final boolean canRead;
+    private final boolean canWrite;
+    private final boolean canSubscribe;
+    private final boolean canBrowse;
     private final PlcValueHandler valueHandler;
     private final BaseOptimizer optimizer;
     private final PlcAuthentication authentication;
     private Plc4xProtocolBase<? extends Message> protocol;
     private PlcTagHandler tagHandler;
 
-    protected AbstractPlcConnection(boolean canPing, boolean canRead, boolean canWrite,
+    protected AbstractPlcConnection(String protocolCode,
+                                    String protocolName,
+                                    String transportCode,
+                                    String transportName,
+                                    boolean canPing, boolean canRead, boolean canWrite,
                                     boolean canSubscribe, boolean canBrowse,
                                     PlcValueHandler valueHandler,
                                     BaseOptimizer optimizer, PlcAuthentication authentication) {
+        this.protocolCode = protocolCode;
+        this.protocolName = protocolName;
+        this.transportCode = transportCode;
+        this.transportName = transportName;
         this.canPing = canPing;
         this.canRead = canRead;
         this.canWrite = canWrite;
@@ -87,11 +99,19 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         this.authentication = authentication;
     }
 
-    protected AbstractPlcConnection(boolean canPing, boolean canRead, boolean canWrite,
+    protected AbstractPlcConnection(String protocolCode,
+                                    String protocolName,
+                                    String transportCode,
+                                    String transportName,
+                                    boolean canPing, boolean canRead, boolean canWrite,
                                     boolean canSubscribe, boolean canBrowse,
                                     PlcValueHandler valueHandler,
                                     PlcTagHandler tagHandler,
                                     BaseOptimizer optimizer, PlcAuthentication authentication) {
+        this.protocolCode = protocolCode;
+        this.protocolName = protocolName;
+        this.transportCode = transportCode;
+        this.transportName = transportName;
         this.canPing = canPing;
         this.canRead = canRead;
         this.canWrite = canWrite;
@@ -356,6 +376,26 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
             throw new PlcRuntimeException("Error parsing tag value " + tag, e);
         }
         return Optional.of(plcValue);
+    }
+
+    @Override
+    public String getProtocolCode() {
+        return protocolCode;
+    }
+
+    @Override
+    public String getProtocolName() {
+        return protocolName;
+    }
+
+    @Override
+    public String getTransportCode() {
+        return transportCode;
+    }
+
+    @Override
+    public String getTransportName() {
+        return transportName;
     }
 
     protected PlcReadRequest getFilteredReadRequest(DefaultPlcReadRequest readRequest) {

@@ -207,6 +207,26 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         when(connection.getMetadata()).thenReturn(new PlcConnectionMetadata() {
 
             @Override
+            public String getProtocolCode() {
+                return "";
+            }
+
+            @Override
+            public String getProtocolName() {
+                return "";
+            }
+
+            @Override
+            public String getTransportCode() {
+                return "";
+            }
+
+            @Override
+            public String getTransportName() {
+                return "";
+            }
+
+            @Override
             public boolean isReadSupported() {
                 return true;
             }

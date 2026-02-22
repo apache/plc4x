@@ -40,6 +40,8 @@ public class PlcConnectionFactory {
 
     <T extends Message> DefaultNettyPlcConnection create(ChannelFactory channelFactory, ProtocolStackConfigurer<T> stackConfigurer) {
         return new DefaultNettyPlcConnection(
+            // This only seems to be called from tests.
+            "", "", "", "",
             true, true, true, true, true,
             null, null, channelFactory,
             fireDiscovery, // force discovery

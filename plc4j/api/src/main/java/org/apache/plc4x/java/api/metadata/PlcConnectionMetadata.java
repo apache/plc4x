@@ -25,6 +25,30 @@ package org.apache.plc4x.java.api.metadata;
 public interface PlcConnectionMetadata {
 
     /**
+     * Returns the protocol code of the driver used to create this connection.
+     * @return protocol code
+     */
+    String getProtocolCode();
+
+    /**
+     * Returns the human-readable name of the protocol of the driver used to create this connection.
+     * @return protocol name
+     */
+    String getProtocolName();
+
+    /**
+     * Returns the code of the transport used to create this connection.
+     * @return transport code
+     */
+    String getTransportCode();
+
+    /**
+     * Returns the human-readable name of the transport used to create this connection.
+     * @return transport name
+     */
+    String getTransportName();
+
+    /**
      * Indicates that the connection supports reading.
      */
     boolean isReadSupported();

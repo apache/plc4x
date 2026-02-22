@@ -29,6 +29,12 @@ Incompatible changes
   PlcConnectionStateChangedEvent events which have many more
   state change options beyond a simple connected and disconnected
   event.
+- PlcConnectionMetadata interface was extended to expose additional
+  information about the connection itself.
+    - protocol code
+    - protocol name
+    - transport code
+    - transport name
 
 Bug Fixes
 ---------

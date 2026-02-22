@@ -107,6 +107,26 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
     public PlcConnectionMetadata getMetadata() {
         return new PlcConnectionMetadata() {
             @Override
+            public String getProtocolCode() {
+                return "mock";
+            }
+
+            @Override
+            public String getProtocolName() {
+                return "mock";
+            }
+
+            @Override
+            public String getTransportCode() {
+                return "test";
+            }
+
+            @Override
+            public String getTransportName() {
+                return "test";
+            }
+
+            @Override
             public boolean isReadSupported() {
                 return true;
             }

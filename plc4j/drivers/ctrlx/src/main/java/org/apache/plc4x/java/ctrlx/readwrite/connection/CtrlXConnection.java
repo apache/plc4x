@@ -129,6 +129,26 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
     public PlcConnectionMetadata getMetadata() {
         return new PlcConnectionMetadata() {
             @Override
+            public String getProtocolCode() {
+                return "ctrlx";
+            }
+
+            @Override
+            public String getProtocolName() {
+                return "";
+            }
+
+            @Override
+            public String getTransportCode() {
+                return "tcp";
+            }
+
+            @Override
+            public String getTransportName() {
+                return "";
+            }
+
+            @Override
             public boolean isReadSupported() {
                 return true;
             }

@@ -55,15 +55,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
-import java.util.stream.Stream;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
-import org.apache.plc4x.java.api.listener.ConnectionStateListener;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.events.ConnectEvent;
-import org.apache.plc4x.java.spi.events.DisconnectedEvent;
-import org.apache.plc4x.java.spi.events.DiscoverEvent;
-import org.apache.plc4x.java.spi.events.DiscoveredEvent;
 
 /**
  * This object generates the main connection and includes the management
@@ -100,6 +94,10 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
     protected int retrysPing = 0;
 
     public S7HPlcConnection(
+        String protocolCode,
+        String protocolName,
+        String transportCode,
+        String transportName,
         boolean canPing,
         boolean canRead,
         boolean canWrite,
@@ -116,7 +114,8 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         ProtocolStackConfigurer<TPKTPacket> stackConfigurer,
         BaseOptimizer optimizer,
         PlcAuthentication authentication) {
-        super(canPing,
+        super(protocolCode, protocolName, transportCode, transportName,
+            canPing,
             canRead,
             canWrite,
             canSubscribe,

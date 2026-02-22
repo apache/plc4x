@@ -63,7 +63,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected Channel channel;
     protected boolean connected;
 
-    public DefaultNettyPlcConnection(boolean canPing,
+    public DefaultNettyPlcConnection(String protocolCode,
+                                     String protocolName,
+                                     String transportCode,
+                                     String transportName,
+                                     boolean canPing,
                                      boolean canRead,
                                      boolean canWrite,
                                      boolean canSubscribe,
@@ -78,7 +82,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      ProtocolStackConfigurer<?> stackConfigurer,
                                      BaseOptimizer optimizer,
                                      PlcAuthentication authentication) {
-        super(canPing, canRead, canWrite, canSubscribe, canBrowse, valueHandler, optimizer, authentication);
+        super(protocolCode, protocolName, transportCode, transportName, canPing, canRead, canWrite, canSubscribe, canBrowse, valueHandler, optimizer, authentication);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.fireDiscoverEvent = fireDiscoverEvent;

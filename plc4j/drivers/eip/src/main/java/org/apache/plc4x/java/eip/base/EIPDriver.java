@@ -208,6 +208,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         }
 
         return new DefaultNettyPlcConnection(
+            getProtocolCode(), getProtocolName(), transport.getTransportCode(), transport.getTransportName(),
             canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
             getValueHandler(),
             configuration,
