@@ -2735,8 +2735,8 @@
             [array DiagnosticInfo value count 'arrayLength == null ? 1 : arrayLength']
         ]
     ]
-    [optional int 32 noOfArrayDimensions 'arrayDimensionsSpecified']
-    [array bit arrayDimensions count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
+    [optional int 32 noOfArrayDimensions 'arrayDimensionsSpecified'                                                        ]
+    [array    int 32 arrayDimensions     count                      'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
 ]
 
 // node type, with two leading reserved bytes

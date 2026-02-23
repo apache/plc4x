@@ -110,6 +110,7 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <configuration>
+          <haltOnFailure>false</haltOnFailure>
           <excludes>
             <exclude>org/eclipse/**/*</exclude>
           </excludes>

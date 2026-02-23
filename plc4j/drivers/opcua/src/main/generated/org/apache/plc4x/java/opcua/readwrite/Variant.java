@@ -44,13 +44,13 @@ public abstract class Variant implements Message {
   protected final boolean arrayLengthSpecified;
   protected final boolean arrayDimensionsSpecified;
   protected final Integer noOfArrayDimensions;
-  protected final List<Boolean> arrayDimensions;
+  protected final List<Integer> arrayDimensions;
 
   public Variant(
       boolean arrayLengthSpecified,
       boolean arrayDimensionsSpecified,
       Integer noOfArrayDimensions,
-      List<Boolean> arrayDimensions) {
+      List<Integer> arrayDimensions) {
     super();
     this.arrayLengthSpecified = arrayLengthSpecified;
     this.arrayDimensionsSpecified = arrayDimensionsSpecified;
@@ -70,7 +70,7 @@ public abstract class Variant implements Message {
     return noOfArrayDimensions;
   }
 
-  public List<Boolean> getArrayDimensions() {
+  public List<Integer> getArrayDimensions() {
     return arrayDimensions;
   }
 
@@ -99,7 +99,7 @@ public abstract class Variant implements Message {
     writeOptionalField("noOfArrayDimensions", noOfArrayDimensions, writeSignedInt(writeBuffer, 32));
 
     // Array Field (arrayDimensions)
-    writeSimpleTypeArrayField("arrayDimensions", arrayDimensions, writeBoolean(writeBuffer));
+    writeSimpleTypeArrayField("arrayDimensions", arrayDimensions, writeSignedInt(writeBuffer, 32));
 
     writeBuffer.popContext("Variant");
   }
@@ -133,7 +133,7 @@ public abstract class Variant implements Message {
 
     // Array field
     if (arrayDimensions != null) {
-      lengthInBits += 1 * arrayDimensions.size();
+      lengthInBits += 32 * arrayDimensions.size();
     }
 
     return lengthInBits;
@@ -222,10 +222,10 @@ public abstract class Variant implements Message {
         readOptionalField(
             "noOfArrayDimensions", readSignedInt(readBuffer, 32), arrayDimensionsSpecified);
 
-    List<Boolean> arrayDimensions =
+    List<Integer> arrayDimensions =
         readCountArrayField(
             "arrayDimensions",
-            readBoolean(readBuffer),
+            readSignedInt(readBuffer, 32),
             (((noOfArrayDimensions) == (null)) ? 0 : noOfArrayDimensions));
 
     readBuffer.closeContext("Variant");
@@ -241,7 +241,7 @@ public abstract class Variant implements Message {
         boolean arrayLengthSpecified,
         boolean arrayDimensionsSpecified,
         Integer noOfArrayDimensions,
-        List<Boolean> arrayDimensions);
+        List<Integer> arrayDimensions);
   }
 
   @Override

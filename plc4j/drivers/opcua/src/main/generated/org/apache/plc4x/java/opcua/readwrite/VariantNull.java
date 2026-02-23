@@ -46,7 +46,7 @@ public class VariantNull extends Variant implements Message {
       boolean arrayLengthSpecified,
       boolean arrayDimensionsSpecified,
       Integer noOfArrayDimensions,
-      List<Boolean> arrayDimensions) {
+      List<Integer> arrayDimensions) {
     super(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions);
   }
 
@@ -92,7 +92,7 @@ public class VariantNull extends Variant implements Message {
         boolean arrayLengthSpecified,
         boolean arrayDimensionsSpecified,
         Integer noOfArrayDimensions,
-        List<Boolean> arrayDimensions) {
+        List<Integer> arrayDimensions) {
       VariantNull variantNull =
           new VariantNull(
               arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions);
