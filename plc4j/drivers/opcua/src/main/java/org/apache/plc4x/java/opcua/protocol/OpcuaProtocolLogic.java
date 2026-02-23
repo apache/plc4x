@@ -59,8 +59,7 @@ import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager.RequestTransaction;
-import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
-import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +84,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         new ExtensionObjectEncodingMask(false, false, false));
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
+    // IEC 61131-3 date types use 1990-01-01 as epoch, PlcDATE etc. use Unix epoch (1970-01-01).
+    private static final long IEC_DATE_EPOCH_OFFSET_DAYS = LocalDate.of(1990, 1, 1).toEpochDay();
     private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new ConcurrentHashMap<>();
     private final RequestTransactionManager tm = new RequestTransactionManager();
 
@@ -309,148 +310,268 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         PlcValue value = null;
         if (variant instanceof VariantBoolean) {
             byte[] array = ((VariantBoolean) variant).getValue();
-            int length = array.length;
-            Boolean[] tmpValue = new Boolean[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = array[i] != 0;
+            List<PlcValue> values = new ArrayList<>(array.length);
+            for (byte b : array) {
+                values.add(new PlcBOOL(b != 0));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantSByte) {
             byte[] array = ((VariantSByte) variant).getValue();
-            value = DefaultPlcValueHandler.of(tag, array);
+            List<PlcValue> values = new ArrayList<>(array.length);
+            for (byte b : array) {
+                values.add(new PlcSINT(b));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantByte) {
             List<Short> array = ((VariantByte) variant).getValue();
-            Short[] tmpValue = array.toArray(new Short[0]);
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (Short s : array) {
+                values.add(new PlcUSINT(s));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantInt16) {
             List<Short> array = ((VariantInt16) variant).getValue();
-            Short[] tmpValue = array.toArray(new Short[0]);
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (Short s : array) {
+                values.add(new PlcINT(s));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantUInt16) {
             List<Integer> array = ((VariantUInt16) variant).getValue();
-            Integer[] tmpValue = array.toArray(new Integer[0]);
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (Integer i : array) {
+                values.add(new PlcUINT(i));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantInt32) {
             List<Integer> array = ((VariantInt32) variant).getValue();
-            Integer[] tmpValue = array.toArray(new Integer[0]);
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (Integer i : array) {
+                values.add(new PlcDINT(i));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantUInt32) {
             List<Long> array = ((VariantUInt32) variant).getValue();
-            Long[] tmpValue = array.toArray(new Long[0]);
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (Long l : array) {
+                values.add(new PlcUDINT(l));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantInt64) {
             List<Long> array = ((VariantInt64) variant).getValue();
-            Long[] tmpValue = array.toArray(new Long[0]);
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (Long l : array) {
+                values.add(new PlcLINT(l));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantUInt64) {
-            value = DefaultPlcValueHandler.of(tag, ((VariantUInt64) variant).getValue());
+            List<BigInteger> array = ((VariantUInt64) variant).getValue();
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (BigInteger bi : array) {
+                values.add(new PlcULINT(bi));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantFloat) {
             List<Float> array = ((VariantFloat) variant).getValue();
-            Float[] tmpValue = array.toArray(new Float[0]);
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (Float f : array) {
+                values.add(new PlcREAL(f));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantDouble) {
             List<Double> array = ((VariantDouble) variant).getValue();
-            Double[] tmpValue = array.toArray(new Double[0]);
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
-        } else if (variant instanceof VariantString) {
-            int length = ((VariantString) variant).getValue().size();
-            List<PascalString> stringArray = ((VariantString) variant).getValue();
-            String[] tmpValue = new String[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = stringArray.get(i).getStringValue();
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (Double d : array) {
+                values.add(new PlcLREAL(d));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
+        } else if (variant instanceof VariantString) {
+            List<PascalString> stringArray = ((VariantString) variant).getValue();
+            List<PlcValue> values = new ArrayList<>(stringArray.size());
+            for (PascalString ps : stringArray) {
+                values.add(new PlcSTRING(ps.getStringValue()));
+            }
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantDateTime) {
             List<Long> array = ((VariantDateTime) variant).getValue();
-            int length = array.size();
-            LocalDateTime[] tmpValue = new LocalDateTime[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(array.get(i))), ZoneOffset.UTC);
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (Long l : array) {
+                values.add(DefaultPlcValueHandler.of(tag, LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(l)), ZoneOffset.UTC)));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantGuid) {
             List<GuidValue> array = ((VariantGuid) variant).getValue();
-            int length = array.size();
-            String[] tmpValue = new String[length];
-            for (int i = 0; i < length; i++) {
-                //These two data section aren't little endian like the rest.
-                byte[] data4Bytes = array.get(i).getData4();
+            List<PlcValue> values = new ArrayList<>(array.size());
+            for (GuidValue guidValue : array) {
+                //These two data sections aren't little endian like the rest.
+                byte[] data4Bytes = guidValue.getData4();
                 int data4 = 0;
                 for (byte data4Byte : data4Bytes) {
                     data4 = (data4 << 8) + (data4Byte & 0xff);
                 }
-                byte[] data5Bytes = array.get(i).getData5();
+                byte[] data5Bytes = guidValue.getData5();
                 long data5 = 0;
                 for (byte data5Byte : data5Bytes) {
                     data5 = (data5 << 8) + (data5Byte & 0xff);
                 }
-                tmpValue[i] = Long.toHexString(array.get(i).getData1()) + "-" + Integer.toHexString(array.get(i).getData2()) + "-" + Integer.toHexString(array.get(i).getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5);
+                values.add(new PlcSTRING(Long.toHexString(guidValue.getData1()) + "-" + Integer.toHexString(guidValue.getData2()) + "-" + Integer.toHexString(guidValue.getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5)));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantXmlElement) {
-            int length = ((VariantXmlElement) variant).getValue().size();
             List<PascalString> strings = ((VariantXmlElement) variant).getValue();
-            String[] tmpValue = new String[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = strings.get(i).getStringValue();
+            List<PlcValue> values = new ArrayList<>(strings.size());
+            for (PascalString ps : strings) {
+                values.add(new PlcSTRING(ps.getStringValue()));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantLocalizedText) {
-            int length = ((VariantLocalizedText) variant).getValue().size();
             List<LocalizedText> strings = ((VariantLocalizedText) variant).getValue();
-            String[] tmpValue = new String[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = "";
-                tmpValue[i] += strings.get(i).getLocaleSpecified() ? strings.get(i).getLocale().getStringValue() + "|" : "";
-                tmpValue[i] += strings.get(i).getTextSpecified() ? strings.get(i).getText().getStringValue() : "";
+            List<PlcValue> values = new ArrayList<>(strings.size());
+            for (LocalizedText lt : strings) {
+                String s = "";
+                s += lt.getLocaleSpecified() ? lt.getLocale().getStringValue() + "|" : "";
+                s += lt.getTextSpecified() ? lt.getText().getStringValue() : "";
+                values.add(new PlcSTRING(s));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantQualifiedName) {
-            int length = ((VariantQualifiedName) variant).getValue().size();
             List<QualifiedName> strings = ((VariantQualifiedName) variant).getValue();
-            String[] tmpValue = new String[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = "ns=" + strings.get(i).getNamespaceIndex() + ";s=" + strings.get(i).getName().getStringValue();
+            List<PlcValue> values = new ArrayList<>(strings.size());
+            for (QualifiedName qn : strings) {
+                values.add(new PlcSTRING("ns=" + qn.getNamespaceIndex() + ";s=" + qn.getName().getStringValue()));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantExtensionObject) {
-            int length = ((VariantExtensionObject) variant).getValue().size();
-            List<ExtensionObject> strings = ((VariantExtensionObject) variant).getValue();
-            String[] tmpValue = new String[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = strings.get(i).toString();
+            List<ExtensionObject> objects = ((VariantExtensionObject) variant).getValue();
+            List<PlcValue> values = new ArrayList<>(objects.size());
+            for (ExtensionObject eo : objects) {
+                values.add(new PlcSTRING(eo.toString()));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantNodeId) {
-            int length = ((VariantNodeId) variant).getValue().size();
-            List<NodeId> strings = ((VariantNodeId) variant).getValue();
-            String[] tmpValue = new String[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = strings.get(i).toString();
+            List<NodeId> nodeIds = ((VariantNodeId) variant).getValue();
+            List<PlcValue> values = new ArrayList<>(nodeIds.size());
+            for (NodeId nid : nodeIds) {
+                values.add(new PlcSTRING(nid.toString()));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantStatusCode) {
-            int length = ((VariantStatusCode) variant).getValue().size();
-            List<StatusCode> strings = ((VariantStatusCode) variant).getValue();
-            String[] tmpValue = new String[length];
-            for (int i = 0; i < length; i++) {
-                tmpValue[i] = strings.get(i).toString();
+            List<StatusCode> statusCodes = ((VariantStatusCode) variant).getValue();
+            List<PlcValue> values = new ArrayList<>(statusCodes.size());
+            for (StatusCode sc : statusCodes) {
+                values.add(new PlcSTRING(sc.toString()));
             }
-            value = DefaultPlcValueHandler.of(tag, tmpValue);
+            value = structurePlcValues(values, variant);
         } else if (variant instanceof VariantByteString) {
-            PlcList plcList = new PlcList();
             List<ByteStringArray> array = ((VariantByteString) variant).getValue();
+            List<PlcValue> values = new ArrayList<>(array.size());
             for (ByteStringArray byteStringArray : array) {
-                int length = byteStringArray.getValue().size();
-                Short[] tmpValue = new Short[length];
-                for (int i = 0; i < length; i++) {
-                    tmpValue[i] = byteStringArray.getValue().get(i);
-                }
-                plcList.add(DefaultPlcValueHandler.of(tag, tmpValue));
+                Short[] tmpValue = byteStringArray.getValue().toArray(new Short[0]);
+                values.add(DefaultPlcValueHandler.of(tag, tmpValue));
             }
-            value = plcList;
+            value = structurePlcValues(values, variant);
         }
+
+        // If the tag declares a specific type (via suffix like :TIME, :DATE, etc.),
+        // re-interpret the raw numeric value as the correct IEC 61131-3 type.
+        if (value != null && tag != null) {
+            PlcValueType targetType = tag.getPlcValueType();
+            if (targetType != PlcValueType.NULL) {
+                value = applyTypeOverride(value, targetType);
+            }
+        }
+
         return value;
+    }
+
+    /**
+     * Recursively applies a type override to a PlcValue.
+     * For PlcList values, each element is converted individually.
+     * For scalar values, the raw numeric is re-interpreted as the target type.
+     */
+    private static PlcValue applyTypeOverride(PlcValue value, PlcValueType targetType) {
+        // If the value is already a properly typed temporal value (e.g., from DTL
+        // conversion), skip the override to avoid corrupting it.
+        PlcValueType currentType = value.getPlcValueType();
+        if (currentType == targetType || isTemporalType(currentType)) {
+            return value;
+        }
+        if (value instanceof PlcList list) {
+            List<PlcValue> converted = new ArrayList<>(list.getLength());
+            for (PlcValue item : list.getList()) {
+                converted.add(applyTypeOverride(item, targetType));
+            }
+            return new PlcList(converted);
+        }
+        long raw = value.getLong();
+        return switch (targetType) {
+            case TIME -> new PlcTIME(raw);
+            case LTIME -> new PlcLTIME(raw);
+            case DATE ->
+                // S7/IEC value is days since 1990-01-01, PlcDATE expects days since 1970-01-01
+                new PlcDATE(raw + IEC_DATE_EPOCH_OFFSET_DAYS);
+            case LDATE ->
+                // PlcLDATE expects seconds since 1970-01-01
+                new PlcLDATE(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L);
+            case TIME_OF_DAY ->
+                // S7/IEC value is milliseconds since midnight
+                new PlcTIME_OF_DAY(LocalTime.ofNanoOfDay(raw * 1_000_000L));
+            case LTIME_OF_DAY -> new PlcLTIME_OF_DAY(raw);
+            case DATE_AND_TIME ->
+                // PlcDATE_AND_TIME expects seconds since 1970-01-01
+                new PlcDATE_AND_TIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L);
+            case DATE_AND_LTIME ->
+                // PlcDATE_AND_LTIME expects nanoseconds since 1970-01-01
+                new PlcDATE_AND_LTIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L * 1_000_000_000L);
+            case LDATE_AND_TIME ->
+                // PlcLDATE_AND_TIME expects milliseconds since 1970-01-01
+                new PlcLDATE_AND_TIME(raw + IEC_DATE_EPOCH_OFFSET_DAYS * 86400L * 1000L);
+            default -> value;
+        };
+    }
+
+    private static boolean isTemporalType(PlcValueType type) {
+        return switch (type) {
+            case TIME, LTIME, DATE, LDATE, TIME_OF_DAY, LTIME_OF_DAY, DATE_AND_TIME, DATE_AND_LTIME, LDATE_AND_TIME ->
+                true;
+            default -> false;
+        };
+    }
+
+    /**
+     * Structures a flat list of PlcValues according to the variant's dimensionality:
+     * - Single value: returns the scalar PlcValue directly
+     * - 1D array (no array dimensions specified): returns a flat PlcList
+     * - Multi-dimensional array: returns nested PlcLists matching the declared dimensions
+     */
+    private static PlcValue structurePlcValues(List<PlcValue> values, Variant variant) {
+        if (values.size() == 1) {
+            return values.getFirst();
+        }
+        List<Integer> dimensions = variant.getArrayDimensions();
+        if (dimensions == null || dimensions.isEmpty()) {
+            return new PlcList(values);
+        }
+        return buildMultiDimensionalList(values, dimensions);
+    }
+
+    /**
+     * Recursively partitions a flat list of PlcValues into nested PlcLists
+     * according to the given dimensions.
+     * E.g., 6 values with dimensions [3, 2] produces a PlcList of 3 PlcLists of 2 values each.
+     */
+    private static PlcValue buildMultiDimensionalList(List<PlcValue> flatValues, List<Integer> dimensions) {
+        if (dimensions.size() <= 1) {
+            return new PlcList(flatValues);
+        }
+        int currentDim = dimensions.getFirst();
+        List<Integer> remainingDims = dimensions.subList(1, dimensions.size());
+        int chunkSize = flatValues.size() / currentDim;
+        List<PlcValue> result = new ArrayList<>(currentDim);
+        for (int i = 0; i < currentDim; i++) {
+            result.add(buildMultiDimensionalList(flatValues.subList(i * chunkSize, (i + 1) * chunkSize), remainingDims));
+        }
+        return new PlcList(result);
     }
 
     private static PlcResponseCode mapOpcStatusCode(long opcStatusCode, PlcResponseCode fallback) {

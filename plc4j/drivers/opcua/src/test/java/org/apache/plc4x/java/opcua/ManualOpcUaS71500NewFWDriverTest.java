@@ -35,7 +35,7 @@ public class ManualOpcUaS71500NewFWDriverTest extends ManualTest {
     }
 
     public static void main(String[] args) throws Exception {
-        boolean testArrays = false;
+        boolean testArrays = true;
         ManualOpcUaS71500NewFWDriverTest test = new ManualOpcUaS71500NewFWDriverTest("opcua://192.168.24.66:4840");
         test.addTestCase(/*"g_b1",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b1\";BOOL",                   new PlcBOOL(true));
         test.addTestCase(/*"g_b8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b8\";BYTE",	                new PlcBYTE(0xAB));
