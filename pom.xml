@@ -125,7 +125,7 @@
     <commons-text.version>1.15.0</commons-text.version>
     <commons-csv.version>1.14.1</commons-csv.version>
     <dom4j.version>2.2.0</dom4j.version>
-    <equalsverifier.version>4.4</equalsverifier.version>
+    <equalsverifier.version>4.4.1</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
     <groovy.version>5.0.4</groovy.version>
     <guava.version>33.5.0-jre</guava.version>
