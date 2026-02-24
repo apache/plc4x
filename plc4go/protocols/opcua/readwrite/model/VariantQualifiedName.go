@@ -62,7 +62,7 @@ var _ VariantQualifiedName = (*_VariantQualifiedName)(nil)
 var _ VariantRequirements = (*_VariantQualifiedName)(nil)
 
 // NewVariantQualifiedName factory function for _VariantQualifiedName
-func NewVariantQualifiedName(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []QualifiedName) *_VariantQualifiedName {
+func NewVariantQualifiedName(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []QualifiedName) *_VariantQualifiedName {
 	_result := &_VariantQualifiedName{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

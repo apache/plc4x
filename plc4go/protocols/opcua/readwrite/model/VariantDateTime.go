@@ -62,7 +62,7 @@ var _ VariantDateTime = (*_VariantDateTime)(nil)
 var _ VariantRequirements = (*_VariantDateTime)(nil)
 
 // NewVariantDateTime factory function for _VariantDateTime
-func NewVariantDateTime(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []int64) *_VariantDateTime {
+func NewVariantDateTime(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []int64) *_VariantDateTime {
 	_result := &_VariantDateTime{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

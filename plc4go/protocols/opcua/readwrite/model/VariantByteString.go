@@ -62,7 +62,7 @@ var _ VariantByteString = (*_VariantByteString)(nil)
 var _ VariantRequirements = (*_VariantByteString)(nil)
 
 // NewVariantByteString factory function for _VariantByteString
-func NewVariantByteString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ByteStringArray) *_VariantByteString {
+func NewVariantByteString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []ByteStringArray) *_VariantByteString {
 	_result := &_VariantByteString{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

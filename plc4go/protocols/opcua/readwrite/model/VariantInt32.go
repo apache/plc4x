@@ -62,7 +62,7 @@ var _ VariantInt32 = (*_VariantInt32)(nil)
 var _ VariantRequirements = (*_VariantInt32)(nil)
 
 // NewVariantInt32 factory function for _VariantInt32
-func NewVariantInt32(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []int32) *_VariantInt32 {
+func NewVariantInt32(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []int32) *_VariantInt32 {
 	_result := &_VariantInt32{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

@@ -62,7 +62,7 @@ var _ VariantUInt16 = (*_VariantUInt16)(nil)
 var _ VariantRequirements = (*_VariantUInt16)(nil)
 
 // NewVariantUInt16 factory function for _VariantUInt16
-func NewVariantUInt16(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []uint16) *_VariantUInt16 {
+func NewVariantUInt16(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []uint16) *_VariantUInt16 {
 	_result := &_VariantUInt16{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

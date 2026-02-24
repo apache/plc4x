@@ -62,7 +62,7 @@ var _ VariantInt64 = (*_VariantInt64)(nil)
 var _ VariantRequirements = (*_VariantInt64)(nil)
 
 // NewVariantInt64 factory function for _VariantInt64
-func NewVariantInt64(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []int64) *_VariantInt64 {
+func NewVariantInt64(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []int64) *_VariantInt64 {
 	_result := &_VariantInt64{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

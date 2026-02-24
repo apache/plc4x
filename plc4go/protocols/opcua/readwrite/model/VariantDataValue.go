@@ -62,7 +62,7 @@ var _ VariantDataValue = (*_VariantDataValue)(nil)
 var _ VariantRequirements = (*_VariantDataValue)(nil)
 
 // NewVariantDataValue factory function for _VariantDataValue
-func NewVariantDataValue(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []DataValue) *_VariantDataValue {
+func NewVariantDataValue(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []DataValue) *_VariantDataValue {
 	_result := &_VariantDataValue{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

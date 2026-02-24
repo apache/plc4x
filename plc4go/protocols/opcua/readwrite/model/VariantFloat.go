@@ -62,7 +62,7 @@ var _ VariantFloat = (*_VariantFloat)(nil)
 var _ VariantRequirements = (*_VariantFloat)(nil)
 
 // NewVariantFloat factory function for _VariantFloat
-func NewVariantFloat(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []float32) *_VariantFloat {
+func NewVariantFloat(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []float32) *_VariantFloat {
 	_result := &_VariantFloat{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

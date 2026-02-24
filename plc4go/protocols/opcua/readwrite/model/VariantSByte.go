@@ -62,7 +62,7 @@ var _ VariantSByte = (*_VariantSByte)(nil)
 var _ VariantRequirements = (*_VariantSByte)(nil)
 
 // NewVariantSByte factory function for _VariantSByte
-func NewVariantSByte(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []byte) *_VariantSByte {
+func NewVariantSByte(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []byte) *_VariantSByte {
 	_result := &_VariantSByte{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

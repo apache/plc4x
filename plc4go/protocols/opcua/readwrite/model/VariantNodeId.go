@@ -62,7 +62,7 @@ var _ VariantNodeId = (*_VariantNodeId)(nil)
 var _ VariantRequirements = (*_VariantNodeId)(nil)
 
 // NewVariantNodeId factory function for _VariantNodeId
-func NewVariantNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []NodeId) *_VariantNodeId {
+func NewVariantNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []NodeId) *_VariantNodeId {
 	_result := &_VariantNodeId{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

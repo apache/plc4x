@@ -62,7 +62,7 @@ var _ VariantExtensionObject = (*_VariantExtensionObject)(nil)
 var _ VariantRequirements = (*_VariantExtensionObject)(nil)
 
 // NewVariantExtensionObject factory function for _VariantExtensionObject
-func NewVariantExtensionObject(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ExtensionObject) *_VariantExtensionObject {
+func NewVariantExtensionObject(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []ExtensionObject) *_VariantExtensionObject {
 	_result := &_VariantExtensionObject{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

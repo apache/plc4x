@@ -62,7 +62,7 @@ var _ VariantString = (*_VariantString)(nil)
 var _ VariantRequirements = (*_VariantString)(nil)
 
 // NewVariantString factory function for _VariantString
-func NewVariantString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []PascalString) *_VariantString {
+func NewVariantString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []PascalString) *_VariantString {
 	_result := &_VariantString{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

@@ -62,7 +62,7 @@ var _ VariantGuid = (*_VariantGuid)(nil)
 var _ VariantRequirements = (*_VariantGuid)(nil)
 
 // NewVariantGuid factory function for _VariantGuid
-func NewVariantGuid(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []GuidValue) *_VariantGuid {
+func NewVariantGuid(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []GuidValue) *_VariantGuid {
 	_result := &_VariantGuid{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

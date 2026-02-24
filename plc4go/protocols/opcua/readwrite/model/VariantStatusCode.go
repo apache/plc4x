@@ -62,7 +62,7 @@ var _ VariantStatusCode = (*_VariantStatusCode)(nil)
 var _ VariantRequirements = (*_VariantStatusCode)(nil)
 
 // NewVariantStatusCode factory function for _VariantStatusCode
-func NewVariantStatusCode(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []StatusCode) *_VariantStatusCode {
+func NewVariantStatusCode(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []StatusCode) *_VariantStatusCode {
 	_result := &_VariantStatusCode{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

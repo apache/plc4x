@@ -62,7 +62,7 @@ var _ VariantDouble = (*_VariantDouble)(nil)
 var _ VariantRequirements = (*_VariantDouble)(nil)
 
 // NewVariantDouble factory function for _VariantDouble
-func NewVariantDouble(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []float64) *_VariantDouble {
+func NewVariantDouble(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []float64) *_VariantDouble {
 	_result := &_VariantDouble{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,
