@@ -170,7 +170,7 @@
 
 - icon:check[role="green"] Implemented and fully supported
 - icon:exclamation[role="yellow"] Work in progress
-- icon:check[role="red"] Not implemented yet
+- icon:times[role="red"] Not implemented yet
 - icon:question[role="red"] Unsure
 
 |===
@@ -410,6 +410,6 @@ The following table contains a list of operations and the protocols that support
 
 - icon:check[role="green"] Implemented and fully supported
 - icon:exclamation[role="yellow"] Implemented and supported by simulation
-- icon:check[role="red"] Not implemented yet
+- icon:times[role="red"] Not implemented yet
 - icon:question[role="red"] Unsure
 |===
