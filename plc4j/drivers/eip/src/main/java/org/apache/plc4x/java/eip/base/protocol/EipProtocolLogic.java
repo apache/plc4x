@@ -811,9 +811,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         CipReadResponse resp = (CipReadResponse) p;
         PlcResponseCode code = decodeResponseCode(resp.getStatus());
         PlcValue plcValue = null;
-        CIPDataTypeCode type = resp.getData().getDataType();
-        ByteBuf data = Unpooled.wrappedBuffer(resp.getData().getData());
         if (code == PlcResponseCode.OK) {
+            CIPDataTypeCode type = resp.getData().getDataType();
+            ByteBuf data = Unpooled.wrappedBuffer(resp.getData().getData());
             plcValue = parsePlcValue((EipTag) tag, data, type);
         }
         PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(code, plcValue);
