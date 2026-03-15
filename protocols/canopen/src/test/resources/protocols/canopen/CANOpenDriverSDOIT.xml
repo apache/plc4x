@@ -183,20 +183,26 @@
       </incoming-plc-message>
       <api-response name="Report Read Response to application (expedited)">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <expeditedSdo>
-                  <CANOpenSDOTag>
-                    <node dataType="int" bitLength="64">1</node>
-                    <index dataType="int" bitLength="64">1000</index>
-                    <subIndex dataType="int" bitLength="64">22</subIndex>
-                    <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
-                  </CANOpenSDOTag>
-                </expeditedSdo>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <expeditedSdo>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">1</node>
+                          <index dataType="int" bitLength="64">1000</index>
+                          <subIndex dataType="int" bitLength="64">22</subIndex>
+                          <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </expeditedSdo>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
           <values isList="true">
             <expeditedSdo>
               <PlcResponseItem>
@@ -312,20 +318,26 @@
       </incoming-plc-message>
       <api-response name="Report Read Response to application (expedited short)">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <expeditedShort>
-                  <CANOpenSDOTag>
-                    <node dataType="int" bitLength="64">1</node>
-                    <index dataType="int" bitLength="64">9186</index>
-                    <subIndex dataType="int" bitLength="64">1</subIndex>
-                    <dataType dataType="string" bitLength="72" encoding="UTF-8">UNSIGNED8</dataType>
-                  </CANOpenSDOTag>
-                </expeditedShort>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <expeditedShort>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">1</node>
+                          <index dataType="int" bitLength="64">9186</index>
+                          <subIndex dataType="int" bitLength="64">1</subIndex>
+                          <dataType dataType="string" bitLength="72" encoding="UTF-8">UNSIGNED8</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </expeditedShort>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
           <values isList="true">
             <expeditedShort>
               <PlcResponseItem>
@@ -488,20 +500,26 @@
       </incoming-plc-message>
       <api-response name="Report Read Response to application (custom answer id)">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <expeditedSdoCustomAnswer>
-                  <CANOpenSDOTag>
-                    <node dataType="int" bitLength="64">1</node>
-                    <index dataType="int" bitLength="64">1000</index>
-                    <subIndex dataType="int" bitLength="64">22</subIndex>
-                    <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
-                  </CANOpenSDOTag>
-                </expeditedSdoCustomAnswer>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <expeditedSdoCustomAnswer>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">1</node>
+                          <index dataType="int" bitLength="64">1000</index>
+                          <subIndex dataType="int" bitLength="64">22</subIndex>
+                          <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </expeditedSdoCustomAnswer>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
           <values isList="true">
             <expeditedSdoCustomAnswer>
               <PlcResponseItem>
@@ -819,35 +837,32 @@
 
       <api-response name="Report Read Response to application (segmented)">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <segmentedSdo>
-                  <CANOpenSDOTag>
-                    <node dataType="int" bitLength="64">2</node>
-                    <index dataType="int" bitLength="64">2000</index>
-                    <subIndex dataType="int" bitLength="64">44</subIndex>
-                    <dataType dataType="string" bitLength="48" encoding="UTF-8">RECORD</dataType>
-                  </CANOpenSDOTag>
-                </segmentedSdo>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <segmentedSdo>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">2</node>
+                          <index dataType="int" bitLength="64">2000</index>
+                          <subIndex dataType="int" bitLength="64">44</subIndex>
+                          <dataType dataType="string" bitLength="48" encoding="UTF-8">RECORD</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </segmentedSdo>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
           <values isList="true">
             <segmentedSdo>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcList>
-                    <PlcSINT dataType="byte" bitLength="8">0x61</PlcSINT>
-                    <PlcSINT dataType="byte" bitLength="8">0x73</PlcSINT>
-                    <PlcSINT dataType="byte" bitLength="8">0x64</PlcSINT>
-                    <PlcSINT dataType="byte" bitLength="8">0x66</PlcSINT>
-                    <PlcSINT dataType="byte" bitLength="8">0x61</PlcSINT>
-                    <PlcSINT dataType="byte" bitLength="8">0x73</PlcSINT>
-                    <PlcSINT dataType="byte" bitLength="8">0x64</PlcSINT>
-                    <PlcSINT dataType="byte" bitLength="8">0x66</PlcSINT>
-                  </PlcList>
+                  <PlcRawByteArray dataType="byte" bitLength="64">0x6173646661736466</PlcRawByteArray>
                 </value>
               </PlcResponseItem>
             </segmentedSdo>
@@ -949,20 +964,26 @@
       </incoming-plc-message>
       <api-response name="Report Read Response to application (abort)">
         <PlcReadResponse>
-          <PlcReadRequest>
-            <PlcTagRequest>
-              <tags isList="true">
-                <TheFailingTag>
-                  <CANOpenSDOTag>
-                    <node dataType="int" bitLength="64">1</node>
-                    <index dataType="int" bitLength="64">1000</index>
-                    <subIndex dataType="int" bitLength="64">22</subIndex>
-                    <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
-                  </CANOpenSDOTag>
-                </TheFailingTag>
-              </tags>
-            </PlcTagRequest>
-          </PlcReadRequest>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <TheFailingTag>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">1</node>
+                          <index dataType="int" bitLength="64">1000</index>
+                          <subIndex dataType="int" bitLength="64">22</subIndex>
+                          <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </TheFailingTag>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
           <values isList="true">
             <TheFailingTag>
               <PlcResponseItem>

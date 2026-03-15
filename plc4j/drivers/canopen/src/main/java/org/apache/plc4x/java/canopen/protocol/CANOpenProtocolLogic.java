@@ -191,6 +191,10 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
             writeInternally((DefaultPlcWriteRequest) writeRequest, (CANOpenPDOTag) tag, response);
             return response;
         }
+        if (tag instanceof CANOpenNMTTag) {
+            writeInternally((DefaultPlcWriteRequest) writeRequest, (CANOpenNMTTag) tag, response);
+            return response;
+        }
 
         response.completeExceptionally(new IllegalArgumentException("Only CANOpenSDOTag instances are supported"));
         return response;
@@ -232,6 +236,29 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
             DataItem.staticSerialize(writeBuffer, writeValue, tag.getCanOpenDataType(), writeValue.getLength(), ByteOrder.LITTLE_ENDIAN);
             final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(writeBuffer.getBytes()));
             conversationContext.sendToWire(new CANOpenFrame((short) tag.getNodeId(), tag.getService(), payload));
+            response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(tagName, PlcResponseCode.OK)));
+        } catch (Exception e) {
+            response.completeExceptionally(e);
+        }
+    }
+
+    private void writeInternally(DefaultPlcWriteRequest writeRequest, CANOpenNMTTag tag, CompletableFuture<PlcWriteResponse> response) {
+        PlcValue writeValue = writeRequest.getPlcValues().get(0);
+
+        NMTStateRequest request = null;
+        if (writeValue.isInteger() || writeValue.isShort() || writeValue.isByte()) {
+            request = NMTStateRequest.enumForValue(writeValue.getShort());
+        }
+        if (request == null) {
+            response.completeExceptionally(new PlcRuntimeException("Unsupported NMTStateRequest value: " + writeValue));
+            return;
+        }
+
+        try {
+            String tagName = writeRequest.getTagNames().iterator().next();
+
+            final CANOpenNetworkPayload payload = new CANOpenNetworkPayload(request, Integer.valueOf(tag.getNodeId()).byteValue());
+            conversationContext.sendToWire(new CANOpenFrame((short) 0, tag.getService(), payload));
             response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(tagName, PlcResponseCode.OK)));
         } catch (Exception e) {
             response.completeExceptionally(e);

@@ -21,10 +21,10 @@ package org.apache.plc4x.java.canopen;
 import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 import org.junit.jupiter.api.Disabled;
 
-class CANOpenDriverSDOIT extends DriverTestsuiteRunner {
+class CANOpenDriverNMTIT extends DriverTestsuiteRunner {
 
-    public CANOpenDriverSDOIT() {
-        super("/protocols/canopen/CANOpenDriverSDOIT.xml", true);
+    public CANOpenDriverNMTIT() {
+        super("/protocols/canopen/CANOpenDriverNMTIT.xml", true);
     }
 
 }

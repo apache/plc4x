@@ -125,12 +125,23 @@ Subscriber will be notified with value mapped to type defined in field syntax.
 | - NMT
 - NMT:nodeId
 | - `subscribe`
+- `write`
 | NMT messages are sent using CAN node ID `0`.
 They have the highest priority on the bus.
-Messages of this kind indicate operating state of an node (booted, operational).
+Messages of this kind indicate operating state of a node (booted, operational).
 
 Subscriptions to this service receive structure with two fields: `node` (USINT) and `state` (USINT).
 If subscription sets `nodeId` to 0 it will receive state updates for all bus participants.
+Supported write values (USINT):
+
+ * `0x01` -> START
+ * `0x02` -> STOP
+ * `0x80` -> PRE_OPERATIONAL
+ * `0x81` -> RESET_NODE
+ * `0x82` -> RESET_COMMUNICATION
+
+On application side, for convenience, you can use `NMTStateRequest` enumeration instead of plain numbers.
+Be aware that passed number is parsed as an enum, so vendor customization on unused bits are not supported.
 
 | HEARTBEAT
 | - HEARTBEAT
