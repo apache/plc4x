@@ -83,7 +83,13 @@ type withEncoding struct {
 func UpcastReaderArgs(args ...WithReaderArgs) []WithReaderWriterArgs {
 	result := make([]WithReaderWriterArgs, len(args))
 	for i, arg := range args {
-		result[i] = readerWriterArg{arg, writerArg{}}
+		// If the arg already implements WithReaderWriterArgs (e.g. codegen.WithByteOrder),
+		// use it directly to preserve the concrete type for type switches.
+		if rw, ok := arg.(WithReaderWriterArgs); ok {
+			result[i] = rw
+		} else {
+			result[i] = readerWriterArg{arg, writerArg{}}
+		}
 	}
 	return result
 }
@@ -91,7 +97,13 @@ func UpcastReaderArgs(args ...WithReaderArgs) []WithReaderWriterArgs {
 func UpcastWriterArgs(args ...WithWriterArgs) []WithReaderWriterArgs {
 	result := make([]WithReaderWriterArgs, len(args))
 	for i, arg := range args {
-		result[i] = readerWriterArg{readerArg{}, arg}
+		// If the arg already implements WithReaderWriterArgs (e.g. codegen.WithByteOrder),
+		// use it directly to preserve the concrete type for type switches.
+		if rw, ok := arg.(WithReaderWriterArgs); ok {
+			result[i] = rw
+		} else {
+			result[i] = readerWriterArg{readerArg{}, arg}
+		}
 	}
 	return result
 }
