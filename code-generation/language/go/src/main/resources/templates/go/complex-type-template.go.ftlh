@@ -831,7 +831,11 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 
 <#if type.isDiscriminatedParentTypeDefinition()>
 func (m *_${type.name}) getLengthInBits(ctx context.Context) uint16 {
+	<#if type.parentType.isPresent()>
+	lengthInBits := uint16(m.${type.getParentType().orElseThrow().name}Contract.(*_${type.getParentType().orElseThrow().name}).getLengthInBits(ctx))
+	<#else>
 	lengthInBits := uint16(0)
+	</#if>
 	<#list type.fields as field>
 		<#switch field.typeName>
 			<#case "array">

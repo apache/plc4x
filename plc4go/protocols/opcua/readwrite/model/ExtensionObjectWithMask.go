@@ -305,7 +305,7 @@ func (m *_ExtensionObjectWithMask) GetTypeName() string {
 }
 
 func (m *_ExtensionObjectWithMask) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.ExtensionObjectContract.(*_ExtensionObject).getLengthInBits(ctx))
 
 	// Simple field (encodingMask)
 	lengthInBits += m.EncodingMask.GetLengthInBits(ctx)
