@@ -820,7 +820,7 @@ const (
 	KnxManufacturer_M_MICRONIC_KOREA_CO___LTD_                           KnxManufacturer = 774
 	KnxManufacturer_M_ROBUSTEL_LIMITED                                   KnxManufacturer = 775
 	KnxManufacturer_M_LEXA_LIFESTYLE                                     KnxManufacturer = 776
-	KnxManufacturer_M_CASAMBI                                            KnxManufacturer = 777
+	KnxManufacturer_M_CASAMBI_TECHNOLOGIES_OY                            KnxManufacturer = 777
 	KnxManufacturer_M_BELCAB_UK_LTD                                      KnxManufacturer = 778
 	KnxManufacturer_M_CHANNEL_SMART_BUILDINGS                            KnxManufacturer = 779
 	KnxManufacturer_M_NANJING_KLEVEN_ELECTRONIC_TECHNOLOGY_CO___LTD      KnxManufacturer = 780
@@ -828,8 +828,14 @@ const (
 	KnxManufacturer_M_OCCHIO_GMBH                                        KnxManufacturer = 782
 	KnxManufacturer_M_INSTELL                                            KnxManufacturer = 783
 	KnxManufacturer_M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH                KnxManufacturer = 784
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 785
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 786
+	KnxManufacturer_M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD       KnxManufacturer = 785
+	KnxManufacturer_M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__   KnxManufacturer = 786
+	KnxManufacturer_M_HOLFMANN_CULTURE_ART_CO__LTD                       KnxManufacturer = 787
+	KnxManufacturer_M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD            KnxManufacturer = 788
+	KnxManufacturer_M_OWL_AUTOMATA                                       KnxManufacturer = 789
+	KnxManufacturer_M_AUTOMATED_PTY_LTD                                  KnxManufacturer = 790
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 791
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 792
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1614,7 +1620,7 @@ func init() {
 		KnxManufacturer_M_MICRONIC_KOREA_CO___LTD_,
 		KnxManufacturer_M_ROBUSTEL_LIMITED,
 		KnxManufacturer_M_LEXA_LIFESTYLE,
-		KnxManufacturer_M_CASAMBI,
+		KnxManufacturer_M_CASAMBI_TECHNOLOGIES_OY,
 		KnxManufacturer_M_BELCAB_UK_LTD,
 		KnxManufacturer_M_CHANNEL_SMART_BUILDINGS,
 		KnxManufacturer_M_NANJING_KLEVEN_ELECTRONIC_TECHNOLOGY_CO___LTD,
@@ -1622,6 +1628,12 @@ func init() {
 		KnxManufacturer_M_OCCHIO_GMBH,
 		KnxManufacturer_M_INSTELL,
 		KnxManufacturer_M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH,
+		KnxManufacturer_M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD,
+		KnxManufacturer_M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__,
+		KnxManufacturer_M_HOLFMANN_CULTURE_ART_CO__LTD,
+		KnxManufacturer_M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD,
+		KnxManufacturer_M_OWL_AUTOMATA,
+		KnxManufacturer_M_AUTOMATED_PTY_LTD,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4679,15 +4691,39 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 785:
 		{ /* '785' */
-			return 43954
+			return 846
 		}
 	case 786:
 		{ /* '786' */
-			return 43959
+			return 847
+		}
+	case 787:
+		{ /* '787' */
+			return 848
+		}
+	case 788:
+		{ /* '788' */
+			return 849
+		}
+	case 789:
+		{ /* '789' */
+			return 850
 		}
 	case 79:
 		{ /* '79' */
 			return 118
+		}
+	case 790:
+		{ /* '790' */
+			return 851
+		}
+	case 791:
+		{ /* '791' */
+			return 43954
+		}
+	case 792:
+		{ /* '792' */
+			return 43959
 		}
 	case 8:
 		{ /* '8' */
@@ -7809,7 +7845,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 777:
 		{ /* '777' */
-			return "casambi"
+			return "Casambi Technologies Oy"
 		}
 	case 778:
 		{ /* '778' */
@@ -7845,15 +7881,39 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 785:
 		{ /* '785' */
-			return "ABB - reserved"
+			return "Qingdao Maisi Intelligent Technology Co.,Ltd"
 		}
 	case 786:
 		{ /* '786' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "Chongqing Mexin Messon Doors Industry Co., Ltd.,"
+		}
+	case 787:
+		{ /* '787' */
+			return "Holfmann Culture Art Co.,LTD"
+		}
+	case 788:
+		{ /* '788' */
+			return "Guangzhou Baite IoT Technology Co., Ltd"
+		}
+	case 789:
+		{ /* '789' */
+			return "OWL Automata"
 		}
 	case 79:
 		{ /* '79' */
 			return "Arcus-eds"
+		}
+	case 790:
+		{ /* '790' */
+			return "Automated Pty Ltd"
+		}
+	case 791:
+		{ /* '791' */
+			return "ABB - reserved"
+		}
+	case 792:
+		{ /* '792' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 8:
 		{ /* '8' */
@@ -9467,7 +9527,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 776:
 		return KnxManufacturer_M_LEXA_LIFESTYLE, true
 	case 777:
-		return KnxManufacturer_M_CASAMBI, true
+		return KnxManufacturer_M_CASAMBI_TECHNOLOGIES_OY, true
 	case 778:
 		return KnxManufacturer_M_BELCAB_UK_LTD, true
 	case 779:
@@ -9485,11 +9545,23 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 784:
 		return KnxManufacturer_M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH, true
 	case 785:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD, true
 	case 786:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__, true
+	case 787:
+		return KnxManufacturer_M_HOLFMANN_CULTURE_ART_CO__LTD, true
+	case 788:
+		return KnxManufacturer_M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD, true
+	case 789:
+		return KnxManufacturer_M_OWL_AUTOMATA, true
 	case 79:
 		return KnxManufacturer_M_ARCUS_EDS, true
+	case 790:
+		return KnxManufacturer_M_AUTOMATED_PTY_LTD, true
+	case 791:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 792:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 8:
 		return KnxManufacturer_M_HAGER_ELECTRO, true
 	case 80:
@@ -11046,8 +11118,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_ROBUSTEL_LIMITED, true
 	case "M_LEXA_LIFESTYLE":
 		return KnxManufacturer_M_LEXA_LIFESTYLE, true
-	case "M_CASAMBI":
-		return KnxManufacturer_M_CASAMBI, true
+	case "M_CASAMBI_TECHNOLOGIES_OY":
+		return KnxManufacturer_M_CASAMBI_TECHNOLOGIES_OY, true
 	case "M_BELCAB_UK_LTD":
 		return KnxManufacturer_M_BELCAB_UK_LTD, true
 	case "M_CHANNEL_SMART_BUILDINGS":
@@ -11064,12 +11136,24 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_INSTELL, true
 	case "M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH":
 		return KnxManufacturer_M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH, true
+	case "M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD":
+		return KnxManufacturer_M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD, true
+	case "M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__":
+		return KnxManufacturer_M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__, true
+	case "M_HOLFMANN_CULTURE_ART_CO__LTD":
+		return KnxManufacturer_M_HOLFMANN_CULTURE_ART_CO__LTD, true
+	case "M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD":
+		return KnxManufacturer_M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD, true
+	case "M_OWL_AUTOMATA":
+		return KnxManufacturer_M_OWL_AUTOMATA, true
+	case "M_ARCUS_EDS":
+		return KnxManufacturer_M_ARCUS_EDS, true
+	case "M_AUTOMATED_PTY_LTD":
+		return KnxManufacturer_M_AUTOMATED_PTY_LTD, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
-	case "M_ARCUS_EDS":
-		return KnxManufacturer_M_ARCUS_EDS, true
 	case "M_HAGER_ELECTRO":
 		return KnxManufacturer_M_HAGER_ELECTRO, true
 	case "M_INTESIS":
@@ -12698,8 +12782,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_ROBUSTEL_LIMITED"
 	case KnxManufacturer_M_LEXA_LIFESTYLE:
 		return "M_LEXA_LIFESTYLE"
-	case KnxManufacturer_M_CASAMBI:
-		return "M_CASAMBI"
+	case KnxManufacturer_M_CASAMBI_TECHNOLOGIES_OY:
+		return "M_CASAMBI_TECHNOLOGIES_OY"
 	case KnxManufacturer_M_BELCAB_UK_LTD:
 		return "M_BELCAB_UK_LTD"
 	case KnxManufacturer_M_CHANNEL_SMART_BUILDINGS:
@@ -12716,12 +12800,24 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_INSTELL"
 	case KnxManufacturer_M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH:
 		return "M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH"
+	case KnxManufacturer_M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD:
+		return "M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD"
+	case KnxManufacturer_M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__:
+		return "M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__"
+	case KnxManufacturer_M_HOLFMANN_CULTURE_ART_CO__LTD:
+		return "M_HOLFMANN_CULTURE_ART_CO__LTD"
+	case KnxManufacturer_M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD:
+		return "M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD"
+	case KnxManufacturer_M_OWL_AUTOMATA:
+		return "M_OWL_AUTOMATA"
+	case KnxManufacturer_M_ARCUS_EDS:
+		return "M_ARCUS_EDS"
+	case KnxManufacturer_M_AUTOMATED_PTY_LTD:
+		return "M_AUTOMATED_PTY_LTD"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-	case KnxManufacturer_M_ARCUS_EDS:
-		return "M_ARCUS_EDS"
 	case KnxManufacturer_M_HAGER_ELECTRO:
 		return "M_HAGER_ELECTRO"
 	case KnxManufacturer_M_INTESIS:
