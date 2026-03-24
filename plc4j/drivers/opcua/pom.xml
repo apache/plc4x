@@ -212,7 +212,7 @@
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-api</artifactId>
-      <version>3.7.0</version>
+      <version>3.7.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
