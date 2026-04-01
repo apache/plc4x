@@ -11,6 +11,7 @@ New Features
   providing a min time interval to prevent excessive
   notifications.
 - Added a new PlcCertificateAuthentication to the API module.
+- Initial version of a new Java UMAS driver.
 
 Incompatible changes
 --------------------
