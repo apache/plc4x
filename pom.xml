@@ -665,125 +665,125 @@
         </executions>
         <configuration>
           <useMavenDefaultExcludes>true</useMavenDefaultExcludes>
-          <excludes>
+          <inputExcludes>
             <!-- Git related files -->
-            <exclude>**/.git/**</exclude>
-            <exclude>**/.gitignore</exclude>
-            <exclude>**/cmake-*/**</exclude>
-            <exclude>**/.lock/**</exclude>
+            <inputExclude>**/.git/**</inputExclude>
+            <inputExclude>**/.gitignore</inputExclude>
+            <inputExclude>**/cmake-*/**</inputExclude>
+            <inputExclude>**/.lock/**</inputExclude>
 
             <!-- License Files for other licenses -->
-            <exclude>**/UNLICENSE</exclude>
-            <exclude>**/CHANGELOG.md</exclude>
-            <exclude>**/EPL-2.0</exclude>
+            <inputExclude>**/UNLICENSE</inputExclude>
+            <inputExclude>**/CHANGELOG.md</inputExclude>
+            <inputExclude>**/EPL-2.0</inputExclude>
 
             <!--
               Files licensed under other compatible licenses.
             -->
-            <exclude>**/Expression.g4</exclude>
+            <excinputExcludelude>**/Expression.g4</excinputExcludelude>
 
             <!-- Maven related files -->
-            <exclude>**/target/**</exclude>
-            <exclude>target/**</exclude>
-            <exclude>out/**</exclude>
+            <inputExclude>**/target/**</inputExclude>
+            <inputExclude>target/**</inputExclude>
+            <inputExclude>out/**</inputExclude>
 
             <!-- Python related files -->
-            <exclude>**/.pytest_cache/**</exclude>
-            <exclude>**/.mypy_cache/**</exclude>
-            <exclude>**/Pipfile</exclude>
-            <exclude>**/Pipfile.lock</exclude>
+            <inputExclude>**/.pytest_cache/**</inputExclude>
+            <inputExclude>**/.mypy_cache/**</inputExclude>
+            <inputExclude>**/Pipfile</inputExclude>
+            <inputExclude>**/Pipfile.lock</inputExclude>
 
             <!-- Eclipse related files -->
-            <exclude>**/.project</exclude>
-            <exclude>**/.settings/**</exclude>
-            <exclude>**/.classpath</exclude>
-            <exclude>**/.factorypath</exclude>
+            <inputExclude>**/.project</inputExclude>
+            <inputExclude>**/.settings/**</inputExclude>
+            <inputExclude>**/.classpath</inputExclude>
+            <inputExclude>**/.factorypath</inputExclude>
 
             <!-- IntelliJ related files -->
-            <exclude>**/.idea/**</exclude>
-            <exclude>**/*.iml</exclude>
-            <exclude>**/.attach_pid*</exclude>
+            <inputExclude>**/.idea/**</inputExclude>
+            <inputExclude>**/*.iml</inputExclude>
+            <inputExclude>**/.attach_pid*</inputExclude>
 
             <!-- Wireshark Captures -->
-            <exclude>**/*.pcap</exclude>
-            <exclude>**/*.pcapng</exclude>
+            <inputExclude>**/*.pcap</inputExclude>
+            <inputExclude>**/*.pcapng</inputExclude>
 
             <!-- JEVN local version files -->
-            <exclude>**/.java-version</exclude>
+            <inputExclude>**/.java-version</inputExclude>
 
             <!-- ASCIIdoctor generated files -->
-            <exclude>**/.asciidoctor/**</exclude>
+            <inputExclude>**/.asciidoctor/**</inputExclude>
 
             <!-- Jenkins build and docker-compose related files -->
-            <exclude>.repository/**</exclude>
-            <exclude>local-snapshots-dir/**</exclude>
-            <exclude>.local-snapshots-dir/**</exclude>
+            <inputExclude>.repository/**</inputExclude>
+            <inputExclude>local-snapshots-dir/**</inputExclude>
+            <inputExclude>.local-snapshots-dir/**</inputExclude>
 
             <!-- Data files created by examples running an embedded elasticsearch -->
-            <exclude>elasticsearch-data/**</exclude>
+            <inputExclude>elasticsearch-data/**</inputExclude>
 
             <!-- JSON doesn't like comments -->
-            <exclude>**/*.json</exclude>
-            <exclude>**/*.avsc</exclude>
+            <inputExclude>**/*.json</inputExclude>
+            <inputExclude>**/*.avsc</inputExclude>
 
             <!-- comments are trouble some for CSVs which are static -->
-            <exclude>**/*.csv</exclude>
+            <inputExclude>**/*.csv</inputExclude>
 
             <!-- Output of the profiler maven extension -->
-            <exclude>**/.profiler/**</exclude>
+            <inputExclude>**/.profiler/**</inputExclude>
 
             <!-- CLion stuff (C++ IDE) -->
-            <exclude>**/cmake-build-debug/**</exclude>
-            <exclude>**/*.make</exclude>
-            <exclude>**/*.cmake</exclude>
-            <exclude>**/*.internal</exclude>
-            <exclude>**/link.txt</exclude>
+            <inputExclude>**/cmake-build-debug/**</inputExclude>
+            <inputExclude>**/*.make</inputExclude>
+            <inputExclude>**/*.cmake</inputExclude>
+            <inputExclude>**/*.internal</inputExclude>
+            <inputExclude>**/link.txt</inputExclude>
             <!-- Not sure why I can't exclude all Makefile's from just the plc4c directory -->
             <!-- exclude>**/Makefile</exclude -->
-            <exclude>**/Makefile</exclude>
-            <exclude>**/*.includecache</exclude>
-            <exclude>**/CMakeFiles/**</exclude>
-            <exclude>**/CMakeCache.txt</exclude>
-            <exclude>**/DartConfiguration.tcl</exclude>
+            <inputExclude>**/Makefile</inputExclude>
+            <inputExclude>**/*.includecache</inputExclude>
+            <inputExclude>**/CMakeFiles/**</inputExclude>
+            <inputExclude>**/CMakeCache.txt</inputExclude>
+            <inputExclude>**/DartConfiguration.tcl</inputExclude>
 
             <!-- .Net stuff -->
-            <exclude>plc4net/plc4net.sln.DotSettings.user</exclude>
+            <inputExclude>plc4net/plc4net.sln.DotSettings.user</inputExclude>
 
             <!-- Stuff created during a plc4net build -->
-            <exclude>**/obj/**</exclude>
+            <inputExclude>**/obj/**</inputExclude>
 
             <!-- Temporarily exclude generated code from thrift in python modules -->
             <!--exclude>generated/**</exclude-->
             <!-- Temporary Python files -->
-            <exclude>**/.eggs/**</exclude>
-            <exclude>**/plc4py.egg-info/**</exclude>
+            <inputExclude>**/.eggs/**</inputExclude>
+            <inputExclude>**/plc4py.egg-info/**</inputExclude>
 
             <!-- Temporary Python virtualenv files-->
-            <exclude>**/venv/**</exclude>
+            <inputExclude>**/venv/**</inputExclude>
 
             <!-- Temporary pytest and mypy folders -->
-            <exclude>**/.mypy_cache/**</exclude>
-            <exclude>**/.pytest_cache/**</exclude>
+            <inputExclude>**/.mypy_cache/**</inputExclude>
+            <inputExclude>**/.pytest_cache/**</inputExclude>
 
             <!-- Exclude a temp file needed by Docker -->
-            <exclude>project_version</exclude>
+            <inputExclude>project_version</inputExclude>
 
             <!-- Exclude files generated by the go build system -->
-            <exclude>**/go.sum</exclude>
+            <inputExclude>**/go.sum</inputExclude>
 
             <!-- Exclude Node related files -->
-            <exclude>ui/frontend/project/dist/**</exclude>
-            <exclude>ui/frontend/project/node/**</exclude>
-            <exclude>ui/frontend/project/node_modules/**</exclude>
+            <inputExclude>ui/frontend/project/dist/**</inputExclude>
+            <inputExclude>ui/frontend/project/node/**</inputExclude>
+            <inputExclude>ui/frontend/project/node_modules/**</inputExclude>
 
-            <exclude>website/node_modules/**</exclude>
+            <inputExclude>website/node_modules/**</inputExclude>
 
-            <exclude>.mvn/**</exclude>
+            <inputExclude>.mvn/**</inputExclude>
 
             <!-- Exclude core dumps-->
-            <exclude>**/hs_err_pid*</exclude>
-            <exclude>**/replay_pid*</exclude>
-          </excludes>
+            <inputExclude>**/hs_err_pid*</inputExclude>
+            <inputExclude>**/replay_pid*</inputExclude>
+          </inputExcludes>
         </configuration>
       </plugin>
 

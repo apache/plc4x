@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.protocol.umas;
+package org.apache.plc4x.protocol.umas.v0;
 
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.junit.jupiter.api.Test;

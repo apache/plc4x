@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.protocol.umas;
+package org.apache.plc4x.protocol.umas.v0;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHelpers;
@@ -25,11 +25,18 @@ import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
+import java.util.Optional;
+
 public class UmasProtocol implements Protocol, ProtocolHelpers {
 
     @Override
     public String getName() {
         return "umas";
+    }
+
+    @Override
+    public Optional<String> getVersion() {
+        return Optional.of("0");
     }
 
     @Override

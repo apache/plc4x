@@ -286,6 +286,7 @@
                 </goals>
                 <configuration>
                   <protocolName>umas</protocolName>
+                  <protocolVersion>0</protocolVersion>
                   <languageName>python</languageName>
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>${project.basedir}/plc4py/protocols</outputDir>
