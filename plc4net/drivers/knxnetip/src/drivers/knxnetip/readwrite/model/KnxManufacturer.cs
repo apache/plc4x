@@ -802,7 +802,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_MICRONIC_KOREA_CO___LTD_ = 774,
         M_ROBUSTEL_LIMITED = 775,
         M_LEXA_LIFESTYLE = 776,
-        M_CASAMBI = 777,
+        M_CASAMBI_TECHNOLOGIES_OY = 777,
         M_BELCAB_UK_LTD = 778,
         M_CHANNEL_SMART_BUILDINGS = 779,
         M_NANJING_KLEVEN_ELECTRONIC_TECHNOLOGY_CO___LTD = 780,
@@ -810,8 +810,17 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_OCCHIO_GMBH = 782,
         M_INSTELL = 783,
         M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH = 784,
-        M_ABB___RESERVED = 785,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 786,
+        M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD = 785,
+        M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__ = 786,
+        M_HOLFMANN_CULTURE_ART_CO__LTD = 787,
+        M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD = 788,
+        M_OWL_AUTOMATA = 789,
+        M_AUTOMATED_PTY_LTD = 790,
+        M_HIKVISION = 791,
+        M_WIREN_BOARD = 792,
+        M_DEGSON_TECHNOLOGY_CO_LTD_ = 793,
+        M_ABB___RESERVED = 794,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 795,
     }
 
     public static class KnxManufacturerInfo
@@ -3080,7 +3089,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_LEXA_LIFESTYLE: { /* '776' */
                     return 837;
                 }
-                case KnxManufacturer.M_CASAMBI: { /* '777' */
+                case KnxManufacturer.M_CASAMBI_TECHNOLOGIES_OY: { /* '777' */
                     return 838;
                 }
                 case KnxManufacturer.M_BELCAB_UK_LTD: { /* '778' */
@@ -3107,14 +3116,41 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH: { /* '784' */
                     return 845;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '785' */
-                    return 43954;
+                case KnxManufacturer.M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD: { /* '785' */
+                    return 846;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '786' */
-                    return 43959;
+                case KnxManufacturer.M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__: { /* '786' */
+                    return 847;
+                }
+                case KnxManufacturer.M_HOLFMANN_CULTURE_ART_CO__LTD: { /* '787' */
+                    return 848;
+                }
+                case KnxManufacturer.M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD: { /* '788' */
+                    return 849;
+                }
+                case KnxManufacturer.M_OWL_AUTOMATA: { /* '789' */
+                    return 850;
                 }
                 case KnxManufacturer.M_ARCUS_EDS: { /* '79' */
                     return 118;
+                }
+                case KnxManufacturer.M_AUTOMATED_PTY_LTD: { /* '790' */
+                    return 851;
+                }
+                case KnxManufacturer.M_HIKVISION: { /* '791' */
+                    return 852;
+                }
+                case KnxManufacturer.M_WIREN_BOARD: { /* '792' */
+                    return 853;
+                }
+                case KnxManufacturer.M_DEGSON_TECHNOLOGY_CO_LTD_: { /* '793' */
+                    return 854;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '794' */
+                    return 43954;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '795' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_HAGER_ELECTRO: { /* '8' */
                     return 9;
@@ -5451,8 +5487,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_LEXA_LIFESTYLE: { /* '776' */
                     return "Lexa LIFESTYLE";
                 }
-                case KnxManufacturer.M_CASAMBI: { /* '777' */
-                    return "casambi";
+                case KnxManufacturer.M_CASAMBI_TECHNOLOGIES_OY: { /* '777' */
+                    return "Casambi Technologies Oy";
                 }
                 case KnxManufacturer.M_BELCAB_UK_LTD: { /* '778' */
                     return "BELCAB UK LTD";
@@ -5478,14 +5514,41 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH: { /* '784' */
                     return "VOKA Vogtländisches Kabelwerk GmbH";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '785' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD: { /* '785' */
+                    return "Qingdao Maisi Intelligent Technology Co.,Ltd";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '786' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__: { /* '786' */
+                    return "Chongqing Mexin Messon Doors Industry Co., Ltd.,";
+                }
+                case KnxManufacturer.M_HOLFMANN_CULTURE_ART_CO__LTD: { /* '787' */
+                    return "Holfmann Culture Art Co.,LTD";
+                }
+                case KnxManufacturer.M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD: { /* '788' */
+                    return "Guangzhou Baite IoT Technology Co., Ltd";
+                }
+                case KnxManufacturer.M_OWL_AUTOMATA: { /* '789' */
+                    return "OWL Automata";
                 }
                 case KnxManufacturer.M_ARCUS_EDS: { /* '79' */
                     return "Arcus-eds";
+                }
+                case KnxManufacturer.M_AUTOMATED_PTY_LTD: { /* '790' */
+                    return "Automated Pty Ltd";
+                }
+                case KnxManufacturer.M_HIKVISION: { /* '791' */
+                    return "HIKVISION";
+                }
+                case KnxManufacturer.M_WIREN_BOARD: { /* '792' */
+                    return "Wiren Board";
+                }
+                case KnxManufacturer.M_DEGSON_TECHNOLOGY_CO_LTD_: { /* '793' */
+                    return "DEGSON TECHNOLOGY CO LTD.";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '794' */
+                    return "ABB - reserved";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '795' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_HAGER_ELECTRO: { /* '8' */
                     return "Hager Electro";

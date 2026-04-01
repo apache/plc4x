@@ -915,7 +915,7 @@ public enum KnxManufacturer {
   M_MICRONIC_KOREA_CO___LTD_((int) 774, (int) 835, (String) "Micronic Korea Co., Ltd."),
   M_ROBUSTEL_LIMITED((int) 775, (int) 836, (String) "Robustel Limited"),
   M_LEXA_LIFESTYLE((int) 776, (int) 837, (String) "Lexa LIFESTYLE"),
-  M_CASAMBI((int) 777, (int) 838, (String) "casambi"),
+  M_CASAMBI_TECHNOLOGIES_OY((int) 777, (int) 838, (String) "Casambi Technologies Oy"),
   M_BELCAB_UK_LTD((int) 778, (int) 839, (String) "BELCAB UK LTD"),
   M_CHANNEL_SMART_BUILDINGS((int) 779, (int) 840, (String) "Channel Smart Buildings"),
   M_NANJING_KLEVEN_ELECTRONIC_TECHNOLOGY_CO___LTD(
@@ -926,9 +926,21 @@ public enum KnxManufacturer {
   M_INSTELL((int) 783, (int) 844, (String) "Instell"),
   M_VOKA_VOGTLAENDISCHES_KABELWERK_GMBH(
       (int) 784, (int) 845, (String) "VOKA Vogtländisches Kabelwerk GmbH"),
-  M_ABB___RESERVED((int) 785, (int) 43954, (String) "ABB - reserved"),
+  M_QINGDAO_MAISI_INTELLIGENT_TECHNOLOGY_CO__LTD(
+      (int) 785, (int) 846, (String) "Qingdao Maisi Intelligent Technology Co.,Ltd"),
+  M_CHONGQING_MEXIN_MESSON_DOORS_INDUSTRY_CO___LTD__(
+      (int) 786, (int) 847, (String) "Chongqing Mexin Messon Doors Industry Co., Ltd.,"),
+  M_HOLFMANN_CULTURE_ART_CO__LTD((int) 787, (int) 848, (String) "Holfmann Culture Art Co.,LTD"),
+  M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD(
+      (int) 788, (int) 849, (String) "Guangzhou Baite IoT Technology Co., Ltd"),
+  M_OWL_AUTOMATA((int) 789, (int) 850, (String) "OWL Automata"),
+  M_AUTOMATED_PTY_LTD((int) 790, (int) 851, (String) "Automated Pty Ltd"),
+  M_HIKVISION((int) 791, (int) 852, (String) "HIKVISION"),
+  M_WIREN_BOARD((int) 792, (int) 853, (String) "Wiren Board"),
+  M_DEGSON_TECHNOLOGY_CO_LTD_((int) 793, (int) 854, (String) "DEGSON TECHNOLOGY CO LTD."),
+  M_ABB___RESERVED((int) 794, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 786, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 795, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

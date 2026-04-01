@@ -23,10 +23,11 @@ import (
 	"encoding/binary"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/spi/codegen"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestByteOrderUpcast(t *testing.T) {

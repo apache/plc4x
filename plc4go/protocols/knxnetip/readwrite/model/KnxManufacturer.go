@@ -834,8 +834,11 @@ const (
 	KnxManufacturer_M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD            KnxManufacturer = 788
 	KnxManufacturer_M_OWL_AUTOMATA                                       KnxManufacturer = 789
 	KnxManufacturer_M_AUTOMATED_PTY_LTD                                  KnxManufacturer = 790
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 791
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 792
+	KnxManufacturer_M_HIKVISION                                          KnxManufacturer = 791
+	KnxManufacturer_M_WIREN_BOARD                                        KnxManufacturer = 792
+	KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_                          KnxManufacturer = 793
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 794
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 795
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1634,6 +1637,9 @@ func init() {
 		KnxManufacturer_M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD,
 		KnxManufacturer_M_OWL_AUTOMATA,
 		KnxManufacturer_M_AUTOMATED_PTY_LTD,
+		KnxManufacturer_M_HIKVISION,
+		KnxManufacturer_M_WIREN_BOARD,
+		KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4719,10 +4725,22 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 791:
 		{ /* '791' */
-			return 43954
+			return 852
 		}
 	case 792:
 		{ /* '792' */
+			return 853
+		}
+	case 793:
+		{ /* '793' */
+			return 854
+		}
+	case 794:
+		{ /* '794' */
+			return 43954
+		}
+	case 795:
+		{ /* '795' */
 			return 43959
 		}
 	case 8:
@@ -7909,10 +7927,22 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 791:
 		{ /* '791' */
-			return "ABB - reserved"
+			return "HIKVISION"
 		}
 	case 792:
 		{ /* '792' */
+			return "Wiren Board"
+		}
+	case 793:
+		{ /* '793' */
+			return "DEGSON TECHNOLOGY CO LTD."
+		}
+	case 794:
+		{ /* '794' */
+			return "ABB - reserved"
+		}
+	case 795:
+		{ /* '795' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 8:
@@ -9559,8 +9589,14 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 790:
 		return KnxManufacturer_M_AUTOMATED_PTY_LTD, true
 	case 791:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_HIKVISION, true
 	case 792:
+		return KnxManufacturer_M_WIREN_BOARD, true
+	case 793:
+		return KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_, true
+	case 794:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 795:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 8:
 		return KnxManufacturer_M_HAGER_ELECTRO, true
@@ -11150,6 +11186,12 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_ARCUS_EDS, true
 	case "M_AUTOMATED_PTY_LTD":
 		return KnxManufacturer_M_AUTOMATED_PTY_LTD, true
+	case "M_HIKVISION":
+		return KnxManufacturer_M_HIKVISION, true
+	case "M_WIREN_BOARD":
+		return KnxManufacturer_M_WIREN_BOARD, true
+	case "M_DEGSON_TECHNOLOGY_CO_LTD_":
+		return KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -12814,6 +12856,12 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_ARCUS_EDS"
 	case KnxManufacturer_M_AUTOMATED_PTY_LTD:
 		return "M_AUTOMATED_PTY_LTD"
+	case KnxManufacturer_M_HIKVISION:
+		return "M_HIKVISION"
+	case KnxManufacturer_M_WIREN_BOARD:
+		return "M_WIREN_BOARD"
+	case KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_:
+		return "M_DEGSON_TECHNOLOGY_CO_LTD_"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

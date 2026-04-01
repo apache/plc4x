@@ -1829,6 +1829,25 @@ public enum BACnetVendorId {
   ANDIVI((int) 1592, (int) 1592, (String) "Andivi"),
   CHYI_LEE_INDUSTRY_CO_LTD((int) 1593, (int) 1593, (String) "Chyi Lee Industry Co., Ltd."),
   ALLBEEBV((int) 1594, (int) 1594, (String) "Allbee B.V."),
+  KAMPMANN_GMBH_COKG((int) 1595, (int) 1595, (String) "Kampmann GmbH & Co. KG"),
+  COSEL_ELEKTRONIK_OTOMASYON_SISTEMLERI_SAN_TIC_LTD_STI(
+      (int) 1596, (int) 1596, (String) "Cosel Elektronik Otomasyon Sistemleri San. Tic. Ltd. Sti."),
+  RACTL_DESIGNS((int) 1597, (int) 1597, (String) "Ractl Designs"),
+  DATABRIDGE_DYNAMIC_PVT_LTD((int) 1598, (int) 1598, (String) "Databridge Dynamic Pvt Ltd"),
+  EVOLO_TECHNOLOGIESAS((int) 1599, (int) 1599, (String) "Evolo Technologies AS"),
+  ENERGY_PLUS_TEKNOLOJI_IMALAT_ITHALATVE_IHRACAT_SANAYIAS(
+      (int) 1600, (int) 1600, (String) "EnergyPlus Teknoloji Imalat Ithalat ve Ihracat Sanayi AS"),
+  GAIAMESH_INC((int) 1601, (int) 1601, (String) "Gaiamesh Inc."),
+  LOVATO_ELECTRICSPA((int) 1602, (int) 1602, (String) "Lovato Electric S.P.A."),
+  QPAC_SYSTEMS_INC((int) 1603, (int) 1603, (String) "Q-PAC Systems, Inc."),
+  YOBIIQ_INTELLIGENCEBV((int) 1604, (int) 1604, (String) "Yobiiq Intelligence B.V."),
+  CAMFILUSA_INC((int) 1605, (int) 1605, (String) "Camfil USA Inc."),
+  RADNOX((int) 1606, (int) 1606, (String) "Radnox"),
+  OPTOSPARK_SDN_BHD((int) 1607, (int) 1607, (String) "Optospark Sdn. Bhd."),
+  CONTROLBRIGHT((int) 1608, (int) 1608, (String) "Controlbright"),
+  PENTAIR_RESIDENTIAL_FILTRATION((int) 1609, (int) 1609, (String) "Pentair Residential Filtration"),
+  VENAERA_INC((int) 1610, (int) 1610, (String) "Venaera Inc."),
+  HUMI_PURE((int) 1611, (int) 1611, (String) "HumiPure"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

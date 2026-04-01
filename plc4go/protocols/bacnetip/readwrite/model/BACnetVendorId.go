@@ -1639,6 +1639,12 @@ const (
 	BACnetVendorId_QPAC_SYSTEMS_INC                                                             BACnetVendorId = 1603
 	BACnetVendorId_YOBIIQ_INTELLIGENCEBV                                                        BACnetVendorId = 1604
 	BACnetVendorId_CAMFILUSA_INC                                                                BACnetVendorId = 1605
+	BACnetVendorId_RADNOX                                                                       BACnetVendorId = 1606
+	BACnetVendorId_OPTOSPARK_SDN_BHD                                                            BACnetVendorId = 1607
+	BACnetVendorId_CONTROLBRIGHT                                                                BACnetVendorId = 1608
+	BACnetVendorId_PENTAIR_RESIDENTIAL_FILTRATION                                               BACnetVendorId = 1609
+	BACnetVendorId_VENAERA_INC                                                                  BACnetVendorId = 1610
+	BACnetVendorId_HUMI_PURE                                                                    BACnetVendorId = 1611
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3243,6 +3249,12 @@ func init() {
 		BACnetVendorId_QPAC_SYSTEMS_INC,
 		BACnetVendorId_YOBIIQ_INTELLIGENCEBV,
 		BACnetVendorId_CAMFILUSA_INC,
+		BACnetVendorId_RADNOX,
+		BACnetVendorId_OPTOSPARK_SDN_BHD,
+		BACnetVendorId_CONTROLBRIGHT,
+		BACnetVendorId_PENTAIR_RESIDENTIAL_FILTRATION,
+		BACnetVendorId_VENAERA_INC,
+		BACnetVendorId_HUMI_PURE,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5941,9 +5953,33 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1605' */
 			return 1605
 		}
+	case 1606:
+		{ /* '1606' */
+			return 1606
+		}
+	case 1607:
+		{ /* '1607' */
+			return 1607
+		}
+	case 1608:
+		{ /* '1608' */
+			return 1608
+		}
+	case 1609:
+		{ /* '1609' */
+			return 1609
+		}
 	case 161:
 		{ /* '161' */
 			return 161
+		}
+	case 1610:
+		{ /* '1610' */
+			return 1610
+		}
+	case 1611:
+		{ /* '1611' */
+			return 1611
 		}
 	case 162:
 		{ /* '162' */
@@ -12347,9 +12383,33 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1605' */
 			return "Camfil USA Inc."
 		}
+	case 1606:
+		{ /* '1606' */
+			return "Radnox"
+		}
+	case 1607:
+		{ /* '1607' */
+			return "Optospark Sdn. Bhd."
+		}
+	case 1608:
+		{ /* '1608' */
+			return "Controlbright"
+		}
+	case 1609:
+		{ /* '1609' */
+			return "Pentair Residential Filtration"
+		}
 	case 161:
 		{ /* '161' */
 			return "Enflex Corp."
+		}
+	case 1610:
+		{ /* '1610' */
+			return "Venaera Inc."
+		}
+	case 1611:
+		{ /* '1611' */
+			return "HumiPure"
 		}
 	case 162:
 		{ /* '162' */
@@ -17406,8 +17466,20 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_YOBIIQ_INTELLIGENCEBV, true
 	case 1605:
 		return BACnetVendorId_CAMFILUSA_INC, true
+	case 1606:
+		return BACnetVendorId_RADNOX, true
+	case 1607:
+		return BACnetVendorId_OPTOSPARK_SDN_BHD, true
+	case 1608:
+		return BACnetVendorId_CONTROLBRIGHT, true
+	case 1609:
+		return BACnetVendorId_PENTAIR_RESIDENTIAL_FILTRATION, true
 	case 161:
 		return BACnetVendorId_ENFLEX_CORP, true
+	case 1610:
+		return BACnetVendorId_VENAERA_INC, true
+	case 1611:
+		return BACnetVendorId_HUMI_PURE, true
 	case 162:
 		return BACnetVendorId_ASI_CONTROLS, true
 	case 163:
@@ -20606,8 +20678,20 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_YOBIIQ_INTELLIGENCEBV, true
 	case "CAMFILUSA_INC":
 		return BACnetVendorId_CAMFILUSA_INC, true
+	case "RADNOX":
+		return BACnetVendorId_RADNOX, true
+	case "OPTOSPARK_SDN_BHD":
+		return BACnetVendorId_OPTOSPARK_SDN_BHD, true
+	case "CONTROLBRIGHT":
+		return BACnetVendorId_CONTROLBRIGHT, true
+	case "PENTAIR_RESIDENTIAL_FILTRATION":
+		return BACnetVendorId_PENTAIR_RESIDENTIAL_FILTRATION, true
 	case "ENFLEX_CORP":
 		return BACnetVendorId_ENFLEX_CORP, true
+	case "VENAERA_INC":
+		return BACnetVendorId_VENAERA_INC, true
+	case "HUMI_PURE":
+		return BACnetVendorId_HUMI_PURE, true
 	case "ASI_CONTROLS":
 		return BACnetVendorId_ASI_CONTROLS, true
 	case "SYS_MIK_GMBH_DRESDEN":
@@ -23878,8 +23962,20 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "YOBIIQ_INTELLIGENCEBV"
 	case BACnetVendorId_CAMFILUSA_INC:
 		return "CAMFILUSA_INC"
+	case BACnetVendorId_RADNOX:
+		return "RADNOX"
+	case BACnetVendorId_OPTOSPARK_SDN_BHD:
+		return "OPTOSPARK_SDN_BHD"
+	case BACnetVendorId_CONTROLBRIGHT:
+		return "CONTROLBRIGHT"
+	case BACnetVendorId_PENTAIR_RESIDENTIAL_FILTRATION:
+		return "PENTAIR_RESIDENTIAL_FILTRATION"
 	case BACnetVendorId_ENFLEX_CORP:
 		return "ENFLEX_CORP"
+	case BACnetVendorId_VENAERA_INC:
+		return "VENAERA_INC"
+	case BACnetVendorId_HUMI_PURE:
+		return "HUMI_PURE"
 	case BACnetVendorId_ASI_CONTROLS:
 		return "ASI_CONTROLS"
 	case BACnetVendorId_SYS_MIK_GMBH_DRESDEN:

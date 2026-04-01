@@ -1617,6 +1617,12 @@
   ['1603' QPAC_SYSTEMS_INC ['1603', '"Q-PAC Systems, Inc."']]
   ['1604' YOBIIQ_INTELLIGENCEBV ['1604', '"Yobiiq Intelligence B.V."']]
   ['1605' CAMFILUSA_INC ['1605', '"Camfil USA Inc."']]
+  ['1606' RADNOX ['1606', '"Radnox"']]
+  ['1607' OPTOSPARK_SDN_BHD ['1607', '"Optospark Sdn. Bhd."']]
+  ['1608' CONTROLBRIGHT ['1608', '"Controlbright"']]
+  ['1609' PENTAIR_RESIDENTIAL_FILTRATION ['1609', '"Pentair Residential Filtration"']]
+  ['1610' VENAERA_INC ['1610', '"Venaera Inc."']]
+  ['1611' HUMI_PURE ['1611', '"HumiPure"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]
