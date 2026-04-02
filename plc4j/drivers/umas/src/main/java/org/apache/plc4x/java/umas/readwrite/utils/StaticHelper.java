@@ -105,6 +105,28 @@ public class StaticHelper {
     }
 
     /**
+     * Converts a UMAS write size index to the actual byte count.
+     * The UMAS protocol uses an index encoding for data sizes:
+     * 1 → 1 byte, 2 → 2 bytes, 3 → 4 bytes, 4 → 8 bytes (= 2^(index-1)).
+     * For STRING (index 17), returns 1 (per-character size; actual length
+     * is determined by the arrayLength field in the write reference).
+     *
+     * @param sizeIndex the UMAS size index (matches UmasDataType.requestSize)
+     * @return the byte count for this size index
+     */
+    public static int writeSizeIndexToByteCount(int sizeIndex) {
+        if (sizeIndex == 17) {
+            // STRING: per-character size is 1 byte
+            return 1;
+        }
+        if (sizeIndex >= 1 && sizeIndex <= 4) {
+            return 1 << (sizeIndex - 1);
+        }
+        // Fallback: treat index as direct byte count
+        return sizeIndex;
+    }
+
+    /**
      * Parses a null-terminated string from the buffer as raw bytes, used by the STRING
      * data type in the DataItem dataIo. Reads up to {@code numberOfValues} bytes and
      * returns the content up to the first null terminator as a String.

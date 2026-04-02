@@ -38,7 +38,12 @@ import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.values.PlcDATE;
+import org.apache.plc4x.java.spi.values.PlcDATE_AND_TIME;
 import org.apache.plc4x.java.spi.values.PlcRawByteArray;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
+import org.apache.plc4x.java.spi.values.PlcTIME;
+import org.apache.plc4x.java.spi.values.PlcTIME_OF_DAY;
 import org.apache.plc4x.java.umas.readwrite.*;
 import org.apache.plc4x.java.umas.readwrite.UmasFunctionKeyTracker;
 import org.apache.plc4x.java.umas.readwrite.configuration.UmasConfiguration;
@@ -118,6 +123,18 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
             .thenCompose(v -> performProjectInfoAsync(context, (short) 4))
             .thenCompose(v -> performProjectInfoAsync(context, (short) 1))
             .thenCompose(v -> performProjectInfoAsync(context, (short) 3))
+            // Eagerly download data dictionary (types + symbols) so
+            // read/write/browse can work immediately without a separate browse call.
+            // Must run off the Netty event loop because the download methods use
+            // blocking get() calls that would deadlock the event loop.
+            .thenCompose(v -> CompletableFuture.runAsync(() -> {
+                try {
+                    loadDataDictionary();
+                } catch (Exception e) {
+                    LOGGER.warn("Failed to eagerly load data dictionary during connect: {}", e.getMessage());
+                    // Non-fatal: browse will download on first use
+                }
+            }))
             .thenAccept(v -> {
                 LOGGER.info("UMAS connection established to PLC: hostname={}, model={}, firmware={}",
                     umasDriverContext.getPlcHostname(), umasDriverContext.getPlcModel(),
@@ -189,11 +206,29 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
                 if (response instanceof UmasPDUReadMemoryBlockResponse readResponse) {
                     byte[] block = readResponse.getBlock();
                     LOGGER.info("{}: {} bytes received", stepName, block != null ? block.length : 0);
-                    if (blockNumber == 0x30 && block != null && block.length >= 9) {
+                    if (blockNumber == 0x30 && block != null && block.length >= 17) {
+                        // UmasMemoryBlockBasicInfo: range(2) + notSure(2) + index(1) + hardwareId(4) = 9 bytes
                         long hardwareId = (block[5] & 0xFFL) | ((block[6] & 0xFFL) << 8)
                             | ((block[7] & 0xFFL) << 16) | ((block[8] & 0xFFL) << 24);
                         umasDriverContext.setHardwareId(hardwareId);
-                        LOGGER.info("{}: extracted hardwareId=0x{}", stepName, String.format("%08X", hardwareId));
+
+                        // Block 0x30 layout after basic info (9 bytes): hash1(4) + hash2(4) + ...
+                        // The project CRC used in FC 0x22/0x23 read/write requests is the
+                        // SUM of hash1 and hash2 (discovered by comparing working Schneider
+                        // OPC UA Server traffic with the raw block 0x30 values).
+                        long hash1 = (block[9] & 0xFFL) | ((block[10] & 0xFFL) << 8)
+                            | ((block[11] & 0xFFL) << 16) | ((block[12] & 0xFFL) << 24);
+                        long hash2 = (block[13] & 0xFFL) | ((block[14] & 0xFFL) << 8)
+                            | ((block[15] & 0xFFL) << 16) | ((block[16] & 0xFFL) << 24);
+                        long projectCrc = (hash1 + hash2) & 0xFFFFFFFFL;
+                        umasDriverContext.setProjectCrc(projectCrc);
+
+                        LOGGER.info("{}: hardwareId=0x{}, hash1=0x{}, hash2=0x{}, projectCRC=0x{}",
+                            stepName,
+                            String.format("%08X", hardwareId),
+                            String.format("%08X", hash1),
+                            String.format("%08X", hash2),
+                            String.format("%08X", projectCrc));
                     }
                 } else {
                     LOGGER.warn("{}: unexpected response type: {}", stepName, response.getClass().getSimpleName());
@@ -347,8 +382,29 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
         }
     }
 
+    private static final int DEFAULT_STRING_BUFFER_SIZE = 254;
+
     private VariableReadRequestReference buildReadReference(UmasUnlocatedVariableReference symbol) {
         int dataTypeId = symbol.getDataType();
+
+        // The symbol's 32-bit offset encodes two fields:
+        //   - lower 8 bits  → offset (uint 8 in VariableReadRequestReference)
+        //   - upper bits     → baseOffset (uint 16 in VariableReadRequestReference)
+        long symbolOffset = symbol.getOffset();
+        int baseOffset = (int) (symbolOffset >> 8);
+        short offset = (short) (symbolOffset & 0xFF);
+
+        // STRING: requestSize=17 doesn't fit in the 4-bit dataSizeIndex field.
+        // Read as a byte array instead: isArray=1, dataSizeIndex=1, arrayLength=bufferSize.
+        if (UmasDataType.isDefined((short) dataTypeId)
+                && UmasDataType.enumForValue((short) dataTypeId) == UmasDataType.STRING) {
+            int stringSize = umasDriverContext.getDataTypeSize(dataTypeId)
+                .orElse(DEFAULT_STRING_BUFFER_SIZE);
+            return new VariableReadRequestReference(
+                (byte) 1, (byte) 1, symbol.getBlock(),
+                baseOffset, offset, stringSize);
+        }
+
         byte dataSizeIndex;
         if (UmasDataType.isDefined((short) dataTypeId)) {
             UmasDataType umasType = UmasDataType.enumForValue((short) dataTypeId);
@@ -356,9 +412,10 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
         } else {
             dataSizeIndex = (byte) 3;
         }
+
         return new VariableReadRequestReference(
             (byte) 0, dataSizeIndex, symbol.getBlock(),
-            (int) symbol.getOffset(), (short) 0, null);
+            baseOffset, offset, null);
     }
 
     private PlcValue parseReadResponse(UmasUnlocatedVariableReference symbol, byte[] block) throws Exception {
@@ -368,8 +425,57 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
         int dataTypeId = symbol.getDataType();
         if (UmasDataType.isDefined((short) dataTypeId)) {
             UmasDataType umasType = UmasDataType.enumForValue((short) dataTypeId);
-            ReadBuffer readBuffer = new ReadBufferByteBased(block, ByteOrder.LITTLE_ENDIAN);
-            return DataItem.staticParse(readBuffer, umasType, 1);
+
+            // Types that need manual parsing because the generated DataItem code
+            // either doesn't return a PlcValue (temporal types) or uses the wrong
+            // read strategy (STRING).
+            switch (umasType) {
+                case STRING: {
+                    // STRING is read as a byte array; extract null-terminated content
+                    for (int i = 0; i < block.length; i++) {
+                        if (block[i] == 0x00) {
+                            return new PlcSTRING(new String(block, 0, i, StandardCharsets.UTF_8));
+                        }
+                    }
+                    return new PlcSTRING(new String(block, StandardCharsets.UTF_8));
+                }
+                case TIME: {
+                    // TIME is stored as uint32 milliseconds (little-endian)
+                    long millis = readUint32LE(block);
+                    return new PlcTIME(millis);
+                }
+                case DATE: {
+                    // DATE is BCD-encoded: day(1) + month(1) + year(2 LE)
+                    int day = decodeBcdByte(block[0]);
+                    int month = decodeBcdByte(block[1]);
+                    int year = decodeBcd16(block[2], block[3]);
+                    return new PlcDATE(java.time.LocalDate.of(year, month, day));
+                }
+                case TOD: {
+                    // TOD is BCD-encoded: centiseconds(1) + seconds(1) + minutes(1) + hours(1)
+                    int secs = decodeBcdByte(block[1]);
+                    int mins = decodeBcdByte(block[2]);
+                    int hours = decodeBcdByte(block[3]);
+                    long totalSeconds = hours * 3600L + mins * 60L + secs;
+                    return new PlcTIME_OF_DAY(totalSeconds);
+                }
+                case DATE_AND_TIME: {
+                    // DT is 8 bytes: reserved(1) + seconds(1 BCD) + minutes(1 BCD)
+                    // + hour(1 BCD) + day(1 BCD) + month(1 BCD) + year(2 BCD LE)
+                    int seconds = decodeBcdByte(block[1]);
+                    int minutes = decodeBcdByte(block[2]);
+                    int hour = decodeBcdByte(block[3]);
+                    int dtDay = decodeBcdByte(block[4]);
+                    int dtMonth = decodeBcdByte(block[5]);
+                    int dtYear = decodeBcd16(block[6], block[7]);
+                    return new PlcDATE_AND_TIME(java.time.LocalDateTime.of(
+                        dtYear, dtMonth, dtDay, hour, minutes, seconds));
+                }
+                default: {
+                    ReadBuffer readBuffer = new ReadBufferByteBased(block, ByteOrder.LITTLE_ENDIAN);
+                    return DataItem.staticParse(readBuffer, umasType, 1);
+                }
+            }
         }
         return new PlcRawByteArray(block);
     }
@@ -458,16 +564,34 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
 
     private VariableWriteRequestReference buildWriteReference(UmasUnlocatedVariableReference symbol, byte[] data) {
         int dataTypeId = symbol.getDataType();
+
+        // The symbol's 32-bit offset encodes two fields:
+        //   - lower 8 bits  → offset (uint 16 in VariableWriteRequestReference)
+        //   - upper bits     → baseOffset (uint 16 in VariableWriteRequestReference)
+        long symbolOffset = symbol.getOffset();
+        int baseOffset = (int) (symbolOffset >> 8);
+        int offset = (int) (symbolOffset & 0xFF);
+
+        // STRING: requestSize=17 doesn't fit in 4-bit dataSizeIndex.
+        // Write as byte array: isArray=1, dataSizeIndex=1, arrayLength=data.length.
+        if (UmasDataType.isDefined((short) dataTypeId)
+                && UmasDataType.enumForValue((short) dataTypeId) == UmasDataType.STRING) {
+            return new VariableWriteRequestReference(
+                (byte) 1, (byte) 1, symbol.getBlock(),
+                baseOffset, offset, data.length, data);
+        }
+
         byte dataSizeIndex;
         if (UmasDataType.isDefined((short) dataTypeId)) {
             UmasDataType umasType = UmasDataType.enumForValue((short) dataTypeId);
-            dataSizeIndex = (byte) umasType.getDataTypeSize();
+            dataSizeIndex = (byte) umasType.getRequestSize();
         } else {
-            dataSizeIndex = (byte) data.length;
+            dataSizeIndex = (byte) 3;
         }
+
         return new VariableWriteRequestReference(
             (byte) 0, dataSizeIndex, symbol.getBlock(),
-            (int) symbol.getOffset(), 0, null, data);
+            baseOffset, offset, null, data);
     }
 
     private byte[] serializeValue(UmasUnlocatedVariableReference symbol, PlcValue value) throws PlcConnectionException {
@@ -615,23 +739,37 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
         return future;
     }
 
-    private List<PlcBrowseItem> executeBrowse() throws Exception {
-        // Phase 1: Download datatype names
-        List<UmasDatatypeReference> datatypeRefs = downloadDatatypeNames();
-        LOGGER.info("Browse: downloaded {} datatype references", datatypeRefs.size());
+    /**
+     * Downloads the data dictionary (types + symbols) into the driver context.
+     * Called during handshake so the symbol table is available for read/write immediately.
+     */
+    private void loadDataDictionary() throws Exception {
+        LOGGER.info("Loading data dictionary (types + symbols)...");
 
-        // Phase 2: Resolve custom types
+        List<UmasDatatypeReference> datatypeRefs = downloadDatatypeNames();
+        LOGGER.info("Data dictionary: downloaded {} datatype references", datatypeRefs.size());
+
         resolveCustomTypes(datatypeRefs);
 
-        // Phase 3: Download symbol table
         List<UmasUnlocatedVariableReference> symbols = downloadSymbolTable();
-        LOGGER.info("Browse: downloaded {} symbols", symbols.size());
+        LOGGER.info("Data dictionary: downloaded {} symbols", symbols.size());
 
         for (UmasUnlocatedVariableReference symbol : symbols) {
             umasDriverContext.addSymbol(symbol.getValue(), symbol);
         }
 
-        return convertToBrowseItems(symbols);
+        LOGGER.info("Data dictionary loaded: {} symbols", umasDriverContext.getSymbolCount());
+    }
+
+    private List<PlcBrowseItem> executeBrowse() throws Exception {
+        // If symbol table is empty, download data dictionary
+        if (umasDriverContext.getSymbolCount() == 0) {
+            loadDataDictionary();
+        }
+
+        // Convert cached symbols to browse items
+        return convertToBrowseItems(
+            new ArrayList<>(umasDriverContext.getSymbolTable().values()));
     }
 
     private List<UmasDatatypeReference> downloadDatatypeNames() throws Exception {
@@ -679,6 +817,10 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
             if (UmasDataType.isDefined(primitiveId)) {
                 umasDriverContext.addDataType(typeId, UmasDataType.enumForValue(primitiveId));
             }
+            // Store the allocated byte size from the data dictionary (important for
+            // STRING buffers and custom struct types where the size is not derivable
+            // from the UmasDataType enum alone)
+            umasDriverContext.addDataTypeSize(typeId, ref.getDataSize());
         }
 
         for (int i = 0; i < datatypeRefs.size(); i++) {
@@ -877,6 +1019,22 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
         UmasFunctionKeyTracker.trackRequest(transactionId, item.getUmasFunctionKey());
         UmasPDU umasPdu = new UmasPDU(item);
         return new ModbusTcpADU(transactionId, unitIdentifier, umasPdu);
+    }
+
+    /** Reads a little-endian uint32 from the first 4 bytes of a block. */
+    private static long readUint32LE(byte[] block) {
+        return (block[0] & 0xFFL) | ((block[1] & 0xFFL) << 8)
+            | ((block[2] & 0xFFL) << 16) | ((block[3] & 0xFFL) << 24);
+    }
+
+    /** Decodes a single BCD-encoded byte (e.g. 0x25 → 25). */
+    private static int decodeBcdByte(byte b) {
+        return ((b >> 4) & 0x0F) * 10 + (b & 0x0F);
+    }
+
+    /** Decodes a BCD-encoded uint16 LE from 2 bytes (e.g. 0x20, 0x25 → 2025). */
+    private static int decodeBcd16(byte lo, byte hi) {
+        return decodeBcdByte(hi) * 100 + decodeBcdByte(lo);
     }
 
     private UmasPDUItem extractUmasResponse(ModbusTcpADU response, String stepName) throws PlcConnectionException {

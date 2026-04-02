@@ -21,6 +21,7 @@ package org.apache.plc4x.java.umas.readwrite.configuration;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
 public class UmasConfiguration implements PlcConnectionConfiguration {
@@ -64,12 +65,26 @@ public class UmasConfiguration implements PlcConnectionConfiguration {
         this.maxFrameSize = maxFrameSize;
     }
 
+    @ConfigurationParameter("browser-generate-array-nodes")
+    @BooleanDefaultValue(true)
+    @Description("Tells the browser to generate artificial child nodes representing individual array elements.")
+    private boolean browserGenerateArrayNodes;
+
+    public boolean isBrowserGenerateArrayNodes() {
+        return browserGenerateArrayNodes;
+    }
+
+    public void setBrowserGenerateArrayNodes(boolean browserGenerateArrayNodes) {
+        this.browserGenerateArrayNodes = browserGenerateArrayNodes;
+    }
+
     @Override
     public String toString() {
         return "UmasConfiguration{" +
             "unitIdentifier=" + unitIdentifier +
             ", requestTimeout=" + requestTimeout +
             ", maxFrameSize=" + maxFrameSize +
+            ", browserGenerateArrayNodes=" + browserGenerateArrayNodes +
             '}';
     }
 

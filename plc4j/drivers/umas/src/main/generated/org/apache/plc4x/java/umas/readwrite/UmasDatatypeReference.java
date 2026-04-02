@@ -95,6 +95,9 @@ public class UmasDatatypeReference implements Message {
     // Simple Field (dataType)
     writeSimpleField("dataType", dataType, writeUnsignedShort(writeBuffer, 8));
 
+    // Reserved Field (reserved)
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+
     // Manual Field (value)
     writeManualField(
         "value",
@@ -129,6 +132,9 @@ public class UmasDatatypeReference implements Message {
     // Simple field (dataType)
     lengthInBits += 8;
 
+    // Reserved Field (reserved)
+    lengthInBits += 8;
+
     // Manual Field (value)
     lengthInBits += (((STR_LEN(value)) + (1))) * (8);
 
@@ -147,6 +153,9 @@ public class UmasDatatypeReference implements Message {
     short classIdentifier = readSimpleField("classIdentifier", readUnsignedShort(readBuffer, 8));
 
     short dataType = readSimpleField("dataType", readUnsignedShort(readBuffer, 8));
+
+    Short reservedField0 =
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
     String value =
         readManualField(

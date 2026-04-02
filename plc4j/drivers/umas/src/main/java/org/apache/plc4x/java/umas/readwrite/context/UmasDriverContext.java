@@ -72,6 +72,9 @@ public class UmasDriverContext implements DriverContext, HasConfiguration<UmasCo
     // Data type table: type ID -> UmasDataType
     private final Map<Integer, UmasDataType> dataTypeTable = new ConcurrentHashMap<>();
 
+    // Data type sizes from DD03: type ID -> allocated byte size
+    private final Map<Integer, Integer> dataTypeSizes = new ConcurrentHashMap<>();
+
     @Override
     public void setConfiguration(UmasConfiguration configuration) {
         this.configuration = configuration;
@@ -211,6 +214,30 @@ public class UmasDriverContext implements DriverContext, HasConfiguration<UmasCo
 
     public Map<Integer, UmasDataType> getDataTypeTable() {
         return Collections.unmodifiableMap(dataTypeTable);
+    }
+
+    // --- Data type size operations (from DD03) ---
+
+    /**
+     * Stores the allocated byte size for a data type from the DD03 data dictionary.
+     * This is the total memory footprint, important for STRING and custom types
+     * where the size is not derivable from the UmasDataType enum alone.
+     *
+     * @param typeId   the data type identifier
+     * @param dataSize the allocated byte size from UmasDatatypeReference.dataSize
+     */
+    public void addDataTypeSize(int typeId, int dataSize) {
+        dataTypeSizes.put(typeId, dataSize);
+    }
+
+    /**
+     * Returns the allocated byte size for a data type, or empty if not registered.
+     *
+     * @param typeId the data type identifier
+     * @return the allocated byte size
+     */
+    public Optional<Integer> getDataTypeSize(int typeId) {
+        return Optional.ofNullable(dataTypeSizes.get(typeId));
     }
 
 }

@@ -300,6 +300,11 @@ public abstract class UmasPDUItem implements Message {
       builder =
           UmasPDUMonitorPlcRequest.staticParseUmasPDUItemBuilder(
               readBuffer, umasRequestFunctionKey, byteLength);
+    } else if (EvaluationHelper.equals(umasFunctionKey, (short) 0xFE)
+        && EvaluationHelper.equals(umasRequestFunctionKey, (short) 0x50)) {
+      builder =
+          UmasPDUMonitorPlcResponse.staticParseUmasPDUItemBuilder(
+              readBuffer, umasRequestFunctionKey, byteLength);
     } else if (EvaluationHelper.equals(umasFunctionKey, (short) 0x58)) {
       builder =
           UmasPDUCheckPlcRequest.staticParseUmasPDUItemBuilder(

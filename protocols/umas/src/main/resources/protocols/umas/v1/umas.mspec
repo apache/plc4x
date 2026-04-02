@@ -26,19 +26,16 @@
 // Key detail: Modbus/TCP MBAP header is big-endian, UMAS payload is little-endian.
 //
 // References:
-//   - Apache PLC4X umas.mspec
+//   - Version 0 of the umas.mspec
 //   - Kaspersky ICS CERT: "The secrets of Schneider Electric's UMAS protocol"
 //   - Wireshark Lua dissectors (zaltzman, yanissec, biero-el-corridor)
-//
-// Procedure of reverse Engineering:
-//   - Setup a Windows VM and installed Control Expert Classic
-//   - Configured an example program with all data-structures an default values
-//   - Setup a virtual PLC and installed the example program on that
-//   - Setup OPC UA Server Expert and connected it to the virtual PLC
-//   - Used WireShark to observe the traffic between the OPC UA Server and the PLC
-//   - Used Claude Code and existing public resources to make sense out of the
-//     observed traffic
-//
+//   - Recordings of the Schneider Electric OPC UA Server Expert communicating
+//     with a Simulated PLC (Tag loading)
+//   - Recordings of the Schneider Electric OPC UA Server Expert communicating
+//     with a Simulated PLC (Using UAExpert to produce subscription traffic)
+//   - Recordings of the Schneider Electric OPC UA Server Expert communicating
+//     with a Simulated PLC (Using Prosys OPC UA Browser to produce read/write
+//     traffic)
 ////////////////////////////////////////////////////////////////
 
 [constants
@@ -299,8 +296,22 @@
         ]
 
         // ---- FC 0x50: Monitor PLC ----
+        // Used by Schneider OPC UA Server Expert to read variable values from
+        // M580 PLCs (instead of FC 0x22 ReadVariable which returns error 0xA1A1).
+        // The request contains a list of sub-operations: register variables for
+        // monitoring, read all registered values, or deregister variables.
         ['0x50'      UmasPDUMonitorPlcRequest
-            [array      byte           data count 'byteLength - 2']
+            [simple     uint 8          subCommand]
+            [simple     uint 8          unknown]
+            [simple     uint 8          numberOfSubOperations]
+            [array      MonitorPlcSubOperation  subOperations count 'numberOfSubOperations']
+        ]
+        // Response payload is a flat byte array because the per-variable value
+        // sizes depend on the data types of the registered variables, which are
+        // only known at the driver layer (via the symbol table). The driver
+        // parses the raw bytes using DataItem and the registered variable types.
+        ['0xFE', '0x50'     UmasPDUMonitorPlcResponse
+            [array      byte            block count 'byteLength - 2']
         ]
 
         // ---- FC 0x58: Check PLC ----
@@ -341,33 +352,66 @@
 // Helper Types
 ////////////////////////////////////////////////////////////////
 
+// Sub-operation within an FC 0x50 MonitorPLC request.
+// Discriminated by the first byte (operation type).
+[discriminatedType MonitorPlcSubOperation byteOrder='"LITTLE_ENDIAN"'
+    [discriminator uint 8  operationType]
+    [typeSwitch operationType
+        // Register or deregister a variable for monitoring.
+        // After registration, the variable's current value is returned
+        // in subsequent read (0x07) responses.
+        ['0x05'  MonitorPlcRegisterVariable
+            [simple     uint 8                   variableIndex  ]
+            [simple     uint 16                  block          ]
+            [simple     uint 16                  offset         ]
+            [simple     MonitorPlcRegisterAction action         ]
+        ]
+        // Read current values for all registered variables.
+        // Returns concatenated raw values in the response — the driver
+        // must know each variable's data type to parse the byte stream.
+        ['0x07'  MonitorPlcReadAll
+        ]
+        // Register a variable AND include its value in the response.
+        // Combines registration with an immediate read for that variable.
+        ['0x09'  MonitorPlcRegisterAndRead
+            [simple     uint 8                   variableIndex  ]
+            [simple     uint 16                  block          ]
+            [simple     uint 16                  offset         ]
+        ]
+        // Clear/reset monitoring state. Observed in Modicon M340 captures
+        // with no payload (single byte operation, like 0x07).
+        ['0x0B'  MonitorPlcReset
+        ]
+    ]
+]
+
 // Memory block structure for specific block/offset combinations
 [type UmasMemoryBlock(uint 16 blockNumber, uint 16 offset)
     [typeSwitch blockNumber, offset
         ['0x30', '0x00' UmasMemoryBlockBasicInfo
-            [simple     uint 16          range]
-            [simple uint 16 notSure]
-            [simple uint 8  index]
-            [simple uint 32 hardwareId]
+            [simple     uint 16                  range          ]
+            [simple     uint 16                  notSure        ]
+            [simple     uint 8                   index          ]
+            [simple     uint 32                  hardwareId     ]
         ]
     ]
 ]
 
 // Parsed response for unlocated variable names (used by driver layer)
 [type UmasPDUReadUnlocatedVariableNamesResponse
-    [simple     uint 8          range]
-    [simple     uint 16         nextAddress]
-    [simple     uint 16         unknown1]
-    [simple     uint 16         noOfRecords]
-    [array      UmasUnlocatedVariableReference         records count 'noOfRecords']
+    [simple     uint 8                           range                              ]
+    [simple     uint 16                          nextAddress                        ]
+    [simple     uint 16                          unknown1                           ]
+    [simple     uint 16                          noOfRecords                        ]
+    [array      UmasUnlocatedVariableReference   records        count 'noOfRecords' ]
 ]
 
 // Parsed response for UDT definitions
 [type UmasPDUReadUmasUDTDefinitionResponse
-    [simple     uint 8          range]
-    [simple     uint 32         unknown1]
-    [simple     uint 16         noOfRecords]
-    [array      UmasUDTDefinition         records count 'noOfRecords']
+    [simple     uint 8              range                           ]
+    [simple     uint 32             unknown1                        ]
+    [simple     uint 16             noOfRecords                     ]
+    [array      UmasUDTDefinition   records     count 'noOfRecords' ]
 ]
 
 // Parsed response for datatype names
@@ -390,7 +434,9 @@
     [optional   uint 16          arrayLength 'isArray != 0']
 ]
 
-// Variable write request reference — identifies a variable to write with data
+// Variable write request reference — identifies a variable to write with data.
+// The dataSizeIndex is a size index (not a byte count): 1→1B, 2→2B, 3→4B, 4→8B.
+// The formula 2^(index-1) converts the index to the actual byte size.
 [type VariableWriteRequestReference
     [simple     uint 4           isArray]
     [simple     uint 4           dataSizeIndex]
@@ -398,7 +444,8 @@
     [simple     uint 16          baseOffset]
     [simple     uint 16          offset]
     [optional   uint 16          arrayLength 'isArray != 0']
-    [array      byte             recordData     length  'isArray == 1 ? dataSizeIndex * arrayLength : dataSizeIndex']
+    [virtual    uint 16          dataSize    'STATIC_CALL("writeSizeIndexToByteCount", dataSizeIndex)']
+    [array      byte             recordData     length  'isArray == 1 ? dataSize * arrayLength : dataSize']
 ]
 
 // Unlocated variable reference from the data dictionary
@@ -427,6 +474,8 @@
     [simple     uint 16          unknown1]
     [simple     uint 8           classIdentifier]
     [simple     uint 8           dataType]
+    // Padding byte before the null-terminated name (always 0x00 in observed captures)
+    [reserved   uint 8           '0x00']
     // Name is null-terminated (no length prefix) — uses -1 to signal "read until null"
     [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, -1)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, -1)' '(STR_LEN(value) + 1) * 8']
 ]
@@ -455,10 +504,10 @@
             [simple   bit     value                            ]
         ]
         ['BYTE','1'  BYTE
-            [simple byte value]
+            [simple   uint 8  value]
         ]
         ['BYTE' List
-            [array    byte     value count 'numberOfValues' ]
+            [array    uint 8  value count 'numberOfValues' ]
         ]
         ['WORD'      WORD
             [simple   uint 16 value]
@@ -562,6 +611,12 @@
     ['23' DWORD     ['4','3','"DWORD"']]
     ['24' UNKNOWN24 ['1','1','"BYTE"']]
     ['25' EBOOL     ['1','1','"BOOL"']]
+]
+
+// Action codes for MonitorPLC register sub-operation (type 0x05)
+[enum uint 8 MonitorPlcRegisterAction
+    ['0x01' DEREGISTER]
+    ['0x02' REGISTER  ]
 ]
 
 // Standard Modbus error codes used in UMAS error responses

@@ -61,11 +61,16 @@ public class DataItem {
       return new PlcBOOL(value);
     } else if (EvaluationHelper.equals(dataType, UmasDataType.BYTE)
         && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BYTE
-      byte value = readSimpleField("value", readByte(readBuffer, 8));
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcBYTE(value);
     } else if (EvaluationHelper.equals(dataType, UmasDataType.BYTE)) { // List
-      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(numberOfValues));
-      return new PlcRawByteArray(value);
+      List<Short> _value =
+          readCountArrayField("value", readUnsignedShort(readBuffer, 8), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (short _item : _value) {
+        value.add(new PlcUSINT(_item));
+      }
+      return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, UmasDataType.WORD)) { // WORD
       int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
       return new PlcWORD(value);
@@ -240,7 +245,7 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataType, UmasDataType.BYTE)) { // List
       // Array field
       if (_value != null) {
-        lengthInBits += 8 * _value.getRaw().length;
+        lengthInBits += 8 * _value.getList().size();
       }
     } else if (EvaluationHelper.equals(dataType, UmasDataType.WORD)) { // WORD
       // Simple field (value)
@@ -387,10 +392,13 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataType, UmasDataType.BYTE)
         && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BYTE
       // Simple Field (value)
-      writeSimpleField("value", (byte) _value.getByte(), writeByte(writeBuffer, 8));
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, UmasDataType.BYTE)) { // List
       // Array Field (value)
-      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getShort).collect(Collectors.toList()),
+          writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, UmasDataType.WORD)) { // WORD
       // Simple Field (value)
       writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));

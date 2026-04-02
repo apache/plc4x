@@ -74,7 +74,10 @@ public class SymbolicUmasTag implements UmasTag {
 
     @Override
     public PlcValueType getPlcValueType() {
-        return dataType != null ? dataType : PlcValueType.NULL;
+        // Return null (not PlcValueType.NULL) when type is unknown so the
+        // DefaultPlcValueHandler preserves the original PlcValue on writes
+        // instead of discarding it as PlcNull.
+        return dataType;
     }
 
     @Override
