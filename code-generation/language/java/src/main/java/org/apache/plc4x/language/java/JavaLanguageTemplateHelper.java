@@ -619,7 +619,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     return "_value.getDate().getDayOfMonth()";
                 case "dayOfWeek":
                     return "_value.getDate().getDayOfWeek().getValue()";
-                case "hour":
+                case "hour", "hours":
                     return "_value.getTime().getHour()";
                 case "minutes":
                     return "_value.getTime().getMinute()";
@@ -627,6 +627,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     return "_value.getTime().getSecond()";
                 case "secondsSinceEpoch":
                     return "_value.getDateTime().toEpochSecond(ZoneOffset.UTC)";
+                case "centiseconds":
+                    return "(_value.getDuration().toMillis() / 10)";
                 case "milliseconds":
                     return "_value.getDuration().toMillis()";
                 case "millisecondsOfSecond":

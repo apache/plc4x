@@ -156,7 +156,8 @@ public class DataItem {
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TIME)
         && EvaluationHelper.equals(numberOfValues, (int) 1)) { // TIME
-      long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
+      long milliseconds = readSimpleField("milliseconds", readUnsignedLong(readBuffer, 32));
+      return PlcTIME.ofMilliseconds(milliseconds);
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TIME)) { // List
       List<Long> _value =
           readCountArrayField("value", readUnsignedLong(readBuffer, 32), numberOfValues);
@@ -178,7 +179,21 @@ public class DataItem {
           readSimpleField("year", readUnsignedInt(readBuffer, 16), WithOption.WithEncoding("BCD"));
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TOD)
         && EvaluationHelper.equals(numberOfValues, (int) 1)) { // TIME_OF_DAY
-      long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
+      short centiseconds =
+          readSimpleField(
+              "centiseconds", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
+
+      short seconds =
+          readSimpleField(
+              "seconds", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
+
+      short minutes =
+          readSimpleField(
+              "minutes", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
+
+      short hours =
+          readSimpleField(
+              "hours", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TOD)) { // List
       List<Long> _value =
           readCountArrayField("value", readUnsignedLong(readBuffer, 32), numberOfValues);
@@ -309,7 +324,7 @@ public class DataItem {
       }
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TIME)
         && EvaluationHelper.equals(numberOfValues, (int) 1)) { // TIME
-      // Simple field (value)
+      // Simple field (milliseconds)
       lengthInBits += 32;
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TIME)) { // List
       // Array field
@@ -328,8 +343,17 @@ public class DataItem {
       lengthInBits += 16;
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TOD)
         && EvaluationHelper.equals(numberOfValues, (int) 1)) { // TIME_OF_DAY
-      // Simple field (value)
-      lengthInBits += 32;
+      // Simple field (centiseconds)
+      lengthInBits += 8;
+
+      // Simple field (seconds)
+      lengthInBits += 8;
+
+      // Simple field (minutes)
+      lengthInBits += 8;
+
+      // Simple field (hours)
+      lengthInBits += 8;
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TOD)) { // List
       // Array field
       if (_value != null) {
@@ -472,8 +496,11 @@ public class DataItem {
           writeFloat(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TIME)
         && EvaluationHelper.equals(numberOfValues, (int) 1)) { // TIME
-      // Simple Field (value)
-      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 32));
+      // Simple Field (milliseconds)
+      writeSimpleField(
+          "milliseconds",
+          (long) _value.getDuration().toMillis(),
+          writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TIME)) { // List
       // Array Field (value)
       writeSimpleTypeArrayField(
@@ -504,8 +531,33 @@ public class DataItem {
           WithOption.WithEncoding("BCD"));
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TOD)
         && EvaluationHelper.equals(numberOfValues, (int) 1)) { // TIME_OF_DAY
-      // Simple Field (value)
-      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 32));
+      // Simple Field (centiseconds)
+      writeSimpleField(
+          "centiseconds",
+          (short) (_value.getDuration().toMillis() / 10),
+          writeUnsignedShort(writeBuffer, 8),
+          WithOption.WithEncoding("BCD"));
+
+      // Simple Field (seconds)
+      writeSimpleField(
+          "seconds",
+          (short) _value.getTime().getSecond(),
+          writeUnsignedShort(writeBuffer, 8),
+          WithOption.WithEncoding("BCD"));
+
+      // Simple Field (minutes)
+      writeSimpleField(
+          "minutes",
+          (short) _value.getTime().getMinute(),
+          writeUnsignedShort(writeBuffer, 8),
+          WithOption.WithEncoding("BCD"));
+
+      // Simple Field (hours)
+      writeSimpleField(
+          "hours",
+          (short) _value.getTime().getHour(),
+          writeUnsignedShort(writeBuffer, 8),
+          WithOption.WithEncoding("BCD"));
     } else if (EvaluationHelper.equals(dataType, UmasDataType.TOD)) { // List
       // Array Field (value)
       writeSimpleTypeArrayField(

@@ -396,9 +396,12 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
 
         // STRING: requestSize=17 doesn't fit in the 4-bit dataSizeIndex field.
         // Read as a byte array instead: isArray=1, dataSizeIndex=1, arrayLength=bufferSize.
+        // Try the DD03 type size first, then the computed symbol size from the memory
+        // layout, and finally fall back to the default.
         if (UmasDataType.isDefined((short) dataTypeId)
                 && UmasDataType.enumForValue((short) dataTypeId) == UmasDataType.STRING) {
             int stringSize = umasDriverContext.getDataTypeSize(dataTypeId)
+                .or(() -> umasDriverContext.getSymbolSize(symbol.getValue()))
                 .orElse(DEFAULT_STRING_BUFFER_SIZE);
             return new VariableReadRequestReference(
                 (byte) 1, (byte) 1, symbol.getBlock(),
@@ -565,12 +568,12 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
     private VariableWriteRequestReference buildWriteReference(UmasUnlocatedVariableReference symbol, byte[] data) {
         int dataTypeId = symbol.getDataType();
 
-        // The symbol's 32-bit offset encodes two fields:
-        //   - lower 8 bits  → offset (uint 16 in VariableWriteRequestReference)
-        //   - upper bits     → baseOffset (uint 16 in VariableWriteRequestReference)
+        // Write references use a different offset encoding than read references:
+        // Read:  baseOffset = offset >> 8 (high 16 bits), offset = offset & 0xFF (low 8 bits)
+        // Write: baseOffset = offset & 0xFFFF (low 16 bits), offset = (offset >> 16) & 0xFFFF (high 16 bits)
         long symbolOffset = symbol.getOffset();
-        int baseOffset = (int) (symbolOffset >> 8);
-        int offset = (int) (symbolOffset & 0xFF);
+        int baseOffset = (int) (symbolOffset & 0xFFFF);
+        int offset = (int) ((symbolOffset >> 16) & 0xFFFF);
 
         // STRING: requestSize=17 doesn't fit in 4-bit dataSizeIndex.
         // Write as byte array: isArray=1, dataSizeIndex=1, arrayLength=data.length.
@@ -644,15 +647,48 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
                 System.arraycopy(strBytes, 0, result, 0, strBytes.length);
                 yield result;
             }
-            case TIME, DATE, TOD -> {
+            case TIME -> {
+                // TIME is stored as uint32 milliseconds (not BCD)
                 ByteBuffer buf = ByteBuffer.allocate(4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
                 buf.putInt((int) (value.getLong() & 0xFFFFFFFFL));
                 yield buf.array();
             }
+            case DATE -> {
+                // DATE is BCD-encoded: day(1) + month(1) + year(2 LE)
+                java.time.LocalDate date = value.getDate();
+                byte[] result = new byte[4];
+                result[0] = encodeBcd(date.getDayOfMonth());
+                result[1] = encodeBcd(date.getMonthValue());
+                int year = date.getYear();
+                result[2] = encodeBcd(year % 100);
+                result[3] = encodeBcd(year / 100);
+                yield result;
+            }
+            case TOD -> {
+                // TOD is BCD-encoded: centiseconds(1) + seconds(1) + minutes(1) + hours(1)
+                java.time.LocalTime time = value.getTime();
+                byte[] result = new byte[4];
+                result[0] = encodeBcd((int) ((time.toNanoOfDay() / 10_000_000) % 100));
+                result[1] = encodeBcd(time.getSecond());
+                result[2] = encodeBcd(time.getMinute());
+                result[3] = encodeBcd(time.getHour());
+                yield result;
+            }
             case DATE_AND_TIME -> {
-                ByteBuffer buf = ByteBuffer.allocate(8).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-                buf.putLong(value.getLong());
-                yield buf.array();
+                // DATE_AND_TIME: reserved(1) + seconds(1 BCD) + minutes(1 BCD)
+                // + hour(1 BCD) + day(1 BCD) + month(1 BCD) + year(2 BCD LE)
+                java.time.LocalDateTime dt = value.getDateTime();
+                byte[] result = new byte[8];
+                result[0] = 0x00;
+                result[1] = encodeBcd(dt.getSecond());
+                result[2] = encodeBcd(dt.getMinute());
+                result[3] = encodeBcd(dt.getHour());
+                result[4] = encodeBcd(dt.getDayOfMonth());
+                result[5] = encodeBcd(dt.getMonthValue());
+                int dtYear = dt.getYear();
+                result[6] = encodeBcd(dtYear % 100);
+                result[7] = encodeBcd(dtYear / 100);
+                yield result;
             }
             case WORD -> {
                 ByteBuffer buf = ByteBuffer.allocate(2).order(java.nio.ByteOrder.LITTLE_ENDIAN);
@@ -757,6 +793,9 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
         for (UmasUnlocatedVariableReference symbol : symbols) {
             umasDriverContext.addSymbol(symbol.getValue(), symbol);
         }
+
+        // Compute per-symbol sizes from the memory layout (gap between adjacent symbols)
+        umasDriverContext.computeSymbolSizes();
 
         LOGGER.info("Data dictionary loaded: {} symbols", umasDriverContext.getSymbolCount());
     }
@@ -1035,6 +1074,14 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
     /** Decodes a BCD-encoded uint16 LE from 2 bytes (e.g. 0x20, 0x25 → 2025). */
     private static int decodeBcd16(byte lo, byte hi) {
         return decodeBcdByte(hi) * 100 + decodeBcdByte(lo);
+    }
+
+    /**
+     * Encodes a decimal value (0-99) into a BCD byte.
+     * For example, 25 becomes 0x25 (high nibble = 2, low nibble = 5).
+     */
+    private static byte encodeBcd(int value) {
+        return (byte) (((value / 10) << 4) | (value % 10));
     }
 
     private UmasPDUItem extractUmasResponse(ModbusTcpADU response, String stepName) throws PlcConnectionException {

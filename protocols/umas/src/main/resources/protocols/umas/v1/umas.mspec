@@ -361,10 +361,10 @@
         // After registration, the variable's current value is returned
         // in subsequent read (0x07) responses.
         ['0x05'  MonitorPlcRegisterVariable
-            [simple     uint 8                   variableIndex  ]
-            [simple     uint 16                  block          ]
-            [simple     uint 16                  offset         ]
-            [simple     MonitorPlcRegisterAction action         ]
+            [simple     uint 8                   variableIndex]
+            [simple     uint 16                  block]
+            [simple     uint 16                  offset]
+            [simple     MonitorPlcRegisterAction action]
         ]
         // Read current values for all registered variables.
         // Returns concatenated raw values in the response — the driver
@@ -374,9 +374,9 @@
         // Register a variable AND include its value in the response.
         // Combines registration with an immediate read for that variable.
         ['0x09'  MonitorPlcRegisterAndRead
-            [simple     uint 8                   variableIndex  ]
-            [simple     uint 16                  block          ]
-            [simple     uint 16                  offset         ]
+            [simple     uint 8                  variableIndex]
+            [simple     uint 16                 block]
+            [simple     uint 16                 offset]
         ]
         // Clear/reset monitoring state. Observed in Modicon M340 captures
         // with no payload (single byte operation, like 0x07).
@@ -389,29 +389,29 @@
 [type UmasMemoryBlock(uint 16 blockNumber, uint 16 offset)
     [typeSwitch blockNumber, offset
         ['0x30', '0x00' UmasMemoryBlockBasicInfo
-            [simple     uint 16                  range          ]
-            [simple     uint 16                  notSure        ]
-            [simple     uint 8                   index          ]
-            [simple     uint 32                  hardwareId     ]
+            [simple     uint 16          range]
+            [simple uint 16 notSure]
+            [simple uint 8  index]
+            [simple uint 32 hardwareId]
         ]
     ]
 ]
 
 // Parsed response for unlocated variable names (used by driver layer)
 [type UmasPDUReadUnlocatedVariableNamesResponse
-    [simple     uint 8                           range                              ]
-    [simple     uint 16                          nextAddress                        ]
-    [simple     uint 16                          unknown1                           ]
-    [simple     uint 16                          noOfRecords                        ]
-    [array      UmasUnlocatedVariableReference   records        count 'noOfRecords' ]
+    [simple     uint 8          range]
+    [simple     uint 16         nextAddress]
+    [simple     uint 16         unknown1]
+    [simple     uint 16         noOfRecords]
+    [array      UmasUnlocatedVariableReference         records count 'noOfRecords']
 ]
 
 // Parsed response for UDT definitions
 [type UmasPDUReadUmasUDTDefinitionResponse
-    [simple     uint 8              range                           ]
-    [simple     uint 32             unknown1                        ]
-    [simple     uint 16             noOfRecords                     ]
-    [array      UmasUDTDefinition   records     count 'noOfRecords' ]
+    [simple     uint 8          range]
+    [simple     uint 32         unknown1]
+    [simple     uint 16         noOfRecords]
+    [array      UmasUDTDefinition         records count 'noOfRecords']
 ]
 
 // Parsed response for datatype names
@@ -552,7 +552,7 @@
             [array float 32 value count 'numberOfValues']
         ]
         ['TIME','1' TIME
-            [simple uint 32 value]
+            [simple uint 32 milliseconds]
         ]
         ['TIME' List
             [array uint 32 value count 'numberOfValues']
@@ -563,7 +563,10 @@
             [simple uint 16 year encoding='"BCD"']
         ]
         ['TOD','1' TIME_OF_DAY
-            [simple uint 32 value]
+            [simple uint 8 centiseconds encoding='"BCD"']
+            [simple uint 8 seconds encoding='"BCD"']
+            [simple uint 8 minutes encoding='"BCD"']
+            [simple uint 8 hours encoding='"BCD"']
         ]
         ['TOD' List
             [array uint 32 value count 'numberOfValues']

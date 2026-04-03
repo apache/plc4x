@@ -75,6 +75,9 @@ public class UmasDriverContext implements DriverContext, HasConfiguration<UmasCo
     // Data type sizes from DD03: type ID -> allocated byte size
     private final Map<Integer, Integer> dataTypeSizes = new ConcurrentHashMap<>();
 
+    // Per-symbol allocated sizes computed from symbol table layout (gap between adjacent symbols)
+    private final Map<String, Integer> symbolSizes = new ConcurrentHashMap<>();
+
     @Override
     public void setConfiguration(UmasConfiguration configuration) {
         this.configuration = configuration;
@@ -238,6 +241,52 @@ public class UmasDriverContext implements DriverContext, HasConfiguration<UmasCo
      */
     public Optional<Integer> getDataTypeSize(int typeId) {
         return Optional.ofNullable(dataTypeSizes.get(typeId));
+    }
+
+    // --- Per-symbol size operations ---
+
+    /**
+     * Returns the computed allocated byte size for a symbol, or empty if not available.
+     *
+     * @param name the symbolic name (case-insensitive)
+     * @return the byte size if computed
+     */
+    public Optional<Integer> getSymbolSize(String name) {
+        return Optional.ofNullable(symbolSizes.get(name.toLowerCase()));
+    }
+
+    /**
+     * Computes the allocated byte size for each symbol from the symbol table layout.
+     * For each memory block, symbols are sorted by offset and the size is computed
+     * as the gap to the next symbol. The last symbol in each block gets no size entry.
+     * Must be called after all symbols have been loaded via {@link #addSymbol}.
+     */
+    public void computeSymbolSizes() {
+        symbolSizes.clear();
+
+        // Group symbols by block
+        java.util.Map<Integer, java.util.List<java.util.Map.Entry<String, UmasUnlocatedVariableReference>>> byBlock =
+            new java.util.HashMap<>();
+        for (var entry : symbolTable.entrySet()) {
+            byBlock.computeIfAbsent(entry.getValue().getBlock(), k -> new java.util.ArrayList<>()).add(entry);
+        }
+
+        // For each block, sort by offset and compute gaps
+        for (var blockEntry : byBlock.entrySet()) {
+            var symbols = blockEntry.getValue();
+            symbols.sort(java.util.Comparator.comparingLong(e -> e.getValue().getOffset()));
+
+            for (int i = 0; i < symbols.size() - 1; i++) {
+                var current = symbols.get(i);
+                var next = symbols.get(i + 1);
+                int size = (int) (next.getValue().getOffset() - current.getValue().getOffset());
+                if (size > 0) {
+                    symbolSizes.put(current.getKey(), size);
+                }
+            }
+        }
+
+        LOGGER.debug("Computed sizes for {} of {} symbols", symbolSizes.size(), symbolTable.size());
     }
 
 }
