@@ -60,7 +60,7 @@ Documentation = "https://plc4x.apache.org/users/getting-started/plc4py.html"
 
 [project.optional-dependencies]
 dev = [
-        "pytest-asyncio>=0.18.3",
+        "pytest-asyncio>=1.3.0",
         "pip-tools",
         "black",
         "pip",
