@@ -78,6 +78,7 @@ dev = [
 [project.entry-points."plc4py.drivers"]
 mock = "plc4py.drivers.mock.MockConnection:MockDriverLoader"
 modbus = "plc4py.drivers.modbus.ModbusConnection:ModbusDriverLoader"
+simulated = "plc4py.drivers.simulated.SimulatedConnection:SimulatedDriverLoader"
 umas = "plc4py.drivers.umas.UmasConnection:UmasDriverLoader"
 
 [project.entry-points."plc4py.transports"]
