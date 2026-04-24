@@ -27,7 +27,7 @@ from plc4py.spi.messages.PlcRequest import TagBuilder
 
 class UmasTag(PlcTag):
     _ADDRESS_PATTERN: str = (
-        "^(?P<tag>[%a-zA-Z_.0-9]+):?(?P<dataType>[A-Z_]*)(\[(?P<elementNb>[0-9]*)\])?"
+        r"^(?P<tag>[%a-zA-Z_.0-9]+):?(?P<dataType>[A-Z_]*)(\[(?P<elementNb>[0-9]*)\])?"
     )
 
     _ADDRESS_COMPILED: Pattern[AnyStr] = re.compile(_ADDRESS_PATTERN)
@@ -56,14 +56,14 @@ class UmasTag(PlcTag):
             int(matcher.group("elementNb"))
             if "elementNb" in matcher.groupdict()
             and matcher.group("elementNb") is not None
-            and len(matcher.group("elementNb")) is not 0
+            and len(matcher.group("elementNb")) != 0
             else 1
         )
         data_type = (
             matcher.group("dataType")
             if "dataType" in matcher.groupdict()
             and matcher.group("dataType") is not None
-            and len(matcher.group("dataType")) is not 0
+            and len(matcher.group("dataType")) != 0
             else None
         )
         return cls(tag_name, quantity, data_type)
