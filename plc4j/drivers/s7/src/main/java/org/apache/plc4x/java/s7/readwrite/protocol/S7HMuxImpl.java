@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -130,9 +131,18 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf outBB, List<Object> list) {
         if ((embedCtx == null) && (ctx.channel() instanceof EmbeddedChannel)) embedCtx = ctx;
-        if ((tcpChannel != null) && (embedCtx == ctx)) {
-            tcpChannel.writeAndFlush(outBB.copy());
+
+        if (ctx == embedCtx) {
+            if (tcpChannel != null) {
+                tcpChannel.writeAndFlush(outBB.copy());
+            }
+            // Netty requires at least one element in the out list, but nothing consumes
+            // the EmbeddedChannel's outbound queue. Use the EMPTY_BUFFER singleton instead
+            // of a copied ByteBuf to avoid leaking direct memory (see issue #2248).
+            list.add(Unpooled.EMPTY_BUFFER);
+            return;
         }
+
         list.add(outBB.copy());
     }
 
