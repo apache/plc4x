@@ -771,70 +771,75 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
             ByteBuf buffer = Unpooled.directBuffer(items.getItems().length * 2);
             ByteBuf rxBuffer = Unpooled.directBuffer(items.getItems().length * 2);
-            buffer.writeBytes(items.getItems());
-
-            if (itemparameter.getLastDataUnit() == 1) {
-                short loop = 0xff;
-                CompletableFuture<S7MessageUserData> loopFuture;
-                S7MessageUserData msg;
-                S7ParameterUserDataItemCPUFunctions loopParameter;
-                S7PayloadUserDataItemCpuFunctionAlarmQueryResponse loopPayload = null;
-
-                do {
-                    loopFuture = reassembledAlarmEvents(itemparameter.getSequenceNumber());
-
-                    try {
-                        msg = loopFuture.get();
-                        if (msg != null) {
-                            loopParameter = (S7ParameterUserDataItemCPUFunctions) ((S7ParameterUserData) msg.getParameter()).getItems().get(0);
-                            loopPayload = (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) ((S7PayloadUserData) msg.getPayload()).getItems().get(0);
-                            buffer.writeBytes(loopPayload.getItems());
-                            loop = loopParameter.getLastDataUnit();
-                        } else {
-                            loop = 0x00;
-                        }
-                    } catch (Exception ex) {
-                        logger.warn(ex.toString());
-                    }
-                } while (loop > 0x00);
-
-                rxBuffer.writeByte(loopPayload.getReturnCode().getValue());
-                rxBuffer.writeByte(loopPayload.getTransportSize().getValue());
-                rxBuffer.writeShort(loopPayload.getDataLength());
-                rxBuffer.writeBytes(buffer);
-
-            } else {
-                rxBuffer.writeByte(payloadItems.get(0).getReturnCode().getValue());
-                rxBuffer.writeByte(payloadItems.get(0).getTransportSize().getValue());
-                rxBuffer.writeShort(payloadItems.get(0).getDataLength());
-                rxBuffer.writeBytes(buffer);
-            }
-
-            ReadBuffer readBuffer = new ReadBufferByteBased(ByteBufUtil.getBytes(rxBuffer));
-
             try {
-                short cpuSubFunction;
-                if (s7DriverContext.getControllerType() == ControllerType.S7_300) {
-                    cpuSubFunction = 0x13;
+                buffer.writeBytes(items.getItems());
+
+                if (itemparameter.getLastDataUnit() == 1) {
+                    short loop = 0xff;
+                    CompletableFuture<S7MessageUserData> loopFuture;
+                    S7MessageUserData msg;
+                    S7ParameterUserDataItemCPUFunctions loopParameter;
+                    S7PayloadUserDataItemCpuFunctionAlarmQueryResponse loopPayload = null;
+
+                    do {
+                        loopFuture = reassembledAlarmEvents(itemparameter.getSequenceNumber());
+
+                        try {
+                            msg = loopFuture.get();
+                            if (msg != null) {
+                                loopParameter = (S7ParameterUserDataItemCPUFunctions) ((S7ParameterUserData) msg.getParameter()).getItems().get(0);
+                                loopPayload = (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) ((S7PayloadUserData) msg.getPayload()).getItems().get(0);
+                                buffer.writeBytes(loopPayload.getItems());
+                                loop = loopParameter.getLastDataUnit();
+                            } else {
+                                loop = 0x00;
+                            }
+                        } catch (Exception ex) {
+                            logger.warn(ex.toString());
+                        }
+                    } while (loop > 0x00);
+
+                    rxBuffer.writeByte(loopPayload.getReturnCode().getValue());
+                    rxBuffer.writeByte(loopPayload.getTransportSize().getValue());
+                    rxBuffer.writeShort(loopPayload.getDataLength());
+                    rxBuffer.writeBytes(buffer);
+
                 } else {
-                    cpuSubFunction = 0xf0;
+                    rxBuffer.writeByte(payloadItems.get(0).getReturnCode().getValue());
+                    rxBuffer.writeByte(payloadItems.get(0).getTransportSize().getValue());
+                    rxBuffer.writeShort(payloadItems.get(0).getDataLength());
+                    rxBuffer.writeBytes(buffer);
                 }
 
-                S7PayloadUserDataItem payloadItem =
-                    S7PayloadUserDataItem.staticParse(readBuffer,
-                        (byte) 0x04,
-                        (byte) 0x00,
-                        cpuSubFunction);
+                ReadBuffer readBuffer = new ReadBufferByteBased(ByteBufUtil.getBytes(rxBuffer));
 
-                // TODO: The eventQueue is only drained in the S7ProtocolEventLogic.ObjectProcessor and here only messages of type S7Event are processed, so S7PayloadUserDataItem elements will just be ignored.
-                //eventQueue.add(payloadItem);
-            } catch (Exception ex) {
-                logger.info(ex.toString());
+                try {
+                    short cpuSubFunction;
+                    if (s7DriverContext.getControllerType() == ControllerType.S7_300) {
+                        cpuSubFunction = 0x13;
+                    } else {
+                        cpuSubFunction = 0xf0;
+                    }
+
+                    S7PayloadUserDataItem payloadItem =
+                        S7PayloadUserDataItem.staticParse(readBuffer,
+                            (byte) 0x04,
+                            (byte) 0x00,
+                            cpuSubFunction);
+
+                    // TODO: The eventQueue is only drained in the S7ProtocolEventLogic.ObjectProcessor and here only messages of type S7Event are processed, so S7PayloadUserDataItem elements will just be ignored.
+                    //eventQueue.add(payloadItem);
+                } catch (Exception ex) {
+                    logger.info(ex.toString());
+                }
+
+                PlcResponseCode resCode = (items.getReturnCode() == DataTransportErrorCode.OK) ? PlcResponseCode.OK : PlcResponseCode.INTERNAL_ERROR;
+                values.put(strTagName, new DefaultPlcResponseItem<>(resCode, null));
+                return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
+            } finally {
+                buffer.release();
+                rxBuffer.release();
             }
-
-            PlcResponseCode resCode = (items.getReturnCode() == DataTransportErrorCode.OK) ? PlcResponseCode.OK : PlcResponseCode.INTERNAL_ERROR;
-            values.put(strTagName, new DefaultPlcResponseItem<>(resCode, null));
-            return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
         } else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCyclicServicesSubscribeResponse) {
             //S7ParameterUserData parameter = (S7ParameterUserData) responseMessage.getParameter();  
