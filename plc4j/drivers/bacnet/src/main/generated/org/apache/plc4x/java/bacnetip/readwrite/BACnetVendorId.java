@@ -1082,7 +1082,7 @@ public enum BACnetVendorId {
   BREATHING_BUILDINGS((int) 936, (int) 936, (String) "Breathing Buildings"),
   EWONSA((int) 937, (int) 937, (String) "eWON SA"),
   CAV_UFF_GIACOMO_CIMBERIO_SPA((int) 938, (int) 938, (String) "Cav. Uff. Giacomo Cimberio S.p.A"),
-  PKE_ELECTRONICSAG((int) 939, (int) 939, (String) "PKE Electronics AG"),
+  PKE_SOFTWARE_SOLUTIONS_GMBH((int) 939, (int) 939, (String) "PKE Software Solutions GmbH"),
   ALLEN((int) 940, (int) 940, (String) "Allen"),
   KASTLE_SYSTEMS((int) 941, (int) 941, (String) "Kastle Systems"),
   LOGICAL_ELECTRO_MECHANICALEM_SYSTEMS_INC(
@@ -1848,6 +1848,16 @@ public enum BACnetVendorId {
   PENTAIR_RESIDENTIAL_FILTRATION((int) 1609, (int) 1609, (String) "Pentair Residential Filtration"),
   VENAERA_INC((int) 1610, (int) 1610, (String) "Venaera Inc."),
   HUMI_PURE((int) 1611, (int) 1611, (String) "HumiPure"),
+  HUMBER_HORIZONS((int) 1612, (int) 1612, (String) "Humber Horizons"),
+  AUTOMATED_FACILITY_SYSTEMS_INC(
+      (int) 1613, (int) 1613, (String) "Automated Facility Systems, Inc."),
+  SITE_SENSEAS((int) 1614, (int) 1614, (String) "SiteSense AS"),
+  ECOIEURL((int) 1615, (int) 1615, (String) "Eco-2i EURL"),
+  DONIX_EMBEDDED_SYSTEMSCC((int) 1616, (int) 1616, (String) "Donix Embedded Systems CC"),
+  GPS_AIR((int) 1617, (int) 1617, (String) "GPS Air"),
+  QINGPING_TECHNOLOGY_BEIJING_CO_LTD(
+      (int) 1619, (int) 1619, (String) "Qingping Technology Beijing Co., Ltd."),
+  P_SSYSTEC_GMBH((int) 1620, (int) 1620, (String) "PSsystec GmbH"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

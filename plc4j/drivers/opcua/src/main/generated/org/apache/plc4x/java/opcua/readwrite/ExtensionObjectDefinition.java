@@ -118,6 +118,8 @@ public abstract class ExtensionObjectDefinition implements Message {
     } else if (EvaluationHelper.equals(extensionId, (int) 23500)) {
       builder =
           CurrencyUnitType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23905)) {
+      builder = NumberRange.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
     } else if (EvaluationHelper.equals(extensionId, (int) 32436)) {
       builder =
           AnnotationDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
@@ -497,6 +499,17 @@ public abstract class ExtensionObjectDefinition implements Message {
     } else if (EvaluationHelper.equals(extensionId, (int) 23470)) {
       builder =
           AliasNameDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 24053)) {
+      builder =
+          AliasNameVerboseDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 24054)) {
+      builder =
+          AliasCategoryUpdateDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 24055)) {
+      builder =
+          AliasUpdateDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
     } else if (EvaluationHelper.equals(extensionId, (int) 24283)) {
       builder =
           UserManagementDataType.staticParseExtensionObjectDefinitionBuilder(

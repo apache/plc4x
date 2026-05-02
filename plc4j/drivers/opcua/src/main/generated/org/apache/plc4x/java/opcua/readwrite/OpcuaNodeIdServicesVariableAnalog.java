@@ -26,7 +26,9 @@ import java.util.Map;
 public enum OpcuaNodeIdServicesVariableAnalog {
   AnalogItemType_EURange((int) 2369L),
   AnalogUnitType_EngineeringUnits((int) 17502L),
-  AnalogUnitRangeType_EngineeringUnits((int) 17575L);
+  AnalogUnitRangeType_EngineeringUnits((int) 17575L),
+  AnalogNumberItemType_EUNumberRange((int) 23907L),
+  AnalogNumberUnitRangeType_EUNumberRange((int) 23927L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableAnalog> map;
 
   static {

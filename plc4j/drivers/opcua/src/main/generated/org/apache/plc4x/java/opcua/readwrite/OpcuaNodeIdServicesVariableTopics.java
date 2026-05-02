@@ -26,6 +26,12 @@ import java.util.Map;
 public enum OpcuaNodeIdServicesVariableTopics {
   Topics_FindAlias_InputArguments((int) 23495L),
   Topics_FindAlias_OutputArguments((int) 23496L),
+  Topics_FindAliasVerbose_InputArguments((int) 24073L),
+  Topics_FindAliasVerbose_OutputArguments((int) 24074L),
+  Topics_AddAliasesToCategory_InputArguments((int) 24076L),
+  Topics_AddAliasesToCategory_OutputArguments((int) 24077L),
+  Topics_DeleteAliasesFromCategory_InputArguments((int) 24079L),
+  Topics_DeleteAliasesFromCategory_OutputArguments((int) 24080L),
   Topics_LastChange((int) 32856L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableTopics> map;
 

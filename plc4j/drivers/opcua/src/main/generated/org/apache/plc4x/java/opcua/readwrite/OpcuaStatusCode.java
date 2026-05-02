@@ -98,6 +98,8 @@ public enum OpcuaStatusCode {
   BadNotReadable((long) 0x803A0000L),
   BadNotWritable((long) 0x803B0000L),
   BadOutOfRange((long) 0x803C0000L),
+  UncertainOverRange((long) 0x40F20000L),
+  UncertainUnderRange((long) 0x40F30000L),
   BadNotSupported((long) 0x803D0000L),
   BadNotFound((long) 0x803E0000L),
   BadObjectDeleted((long) 0x803F0000L),

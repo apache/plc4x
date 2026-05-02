@@ -25,7 +25,9 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableFind {
   FindAliasMethodType_InputArguments((int) 23466L),
-  FindAliasMethodType_OutputArguments((int) 23467L);
+  FindAliasMethodType_OutputArguments((int) 23467L),
+  FindAliasVerboseMethodType_InputArguments((int) 24015L),
+  FindAliasVerboseMethodType_OutputArguments((int) 24024L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableFind> map;
 
   static {

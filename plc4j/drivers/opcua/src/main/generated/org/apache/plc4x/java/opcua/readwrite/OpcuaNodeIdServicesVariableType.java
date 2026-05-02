@@ -83,6 +83,8 @@ public enum OpcuaNodeIdServicesVariableType {
   MultiStateDictionaryEntryDiscreteBaseType((int) 19077L),
   MultiStateDictionaryEntryDiscreteType((int) 19084L),
   PubSubDiagnosticsCounterType((int) 19725L),
+  AnalogNumberItemType((int) 23906L),
+  AnalogNumberUnitRangeType((int) 23918L),
   AlarmStateVariableType((int) 32244L),
   BitFieldType((int) 32431L),
   ReferenceDescriptionVariableType((int) 32657L);

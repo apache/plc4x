@@ -29,7 +29,8 @@ public enum OpcuaNodeIdServicesVariableLog {
   LogObjectType_MaxRecords((int) 19356L),
   LogObjectType_MaxStorageDuration((int) 19357L),
   LogObjectType_MinimumSeverity((int) 19744L),
-  LogRecordMask_OptionSetValues((int) 19750L);
+  LogRecordMask_OptionSetValues((int) 19750L),
+  LogObjectType_ReleaseContinuationPoint_InputArguments((int) 24373L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableLog> map;
 
   static {

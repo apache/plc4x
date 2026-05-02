@@ -1546,8 +1546,12 @@
     ['791' M_HIKVISION ['852', '"HIKVISION"']]
     ['792' M_WIREN_BOARD ['853', '"Wiren Board"']]
     ['793' M_DEGSON_TECHNOLOGY_CO_LTD_ ['854', '"DEGSON TECHNOLOGY CO LTD."']]
-    ['794' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['795' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['794' M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_ ['855', '"Shenzhen Hongshengxu Intelligent Tech Co., Ltd."']]
+    ['795' M_ITQAN_SMART ['856', '"ITQAN SMART"']]
+    ['796' M_YUNCH ['857', '"YUNCH"']]
+    ['797' M_LUMI_VIETNAM ['858', '"Lumi Vietnam"']]
+    ['798' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['799' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
