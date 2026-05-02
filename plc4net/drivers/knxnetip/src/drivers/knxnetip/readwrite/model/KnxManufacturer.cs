@@ -819,8 +819,12 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_HIKVISION = 791,
         M_WIREN_BOARD = 792,
         M_DEGSON_TECHNOLOGY_CO_LTD_ = 793,
-        M_ABB___RESERVED = 794,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 795,
+        M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_ = 794,
+        M_ITQAN_SMART = 795,
+        M_YUNCH = 796,
+        M_LUMI_VIETNAM = 797,
+        M_ABB___RESERVED = 798,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 799,
     }
 
     public static class KnxManufacturerInfo
@@ -3146,10 +3150,22 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_DEGSON_TECHNOLOGY_CO_LTD_: { /* '793' */
                     return 854;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '794' */
+                case KnxManufacturer.M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_: { /* '794' */
+                    return 855;
+                }
+                case KnxManufacturer.M_ITQAN_SMART: { /* '795' */
+                    return 856;
+                }
+                case KnxManufacturer.M_YUNCH: { /* '796' */
+                    return 857;
+                }
+                case KnxManufacturer.M_LUMI_VIETNAM: { /* '797' */
+                    return 858;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '798' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '795' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '799' */
                     return 43959;
                 }
                 case KnxManufacturer.M_HAGER_ELECTRO: { /* '8' */
@@ -5544,10 +5560,22 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_DEGSON_TECHNOLOGY_CO_LTD_: { /* '793' */
                     return "DEGSON TECHNOLOGY CO LTD.";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '794' */
+                case KnxManufacturer.M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_: { /* '794' */
+                    return "Shenzhen Hongshengxu Intelligent Tech Co., Ltd.";
+                }
+                case KnxManufacturer.M_ITQAN_SMART: { /* '795' */
+                    return "ITQAN SMART";
+                }
+                case KnxManufacturer.M_YUNCH: { /* '796' */
+                    return "YUNCH";
+                }
+                case KnxManufacturer.M_LUMI_VIETNAM: { /* '797' */
+                    return "Lumi Vietnam";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '798' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '795' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '799' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_HAGER_ELECTRO: { /* '8' */
