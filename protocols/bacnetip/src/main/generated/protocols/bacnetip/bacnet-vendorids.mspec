@@ -1631,6 +1631,7 @@
   ['1617' GPS_AIR ['1617', '"GPS Air"']]
   ['1619' QINGPING_TECHNOLOGY_BEIJING_CO_LTD ['1619', '"Qingping Technology Beijing Co., Ltd."']]
   ['1620' P_SSYSTEC_GMBH ['1620', '"PSsystec GmbH"']]
+  ['1621' ES_OTOMASYON_SAN_TIC_LTD_STI ['1621', '"3ES Otomasyon San. Tic. Ltd. Sti."']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

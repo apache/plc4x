@@ -1550,8 +1550,9 @@
     ['795' M_ITQAN_SMART ['856', '"ITQAN SMART"']]
     ['796' M_YUNCH ['857', '"YUNCH"']]
     ['797' M_LUMI_VIETNAM ['858', '"Lumi Vietnam"']]
-    ['798' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['799' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['798' M_ARCOLA_AI_LIMITED ['859', '"Arcola AI Limited"']]
+    ['799' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['800' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

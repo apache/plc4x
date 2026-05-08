@@ -841,8 +841,9 @@ const (
 	KnxManufacturer_M_ITQAN_SMART                                        KnxManufacturer = 795
 	KnxManufacturer_M_YUNCH                                              KnxManufacturer = 796
 	KnxManufacturer_M_LUMI_VIETNAM                                       KnxManufacturer = 797
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 798
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 799
+	KnxManufacturer_M_ARCOLA_AI_LIMITED                                  KnxManufacturer = 798
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 799
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 800
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1648,6 +1649,7 @@ func init() {
 		KnxManufacturer_M_ITQAN_SMART,
 		KnxManufacturer_M_YUNCH,
 		KnxManufacturer_M_LUMI_VIETNAM,
+		KnxManufacturer_M_ARCOLA_AI_LIMITED,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4761,11 +4763,11 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 798:
 		{ /* '798' */
-			return 43954
+			return 859
 		}
 	case 799:
 		{ /* '799' */
-			return 43959
+			return 43954
 		}
 	case 8:
 		{ /* '8' */
@@ -4774,6 +4776,10 @@ func (e KnxManufacturer) Number() uint16 {
 	case 80:
 		{ /* '80' */
 			return 119
+		}
+	case 800:
+		{ /* '800' */
+			return 43959
 		}
 	case 81:
 		{ /* '81' */
@@ -7979,11 +7985,11 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 798:
 		{ /* '798' */
-			return "ABB - reserved"
+			return "Arcola AI Limited"
 		}
 	case 799:
 		{ /* '799' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "ABB - reserved"
 		}
 	case 8:
 		{ /* '8' */
@@ -7992,6 +7998,10 @@ func (e KnxManufacturer) Name() string {
 	case 80:
 		{ /* '80' */
 			return "Intesis"
+		}
+	case 800:
+		{ /* '800' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 81:
 		{ /* '81' */
@@ -9643,13 +9653,15 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 797:
 		return KnxManufacturer_M_LUMI_VIETNAM, true
 	case 798:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_ARCOLA_AI_LIMITED, true
 	case 799:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case 8:
 		return KnxManufacturer_M_HAGER_ELECTRO, true
 	case 80:
 		return KnxManufacturer_M_INTESIS, true
+	case 800:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 81:
 		return KnxManufacturer_M_HERHOLDT_CONTROLS_SRL, true
 	case 82:
@@ -11248,14 +11260,16 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_YUNCH, true
 	case "M_LUMI_VIETNAM":
 		return KnxManufacturer_M_LUMI_VIETNAM, true
+	case "M_ARCOLA_AI_LIMITED":
+		return KnxManufacturer_M_ARCOLA_AI_LIMITED, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
-	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_HAGER_ELECTRO":
 		return KnxManufacturer_M_HAGER_ELECTRO, true
 	case "M_INTESIS":
 		return KnxManufacturer_M_INTESIS, true
+	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_HERHOLDT_CONTROLS_SRL":
 		return KnxManufacturer_M_HERHOLDT_CONTROLS_SRL, true
 	case "M_NIKO_ZUBLIN":
@@ -12926,14 +12940,16 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_YUNCH"
 	case KnxManufacturer_M_LUMI_VIETNAM:
 		return "M_LUMI_VIETNAM"
+	case KnxManufacturer_M_ARCOLA_AI_LIMITED:
+		return "M_ARCOLA_AI_LIMITED"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
-	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
-		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_HAGER_ELECTRO:
 		return "M_HAGER_ELECTRO"
 	case KnxManufacturer_M_INTESIS:
 		return "M_INTESIS"
+	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
+		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_HERHOLDT_CONTROLS_SRL:
 		return "M_HERHOLDT_CONTROLS_SRL"
 	case KnxManufacturer_M_NIKO_ZUBLIN:

@@ -1653,6 +1653,7 @@ const (
 	BACnetVendorId_GPS_AIR                                                                      BACnetVendorId = 1617
 	BACnetVendorId_QINGPING_TECHNOLOGY_BEIJING_CO_LTD                                           BACnetVendorId = 1619
 	BACnetVendorId_P_SSYSTEC_GMBH                                                               BACnetVendorId = 1620
+	BACnetVendorId_ES_OTOMASYON_SAN_TIC_LTD_STI                                                 BACnetVendorId = 1621
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3271,6 +3272,7 @@ func init() {
 		BACnetVendorId_GPS_AIR,
 		BACnetVendorId_QINGPING_TECHNOLOGY_BEIJING_CO_LTD,
 		BACnetVendorId_P_SSYSTEC_GMBH,
+		BACnetVendorId_ES_OTOMASYON_SAN_TIC_LTD_STI,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -6032,6 +6034,10 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1620:
 		{ /* '1620' */
 			return 1620
+		}
+	case 1621:
+		{ /* '1621' */
+			return 1621
 		}
 	case 163:
 		{ /* '163' */
@@ -12495,6 +12501,10 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1620' */
 			return "PSsystec GmbH"
 		}
+	case 1621:
+		{ /* '1621' */
+			return "3ES Otomasyon San. Tic. Ltd. Sti."
+		}
 	case 163:
 		{ /* '163' */
 			return "SysMik GmbH Dresden"
@@ -17578,6 +17588,8 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ASI_CONTROLS, true
 	case 1620:
 		return BACnetVendorId_P_SSYSTEC_GMBH, true
+	case 1621:
+		return BACnetVendorId_ES_OTOMASYON_SAN_TIC_LTD_STI, true
 	case 163:
 		return BACnetVendorId_SYS_MIK_GMBH_DRESDEN, true
 	case 164:
@@ -20806,6 +20818,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ASI_CONTROLS, true
 	case "P_SSYSTEC_GMBH":
 		return BACnetVendorId_P_SSYSTEC_GMBH, true
+	case "ES_OTOMASYON_SAN_TIC_LTD_STI":
+		return BACnetVendorId_ES_OTOMASYON_SAN_TIC_LTD_STI, true
 	case "SYS_MIK_GMBH_DRESDEN":
 		return BACnetVendorId_SYS_MIK_GMBH_DRESDEN, true
 	case "HSC_REGELUNGSTECHNIK_GMBH":
@@ -24106,6 +24120,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "ASI_CONTROLS"
 	case BACnetVendorId_P_SSYSTEC_GMBH:
 		return "P_SSYSTEC_GMBH"
+	case BACnetVendorId_ES_OTOMASYON_SAN_TIC_LTD_STI:
+		return "ES_OTOMASYON_SAN_TIC_LTD_STI"
 	case BACnetVendorId_SYS_MIK_GMBH_DRESDEN:
 		return "SYS_MIK_GMBH_DRESDEN"
 	case BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH:

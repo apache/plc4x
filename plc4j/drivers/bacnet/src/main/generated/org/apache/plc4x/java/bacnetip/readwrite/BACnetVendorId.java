@@ -1858,6 +1858,8 @@ public enum BACnetVendorId {
   QINGPING_TECHNOLOGY_BEIJING_CO_LTD(
       (int) 1619, (int) 1619, (String) "Qingping Technology Beijing Co., Ltd."),
   P_SSYSTEC_GMBH((int) 1620, (int) 1620, (String) "PSsystec GmbH"),
+  ES_OTOMASYON_SAN_TIC_LTD_STI(
+      (int) 1621, (int) 1621, (String) "3ES Otomasyon San. Tic. Ltd. Sti."),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
