@@ -20,10 +20,13 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface PlcBrowseItem {
 
@@ -48,9 +51,19 @@ public interface PlcBrowseItem {
     boolean isWritable();
 
     /**
-     * @return returns 'true' if we can subscribe this variable.
+     * @return the set of subscription types this variable supports. An empty set means the
+     *         variable is not subscribable. Implementations must never return {@code null}.
      */
-    boolean isSubscribable();
+    default Set<PlcSubscriptionType> getSupportedSubscriptionTypes() {
+        return Collections.emptySet();
+    }
+
+    /**
+     * @return returns 'true' if we can subscribe this variable in any subscription mode.
+     */
+    default boolean isSubscribable() {
+        return !getSupportedSubscriptionTypes().isEmpty();
+    }
 
     /**
      * @return returns 'true' if we can publish this variable.
