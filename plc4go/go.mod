@@ -37,8 +37,8 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
-	golang.org/x/net v0.53.0
-	golang.org/x/text v0.36.0
+	golang.org/x/net v0.54.0
+	golang.org/x/text v0.37.0
 	golang.org/x/tools v0.44.0
 )
 
@@ -81,8 +81,8 @@ require (
 	golang.org/x/exp v0.0.0-20260211191109-2735e65f0518 // indirect
 	golang.org/x/mod v0.35.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.43.0 // indirect
-	golang.org/x/term v0.42.0 // indirect
+	golang.org/x/sys v0.44.0 // indirect
+	golang.org/x/term v0.43.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/gotestsum v1.13.0 // indirect
 )
