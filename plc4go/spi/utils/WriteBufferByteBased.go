@@ -27,9 +27,12 @@ import (
 	"math/bits"
 	"regexp"
 	"strings"
+	"unicode/utf16"
 
 	"github.com/pkg/errors"
 )
+
+var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
 
 type WriteBufferByteBased interface {
 	WriteBuffer
@@ -224,37 +227,31 @@ func (wb *byteWriteBuffer) WriteBigFloat(_ string, bitLength uint8, value *big.F
 
 func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, value string, writerArgs ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
-	// TODO: make this a writer arg
-	var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
-	encoding := wb.ExtractEncoding(UpcastWriterArgs(writerArgs...)...)
-	encoding = nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(encoding), "")
-	remainingBits := int64(bitLength) // we use int64 otherwise the subtraction below flips
-	// TODO: the implementation completely ignores encoding for now. Fix this
+	encoding := nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(wb.ExtractEncoding(UpcastWriterArgs(writerArgs...)...)), "")
+	remainingBits := int64(bitLength) // int64 so subtraction doesn't wrap on underflow
 	switch encoding {
 	case "UTF8":
-		for _, theByte := range []byte(value) {
-			wb.bits.TryWriteByte(theByte)
+		for _, b := range []byte(value) {
+			wb.bits.TryWriteByte(b)
 			remainingBits -= 8
 		}
 	case "UTF16":
 		fallthrough
 	case "UTF16BE":
-		// TODO: Really implement 2-byte characters
-		for _, theByte := range []byte(value) {
-			wb.bits.TryWriteByte(0x00)
-			wb.bits.TryWriteByte(theByte)
+		for _, u := range utf16.Encode([]rune(value)) {
+			wb.bits.TryWriteByte(byte(u >> 8))
+			wb.bits.TryWriteByte(byte(u))
 			remainingBits -= 16
 		}
 	case "UTF16LE":
-		// TODO: Really implement 2-byte characters
-		for _, theByte := range []byte(value) {
-			wb.bits.TryWriteByte(theByte)
-			wb.bits.TryWriteByte(0x00)
+		for _, u := range utf16.Encode([]rune(value)) {
+			wb.bits.TryWriteByte(byte(u))
+			wb.bits.TryWriteByte(byte(u >> 8))
 			remainingBits -= 16
 		}
 	}
-	// Fill up with 0-bytes
-	for i := 0; i < int(remainingBits/8); i++ {
+	// Fill remaining allocated space with zero bytes
+	for range remainingBits / 8 {
 		wb.bits.TryWriteByte(0x00)
 	}
 	return wb.bits.GetTryError()

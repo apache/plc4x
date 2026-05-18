@@ -23,6 +23,7 @@ import (
 	"encoding/binary"
 	"math"
 	"math/big"
+	"math/bits"
 
 	"github.com/pkg/errors"
 )
@@ -145,54 +146,39 @@ func (rb *byteReadBuffer) ReadUint8(_ string, bitLength uint8, _ ...WithReaderAr
 	return uint8(res), nil
 }
 
-func (rb *byteReadBuffer) ReadUint16(logicalName string, bitLength uint8, _ ...WithReaderArgs) (uint16, error) {
-	if rb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		bigInt, err := rb.ReadBigInt(logicalName, uint64(bitLength))
-		if err != nil {
-			return 0, err
-		}
-		return uint16(bigInt.Uint64()), nil
-	}
+func (rb *byteReadBuffer) ReadUint16(_ string, bitLength uint8, _ ...WithReaderArgs) (uint16, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
 	rb.pos += uint64(bitLength)
+	if rb.byteOrder == binary.LittleEndian {
+		return uint16(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
+	}
 	return uint16(res), nil
 }
 
-func (rb *byteReadBuffer) ReadUint32(logicalName string, bitLength uint8, _ ...WithReaderArgs) (uint32, error) {
-	if rb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		bigInt, err := rb.ReadBigInt(logicalName, uint64(bitLength))
-		if err != nil {
-			return 0, err
-		}
-		return uint32(bigInt.Uint64()), nil
-	}
+func (rb *byteReadBuffer) ReadUint32(_ string, bitLength uint8, _ ...WithReaderArgs) (uint32, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
 	rb.pos += uint64(bitLength)
+	if rb.byteOrder == binary.LittleEndian {
+		return uint32(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
+	}
 	return uint32(res), nil
 }
 
-func (rb *byteReadBuffer) ReadUint64(logicalName string, bitLength uint8, _ ...WithReaderArgs) (uint64, error) {
-	if rb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		bigInt, err := rb.ReadBigInt(logicalName, uint64(bitLength))
-		if err != nil {
-			return 0, err
-		}
-		return bigInt.Uint64(), nil
-	}
+func (rb *byteReadBuffer) ReadUint64(_ string, bitLength uint8, _ ...WithReaderArgs) (uint64, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
 	rb.pos += uint64(bitLength)
+	if rb.byteOrder == binary.LittleEndian {
+		return bits.ReverseBytes64(res) >> (64 - bitLength), nil
+	}
 	return res, nil
 }
 
@@ -205,59 +191,43 @@ func (rb *byteReadBuffer) ReadInt8(_ string, bitLength uint8, _ ...WithReaderArg
 	return int8(res), nil
 }
 
-func (rb *byteReadBuffer) ReadInt16(logicalName string, bitLength uint8, _ ...WithReaderArgs) (int16, error) {
-	if rb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		bigInt, err := rb.ReadBigInt(logicalName, uint64(bitLength))
-		if err != nil {
-			return 0, err
-		}
-		return int16(bigInt.Int64()), nil
-	}
+func (rb *byteReadBuffer) ReadInt16(_ string, bitLength uint8, _ ...WithReaderArgs) (int16, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
 	rb.pos += uint64(bitLength)
+	if rb.byteOrder == binary.LittleEndian {
+		return int16(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
+	}
 	return int16(res), nil
 }
 
-func (rb *byteReadBuffer) ReadInt32(logicalName string, bitLength uint8, _ ...WithReaderArgs) (int32, error) {
-	if rb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		bigInt, err := rb.ReadBigInt(logicalName, uint64(bitLength))
-		if err != nil {
-			return 0, err
-		}
-		return int32(bigInt.Int64()), nil
-	}
+func (rb *byteReadBuffer) ReadInt32(_ string, bitLength uint8, _ ...WithReaderArgs) (int32, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
 	rb.pos += uint64(bitLength)
+	if rb.byteOrder == binary.LittleEndian {
+		return int32(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
+	}
 	return int32(res), nil
 }
 
-func (rb *byteReadBuffer) ReadInt64(logicalName string, bitLength uint8, _ ...WithReaderArgs) (int64, error) {
-	if rb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		bigInt, err := rb.ReadBigInt(logicalName, uint64(bitLength))
-		if err != nil {
-			return 0, err
-		}
-		return bigInt.Int64(), nil
-	}
+func (rb *byteReadBuffer) ReadInt64(_ string, bitLength uint8, _ ...WithReaderArgs) (int64, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
 	rb.pos += uint64(bitLength)
+	if rb.byteOrder == binary.LittleEndian {
+		return int64(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
+	}
 	return int64(res), nil
 }
 
 func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReaderArgs) (*big.Int, error) {
-	// TODO: highly experimental remove this comment when tested or verified
 	rawBytes := make([]byte, 0, (bitLength+7)/8)
 
 	fullBytes := bitLength / 8
