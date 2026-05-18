@@ -144,8 +144,8 @@ func (t *TNetwork2) Run(timeLimit time.Duration) {
 
 	// check for success
 	success, failed := t.CheckForSuccess()
-	assert.True(t.t, success)
-	assert.False(t.t, failed)
+	assert.True(t.t, success, "should have succeeded")
+	assert.False(t.t, failed, "should not have failed")
 }
 
 func TestNet2(t *testing.T) {

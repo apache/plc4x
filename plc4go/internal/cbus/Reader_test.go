@@ -334,8 +334,8 @@ func TestReader_readSync(t *testing.T) {
 					response := result.GetResponse()
 					assert.NotNil(t, response)
 					value := response.GetValue("blub")
-					assert.NotNil(t, value)
-					require.True(t, value.IsString())
+					require.NotNil(t, value)
+					assert.True(t, value.IsString())
 					assert.Equal(t, "PC_CNIED", value.GetString())
 				}
 				return true
