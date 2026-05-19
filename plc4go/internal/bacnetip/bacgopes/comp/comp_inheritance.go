@@ -22,7 +22,7 @@ package comp
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 var inheritanceDebug = func(_ string, _ ...any) {}

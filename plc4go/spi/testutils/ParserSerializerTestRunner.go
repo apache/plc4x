@@ -30,9 +30,9 @@ import (
 	"testing"
 	"testing/synctest"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils/xmldom"
 	"github.com/apache/plc4x/plc4go/spi/utils"

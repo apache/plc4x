@@ -28,7 +28,7 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type WriteBufferJsonBased interface {

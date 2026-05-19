@@ -26,8 +26,9 @@ import (
 	"math"
 	"strings"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 // DefaultWidth defaults to a default screen dumps size

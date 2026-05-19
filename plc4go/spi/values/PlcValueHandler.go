@@ -20,7 +20,6 @@
 package values
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -31,6 +30,7 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 )
 

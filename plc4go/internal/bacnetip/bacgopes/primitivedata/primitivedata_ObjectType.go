@@ -24,9 +24,8 @@ import (
 	"maps"
 	"strconv"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 // ObjectTypeContract provides a set of functions which can be overwritten by a sub struct

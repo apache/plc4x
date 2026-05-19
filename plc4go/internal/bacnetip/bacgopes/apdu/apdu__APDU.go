@@ -23,11 +23,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 // _APDU masks the Encode() and Decode() functions of the APDU

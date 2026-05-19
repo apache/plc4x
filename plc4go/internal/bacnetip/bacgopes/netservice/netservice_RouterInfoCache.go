@@ -22,10 +22,10 @@ package netservice
 import (
 	"maps"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type RouterStatus uint8

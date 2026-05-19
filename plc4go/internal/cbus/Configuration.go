@@ -23,10 +23,11 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 //go:generate go tool plc4xGenerator -type=Configuration

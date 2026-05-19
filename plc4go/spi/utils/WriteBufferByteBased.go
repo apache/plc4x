@@ -29,7 +29,7 @@ import (
 	"strings"
 	"unicode/utf16"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)

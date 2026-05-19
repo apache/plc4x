@@ -31,7 +31,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 func generateCertificate() (*CertificateKeyPair, error) {

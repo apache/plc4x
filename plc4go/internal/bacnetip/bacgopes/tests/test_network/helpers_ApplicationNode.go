@@ -22,7 +22,6 @@ package test_network
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
@@ -35,6 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 //go:generate go tool plc4xGenerator -type=ApplicationNode -prefix=helpers_

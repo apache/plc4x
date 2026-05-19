@@ -20,10 +20,9 @@
 package utils
 
 import (
-	stdErrors "errors"
 	"io"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 // ReadBitBuffer reads bits from a fixed byte slice in big-endian bit order.
@@ -197,7 +196,7 @@ func (w *WriteBitBuffer) WriteBits(val uint64, n uint8) error {
 // TryWriteByte writes a byte, accumulating any error into GetTryError.
 func (w *WriteBitBuffer) TryWriteByte(b byte) {
 	if err := w.WriteBits(uint64(b), 8); err != nil && w.tryError == nil {
-		w.tryError = stdErrors.Join(w.tryError, err)
+		w.tryError = errors.Join(w.tryError, err)
 	}
 }
 

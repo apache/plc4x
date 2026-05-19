@@ -126,18 +126,18 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			// Array Field (${arrayField.name})
                         <#if arrayElementType.isByteBased()>
 							<#if !field.isCountArrayField() && !field.isLengthArrayField()>
-			return nil, errors.Wrap(_${arrayField.name}Err, "Array fields of type byte only support 'count' and 'length' loop-types.")<@emitImport import="github.com/pkg/errors" />
+			return nil, errors.Wrap(_${arrayField.name}Err, "Array fields of type byte only support 'count' and 'length' loop-types.")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 							</#if>
 			${arrayField.name}, _${arrayField.name}Err := readBuffer.ReadByteArray("${arrayField.name}", int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}))<#if arrayField.loopExpression.contains("CEIL")><@emitImport import="math" /></#if>
 			if _${arrayField.name}Err != nil {
-				return nil, errors.Wrap(_${arrayField.name}Err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				return nil, errors.Wrap(_${arrayField.name}Err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
                         <#else>
 			var ${arrayField.name} []api.PlcValue
 			for i := 0; i < int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}); i++ {
 				_item, _itemErr := <#if arrayElementType.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.name, arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>Complex type array in data-io parsing currently not implemented</#if>
 				if _itemErr != nil {
-					return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")<@emitImport import="github.com/pkg/errors" />
+					return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 				}
 				${arrayField.name} = append(${arrayField.name}, ${helper.getPlcValueTypeForTypeReference(arrayElementType)}(_item))
 			}
@@ -152,7 +152,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			// Manual Field (${manualField.name})
 			${manualField.name}, _${manualField.name}Err := ${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)}
 			if _${manualField.name}Err != nil {
-				return nil, errors.Wrap(_${manualField.name}Err, "Error parsing '${manualField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				return nil, errors.Wrap(_${manualField.name}Err, "Error parsing '${manualField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					<#if manualField.name == "value">
 						<#assign valueDefined=true>
@@ -163,7 +163,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 			// Reserved Field (Just skip the bytes)
 			if _, _err := ${helper.getReadBufferReadMethodCall("reserved", reservedField.type.asSimpleTypeReference().orElseThrow(), reservedField)}; _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing reserved field")<@emitImport import="github.com/pkg/errors" />
+				return nil, errors.Wrap(_err, "Error parsing reserved field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					<#break>
 				<#case "simple">
@@ -211,7 +211,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			)
 			|| (simpleField.name == "value")>${simpleField.name}<#else>_</#if>, _${simpleField.name}Err := <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Parse(io<#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
 			if _${simpleField.name}Err != nil {
-				return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					<#if case.name == "Struct">
 			_map["${case.name}"] = ${helper.getPlcValueTypeForTypeReference(simpleField.type)}(${simpleField.name})
@@ -302,7 +302,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	</#list>
 	}
     // TODO: add more info which type it is actually
-	return nil, errors.New("unsupported type")<@emitImport import="github.com/pkg/errors" />
+	return nil, errors.New("unsupported type")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 }
 
 func ${type.name}Serialize(value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) ([]byte, error) {
@@ -387,7 +387,7 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 					</#if>
 				_itemErr := <#if arrayElementType.isSimpleTypeReference()>${helper.getWriteBufferWriteMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField.name + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayElementType)?cap_first + "()", arrayField)}<#else>Complex type array in data-io serialization currently not implemented</#if>
 				if _itemErr != nil {
-					return errors.Wrap(_itemErr, "Error serializing 'value' field")<@emitImport import="github.com/pkg/errors" />
+					return errors.Wrap(_itemErr, "Error serializing 'value' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 				}
 			}
 					<#break>
@@ -397,7 +397,7 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			// Manual Field (${manualField.name})
 			_${manualField.name}Err := ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, parserArguments)}
 			if _${manualField.name}Err != nil {
-				return errors.Wrap(_${manualField.name}Err, "Error serializing '${manualField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				return errors.Wrap(_${manualField.name}Err, "Error serializing '${manualField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					<#break>
 				<#case "reserved">
@@ -405,7 +405,7 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 			// Reserved Field (Just skip the bytes)
 			if _err := ${helper.getWriteBufferWriteMethodCall("reserved", reservedField.type.asSimpleTypeReference().orElseThrow(), helper.getReservedValue(reservedField), reservedField)}; _err != nil {
-				return errors.Wrap(_err, "Error serializing reserved field")<@emitImport import="github.com/pkg/errors" />
+				return errors.Wrap(_err, "Error serializing reserved field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					<#break>
 				<#case "simple">
@@ -414,11 +414,11 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			// Simple Field (${simpleField.name})
 					<#if (case.name == "TIME") || (case.name == "LTIME") || (case.name == "DATE") || (case.name == "LDATE") || (case.name == "TIME_OF_DAY") || (case.name == "LTIME_OF_DAY") || (case.name == "DATE_AND_TIME") || (case.name == "LDATE_AND_TIME")>
 			if _err := ${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), "value.(values.Plc${case.name}).Get${simpleField.name?cap_first}()", simpleField)}; _err != nil {
-				return errors.Wrap(_err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				return errors.Wrap(_err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					<#else>
 			if _err := <#if simpleField.type.isSimpleTypeReference()>${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), "value.Get" + helper.getLanguageTypeNameForTypeReference(simpleField.type)?cap_first + "()", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Serialize(io, <#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
-				return errors.Wrap(_err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				return errors.Wrap(_err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
 					</#if>
 					<#break>
@@ -428,7 +428,7 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 	<#if !defaultSet>
 		default:
             // TODO: add more info which type it is actually
-			return errors.New("unsupported type")<@emitImport import="github.com/pkg/errors" />
+			return errors.New("unsupported type")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	</#if>
 	}
 	writeBuffer.PopContext("${type.name}")

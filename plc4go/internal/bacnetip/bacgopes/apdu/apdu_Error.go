@@ -22,11 +22,10 @@ package apdu
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
-
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type Error struct {

@@ -22,7 +22,6 @@ package knxnetip
 import (
 	"bytes"
 	"context"
-	stdErrors "errors"
 	"fmt"
 	"net"
 	"net/url"
@@ -31,11 +30,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
@@ -298,7 +297,7 @@ func (d *Discoverer) Close() error {
 	}
 	d.log.Trace().Msg("waiting for wait group")
 	d.wg.Wait()
-	if err := stdErrors.Join(collectedErrors...); err != nil {
+	if err := errors.Join(collectedErrors...); err != nil {
 		return errors.Wrap(err, "error closing discoverer")
 	}
 	return nil

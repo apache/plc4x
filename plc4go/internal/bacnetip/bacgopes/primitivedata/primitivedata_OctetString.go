@@ -23,11 +23,10 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type OctetString struct {

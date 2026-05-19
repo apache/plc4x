@@ -20,10 +20,10 @@
 package test_bvll
 
 import (
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type _NetworkServiceElement struct {

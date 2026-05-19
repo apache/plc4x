@@ -20,11 +20,10 @@
 package basetypes
 
 import (
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type COVSubscription struct {

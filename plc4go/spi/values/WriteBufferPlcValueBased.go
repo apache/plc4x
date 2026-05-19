@@ -24,9 +24,8 @@ import (
 	"encoding/binary"
 	"math/big"
 
-	"github.com/pkg/errors"
-
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 

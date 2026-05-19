@@ -20,8 +20,9 @@
 package state_machine
 
 import (
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 // StateMachineGroup  A state machine group is a collection of state machines that are all

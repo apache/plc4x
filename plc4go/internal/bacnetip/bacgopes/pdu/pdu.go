@@ -23,9 +23,8 @@ import (
 	"encoding/binary"
 	"net"
 
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 var _debug = CreateDebugPrinter()

@@ -22,10 +22,10 @@ package comm
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 // Bind a list of clients and servers together, top down

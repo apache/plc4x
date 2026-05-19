@@ -26,8 +26,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 func Test_future_AwaitCompletion(t *testing.T) {

@@ -23,7 +23,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/hex"
-	stdErrors "errors"
 	"fmt"
 	"runtime/debug"
 	"strconv"
@@ -31,13 +30,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -370,7 +369,7 @@ func (m *Connection) Connect(ctx context.Context) error {
 
 func (m *Connection) doSomethingAndClose(something func() error) error {
 	err := something()
-	return stdErrors.Join(err, m.messageCodec.Disconnect())
+	return errors.Join(err, m.messageCodec.Disconnect())
 }
 
 func (m *Connection) Close() error {

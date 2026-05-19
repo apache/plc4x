@@ -22,10 +22,9 @@ package readwrite
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	. "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 

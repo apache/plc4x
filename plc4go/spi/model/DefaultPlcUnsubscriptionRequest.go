@@ -21,12 +21,10 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"sync"
 
-	"github.com/pkg/errors"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 var _ apiModel.PlcUnsubscriptionRequestBuilder = &DefaultPlcUnsubscriptionRequestBuilder{}
@@ -80,7 +78,7 @@ func (d *DefaultPlcUnsubscriptionRequest) Execute(ctx context.Context) <-chan ap
 			}
 		}
 		var finalErr error
-		if err := stdErrors.Join(collectedErrors...); err != nil {
+		if err := errors.Join(collectedErrors...); err != nil {
 			finalErr = errors.Wrap(err, "error unsubscribing from all")
 		}
 		results <- NewDefaultPlcUnsubscriptionRequestResult(d, NewDefaultPlcUnsubscriptionResponse(d), finalErr)

@@ -20,10 +20,9 @@
 package object
 
 import (
-	"github.com/pkg/errors"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type CurrentPropertyListMixIn struct {

@@ -21,7 +21,6 @@ package bacnetip
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 	"math"
 	"net"
@@ -29,13 +28,13 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -138,7 +137,7 @@ func (d *Driver) Close() error {
 	if err := d.tm.Close(); err != nil {
 		collectedErrors = append(collectedErrors, errors.Wrap(err, "error closing transaction manager"))
 	}
-	if err := stdErrors.Join(collectedErrors...); err != nil {
+	if err := errors.Join(collectedErrors...); err != nil {
 		return errors.Wrap(err, "error closing driver")
 	}
 	return nil

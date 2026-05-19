@@ -20,7 +20,6 @@
 package knxnetip
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -28,6 +27,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type Tag interface {
