@@ -23,7 +23,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/cstockton/go-conv"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
@@ -44,37 +43,37 @@ func (f *FieldReaderVirtual[T]) ReadVirtualField(ctx context.Context, logicalNam
 	f.log.Debug().Str("logicalName", logicalName).Msg("reading field")
 	switch klass.(type) {
 	case *bool:
-		return f.toT(conv.Bool(valueExpression))
+		return f.toT(convBool(valueExpression))
 	case *int8:
-		return f.toT(conv.Int8(valueExpression))
+		return f.toT(convInt8(valueExpression))
 	case *uint8:
-		return f.toT(conv.Uint8(valueExpression))
+		return f.toT(convUint8(valueExpression))
 	case *int16:
-		return f.toT(conv.Int16(valueExpression))
+		return f.toT(convInt16(valueExpression))
 	case *uint16:
-		return f.toT(conv.Uint16(valueExpression))
+		return f.toT(convUint16(valueExpression))
 	case *int32:
-		return f.toT(conv.Int32(valueExpression))
+		return f.toT(convInt32(valueExpression))
 	case *uint32:
-		return f.toT(conv.Uint32(valueExpression))
+		return f.toT(convUint32(valueExpression))
 	case *int64:
-		return f.toT(conv.Int64(valueExpression))
+		return f.toT(convInt64(valueExpression))
 	case *uint64:
-		return f.toT(conv.Uint64(valueExpression))
+		return f.toT(convUint64(valueExpression))
 	case *int:
-		return f.toT(conv.Int(valueExpression))
+		return f.toT(convInt(valueExpression))
 	case *uint:
-		return f.toT(conv.Uint(valueExpression))
-	//case *uintptr:
-	//	return f.toT(conv.Uintptr(valueExpression))
+		return f.toT(convUint(valueExpression))
+	case *uintptr:
+		return f.toT(convUintptr(valueExpression))
 	case *float32:
-		return f.toT(conv.Float32(valueExpression))
+		return f.toT(convFloat32(valueExpression))
 	case *float64:
-		return f.toT(conv.Float64(valueExpression))
-	//case *complex64:
-	//	return f.toT(conv.Complex64(valueExpression))
-	//case *complex128:
-	//	return f.toT(conv.Complex128(valueExpression))
+		return f.toT(convFloat64(valueExpression))
+	case *complex64:
+		return f.toT(convComplex64(valueExpression))
+	case *complex128:
+		return f.toT(convComplex128(valueExpression))
 	case *string:
 		return any(fmt.Sprintf("%v", valueExpression)).(T), nil
 	}

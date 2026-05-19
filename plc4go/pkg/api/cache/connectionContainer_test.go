@@ -22,10 +22,10 @@ package cache
 import (
 	"context"
 	"fmt"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/viney-shih/go-lock"
 
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
@@ -36,7 +36,7 @@ import (
 
 func Test_connectionContainer_String(t1 *testing.T) {
 	type fields struct {
-		lock             lock.RWMutex
+		lock             *sync.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
@@ -83,7 +83,7 @@ func Test_connectionContainer_String(t1 *testing.T) {
 
 func Test_connectionContainer_addListener(t1 *testing.T) {
 	type fields struct {
-		lock             lock.RWMutex
+		lock             *sync.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
@@ -105,7 +105,7 @@ func Test_connectionContainer_addListener(t1 *testing.T) {
 		{
 			name: "add it",
 			fields: fields{
-				lock: lock.NewCASMutex(),
+				lock: &sync.RWMutex{},
 			},
 		},
 	}
@@ -131,7 +131,7 @@ func Test_connectionContainer_addListener(t1 *testing.T) {
 
 func Test_connectionContainer_connect(t1 *testing.T) {
 	type fields struct {
-		lock             lock.RWMutex
+		lock             *sync.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
@@ -151,7 +151,7 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 			name: "connect fresh",
 			fields: fields{
 				connectionString: "simulated://1.2.3.4:42",
-				lock:             lock.NewCASMutex(),
+				lock:             &sync.RWMutex{},
 			},
 			setup: func(t *testing.T, fields *fields) {
 				logger := testutils.ProduceTestingLogger(t)
@@ -190,7 +190,7 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 
 func Test_connectionContainer_lease(t1 *testing.T) {
 	type fields struct {
-		lock             lock.RWMutex
+		lock             *sync.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
@@ -214,7 +214,7 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 			name: "lease fresh",
 			fields: fields{
 				connectionString: "simulated://1.2.3.4:42",
-				lock:             lock.NewCASMutex(),
+				lock:             &sync.RWMutex{},
 			},
 			args: args{
 				ctx: t1.Context(),
@@ -258,7 +258,7 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 
 func Test_connectionContainer_returnConnection(t1 *testing.T) {
 	type fields struct {
-		lock             lock.RWMutex
+		lock             *sync.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
@@ -283,7 +283,7 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 			name: "return connection fresh",
 			fields: fields{
 				connectionString: "simulated://1.2.3.4:42",
-				lock:             lock.NewCASMutex(),
+				lock:             &sync.RWMutex{},
 			},
 			args: args{
 				state: StateInitialized,
@@ -304,7 +304,7 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 			name: "return unconnected connection",
 			fields: fields{
 				connectionString: "simulated://1.2.3.4:42",
-				lock:             lock.NewCASMutex(),
+				lock:             &sync.RWMutex{},
 			},
 			args: args{
 				state: StateInUse,

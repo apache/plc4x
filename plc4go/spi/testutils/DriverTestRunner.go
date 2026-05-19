@@ -33,7 +33,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"github.com/subchen/go-xmldom"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -41,6 +40,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
+	"github.com/apache/plc4x/plc4go/spi/testutils/xmldom"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"

@@ -29,7 +29,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/IBM/netaddr"
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -367,7 +366,10 @@ func (d *Discoverer) buildupCommunicationChannels(ctx context.Context, interface
 			}
 
 			_, cidr, _ := net.ParseCIDR(unicastAddress.String())
-			broadcastAddr := netaddr.BroadcastAddr(cidr)
+			broadcastAddr := make(net.IP, len(cidr.IP))
+			for i := range broadcastAddr {
+				broadcastAddr[i] = cidr.IP[i] | ^cidr.Mask[i]
+			}
 			// Handle undirected
 			broadcastConnection, err := reuseport.ListenPacket("udp4", fmt.Sprintf("%v:%d", broadcastAddr, bacNetPort))
 			if err != nil {

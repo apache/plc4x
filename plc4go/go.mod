@@ -22,9 +22,7 @@ module github.com/apache/plc4x/plc4go
 go 1.26
 
 require (
-	github.com/IBM/netaddr v1.5.0
 	github.com/ajankovic/xdiff v0.0.1
-	github.com/cstockton/go-conv v1.0.0
 	github.com/fatih/color v1.19.0
 	github.com/google/uuid v1.6.0
 	github.com/gopacket/gopacket v1.5.0
@@ -32,17 +30,13 @@ require (
 	github.com/libp2p/go-reuseport v0.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.35.1
-	github.com/snksoft/crc v1.1.0
 	github.com/stretchr/testify v1.11.1
-	github.com/subchen/go-xmldom v1.1.2
-	github.com/viney-shih/go-lock v1.1.2
 	golang.org/x/net v0.54.0
 	golang.org/x/text v0.37.0
 	golang.org/x/tools v0.45.0
 )
 
 require (
-	github.com/antchfx/xpath v1.3.5 // indirect
 	github.com/bitfield/gotestdox v0.2.2 // indirect
 	github.com/brunoga/deep v1.3.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.6.0 // indirect

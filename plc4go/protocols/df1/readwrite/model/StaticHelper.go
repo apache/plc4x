@@ -22,29 +22,38 @@ package model
 import (
 	"context"
 
-	"github.com/snksoft/crc"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-var table *crc.Table
-
-func init() {
-	// CRC-16/DF-1
-	table = crc.NewTable(&crc.Parameters{Width: 16, Polynomial: 0x8005, Init: 0x0000, ReflectIn: true, ReflectOut: true, FinalXor: 0x0000})
+// crc16df1Update accumulates CRC-16/DF-1 (CRC-16/ARC variant) over data.
+// Parameters: poly=0x8005, init=0x0000, reflectIn=true, reflectOut=true, finalXor=0.
+// The reflected polynomial is 0xA001.
+func crc16df1Update(crc uint16, data []byte) uint16 {
+	const refPoly uint16 = 0xA001
+	for _, b := range data {
+		crc ^= uint16(b)
+		for range 8 {
+			if crc&1 != 0 {
+				crc = (crc >> 1) ^ refPoly
+			} else {
+				crc >>= 1
+			}
+		}
+	}
+	return crc
 }
 
 func CrcCheck(ctx context.Context, destinationAddress uint8, sourceAddress uint8, command DF1Command) func() (uint16, error) {
 	return func() (uint16, error) {
-		df1Crc := table.InitCrc()
-		df1Crc = table.UpdateCrc(df1Crc, []byte{destinationAddress, sourceAddress})
+		df1Crc := uint16(0)
+		df1Crc = crc16df1Update(df1Crc, []byte{destinationAddress, sourceAddress})
 		bytes, err := command.Serialize()
 		if err != nil {
 			return 0, err
 		}
-		df1Crc = table.UpdateCrc(df1Crc, bytes)
-		df1Crc = table.UpdateCrc(df1Crc, []byte{0x03})
-		return table.CRC16(df1Crc), nil
+		df1Crc = crc16df1Update(df1Crc, bytes)
+		df1Crc = crc16df1Update(df1Crc, []byte{0x03})
+		return df1Crc, nil
 	}
 }
 
