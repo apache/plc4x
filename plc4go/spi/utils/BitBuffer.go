@@ -85,7 +85,7 @@ func (b *ReadBitBuffer) ReadBits(n uint8) (uint64, error) {
 		return 0, errors.New("cannot read more than 64 bits at once")
 	}
 	if uint64(n) > b.BitsRemaining() {
-		return 0, io.ErrUnexpectedEOF
+		return 0, io.EOF
 	}
 
 	var result uint64
@@ -134,7 +134,11 @@ type WriteBitBuffer struct {
 
 // NewWriteBitBuffer creates a WriteBitBuffer with the given initial capacity hint.
 func NewWriteBitBuffer(initialCap int) *WriteBitBuffer {
-	return &WriteBitBuffer{buf: make([]byte, 0, initialCap)}
+	var buf []byte
+	if initialCap > 0 {
+		buf = make([]byte, 0, initialCap)
+	}
+	return &WriteBitBuffer{buf: buf}
 }
 
 // WriteBool writes a single bit.

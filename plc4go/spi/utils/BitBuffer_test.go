@@ -109,7 +109,7 @@ func TestReadBitBuffer_Read(t *testing.T) {
 func TestReadBitBuffer_ReadBits_EOF(t *testing.T) {
 	b := NewReadBitBuffer([]byte{0xFF})
 	_, err := b.ReadBits(9)
-	assert.ErrorIs(t, err, io.ErrUnexpectedEOF)
+	assert.ErrorIs(t, err, io.EOF)
 }
 
 func TestReadBitBuffer_ReadBits_Zero(t *testing.T) {
@@ -139,7 +139,7 @@ func TestReadBitBuffer_EmptyBuffer(t *testing.T) {
 	b := NewReadBitBuffer([]byte{})
 	assert.Equal(t, uint64(0), b.BitsRemaining())
 	_, err := b.ReadBits(1)
-	assert.ErrorIs(t, err, io.ErrUnexpectedEOF)
+	assert.ErrorIs(t, err, io.EOF)
 }
 
 func TestReadBitBuffer_Read_Partial(t *testing.T) {
@@ -240,14 +240,14 @@ func TestWriteBitBuffer_TryWriteByte(t *testing.T) {
 func TestWriteBitBuffer_WriteBits_Zero(t *testing.T) {
 	w := NewWriteBitBuffer(0)
 	require.NoError(t, w.WriteBits(0xFF, 0))
-	assert.Equal(t, []byte{}, w.Bytes())
+	assert.Nil(t, w.Bytes())
 }
 
 func TestWriteBitBuffer_WriteBits_TooMany(t *testing.T) {
 	w := NewWriteBitBuffer(0)
 	err := w.WriteBits(0, 65)
 	require.Error(t, err)
-	assert.Equal(t, []byte{}, w.Bytes(), "buffer must not change on error")
+	assert.Nil(t, w.Bytes(), "buffer must not change on error")
 }
 
 func TestWriteBitBuffer_WriteBits_64(t *testing.T) {

@@ -166,7 +166,7 @@ func Test_byteWriteBuffer_GetBytes(t *testing.T) {
 			fields: fields{
 				bits: NewWriteBitBuffer(0),
 			},
-			want: []byte{},
+			want: nil,
 		},
 	}
 	for _, tt := range tests {
