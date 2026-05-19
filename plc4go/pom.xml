@@ -239,6 +239,7 @@
             <configuration>
               <args>
                 <arg>tool</arg>
+                <arg>-modfile=tools.mod</arg>
                 <arg>mockery</arg>
                 <arg>--log-level</arg>
                 <arg>info</arg>
@@ -272,6 +273,7 @@
               <skip>${skipTests}</skip>
               <args>
                 <arg>tool</arg>
+                <arg>-modfile=tools.mod</arg>
                 <arg>gotestsum</arg>
                 <arg>--junitfile</arg>
                 <arg>target/surefire-reports/go-junit-report.xml</arg>
@@ -292,6 +294,7 @@
             <configuration>
               <args>
                 <arg>tool</arg>
+                <arg>-modfile=tools.mod</arg>
                 <arg>goimports-reviser</arg>
                 <arg>-excludes</arg>
                 <arg>.idea,.git</arg>

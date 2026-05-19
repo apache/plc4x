@@ -59,7 +59,7 @@ test: compile
 
 ## test: Runs gotestsum.
 test-readable: compile
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool gotestsum ./...
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool -modfile=tools.mod gotestsum ./...
 
 test-readable-mvn: compile
 	$(MVNBIN) mvn-golang-wrapper:custom@readable-test
@@ -101,7 +101,7 @@ go-clean:
 
 go-imports:
 	@echo "  > adjusting imports"
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool goimports-reviser -excludes .idea,.git ./...
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool -modfile=tools.mod goimports-reviser -excludes .idea,.git ./...
 
 go-fmt: go-imports
 	@echo "  > formatting files"
@@ -109,7 +109,7 @@ go-fmt: go-imports
 
 go-mocks:
 	@echo "  > generating mocks"
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool mockery
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool -modfile=tools.mod mockery
 
 .PHONY: help
 all: help
