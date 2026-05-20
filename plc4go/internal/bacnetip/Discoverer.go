@@ -29,7 +29,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/libp2p/go-reuseport"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -43,6 +42,11 @@ import (
 type Discoverer struct {
 	wg sync.WaitGroup // use to track spawned go routines
 
+	// discoveryTimeout caps both the WhoIs broadcast loop and the wait for IAm
+	// responses. Originally hardcoded to 60s; configurable via
+	// Configuration.DiscoveryTimeoutSeconds passed through NewDiscovererWithTimeout.
+	discoveryTimeout time.Duration
+
 	passLogToModel bool
 	log            zerolog.Logger
 }
@@ -51,9 +55,20 @@ func NewDiscoverer(_options ...options.WithOption) *Discoverer {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Discoverer{
-		passLogToModel: passLoggerToModel,
-		log:            customLogger,
+		discoveryTimeout: 5 * time.Second,
+		passLogToModel:   passLoggerToModel,
+		log:              customLogger,
 	}
+}
+
+// SetDiscoveryTimeout overrides the default 5-second window for discovery.
+// 0 falls back to the default. Intended to be called from Driver setup once
+// Configuration.DiscoveryTimeoutSeconds is known.
+func (d *Discoverer) SetDiscoveryTimeout(t time.Duration) {
+	if t <= 0 {
+		t = 5 * time.Second
+	}
+	d.discoveryTimeout = t
 }
 
 func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
@@ -73,18 +88,22 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		return errors.Wrap(err, "error building communication channels")
 	}
 
-	// TODO: make adjustable
-	ctx, cancelFunc := context.WithTimeout(ctx, time.Second*60)
-	defer func() {
-		cancelFunc()
-	}()
+	timeout := d.discoveryTimeout
+	if timeout <= 0 {
+		timeout = 5 * time.Second
+	}
+	ctx, cancelFunc := context.WithTimeout(ctx, timeout)
+	defer cancelFunc()
 	incomingBVLCChannel, err := d.broadcastAndDiscover(ctx, communicationChannels, specificOptions)
 	if err != nil {
 		return errors.Wrap(err, "error broadcasting and discovering")
 	}
 	d.handleIncomingBVLCs(ctx, callback, incomingBVLCChannel)
-	// TODO: make adjustable
-	time.Sleep(time.Second * 60)
+	// Wait for the discovery window to elapse OR for the caller to cancel.
+	select {
+	case <-time.After(timeout):
+	case <-ctx.Done():
+	}
 	for _, channel := range communicationChannels {
 		_ = channel.Close()
 	}
@@ -147,7 +166,11 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 				characterString := driverModel.CreateBACnetContextTagCharacterString(3, driverModel.BACnetCharacterEncoding_ISO_10646, *name)
 				object = driverModel.NewBACnetUnconfirmedServiceRequestWhoHasObjectName(characterString.GetHeader(), characterString)
 			} else {
-				panic("Invalid state")
+				// Neither identifier nor name supplied — the caller wired the
+				// who-has options together inconsistently. Skip this discovery
+				// loop entry rather than crashing the entire driver.
+				d.log.Warn().Msg("WhoHas options missing both identifier and name; skipping")
+				continue
 			}
 			requestWhoHas := driverModel.NewBACnetUnconfirmedServiceRequestWhoHas(lowLimit, highLimit, object)
 			apdu := driverModel.NewAPDUUnconfirmedRequest(requestWhoHas)
@@ -337,18 +360,17 @@ func (d *Discoverer) buildupCommunicationChannels(ctx context.Context, interface
 			case *net.IPNet:
 				ipAddr = addr.IP.To4()
 				if ipAddr == nil {
-					// TODO: for now we only support ipv4 (reuse doesn't like v6 address strings atm)
+					// BACnet/IPv6 (Annex U) uses a different BVLC framing
+					// (BVLC6) that isn't in the generated model yet, so we
+					// skip IPv6 addresses until that lands.
 					continue
-					ipAddr = addr.IP.To16()
 				}
 
 			// If the device is configured for a point-to-point connection
 			case *net.IPAddr:
 				ipAddr = addr.IP.To4()
 				if ipAddr == nil {
-					// TODO: for now we only support ipv4 (reuse doesn't like v6 address strings atm)
 					continue
-					ipAddr = addr.IP.To16()
 				}
 			default:
 				continue
@@ -358,8 +380,16 @@ func (d *Discoverer) buildupCommunicationChannels(ctx context.Context, interface
 				continue
 			}
 
-			// Handle undirected
-			unicastConnection, err := reuseport.ListenPacket("udp4", fmt.Sprintf("%v:%d", ipAddr, bacNetPort))
+			// Plain net.ListenPacket. SO_REUSEPORT/REUSEADDR were attempted in
+			// an earlier iteration but they don't actually solve the
+			// "multiple BACnet stacks on one host" problem on UDP broadcast —
+			// the kernel hashes each broadcast packet to ONE socket, so the
+			// second stack still misses traffic. Co-locating BACnet stacks
+			// requires a userland demultiplexer, not socket options. If you
+			// hit "address already in use" here, stop whatever else is bound
+			// to the BACnet/IP UDP port.
+			var lc net.ListenConfig
+			unicastConnection, err := lc.ListenPacket(ctx, "udp4", fmt.Sprintf("%v:%d", ipAddr, bacNetPort))
 			if err != nil {
 				d.log.Debug().Err(err).Msg("Error building unicast Port")
 				continue
@@ -370,8 +400,7 @@ func (d *Discoverer) buildupCommunicationChannels(ctx context.Context, interface
 			for i := range broadcastAddr {
 				broadcastAddr[i] = cidr.IP[i] | ^cidr.Mask[i]
 			}
-			// Handle undirected
-			broadcastConnection, err := reuseport.ListenPacket("udp4", fmt.Sprintf("%v:%d", broadcastAddr, bacNetPort))
+			broadcastConnection, err := lc.ListenPacket(ctx, "udp4", fmt.Sprintf("%v:%d", broadcastAddr, bacNetPort))
 			if err != nil {
 				if err := unicastConnection.Close(); err != nil {
 					d.log.Debug().Err(err).Msg("Error closing transport instance")
@@ -509,7 +538,7 @@ func whoHasOption() option {
 func whoHasLimits(whoHasDeviceInstanceRangeLowLimit, whoHasDeviceInstanceRangeHighLimit uint) option {
 	return func(specificOptions *protocolSpecificOptions) error {
 		if specificOptions.whoHasOptions == nil {
-			panic("we should have set this before")
+			return errors.New("WithDiscoveryOptionWhoHas must be passed before WhoHasLimits")
 		}
 		specificOptions.whoHasOptions.limits = &struct {
 			deviceInstanceRangeLow  uint
@@ -522,7 +551,7 @@ func whoHasLimits(whoHasDeviceInstanceRangeLowLimit, whoHasDeviceInstanceRangeHi
 func whoHasObjectIdentifier(objectIdentifierType string, objectIdentifierInstance uint) option {
 	return func(specificOptions *protocolSpecificOptions) error {
 		if specificOptions.whoHasOptions == nil {
-			panic("we should have set this before")
+			return errors.New("WithDiscoveryOptionWhoHas must be passed before WhoHasObjectIdentifier")
 		}
 		specificOptions.whoHasOptions.object.identifier = &struct {
 			type_    string
@@ -535,7 +564,7 @@ func whoHasObjectIdentifier(objectIdentifierType string, objectIdentifierInstanc
 func whoHasObjectName(objectName string) option {
 	return func(specificOptions *protocolSpecificOptions) error {
 		if specificOptions.whoHasOptions == nil {
-			panic("we should have set this before")
+			return errors.New("WithDiscoveryOptionWhoHas must be passed before WhoHasObjectName")
 		}
 		specificOptions.whoHasOptions.object.name = &objectName
 		return nil

@@ -28,7 +28,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/libp2p/go-reuseport"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -40,7 +39,15 @@ import (
 type TransportInstance struct {
 	LocalAddress  *net.UDPAddr
 	RemoteAddress *net.UDPAddr
-	SoReUse       bool
+	// SoReUse historically toggled SO_REUSEPORT via github.com/libp2p/go-reuseport.
+	// In practice that does not deliver broadcast traffic to multiple host-local
+	// BACnet stacks (the kernel hashes each broadcast to one socket on Linux,
+	// and behaviour is platform-dependent elsewhere), so this field is kept for
+	// API compatibility but no longer changes how the socket is bound.
+	//
+	// Deprecated: no-op as of plc4go 1.0; will be removed once the API contract
+	// can absorb the signature change.
+	SoReUse bool
 
 	transport *Transport
 	udpConn   *net.UDPConn
@@ -93,13 +100,11 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 		if m.udpConn, err = net.DialUDP("udp", m.LocalAddress, m.RemoteAddress); err != nil {
 			return errors.Wrapf(err, "error connecting to remote address '%s'", m.RemoteAddress)
 		}
-	} else if m.SoReUse && m.LocalAddress != nil {
-		if packetConn, err := reuseport.ListenPacket("udp", m.LocalAddress.String()); err != nil {
-			return errors.Wrapf(err, "error connecting to local address '%s'", m.LocalAddress)
-		} else {
-			m.udpConn = packetConn.(*net.UDPConn)
-		}
 	} else {
+		// Listen-only mode (no RemoteAddress). The SoReUse field used to switch
+		// to a SO_REUSEPORT-enabled bind via libp2p/go-reuseport; that did not
+		// actually solve the "multiple BACnet stacks on one host" problem (see
+		// the SoReUse doc comment), so both branches now use stdlib net.ListenUDP.
 		if m.udpConn, err = net.ListenUDP("udp", m.LocalAddress); err != nil {
 			return errors.Wrapf(err, "error connecting to local address '%s'", m.LocalAddress)
 		}
