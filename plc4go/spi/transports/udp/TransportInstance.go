@@ -110,16 +110,10 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 		}
 	}
 
-	// TODO: Start a worker that uses m.udpConn.ReadFromUDP() to fill a buffer
-	/*	m.wg.Go(func() {
-	    buf := make([]byte, 1024)
-	    for {
-	        rsize, raddr, err := m.udpConn.ReadFromUDP(buf)
-	        if err != nil {
-	            fmt.Printf("Got %d bytes from %v: %v", rsize, raddr, buf)
-	        }
-	    }
-	}()*/
+	// Passive bufio.Reader over the UDP socket — same pattern the TCP
+	// transport uses. The codec's Receive worker drives reads through
+	// PeekReadableBytes/Read/FillBuffer with a deadline set from the request
+	// context, so we don't need a separate pump goroutine.
 	m.reader = bufio.NewReader(m.udpConn)
 
 	m.connected.Store(true)
@@ -232,11 +226,16 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	}
 	var num int
 	var err error
-	if m.RemoteAddress == nil {
-		// TODO: usually this happens on the dial port... is there a better way to catch that?
+	// A connected UDP socket (obtained via net.DialUDP) rejects WriteToUDP with
+	// "use of WriteTo with pre-connected connection" — we have to use the plain
+	// Write() path instead. udpConn.RemoteAddr() is nil for ListenUDP sockets and
+	// the connected remote for DialUDP sockets, so that's the right discriminator.
+	if m.udpConn.RemoteAddr() != nil {
 		num, err = m.udpConn.Write(data)
-	} else {
+	} else if m.RemoteAddress != nil {
 		num, err = m.udpConn.WriteToUDP(data, m.RemoteAddress)
+	} else {
+		num, err = m.udpConn.Write(data)
 	}
 	if err != nil {
 		return errors.Wrapf(err, "error writing (remote address: %s)", m.RemoteAddress)

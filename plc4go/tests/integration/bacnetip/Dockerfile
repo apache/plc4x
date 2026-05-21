@@ -36,4 +36,6 @@ COPY device.py /sim/device.py
 # Standard BACnet/IP unicast + broadcast port.
 EXPOSE 47808/udp
 
-CMD ["python", "device.py"]
+# -u forces unbuffered stdout so `docker compose logs` shows lifecycle messages
+# in real time instead of dumping them only on container exit.
+CMD ["python", "-u", "device.py"]

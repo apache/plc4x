@@ -227,3 +227,112 @@ func TestToPlcWriteResponse_Reject(t *testing.T) {
 	resp := writer.toPlcWriteResponse(reject, req)
 	assert.Equal(t, apiModel.PlcResponseCode_INVALID_DATA, resp.GetResponseCode("av"))
 }
+
+// ── WritePropertyMultiple wire-format regression guards ────────────────────
+
+// TestBuildServiceRequest_WPM_ContextTagNumbers locks down the BACnet-spec
+// context tag numbering inside each BACnetPropertyWriteDefinition:
+//
+//	[0] propertyIdentifier
+//	[1] arrayIndex (optional)
+//	[2] propertyValue (constructed)
+//	[3] priority (optional)
+//
+// Earlier versions of buildServiceRequest used (2, 3, opening/closing-3), which
+// bacpypes3 silently rejected with REJECT(INVALID_TAG). Re-introducing those
+// values must fail this test.
+func TestBuildServiceRequest_WPM_ContextTagNumbers(t *testing.T) {
+	writer := newTestWriter(t)
+	req := writeRequestFor(t, []writeTagSpec{
+		{
+			name:  "av2",
+			tag:   makeTag(readWriteModel.BACnetObjectType_ANALOG_VALUE, 2, readWriteModel.BACnetPropertyIdentifier_PRESENT_VALUE),
+			value: spiValues.NewPlcREAL(11.25),
+		},
+		{
+			name:  "av3",
+			tag:   makeTag(readWriteModel.BACnetObjectType_ANALOG_VALUE, 3, readWriteModel.BACnetPropertyIdentifier_PRESENT_VALUE),
+			value: spiValues.NewPlcREAL(22.5),
+		},
+	})
+	got, err := writer.buildServiceRequest(req)
+	require.NoError(t, err)
+	wpm, ok := got.(readWriteModel.BACnetConfirmedServiceRequestWritePropertyMultiple)
+	require.True(t, ok)
+	require.Len(t, wpm.GetData(), 2)
+
+	for i, spec := range wpm.GetData() {
+		t.Logf("spec[%d]: object=%v", i, spec.GetObjectIdentifier().GetPayload())
+		// Each WAS opens/closes the listOfProperties with context tag 1.
+		assert.Equal(t, uint8(1), spec.GetOpeningTag().GetHeader().GetActualTagNumber(),
+			"WAS opening tag must be context 1")
+		assert.Equal(t, uint8(1), spec.GetClosingTag().GetHeader().GetActualTagNumber(),
+			"WAS closing tag must be context 1")
+		require.NotEmpty(t, spec.GetListOfPropertyWriteDefinition())
+		def := spec.GetListOfPropertyWriteDefinition()[0]
+		// PropertyWriteDefinition fields:
+		//   propertyIdentifier [0]
+		assert.Equal(t, uint8(0), def.GetPropertyIdentifier().GetHeader().GetActualTagNumber(),
+			"propertyIdentifier must be context tag 0 (not 2 — pre-fix value)")
+		// propertyValue's ConstructedDataUnspecified uses opening/closing tag 2.
+		cd, ok := def.GetPropertyValue().(readWriteModel.BACnetConstructedDataUnspecified)
+		require.True(t, ok, "propertyValue should be ConstructedDataUnspecified, got %T", def.GetPropertyValue())
+		assert.Equal(t, uint8(2), cd.GetOpeningTag().GetHeader().GetActualTagNumber(),
+			"propertyValue opening tag must be context 2 (not 3 — pre-fix value)")
+		assert.Equal(t, uint8(2), cd.GetClosingTag().GetHeader().GetActualTagNumber(),
+			"propertyValue closing tag must be context 2 (not 3 — pre-fix value)")
+	}
+}
+
+// TestBuildServiceRequest_WPM_SerializesAndRoundTrips confirms the WPM
+// request serializes to bytes and can be re-parsed by the generated model.
+// If the wire format ever drifts so badly that it can't even round-trip,
+// this catches it before integration tests see it.
+func TestBuildServiceRequest_WPM_SerializesAndRoundTrips(t *testing.T) {
+	writer := newTestWriter(t)
+	req := writeRequestFor(t, []writeTagSpec{
+		{
+			name:  "av2",
+			tag:   makeTag(readWriteModel.BACnetObjectType_ANALOG_VALUE, 2, readWriteModel.BACnetPropertyIdentifier_PRESENT_VALUE),
+			value: spiValues.NewPlcREAL(11.25),
+		},
+		{
+			name:  "av3",
+			tag:   makeTag(readWriteModel.BACnetObjectType_ANALOG_VALUE, 3, readWriteModel.BACnetPropertyIdentifier_PRESENT_VALUE),
+			value: spiValues.NewPlcREAL(22.5),
+		},
+	})
+	got, err := writer.buildServiceRequest(req)
+	require.NoError(t, err)
+	raw, err := got.Serialize()
+	require.NoError(t, err)
+	require.NotEmpty(t, raw)
+}
+
+// TestBuildServiceRequest_SingleWriteProperty_ContextTagNumbers locks the
+// single-write encoding so refactors that share helpers between single and
+// multi paths don't accidentally swap the constants. WriteProperty uses
+// propId [1], arrayIndex [2], propVal {opening/closing 3}.
+func TestBuildServiceRequest_SingleWriteProperty_ContextTagNumbers(t *testing.T) {
+	writer := newTestWriter(t)
+	req := writeRequestFor(t, []writeTagSpec{
+		{
+			name:  "av",
+			tag:   makeTag(readWriteModel.BACnetObjectType_ANALOG_VALUE, 5, readWriteModel.BACnetPropertyIdentifier_PRESENT_VALUE),
+			value: spiValues.NewPlcREAL(7.0),
+		},
+	})
+	got, err := writer.buildServiceRequest(req)
+	require.NoError(t, err)
+	wp, ok := got.(readWriteModel.BACnetConfirmedServiceRequestWriteProperty)
+	require.True(t, ok)
+
+	assert.Equal(t, uint8(1), wp.GetPropertyIdentifier().GetHeader().GetActualTagNumber(),
+		"single-write propertyIdentifier must be context tag 1")
+	cd, ok := wp.GetPropertyValue().(readWriteModel.BACnetConstructedDataUnspecified)
+	require.True(t, ok)
+	assert.Equal(t, uint8(3), cd.GetOpeningTag().GetHeader().GetActualTagNumber(),
+		"single-write propertyValue opening tag must be context 3")
+	assert.Equal(t, uint8(3), cd.GetClosingTag().GetHeader().GetActualTagNumber(),
+		"single-write propertyValue closing tag must be context 3")
+}

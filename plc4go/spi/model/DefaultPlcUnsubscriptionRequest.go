@@ -39,7 +39,7 @@ func NewDefaultPlcUnsubscriptionRequestBuilder() *DefaultPlcUnsubscriptionReques
 }
 
 func (d *DefaultPlcUnsubscriptionRequestBuilder) AddHandles(subscriptionHandles ...apiModel.PlcSubscriptionHandle) apiModel.PlcUnsubscriptionRequestBuilder {
-	subscriptionHandles = append(subscriptionHandles, subscriptionHandles...)
+	d.subscriptionHandles = append(d.subscriptionHandles, subscriptionHandles...)
 	return d
 }
 

@@ -191,7 +191,7 @@ func (m *Subscriber) sendSubscribeCOV(ctx context.Context, handle *SubscriptionH
 	// SimpleAck back through the codec. Phase 5 will replace this with a real
 	// transaction-manager-backed retry loop honoring ApduTimeoutMs/Retries.
 	done := make(chan apiModel.PlcResponseCode, 1)
-	err := m.connection.messageCodec.SendRequest(ctx, "subscribe-cov", apdu,
+	err := m.connection.messageCodec.SendRequest(ctx, "subscribe-cov", wrapAPDU(apdu, true),
 		func(message spi.Message) bool {
 			return m.acceptsResponse(message, invokeId)
 		},
@@ -306,10 +306,19 @@ func (m *Subscriber) dispatchNotification(handle *SubscriptionHandle, listOfValu
 				break
 			}
 		}
+		// A BACnetConstructedDataElement holds the value in exactly one of three
+		// fields depending on how the publisher framed it: ApplicationTag (e.g.
+		// Real for AnalogInput), ConstructedData (nested typed value), or
+		// ContextTag (context-specific encoding). Pick whichever is populated.
 		element := picked.GetPropertyValue()
-		if element != nil {
+		switch {
+		case element == nil:
+			values[handle.tagName] = spiValues.NewPlcNULL()
+		case element.GetApplicationTag() != nil:
 			values[handle.tagName] = appTagToPlcValue(element.GetApplicationTag())
-		} else {
+		case element.GetConstructedData() != nil:
+			values[handle.tagName] = constructedDataToPlcValue(element.GetConstructedData())
+		default:
 			values[handle.tagName] = spiValues.NewPlcNULL()
 		}
 	}

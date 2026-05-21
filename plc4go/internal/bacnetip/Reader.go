@@ -139,7 +139,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			context.AfterFunc(transactionContext, cancel)
 			// Send the  over the wire
 			m.log.Trace().Msg("Send ")
-			if err := m.messageCodec.SendRequest(ctx, "read", apdu, func(message spi.Message) bool {
+			if err := m.messageCodec.SendRequest(ctx, "read", wrapAPDU(apdu, true), func(message spi.Message) bool {
 				bvlc, ok := message.(readWriteModel.BVLC)
 				if !ok {
 					m.log.Debug().Type("bvlc", bvlc).Msg("Received strange type")

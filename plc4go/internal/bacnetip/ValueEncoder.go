@@ -40,6 +40,17 @@ func plcValueToApplicationTag(v apiValues.PlcValue, hint encodingHint) (model.BA
 	case apiValues.NULL:
 		return model.CreateBACnetApplicationTagNull(), nil
 	case apiValues.BOOL:
+		// Binary objects' PRESENT_VALUE is Enumerated (INACTIVE=0, ACTIVE=1)
+		// on the wire — sending a Boolean application tag gets rejected with
+		// REJECT(INVALID_TAG). When the caller hints Enumerated, encode the
+		// bool as 0/1 Enumerated.
+		if hint == hintEnumerated {
+			var v32 uint32
+			if v.GetBool() {
+				v32 = 1
+			}
+			return model.CreateBACnetApplicationTagEnumerated(v32), nil
+		}
 		return model.CreateBACnetApplicationTagBoolean(v.GetBool()), nil
 	case apiValues.BYTE, apiValues.USINT, apiValues.UINT, apiValues.UDINT, apiValues.ULINT, apiValues.WORD, apiValues.DWORD, apiValues.LWORD:
 		if hint == hintEnumerated {
@@ -71,14 +82,20 @@ const (
 	hintEnumerated
 )
 
-// hintForProperty returns the encoding hint appropriate to a BACnet property
-// identifier. PRESENT_VALUE on Binary*/Multistate* objects (and many discrete
-// status fields) carries Enumerated; everything else defaults to none.
-func hintForProperty(_ uint32) encodingHint {
-	// Today we don't second-guess the caller. WriteProperty callers should
-	// either pass a PlcUDINT and accept the default UnsignedInteger encoding,
-	// or use a PlcREAL/PlcBOOL/PlcSTRING that maps unambiguously. Per-property
-	// dispatch will be added once the integration tests expose a real device
-	// that rejects an UnsignedInteger where Enumerated is required.
+// hintForProperty returns the encoding hint appropriate to a BACnet
+// (objectType, propertyIdentifier) pair. PRESENT_VALUE on Binary* objects
+// carries Enumerated (INACTIVE=0, ACTIVE=1); without the hint we would emit
+// a Boolean application tag and bacpypes3/Niagara reject with INVALID_TAG.
+func hintForProperty(objectType, propertyId uint32) encodingHint {
+	if propertyId != uint32(model.BACnetPropertyIdentifier_PRESENT_VALUE) {
+		return hintNone
+	}
+	switch model.BACnetObjectType(objectType) {
+	case model.BACnetObjectType_BINARY_INPUT,
+		model.BACnetObjectType_BINARY_OUTPUT,
+		model.BACnetObjectType_BINARY_VALUE,
+		model.BACnetObjectType_BINARY_LIGHTING_OUTPUT:
+		return hintEnumerated
+	}
 	return hintNone
 }

@@ -22,6 +22,7 @@ package bacnetip
 import (
 	"context"
 	"math"
+	"net"
 	"net/url"
 	"strconv"
 	"time"
@@ -36,6 +37,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -87,16 +89,44 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	if _, ok := driverOptions["so-reuse"]; !ok {
 		driverOptions["so-reuse"] = []string{"true"}
 	}
-	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(
+	// BACnet/IP uses port 47808 on both sides of a conversation; spec-conformant
+	// peers (bacpypes3, EcoStruxure, Niagara, ...) send unsolicited messages
+	// and responses back to the well-known port regardless of the request's
+	// source port. The generic transport.CreateTransportInstance dials with
+	// LocalAddress=nil, which gives us an ephemeral source — fine for protocols
+	// that reply to the source port, but for BACnet that means responses get
+	// dropped by the kernel.
+	//
+	// Use CreateTransportInstanceForLocalAddress with a fixed 0.0.0.0:47808
+	// bind. Callers that need to co-locate multiple BACnet connections in one
+	// process can override via the "local-port" driver option (uint), or 0
+	// for explicit ephemeral.
+	localPort := int(model.BacnetConstants_BACNETUDPDEFAULTPORT)
+	if val, ok := driverOptions["local-port"]; ok && len(val) > 0 {
+		if parsed, parseErr := strconv.Atoi(val[0]); parseErr != nil {
+			connectionLog.Warn().Err(parseErr).Str("local-port", val[0]).Msg("ignoring invalid local-port option")
+		} else {
+			localPort = parsed
+		}
+	}
+	localAddress := &net.UDPAddr{IP: net.IPv4zero, Port: localPort}
+	connectionLog.Info().Stringer("localAddress", localAddress).Msg("BACnet driver binding local UDP")
+
+	udpTransport, ok := transport.(*udp.Transport)
+	if !ok {
+		return nil, errors.Errorf("BACnet/IP requires the udp transport; got %T", transport)
+	}
+	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(
 		transportUrl,
 		driverOptions,
+		localAddress,
 		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
 	if err != nil {
 		connectionLog.Error().
 			Stringer("transportUrl", &transportUrl).
 			Strs("defaultUdpPort", driverOptions["defaultUdpPort"]).
+			Int("localPort", localPort).
 			Msg("We couldn't create a transport instance for port")
 		return nil, errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String())
 	}

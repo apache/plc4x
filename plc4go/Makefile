@@ -61,12 +61,15 @@ test: compile
 test-readable: compile
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool -modfile=tools.mod gotestsum ./...
 
-## integration-bacnetip: Bring up the bacpypes3 simulator + run the BACnet/IP integration tests.
-## Tears the container down on exit even if a test fails.
+## integration-bacnetip: Build + run the bacpypes3 simulator + Go test-runner in their own
+## network namespaces on a shared docker bridge, then tear everything down. The compose exit
+## code follows the test-runner so `make integration-bacnetip` mirrors a normal go-test failure.
 integration-bacnetip:
-	@docker compose -f tests/integration/bacnetip/docker-compose.yml up -d --build
-	@trap 'docker compose -f tests/integration/bacnetip/docker-compose.yml down' EXIT; \
-		BACNET_IT=1 go test -tags integration ./tests/integration/bacnetip/... -v -count=1 -timeout 120s
+	@docker compose -f tests/integration/bacnetip/docker-compose.yml up \
+		--build --abort-on-container-exit --exit-code-from test-runner; \
+		status=$$?; \
+		docker compose -f tests/integration/bacnetip/docker-compose.yml down; \
+		exit $$status
 
 test-readable-mvn: compile
 	$(MVNBIN) mvn-golang-wrapper:custom@readable-test

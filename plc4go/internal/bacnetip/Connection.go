@@ -231,6 +231,14 @@ func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 	)
 }
 
+func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+	// The default request implementation dispatches each handle's
+	// Unsubscribe back through the embedded Subscriber, so we don't need
+	// to pass our own here — the SubscriptionHandles created by Subscribe
+	// already carry the Subscriber reference.
+	return spiModel.NewDefaultPlcUnsubscriptionRequestBuilder()
+}
+
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	if slices.Contains(c.subscribers, subscriber) {
 		c.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber already added")

@@ -212,4 +212,80 @@ func TestDispatchNotification_NilTag_DoesNotPanic(t *testing.T) {
 	s.dispatchNotification(handle, empty)
 }
 
+// buildCOVNotificationWithConstructedData builds an UnconfirmedCOVNotification
+// where the PropertyValue's element holds a ConstructedData (not an
+// ApplicationTag). bacpypes3 wraps the present-value this way for some object
+// types; the dispatch code's element.GetApplicationTag() branch would return
+// nil and previously yielded PlcNULL, dropping the value. The Subscriber must
+// fall through to constructedDataToPlcValue.
+func buildCOVNotificationWithConstructedData(processId uint32, deviceId uint32, objType readWriteModel.BACnetObjectType, instance uint32, presentValue float32) readWriteModel.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+	subscriberProcessTag := readWriteModel.CreateBACnetContextTagUnsignedInteger(0, uint(processId))
+	initiatingDeviceTag := readWriteModel.CreateBACnetContextTagObjectIdentifier(1, uint16(readWriteModel.BACnetObjectType_DEVICE), deviceId)
+	monitoredObjectTag := readWriteModel.CreateBACnetContextTagObjectIdentifier(2, uint16(objType), instance)
+	lifetimeTag := readWriteModel.CreateBACnetContextTagUnsignedInteger(3, 0)
+
+	// Build a ConstructedDataUnspecified holding the Real value, then wrap
+	// that in a parent element where ApplicationTag is nil and
+	// ConstructedData is the inner ConstructedDataUnspecified.
+	innerHeader := readWriteModel.CreateBACnetTagHeaderBalanced(true, 2, 0)
+	innerElement := readWriteModel.NewBACnetConstructedDataElement(
+		innerHeader,
+		readWriteModel.CreateBACnetApplicationTagReal(presentValue),
+		nil,
+		nil,
+	)
+	innerCD := readWriteModel.NewBACnetConstructedDataUnspecified(
+		readWriteModel.CreateBACnetOpeningTag(2),
+		innerHeader,
+		readWriteModel.CreateBACnetClosingTag(2),
+		nil,
+		[]readWriteModel.BACnetConstructedDataElement{innerElement},
+	)
+	outerHeader := readWriteModel.CreateBACnetTagHeaderBalanced(true, 2, 0)
+	outerElement := readWriteModel.NewBACnetConstructedDataElement(outerHeader, nil, nil, innerCD)
+	propIdTag := readWriteModel.CreateBACnetPropertyIdentifierTagged(0, uint32(readWriteModel.BACnetPropertyIdentifier_PRESENT_VALUE))
+	propVal := readWriteModel.NewBACnetPropertyValue(propIdTag, nil, outerElement, nil)
+	values := readWriteModel.NewBACnetPropertyValues(
+		readWriteModel.CreateBACnetOpeningTag(4),
+		[]readWriteModel.BACnetPropertyValue{propVal},
+		readWriteModel.CreateBACnetClosingTag(4),
+	)
+	return readWriteModel.NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(
+		subscriberProcessTag, initiatingDeviceTag, monitoredObjectTag, lifetimeTag, values,
+	)
+}
+
+func TestDispatchNotification_ConstructedDataBranch(t *testing.T) {
+	// Regression: pre-fix Subscriber.dispatchNotification only inspected the
+	// element's ApplicationTag field. When bacpypes3 framed a COV's
+	// PresentValue as nested ConstructedData, the value went silently to
+	// PlcNULL and the consumer never saw the actual reading.
+	s := newTestSubscriber(t)
+	s.log = zerolog.Nop()
+
+	objType := readWriteModel.BACnetObjectType_ANALOG_INPUT
+	tag := &plcTag{ObjectId: objectId{ObjectIdType: &objType, ObjectIdInstance: 2}}
+	handle := NewSubscriptionHandle(s, "cd-tag", tag, apiModel.SubscriptionChangeOfState, 0)
+	handle.subscriberProcessId = 42
+	s.storeHandle(handle)
+
+	capture := &captureConsumer{}
+	reg := spiModel.NewDefaultPlcConsumerRegistration(s, capture.consume, handle.DefaultPlcSubscriptionHandle)
+	s.consumers[reg.(*spiModel.DefaultPlcConsumerRegistration)] = capture.consume
+
+	req := buildCOVNotificationWithConstructedData(42, 1234, objType, 2, 17.5)
+	s.HandleUnconfirmedCOVNotification(req)
+
+	require.Len(t, capture.events, 1)
+	val := capture.events[0].GetValue("cd-tag")
+	require.NotNil(t, val)
+	// The value must be present (not PlcNULL) — that's the regression we're
+	// guarding against. Exact float comparison is best-effort: the nested
+	// ConstructedDataUnspecified path goes through elementsToPlcValue which
+	// unwraps the single element back to its ApplicationTag's value.
+	assert.NotEqual(t, apiValues.NULL, val.GetPlcValueType(),
+		"ConstructedData branch should yield a real value, not PlcNULL")
+	assert.InDelta(t, 17.5, val.GetFloat32(), 1e-3)
+}
+
 var _ = time.Second // keep import alive across phases

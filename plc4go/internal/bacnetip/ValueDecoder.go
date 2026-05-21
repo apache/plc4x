@@ -123,11 +123,44 @@ func constructedDataToPlcValue(data model.BACnetConstructedData) apiValues.PlcVa
 		if tag, ok := v.(model.BACnetApplicationTag); ok {
 			return appTagToPlcValue(tag)
 		}
+		if pv, ok := taggedEnumToPlcValue(v); ok {
+			return pv
+		}
 		// Composite types: stringify until we add typed mappings (DateTime,
 		// ObjectReference, BACnetTimeStamp, ...).
 		return spiValues.NewPlcSTRING(fmt.Sprintf("%v", v))
 	}
 	return spiValues.NewPlcSTRING(fmt.Sprintf("%T:%v", data, data))
+}
+
+// taggedEnumToPlcValue handles BACnet's *Tagged enum wrappers (BACnetBinaryPV,
+// BACnetReliability, BACnetEventState, ...) returned by GetActualValue on
+// typed ConstructedData subtypes. These don't satisfy BACnetApplicationTag
+// but expose a GetValue() method whose return is the unwrapped enum integer.
+// Surfacing them as PlcUDINT keeps the API consistent with how Enumerated
+// application tags are decoded (the property identifier on the request side
+// determines the enum schema).
+func taggedEnumToPlcValue(v any) (apiValues.PlcValue, bool) {
+	rv := reflect.ValueOf(v)
+	if !rv.IsValid() {
+		return nil, false
+	}
+	method := rv.MethodByName("GetValue")
+	if !method.IsValid() || method.Type().NumIn() != 0 || method.Type().NumOut() != 1 {
+		return nil, false
+	}
+	out := method.Call(nil)[0]
+	switch out.Kind() {
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return spiValues.NewPlcUDINT(uint32(out.Uint())), true
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return spiValues.NewPlcLINT(out.Int()), true
+	case reflect.Bool:
+		return spiValues.NewPlcBOOL(out.Bool()), true
+	case reflect.String:
+		return spiValues.NewPlcSTRING(out.String()), true
+	}
+	return nil, false
 }
 
 // elementsToPlcValue collapses a list of BACnetConstructedDataElement to a

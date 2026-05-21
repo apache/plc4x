@@ -107,7 +107,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			ctx, cancel := context.WithCancel(ctx)
 			context.AfterFunc(transactionContext, cancel)
 
-			err := m.messageCodec.SendRequest(ctx, "write", apdu, func(message spi.Message) bool {
+			err := m.messageCodec.SendRequest(ctx, "write", wrapAPDU(apdu, true), func(message spi.Message) bool {
 				return m.acceptsResponse(message, invokeId)
 			}, func(message spi.Message) error {
 				bvlc := message.(readWriteModel.BVLC)
@@ -148,8 +148,15 @@ func (m *Writer) buildServiceRequest(writeRequest apiModel.PlcWriteRequest) (rea
 
 	// Multi: collapse all (tag, properties...) into a WritePropertyMultiple
 	// with one BACnetWriteAccessSpecification per tag and one
-	// BACnetPropertyWriteDefinition per (tag, property) pair. WritePriority is
-	// taken from the same nil/!nil dance as WriteProperty.
+	// BACnetPropertyWriteDefinition per (tag, property) pair.
+	//
+	// PropertyWriteDefinition field tags (per BACnet spec):
+	//   [0] propertyIdentifier
+	//   [1] arrayIndex (OPTIONAL)
+	//   [2] propertyValue (constructed — opening/closing tag 2)
+	//   [3] priority (OPTIONAL)
+	// These differ from single WriteProperty (1/2/3/4), so the propVal wrapper
+	// also uses opening/closing tag 2 instead of 3.
 	var specs []readWriteModel.BACnetWriteAccessSpecification
 	for _, tagName := range tagNames {
 		tag, ok := writeRequest.GetTag(tagName).(BacNetPlcTag)
@@ -160,15 +167,15 @@ func (m *Writer) buildServiceRequest(writeRequest apiModel.PlcWriteRequest) (rea
 		var defs []readWriteModel.BACnetPropertyWriteDefinition
 		for _, prop := range tag.GetProperties() {
 			plcValue := writeRequest.GetValue(tagName)
-			appTag, err := plcValueToApplicationTag(plcValue.(apiValues.PlcValue), hintForProperty(prop.getId()))
+			appTag, err := plcValueToApplicationTag(plcValue.(apiValues.PlcValue), hintForProperty(uint32(tag.GetObjectId().getId()), prop.getId()))
 			if err != nil {
 				return nil, errors.Wrapf(err, "tag %s property %s", tagName, prop.String())
 			}
-			cd := constructedDataFromAppTag(appTag)
-			propId := readWriteModel.CreateBACnetPropertyIdentifierTagged(2, prop.getId())
+			cd := constructedDataFromAppTag(appTag, 2)
+			propId := readWriteModel.CreateBACnetPropertyIdentifierTagged(0, prop.getId())
 			var arrayIndex readWriteModel.BACnetContextTagUnsignedInteger
 			if prop.ArrayIndex != nil {
-				arrayIndex = readWriteModel.CreateBACnetContextTagUnsignedInteger(3, *prop.ArrayIndex)
+				arrayIndex = readWriteModel.CreateBACnetContextTagUnsignedInteger(1, *prop.ArrayIndex)
 			}
 			defs = append(defs, readWriteModel.NewBACnetPropertyWriteDefinition(propId, arrayIndex, cd, nil))
 		}
@@ -187,7 +194,7 @@ func (m *Writer) buildSingleWriteProperty(tag BacNetPlcTag, plcValue apiValues.P
 		return nil, errors.New("nil PlcValue")
 	}
 	prop := tag.GetProperties()[0]
-	appTag, err := plcValueToApplicationTag(plcValue, hintForProperty(prop.getId()))
+	appTag, err := plcValueToApplicationTag(plcValue, hintForProperty(uint32(tag.GetObjectId().getId()), prop.getId()))
 	if err != nil {
 		return nil, err
 	}
@@ -197,20 +204,21 @@ func (m *Writer) buildSingleWriteProperty(tag BacNetPlcTag, plcValue apiValues.P
 	if prop.ArrayIndex != nil {
 		arrayIndex = readWriteModel.CreateBACnetContextTagUnsignedInteger(2, *prop.ArrayIndex)
 	}
-	cd := constructedDataFromAppTag(appTag)
+	cd := constructedDataFromAppTag(appTag, 3)
 	return readWriteModel.NewBACnetConfirmedServiceRequestWriteProperty(0, objectIdTag, propId, arrayIndex, cd, nil), nil
 }
 
 // constructedDataFromAppTag wraps a single ApplicationTag into a generic
-// ConstructedDataUnspecified payload (opening tag 3, one element, closing 3) so
-// the wire-format builder can serialize it without per-property typed types.
-func constructedDataFromAppTag(tag readWriteModel.BACnetApplicationTag) readWriteModel.BACnetConstructedData {
-	header := readWriteModel.CreateBACnetTagHeaderBalanced(true, 3, 0)
+// ConstructedDataUnspecified payload using the supplied context tag number
+// for the opening/closing brackets. Single WriteProperty uses tag 3,
+// WritePropertyMultiple's PropertyWriteDefinition uses tag 2.
+func constructedDataFromAppTag(tag readWriteModel.BACnetApplicationTag, tagNumber uint8) readWriteModel.BACnetConstructedData {
+	header := readWriteModel.CreateBACnetTagHeaderBalanced(true, tagNumber, 0)
 	element := readWriteModel.NewBACnetConstructedDataElement(header, tag, nil, nil)
 	return readWriteModel.NewBACnetConstructedDataUnspecified(
-		readWriteModel.CreateBACnetOpeningTag(3),
+		readWriteModel.CreateBACnetOpeningTag(tagNumber),
 		header,
-		readWriteModel.CreateBACnetClosingTag(3),
+		readWriteModel.CreateBACnetClosingTag(tagNumber),
 		nil,
 		[]readWriteModel.BACnetConstructedDataElement{element},
 	)

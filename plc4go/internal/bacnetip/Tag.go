@@ -24,6 +24,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strings"
+	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -42,6 +43,21 @@ type plcTag struct {
 	ObjectId objectId
 	// Properties 1..N identifiers
 	Properties []property
+}
+
+// GetPlcSubscriptionType lets a plcTag participate in subscription requests
+// without a separate tag type. The BACnet driver always issues SubscribeCOV
+// regardless of the api/model.PlcSubscriptionType, so we report the most
+// permissive value (ChangeOfState) — the caller's selection only affects
+// plc4go-side filtering, not what we put on the wire.
+func (m plcTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionChangeOfState
+}
+
+// GetDuration is part of PlcSubscriptionTag. We report 0 (no per-tag cycle);
+// the COV refresh interval comes from Configuration.CovLifetimeSeconds.
+func (m plcTag) GetDuration() time.Duration {
+	return 0
 }
 
 type objectId struct {

@@ -17,20 +17,56 @@
 # under the License.
 #
 
-# Spins a single bacpypes3 BACnet/IP virtual device for plc4go integration
-# tests. Usage:
+# Two-service setup so both ends of the BACnet conversation get their own
+# network namespace. This matters because BACnet/IP uses port 47808 on both
+# sides — a single host network can only honour that for one process at a
+# time. With a bridge network, the simulator and the Go test-runner each
+# bind 47808 against their own interface, and UDP broadcasts traverse the
+# bridge so discovery works.
 #
-#   docker compose -f tests/integration/bacnetip/docker-compose.yml up -d
-#   BACNET_IT=1 go test -tags integration ./tests/integration/bacnetip/...
-#   docker compose -f tests/integration/bacnetip/docker-compose.yml down
+# Usage:
+#   make integration-bacnetip
+#
+# or directly:
+#   docker compose -f tests/integration/bacnetip/docker-compose.yml \
+#                  --project-directory ../.. \
+#                  up --build --abort-on-container-exit --exit-code-from test-runner
 #
 services:
   bacnet-device:
     build:
+      # `context` is resolved relative to this compose file's directory.
+      # `.` here is plc4go/tests/integration/bacnetip — the dir holding the
+      # simulator's Dockerfile and device.py.
       context: .
       dockerfile: Dockerfile
-    # host networking is the easiest way to make BACnet broadcast traffic
-    # work without per-OS bridge tweaks. The downside is the container
-    # claims UDP 47808 on the host.
-    network_mode: host
-    restart: unless-stopped
+    networks:
+      bacnet:
+        ipv4_address: 172.30.0.10
+    # 47808 is reachable inside the bacnet bridge via the service name
+    # `bacnet-device` or the fixed IP above. No host port mapping — the host
+    # network namespace stays untouched.
+    expose:
+      - "47808/udp"
+    restart: "no"
+
+  test-runner:
+    build:
+      # Walk back up to the plc4go module root so Dockerfile.test can COPY
+      # go.mod, go.sum, and the whole source tree.
+      context: ../../..
+      dockerfile: tests/integration/bacnetip/Dockerfile.test
+    depends_on:
+      - bacnet-device
+    networks:
+      bacnet:
+        ipv4_address: 172.30.0.11
+    restart: "no"
+
+networks:
+  bacnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/24
