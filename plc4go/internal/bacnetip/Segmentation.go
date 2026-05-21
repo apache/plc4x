@@ -35,12 +35,12 @@ import (
 // expected sequence number, returning a SegmentAck PDU the caller must transmit
 // after every received segment.
 type inboundReassembler struct {
-	invokeId     uint8
-	expectedSeq  uint8
-	buffer       []byte
-	windowSize   uint8 // actual window size we advertised in the original request
-	moreFollows  bool
-	complete     bool
+	invokeId    uint8
+	expectedSeq uint8
+	buffer      []byte
+	windowSize  uint8 // actual window size we advertised in the original request
+	moreFollows bool
+	complete    bool
 }
 
 // NewInboundReassembler creates a fresh reassembler tracking the given invoke
@@ -100,13 +100,13 @@ func (r *inboundReassembler) Bytes() []byte { return r.buffer }
 // SendNext returns the next segment to put on the wire, then waits for the
 // remote SegmentAck via AcknowledgeSegment before calling SendNext again.
 type outboundSegmenter struct {
-	invokeId     uint8
-	payload      []byte
-	maxSegment   uint16 // bytes per segment (peer's max APDU minus header overhead)
-	windowSize   uint8
-	nextSeq      uint8
-	cursor       int  // byte offset into payload
-	done         bool
+	invokeId   uint8
+	payload    []byte
+	maxSegment uint16 // bytes per segment (peer's max APDU minus header overhead)
+	windowSize uint8
+	nextSeq    uint8
+	cursor     int // byte offset into payload
+	done       bool
 }
 
 // NewOutboundSegmenter prepares a segmenter for the given serialized request

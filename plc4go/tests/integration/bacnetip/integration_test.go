@@ -1,3 +1,5 @@
+//go:build integration
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,7 +25,6 @@
 // build tag (`integration`) and an environment variable (`BACNET_IT`) so the
 // default `make test` does not try to run them.
 //
-//go:build integration
 
 package bacnetip_test
 

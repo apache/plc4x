@@ -41,7 +41,7 @@ import (
 //   - CharacterString→ PlcSTRING
 //   - OctetString    → PlcRawByteArray
 //   - Enumerated     → PlcUDINT (the raw numeric; the property identifier on
-//                      the request side determines the enum schema)
+//     the request side determines the enum schema)
 //   - BitString      → PlcRawByteArray (packed MSB-first)
 //   - Date           → PlcDATE       (year-1900 + month + day-of-month)
 //   - Time           → PlcTIME_OF_DAY

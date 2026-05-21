@@ -127,4 +127,3 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// TODO: maybe we return here a not enough error error
 	return nil, nil
 }
-

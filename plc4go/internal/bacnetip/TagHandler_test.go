@@ -97,10 +97,10 @@ func TestTagHandler_ParseInvalidString(t *testing.T) {
 	cases := []string{
 		"",
 		"garbage",
-		"ANALOG_INPUT,1",       // missing property
-		"ANALOG_INPUT/X",       // missing instance
-		"ANALOG_INPUT,abc/X",   // non-numeric instance
-		",1/X",                 // missing object type
+		"ANALOG_INPUT,1",     // missing property
+		"ANALOG_INPUT/X",     // missing instance
+		"ANALOG_INPUT,abc/X", // non-numeric instance
+		",1/X",               // missing object type
 	}
 	for _, c := range cases {
 		_, err := h.ParseTag(c)

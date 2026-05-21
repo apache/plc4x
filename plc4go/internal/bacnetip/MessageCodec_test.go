@@ -64,12 +64,12 @@ func (f *fakeTransportInstance) WrittenBytes() []byte {
 	return append([]byte(nil), f.writeBuffer.Bytes()...)
 }
 
-func (f *fakeTransportInstance) Connect(_ context.Context) error           { f.connected = true; return nil }
+func (f *fakeTransportInstance) Connect(_ context.Context) error            { f.connected = true; return nil }
 func (f *fakeTransportInstance) ConnectWithContext(_ context.Context) error { return f.Connect(nil) }
-func (f *fakeTransportInstance) Close() error                              { f.connected = false; return nil }
-func (f *fakeTransportInstance) IsConnected() bool                         { return f.connected }
-func (f *fakeTransportInstance) String() string                            { return "fake" }
-func (f *fakeTransportInstance) Reset()                                    {}
+func (f *fakeTransportInstance) Close() error                               { f.connected = false; return nil }
+func (f *fakeTransportInstance) IsConnected() bool                          { return f.connected }
+func (f *fakeTransportInstance) String() string                             { return "fake" }
+func (f *fakeTransportInstance) Reset()                                     {}
 
 func (f *fakeTransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	f.mu.Lock()

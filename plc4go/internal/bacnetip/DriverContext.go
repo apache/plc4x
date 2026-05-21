@@ -34,15 +34,15 @@ type DriverContext struct {
 	// maxApduLengthAccepted is the Configuration.MaxApduLengthAccepted byte count
 	// translated to its BACnet enum value (used in IAm responses and confirmed
 	// requests). E.g. 1476 → MaxApduLengthAccepted_NUM_OCTETS_1476.
-	maxApduLengthAccepted model.MaxApduLengthAccepted
+	maxApduLengthAccepted model.MaxApduLengthAccepted `stringer:"true"`
 
 	// segmentation is Configuration.SegmentationSupported translated to its
 	// BACnet enum. Defaults to SEGMENTED_BOTH for unknown strings.
-	segmentation model.BACnetSegmentation
+	segmentation model.BACnetSegmentation `stringer:"true"`
 
 	// maxSegmentsAccepted is Configuration.MaxSegmentsAccepted translated to its
 	// BACnet enum value (e.g. 16 → NUM_SEGMENTS_16).
-	maxSegmentsAccepted model.MaxSegmentsAccepted
+	maxSegmentsAccepted model.MaxSegmentsAccepted `stringer:"true"`
 
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
