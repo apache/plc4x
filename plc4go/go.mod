@@ -27,7 +27,7 @@ require (
 	github.com/ajankovic/xdiff v0.0.1
 	github.com/fatih/color v1.19.0
 	github.com/google/uuid v1.6.0
-	github.com/gopacket/gopacket v1.5.0
+	github.com/gopacket/gopacket v1.6.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
 	github.com/rs/zerolog v1.35.1
 	github.com/stretchr/testify v1.11.1
