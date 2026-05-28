@@ -122,6 +122,10 @@ func (f *fakeTransportInstance) FillBuffer(ctx context.Context, until func(pos u
 	return ctx.Err()
 }
 
+func (f *fakeTransportInstance) ClassifyError(err error) transports.TransportErrorKind {
+	return transports.TransportErrorUnknown
+}
+
 var _ transports.TransportInstance = (*fakeTransportInstance)(nil)
 
 func newTestCodec(t *testing.T) (*MessageCodec, *fakeTransportInstance) {

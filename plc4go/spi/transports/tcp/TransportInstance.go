@@ -23,9 +23,11 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -157,4 +159,42 @@ func (m *TransportInstance) String() string {
 		localAddress = m.LocalAddress.String() + "->"
 	}
 	return fmt.Sprintf("tcp:%s%s", localAddress, m.RemoteAddress)
+}
+
+// ClassifyError attempts to map common network errors to transport severity categories.
+func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKind {
+	if err == nil {
+		return transports.TransportErrorUnknown
+	}
+	if transports.ErrorIs(err, io.EOF) || transports.ErrorIs(err, net.ErrClosed) {
+		return transports.TransportErrorFatal
+	}
+	if netErr, ok := err.(net.Error); ok {
+		if netErr.Timeout() {
+			return transports.TransportErrorRetryable
+		}
+	}
+	if transports.IsTransientSyscallError(err) {
+		return transports.TransportErrorTransient
+	}
+	var opErr *net.OpError
+	if transports.ErrorAs(err, &opErr) && opErr != nil {
+		if opErr.Timeout() {
+			return transports.TransportErrorRetryable
+		}
+		if transports.IsTransientSyscallError(opErr.Err) {
+			return transports.TransportErrorTransient
+		}
+		var syscallErr syscall.Errno
+		if transports.ErrorAs(opErr.Err, &syscallErr) {
+			switch syscallErr {
+			case syscall.ECONNREFUSED, syscall.ECONNRESET, syscall.EPIPE, syscall.ENETDOWN, syscall.ENETUNREACH:
+				return transports.TransportErrorFatal
+			case syscall.ETIMEDOUT:
+				return transports.TransportErrorRetryable
+			}
+		}
+		return transports.TransportErrorFatal
+	}
+	return transports.TransportErrorFatal
 }

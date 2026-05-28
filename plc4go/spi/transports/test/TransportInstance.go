@@ -326,6 +326,20 @@ func (m *TransportInstance) String() string {
 	return "test"
 }
 
+// ClassifyError maps test-transport specific error values to the shared severity enum.
+func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKind {
+	if err == nil {
+		return transports.TransportErrorUnknown
+	}
+	if transports.ErrorIs(err, context.Canceled) {
+		return transports.TransportErrorTransient
+	}
+	if transports.ErrorIs(err, context.DeadlineExceeded) || transports.ErrorIs(err, bufio.ErrBufferFull) {
+		return transports.TransportErrorRetryable
+	}
+	return transports.TransportErrorFatal
+}
+
 func (m *TransportInstance) availableBytes() uint32 {
 	m.dataMutex.RLock()
 	defer m.dataMutex.RUnlock()

@@ -23,6 +23,7 @@ import (
 	"context"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -45,6 +46,7 @@ type Connection struct {
 	connected    bool
 	connectionId string
 	tracer       tracer.Tracer
+	invalidated  atomic.Bool
 
 	wg sync.WaitGroup // use to track spawned go routines
 
@@ -118,6 +120,7 @@ func (c *Connection) Connect(_ context.Context) error {
 	} else {
 		// Mark the connection as "connected"
 		c.connected = true
+		c.invalidated.Store(false)
 		if c.tracer != nil {
 			c.tracer.AddTransactionalTrace(txId, "connect", "success")
 		}
@@ -132,6 +135,9 @@ func (c *Connection) Close() error {
 
 	// Check if the connection is connected.
 	if !c.connected {
+		if c.invalidated.Load() {
+			return nil
+		}
 		if c.tracer != nil {
 			c.tracer.AddTrace("close", "error: not connected")
 		}
@@ -161,10 +167,13 @@ func (c *Connection) Close() error {
 }
 
 func (c *Connection) IsConnected() bool {
-	return c.connected
+	return c.connected && !c.IsInvalidated()
 }
 
 func (c *Connection) Ping(ctx context.Context) error {
+	if c.IsInvalidated() {
+		return errors.New("connection has been invalidated")
+	}
 	// Check if the connection is connected
 	if !c.connected {
 		if c.tracer != nil {
@@ -245,4 +254,18 @@ func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 
 func (c *Connection) String() string {
 	return "simulatedConnection"
+}
+
+func (c *Connection) Invalidate() {
+	if c.invalidated.Swap(true) {
+		return
+	}
+	c.log.Debug().Msg("invalidating connection")
+	if err := c.Close(); err != nil {
+		c.log.Warn().Err(err).Msg("error closing invalidated connection")
+	}
+}
+
+func (c *Connection) IsInvalidated() bool {
+	return c.invalidated.Load()
 }

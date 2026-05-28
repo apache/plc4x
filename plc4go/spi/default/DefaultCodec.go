@@ -21,6 +21,7 @@ package _default
 
 import (
 	"context"
+	stdErrors "errors"
 	"runtime/debug"
 	"slices"
 	"sync"
@@ -50,6 +51,7 @@ type DefaultCodec interface {
 	utils.Serializable
 	spi.MessageCodec
 	spi.TransportInstanceExposer
+	spi.TransportErrorHandlerSetter
 }
 
 // NewDefaultCodec is the factory for a DefaultCodec
@@ -100,6 +102,8 @@ type defaultCodec struct {
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
+
+	transportErrorHandler transports.TransportErrorHandler
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {
@@ -142,6 +146,10 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 
 func (m *defaultCodec) GetTransportInstance() transports.TransportInstance {
 	return m.transportInstance
+}
+
+func (m *defaultCodec) SetTransportErrorHandler(handler transports.TransportErrorHandler) {
+	m.transportErrorHandler = handler
 }
 
 func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
@@ -476,7 +484,11 @@ mainLoop:
 		}
 		if err != nil {
 			workerLog.Error().Err(err).Msg("got an error reading from transport")
-			continue mainLoop
+			if m.handleTransportError(workerLog, err) {
+				continue mainLoop
+			}
+			workerLog.Debug().Msg("transport error requested worker shutdown")
+			return
 		}
 		if message == nil {
 			workerLog.Trace().Msg("Not enough data yet")
@@ -513,5 +525,100 @@ func (m *defaultCodec) passToDefaultIncomingMessageChannel(workerLog zerolog.Log
 	case m.defaultIncomingMessageChannel <- message:
 	default:
 		workerLog.Warn().Interface("message", message).Msg("Message discarded")
+	}
+}
+
+func (m *defaultCodec) handleTransportError(workerLog zerolog.Logger, err error) bool {
+	if err == nil {
+		return true
+	}
+	if stdErrors.Is(err, context.Canceled) {
+		workerLog.Debug().Msg("receive aborted due to context cancellation")
+		return false
+	}
+
+	kind := transports.TransportErrorUnknown
+	if stdErrors.Is(err, context.DeadlineExceeded) {
+		kind = transports.TransportErrorRetryable
+	} else if m.transportInstance != nil {
+		kind = m.transportInstance.ClassifyError(err)
+	}
+	if kind == transports.TransportErrorUnknown {
+		workerLog.Warn().Err(err).Msg("transport error classified as unknown; treating as fatal")
+		kind = transports.TransportErrorFatal
+	}
+
+	switch kind {
+	case transports.TransportErrorTransient:
+		workerLog.Debug().Err(err).Msg("transient transport error; keeping worker alive")
+		m.emitTransportError(kind, transports.NewTransportError(kind, err))
+		return true
+	case transports.TransportErrorRetryable:
+		workerLog.Warn().Err(err).Msg("retryable transport error; resetting transport instance")
+		if m.transportInstance != nil {
+			defer func() {
+				if recoverErr := recover(); recoverErr != nil {
+					workerLog.Error().Interface("panic", recoverErr).Msg("panic while resetting transport instance")
+				}
+			}()
+			m.transportInstance.Reset()
+		}
+		m.emitTransportError(kind, transports.NewTransportError(kind, err))
+		return true
+	case transports.TransportErrorFatal:
+		workerLog.Error().Err(err).Msg("fatal transport error; shutting down codec")
+		wrappedErr := transports.NewTransportError(kind, err)
+		m.failAllExpectations(wrappedErr)
+		if m.transportInstance != nil {
+			if closeErr := m.transportInstance.Close(); closeErr != nil {
+				workerLog.Warn().Err(closeErr).Msg("error closing transport after fatal condition")
+			}
+		}
+		if m.ctxCancel != nil {
+			m.ctxCancel()
+		}
+		m.running.Store(false)
+		m.emitTransportError(kind, wrappedErr)
+		return false
+	default:
+		workerLog.Error().Err(err).Msg("unexpected transport error classification; treating as fatal")
+		wrappedErr := transports.NewTransportError(transports.TransportErrorFatal, err)
+		m.failAllExpectations(wrappedErr)
+		if m.transportInstance != nil {
+			if closeErr := m.transportInstance.Close(); closeErr != nil {
+				workerLog.Warn().Err(closeErr).Msg("error closing transport after unexpected classification")
+			}
+		}
+		if m.ctxCancel != nil {
+			m.ctxCancel()
+		}
+		m.running.Store(false)
+		m.emitTransportError(transports.TransportErrorFatal, wrappedErr)
+		return false
+	}
+}
+
+func (m *defaultCodec) emitTransportError(kind transports.TransportErrorKind, err error) {
+	if m.transportErrorHandler != nil {
+		m.transportErrorHandler(kind, err)
+	}
+}
+
+func (m *defaultCodec) failAllExpectations(err error) {
+	m.expectationsChangeMutex.Lock()
+	expectations := slices.Clone(m.expectations)
+	m.expectations = nil
+	m.expectationsChangeMutex.Unlock()
+
+	for _, expectation := range expectations {
+		expectation := expectation
+		expectation.Cancel(err)
+		if handleErr := expectation.GetHandleError(); handleErr != nil {
+			m.wg.Go(func() {
+				if handlerErr := handleErr(err); handlerErr != nil {
+					m.log.Error().Err(handlerErr).Msg("error returned by expectation error handler")
+				}
+			})
+		}
 	}
 }

@@ -26,11 +26,11 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/default"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
@@ -110,6 +110,9 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (c *Connection) Ping(ctx context.Context) error {
+	if c.DefaultConnection.IsInvalidated() {
+		return errors.New("connection has been invalidated")
+	}
 	c.log.Trace().Msg("Pinging")
 	errChan := make(chan error, 1)
 	successChan := make(chan struct{}, 1)

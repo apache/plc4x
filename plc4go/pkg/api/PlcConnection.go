@@ -39,6 +39,9 @@ type PlcConnection interface {
 	// Ping Executes a no-op operation to check if the current connection is still able to communicate
 	Ping(ctx context.Context) error
 
+	// Invalidate marks the connection as irrecoverably failed so caches can drop it without health checks.
+	Invalidate()
+
 	// GetMetadata Get some metadata regarding the current connection
 	GetMetadata() model.PlcConnectionMetadata
 

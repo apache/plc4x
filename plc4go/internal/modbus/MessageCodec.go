@@ -66,6 +66,38 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
+func (m *MessageCodec) classifyTransportError(err error) transports.TransportErrorKind {
+	if err == nil {
+		return transports.TransportErrorUnknown
+	}
+	if transport := m.GetTransportInstance(); transport != nil {
+		return transport.ClassifyError(err)
+	}
+	return transports.TransportErrorUnknown
+}
+
+func (m *MessageCodec) isFatalTransportError(err error) bool {
+	if err == nil || isEOF(err) {
+		return false
+	}
+	return m.classifyTransportError(err) == transports.TransportErrorFatal
+}
+
+func (m *MessageCodec) wrapFatalTransportError(err error, msg string) error {
+	if err == nil {
+		return nil
+	}
+	// TODO: Any additional context?
+	return transports.NewTransportError(transports.TransportErrorFatal, errors.Wrap(err, msg))
+}
+
+func isEOF(err error) (matched bool) {
+	if err == nil {
+		return false
+	}
+	return transports.ErrorIs(err, io.EOF)
+}
+
 func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
 	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending message")
 	// Cast the message to the correct type of struct
@@ -100,20 +132,23 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		}
 		return numBytesAvailable < 6
 	}); err != nil {
-		if err != io.EOF {
+		if m.isFatalTransportError(err) {
 			m.log.Debug().Err(err).Msg("error filling buffer")
+			return nil, m.wrapFatalTransportError(err, "error filling buffer")
 		}
-		// Fall through on errors, we might have enough data...
+		// Fall through on non-fatal errors, we might have enough data...
 	}
 
 	// 2. Check buffer status
 	numBytesAvail, err := ti.GetNumBytesAvailableInBuffer()
-	if err != nil {
+	if err != nil && numBytesAvail < 6 {
 		// Yield if we can't check buffer
-		if err == io.EOF {
+		if isEOF(err) {
+			m.log.Debug().Msg("transport buffer exhausted while checking availability")
 			return nil, nil
 		}
-		return nil, fmt.Errorf("error getting buffer length")
+		m.log.Warn().Err(err).Msg("error getting buffer length")
+		return nil, m.wrapFatalTransportError(err, "error getting buffer length")
 	}
 
 	// Need at least 6 bytes for MBAP header
@@ -125,6 +160,9 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	header, err := ti.PeekReadableBytes(ctx, 6)
 	if err != nil {
 		m.log.Warn().Err(err).Msg("error peeking header")
+		if m.isFatalTransportError(err) {
+			return nil, m.wrapFatalTransportError(err, "error peeking header")
+		}
 		return nil, nil
 	}
 
@@ -175,7 +213,10 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// Read the entire frame
 	frameSlice, err := ti.PeekReadableBytes(ctx, packetSize)
 	if err != nil {
-		m.log.Warn().Err(err).Msg("Error peeking frame slice")
+		m.log.Warn().Err(err).Msg("error peeking frame slice")
+		if m.isFatalTransportError(err) {
+			return nil, m.wrapFatalTransportError(err, "error peeking frame slice")
+		}
 		return nil, nil
 	}
 
@@ -357,7 +398,7 @@ func (m *MessageCodec) checkPacketConsistency(data []byte) bool {
 // handleDesync handles stream realignment when an invalid header is detected at the head.
 // It strictly scans the available buffer for a valid MBAP header using checkPacketConsistency.
 // If one is found, it realigns the stream.
-// If NO valid header is found in the *entire* buffer, it treats the connection as dead.
+// If NO valid header is found in the *entire* buffer, it trims the garbage and waits for more data.
 func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields map[string]interface{}) (spi.Message, error) {
 	ti := m.GetTransportInstance()
 
@@ -444,5 +485,5 @@ func (m *MessageCodec) handleDesync(ctx context.Context, reason string, fields m
 		return nil, err // Return error to kill connection
 	}
 
-	return nil, fmt.Errorf("stream desynchronized: discarded %d bytes of garbage", bytesToDiscard)
+	return nil, nil
 }

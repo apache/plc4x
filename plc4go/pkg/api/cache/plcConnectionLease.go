@@ -22,6 +22,7 @@ package cache
 import (
 	"context"
 	"fmt"
+	"sync/atomic"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -38,7 +39,11 @@ type plcConnectionLease struct {
 	connection tracedPlcConnection
 	// the last traces of this connection
 	lastTraces []tracer.TraceEntry
+	// invalidated indicates the lease was explicitly marked unusable by the caller.
+	invalidated atomic.Bool
 }
+
+var errConnectionInvalidated = errors.New("connection has been invalidated")
 
 func newPlcConnectionLease(connectionContainer *connectionContainer, leaseId uint32, connection tracedPlcConnection) *plcConnectionLease {
 	p := &plcConnectionLease{
@@ -53,23 +58,17 @@ func newPlcConnectionLease(connectionContainer *connectionContainer, leaseId uin
 }
 
 func (t *plcConnectionLease) IsTraceEnabled() bool {
-	if t.connection == nil {
-		panic("Called 'IsTraceEnabled' on a closed cached connection")
-	}
+	t.ensureConnection("IsTraceEnabled")
 	return t.connection.IsTraceEnabled()
 }
 
 func (t *plcConnectionLease) GetTracer() tracer.Tracer {
-	if t.connection == nil {
-		panic("Called 'GetTracer' on a closed cached connection")
-	}
+	t.ensureConnection("GetTracer")
 	return t.connection.GetTracer()
 }
 
 func (t *plcConnectionLease) GetConnectionId() string {
-	if t.connection == nil {
-		panic("Called 'GetConnectionId' on a closed cached connection")
-	}
+	t.ensureConnection("GetConnectionId")
 	return fmt.Sprintf("%s-%d", t.connection.GetConnectionId(), t.leaseId)
 }
 
@@ -88,7 +87,9 @@ func (t *plcConnectionLease) Close() error {
 
 	// Check if the connection is still alive, if it is, put it back into the cache
 	newState := StateIdle
-	if err := t.Ping(ctx); err != nil {
+	if t.isInvalidated() {
+		newState = StateInvalid
+	} else if err := t.Ping(ctx); err != nil {
 		if errors.Is(err, context.DeadlineExceeded) {
 			// Add some trace information
 			if t.connection.IsTraceEnabled() {
@@ -98,8 +99,8 @@ func (t *plcConnectionLease) Close() error {
 		newState = StateInvalid
 	}
 
-	// Extract the trace entries from the connection.
-	if t.IsTraceEnabled() {
+	// Extract the trace entries from the connection unless it was invalidated.
+	if !t.isInvalidated() && t.IsTraceEnabled() {
 		_tracer := t.GetTracer()
 		// Save all traces.
 		t.lastTraces = _tracer.GetTraces()
@@ -126,6 +127,9 @@ func (t *plcConnectionLease) IsConnected() bool {
 	if t.connection == nil {
 		return false
 	}
+	if t.isInvalidated() {
+		return false
+	}
 	return t.connection.IsConnected()
 }
 
@@ -133,49 +137,64 @@ func (t *plcConnectionLease) Ping(ctx context.Context) error {
 	if t.connection == nil {
 		panic("Called 'Ping' on a closed cached connection")
 	}
+	if t.isInvalidated() {
+		return errConnectionInvalidated
+	}
 	return t.connection.Ping(ctx)
 }
 
 func (t *plcConnectionLease) GetMetadata() apiModel.PlcConnectionMetadata {
-	if t.connection == nil {
-		panic("Called 'GetMetadata' on a closed cached connection")
-	}
+	t.ensureConnection("GetMetadata")
 	return t.connection.GetMetadata()
 }
 
 func (t *plcConnectionLease) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	if t.connection == nil {
-		panic("Called 'ReadRequestBuilder' on a closed cached connection")
-	}
+	t.ensureConnection("ReadRequestBuilder")
 	return t.connection.ReadRequestBuilder()
 }
 
 func (t *plcConnectionLease) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	if t.connection == nil {
-		panic("Called 'WriteRequestBuilder' on a closed cached connection")
-	}
+	t.ensureConnection("WriteRequestBuilder")
 	return t.connection.WriteRequestBuilder()
 }
 
 func (t *plcConnectionLease) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	if t.connection == nil {
-		panic("Called 'SubscriptionRequestBuilder' on a closed cached connection")
-	}
+	t.ensureConnection("SubscriptionRequestBuilder")
 	return t.connection.SubscriptionRequestBuilder()
 }
 
 func (t *plcConnectionLease) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
-	if t.connection == nil {
-		panic("Called 'UnsubscriptionRequestBuilder' on a closed cached connection")
-	}
+	t.ensureConnection("UnsubscriptionRequestBuilder")
 	return t.connection.UnsubscriptionRequestBuilder()
 }
 
 func (t *plcConnectionLease) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	if t.connection == nil {
-		panic("Called 'BrowseRequestBuilder' on a closed cached connection")
-	}
+	t.ensureConnection("BrowseRequestBuilder")
 	return t.connection.BrowseRequestBuilder()
+}
+
+func (t *plcConnectionLease) Invalidate() {
+	if t.connection == nil {
+		t.invalidated.Store(true)
+		return
+	}
+	if t.invalidated.Swap(true) {
+		return
+	}
+	t.connection.Invalidate()
+}
+
+func (t *plcConnectionLease) ensureConnection(method string) {
+	if t.connection == nil {
+		panic(fmt.Sprintf("Called '%s' on a closed cached connection", method))
+	}
+	if t.isInvalidated() {
+		panic(fmt.Sprintf("Called '%s' on an invalidated cached connection", method))
+	}
+}
+
+func (t *plcConnectionLease) isInvalidated() bool {
+	return t.invalidated.Load()
 }
 
 func (t *plcConnectionLease) String() string {

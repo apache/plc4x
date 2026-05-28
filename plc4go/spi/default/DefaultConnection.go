@@ -21,12 +21,13 @@ package _default
 
 import (
 	"context"
+	"reflect"
 	"sync"
 	"sync/atomic"
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -51,6 +52,7 @@ type DefaultConnection interface {
 	spi.TransportInstanceExposer
 	spi.HandlerExposer
 	SetConnected(connected bool)
+	IsInvalidated() bool
 }
 
 // NewDefaultConnection is the factory for a DefaultConnection
@@ -87,6 +89,7 @@ type defaultConnection struct {
 	DefaultConnectionRequirements `ignore:"true"`
 	// connected indicates if a connection is connected
 	connected    atomic.Bool
+	invalidated  atomic.Bool
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 
@@ -109,18 +112,50 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 	}
 
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	return &defaultConnection{
+	conn := &defaultConnection{
 		DefaultConnectionRequirements: requirements,
 		tagHandler:                    tagHandler,
 		valueHandler:                  valueHandler,
 
 		log: customLogger,
 	}
+
+	var codec spi.MessageCodec
+	if requirements != nil {
+		codec = requirements.GetMessageCodec()
+	}
+	if codec != nil {
+		if codecValue := reflect.ValueOf(codec); codecValue.Kind() == reflect.Pointer && codecValue.IsNil() {
+			codec = nil
+		}
+	}
+	if codec != nil {
+		if setter, ok := codec.(spi.TransportErrorHandlerSetter); ok {
+			setter.SetTransportErrorHandler(func(kind transports.TransportErrorKind, err error) {
+				switch kind {
+				case transports.TransportErrorFatal:
+					conn.log.Error().Err(err).Msg("transport reported fatal error; invalidating connection")
+					conn.Invalidate()
+				case transports.TransportErrorRetryable:
+					conn.log.Warn().Err(err).Msg("transport reported retryable error")
+				case transports.TransportErrorTransient:
+					conn.log.Debug().Err(err).Msg("transport reported transient error")
+				default:
+					conn.log.Warn().Err(err).Msg("transport reported unknown error classification")
+				}
+			})
+		}
+	}
+
+	return conn
 }
 
 func (d *defaultConnection) SetConnected(connected bool) {
 	d.log.Trace().Bool("connected", connected).Msg("set connected")
 	d.connected.Store(connected)
+	if connected {
+		d.invalidated.Store(false)
+	}
 }
 
 func (d *defaultConnection) Connect(ctx context.Context) error {
@@ -135,7 +170,11 @@ func (d *defaultConnection) Close() error {
 	if messageCodec := d.GetMessageCodec(); messageCodec != nil {
 		d.log.Trace().Msg("disconnecting message codec")
 		if err := messageCodec.Disconnect(); err != nil {
-			d.log.Warn().Err(err).Msg("Error disconnecting message code")
+			if err.Error() != "already disconnected" {
+				d.log.Warn().Err(err).Msg("Error disconnecting message codec")
+			} else {
+				d.log.Trace().Msg("message codec already disconnected")
+			}
 		} else {
 			d.log.Trace().Msg("message codec disconnected")
 		}
@@ -155,14 +194,31 @@ func (d *defaultConnection) Close() error {
 
 func (d *defaultConnection) IsConnected() bool {
 	// TODO: should we check here if the transport is connected?
-	return d.connected.Load()
+	return d.connected.Load() && !d.invalidated.Load()
 }
 
 func (d *defaultConnection) Ping(_ context.Context) error {
+	if d.invalidated.Load() {
+		return errors.New("connection has been invalidated")
+	}
 	if !d.DefaultConnectionRequirements.IsConnected() {
 		return errors.New("not connected")
 	}
 	return nil
+}
+
+func (d *defaultConnection) Invalidate() {
+	if d.invalidated.Swap(true) {
+		return
+	}
+	d.log.Debug().Msg("invalidating connection")
+	if err := d.Close(); err != nil {
+		d.log.Warn().Err(err).Msg("error closing invalidated connection")
+	}
+}
+
+func (d *defaultConnection) IsInvalidated() bool {
+	return d.invalidated.Load()
 }
 
 func (d *defaultConnection) GetMetadata() apiModel.PlcConnectionMetadata {

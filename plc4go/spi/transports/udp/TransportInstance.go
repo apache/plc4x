@@ -23,9 +23,11 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -248,4 +250,39 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 
 func (m *TransportInstance) String() string {
 	return fmt.Sprintf("udp:%s->%s", m.LocalAddress, m.RemoteAddress)
+}
+
+func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKind {
+	if err == nil {
+		return transports.TransportErrorUnknown
+	}
+	if transports.ErrorIs(err, io.EOF) || transports.ErrorIs(err, net.ErrClosed) || transports.ErrorIs(err, syscall.EPIPE) {
+		return transports.TransportErrorFatal
+	}
+	if netErr, ok := err.(net.Error); ok {
+		if netErr.Timeout() {
+			return transports.TransportErrorRetryable
+		}
+	}
+	if transports.IsTransientSyscallError(err) {
+		return transports.TransportErrorTransient
+	}
+	var opErr *net.OpError
+	if transports.ErrorAs(err, &opErr) && opErr != nil {
+		if opErr.Timeout() {
+			return transports.TransportErrorRetryable
+		}
+		if transports.IsTransientSyscallError(opErr.Err) {
+			return transports.TransportErrorTransient
+		}
+		if syscallErr, ok := opErr.Err.(syscall.Errno); ok {
+			switch syscallErr {
+			case syscall.ECONNRESET, syscall.ECONNREFUSED, syscall.ENETDOWN, syscall.ENETUNREACH:
+				return transports.TransportErrorFatal
+			case syscall.ETIMEDOUT:
+				return transports.TransportErrorRetryable
+			}
+		}
+	}
+	return transports.TransportErrorFatal
 }

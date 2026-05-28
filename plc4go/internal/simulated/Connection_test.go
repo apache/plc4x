@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -40,6 +41,7 @@ func TestConnection_Connect(t *testing.T) {
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
+		invalidated  bool
 	}
 	tests := []struct {
 		name    string
@@ -93,6 +95,7 @@ func TestConnection_Close(t *testing.T) {
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
+		invalidated  bool
 	}
 	tests := []struct {
 		name    string
@@ -291,6 +294,7 @@ func TestConnection_IsConnected(t *testing.T) {
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
+		invalidated  bool
 	}
 	tests := []struct {
 		name   string
@@ -319,6 +323,18 @@ func TestConnection_IsConnected(t *testing.T) {
 			},
 			want: false,
 		},
+		{
+			name: "invalidated",
+			fields: fields{
+				device:       NewDevice("hurz"),
+				fieldHandler: NewTagHandler(),
+				valueHandler: NewValueHandler(),
+				options:      map[string][]string{},
+				connected:    true,
+				invalidated:  true,
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -328,6 +344,9 @@ func TestConnection_IsConnected(t *testing.T) {
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
+			}
+			if tt.fields.invalidated {
+				c.invalidated.Store(true)
 			}
 			if got := c.IsConnected(); got != tt.want {
 				t.Errorf("IsConnected() = %v, want %v", got, tt.want)
@@ -351,6 +370,7 @@ func TestConnection_Ping(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
+		prepare      func(*Connection)
 		wantErr      assert.ErrorAssertionFunc
 		delayAtLeast time.Duration
 	}{
@@ -386,6 +406,24 @@ func TestConnection_Ping(t *testing.T) {
 			wantErr:      assert.NoError,
 			delayAtLeast: 1000,
 		},
+		{
+			name: "invalidated",
+			fields: fields{
+				device:       NewDevice("hurz"),
+				fieldHandler: NewTagHandler(),
+				valueHandler: NewValueHandler(),
+				options:      map[string][]string{},
+				connected:    true,
+			},
+			args: args{
+				ctx: t.Context(),
+			},
+			prepare: func(c *Connection) {
+				c.invalidated.Store(true)
+			},
+			wantErr:      assert.Error,
+			delayAtLeast: 0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -396,10 +434,26 @@ func TestConnection_Ping(t *testing.T) {
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
 			}
+			if tt.prepare != nil {
+				prepare := tt.prepare
+				prepare(c)
+			}
 			err := c.Ping(tt.args.ctx)
 			tt.wantErr(t, err)
 		})
 	}
+}
+
+func TestConnection_Invalidate(t *testing.T) {
+	conn := NewConnection(NewDevice("hurz"), NewTagHandler(), NewValueHandler(), map[string][]string{})
+	require.NoError(t, conn.Connect(t.Context()))
+	conn.Invalidate()
+	assert.True(t, conn.IsInvalidated())
+	assert.False(t, conn.IsConnected())
+	assert.Error(t, conn.Ping(t.Context()))
+	require.NoError(t, conn.Close())
+	conn.Invalidate()
+	assert.True(t, conn.IsInvalidated())
 }
 
 func TestConnection_BrowseRequestBuilder(t *testing.T) {
