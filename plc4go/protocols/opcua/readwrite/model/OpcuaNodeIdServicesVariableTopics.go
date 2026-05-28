@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,9 +41,15 @@ type IOpcuaNodeIdServicesVariableTopics interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments  OpcuaNodeIdServicesVariableTopics = 23495
-	OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments OpcuaNodeIdServicesVariableTopics = 23496
-	OpcuaNodeIdServicesVariableTopics_Topics_LastChange                OpcuaNodeIdServicesVariableTopics = 32856
+	OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments                  OpcuaNodeIdServicesVariableTopics = 23495
+	OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments                 OpcuaNodeIdServicesVariableTopics = 23496
+	OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_InputArguments           OpcuaNodeIdServicesVariableTopics = 24073
+	OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_OutputArguments          OpcuaNodeIdServicesVariableTopics = 24074
+	OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_InputArguments       OpcuaNodeIdServicesVariableTopics = 24076
+	OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_OutputArguments      OpcuaNodeIdServicesVariableTopics = 24077
+	OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_InputArguments  OpcuaNodeIdServicesVariableTopics = 24079
+	OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_OutputArguments OpcuaNodeIdServicesVariableTopics = 24080
+	OpcuaNodeIdServicesVariableTopics_Topics_LastChange                                OpcuaNodeIdServicesVariableTopics = 32856
 )
 
 var OpcuaNodeIdServicesVariableTopicsValues []OpcuaNodeIdServicesVariableTopics
@@ -53,6 +59,12 @@ func init() {
 	OpcuaNodeIdServicesVariableTopicsValues = []OpcuaNodeIdServicesVariableTopics{
 		OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments,
 		OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments,
+		OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_InputArguments,
+		OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_OutputArguments,
+		OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_InputArguments,
+		OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_OutputArguments,
+		OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_InputArguments,
+		OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_OutputArguments,
 		OpcuaNodeIdServicesVariableTopics_Topics_LastChange,
 	}
 }
@@ -63,6 +75,18 @@ func OpcuaNodeIdServicesVariableTopicsByValue(value int32) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments, true
 	case 23496:
 		return OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments, true
+	case 24073:
+		return OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_InputArguments, true
+	case 24074:
+		return OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_OutputArguments, true
+	case 24076:
+		return OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_InputArguments, true
+	case 24077:
+		return OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_OutputArguments, true
+	case 24079:
+		return OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_InputArguments, true
+	case 24080:
+		return OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_OutputArguments, true
 	case 32856:
 		return OpcuaNodeIdServicesVariableTopics_Topics_LastChange, true
 	}
@@ -75,6 +99,18 @@ func OpcuaNodeIdServicesVariableTopicsByName(value string) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments, true
 	case "Topics_FindAlias_OutputArguments":
 		return OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments, true
+	case "Topics_FindAliasVerbose_InputArguments":
+		return OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_InputArguments, true
+	case "Topics_FindAliasVerbose_OutputArguments":
+		return OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_OutputArguments, true
+	case "Topics_AddAliasesToCategory_InputArguments":
+		return OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_InputArguments, true
+	case "Topics_AddAliasesToCategory_OutputArguments":
+		return OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_OutputArguments, true
+	case "Topics_DeleteAliasesFromCategory_InputArguments":
+		return OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_InputArguments, true
+	case "Topics_DeleteAliasesFromCategory_OutputArguments":
+		return OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_OutputArguments, true
 	case "Topics_LastChange":
 		return OpcuaNodeIdServicesVariableTopics_Topics_LastChange, true
 	}
@@ -152,6 +188,18 @@ func (e OpcuaNodeIdServicesVariableTopics) PLC4XEnumName() string {
 		return "Topics_FindAlias_InputArguments"
 	case OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments:
 		return "Topics_FindAlias_OutputArguments"
+	case OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_InputArguments:
+		return "Topics_FindAliasVerbose_InputArguments"
+	case OpcuaNodeIdServicesVariableTopics_Topics_FindAliasVerbose_OutputArguments:
+		return "Topics_FindAliasVerbose_OutputArguments"
+	case OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_InputArguments:
+		return "Topics_AddAliasesToCategory_InputArguments"
+	case OpcuaNodeIdServicesVariableTopics_Topics_AddAliasesToCategory_OutputArguments:
+		return "Topics_AddAliasesToCategory_OutputArguments"
+	case OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_InputArguments:
+		return "Topics_DeleteAliasesFromCategory_InputArguments"
+	case OpcuaNodeIdServicesVariableTopics_Topics_DeleteAliasesFromCategory_OutputArguments:
+		return "Topics_DeleteAliasesFromCategory_OutputArguments"
 	case OpcuaNodeIdServicesVariableTopics_Topics_LastChange:
 		return "Topics_LastChange"
 	}

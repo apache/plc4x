@@ -66,7 +66,30 @@ public enum PlcResponseCode {
     /**
      * Indicates a response is pending.
      */
-    RESPONSE_PENDING((short) 0x0C);
+    RESPONSE_PENDING((short) 0x0C),
+    /**
+     * The request and the connection are both healthy, but the data this
+     * tag points at is not yet available — typically because an asynchronous
+     * source (cyclic IO, subscription stream, lazy cache) has not yet
+     * delivered its first value. The caller should retry shortly; this is
+     * not a permanent failure.
+     *
+     * <p>Distinct from {@link #RESPONSE_PENDING}, which signals a
+     * request/response is in flight to a remote endpoint. {@code NOT_READY}
+     * is for push-model and cache-backed reads where there is no in-flight
+     * request to wait on — only the next periodic delivery.</p>
+     */
+    NOT_READY((short) 0x0D),
+    /**
+     * The request shape is valid, but a value carried by it falls outside
+     * the range the target accepts — e.g. a numeric value too large for
+     * the destination datatype, an address beyond the device's declared
+     * extent, or a polling interval below the protocol's wire-cycle floor.
+     * Distinct from {@link #INVALID_DATA} (which means "malformed") and
+     * {@link #INVALID_ADDRESS} (which means "no such address exists").
+     */
+    OUT_OF_RANGE((short) 0x0E);
+
     private static final Map<Short, PlcResponseCode> map;
 
     static {

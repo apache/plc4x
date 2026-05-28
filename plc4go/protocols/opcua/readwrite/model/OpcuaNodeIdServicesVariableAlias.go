@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,12 +41,26 @@ type IOpcuaNodeIdServicesVariableAlias interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_InputArguments  OpcuaNodeIdServicesVariableAlias = 23460
-	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments OpcuaNodeIdServicesVariableAlias = 23461
-	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments                                     OpcuaNodeIdServicesVariableAlias = 23463
-	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments                                    OpcuaNodeIdServicesVariableAlias = 23464
-	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange                OpcuaNodeIdServicesVariableAlias = 32849
-	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_LastChange                                                   OpcuaNodeIdServicesVariableAlias = 32850
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_InputArguments                  OpcuaNodeIdServicesVariableAlias = 23460
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments                 OpcuaNodeIdServicesVariableAlias = 23461
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments                                                     OpcuaNodeIdServicesVariableAlias = 23463
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments                                                    OpcuaNodeIdServicesVariableAlias = 23464
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_InputArguments           OpcuaNodeIdServicesVariableAlias = 23931
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_OutputArguments          OpcuaNodeIdServicesVariableAlias = 23935
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_InputArguments       OpcuaNodeIdServicesVariableAlias = 23937
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_OutputArguments      OpcuaNodeIdServicesVariableAlias = 23959
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_InputArguments  OpcuaNodeIdServicesVariableAlias = 23961
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_OutputArguments OpcuaNodeIdServicesVariableAlias = 23962
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_InputArguments                                              OpcuaNodeIdServicesVariableAlias = 23964
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_OutputArguments                                             OpcuaNodeIdServicesVariableAlias = 23971
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_InputArguments                                          OpcuaNodeIdServicesVariableAlias = 23973
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_OutputArguments                                         OpcuaNodeIdServicesVariableAlias = 23974
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_InputArguments                                     OpcuaNodeIdServicesVariableAlias = 23976
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_OutputArguments                                    OpcuaNodeIdServicesVariableAlias = 23986
+	OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetClassId                                                                 OpcuaNodeIdServicesVariableAlias = 24499
+	OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetMetaData                                                                OpcuaNodeIdServicesVariableAlias = 24500
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange                                OpcuaNodeIdServicesVariableAlias = 32849
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_LastChange                                                                   OpcuaNodeIdServicesVariableAlias = 32850
 )
 
 var OpcuaNodeIdServicesVariableAliasValues []OpcuaNodeIdServicesVariableAlias
@@ -58,6 +72,20 @@ func init() {
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments,
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments,
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_InputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_OutputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_InputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_OutputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_InputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_OutputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_InputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_OutputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_InputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_OutputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_InputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_OutputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetClassId,
+		OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetMetaData,
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange,
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_LastChange,
 	}
@@ -73,6 +101,34 @@ func OpcuaNodeIdServicesVariableAliasByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments, true
 	case 23464:
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments, true
+	case 23931:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_InputArguments, true
+	case 23935:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_OutputArguments, true
+	case 23937:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_InputArguments, true
+	case 23959:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_OutputArguments, true
+	case 23961:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_InputArguments, true
+	case 23962:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_OutputArguments, true
+	case 23964:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_InputArguments, true
+	case 23971:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_OutputArguments, true
+	case 23973:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_InputArguments, true
+	case 23974:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_OutputArguments, true
+	case 23976:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_InputArguments, true
+	case 23986:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_OutputArguments, true
+	case 24499:
+		return OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetClassId, true
+	case 24500:
+		return OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetMetaData, true
 	case 32849:
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange, true
 	case 32850:
@@ -91,6 +147,34 @@ func OpcuaNodeIdServicesVariableAliasByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments, true
 	case "AliasNameCategoryType_FindAlias_OutputArguments":
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments, true
+	case "AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_InputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_InputArguments, true
+	case "AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_OutputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_OutputArguments, true
+	case "AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_InputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_InputArguments, true
+	case "AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_OutputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_OutputArguments, true
+	case "AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_InputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_InputArguments, true
+	case "AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_OutputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_OutputArguments, true
+	case "AliasNameCategoryType_FindAliasVerbose_InputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_InputArguments, true
+	case "AliasNameCategoryType_FindAliasVerbose_OutputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_OutputArguments, true
+	case "AliasNameCategoryType_AddAliasesToCategory_InputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_InputArguments, true
+	case "AliasNameCategoryType_AddAliasesToCategory_OutputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_OutputArguments, true
+	case "AliasNameCategoryType_DeleteAliasesFromCategory_InputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_InputArguments, true
+	case "AliasNameCategoryType_DeleteAliasesFromCategory_OutputArguments":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_OutputArguments, true
+	case "AliasUpdateDataType_DataSetClassId":
+		return OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetClassId, true
+	case "AliasUpdateDataType_DataSetMetaData":
+		return OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetMetaData, true
 	case "AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange":
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange, true
 	case "AliasNameCategoryType_LastChange":
@@ -174,6 +258,34 @@ func (e OpcuaNodeIdServicesVariableAlias) PLC4XEnumName() string {
 		return "AliasNameCategoryType_FindAlias_InputArguments"
 	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments:
 		return "AliasNameCategoryType_FindAlias_OutputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_InputArguments:
+		return "AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_InputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_OutputArguments:
+		return "AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_OutputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_InputArguments:
+		return "AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_InputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_OutputArguments:
+		return "AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_OutputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_InputArguments:
+		return "AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_InputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_OutputArguments:
+		return "AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_OutputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_InputArguments:
+		return "AliasNameCategoryType_FindAliasVerbose_InputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAliasVerbose_OutputArguments:
+		return "AliasNameCategoryType_FindAliasVerbose_OutputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_InputArguments:
+		return "AliasNameCategoryType_AddAliasesToCategory_InputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_AddAliasesToCategory_OutputArguments:
+		return "AliasNameCategoryType_AddAliasesToCategory_OutputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_InputArguments:
+		return "AliasNameCategoryType_DeleteAliasesFromCategory_InputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_DeleteAliasesFromCategory_OutputArguments:
+		return "AliasNameCategoryType_DeleteAliasesFromCategory_OutputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetClassId:
+		return "AliasUpdateDataType_DataSetClassId"
+	case OpcuaNodeIdServicesVariableAlias_AliasUpdateDataType_DataSetMetaData:
+		return "AliasUpdateDataType_DataSetMetaData"
 	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange:
 		return "AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange"
 	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_LastChange:

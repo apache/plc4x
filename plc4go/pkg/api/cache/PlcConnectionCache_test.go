@@ -23,12 +23,12 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/viney-shih/go-lock"
 
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -293,7 +293,7 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -374,7 +374,7 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -385,8 +385,8 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 		t.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
-	floodGate := lock.NewCASMutex() // floodgate is use because we want both get connection to get executed in short order
-	floodGate.Lock()                // We use a cas mutex write lock to lock the floodgate
+	floodGate := &sync.RWMutex{} // floodgate is use because we want both get connection to get executed in short order
+	floodGate.Lock()             // We use a cas mutex write lock to lock the floodgate
 
 	// Read once from the cache.
 	firstRun := executeAndTestReadFromPlc(
@@ -473,7 +473,7 @@ func TestPlcConnectionCache_ConnectWithError(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -509,7 +509,7 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -557,7 +557,7 @@ func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -611,7 +611,7 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 		driverManager: driverManager,
 		maxLeaseTime:  5 * time.Second,
 		maxWaitTime:   25 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -707,7 +707,7 @@ func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}

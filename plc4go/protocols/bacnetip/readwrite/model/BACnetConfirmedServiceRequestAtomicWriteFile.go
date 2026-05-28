@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,7 +239,7 @@ func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) Build() (BACnetCo
 	if b.FileData == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'fileData' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestAtomicWriteFile.deepCopy(), nil
@@ -456,7 +455,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetOpeningTag](ctx, "openingTag", GetRef(m.GetOpeningTag()), WriteComplex[BACnetOpeningTag](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetOpeningTag](ctx, "openingTag", new(m.GetOpeningTag()), WriteComplex[BACnetOpeningTag](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
@@ -468,7 +467,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(err, "Error serializing 'fileData' field")
 		}
 
-		if err := WriteOptionalField[BACnetClosingTag](ctx, "closingTag", GetRef(m.GetClosingTag()), WriteComplex[BACnetClosingTag](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetClosingTag](ctx, "closingTag", new(m.GetClosingTag()), WriteComplex[BACnetClosingTag](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 

@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -197,7 +196,7 @@ func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) Build
 	if b.ClosingTag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.deepCopy(), nil
@@ -454,7 +453,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagEnumerated](ctx, "rawObjectType", GetRef(m.GetRawObjectType()), WriteComplex[BACnetContextTagEnumerated](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagEnumerated](ctx, "rawObjectType", new(m.GetRawObjectType()), WriteComplex[BACnetContextTagEnumerated](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'rawObjectType' field")
 	}
 	// Virtual field
@@ -470,7 +469,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 		return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", new(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 	}
 	// Virtual field

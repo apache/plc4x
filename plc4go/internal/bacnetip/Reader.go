@@ -21,17 +21,16 @@ package bacnetip
 
 import (
 	"context"
-	"fmt"
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
@@ -140,7 +139,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			context.AfterFunc(transactionContext, cancel)
 			// Send the  over the wire
 			m.log.Trace().Msg("Send ")
-			if err := m.messageCodec.SendRequest(ctx, "read", apdu, func(message spi.Message) bool {
+			if err := m.messageCodec.SendRequest(ctx, "read", wrapAPDU(apdu, true), func(message spi.Message) bool {
 				bvlc, ok := message.(readWriteModel.BVLC)
 				if !ok {
 					m.log.Debug().Type("bvlc", bvlc).Msg("Received strange type")
@@ -210,105 +209,189 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 }
 
 func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
-	var complexAck readWriteModel.APDUComplexAck
-	var errorClass *readWriteModel.ErrorClass
-	var errorCode *readWriteModel.ErrorCode
-	var rejectReason *readWriteModel.BACnetRejectReason
-	var abortReason *readWriteModel.BACnetAbortReason
-	switch apdu := apdu.(type) {
-	case readWriteModel.APDUComplexAck:
-		complexAck = apdu
-	case readWriteModel.APDUError:
-		apduError := apdu.GetError()
-		var bacError readWriteModel.Error
-		switch concreteError := apduError.(type) {
-		case readWriteModel.BACnetErrorGeneral:
-			bacError = concreteError.GetError()
-		default:
-			bacError = concreteError.(interface {
-				GetErrorType() readWriteModel.ErrorEnclosed
-			}).GetErrorType().GetError()
-		}
-		errorClassValue := bacError.GetErrorClass().GetValue()
-		errorClass = &errorClassValue
-		errorCodeValue := bacError.GetErrorCode().GetValue()
-		errorCode = &errorCodeValue
-	case readWriteModel.APDUReject:
-		rejectReasonValue := apdu.GetRejectReason().GetValue()
-		rejectReason = &rejectReasonValue
-	case readWriteModel.APDUAbort:
-		abortReasonValue := apdu.GetAbortReason().GetValue()
-		abortReason = &abortReasonValue
-	default:
-		return nil, errors.Errorf("unsupported response type %T", apdu)
-	}
+	tagNames := readRequest.GetTagNames()
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	plcValues := map[string]values.PlcValue{}
 
-	// If the result contains any form of non-null error code, handle this instead.
-	if errorClass != nil {
-		m.log.Warn().
-			Stringer("errorClass", errorClass).
-			Stringer("errorCode", errorCode).
-			Msg("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. " +
-				"We probably need to implement explicit handling for this, so please file a bug-report " +
-				"on https://github.com/apache/plc4x/issues and ideally attach a WireShark dump " +
-				"containing a capture of the communication.")
-		for _, tagName := range readRequest.GetTagNames() {
-			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-			plcValues[tagName] = spiValues.NewPlcNULL()
+	// Dispatch on APDU subtype. Errors/Reject/Abort fan out to every requested
+	// tag with the same response code so consumers can read a sane PlcResponse
+	// even on protocol-level failures.
+	switch apdu := apdu.(type) {
+	case readWriteModel.APDUComplexAck:
+		return m.decodeComplexAck(apdu, readRequest)
+	case readWriteModel.APDUError:
+		responseCode := mapErrorAPDU(apdu, m.log)
+		return broadcastResponseCode(readRequest, responseCode, responseCodes, plcValues), nil
+	case readWriteModel.APDUReject:
+		m.log.Warn().Stringer("rejectReason", reasonOfReject(apdu)).Msg("BACnet REJECT received")
+		return broadcastResponseCode(readRequest, apiModel.PlcResponseCode_INVALID_DATA, responseCodes, plcValues), nil
+	case readWriteModel.APDUAbort:
+		reason := apdu.GetAbortReason().GetValue()
+		code := apiModel.PlcResponseCode_INTERNAL_ERROR
+		if reason == readWriteModel.BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED {
+			code = apiModel.PlcResponseCode_UNSUPPORTED
 		}
-		return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+		m.log.Warn().Stringer("abortReason", &reason).Msg("BACnet ABORT received")
+		return broadcastResponseCode(readRequest, code, responseCodes, plcValues), nil
+	default:
+		// Reject any other APDU type — but mark all tags as remote-error so the
+		// caller still receives a well-formed PlcReadResponse instead of nil.
+		_ = tagNames
+		m.log.Warn().Type("apdu", apdu).Msg("unsupported APDU type on read response")
+		return broadcastResponseCode(readRequest, apiModel.PlcResponseCode_REMOTE_ERROR, responseCodes, plcValues), nil
 	}
-	if rejectReason != nil {
-		m.log.Warn().
-			Stringer("rejectReason", rejectReason).
-			Msg("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. " +
-				"We probably need to implement explicit handling for this, so please file a bug-report " +
-				"on https://github.com/apache/plc4x/issues and ideally attach a WireShark dump " +
-				"containing a capture of the communication.")
-		for _, tagName := range readRequest.GetTagNames() {
-			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-			plcValues[tagName] = spiValues.NewPlcNULL()
-		}
-		return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
-	}
-	if abortReason != nil {
-		m.log.Warn().
-			Stringer("abortReason", abortReason).
-			Msg("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. " +
-				"We probably need to implement explicit handling for this, so please file a bug-report " +
-				"on https://github.com/apache/plc4x/issues and ideally attach a WireShark dump " +
-				"containing a capture of the communication.")
-		for _, tagName := range readRequest.GetTagNames() {
-			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-			plcValues[tagName] = spiValues.NewPlcNULL()
-		}
-		return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+}
+
+// decodeComplexAck handles the happy-path APDUComplexAck for ReadProperty and
+// ReadPropertyMultiple. Segmented responses are flagged but not yet reassembled
+// — that happens in Phase 5.
+func (m *Reader) decodeComplexAck(apdu readWriteModel.APDUComplexAck, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
+	tagNames := readRequest.GetTagNames()
+	responseCodes := map[string]apiModel.PlcResponseCode{}
+	plcValues := map[string]values.PlcValue{}
+
+	if apdu.GetSegmentedMessage() {
+		// Segmentation reassembly is implemented in Phase 5. Until then surface a
+		// well-formed response with UNSUPPORTED so callers handle it gracefully.
+		m.log.Warn().Uint8("invokeId", apdu.GetOriginalInvokeId()).Msg("segmented APDU response — reassembly not yet implemented")
+		return broadcastResponseCode(readRequest, apiModel.PlcResponseCode_UNSUPPORTED, responseCodes, plcValues), nil
 	}
 
-	switch serviceAck := complexAck.GetServiceAck().(type) {
+	switch serviceAck := apdu.GetServiceAck().(type) {
 	case readWriteModel.BACnetServiceAckReadProperty:
-		// TODO: super lazy implementation for now
-		responseCodes[readRequest.GetTagNames()[0]] = apiModel.PlcResponseCode_OK
-		plcValues[readRequest.GetTagNames()[0]] = spiValues.NewPlcSTRING(serviceAck.GetValues().(fmt.Stringer).String())
+		if len(tagNames) == 0 {
+			return nil, errors.New("ReadProperty response without a corresponding requested tag")
+		}
+		responseCodes[tagNames[0]] = apiModel.PlcResponseCode_OK
+		plcValues[tagNames[0]] = constructedDataToPlcValue(serviceAck.GetValues())
+		// Any extra requested tags (shouldn't happen with single ReadProperty,
+		// but be defensive) get NOT_FOUND.
+		for _, n := range tagNames[1:] {
+			responseCodes[n] = apiModel.PlcResponseCode_NOT_FOUND
+			plcValues[n] = spiValues.NewPlcNULL()
+		}
 	case readWriteModel.BACnetServiceAckReadPropertyMultiple:
-
-		// way to know how to interpret the responses is by aligning them with the
-		// items from the request as this information is not returned by the PLC.
-		if len(readRequest.GetTagNames()) != len(serviceAck.GetData()) {
-			return nil, errors.New("The number of requested items doesn't match the number of returned items")
+		data := serviceAck.GetData()
+		if len(tagNames) != len(data) {
+			return nil, errors.Errorf("ReadPropertyMultiple expected %d results, got %d", len(tagNames), len(data))
 		}
-		for i, tagName := range readRequest.GetTagNames() {
-			// TODO: super lazy implementation for now
-			responseCodes[tagName] = apiModel.PlcResponseCode_OK
-			plcValues[tagName] = spiValues.NewPlcSTRING(serviceAck.GetData()[i].GetListOfResults().(fmt.Stringer).String())
+		for i, tagName := range tagNames {
+			list := data[i].GetListOfResults()
+			if list == nil {
+				responseCodes[tagName] = apiModel.PlcResponseCode_NOT_FOUND
+				plcValues[tagName] = spiValues.NewPlcNULL()
+				continue
+			}
+			// Per BACnet ReadPropertyMultiple semantics each requested property
+			// in the access spec produces one read result. We collapse to a
+			// single value if there's just one, otherwise wrap as PlcList.
+			results := list.GetListOfReadAccessProperty()
+			code, value := readResultsToPlcValue(results)
+			responseCodes[tagName] = code
+			plcValues[tagName] = value
 		}
+	default:
+		m.log.Warn().Type("serviceAck", serviceAck).Msg("unsupported ServiceAck variant")
+		return broadcastResponseCode(readRequest, apiModel.PlcResponseCode_INTERNAL_ERROR, responseCodes, plcValues), nil
 	}
 
-	// Return the response
-	m.log.Trace().Msg("Returning the response")
 	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+}
+
+// readResultsToPlcValue collapses a ReadPropertyMultiple result list to a
+// (responseCode, value) pair. Errors in any one element propagate to the whole
+// tag — BACnet doesn't promise atomicity but we fail closed for clarity.
+func readResultsToPlcValue(results []readWriteModel.BACnetReadAccessProperty) (apiModel.PlcResponseCode, values.PlcValue) {
+	if len(results) == 0 {
+		return apiModel.PlcResponseCode_NOT_FOUND, spiValues.NewPlcNULL()
+	}
+	collected := make([]values.PlcValue, 0, len(results))
+	for _, rap := range results {
+		rr := rap.GetReadResult()
+		if rr == nil {
+			collected = append(collected, spiValues.NewPlcNULL())
+			continue
+		}
+		if e := rr.GetPropertyAccessError(); e != nil {
+			code := bacnetErrorEnclosedToResponseCode(e)
+			return code, spiValues.NewPlcNULL()
+		}
+		collected = append(collected, constructedDataToPlcValue(rr.GetPropertyValue()))
+	}
+	if len(collected) == 1 {
+		return apiModel.PlcResponseCode_OK, collected[0]
+	}
+	return apiModel.PlcResponseCode_OK, spiValues.NewPlcList(collected)
+}
+
+// mapErrorAPDU translates an APDUError into the appropriate plc4go response code
+// based on BACnet ErrorClass + ErrorCode. Unknown combinations default to
+// REMOTE_ERROR so callers always get a meaningful non-OK result.
+func mapErrorAPDU(apdu readWriteModel.APDUError, log zerolog.Logger) apiModel.PlcResponseCode {
+	apduError := apdu.GetError()
+	var bacError readWriteModel.Error
+	switch concreteError := apduError.(type) {
+	case readWriteModel.BACnetErrorGeneral:
+		bacError = concreteError.GetError()
+	default:
+		bacError = concreteError.(interface {
+			GetErrorType() readWriteModel.ErrorEnclosed
+		}).GetErrorType().GetError()
+	}
+	errorClass := bacError.GetErrorClass().GetValue()
+	errorCode := bacError.GetErrorCode().GetValue()
+	log.Warn().
+		Stringer("errorClass", &errorClass).
+		Stringer("errorCode", &errorCode).
+		Msg("BACnet error response received")
+	return mapErrorClassCodeToResponseCode(errorClass, errorCode)
+}
+
+// mapErrorClassCodeToResponseCode is the table the plan calls out: class+code
+// to plc4go's flat response codes.
+func mapErrorClassCodeToResponseCode(class readWriteModel.ErrorClass, code readWriteModel.ErrorCode) apiModel.PlcResponseCode {
+	switch class {
+	case readWriteModel.ErrorClass_OBJECT:
+		if code == readWriteModel.ErrorCode_UNKNOWN_OBJECT {
+			return apiModel.PlcResponseCode_NOT_FOUND
+		}
+	case readWriteModel.ErrorClass_PROPERTY:
+		switch code {
+		case readWriteModel.ErrorCode_UNKNOWN_PROPERTY:
+			return apiModel.PlcResponseCode_INVALID_ADDRESS
+		case readWriteModel.ErrorCode_WRITE_ACCESS_DENIED:
+			return apiModel.PlcResponseCode_ACCESS_DENIED
+		}
+	case readWriteModel.ErrorClass_DEVICE:
+		if code == readWriteModel.ErrorCode_OPERATIONAL_PROBLEM {
+			return apiModel.PlcResponseCode_REMOTE_ERROR
+		}
+	}
+	return apiModel.PlcResponseCode_REMOTE_ERROR
+}
+
+// bacnetErrorEnclosedToResponseCode extracts the inner Error from a
+// per-property ErrorEnclosed (used in ReadPropertyMultiple results) and maps it
+// to a plc4go response code.
+func bacnetErrorEnclosedToResponseCode(enclosed readWriteModel.ErrorEnclosed) apiModel.PlcResponseCode {
+	err := enclosed.GetError()
+	return mapErrorClassCodeToResponseCode(err.GetErrorClass().GetValue(), err.GetErrorCode().GetValue())
+}
+
+// broadcastResponseCode populates the same code and a PlcNULL value for every
+// tag in the request, then wraps in a DefaultPlcReadResponse.
+func broadcastResponseCode(req apiModel.PlcReadRequest, code apiModel.PlcResponseCode, codes map[string]apiModel.PlcResponseCode, vals map[string]values.PlcValue) apiModel.PlcReadResponse {
+	for _, name := range req.GetTagNames() {
+		codes[name] = code
+		vals[name] = spiValues.NewPlcNULL()
+	}
+	return spiModel.NewDefaultPlcReadResponse(req, codes, vals)
+}
+
+// reasonOfReject returns a pointer to the reject reason for Stringer formatting.
+func reasonOfReject(apdu readWriteModel.APDUReject) *readWriteModel.BACnetRejectReason {
+	r := apdu.GetRejectReason().GetValue()
+	return &r
 }
 
 func getInvokeIdFromApdu(apdu readWriteModel.APDU) (uint8, error) {

@@ -26,10 +26,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -511,7 +510,7 @@ func (m TagHandler) applicationIdFromArgument(applicationIdArgument string) (rea
 func (m TagHandler) extractBridges(match map[string]string) ([]readWriteModel.BridgeAddress, error) {
 	var bridgeAddresses []readWriteModel.BridgeAddress
 	if match["bridges"] != "" {
-		for _, bridge := range strings.Split(match["bridges"], "-") {
+		for bridge := range strings.SplitSeq(match["bridges"], "-") {
 			bridge = strings.TrimPrefix(bridge, "b")
 			if strings.HasPrefix(bridge, "0x") {
 				decodedHex, err := hex.DecodeString(bridge[2:])

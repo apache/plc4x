@@ -75,6 +75,18 @@ public abstract class ManualTest {
     }
 
     public void run() throws Exception {
+        // Timing accumulators for single item tests
+        long singleReadTotalMs = 0;
+        int singleReadCount = 0;
+        long singleWriteTotalMs = 0;
+        int singleWriteCount = 0;
+
+        // Timing accumulators for multi item tests
+        long multiReadTotalMs = 0;
+        int multiReadCount = 0;
+        long multiWriteTotalMs = 0;
+        int multiWriteCount = 0;
+
         try (PlcConnection plcConnection = new DefaultPlcDriverManager().getConnection(connectionString)) {
             System.out.println("Reading all types in separate requests");
 
@@ -94,6 +106,9 @@ public abstract class ManualTest {
                         long startTime = System.currentTimeMillis();
                         final PlcReadResponse readResponse = readRequest.execute().get();
                         long endTime = System.currentTimeMillis();
+                        long duration = endTime - startTime;
+                        singleReadTotalMs += duration;
+                        singleReadCount++;
 
                         // Check the result
                         Assertions.assertEquals(1, readResponse.getTagNames().size(), tagName);
@@ -139,7 +154,7 @@ public abstract class ManualTest {
                                     readResponse.getPlcValue(tagName).getObject().toString(), tagName);
                             }
                         }
-                        System.out.println("        - Read OK (" + (endTime - startTime) + " ms)");
+                        System.out.println("        - Read OK (" + duration + " ms)");
                     }
 
                     // Try writing the value to the PLC.
@@ -152,12 +167,15 @@ public abstract class ManualTest {
                         long startTime = System.currentTimeMillis();
                         PlcWriteResponse writeResponse = writeRequest.execute().get();
                         long endTime = System.currentTimeMillis();
+                        long duration = endTime - startTime;
+                        singleWriteTotalMs += duration;
+                        singleWriteCount++;
 
                         // Check the result
                         Assertions.assertEquals(testCase.responseCode, writeResponse.getResponseCode(tagName),
                             String.format("Got status %s for %s",
                                 writeResponse.getResponseCode(tagName).name(), testCase.address));
-                        System.out.println("        - Write OK (" + (endTime - startTime) + " ms)");
+                        System.out.println("        - Write OK (" + duration + " ms)");
                     }
                 }
                 System.out.println("Success");
@@ -192,6 +210,9 @@ public abstract class ManualTest {
                         long startTime = System.currentTimeMillis();
                         final PlcReadResponse readResponse = readRequest.execute().get();
                         long endTime = System.currentTimeMillis();
+                        long duration = endTime - startTime;
+                        multiReadTotalMs += duration;
+                        multiReadCount++;
 
                         // Check the result
                         Assertions.assertEquals(shuffledTestcases.size(), readResponse.getTagNames().size());
@@ -213,7 +234,7 @@ public abstract class ManualTest {
                                     "Tag: " + tagName);
                             }
                         }
-                        System.out.println("        - Read OK (" + (endTime - startTime) + " ms)");
+                        System.out.println("        - Read OK (" + duration + " ms)");
                     }
 
                     if (testWrite) {
@@ -224,10 +245,13 @@ public abstract class ManualTest {
                         }
                         final PlcWriteRequest writeRequest = writeBuilder.build();
 
-                        // Execute the read request
+                        // Execute the write request
                         long startTime = System.currentTimeMillis();
                         final PlcWriteResponse writeResponse = writeRequest.execute().get();
                         long endTime = System.currentTimeMillis();
+                        long duration = endTime - startTime;
+                        multiWriteTotalMs += duration;
+                        multiWriteCount++;
 
                         // Check the result
                         Assertions.assertEquals(shuffledTestcases.size(), writeResponse.getTagNames().size());
@@ -236,7 +260,7 @@ public abstract class ManualTest {
                             Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName),
                                 "Tag: " + tagName);
                         }
-                        System.out.println("        - Write OK (" + (endTime - startTime) + " ms)");
+                        System.out.println("        - Write OK (" + duration + " ms)");
                     }
                 }
                 System.out.println("Success");
@@ -244,6 +268,46 @@ public abstract class ManualTest {
         } catch (Exception e) {
             Assertions.fail(e);
         }
+
+        // Print timing summary
+        System.out.println();
+        System.out.println("=== Test Summary ===");
+        if (singleReadCount > 0 || singleWriteCount > 0) {
+            System.out.println("Single Item:");
+            if (singleReadCount > 0) {
+                double avgSingleRead = (double) singleReadTotalMs / singleReadCount;
+                System.out.printf("  Average Read Time:  %.2f ms (%d requests, %d ms total)%n",
+                    avgSingleRead, singleReadCount, singleReadTotalMs);
+            }
+            if (singleWriteCount > 0) {
+                double avgSingleWrite = (double) singleWriteTotalMs / singleWriteCount;
+                System.out.printf("  Average Write Time: %.2f ms (%d requests, %d ms total)%n",
+                    avgSingleWrite, singleWriteCount, singleWriteTotalMs);
+            }
+            if (singleReadCount > 0 && singleWriteCount > 0) {
+                double avgSingle = (double) (singleReadTotalMs + singleWriteTotalMs) / (singleReadCount + singleWriteCount);
+                System.out.printf("  Average Time:       %.2f ms%n", avgSingle);
+            }
+        }
+        if (multiReadCount > 0 || multiWriteCount > 0) {
+            int multiItems = testCases.size();
+            System.out.printf("Multi Item (each %d items):%n", multiItems);
+            if (multiReadCount > 0) {
+                double avgMultiRead = (double) multiReadTotalMs / multiReadCount;
+                System.out.printf("  Average Read Time:  %.2f ms (%d requests, %d ms total)%n",
+                    avgMultiRead, multiReadCount, multiReadTotalMs);
+            }
+            if (multiWriteCount > 0) {
+                double avgMultiWrite = (double) multiWriteTotalMs / multiWriteCount;
+                System.out.printf("  Average Write Time: %.2f ms (%d requests, %d ms total)%n",
+                    avgMultiWrite, multiWriteCount, multiWriteTotalMs);
+            }
+            if (multiReadCount > 0 && multiWriteCount > 0) {
+                double avgMulti = (double) (multiReadTotalMs + multiWriteTotalMs) / (multiReadCount + multiWriteCount);
+                System.out.printf("  Average Time:       %.2f ms%n", avgMulti);
+            }
+        }
+        System.out.println("======================");
     }
 
     public static class TestCase {

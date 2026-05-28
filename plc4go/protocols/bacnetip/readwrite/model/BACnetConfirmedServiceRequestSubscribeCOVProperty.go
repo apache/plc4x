@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -263,7 +262,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder) Build() (BAC
 	if b.MonitoredPropertyIdentifier == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'monitoredPropertyIdentifier' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestSubscribeCOVProperty.deepCopy(), nil
@@ -502,11 +501,11 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) SerializeWithWriteB
 			return errors.Wrap(err, "Error serializing 'monitoredObjectIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", new(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", GetRef(m.GetLifetime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", new(m.GetLifetime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'lifetime' field")
 		}
 
@@ -514,7 +513,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) SerializeWithWriteB
 			return errors.Wrap(err, "Error serializing 'monitoredPropertyIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", new(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'covIncrement' field")
 		}
 

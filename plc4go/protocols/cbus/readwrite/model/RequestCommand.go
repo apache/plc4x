@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -216,7 +215,7 @@ func (b *_RequestCommandBuilder) Build() (RequestCommand, error) {
 	if b.Chksum == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'chksum' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RequestCommand.deepCopy(), nil
@@ -486,7 +485,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_chksumDecodedErr, "Error serializing 'chksumDecoded' field")
 		}
 
-		if err := WriteOptionalField[Alpha](ctx, "alpha", GetRef(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[Alpha](ctx, "alpha", new(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'alpha' field")
 		}
 

@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,7 +134,7 @@ func (b *_BACnetVMACEntryBuilder) WithOptionalNativeMacAddressBuilder(builderSup
 }
 
 func (b *_BACnetVMACEntryBuilder) Build() (BACnetVMACEntry, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetVMACEntry.deepCopy(), nil
@@ -294,11 +293,11 @@ func (m *_BACnetVMACEntry) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for BACnetVMACEntry")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "virtualMacAddress", GetRef(m.GetVirtualMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "virtualMacAddress", new(m.GetVirtualMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'virtualMacAddress' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "nativeMacAddress", GetRef(m.GetNativeMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "nativeMacAddress", new(m.GetNativeMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'nativeMacAddress' field")
 	}
 

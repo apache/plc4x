@@ -49,6 +49,8 @@ public enum OpcuaNodeIdServicesVariableAdd {
   AddDataSetFolderMethodType_OutputArguments((int) 17069L),
   AddSubscribedDataSetMethodType_InputArguments((int) 23822L),
   AddSubscribedDataSetMethodType_OutputArguments((int) 23823L),
+  AddAliasesToCategoryMethodType_InputArguments((int) 24026L),
+  AddAliasesToCategoryMethodType_OutputArguments((int) 24027L),
   AddUserMethodType_InputArguments((int) 24283L),
   AddPriorityMappingEntryMethodType_InputArguments((int) 25234L),
   AddSecurityGroupFolderMethodType_InputArguments((int) 25289L),

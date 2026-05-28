@@ -18,13 +18,13 @@
  */
 package org.apache.plc4x.java.api.listener;
 
+import org.apache.plc4x.java.api.model.PlcConnectionStateChangedEvent;
+
 /**
  * Additional helper for tracking connection state.
  */
 public interface ConnectionStateListener extends EventListener {
 
-    void connected();
-
-    void disconnected();
+    void onConnectionStateChanged(PlcConnectionStateChangedEvent event);
 
 }

@@ -202,6 +202,10 @@ body {
   margin: 0.25rem 0;
 }
 
+.navbar-icon-link {
+  color: black;
+}
+
 .navbar .button {
   display: inline-flex;
   align-items: center;

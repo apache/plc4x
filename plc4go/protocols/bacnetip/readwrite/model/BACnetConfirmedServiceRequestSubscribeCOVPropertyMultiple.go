@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -234,7 +233,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) Buil
 	if b.ListOfCovSubscriptionSpecifications == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'listOfCovSubscriptionSpecifications' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple.deepCopy(), nil
@@ -456,15 +455,15 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 			return errors.Wrap(err, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", new(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", GetRef(m.GetLifetime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", new(m.GetLifetime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'lifetime' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "maxNotificationDelay", GetRef(m.GetMaxNotificationDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "maxNotificationDelay", new(m.GetMaxNotificationDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxNotificationDelay' field")
 		}
 

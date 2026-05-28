@@ -28,7 +28,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
@@ -38,6 +37,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -282,7 +282,7 @@ func (m *Connection) readDataTypeTable(ctx context.Context, dataTableSize uint32
 	// Parse and process the response
 	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	dataTypes := map[string]readWriteModel.AdsDataTypeTableEntry{}
-	for i := uint32(0); i < numDataTypes; i++ {
+	for range numDataTypes {
 		dataType, err := readWriteModel.AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table: %v", err)
@@ -301,7 +301,7 @@ func (m *Connection) readSymbolTable(ctx context.Context, symbolTableSize uint32
 	// Parse and process the response
 	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	symbols := map[string]readWriteModel.AdsSymbolTableEntry{}
-	for i := uint32(0); i < numSymbols; i++ {
+	for range numSymbols {
 		symbol, err := readWriteModel.AdsSymbolTableEntryParseWithBuffer(ctx, readBuffer)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table")

@@ -70,6 +70,10 @@ public enum OpcuaNodeIdServicesVariableI {
   IPriorityMappingEntryType_PriorityLabel((int) 24207L),
   IPriorityMappingEntryType_PriorityValue_PCP((int) 24208L),
   IPriorityMappingEntryType_PriorityValue_DSCP((int) 24209L),
+  IIetfBaseNetworkInterfaceType_Speed_InstrumentNumberRange((int) 24219L),
+  IIetfBaseNetworkInterfaceType_Speed_EUNumberRange((int) 24221L),
+  IIeeeBaseEthernetPortType_Speed_InstrumentNumberRange((int) 24223L),
+  IIeeeBaseEthernetPortType_Speed_EUNumberRange((int) 24225L),
   IIeeeAutoNegotiationStatusType_NegotiationStatus((int) 24234L),
   IVlanIdType_VlanId((int) 25219L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableI> map;

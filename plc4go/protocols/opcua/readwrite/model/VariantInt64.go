@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +61,7 @@ var _ VariantInt64 = (*_VariantInt64)(nil)
 var _ VariantRequirements = (*_VariantInt64)(nil)
 
 // NewVariantInt64 factory function for _VariantInt64
-func NewVariantInt64(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []int64) *_VariantInt64 {
+func NewVariantInt64(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []int64) *_VariantInt64 {
 	_result := &_VariantInt64{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,
@@ -129,7 +128,7 @@ func (b *_VariantInt64Builder) WithValue(value ...int64) VariantInt64Builder {
 }
 
 func (b *_VariantInt64Builder) Build() (VariantInt64, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantInt64.deepCopy(), nil

@@ -142,7 +142,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 				var wg sync.WaitGroup
 				t.Cleanup(wg.Wait)
 				wg.Go(func() {
-					for i := 0; i < 500; i++ {
+					for i := range 500 {
 						select {
 						case e.workItems <- workItem{
 							workItemId: int32(i),

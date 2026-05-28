@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
+                       byteOrder="LITTLE_ENDIAN">
+
+  <name>CANOpen SDO Segmentation</name>
+
+  <protocolName>canopen</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
+  <driver-name>canopen</driver-name>
+
+  <driver-parameters>
+    <parameter>
+      <name>nodeId</name>
+      <value>15</value>
+    </parameter>
+    <parameter>
+      <name>request-timeout</name>
+      <value>5000</value>
+    </parameter>
+  </driver-parameters>
+
+  <testcase>
+    <name>Send NMT write request</name>
+    <description>
+      Trigger write using CANOpen NMT requesting specific node to change its state.
+    </description>
+    <steps>
+      <api-request name="Request node 1 to enter PRE_OPERATIONAL state">
+        <TestWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+              <name>boot_up_request</name>
+              <address>NMT:1</address>
+              <value>
+                <PlcUSINT>128</PlcUSINT>
+              </value>
+            </tag>
+          </tags>
+        </TestWriteRequest>
+      </api-request>
+      <outgoing-plc-message name="Send NMT Request">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">0</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="NMT">0</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenNetworkPayload>
+                <request>
+                  <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="PRE_OPERATIONAL">128</NMTStateRequest>
+                </request>
+                <reserved dataType="uint" bitLength="1">0</reserved>
+                <node dataType="uint" bitLength="7">1</node>
+              </CANOpenNetworkPayload>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+            <value dataType="uint" bitLength="8">0</value>
+            <value dataType="uint" bitLength="8">0</value>
+            <value dataType="uint" bitLength="8">0</value>
+            <value dataType="uint" bitLength="8">0</value>
+            <value dataType="uint" bitLength="8">0</value>
+            <value dataType="uint" bitLength="8">0</value>
+          </padding>
+        </CANOpenFrame>
+      </outgoing-plc-message>
+      <api-response name="Report Write Response to application">
+        <PlcWriteResponse>
+          <request>
+            <PlcWriteRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <boot_up_request>
+                    <PlcTagValueItem>
+                      <tag>
+                        <CANOpenNMTTag>
+                          <service dataType="string" bitLength="24" encoding="UTF-8">NMT</service>
+                          <node dataType="int" bitLength="64">1</node>
+                        </CANOpenNMTTag>
+                      </tag>
+                      <value>
+                        <PlcUSINT dataType="int" bitLength="8">128</PlcUSINT>
+                      </value>
+                    </PlcTagValueItem>
+                  </boot_up_request>
+                </tags>
+              </PlcTagRequest>
+            </PlcWriteRequest>
+          </request>
+          <responseCodes isList="true">
+            <boot_up_request>
+              <ResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</ResponseCode>
+            </boot_up_request>
+          </responseCodes>
+        </PlcWriteResponse>
+      </api-response>
+      <delay>1000</delay>
+    </steps>
+  </testcase>
+
+</test:driver-testsuite>

@@ -20,14 +20,12 @@
 package utils
 
 import (
-	"bytes"
 	"encoding/binary"
 	"fmt"
 	"math"
 	"math/big"
 	"testing"
 
-	"github.com/icza/bitio"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -43,7 +41,7 @@ func TestNewReadBuffer(t *testing.T) {
 		{
 			name: "create it",
 			want: &byteReadBuffer{
-				reader:    bitio.NewReader(bytes.NewBuffer(nil)),
+				bits:      &ReadBitBuffer{},
 				byteOrder: binary.BigEndian,
 			},
 		},
@@ -60,7 +58,7 @@ func TestNewReadBuffer(t *testing.T) {
 func TestReadBuffer_GetBytes(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -77,7 +75,7 @@ func TestReadBuffer_GetBytes(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -91,7 +89,7 @@ func TestReadBuffer_GetBytes(t *testing.T) {
 func TestReadBuffer_GetPos(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -108,7 +106,7 @@ func TestReadBuffer_GetPos(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -122,7 +120,7 @@ func TestReadBuffer_GetPos(t *testing.T) {
 func TestReadBuffer_GetTotalBytes(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -139,7 +137,7 @@ func TestReadBuffer_GetTotalBytes(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -153,7 +151,7 @@ func TestReadBuffer_GetTotalBytes(t *testing.T) {
 func TestReadBuffer_HasMore(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -175,7 +173,7 @@ func TestReadBuffer_HasMore(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -189,7 +187,7 @@ func TestReadBuffer_HasMore(t *testing.T) {
 func TestReadBuffer_PeekByte(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -213,7 +211,7 @@ func TestReadBuffer_PeekByte(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -227,7 +225,7 @@ func TestReadBuffer_PeekByte(t *testing.T) {
 func TestReadBuffer_ReadBigFloat(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -244,7 +242,7 @@ func TestReadBuffer_ReadBigFloat(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer(nil)),
+				bits: &ReadBitBuffer{},
 			},
 			want: big.NewFloat(0),
 		},
@@ -253,7 +251,7 @@ func TestReadBuffer_ReadBigFloat(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -272,7 +270,7 @@ func TestReadBuffer_ReadBigFloat(t *testing.T) {
 func TestReadBuffer_ReadBigInt(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -289,7 +287,7 @@ func TestReadBuffer_ReadBigInt(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer(nil)),
+				bits: &ReadBitBuffer{},
 			},
 			want: big.NewInt(0),
 		},
@@ -298,7 +296,7 @@ func TestReadBuffer_ReadBigInt(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -317,7 +315,7 @@ func TestReadBuffer_ReadBigInt(t *testing.T) {
 func TestReadBuffer_ReadBit(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -330,7 +328,7 @@ func TestReadBuffer_ReadBit(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 	}
@@ -338,7 +336,7 @@ func TestReadBuffer_ReadBit(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -357,7 +355,7 @@ func TestReadBuffer_ReadBit(t *testing.T) {
 func TestReadBuffer_ReadFloat32(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -374,7 +372,7 @@ func TestReadBuffer_ReadFloat32(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 		{
@@ -383,7 +381,7 @@ func TestReadBuffer_ReadFloat32(t *testing.T) {
 				bitLength: 32,
 			},
 			fields: fields{
-				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0, 0x0, 0x0, 0x0})),
+				bits:      NewReadBitBuffer([]byte{0x0, 0x0, 0x0, 0x0}),
 				byteOrder: binary.LittleEndian,
 			},
 		},
@@ -399,7 +397,7 @@ func TestReadBuffer_ReadFloat32(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -418,7 +416,7 @@ func TestReadBuffer_ReadFloat32(t *testing.T) {
 func TestReadBuffer_ReadFloat64(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -448,7 +446,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased(rawData)
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -467,7 +465,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased(rawData, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -486,7 +484,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased(rawData)
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -505,7 +503,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased(rawData, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -522,7 +520,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x3F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -539,7 +537,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x3F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -556,7 +554,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -573,7 +571,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -590,7 +588,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -607,7 +605,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -633,7 +631,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x40, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -650,7 +648,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -667,7 +665,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x40, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -684,7 +682,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -701,7 +699,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x40, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -718,7 +716,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -735,7 +733,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x40, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -752,7 +750,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -769,7 +767,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x40, 0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -786,7 +784,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x37, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -803,7 +801,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x3F, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -820,7 +818,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x3F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -844,7 +842,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -861,7 +859,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -878,7 +876,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x0F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -895,7 +893,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x00}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -912,7 +910,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -929,7 +927,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -946,7 +944,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x7F, 0xEF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -963,7 +961,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xEF, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -991,7 +989,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1008,7 +1006,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1025,7 +1023,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1042,7 +1040,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1059,7 +1057,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x7F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1076,7 +1074,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1093,7 +1091,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1110,7 +1108,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF0, 0xFF}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1127,7 +1125,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x7F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1144,7 +1142,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x01, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1161,7 +1159,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x7F, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1178,7 +1176,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x01, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF8, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1195,7 +1193,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1212,7 +1210,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1232,7 +1230,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x3F, 0xD5, 0x55, 0x55, 0x55, 0x55, 0x55, 0x16})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1249,7 +1247,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x16, 0x55, 0x55, 0x55, 0x55, 0x55, 0xD5, 0x3F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1270,7 +1268,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x40, 0x09, 0x21, 0xFB, 0x54, 0x44, 0x2D, 0x18})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1287,7 +1285,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				buffer := NewReadBufferByteBased([]byte{0x18, 0x2D, 0x44, 0x54, 0xFB, 0x21, 0x09, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1303,7 +1301,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1323,7 +1321,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 func TestReadBuffer_ReadInt16(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1340,13 +1338,13 @@ func TestReadBuffer_ReadInt16(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 		{
 			name: "read it LE",
 			fields: fields{
-				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits:      NewReadBitBuffer([]byte{0x0}),
 				byteOrder: binary.LittleEndian,
 			},
 		},
@@ -1355,7 +1353,7 @@ func TestReadBuffer_ReadInt16(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1374,7 +1372,7 @@ func TestReadBuffer_ReadInt16(t *testing.T) {
 func TestReadBuffer_ReadInt32(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1391,13 +1389,13 @@ func TestReadBuffer_ReadInt32(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 		{
 			name: "read it LE",
 			fields: fields{
-				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits:      NewReadBitBuffer([]byte{0x0}),
 				byteOrder: binary.LittleEndian,
 			},
 		},
@@ -1406,7 +1404,7 @@ func TestReadBuffer_ReadInt32(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1425,7 +1423,7 @@ func TestReadBuffer_ReadInt32(t *testing.T) {
 func TestReadBuffer_ReadInt64(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1442,13 +1440,13 @@ func TestReadBuffer_ReadInt64(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 		{
 			name: "read it LE",
 			fields: fields{
-				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits:      NewReadBitBuffer([]byte{0x0}),
 				byteOrder: binary.LittleEndian,
 			},
 		},
@@ -1457,7 +1455,7 @@ func TestReadBuffer_ReadInt64(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1476,7 +1474,7 @@ func TestReadBuffer_ReadInt64(t *testing.T) {
 func TestReadBuffer_ReadInt8(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1493,7 +1491,7 @@ func TestReadBuffer_ReadInt8(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 	}
@@ -1501,7 +1499,7 @@ func TestReadBuffer_ReadInt8(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1520,7 +1518,7 @@ func TestReadBuffer_ReadInt8(t *testing.T) {
 func TestReadBuffer_ReadString(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1538,14 +1536,14 @@ func TestReadBuffer_ReadString(t *testing.T) {
 			name: "read it",
 			args: args{bitLength: 8},
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 		{
 			name: "read it (null terminated)",
 			args: args{bitLength: 8},
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x70, 0x0})),
+				bits: NewReadBitBuffer([]byte{0x70, 0x0}),
 			},
 			want: "p",
 		},
@@ -1553,7 +1551,7 @@ func TestReadBuffer_ReadString(t *testing.T) {
 			name: "read it",
 			args: args{bitLength: 8},
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x70})),
+				bits: NewReadBitBuffer([]byte{0x70}),
 			},
 			want: "p",
 		},
@@ -1562,7 +1560,7 @@ func TestReadBuffer_ReadString(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1581,7 +1579,7 @@ func TestReadBuffer_ReadString(t *testing.T) {
 func TestReadBuffer_ReadUint16(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1598,13 +1596,13 @@ func TestReadBuffer_ReadUint16(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 		{
 			name: "read it LE",
 			fields: fields{
-				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits:      NewReadBitBuffer([]byte{0x0}),
 				byteOrder: binary.LittleEndian,
 			},
 		},
@@ -1613,7 +1611,7 @@ func TestReadBuffer_ReadUint16(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1632,7 +1630,7 @@ func TestReadBuffer_ReadUint16(t *testing.T) {
 func TestReadBuffer_ReadUint32(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1652,7 +1650,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x0, 0x0, 0x0, 0x1})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1667,7 +1665,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x0, 0x0, 0x0, 0x10})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1682,7 +1680,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x0, 0x0, 0x1, 0x0})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1697,7 +1695,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x0, 0x1, 0x0, 0x0})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1712,7 +1710,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x1, 0x0, 0x0, 0x0})
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1727,7 +1725,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x1, 0x0, 0x0, 0x0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1742,7 +1740,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x10, 0x0, 0x0, 0x0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1757,7 +1755,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x0, 0x1, 0x0, 0x0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1772,7 +1770,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x0, 0x0, 0x1, 0x0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1787,7 +1785,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				buffer := NewReadBufferByteBased([]uint8{0x0, 0x0, 0x0, 0x1}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
-					reader:    buffer.(*byteReadBuffer).reader,
+					bits:      buffer.(*byteReadBuffer).bits,
 					pos:       buffer.(*byteReadBuffer).pos,
 					byteOrder: buffer.(*byteReadBuffer).byteOrder,
 				}
@@ -1801,7 +1799,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1820,7 +1818,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 func TestReadBuffer_ReadUint64(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1837,13 +1835,13 @@ func TestReadBuffer_ReadUint64(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 		{
 			name: "read it LE",
 			fields: fields{
-				reader:    bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits:      NewReadBitBuffer([]byte{0x0}),
 				byteOrder: binary.LittleEndian,
 			},
 		},
@@ -1852,7 +1850,7 @@ func TestReadBuffer_ReadUint64(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1871,7 +1869,7 @@ func TestReadBuffer_ReadUint64(t *testing.T) {
 func TestReadBuffer_ReadUint8(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1888,7 +1886,7 @@ func TestReadBuffer_ReadUint8(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 	}
@@ -1896,7 +1894,7 @@ func TestReadBuffer_ReadUint8(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1915,7 +1913,7 @@ func TestReadBuffer_ReadUint8(t *testing.T) {
 func TestReadBuffer_Reset(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1930,7 +1928,7 @@ func TestReadBuffer_Reset(t *testing.T) {
 		{
 			name: "reset it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 	}
@@ -1938,7 +1936,7 @@ func TestReadBuffer_Reset(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1950,7 +1948,7 @@ func TestReadBuffer_Reset(t *testing.T) {
 func TestReadBuffer_SetByteOrder(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1965,7 +1963,7 @@ func TestReadBuffer_SetByteOrder(t *testing.T) {
 		{
 			name: "set it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 	}
@@ -1973,7 +1971,7 @@ func TestReadBuffer_SetByteOrder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -1985,7 +1983,7 @@ func TestReadBuffer_SetByteOrder(t *testing.T) {
 func TestReadBuffer_GetByteOrder(t *testing.T) {
 	type fields struct {
 		data      []uint8
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -1997,7 +1995,7 @@ func TestReadBuffer_GetByteOrder(t *testing.T) {
 		{
 			name: "get it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 		},
 	}
@@ -2005,7 +2003,7 @@ func TestReadBuffer_GetByteOrder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -2018,7 +2016,7 @@ func TestReadBuffer_GetByteOrder(t *testing.T) {
 func Test_byteReadBuffer_PullContext(t *testing.T) {
 	type fields struct {
 		data      []byte
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -2041,7 +2039,7 @@ func Test_byteReadBuffer_PullContext(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -2053,7 +2051,7 @@ func Test_byteReadBuffer_PullContext(t *testing.T) {
 func Test_byteReadBuffer_CloseContext(t *testing.T) {
 	type fields struct {
 		data      []byte
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -2076,7 +2074,7 @@ func Test_byteReadBuffer_CloseContext(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -2088,7 +2086,7 @@ func Test_byteReadBuffer_CloseContext(t *testing.T) {
 func Test_byteReadBuffer_ReadByte(t *testing.T) {
 	type fields struct {
 		data      []byte
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -2106,7 +2104,7 @@ func Test_byteReadBuffer_ReadByte(t *testing.T) {
 		{
 			name: "read it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 			wantErr: assert.NoError,
 		},
@@ -2115,7 +2113,7 @@ func Test_byteReadBuffer_ReadByte(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
@@ -2131,7 +2129,7 @@ func Test_byteReadBuffer_ReadByte(t *testing.T) {
 func Test_byteReadBuffer_ReadByteArray(t *testing.T) {
 	type fields struct {
 		data      []byte
-		reader    *bitio.Reader
+		bits      *ReadBitBuffer
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
@@ -2150,7 +2148,7 @@ func Test_byteReadBuffer_ReadByteArray(t *testing.T) {
 		{
 			name: "read  it",
 			fields: fields{
-				reader: bitio.NewReader(bytes.NewBuffer([]byte{0x0})),
+				bits: NewReadBitBuffer([]byte{0x0}),
 			},
 			args: args{
 				numberOfBytes: 1,
@@ -2163,7 +2161,7 @@ func Test_byteReadBuffer_ReadByteArray(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			rb := &byteReadBuffer{
 				data:      tt.fields.data,
-				reader:    tt.fields.reader,
+				bits:      tt.fields.bits,
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}

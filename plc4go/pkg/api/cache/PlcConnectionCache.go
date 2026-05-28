@@ -26,13 +26,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"github.com/viney-shih/go-lock"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
@@ -52,7 +51,7 @@ func NewPlcConnectionCache(driverManager plc4go.PlcDriverManager, withConnection
 		driverManager: driverManager,
 		maxLeaseTime:  maxLeaseTime,
 		maxWaitTime:   maxLeaseTime * 5,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 		log:           log,
@@ -109,7 +108,7 @@ type plcConnectionCache struct {
 	maxLeaseTime time.Duration
 	maxWaitTime  time.Duration
 
-	cacheLock   lock.RWMutex
+	cacheLock   *sync.RWMutex
 	connections map[string]*connectionContainer
 	tracer      tracer.Tracer
 

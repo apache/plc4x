@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +61,7 @@ var _ VariantDataValue = (*_VariantDataValue)(nil)
 var _ VariantRequirements = (*_VariantDataValue)(nil)
 
 // NewVariantDataValue factory function for _VariantDataValue
-func NewVariantDataValue(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []DataValue) *_VariantDataValue {
+func NewVariantDataValue(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []DataValue) *_VariantDataValue {
 	_result := &_VariantDataValue{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,
@@ -129,7 +128,7 @@ func (b *_VariantDataValueBuilder) WithValue(value ...DataValue) VariantDataValu
 }
 
 func (b *_VariantDataValueBuilder) Build() (VariantDataValue, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantDataValue.deepCopy(), nil

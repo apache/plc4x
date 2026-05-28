@@ -60,7 +60,7 @@ import (
 		</#list>
 	</#if>
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/rs/zerolog"
 )
 

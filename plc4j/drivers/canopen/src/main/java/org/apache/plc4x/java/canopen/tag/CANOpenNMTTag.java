@@ -51,12 +51,12 @@ public class CANOpenNMTTag extends CANOpenTag implements CANOpenSubscriptionTag 
 
     @Override
     public String getAddressString() {
-        return "NMT:" + getNodeId();
+        return isWildcard() ? "NMT" : "NMT:" + getNodeId();
     }
 
     @Override
     public PlcValueType getPlcValueType() {
-        return PlcValueType.NULL;
+        return PlcValueType.USINT;
     }
 
     @Override

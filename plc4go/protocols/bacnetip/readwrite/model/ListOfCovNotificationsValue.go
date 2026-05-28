@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -191,7 +190,7 @@ func (b *_ListOfCovNotificationsValueBuilder) Build() (ListOfCovNotificationsVal
 	if b.PropertyValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'propertyValue' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ListOfCovNotificationsValue.deepCopy(), nil
@@ -380,7 +379,7 @@ func (m *_ListOfCovNotificationsValue) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", new(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 	}
 
@@ -388,7 +387,7 @@ func (m *_ListOfCovNotificationsValue) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(err, "Error serializing 'propertyValue' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagTime](ctx, "timeOfChange", GetRef(m.GetTimeOfChange()), WriteComplex[BACnetContextTagTime](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagTime](ctx, "timeOfChange", new(m.GetTimeOfChange()), WriteComplex[BACnetContextTagTime](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'timeOfChange' field")
 	}
 

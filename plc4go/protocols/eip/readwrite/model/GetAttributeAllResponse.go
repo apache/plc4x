@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,7 +153,7 @@ func (b *_GetAttributeAllResponseBuilder) WithOptionalAttributesBuilder(builderS
 }
 
 func (b *_GetAttributeAllResponseBuilder) Build() (GetAttributeAllResponse, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._GetAttributeAllResponse.deepCopy(), nil
@@ -363,7 +362,7 @@ func (m *_GetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(err, "Error serializing 'extStatus' field")
 		}
 
-		if err := WriteOptionalField[CIPAttributes](ctx, "attributes", GetRef(m.GetAttributes()), WriteComplex[CIPAttributes](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[CIPAttributes](ctx, "attributes", new(m.GetAttributes()), WriteComplex[CIPAttributes](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'attributes' field")
 		}
 

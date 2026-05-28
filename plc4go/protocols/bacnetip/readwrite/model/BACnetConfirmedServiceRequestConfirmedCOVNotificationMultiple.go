@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -246,7 +245,7 @@ func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) 
 	if b.ListOfCovNotifications == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'listOfCovNotifications' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple.deepCopy(), nil
@@ -464,7 +463,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Seriali
 			return errors.Wrap(err, "Error serializing 'timeRemaining' field")
 		}
 
-		if err := WriteOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", GetRef(m.GetTimestamp()), WriteComplex[BACnetTimeStampEnclosed](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", new(m.GetTimestamp()), WriteComplex[BACnetTimeStampEnclosed](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 

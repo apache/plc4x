@@ -95,6 +95,8 @@
         ['0x803A0000'  BadNotReadable]
         ['0x803B0000'  BadNotWritable]
         ['0x803C0000'  BadOutOfRange]
+        ['0x40F20000'  UncertainOverRange]
+        ['0x40F30000'  UncertainUnderRange]
         ['0x803D0000'  BadNotSupported]
         ['0x803E0000'  BadNotFound]
         ['0x803F0000'  BadObjectDeleted]

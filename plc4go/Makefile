@@ -59,7 +59,17 @@ test: compile
 
 ## test: Runs gotestsum.
 test-readable: compile
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool gotestsum ./...
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool -modfile=tools.mod gotestsum ./...
+
+## integration-bacnetip: Build + run the bacpypes3 simulator + Go test-runner in their own
+## network namespaces on a shared docker bridge, then tear everything down. The compose exit
+## code follows the test-runner so `make integration-bacnetip` mirrors a normal go-test failure.
+integration-bacnetip:
+	@docker compose -f tests/integration/bacnetip/docker-compose.yml up \
+		--build --abort-on-container-exit --exit-code-from test-runner; \
+		status=$$?; \
+		docker compose -f tests/integration/bacnetip/docker-compose.yml down; \
+		exit $$status
 
 test-readable-mvn: compile
 	$(MVNBIN) mvn-golang-wrapper:custom@readable-test
@@ -101,7 +111,7 @@ go-clean:
 
 go-imports:
 	@echo "  > adjusting imports"
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool goimports-reviser -excludes .idea,.git ./...
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool -modfile=tools.mod goimports-reviser -excludes .idea,.git ./...
 
 go-fmt: go-imports
 	@echo "  > formatting files"
@@ -109,7 +119,7 @@ go-fmt: go-imports
 
 go-mocks:
 	@echo "  > generating mocks"
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool mockery
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go tool -modfile=tools.mod mockery
 
 .PHONY: help
 all: help

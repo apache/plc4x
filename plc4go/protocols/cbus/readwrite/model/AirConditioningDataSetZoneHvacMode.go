@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -256,7 +255,7 @@ func (b *_AirConditioningDataSetZoneHvacModeBuilder) Build() (AirConditioningDat
 	if b.HvacModeAndFlags == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'hvacModeAndFlags' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AirConditioningDataSetZoneHvacMode.deepCopy(), nil
@@ -512,15 +511,15 @@ func (m *_AirConditioningDataSetZoneHvacMode) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(err, "Error serializing 'hvacType' field")
 		}
 
-		if err := WriteOptionalField[HVACTemperature](ctx, "level", GetRef(m.GetLevel()), WriteComplex[HVACTemperature](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACTemperature](ctx, "level", new(m.GetLevel()), WriteComplex[HVACTemperature](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", GetRef(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", new(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'rawLevel' field")
 		}
 
-		if err := WriteOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", GetRef(m.GetAuxLevel()), WriteComplex[HVACAuxiliaryLevel](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", new(m.GetAuxLevel()), WriteComplex[HVACAuxiliaryLevel](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'auxLevel' field")
 		}
 

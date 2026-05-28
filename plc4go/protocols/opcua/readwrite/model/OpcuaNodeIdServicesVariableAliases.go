@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,9 +41,15 @@ type IOpcuaNodeIdServicesVariableAliases interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments  OpcuaNodeIdServicesVariableAliases = 23477
-	OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments OpcuaNodeIdServicesVariableAliases = 23478
-	OpcuaNodeIdServicesVariableAliases_Aliases_LastChange                OpcuaNodeIdServicesVariableAliases = 32852
+	OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments                  OpcuaNodeIdServicesVariableAliases = 23477
+	OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments                 OpcuaNodeIdServicesVariableAliases = 23478
+	OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_InputArguments           OpcuaNodeIdServicesVariableAliases = 24055
+	OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_OutputArguments          OpcuaNodeIdServicesVariableAliases = 24056
+	OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_InputArguments       OpcuaNodeIdServicesVariableAliases = 24058
+	OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_OutputArguments      OpcuaNodeIdServicesVariableAliases = 24059
+	OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_InputArguments  OpcuaNodeIdServicesVariableAliases = 24061
+	OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_OutputArguments OpcuaNodeIdServicesVariableAliases = 24062
+	OpcuaNodeIdServicesVariableAliases_Aliases_LastChange                                OpcuaNodeIdServicesVariableAliases = 32852
 )
 
 var OpcuaNodeIdServicesVariableAliasesValues []OpcuaNodeIdServicesVariableAliases
@@ -53,6 +59,12 @@ func init() {
 	OpcuaNodeIdServicesVariableAliasesValues = []OpcuaNodeIdServicesVariableAliases{
 		OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments,
 		OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments,
+		OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_InputArguments,
+		OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_OutputArguments,
+		OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_InputArguments,
+		OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_OutputArguments,
+		OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_InputArguments,
+		OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_OutputArguments,
 		OpcuaNodeIdServicesVariableAliases_Aliases_LastChange,
 	}
 }
@@ -63,6 +75,18 @@ func OpcuaNodeIdServicesVariableAliasesByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments, true
 	case 23478:
 		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments, true
+	case 24055:
+		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_InputArguments, true
+	case 24056:
+		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_OutputArguments, true
+	case 24058:
+		return OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_InputArguments, true
+	case 24059:
+		return OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_OutputArguments, true
+	case 24061:
+		return OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_InputArguments, true
+	case 24062:
+		return OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_OutputArguments, true
 	case 32852:
 		return OpcuaNodeIdServicesVariableAliases_Aliases_LastChange, true
 	}
@@ -75,6 +99,18 @@ func OpcuaNodeIdServicesVariableAliasesByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments, true
 	case "Aliases_FindAlias_OutputArguments":
 		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments, true
+	case "Aliases_FindAliasVerbose_InputArguments":
+		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_InputArguments, true
+	case "Aliases_FindAliasVerbose_OutputArguments":
+		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_OutputArguments, true
+	case "Aliases_AddAliasesToCategory_InputArguments":
+		return OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_InputArguments, true
+	case "Aliases_AddAliasesToCategory_OutputArguments":
+		return OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_OutputArguments, true
+	case "Aliases_DeleteAliasesFromCategory_InputArguments":
+		return OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_InputArguments, true
+	case "Aliases_DeleteAliasesFromCategory_OutputArguments":
+		return OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_OutputArguments, true
 	case "Aliases_LastChange":
 		return OpcuaNodeIdServicesVariableAliases_Aliases_LastChange, true
 	}
@@ -152,6 +188,18 @@ func (e OpcuaNodeIdServicesVariableAliases) PLC4XEnumName() string {
 		return "Aliases_FindAlias_InputArguments"
 	case OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments:
 		return "Aliases_FindAlias_OutputArguments"
+	case OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_InputArguments:
+		return "Aliases_FindAliasVerbose_InputArguments"
+	case OpcuaNodeIdServicesVariableAliases_Aliases_FindAliasVerbose_OutputArguments:
+		return "Aliases_FindAliasVerbose_OutputArguments"
+	case OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_InputArguments:
+		return "Aliases_AddAliasesToCategory_InputArguments"
+	case OpcuaNodeIdServicesVariableAliases_Aliases_AddAliasesToCategory_OutputArguments:
+		return "Aliases_AddAliasesToCategory_OutputArguments"
+	case OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_InputArguments:
+		return "Aliases_DeleteAliasesFromCategory_InputArguments"
+	case OpcuaNodeIdServicesVariableAliases_Aliases_DeleteAliasesFromCategory_OutputArguments:
+		return "Aliases_DeleteAliasesFromCategory_OutputArguments"
 	case OpcuaNodeIdServicesVariableAliases_Aliases_LastChange:
 		return "Aliases_LastChange"
 	}

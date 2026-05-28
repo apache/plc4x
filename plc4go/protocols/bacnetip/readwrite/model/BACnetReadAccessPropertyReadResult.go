@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -165,7 +164,7 @@ func (b *_BACnetReadAccessPropertyReadResultBuilder) Build() (BACnetReadAccessPr
 	if b.PeekedTagHeader == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetReadAccessPropertyReadResult.deepCopy(), nil
@@ -382,11 +381,11 @@ func (m *_BACnetReadAccessPropertyReadResult) SerializeWithWriteBuffer(ctx conte
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
-	if err := WriteOptionalField[BACnetConstructedData](ctx, "propertyValue", GetRef(m.GetPropertyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "propertyValue", new(m.GetPropertyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'propertyValue' field")
 	}
 
-	if err := WriteOptionalField[ErrorEnclosed](ctx, "propertyAccessError", GetRef(m.GetPropertyAccessError()), WriteComplex[ErrorEnclosed](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[ErrorEnclosed](ctx, "propertyAccessError", new(m.GetPropertyAccessError()), WriteComplex[ErrorEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'propertyAccessError' field")
 	}
 

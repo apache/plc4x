@@ -438,16 +438,16 @@ func TestCombinations(t *testing.T) {
 			for _, _argument := range tt.arguments {
 				argument := _argument
 				t.Run(fmt.Sprintf("%s", argument), func(t *testing.T) {
-					PlcValueType := reflect.TypeOf((*apiValues.PlcValue)(nil)).Elem()
+					PlcValueType := reflect.TypeFor[apiValues.PlcValue]()
 					methods := make(map[string]reflect.Method)
-					for i := 0; i < PlcValueType.NumMethod(); i++ {
-						method := PlcValueType.Method(i)
+					for method := range PlcValueType.Methods() {
+						method := method
 						methods[method.Name] = method
 					}
 
 					for methodName := range methods {
-						if strings.HasPrefix(methodName, "Is") {
-							queryType := strings.TrimPrefix(methodName, "Is")
+						if after, ok := strings.CutPrefix(methodName, "Is"); ok {
+							queryType := after
 							t.Run(queryType, func(t *testing.T) {
 								getMethod := methods[fmt.Sprintf("Get%s", queryType)]
 								isA := reflect.ValueOf(argument).MethodByName(methodName).Call([]reflect.Value{})[0].Bool()

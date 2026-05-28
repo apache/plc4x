@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -159,7 +158,7 @@ func (b *_ReplyOrConfirmationConfirmationBuilder) Build() (ReplyOrConfirmationCo
 	if b.Confirmation == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'confirmation' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ReplyOrConfirmationConfirmation.deepCopy(), nil
@@ -326,7 +325,7 @@ func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(err, "Error serializing 'confirmation' field")
 		}
 
-		if err := WriteOptionalField[ReplyOrConfirmation](ctx, "embeddedReply", GetRef(m.GetEmbeddedReply()), WriteComplex[ReplyOrConfirmation](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[ReplyOrConfirmation](ctx, "embeddedReply", new(m.GetEmbeddedReply()), WriteComplex[ReplyOrConfirmation](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'embeddedReply' field")
 		}
 

@@ -22,16 +22,16 @@ package cache
 import (
 	"context"
 	"fmt"
+	"sync"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"github.com/viney-shih/go-lock"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type connectionContainer struct {
-	lock             lock.RWMutex
+	lock             *sync.RWMutex
 	connectionString string
 	driverManager    plc4go.PlcDriverManager
 	tracerEnabled    bool
@@ -58,7 +58,7 @@ func newConnectionContainer(log zerolog.Logger, driverManager plc4go.PlcDriverMa
 	return &connectionContainer{
 		driverManager:    driverManager,
 		connectionString: connectionString,
-		lock:             lock.NewCASMutex(),
+		lock:             &sync.RWMutex{},
 		leaseCounter:     0,
 		closed:           false,
 		state:            StateInitialized,

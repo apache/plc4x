@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,9 +41,11 @@ type IOpcuaNodeIdServicesVariableAnalog interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange               OpcuaNodeIdServicesVariableAnalog = 2369
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EngineeringUnits      OpcuaNodeIdServicesVariableAnalog = 17502
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits OpcuaNodeIdServicesVariableAnalog = 17575
+	OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange                  OpcuaNodeIdServicesVariableAnalog = 2369
+	OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EngineeringUnits         OpcuaNodeIdServicesVariableAnalog = 17502
+	OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits    OpcuaNodeIdServicesVariableAnalog = 17575
+	OpcuaNodeIdServicesVariableAnalog_AnalogNumberItemType_EUNumberRange      OpcuaNodeIdServicesVariableAnalog = 23907
+	OpcuaNodeIdServicesVariableAnalog_AnalogNumberUnitRangeType_EUNumberRange OpcuaNodeIdServicesVariableAnalog = 23927
 )
 
 var OpcuaNodeIdServicesVariableAnalogValues []OpcuaNodeIdServicesVariableAnalog
@@ -54,6 +56,8 @@ func init() {
 		OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange,
 		OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EngineeringUnits,
 		OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits,
+		OpcuaNodeIdServicesVariableAnalog_AnalogNumberItemType_EUNumberRange,
+		OpcuaNodeIdServicesVariableAnalog_AnalogNumberUnitRangeType_EUNumberRange,
 	}
 }
 
@@ -65,6 +69,10 @@ func OpcuaNodeIdServicesVariableAnalogByValue(value int32) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits, true
 	case 2369:
 		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange, true
+	case 23907:
+		return OpcuaNodeIdServicesVariableAnalog_AnalogNumberItemType_EUNumberRange, true
+	case 23927:
+		return OpcuaNodeIdServicesVariableAnalog_AnalogNumberUnitRangeType_EUNumberRange, true
 	}
 	return 0, false
 }
@@ -77,6 +85,10 @@ func OpcuaNodeIdServicesVariableAnalogByName(value string) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits, true
 	case "AnalogItemType_EURange":
 		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange, true
+	case "AnalogNumberItemType_EUNumberRange":
+		return OpcuaNodeIdServicesVariableAnalog_AnalogNumberItemType_EUNumberRange, true
+	case "AnalogNumberUnitRangeType_EUNumberRange":
+		return OpcuaNodeIdServicesVariableAnalog_AnalogNumberUnitRangeType_EUNumberRange, true
 	}
 	return 0, false
 }
@@ -154,6 +166,10 @@ func (e OpcuaNodeIdServicesVariableAnalog) PLC4XEnumName() string {
 		return "AnalogUnitRangeType_EngineeringUnits"
 	case OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange:
 		return "AnalogItemType_EURange"
+	case OpcuaNodeIdServicesVariableAnalog_AnalogNumberItemType_EUNumberRange:
+		return "AnalogNumberItemType_EUNumberRange"
+	case OpcuaNodeIdServicesVariableAnalog_AnalogNumberUnitRangeType_EUNumberRange:
+		return "AnalogNumberUnitRangeType_EUNumberRange"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

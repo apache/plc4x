@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -2109,6 +2109,7 @@ const (
 	OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_MaxByteStringLength                                               OpcuaNodeIdServicesVariableServer = 24259
 	OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_MaxByteStringLength                                                     OpcuaNodeIdServicesVariableServer = 24260
 	OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_MaxByteStringLength                                                 OpcuaNodeIdServicesVariableServer = 24261
+	OpcuaNodeIdServicesVariableServer_ServerLog_ReleaseContinuationPoint_InputArguments                                                                                         OpcuaNodeIdServicesVariableServer = 24378
 	OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2_InputArguments                             OpcuaNodeIdServicesVariableServer = 24619
 	OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2_InputArguments                           OpcuaNodeIdServicesVariableServer = 24621
 	OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2_InputArguments                    OpcuaNodeIdServicesVariableServer = 24623
@@ -4341,6 +4342,7 @@ func init() {
 		OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultApplicationGroup_TrustList_MaxByteStringLength,
 		OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_MaxByteStringLength,
 		OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_MaxByteStringLength,
+		OpcuaNodeIdServicesVariableServer_ServerLog_ReleaseContinuationPoint_InputArguments,
 		OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2_InputArguments,
 		OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2_InputArguments,
 		OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2_InputArguments,
@@ -8485,6 +8487,8 @@ func OpcuaNodeIdServicesVariableServerByValue(value int32) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_MaxByteStringLength, true
 	case 24261:
 		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_MaxByteStringLength, true
+	case 24378:
+		return OpcuaNodeIdServicesVariableServer_ServerLog_ReleaseContinuationPoint_InputArguments, true
 	case 24619:
 		return OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2_InputArguments, true
 	case 24621:
@@ -12941,6 +12945,8 @@ func OpcuaNodeIdServicesVariableServerByName(value string) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_MaxByteStringLength, true
 	case "ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_MaxByteStringLength":
 		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_MaxByteStringLength, true
+	case "ServerLog_ReleaseContinuationPoint_InputArguments":
+		return OpcuaNodeIdServicesVariableServer_ServerLog_ReleaseContinuationPoint_InputArguments, true
 	case "ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2_InputArguments":
 		return OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2_InputArguments, true
 	case "ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2_InputArguments":
@@ -17462,6 +17468,8 @@ func (e OpcuaNodeIdServicesVariableServer) PLC4XEnumName() string {
 		return "ServerConfiguration_CertificateGroups_DefaultHttpsGroup_TrustList_MaxByteStringLength"
 	case OpcuaNodeIdServicesVariableServer_ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_MaxByteStringLength:
 		return "ServerConfiguration_CertificateGroups_DefaultUserTokenGroup_TrustList_MaxByteStringLength"
+	case OpcuaNodeIdServicesVariableServer_ServerLog_ReleaseContinuationPoint_InputArguments:
+		return "ServerLog_ReleaseContinuationPoint_InputArguments"
 	case OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2_InputArguments:
 		return "ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2_InputArguments"
 	case OpcuaNodeIdServicesVariableServer_ServerConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2_InputArguments:

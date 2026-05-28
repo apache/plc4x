@@ -21,8 +21,8 @@ package io
 
 import (
 	"context"
-	"errors"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 

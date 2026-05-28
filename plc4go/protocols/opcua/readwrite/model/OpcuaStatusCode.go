@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -115,6 +115,8 @@ const (
 	OpcuaStatusCode_BadNotReadable                                                  OpcuaStatusCode = 0x803A0000
 	OpcuaStatusCode_BadNotWritable                                                  OpcuaStatusCode = 0x803B0000
 	OpcuaStatusCode_BadOutOfRange                                                   OpcuaStatusCode = 0x803C0000
+	OpcuaStatusCode_UncertainOverRange                                              OpcuaStatusCode = 0x40F20000
+	OpcuaStatusCode_UncertainUnderRange                                             OpcuaStatusCode = 0x40F30000
 	OpcuaStatusCode_BadNotSupported                                                 OpcuaStatusCode = 0x803D0000
 	OpcuaStatusCode_BadNotFound                                                     OpcuaStatusCode = 0x803E0000
 	OpcuaStatusCode_BadObjectDeleted                                                OpcuaStatusCode = 0x803F0000
@@ -394,6 +396,8 @@ func init() {
 		OpcuaStatusCode_BadNotReadable,
 		OpcuaStatusCode_BadNotWritable,
 		OpcuaStatusCode_BadOutOfRange,
+		OpcuaStatusCode_UncertainOverRange,
+		OpcuaStatusCode_UncertainUnderRange,
 		OpcuaStatusCode_BadNotSupported,
 		OpcuaStatusCode_BadNotFound,
 		OpcuaStatusCode_BadObjectDeleted,
@@ -689,6 +693,10 @@ func OpcuaStatusCodeByValue(value uint32) (enum OpcuaStatusCode, ok bool) {
 		return OpcuaStatusCode_UncertainDominantValueChanged, true
 	case 0x40E20000:
 		return OpcuaStatusCode_UncertainDependentValueChanged, true
+	case 0x40F20000:
+		return OpcuaStatusCode_UncertainOverRange, true
+	case 0x40F30000:
+		return OpcuaStatusCode_UncertainUnderRange, true
 	case 0x42080000:
 		return OpcuaStatusCode_UncertainTransducerInManual, true
 	case 0x42090000:
@@ -1239,6 +1247,10 @@ func OpcuaStatusCodeByName(value string) (enum OpcuaStatusCode, ok bool) {
 		return OpcuaStatusCode_UncertainDominantValueChanged, true
 	case "UncertainDependentValueChanged":
 		return OpcuaStatusCode_UncertainDependentValueChanged, true
+	case "UncertainOverRange":
+		return OpcuaStatusCode_UncertainOverRange, true
+	case "UncertainUnderRange":
+		return OpcuaStatusCode_UncertainUnderRange, true
 	case "UncertainTransducerInManual":
 		return OpcuaStatusCode_UncertainTransducerInManual, true
 	case "UncertainSimulatedValue":
@@ -1854,6 +1866,10 @@ func (e OpcuaStatusCode) PLC4XEnumName() string {
 		return "UncertainDominantValueChanged"
 	case OpcuaStatusCode_UncertainDependentValueChanged:
 		return "UncertainDependentValueChanged"
+	case OpcuaStatusCode_UncertainOverRange:
+		return "UncertainOverRange"
+	case OpcuaStatusCode_UncertainUnderRange:
+		return "UncertainUnderRange"
 	case OpcuaStatusCode_UncertainTransducerInManual:
 		return "UncertainTransducerInManual"
 	case OpcuaStatusCode_UncertainSimulatedValue:

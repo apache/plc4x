@@ -21,15 +21,13 @@ package ads
 
 import (
 	"context"
-	stdErrors "errors"
 	"runtime/debug"
 	"time"
-
-	"github.com/pkg/errors"
 
 	dirverModel "github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -213,7 +211,7 @@ func (m *Connection) processSubscriptionResponses(_ context.Context, subscriptio
 		}
 	}
 	var errResult error
-	if err := stdErrors.Join(collectedErrors...); err != nil {
+	if err := errors.Join(collectedErrors...); err != nil {
 		errResult = errors.Wrap(err, "while aggregating results")
 	}
 	return spiModel.NewDefaultPlcSubscriptionRequestResult(

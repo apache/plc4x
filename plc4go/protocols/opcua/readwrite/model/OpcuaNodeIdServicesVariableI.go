@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,54 +41,58 @@ type IOpcuaNodeIdServicesVariableI interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableI_IOrderedObjectType_NumberInList                          OpcuaNodeIdServicesVariableI = 23517
-	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_AdminStatus                OpcuaNodeIdServicesVariableI = 24149
-	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_OperStatus                 OpcuaNodeIdServicesVariableI = 24150
-	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_PhysAddress                OpcuaNodeIdServicesVariableI = 24151
-	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed                      OpcuaNodeIdServicesVariableI = 24152
-	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_Definition           OpcuaNodeIdServicesVariableI = 24153
-	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_ValuePrecision       OpcuaNodeIdServicesVariableI = 24154
-	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_InstrumentRange      OpcuaNodeIdServicesVariableI = 24155
-	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_EURange              OpcuaNodeIdServicesVariableI = 24156
-	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_EngineeringUnits     OpcuaNodeIdServicesVariableI = 24157
-	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed                          OpcuaNodeIdServicesVariableI = 24159
-	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_Definition               OpcuaNodeIdServicesVariableI = 24160
-	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_ValuePrecision           OpcuaNodeIdServicesVariableI = 24161
-	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_InstrumentRange          OpcuaNodeIdServicesVariableI = 24162
-	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_EURange                  OpcuaNodeIdServicesVariableI = 24163
-	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_EngineeringUnits         OpcuaNodeIdServicesVariableI = 24164
-	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Duplex                         OpcuaNodeIdServicesVariableI = 24165
-	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_MaxFrameLength                 OpcuaNodeIdServicesVariableI = 24166
-	OpcuaNodeIdServicesVariableI_IBaseEthernetCapabilitiesType_VlanTagCapable             OpcuaNodeIdServicesVariableI = 24168
-	OpcuaNodeIdServicesVariableI_ISrClassType_Id                                          OpcuaNodeIdServicesVariableI = 24170
-	OpcuaNodeIdServicesVariableI_ISrClassType_Priority                                    OpcuaNodeIdServicesVariableI = 24171
-	OpcuaNodeIdServicesVariableI_ISrClassType_Vid                                         OpcuaNodeIdServicesVariableI = 24172
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_StreamId                          OpcuaNodeIdServicesVariableI = 24174
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_StreamName                        OpcuaNodeIdServicesVariableI = 24175
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_State                             OpcuaNodeIdServicesVariableI = 24176
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_AccumulatedLatency                OpcuaNodeIdServicesVariableI = 24177
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_SrClassId                         OpcuaNodeIdServicesVariableI = 24178
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnTrafficSpecificationType_MaxIntervalFrames   OpcuaNodeIdServicesVariableI = 24180
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnTrafficSpecificationType_MaxFrameSize        OpcuaNodeIdServicesVariableI = 24181
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnTrafficSpecificationType_Interval            OpcuaNodeIdServicesVariableI = 24182
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStatusStreamType_TalkerStatus                OpcuaNodeIdServicesVariableI = 24184
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStatusStreamType_ListenerStatus              OpcuaNodeIdServicesVariableI = 24185
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStatusStreamType_FailureCode                 OpcuaNodeIdServicesVariableI = 24186
-	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStatusStreamType_FailureSystemIdentifier     OpcuaNodeIdServicesVariableI = 24187
-	OpcuaNodeIdServicesVariableI_IIeeeTsnInterfaceConfigurationType_MacAddress            OpcuaNodeIdServicesVariableI = 24189
-	OpcuaNodeIdServicesVariableI_IIeeeTsnInterfaceConfigurationType_InterfaceName         OpcuaNodeIdServicesVariableI = 24190
-	OpcuaNodeIdServicesVariableI_IIeeeTsnInterfaceConfigurationTalkerType_TimeAwareOffset OpcuaNodeIdServicesVariableI = 24194
-	OpcuaNodeIdServicesVariableI_IIeeeTsnInterfaceConfigurationListenerType_ReceiveOffset OpcuaNodeIdServicesVariableI = 24198
-	OpcuaNodeIdServicesVariableI_IIeeeTsnMacAddressType_DestinationAddress                OpcuaNodeIdServicesVariableI = 24200
-	OpcuaNodeIdServicesVariableI_IIeeeTsnMacAddressType_SourceAddress                     OpcuaNodeIdServicesVariableI = 24201
-	OpcuaNodeIdServicesVariableI_IIeeeTsnVlanTagType_VlanId                               OpcuaNodeIdServicesVariableI = 24203
-	OpcuaNodeIdServicesVariableI_IIeeeTsnVlanTagType_PriorityCodePoint                    OpcuaNodeIdServicesVariableI = 24204
-	OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_MappingUri                     OpcuaNodeIdServicesVariableI = 24206
-	OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityLabel                  OpcuaNodeIdServicesVariableI = 24207
-	OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_PCP              OpcuaNodeIdServicesVariableI = 24208
-	OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_DSCP             OpcuaNodeIdServicesVariableI = 24209
-	OpcuaNodeIdServicesVariableI_IIeeeAutoNegotiationStatusType_NegotiationStatus         OpcuaNodeIdServicesVariableI = 24234
-	OpcuaNodeIdServicesVariableI_IVlanIdType_VlanId                                       OpcuaNodeIdServicesVariableI = 25219
+	OpcuaNodeIdServicesVariableI_IOrderedObjectType_NumberInList                           OpcuaNodeIdServicesVariableI = 23517
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_AdminStatus                 OpcuaNodeIdServicesVariableI = 24149
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_OperStatus                  OpcuaNodeIdServicesVariableI = 24150
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_PhysAddress                 OpcuaNodeIdServicesVariableI = 24151
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed                       OpcuaNodeIdServicesVariableI = 24152
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_Definition            OpcuaNodeIdServicesVariableI = 24153
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_ValuePrecision        OpcuaNodeIdServicesVariableI = 24154
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_InstrumentRange       OpcuaNodeIdServicesVariableI = 24155
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_EURange               OpcuaNodeIdServicesVariableI = 24156
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_EngineeringUnits      OpcuaNodeIdServicesVariableI = 24157
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed                           OpcuaNodeIdServicesVariableI = 24159
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_Definition                OpcuaNodeIdServicesVariableI = 24160
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_ValuePrecision            OpcuaNodeIdServicesVariableI = 24161
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_InstrumentRange           OpcuaNodeIdServicesVariableI = 24162
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_EURange                   OpcuaNodeIdServicesVariableI = 24163
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_EngineeringUnits          OpcuaNodeIdServicesVariableI = 24164
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Duplex                          OpcuaNodeIdServicesVariableI = 24165
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_MaxFrameLength                  OpcuaNodeIdServicesVariableI = 24166
+	OpcuaNodeIdServicesVariableI_IBaseEthernetCapabilitiesType_VlanTagCapable              OpcuaNodeIdServicesVariableI = 24168
+	OpcuaNodeIdServicesVariableI_ISrClassType_Id                                           OpcuaNodeIdServicesVariableI = 24170
+	OpcuaNodeIdServicesVariableI_ISrClassType_Priority                                     OpcuaNodeIdServicesVariableI = 24171
+	OpcuaNodeIdServicesVariableI_ISrClassType_Vid                                          OpcuaNodeIdServicesVariableI = 24172
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_StreamId                           OpcuaNodeIdServicesVariableI = 24174
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_StreamName                         OpcuaNodeIdServicesVariableI = 24175
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_State                              OpcuaNodeIdServicesVariableI = 24176
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_AccumulatedLatency                 OpcuaNodeIdServicesVariableI = 24177
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStreamType_SrClassId                          OpcuaNodeIdServicesVariableI = 24178
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnTrafficSpecificationType_MaxIntervalFrames    OpcuaNodeIdServicesVariableI = 24180
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnTrafficSpecificationType_MaxFrameSize         OpcuaNodeIdServicesVariableI = 24181
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnTrafficSpecificationType_Interval             OpcuaNodeIdServicesVariableI = 24182
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStatusStreamType_TalkerStatus                 OpcuaNodeIdServicesVariableI = 24184
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStatusStreamType_ListenerStatus               OpcuaNodeIdServicesVariableI = 24185
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStatusStreamType_FailureCode                  OpcuaNodeIdServicesVariableI = 24186
+	OpcuaNodeIdServicesVariableI_IIeeeBaseTsnStatusStreamType_FailureSystemIdentifier      OpcuaNodeIdServicesVariableI = 24187
+	OpcuaNodeIdServicesVariableI_IIeeeTsnInterfaceConfigurationType_MacAddress             OpcuaNodeIdServicesVariableI = 24189
+	OpcuaNodeIdServicesVariableI_IIeeeTsnInterfaceConfigurationType_InterfaceName          OpcuaNodeIdServicesVariableI = 24190
+	OpcuaNodeIdServicesVariableI_IIeeeTsnInterfaceConfigurationTalkerType_TimeAwareOffset  OpcuaNodeIdServicesVariableI = 24194
+	OpcuaNodeIdServicesVariableI_IIeeeTsnInterfaceConfigurationListenerType_ReceiveOffset  OpcuaNodeIdServicesVariableI = 24198
+	OpcuaNodeIdServicesVariableI_IIeeeTsnMacAddressType_DestinationAddress                 OpcuaNodeIdServicesVariableI = 24200
+	OpcuaNodeIdServicesVariableI_IIeeeTsnMacAddressType_SourceAddress                      OpcuaNodeIdServicesVariableI = 24201
+	OpcuaNodeIdServicesVariableI_IIeeeTsnVlanTagType_VlanId                                OpcuaNodeIdServicesVariableI = 24203
+	OpcuaNodeIdServicesVariableI_IIeeeTsnVlanTagType_PriorityCodePoint                     OpcuaNodeIdServicesVariableI = 24204
+	OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_MappingUri                      OpcuaNodeIdServicesVariableI = 24206
+	OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityLabel                   OpcuaNodeIdServicesVariableI = 24207
+	OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_PCP               OpcuaNodeIdServicesVariableI = 24208
+	OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_DSCP              OpcuaNodeIdServicesVariableI = 24209
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_InstrumentNumberRange OpcuaNodeIdServicesVariableI = 24219
+	OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_EUNumberRange         OpcuaNodeIdServicesVariableI = 24221
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_InstrumentNumberRange     OpcuaNodeIdServicesVariableI = 24223
+	OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_EUNumberRange             OpcuaNodeIdServicesVariableI = 24225
+	OpcuaNodeIdServicesVariableI_IIeeeAutoNegotiationStatusType_NegotiationStatus          OpcuaNodeIdServicesVariableI = 24234
+	OpcuaNodeIdServicesVariableI_IVlanIdType_VlanId                                        OpcuaNodeIdServicesVariableI = 25219
 )
 
 var OpcuaNodeIdServicesVariableIValues []OpcuaNodeIdServicesVariableI
@@ -142,6 +146,10 @@ func init() {
 		OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityLabel,
 		OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_PCP,
 		OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_DSCP,
+		OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_InstrumentNumberRange,
+		OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_EUNumberRange,
+		OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_InstrumentNumberRange,
+		OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_EUNumberRange,
 		OpcuaNodeIdServicesVariableI_IIeeeAutoNegotiationStatusType_NegotiationStatus,
 		OpcuaNodeIdServicesVariableI_IVlanIdType_VlanId,
 	}
@@ -241,6 +249,14 @@ func OpcuaNodeIdServicesVariableIByValue(value int32) (enum OpcuaNodeIdServicesV
 		return OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_PCP, true
 	case 24209:
 		return OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_DSCP, true
+	case 24219:
+		return OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_InstrumentNumberRange, true
+	case 24221:
+		return OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_EUNumberRange, true
+	case 24223:
+		return OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_InstrumentNumberRange, true
+	case 24225:
+		return OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_EUNumberRange, true
 	case 24234:
 		return OpcuaNodeIdServicesVariableI_IIeeeAutoNegotiationStatusType_NegotiationStatus, true
 	case 25219:
@@ -343,6 +359,14 @@ func OpcuaNodeIdServicesVariableIByName(value string) (enum OpcuaNodeIdServicesV
 		return OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_PCP, true
 	case "IPriorityMappingEntryType_PriorityValue_DSCP":
 		return OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_DSCP, true
+	case "IIetfBaseNetworkInterfaceType_Speed_InstrumentNumberRange":
+		return OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_InstrumentNumberRange, true
+	case "IIetfBaseNetworkInterfaceType_Speed_EUNumberRange":
+		return OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_EUNumberRange, true
+	case "IIeeeBaseEthernetPortType_Speed_InstrumentNumberRange":
+		return OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_InstrumentNumberRange, true
+	case "IIeeeBaseEthernetPortType_Speed_EUNumberRange":
+		return OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_EUNumberRange, true
 	case "IIeeeAutoNegotiationStatusType_NegotiationStatus":
 		return OpcuaNodeIdServicesVariableI_IIeeeAutoNegotiationStatusType_NegotiationStatus, true
 	case "IVlanIdType_VlanId":
@@ -510,6 +534,14 @@ func (e OpcuaNodeIdServicesVariableI) PLC4XEnumName() string {
 		return "IPriorityMappingEntryType_PriorityValue_PCP"
 	case OpcuaNodeIdServicesVariableI_IPriorityMappingEntryType_PriorityValue_DSCP:
 		return "IPriorityMappingEntryType_PriorityValue_DSCP"
+	case OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_InstrumentNumberRange:
+		return "IIetfBaseNetworkInterfaceType_Speed_InstrumentNumberRange"
+	case OpcuaNodeIdServicesVariableI_IIetfBaseNetworkInterfaceType_Speed_EUNumberRange:
+		return "IIetfBaseNetworkInterfaceType_Speed_EUNumberRange"
+	case OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_InstrumentNumberRange:
+		return "IIeeeBaseEthernetPortType_Speed_InstrumentNumberRange"
+	case OpcuaNodeIdServicesVariableI_IIeeeBaseEthernetPortType_Speed_EUNumberRange:
+		return "IIeeeBaseEthernetPortType_Speed_EUNumberRange"
 	case OpcuaNodeIdServicesVariableI_IIeeeAutoNegotiationStatusType_NegotiationStatus:
 		return "IIeeeAutoNegotiationStatusType_NegotiationStatus"
 	case OpcuaNodeIdServicesVariableI_IVlanIdType_VlanId:

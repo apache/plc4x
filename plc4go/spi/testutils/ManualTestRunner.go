@@ -27,11 +27,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -155,7 +155,7 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 	// Read all items in one big request.
 	// Shuffle the list of test cases and run the test 10 times.
 	t.Log("Reading all items together in random order")
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		t.Logf(" - run number %d of %d", i, 100)
 		shuffledTestcases := append(make([]ManualTestCase, 0), m.TestCases...)
 		rand.Seed(time.Now().UnixNano())

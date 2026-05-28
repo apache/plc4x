@@ -28,10 +28,10 @@ import (
 	"crypto/x509"
 	"encoding/binary"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -85,7 +85,7 @@ func (h *EncryptionHandler) encodeMessage(ctx context.Context, pdu readWriteMode
 	if err := buf.WriteByte("", paddingByte); err != nil {
 		return nil, errors.Wrap(err, "error writing byte")
 	}
-	for i := 0; i < paddingSize; i++ {
+	for range paddingSize {
 		if err := buf.WriteByte("", paddingByte); err != nil {
 			return nil, errors.Wrap(err, "error writing byte")
 		}

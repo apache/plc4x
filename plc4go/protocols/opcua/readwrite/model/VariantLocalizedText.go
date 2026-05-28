@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -62,7 +61,7 @@ var _ VariantLocalizedText = (*_VariantLocalizedText)(nil)
 var _ VariantRequirements = (*_VariantLocalizedText)(nil)
 
 // NewVariantLocalizedText factory function for _VariantLocalizedText
-func NewVariantLocalizedText(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []LocalizedText) *_VariantLocalizedText {
+func NewVariantLocalizedText(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []int32, arrayLength *int32, value []LocalizedText) *_VariantLocalizedText {
 	_result := &_VariantLocalizedText{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,
@@ -129,7 +128,7 @@ func (b *_VariantLocalizedTextBuilder) WithValue(value ...LocalizedText) Variant
 }
 
 func (b *_VariantLocalizedTextBuilder) Build() (VariantLocalizedText, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantLocalizedText.deepCopy(), nil

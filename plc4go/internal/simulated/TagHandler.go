@@ -20,13 +20,13 @@
 package simulated
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 

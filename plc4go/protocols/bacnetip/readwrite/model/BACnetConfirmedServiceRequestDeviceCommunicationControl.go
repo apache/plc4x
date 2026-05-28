@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -182,7 +181,7 @@ func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) Build(
 	if b.EnableDisable == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'enableDisable' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestDeviceCommunicationControl.deepCopy(), nil
@@ -368,7 +367,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestDeviceCommunicationControl")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "timeDuration", GetRef(m.GetTimeDuration()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "timeDuration", new(m.GetTimeDuration()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'timeDuration' field")
 		}
 
@@ -376,7 +375,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 			return errors.Wrap(err, "Error serializing 'enableDisable' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", GetRef(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", new(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'password' field")
 		}
 

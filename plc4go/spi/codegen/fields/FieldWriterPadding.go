@@ -22,11 +22,11 @@ package fields
 import (
 	"context"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	"github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -49,7 +49,7 @@ func (f *FieldWriterPadding[T]) WritePaddingField(ctx context.Context, logicalNa
 		if err := dataWriter.PushContext(logicalName, utils.WithRenderAsList(true)); err != nil {
 			return errors.Wrap(err, "error pushing context for "+logicalName)
 		}
-		for i := 0; i < timesPadding; i++ {
+		for range timesPadding {
 			if err := dataWriter.Write(ctx, logicalName, value, writerArgs...); err != nil {
 				return errors.Wrap(err, "error writing value for "+logicalName)
 			}

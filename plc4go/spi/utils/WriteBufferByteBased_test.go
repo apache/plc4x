@@ -20,14 +20,12 @@
 package utils
 
 import (
-	"bytes"
 	"context"
 	"encoding/binary"
 	"fmt"
 	"math/big"
 	"testing"
 
-	"github.com/icza/bitio"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -43,7 +41,7 @@ func TestSizingWorksProperly(t *testing.T) {
 	})
 	t.Run("custom sizing", func(t *testing.T) {
 		wb := NewWriteBufferByteBased(WithInitialSizeForByteBasedBuffer(23432342))
-		for i := 0; i < 14; i++ {
+		for range 14 {
 			_ = wb.WriteByte("nasd", 12)
 		}
 
@@ -63,8 +61,7 @@ func TestNewWriteBufferByteBased(t *testing.T) {
 		{
 			name: "create it,",
 			want: &byteWriteBuffer{
-				data:      new(bytes.Buffer),
-				writer:    bitio.NewWriter(new(bytes.Buffer)),
+				bits:      NewWriteBitBuffer(0),
 				byteOrder: binary.BigEndian,
 			},
 		},
@@ -94,34 +91,7 @@ func TestWithByteOrderForByteBasedBuffer(t *testing.T) {
 			assert.NotNilf(t, withByteOrderForByteBasedBuffer, "WithByteOrderForByteBasedBuffer(%v)", tt.args.byteOrder)
 			withByteOrderForByteBasedBuffer(
 				&byteWriteBuffer{
-					data:   new(bytes.Buffer),
-					writer: bitio.NewWriter(new(bytes.Buffer)),
-				},
-			)
-		})
-	}
-}
-
-func TestWithCustomBufferForByteBasedBuffer(t *testing.T) {
-	type args struct {
-		buffer *bytes.Buffer
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		{
-			name: "create it",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			withCustomBufferForByteBasedBuffer := WithCustomBufferForByteBasedBuffer(tt.args.buffer)
-			assert.NotNilf(t, withCustomBufferForByteBasedBuffer, "WithCustomBufferForByteBasedBuffer(%v)", tt.args.buffer)
-			withCustomBufferForByteBasedBuffer(
-				&byteWriteBuffer{
-					data:   new(bytes.Buffer),
-					writer: bitio.NewWriter(new(bytes.Buffer)),
+					bits: NewWriteBitBuffer(0),
 				},
 			)
 		})
@@ -146,8 +116,7 @@ func TestWithInitialSizeForByteBasedBuffer(t *testing.T) {
 			assert.NotNilf(t, withInitialSizeForByteBasedBuffer, "WithInitialSizeForByteBasedBuffer(%v)", tt.args.length)
 			withInitialSizeForByteBasedBuffer(
 				&byteWriteBuffer{
-					data:   new(bytes.Buffer),
-					writer: bitio.NewWriter(new(bytes.Buffer)),
+					bits: NewWriteBitBuffer(0),
 				},
 			)
 		})
@@ -156,8 +125,7 @@ func TestWithInitialSizeForByteBasedBuffer(t *testing.T) {
 
 func Test_byteWriteBuffer_GetByteOrder(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -173,8 +141,7 @@ func Test_byteWriteBuffer_GetByteOrder(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -185,8 +152,7 @@ func Test_byteWriteBuffer_GetByteOrder(t *testing.T) {
 
 func Test_byteWriteBuffer_GetBytes(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -198,15 +164,15 @@ func Test_byteWriteBuffer_GetBytes(t *testing.T) {
 		{
 			name: "get it",
 			fields: fields{
-				data: new(bytes.Buffer),
+				bits: NewWriteBitBuffer(0),
 			},
+			want: nil,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -217,8 +183,7 @@ func Test_byteWriteBuffer_GetBytes(t *testing.T) {
 
 func Test_byteWriteBuffer_GetPos(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -234,8 +199,7 @@ func Test_byteWriteBuffer_GetPos(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -246,8 +210,7 @@ func Test_byteWriteBuffer_GetPos(t *testing.T) {
 
 func Test_byteWriteBuffer_GetTotalBytes(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -259,15 +222,14 @@ func Test_byteWriteBuffer_GetTotalBytes(t *testing.T) {
 		{
 			name: "get it",
 			fields: fields{
-				data: new(bytes.Buffer),
+				bits: NewWriteBitBuffer(0),
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -278,8 +240,7 @@ func Test_byteWriteBuffer_GetTotalBytes(t *testing.T) {
 
 func Test_byteWriteBuffer_PopContext(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -301,8 +262,7 @@ func Test_byteWriteBuffer_PopContext(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -313,8 +273,7 @@ func Test_byteWriteBuffer_PopContext(t *testing.T) {
 
 func Test_byteWriteBuffer_PushContext(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -336,8 +295,7 @@ func Test_byteWriteBuffer_PushContext(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -348,8 +306,7 @@ func Test_byteWriteBuffer_PushContext(t *testing.T) {
 
 func Test_byteWriteBuffer_SetByteOrder(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -368,8 +325,7 @@ func Test_byteWriteBuffer_SetByteOrder(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -380,8 +336,7 @@ func Test_byteWriteBuffer_SetByteOrder(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteBigFloat(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -405,8 +360,7 @@ func Test_byteWriteBuffer_WriteBigFloat(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -417,8 +371,7 @@ func Test_byteWriteBuffer_WriteBigFloat(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteBigInt(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -442,8 +395,7 @@ func Test_byteWriteBuffer_WriteBigInt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -454,8 +406,7 @@ func Test_byteWriteBuffer_WriteBigInt(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteBit(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -473,7 +424,7 @@ func Test_byteWriteBuffer_WriteBit(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
@@ -481,8 +432,7 @@ func Test_byteWriteBuffer_WriteBit(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -493,8 +443,7 @@ func Test_byteWriteBuffer_WriteBit(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteByte(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -512,7 +461,7 @@ func Test_byteWriteBuffer_WriteByte(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
@@ -520,8 +469,7 @@ func Test_byteWriteBuffer_WriteByte(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -532,8 +480,7 @@ func Test_byteWriteBuffer_WriteByte(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteByteArray(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -551,14 +498,14 @@ func Test_byteWriteBuffer_WriteByteArray(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "write more",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			args: args{
 				data: []byte{1, 2, 3, 4},
@@ -569,8 +516,7 @@ func Test_byteWriteBuffer_WriteByteArray(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -581,8 +527,7 @@ func Test_byteWriteBuffer_WriteByteArray(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteFloat32(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -601,7 +546,7 @@ func Test_byteWriteBuffer_WriteFloat32(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
@@ -609,8 +554,7 @@ func Test_byteWriteBuffer_WriteFloat32(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -621,8 +565,7 @@ func Test_byteWriteBuffer_WriteFloat32(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteFloat64(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -641,7 +584,7 @@ func Test_byteWriteBuffer_WriteFloat64(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
@@ -649,8 +592,7 @@ func Test_byteWriteBuffer_WriteFloat64(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -661,8 +603,7 @@ func Test_byteWriteBuffer_WriteFloat64(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteInt16(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -681,14 +622,14 @@ func Test_byteWriteBuffer_WriteInt16(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "write it LE",
 			fields: fields{
-				writer:    bitio.NewWriter(new(bytes.Buffer)),
+				bits:      NewWriteBitBuffer(0),
 				byteOrder: binary.LittleEndian,
 			},
 			wantErr: assert.NoError,
@@ -697,8 +638,7 @@ func Test_byteWriteBuffer_WriteInt16(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -709,8 +649,7 @@ func Test_byteWriteBuffer_WriteInt16(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteInt32(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -729,14 +668,14 @@ func Test_byteWriteBuffer_WriteInt32(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "write it LE",
 			fields: fields{
-				writer:    bitio.NewWriter(new(bytes.Buffer)),
+				bits:      NewWriteBitBuffer(0),
 				byteOrder: binary.LittleEndian,
 			},
 			wantErr: assert.NoError,
@@ -745,8 +684,7 @@ func Test_byteWriteBuffer_WriteInt32(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -757,8 +695,7 @@ func Test_byteWriteBuffer_WriteInt32(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteInt64(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -777,14 +714,14 @@ func Test_byteWriteBuffer_WriteInt64(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "write it LE",
 			fields: fields{
-				writer:    bitio.NewWriter(new(bytes.Buffer)),
+				bits:      NewWriteBitBuffer(0),
 				byteOrder: binary.LittleEndian,
 			},
 			wantErr: assert.NoError,
@@ -793,8 +730,7 @@ func Test_byteWriteBuffer_WriteInt64(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -805,8 +741,7 @@ func Test_byteWriteBuffer_WriteInt64(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteInt8(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -825,7 +760,7 @@ func Test_byteWriteBuffer_WriteInt8(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
@@ -833,8 +768,7 @@ func Test_byteWriteBuffer_WriteInt8(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -845,8 +779,7 @@ func Test_byteWriteBuffer_WriteInt8(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -864,14 +797,14 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				serializable := NewMockSerializable(t)
@@ -887,8 +820,7 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 				tt.setup(t, &tt.fields, &tt.args)
 			}
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -899,8 +831,7 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteString(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -919,7 +850,7 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			args: args{
 				bitLength: 48,
@@ -930,7 +861,7 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 		{
 			name: "write it UTF-8",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			args: args{
 				bitLength: 48,
@@ -942,7 +873,7 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 		{
 			name: "write it UTF-16",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			args: args{
 				bitLength: 48,
@@ -954,7 +885,7 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 		{
 			name: "write it UTF-16 BigEndian",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			args: args{
 				bitLength: 48,
@@ -966,7 +897,7 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 		{
 			name: "write it UTF-16 LittleEndian",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			args: args{
 				bitLength: 48,
@@ -979,8 +910,7 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -991,8 +921,7 @@ func Test_byteWriteBuffer_WriteString(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteUint16(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -1011,14 +940,14 @@ func Test_byteWriteBuffer_WriteUint16(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "write it LE",
 			fields: fields{
-				writer:    bitio.NewWriter(new(bytes.Buffer)),
+				bits:      NewWriteBitBuffer(0),
 				byteOrder: binary.LittleEndian,
 			},
 			wantErr: assert.NoError,
@@ -1027,8 +956,7 @@ func Test_byteWriteBuffer_WriteUint16(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -1039,8 +967,7 @@ func Test_byteWriteBuffer_WriteUint16(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteUint32(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -1059,7 +986,7 @@ func Test_byteWriteBuffer_WriteUint32(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
@@ -1067,7 +994,7 @@ func Test_byteWriteBuffer_WriteUint32(t *testing.T) {
 		{
 			name: "write it LE",
 			fields: fields{
-				writer:    bitio.NewWriter(new(bytes.Buffer)),
+				bits:      NewWriteBitBuffer(0),
 				byteOrder: binary.LittleEndian,
 			},
 			wantErr: assert.NoError,
@@ -1076,8 +1003,7 @@ func Test_byteWriteBuffer_WriteUint32(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -1088,8 +1014,7 @@ func Test_byteWriteBuffer_WriteUint32(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteUint64(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -1108,7 +1033,7 @@ func Test_byteWriteBuffer_WriteUint64(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
@@ -1116,7 +1041,7 @@ func Test_byteWriteBuffer_WriteUint64(t *testing.T) {
 		{
 			name: "write it LE",
 			fields: fields{
-				writer:    bitio.NewWriter(new(bytes.Buffer)),
+				bits:      NewWriteBitBuffer(0),
 				byteOrder: binary.LittleEndian,
 			},
 			wantErr: assert.NoError,
@@ -1125,8 +1050,7 @@ func Test_byteWriteBuffer_WriteUint64(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -1137,8 +1061,7 @@ func Test_byteWriteBuffer_WriteUint64(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteUint8(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -1157,7 +1080,7 @@ func Test_byteWriteBuffer_WriteUint8(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
@@ -1165,8 +1088,7 @@ func Test_byteWriteBuffer_WriteUint8(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -1177,8 +1099,7 @@ func Test_byteWriteBuffer_WriteUint8(t *testing.T) {
 
 func Test_byteWriteBuffer_WriteVirtual(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -1197,7 +1118,7 @@ func Test_byteWriteBuffer_WriteVirtual(t *testing.T) {
 		{
 			name: "write it",
 			fields: fields{
-				writer: bitio.NewWriter(new(bytes.Buffer)),
+				bits: NewWriteBitBuffer(0),
 			},
 			wantErr: assert.NoError,
 		},
@@ -1205,8 +1126,7 @@ func Test_byteWriteBuffer_WriteVirtual(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
@@ -1217,8 +1137,7 @@ func Test_byteWriteBuffer_WriteVirtual(t *testing.T) {
 
 func Test_byteWriteBuffer_move(t *testing.T) {
 	type fields struct {
-		data      *bytes.Buffer
-		writer    *bitio.Writer
+		bits      *WriteBitBuffer
 		byteOrder binary.ByteOrder
 		pos       uint
 	}
@@ -1237,8 +1156,7 @@ func Test_byteWriteBuffer_move(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			wb := &byteWriteBuffer{
-				data:      tt.fields.data,
-				writer:    tt.fields.writer,
+				bits:      tt.fields.bits,
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}

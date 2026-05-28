@@ -24,9 +24,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -122,7 +122,7 @@ func (m *defaultBufferedTransportInstance) Read(ctx context.Context, numBytes ui
 		}
 	}
 	data := make([]byte, numBytes)
-	for i := uint32(0); i < numBytes; i++ {
+	for i := range numBytes {
 		val, err := m.GetReader().ReadByte()
 		if err != nil {
 			return nil, errors.Wrap(err, "error reading")

@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -193,7 +192,7 @@ func (b *_BACnetConstructedDataElementBuilder) Build() (BACnetConstructedDataEle
 	if b.PeekedTagHeader == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataElement.deepCopy(), nil
@@ -504,15 +503,15 @@ func (m *_BACnetConstructedDataElement) SerializeWithWriteBuffer(ctx context.Con
 		return errors.Wrap(_isContextTagErr, "Error serializing 'isContextTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetApplicationTag](ctx, "applicationTag", GetRef(m.GetApplicationTag()), WriteComplex[BACnetApplicationTag](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetApplicationTag](ctx, "applicationTag", new(m.GetApplicationTag()), WriteComplex[BACnetApplicationTag](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'applicationTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTag](ctx, "contextTag", GetRef(m.GetContextTag()), WriteComplex[BACnetContextTag](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTag](ctx, "contextTag", new(m.GetContextTag()), WriteComplex[BACnetContextTag](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'contextTag' field")
 	}
 
-	if err := WriteOptionalField[BACnetConstructedData](ctx, "constructedData", GetRef(m.GetConstructedData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "constructedData", new(m.GetConstructedData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'constructedData' field")
 	}
 

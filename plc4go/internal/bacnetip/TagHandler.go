@@ -25,10 +25,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -74,7 +73,7 @@ func (m TagHandler) ParseTag(tagString string) (apiModel.PlcTag, error) {
 			result.ObjectId.ObjectIdInstance = uint32(parsedObjectInstance)
 		}
 
-		for _, propertyString := range strings.Split(addressMatch[PROPERTY_IDENTIFIERS], "&") {
+		for propertyString := range strings.SplitSeq(addressMatch[PROPERTY_IDENTIFIERS], "&") {
 			var _property struct {
 				PropertyIdentifier            *readWriteModel.BACnetPropertyIdentifier
 				PropertyIdentifierProprietary *uint32

@@ -1338,7 +1338,7 @@
           <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>time</name>
-              <address>ns=0;i=2258</address>
+              <address>ns=0;i=2258;DATE_AND_TIME</address>
             </tag>
           </tags>
         </TestReadRequest>
@@ -1681,7 +1681,7 @@
                         <OpcuaTag>
                           <nodeId dataType="string" bitLength="88" encoding="UTF-8">ns=0;i=2258</nodeId>
                           <attributeId dataType="string" bitLength="40" encoding="UTF-8">Value</attributeId>
-                          <dataType dataType="string" bitLength="32" encoding="UTF-8">NULL</dataType>
+                          <dataType dataType="string" bitLength="104" encoding="UTF-8">DATE_AND_TIME</dataType>
                         </OpcuaTag>
                       </tag>
                     </PlcTagItem>

@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -66,6 +66,8 @@ const (
 	OpcuaNodeIdServicesVariableAdd_AddDataSetFolderMethodType_OutputArguments              OpcuaNodeIdServicesVariableAdd = 17069
 	OpcuaNodeIdServicesVariableAdd_AddSubscribedDataSetMethodType_InputArguments           OpcuaNodeIdServicesVariableAdd = 23822
 	OpcuaNodeIdServicesVariableAdd_AddSubscribedDataSetMethodType_OutputArguments          OpcuaNodeIdServicesVariableAdd = 23823
+	OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_InputArguments           OpcuaNodeIdServicesVariableAdd = 24026
+	OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_OutputArguments          OpcuaNodeIdServicesVariableAdd = 24027
 	OpcuaNodeIdServicesVariableAdd_AddUserMethodType_InputArguments                        OpcuaNodeIdServicesVariableAdd = 24283
 	OpcuaNodeIdServicesVariableAdd_AddPriorityMappingEntryMethodType_InputArguments        OpcuaNodeIdServicesVariableAdd = 25234
 	OpcuaNodeIdServicesVariableAdd_AddSecurityGroupFolderMethodType_InputArguments         OpcuaNodeIdServicesVariableAdd = 25289
@@ -106,6 +108,8 @@ func init() {
 		OpcuaNodeIdServicesVariableAdd_AddDataSetFolderMethodType_OutputArguments,
 		OpcuaNodeIdServicesVariableAdd_AddSubscribedDataSetMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableAdd_AddSubscribedDataSetMethodType_OutputArguments,
+		OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_InputArguments,
+		OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_OutputArguments,
 		OpcuaNodeIdServicesVariableAdd_AddUserMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableAdd_AddPriorityMappingEntryMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableAdd_AddSecurityGroupFolderMethodType_InputArguments,
@@ -167,6 +171,10 @@ func OpcuaNodeIdServicesVariableAddByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableAdd_AddSubscribedDataSetMethodType_InputArguments, true
 	case 23823:
 		return OpcuaNodeIdServicesVariableAdd_AddSubscribedDataSetMethodType_OutputArguments, true
+	case 24026:
+		return OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_InputArguments, true
+	case 24027:
+		return OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_OutputArguments, true
 	case 24283:
 		return OpcuaNodeIdServicesVariableAdd_AddUserMethodType_InputArguments, true
 	case 25234:
@@ -239,6 +247,10 @@ func OpcuaNodeIdServicesVariableAddByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableAdd_AddSubscribedDataSetMethodType_InputArguments, true
 	case "AddSubscribedDataSetMethodType_OutputArguments":
 		return OpcuaNodeIdServicesVariableAdd_AddSubscribedDataSetMethodType_OutputArguments, true
+	case "AddAliasesToCategoryMethodType_InputArguments":
+		return OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_InputArguments, true
+	case "AddAliasesToCategoryMethodType_OutputArguments":
+		return OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_OutputArguments, true
 	case "AddUserMethodType_InputArguments":
 		return OpcuaNodeIdServicesVariableAdd_AddUserMethodType_InputArguments, true
 	case "AddPriorityMappingEntryMethodType_InputArguments":
@@ -376,6 +388,10 @@ func (e OpcuaNodeIdServicesVariableAdd) PLC4XEnumName() string {
 		return "AddSubscribedDataSetMethodType_InputArguments"
 	case OpcuaNodeIdServicesVariableAdd_AddSubscribedDataSetMethodType_OutputArguments:
 		return "AddSubscribedDataSetMethodType_OutputArguments"
+	case OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_InputArguments:
+		return "AddAliasesToCategoryMethodType_InputArguments"
+	case OpcuaNodeIdServicesVariableAdd_AddAliasesToCategoryMethodType_OutputArguments:
+		return "AddAliasesToCategoryMethodType_OutputArguments"
 	case OpcuaNodeIdServicesVariableAdd_AddUserMethodType_InputArguments:
 		return "AddUserMethodType_InputArguments"
 	case OpcuaNodeIdServicesVariableAdd_AddPriorityMappingEntryMethodType_InputArguments:

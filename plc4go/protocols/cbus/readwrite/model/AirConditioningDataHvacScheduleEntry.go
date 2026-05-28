@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -273,7 +272,7 @@ func (b *_AirConditioningDataHvacScheduleEntryBuilder) Build() (AirConditioningD
 	if b.StartTime == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'startTime' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AirConditioningDataHvacScheduleEntry.deepCopy(), nil
@@ -544,11 +543,11 @@ func (m *_AirConditioningDataHvacScheduleEntry) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(err, "Error serializing 'startTime' field")
 		}
 
-		if err := WriteOptionalField[HVACTemperature](ctx, "level", GetRef(m.GetLevel()), WriteComplex[HVACTemperature](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACTemperature](ctx, "level", new(m.GetLevel()), WriteComplex[HVACTemperature](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", GetRef(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", new(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'rawLevel' field")
 		}
 

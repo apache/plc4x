@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -217,7 +216,7 @@ func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) Build() (BACn
 	if b.Request == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'request' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestLifeSafetyOperation.deepCopy(), nil
@@ -422,7 +421,7 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) SerializeWithWriteBu
 			return errors.Wrap(err, "Error serializing 'request' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", new(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 

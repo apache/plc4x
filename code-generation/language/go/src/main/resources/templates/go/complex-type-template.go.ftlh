@@ -411,7 +411,7 @@ func (b *_${type.name}Builder) <#if type.isAbstract()>Partial</#if>Build() (${ty
 	</#if>
 </#list>
 	if err := stdErrors.Join(b.collectedErr...); err != nil {<@emitImportWithAlias alias="stdErrors" import="errors" />
-		return nil, errors.Wrap(err, "error occurred during build")<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, "error occurred during build")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	return b._${type.name}.deepCopy(), nil
 }
@@ -458,10 +458,10 @@ func (b *_${type.name}Builder) buildFor${parentType.name}() (${parentType.name},
 func (b *_${type.name}Builder) Build() (${type.name},error) {
 	v, err := b.PartialBuild()
 	if err != nil{
-		return nil, errors.Wrap(err, "error occurred during partial build")<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, "error occurred during partial build")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	if b.childBuilder == nil {
-		return nil, errors.New("no child builder present")<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.New("no child builder present")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	b.childBuilder.setParent(v)
 	return b.childBuilder.buildFor${type.name}()
@@ -831,7 +831,11 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 
 <#if type.isDiscriminatedParentTypeDefinition()>
 func (m *_${type.name}) getLengthInBits(ctx context.Context) uint16 {
+	<#if type.parentType.isPresent()>
+	lengthInBits := uint16(m.${type.getParentType().orElseThrow().name}Contract.(*_${type.getParentType().orElseThrow().name}).getLengthInBits(ctx))
+	<#else>
 	lengthInBits := uint16(0)
+	</#if>
 	<#list type.fields as field>
 		<#switch field.typeName>
 			<#case "array">
@@ -1023,7 +1027,7 @@ func ${type.name}ParseWithBufferProducer<#if type.isDiscriminatedParentTypeDefin
 	vc, ok := v.(T)
 	if !ok {
 		var zero T
-		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))<@emitImport import="github.com/pkg/errors" />
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	return vc, nil
 	<#else>
@@ -1049,7 +1053,7 @@ func ${type.name}ParseWithBuffer<#if type.isDiscriminatedParentTypeDefinition()>
 	vc, ok := v.(T)
 	if !ok {
 		var zero T
-		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))<@emitImport import="github.com/pkg/errors" />
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	return vc, nil
 	<#else>
@@ -1069,7 +1073,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ${type.name}")<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(pullErr, "Error pulling for ${type.name}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -1105,7 +1109,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 					</#if>
 				</#if>
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "assert">
@@ -1115,7 +1119,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 
 	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	_ = ${namedField.name}
 				<#break>
@@ -1126,7 +1130,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 
 	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	_ = ${namedField.name}
 			<#break>
@@ -1137,7 +1141,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 
 	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}_${namedField.name?upper_case}${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	_ = ${namedField.name}
 			<#break>
@@ -1152,7 +1156,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)})
 				</#if>
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "enum">
@@ -1163,7 +1167,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 
 	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", "${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}", ReadEnum[${helper.getLanguageTypeNameForField(field)},${helper.getLanguageTypeNameForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type.asNonSimpleTypeReference().orElseThrow(), enumField.fieldName))}](${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}FirstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))})${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "implicit">
@@ -1173,7 +1177,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 
 	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	_ = ${namedField.name}
 				<#break>
@@ -1189,7 +1193,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 	${namedField.name},err := ReadManualArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${namedField.name}", readBuffer, ${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}, ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
 				</#if>
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "manual">${helper.emitRequiredImportRaw(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"")}
@@ -1199,7 +1203,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 
 	${manualField.name},err := ReadManualField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", readBuffer, EnsureType[${helper.getLanguageTypeNameForField(field)}](${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "optional">
@@ -1210,7 +1214,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 	var ${namedField.name} <#if !optionalField.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(optionalField)}
 	<#if optionalField.type.isComplexTypeReference()>_</#if>${namedField.name},err <#if optionalField.type.isComplexTypeReference()>:</#if>= Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if optionalField.conditionExpression.present>, ${helper.toParseExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}<#else>, true</#if>${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "padding">
@@ -1219,7 +1223,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 				<#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
 
 	if err:= Read${field.typeName?cap_first}Field(ctx, ${helper.getDataReaderCall(typedField.type)}, (int) (${helper.toParseExpression(paddingField, paddingField.type, paddingField.paddingCondition, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)}); err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing padding field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing padding field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "reserved">
@@ -1228,7 +1232,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 
 	reservedField${reservedFieldIndex}<#assign reservedFieldIndex=reservedFieldIndex+1>,err := Read${field.typeName?cap_first}Field(ctx, "reserved", ${helper.getDataReaderCall(typedField.type)}, ${helper.getReservedValue(reservedField)}${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "simple">
@@ -1257,7 +1261,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 </@compress>
 
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "switch">
@@ -1305,11 +1309,11 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
                     </@compress>
 
 		if _child, err = new(_${case.name}).parse(ctx, readBuffer, m<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ${case.name} for type-switch of ${type.name}")<@emitImport import="github.com/pkg/errors" />
+			return nil, errors.Wrap(err, "Error parsing sub-type ${case.name} for type-switch of ${type.name}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 		}
 				</#list>
 	default:
-		return nil, errors.Errorf("Unmapped type for<#if switchField.getDiscriminatorExpressions()?has_content> parameters [<#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${discriminatorExpression.stringRepresentation()}=%v<#sep>, </#sep></#list>]</#if>"<#if switchField.getDiscriminatorExpressions()?has_content>, <#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)}<#sep>, </#sep></#list></#if>)<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Errorf("Unmapped type for<#if switchField.getDiscriminatorExpressions()?has_content> parameters [<#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${discriminatorExpression.stringRepresentation()}=%v<#sep>, </#sep></#list>]</#if>"<#if switchField.getDiscriminatorExpressions()?has_content>, <#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)}<#sep>, </#sep></#list></#if>)<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 
@@ -1318,7 +1322,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 				<#assign typedField = field.asTypedField().orElseThrow()>
 
 	if _, err := Read${field.typeName?cap_first}Field(ctx, "unknown", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)}); err!=nil{
-			return nil, errors.Wrap(err, "Error parsing unknown field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
+			return nil, errors.Wrap(err, "Error parsing unknown field of ${type.name}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 			<#case "virtual">${helper.emitRequiredImportRaw(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"")}
@@ -1328,7 +1332,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 
 	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", (*${helper.getLanguageTypeNameForField(field)})(nil), ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments,true)}${helper.getFieldOptions(typedField, parserArguments)});
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	_ = ${namedField.name}
 				<#break>
@@ -1339,7 +1343,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 	if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
 		<#assign errorType="ParseValidationError">
 		<#if !validationField.shouldFail()><#assign errorType="ParseAssertError"></#if>
-		return nil, errors.WithStack(utils.${errorType}{Message: ${validationField.getDescription().orElse("\"Validation failed\"")}})<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.WithStack(utils.${errorType}{Message: ${validationField.getDescription().orElse("\"Validation failed\"")}})<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
                 <#break>
 			<#case "peek">
@@ -1349,7 +1353,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 
 	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if peekField.offsetExpression.present>, ${helper.toParseExpression(peekField, helper.boolTypeReference, peekField.offsetExpression.get(), parserArguments)}<#else>, 0</#if>${helper.getFieldOptions(typedField, parserArguments)});
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 		</#switch>
@@ -1376,7 +1380,7 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 	</#list>
 
 	if closeErr := readBuffer.CloseContext("${type.name}"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ${type.name}")<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(closeErr, "Error closing for ${type.name}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 
 	<#if type.isDiscriminatedParentTypeDefinition()>
@@ -1414,7 +1418,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	<#else>
 		<#if !type.isDiscriminatedChildTypeDefinition()>
 	if pushErr :=writeBuffer.PushContext("${type.name}"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ${type.name}")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(pushErr, "Error pushing for ${type.name}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 		</#if>
 		<#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
@@ -1433,7 +1437,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		<#if type.isDiscriminatedChildTypeDefinition()>
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("${type.name}"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ${type.name}")<@emitImport import="github.com/pkg/errors" />
+			return errors.Wrap(pushErr, "Error pushing for ${type.name}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 		}
 		</#if>
         <#assign reservedFieldIndex=0>
@@ -1451,7 +1455,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						${helper.getFieldOptions(typedField, parserArguments)}); err != nil {
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#elseif arrayField.type.elementTypeReference.isSimpleTypeReference()>
 					<@compress single_line=true>
@@ -1460,7 +1464,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						${helper.getFieldOptions(typedField, parserArguments)}); err != nil {
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#else>
 					<@compress single_line=true>
@@ -1468,7 +1472,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						writeBuffer${helper.getFieldOptions(typedField, parserArguments)}); err != nil {
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					</#if>
 					<#break>
@@ -1484,7 +1488,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						${helper.getFieldOptions(typedField, parserArguments)});err != nil{
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 				<#case "const">
@@ -1506,7 +1510,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 				</#if>;err != nil{
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 				<#case "discriminator">
@@ -1530,7 +1534,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						;err != nil{
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 				<#case "enum">
@@ -1546,7 +1550,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						${helper.getFieldOptions(typedField, parserArguments)});err != nil{
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 				<#break>
 				<#case "implicit">
@@ -1557,7 +1561,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#-- Implicit field values might be used in expressions, in order to avoid problems, we generate a temporary variable with the given name. -->
 	${implicitField.name} := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(implicitField, implicitField.type, implicitField.serializeExpression, parserArguments)});
 	if err := WriteImplicitField(ctx, "${namedField.name}", ${implicitField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});err != nil{
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 				<#case "manualArray">
@@ -1576,7 +1580,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						writeBuffer${helper.getFieldOptions(typedField, parserArguments)}); err != nil{
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 				<#case "manual">
@@ -1594,7 +1598,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						writeBuffer${helper.getFieldOptions(typedField, parserArguments)}); err != nil{
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 				<#case "optional">
@@ -1609,7 +1613,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						ctx,
 						"${optionalField.name}",
 						"${helper.getLanguageTypeNameForField(field)}",
-						<#if typedField.type.isComplexTypeReference()>GetRef(</#if>m.Get${optionalField.name?cap_first}()<#if typedField.type.isComplexTypeReference()>)</#if>,
+						<#if typedField.type.isComplexTypeReference()>new(</#if>m.Get${optionalField.name?cap_first}()<#if typedField.type.isComplexTypeReference()>)</#if>,
 						${helper.getEnumDataWriterCall(optionalField.type, optionalField.name, "value")}
 						<#if optionalField.conditionExpression.present>
 							, ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}
@@ -1620,7 +1624,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	WriteOptionalField(
 						ctx,
 						"${optionalField.name}",
-						<#if typedField.type.isComplexTypeReference()>GetRef(</#if>m.Get${optionalField.name?cap_first}()<#if typedField.type.isComplexTypeReference()>)</#if>,
+						<#if typedField.type.isComplexTypeReference()>new(</#if>m.Get${optionalField.name?cap_first}()<#if typedField.type.isComplexTypeReference()>)</#if>,
 						WriteDataIO(writeBuffer,
 							func (wb utils.WriteBuffer, val any) error {
 						return ${optionalField.type.asComplexTypeReference().orElseThrow().name}.
@@ -1644,7 +1648,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	WriteOptionalField[${helper.getLanguageTypeNameForField(field)}](
 						ctx,
 						"${optionalField.name}",
-						<#if typedField.type.isComplexTypeReference()>GetRef(</#if>m.Get${optionalField.name?cap_first}()<#if typedField.type.isComplexTypeReference()>)</#if>,
+						<#if typedField.type.isComplexTypeReference()>new(</#if>m.Get${optionalField.name?cap_first}()<#if typedField.type.isComplexTypeReference()>)</#if>,
 						${helper.getDataWriterCall(typedField.type, optionalField.name)},
 						<#if helper.isGeneratePropertiesForParserArguments() && optionalField.conditionExpression.present>
 							${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}
@@ -1656,7 +1660,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						;err != nil {
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 				<#case "padding">
@@ -1673,7 +1677,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						); err != nil {
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing 'padding' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing 'padding' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 				<#case "reserved">
@@ -1693,7 +1697,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						<#assign reservedFieldIndex=reservedFieldIndex+1> err != nil {
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing 'reserved' field number ${reservedFieldIndex}")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing 'reserved' field number ${reservedFieldIndex}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 				<#case "simple">
@@ -1743,7 +1747,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 						;err != nil {
 					</@compress>
 
-		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 				<#case "switch">
@@ -1751,7 +1755,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
-		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 				<#case "virtual">
@@ -1762,7 +1766,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	${namedField.name} := m.Get${namedField.name?cap_first}()
 	_ =	${namedField.name}
 	if _${namedField.name}Err := writeBuffer.WriteVirtual(ctx, "${namedField.name}", m.Get${namedField.name?cap_first}()); _${namedField.name}Err != nil {
-		return errors.Wrap(_${namedField.name}Err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(_${namedField.name}Err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 					<#break>
 			</#switch>
@@ -1770,14 +1774,14 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		<#if type.isDiscriminatedChildTypeDefinition()>
 		if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ${type.name}")<@emitImport import="github.com/pkg/errors" />
+			return errors.Wrap(popErr, "Error popping for ${type.name}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 		}
 		return nil
 	}
 	return <#if type.isDiscriminatedParentTypeDefinition()>p</#if>m.${type.getParentType().orElseThrow().name}Contract.(*_${type.getParentType().orElseThrow().name}).serializeParent(ctx, writeBuffer, m, ser)
 		<#else>
 	if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ${type.name}")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(popErr, "Error popping for ${type.name}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 	}
 	return nil
 		</#if>

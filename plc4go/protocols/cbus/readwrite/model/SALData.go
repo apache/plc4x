@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -194,7 +193,7 @@ func (b *_SALDataBuilder) WithOptionalSalDataBuilder(builderSupplier func(SALDat
 }
 
 func (b *_SALDataBuilder) PartialBuild() (SALDataContract, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALData.deepCopy(), nil
@@ -700,7 +699,7 @@ func (pm *_SALData) serializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteOptionalField[SALData](ctx, "salData", GetRef(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[SALData](ctx, "salData", new(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'salData' field")
 	}
 

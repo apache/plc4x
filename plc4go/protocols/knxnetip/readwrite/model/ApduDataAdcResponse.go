@@ -21,12 +21,11 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -106,7 +105,7 @@ func (b *_ApduDataAdcResponseBuilder) WithMandatoryFields() ApduDataAdcResponseB
 }
 
 func (b *_ApduDataAdcResponseBuilder) Build() (ApduDataAdcResponse, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataAdcResponse.deepCopy(), nil

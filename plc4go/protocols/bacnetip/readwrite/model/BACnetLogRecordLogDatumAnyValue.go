@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,7 +129,7 @@ func (b *_BACnetLogRecordLogDatumAnyValueBuilder) WithOptionalAnyValueBuilder(bu
 }
 
 func (b *_BACnetLogRecordLogDatumAnyValueBuilder) Build() (BACnetLogRecordLogDatumAnyValue, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLogRecordLogDatumAnyValue.deepCopy(), nil
@@ -280,7 +279,7 @@ func (m *_BACnetLogRecordLogDatumAnyValue) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumAnyValue")
 		}
 
-		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", GetRef(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", new(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'anyValue' field")
 		}
 

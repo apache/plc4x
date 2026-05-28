@@ -22,8 +22,9 @@ package s7
 import (
 	"strconv"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type Configuration struct {

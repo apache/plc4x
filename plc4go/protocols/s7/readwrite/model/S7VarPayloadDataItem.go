@@ -21,15 +21,14 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 	"math"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -126,7 +125,7 @@ func (b *_S7VarPayloadDataItemBuilder) WithData(data ...byte) S7VarPayloadDataIt
 }
 
 func (b *_S7VarPayloadDataItemBuilder) Build() (S7VarPayloadDataItem, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7VarPayloadDataItem.deepCopy(), nil

@@ -27,7 +27,7 @@
        {{#if env.SITE_SEARCH_PROVIDER}}
        <div class="navbar-item search hide-for-print">
          <div id="search-field" class="field">
-@@ -16,29 +37,29 @@
+@@ -16,29 +18,34 @@
        </button>
      </div>
      <div id="topbar-nav" class="navbar-menu">
@@ -44,14 +44,6 @@
 -            <a class="navbar-item" href="#">Product A</a>
 -            <a class="navbar-item" href="#">Product B</a>
 -            <a class="navbar-item" href="#">Product C</a>
--          </div>
--        </div>
--        <div class="navbar-item has-dropdown is-hoverable">
--          <a class="navbar-link" href="#">Services</a>
--          <div class="navbar-dropdown">
--            <a class="navbar-item" href="#">Service A</a>
--            <a class="navbar-item" href="#">Service B</a>
--            <a class="navbar-item" href="#">Service C</a>
 +            <a class="navbar-item" href="https://www.apache.org">Apache Homepage</a>
 +            <a class="navbar-item" href="https://www.apache.org/licenses/">License</a>
 +            <a class="navbar-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>
@@ -62,10 +54,22 @@
 +            <a class="navbar-item" href="https://events.apache.org/">Upcoming Events</a>
            </div>
          </div>
+-        <div class="navbar-item has-dropdown is-hoverable">
+-          <a class="navbar-link" href="#">Services</a>
+-          <div class="navbar-dropdown">
+-            <a class="navbar-item" href="#">Service A</a>
+-            <a class="navbar-item" href="#">Service B</a>
+-            <a class="navbar-item" href="#">Service C</a>
+-          </div>
++        <div class="navbar-item">
++          <span class="control">
++            <a class="fa-brands fa-github" href="https://github.com/apache/plc4x"></a>
++          </span>
+         </div>
          <div class="navbar-item">
            <span class="control">
 -            <a class="button is-primary" href="#">Download</a>
-+            <a class="button is-primary" href="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/users/download">Download</a>
++            <a class="button is-primary" href="{{{or site.url siteRootPath}}}/plc4x/{{page.version}}/users/download.html">Download</a>
            </span>
          </div>
 +        <a class="acevent" data-format="wide"></a>

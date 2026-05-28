@@ -26,7 +26,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -34,6 +33,7 @@ import (
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -558,7 +558,7 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 	} else if strings.HasPrefix(segment, "[") && strings.HasSuffix(segment, "]") {
 		segment = strings.TrimPrefix(segment, "[")
 		segment = strings.TrimSuffix(segment, "]")
-		for _, segment := range strings.Split(segment, ",") {
+		for segment := range strings.SplitSeq(segment, ",") {
 			if strings.Contains(segment, "-") {
 				split := strings.Split(segment, "-")
 				localMin, err := strconv.ParseUint(split[0], 10, 8)

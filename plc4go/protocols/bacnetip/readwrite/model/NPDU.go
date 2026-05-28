@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -252,7 +251,7 @@ func (b *_NPDUBuilder) Build() (NPDU, error) {
 	if b.Control == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'control' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NPDU.deepCopy(), nil
@@ -709,11 +708,11 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(_payloadSubtractionErr, "Error serializing 'payloadSubtraction' field")
 	}
 
-	if err := WriteOptionalField[NLM](ctx, "nlm", GetRef(m.GetNlm()), WriteComplex[NLM](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[NLM](ctx, "nlm", new(m.GetNlm()), WriteComplex[NLM](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'nlm' field")
 	}
 
-	if err := WriteOptionalField[APDU](ctx, "apdu", GetRef(m.GetApdu()), WriteComplex[APDU](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[APDU](ctx, "apdu", new(m.GetApdu()), WriteComplex[APDU](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'apdu' field")
 	}
 

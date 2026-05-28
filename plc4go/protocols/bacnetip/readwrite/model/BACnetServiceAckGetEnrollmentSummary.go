@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -246,7 +245,7 @@ func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) Build() (BACnetServiceAck
 	if b.Priority == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'priority' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetServiceAckGetEnrollmentSummary.deepCopy(), nil
@@ -468,7 +467,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(err, "Error serializing 'priority' field")
 		}
 
-		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "notificationClass", GetRef(m.GetNotificationClass()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "notificationClass", new(m.GetNotificationClass()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'notificationClass' field")
 		}
 

@@ -34,11 +34,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -54,7 +54,7 @@ const (
 )
 
 var (
-	SECURITY_POLICY_NONE = readWriteModel.NewPascalString(utils.ToPtr("http://opcfoundation.org/UA/SecurityPolicy#None"))
+	SECURITY_POLICY_NONE = readWriteModel.NewPascalString(new("http://opcfoundation.org/UA/SecurityPolicy#None"))
 	NULL_STRING          = readWriteModel.NewPascalString(nil)
 	NULL_BYTE_STRING     = readWriteModel.NewPascalByteString(-1, nil)
 	NULL_EXPANDED_NODEID = readWriteModel.NewExpandedNodeId(false,
@@ -71,9 +71,9 @@ var (
 	INET_ADDRESS_PATTERN = regexp.MustCompile(`(.(?P<transportCode>tcp))?://(?P<transportHost>[\w.-]+)(:(?P<transportPort>\d*))?`)
 
 	URI_PATTERN                 = regexp.MustCompile(`^(?P<protocolCode>opc)` + INET_ADDRESS_PATTERN.String() + `(?P<transportEndpoint>[\w/=]*)[?]?`)
-	APPLICATION_URI             = readWriteModel.NewPascalString(utils.ToPtr("urn:apache:plc4x:client"))
-	PRODUCT_URI                 = readWriteModel.NewPascalString(utils.ToPtr("urn:apache:plc4x:client"))
-	APPLICATION_TEXT            = readWriteModel.NewPascalString(utils.ToPtr("OPCUA client for the Apache PLC4X:PLC4J project"))
+	APPLICATION_URI             = readWriteModel.NewPascalString(new("urn:apache:plc4x:client"))
+	PRODUCT_URI                 = readWriteModel.NewPascalString(new("urn:apache:plc4x:client"))
+	APPLICATION_TEXT            = readWriteModel.NewPascalString(new("OPCUA client for the Apache PLC4X:PLC4J project"))
 	DEFAULT_CONNECTION_LIFETIME = uint32(36000000)
 )
 
@@ -497,7 +497,7 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 	applicationName := readWriteModel.NewLocalizedText(
 		true,
 		true,
-		readWriteModel.NewPascalString(utils.ToPtr("en")),
+		readWriteModel.NewPascalString(new("en")),
 		APPLICATION_TEXT)
 
 	var discoveryUrls []readWriteModel.PascalString
@@ -1532,7 +1532,7 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 			readWriteModel.NewPascalString(policyId),
 			readWriteModel.NewPascalString(&s.username),
 			readWriteModel.NewPascalByteString(int32(len(encryptedPassword)), encryptedPassword),
-			readWriteModel.NewPascalString(utils.ToPtr(PASSWORD_ENCRYPTION_ALGORITHM)),
+			readWriteModel.NewPascalString(new(PASSWORD_ENCRYPTION_ALGORITHM)),
 		)
 		extExpandedNodeId := readWriteModel.NewExpandedNodeId(
 			false, //Namespace Uri Specified

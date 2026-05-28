@@ -23,15 +23,17 @@ import (
 	"context"
 	"fmt"
 	"runtime/debug"
+	"slices"
 	"sync"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/default"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
@@ -43,6 +45,8 @@ type Connection struct {
 
 	invokeIdGenerator InvokeIdGenerator
 	messageCodec      spi.MessageCodec
+	configuration     Configuration
+	driverContext     DriverContext
 	subscribers       []*Subscriber
 	tm                transactions.RequestTransactionManager
 
@@ -61,9 +65,16 @@ var (
 
 func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	configuration, err := ParseFromOptions(customLogger, connectionOptions)
+	if err != nil {
+		customLogger.Warn().Err(err).Msg("invalid driver options; falling back to defaults")
+		configuration = createDefaultConfiguration()
+	}
 	connection := &Connection{
 		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
 		messageCodec:      messageCodec,
+		configuration:     configuration,
+		driverContext:     NewDriverContext(configuration),
 		tm:                tm,
 		log:               customLogger,
 		_options:          _options,
@@ -119,10 +130,50 @@ func (c *Connection) passToDefaultIncomingMessageChannel() {
 	incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
 	select {
 	case message := <-incomingMessageChannel:
-		// TODO: implement mapping to subscribers
-		c.log.Info().Interface("message", message).Msg("Received")
+		c.routeIncomingMessage(message)
 	default:
-		c.log.Info().Msg("Message was not handled")
+		c.log.Trace().Msg("no incoming message")
+	}
+}
+
+// routeIncomingMessage inspects an unsolicited (non-request-matched) BVLC
+// frame and dispatches it to the appropriate handler. The only message we
+// route today is COV (Confirmed/Unconfirmed) — everything else is logged at
+// debug level for visibility.
+func (c *Connection) routeIncomingMessage(message spi.Message) {
+	bvlc, ok := message.(readWriteModel.BVLC)
+	if !ok {
+		c.log.Debug().Type("message", message).Msg("non-BVLC incoming message")
+		return
+	}
+	npduRetriever, ok := bvlc.(interface{ GetNpdu() readWriteModel.NPDU })
+	if !ok {
+		c.log.Debug().Msg("BVLC without an NPDU")
+		return
+	}
+	apdu := npduRetriever.GetNpdu().GetApdu()
+	switch apdu := apdu.(type) {
+	case readWriteModel.APDUUnconfirmedRequest:
+		switch sr := apdu.GetServiceRequest().(type) {
+		case readWriteModel.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification:
+			for _, s := range c.subscribers {
+				s.HandleUnconfirmedCOVNotification(sr)
+			}
+		default:
+			c.log.Debug().Type("serviceRequest", sr).Msg("unhandled unconfirmed service request")
+		}
+	case readWriteModel.APDUConfirmedRequest:
+		switch sr := apdu.GetServiceRequest().(type) {
+		case readWriteModel.BACnetConfirmedServiceRequestConfirmedCOVNotification:
+			for _, s := range c.subscribers {
+				s.HandleConfirmedCOVNotification(sr)
+			}
+			// TODO: send APDUSimpleAck back to the publisher so it doesn't retry.
+		default:
+			c.log.Debug().Type("serviceRequest", sr).Msg("unhandled confirmed service request")
+		}
+	default:
+		c.log.Debug().Type("apdu", apdu).Msg("unhandled APDU")
 	}
 }
 
@@ -134,6 +185,15 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
+func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
+	return &_default.DefaultConnectionMetadata{
+		ProvidesReading:     true,
+		ProvidesWriting:     true,
+		ProvidesSubscribing: true,
+		ProvidesBrowsing:    false,
+	}
+}
+
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return spiModel.NewDefaultPlcReadRequestBuilder(
 		c.GetPlcTagHandler(),
@@ -141,6 +201,20 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 			&c.invokeIdGenerator,
 			c.messageCodec,
 			c.tm,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+	)
+}
+
+func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+	return spiModel.NewDefaultPlcWriteRequestBuilder(
+		c.GetPlcTagHandler(),
+		c.GetPlcValueHandler(),
+		NewWriter(
+			&c.invokeIdGenerator,
+			c.messageCodec,
+			c.tm,
+			c.driverContext,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
@@ -157,12 +231,18 @@ func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 	)
 }
 
+func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+	// The default request implementation dispatches each handle's
+	// Unsubscribe back through the embedded Subscriber, so we don't need
+	// to pass our own here — the SubscriptionHandles created by Subscribe
+	// already carry the Subscriber reference.
+	return spiModel.NewDefaultPlcUnsubscriptionRequestBuilder()
+}
+
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
-	for _, sub := range c.subscribers {
-		if sub == subscriber {
-			c.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber already added")
-			return
-		}
+	if slices.Contains(c.subscribers, subscriber) {
+		c.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber already added")
+		return
 	}
 	c.subscribers = append(c.subscribers, subscriber)
 }

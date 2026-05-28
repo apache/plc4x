@@ -22,15 +22,14 @@ package model
 import (
 	"context"
 	"encoding/binary"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -177,7 +176,7 @@ func (b *_ConnectionResponseBuilder) WithOptionalConnectionResponseDataBlockBuil
 }
 
 func (b *_ConnectionResponseBuilder) Build() (ConnectionResponse, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConnectionResponse.deepCopy(), nil
@@ -384,11 +383,11 @@ func (m *_ConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(err, "Error serializing 'status' field")
 		}
 
-		if err := WriteOptionalField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", GetRef(m.GetHpaiDataEndpoint()), WriteComplex[HPAIDataEndpoint](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteOptionalField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", new(m.GetHpaiDataEndpoint()), WriteComplex[HPAIDataEndpoint](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'hpaiDataEndpoint' field")
 		}
 
-		if err := WriteOptionalField[ConnectionResponseDataBlock](ctx, "connectionResponseDataBlock", GetRef(m.GetConnectionResponseDataBlock()), WriteComplex[ConnectionResponseDataBlock](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteOptionalField[ConnectionResponseDataBlock](ctx, "connectionResponseDataBlock", new(m.GetConnectionResponseDataBlock()), WriteComplex[ConnectionResponseDataBlock](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'connectionResponseDataBlock' field")
 		}
 

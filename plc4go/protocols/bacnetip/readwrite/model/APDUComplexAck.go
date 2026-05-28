@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -214,7 +213,7 @@ func (b *_APDUComplexAckBuilder) WithSegment(segment ...byte) APDUComplexAckBuil
 }
 
 func (b *_APDUComplexAckBuilder) Build() (APDUComplexAck, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._APDUComplexAck.deepCopy(), nil
@@ -569,7 +568,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
 
-		if err := WriteOptionalField[BACnetServiceAck](ctx, "serviceAck", GetRef(m.GetServiceAck()), WriteComplex[BACnetServiceAck](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetServiceAck](ctx, "serviceAck", new(m.GetServiceAck()), WriteComplex[BACnetServiceAck](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceAck' field")
 		}
 

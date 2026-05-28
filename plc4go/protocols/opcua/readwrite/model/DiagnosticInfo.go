@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -269,7 +268,7 @@ func (b *_DiagnosticInfoBuilder) WithOptionalInnerDiagnosticInfoBuilder(builderS
 }
 
 func (b *_DiagnosticInfoBuilder) Build() (DiagnosticInfo, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DiagnosticInfo.deepCopy(), nil
@@ -659,15 +658,15 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(err, "Error serializing 'localizedText' field")
 	}
 
-	if err := WriteOptionalField[PascalString](ctx, "additionalInfo", GetRef(m.GetAdditionalInfo()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[PascalString](ctx, "additionalInfo", new(m.GetAdditionalInfo()), WriteComplex[PascalString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'additionalInfo' field")
 	}
 
-	if err := WriteOptionalField[StatusCode](ctx, "innerStatusCode", GetRef(m.GetInnerStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[StatusCode](ctx, "innerStatusCode", new(m.GetInnerStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'innerStatusCode' field")
 	}
 
-	if err := WriteOptionalField[DiagnosticInfo](ctx, "innerDiagnosticInfo", GetRef(m.GetInnerDiagnosticInfo()), WriteComplex[DiagnosticInfo](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[DiagnosticInfo](ctx, "innerDiagnosticInfo", new(m.GetInnerDiagnosticInfo()), WriteComplex[DiagnosticInfo](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'innerDiagnosticInfo' field")
 	}
 

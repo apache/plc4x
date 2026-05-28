@@ -196,10 +196,7 @@ func (g *Generator) parsePackage(patterns []string, tags []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	index := 0
-	if *pkgIndex > 0 {
-		index = *pkgIndex
-	}
+	index := max(*pkgIndex, 0)
 	if len(pkgs) != 1 {
 		if *pkgIndex < 0 {
 			log.Fatalf("error: %d packages found (%v)", len(pkgs), pkgs)
@@ -428,7 +425,7 @@ func (g *Generator) generate(typeName string) {
 				}
 			}
 			if *verbose {
-				fmt.Printf("Warn: no support yet for %#q\n", fieldType)
+				fmt.Printf("Warn: no support yet for %#v\n", fieldType)
 			}
 			continue
 		case *ast.Ident:

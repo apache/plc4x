@@ -50,7 +50,7 @@ public class VariantDiagnosticInfo extends Variant implements Message {
       boolean arrayLengthSpecified,
       boolean arrayDimensionsSpecified,
       Integer noOfArrayDimensions,
-      List<Boolean> arrayDimensions,
+      List<Integer> arrayDimensions,
       Integer arrayLength,
       List<DiagnosticInfo> value) {
     super(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions);
@@ -142,7 +142,7 @@ public class VariantDiagnosticInfo extends Variant implements Message {
         boolean arrayLengthSpecified,
         boolean arrayDimensionsSpecified,
         Integer noOfArrayDimensions,
-        List<Boolean> arrayDimensions) {
+        List<Integer> arrayDimensions) {
       VariantDiagnosticInfo variantDiagnosticInfo =
           new VariantDiagnosticInfo(
               arrayLengthSpecified,

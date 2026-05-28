@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,7 +153,7 @@ func (b *_ConfirmationBuilder) Build() (Confirmation, error) {
 	if b.Alpha == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'alpha' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Confirmation.deepCopy(), nil
@@ -349,7 +348,7 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(err, "Error serializing 'alpha' field")
 	}
 
-	if err := WriteOptionalField[Alpha](ctx, "secondAlpha", GetRef(m.GetSecondAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[Alpha](ctx, "secondAlpha", new(m.GetSecondAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'secondAlpha' field")
 	}
 

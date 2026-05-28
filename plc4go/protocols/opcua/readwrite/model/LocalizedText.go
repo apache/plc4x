@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,7 +156,7 @@ func (b *_LocalizedTextBuilder) WithOptionalTextBuilder(builderSupplier func(Pas
 }
 
 func (b *_LocalizedTextBuilder) Build() (LocalizedText, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LocalizedText.deepCopy(), nil
@@ -363,11 +362,11 @@ func (m *_LocalizedText) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(err, "Error serializing 'localeSpecified' field")
 	}
 
-	if err := WriteOptionalField[PascalString](ctx, "locale", GetRef(m.GetLocale()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[PascalString](ctx, "locale", new(m.GetLocale()), WriteComplex[PascalString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'locale' field")
 	}
 
-	if err := WriteOptionalField[PascalString](ctx, "text", GetRef(m.GetText()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[PascalString](ctx, "text", new(m.GetText()), WriteComplex[PascalString](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'text' field")
 	}
 

@@ -23,6 +23,10 @@ import org.apache.plc4x.java.spi.generation.WithReaderWriterArgs;
 
 public interface WithOption extends WithReaderWriterArgs {
 
+    static WithOption WithByteOrder(String byteOrderString) {
+        return (withOptionByteOrder) () -> ByteOrder.valueOf(byteOrderString);
+    }
+
     static WithOption WithByteOrder(ByteOrder byteOrder) {
         return (withOptionByteOrder) () -> byteOrder;
     }

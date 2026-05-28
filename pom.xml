@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>35</version>
+    <version>38</version>
     <relativePath />
   </parent>
 
@@ -104,53 +104,53 @@
 
     <antlr.version>4.13.2</antlr.version>
     <apiguardian.version>1.1.2</apiguardian.version>
-    <assertj.version>3.27.6</assertj.version>
+    <assertj.version>3.27.7</assertj.version>
     <awaitility.version>4.3.0</awaitility.version>
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
-    <bouncycastle.version>1.82</bouncycastle.version>
-    <byte-buddy.version>1.18.1</byte-buddy.version>
+    <bouncycastle.version>1.84</bouncycastle.version>
+    <byte-buddy.version>1.18.8</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.11.0</commons-cli.version>
-    <commons-codec.version>1.20.0</commons-codec.version>
+    <commons-codec.version>1.22.0</commons-codec.version>
     <commons-collections4.version>4.5.0</commons-collections4.version>
     <commons-compress.version>1.28.0</commons-compress.version>
-    <commons-configuration2.version>2.12.0</commons-configuration2.version>
-    <commons-io.version>2.21.0</commons-io.version>
+    <commons-configuration2.version>2.15.1</commons-configuration2.version>
+    <commons-io.version>2.22.0</commons-io.version>
     <commons-lang3.version>3.20.0</commons-lang3.version>
     <commons-logging.version>1.3.5</commons-logging.version>
     <commons-math3.version>3.6.1</commons-math3.version>
-    <commons-net.version>3.12.0</commons-net.version>
-    <commons-text.version>1.14.0</commons-text.version>
+    <commons-net.version>3.13.0</commons-net.version>
+    <commons-text.version>1.15.0</commons-text.version>
     <commons-csv.version>1.14.1</commons-csv.version>
     <dom4j.version>2.2.0</dom4j.version>
-    <equalsverifier.version>4.2.3</equalsverifier.version>
+    <equalsverifier.version>4.5</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
-    <groovy.version>5.0.2</groovy.version>
-    <guava.version>33.5.0-jre</guava.version>
+    <groovy.version>5.0.6</groovy.version>
+    <guava.version>33.6.0-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <jackson.version>2.20.1</jackson.version>
-    <jackson.broken.version>2.20</jackson.broken.version>
+    <jackson.version>2.21.3</jackson.version>
+    <jackson.broken.version>2.21</jackson.broken.version>
     <woodstox-core.version>7.1.1</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.4</jaxb.version>
     <jetty-util.version>12.1.0</jetty-util.version>
     <jna.version>5.18.1</jna.version>
     <jserialcom.version>2.11.4</jserialcom.version>
-    <junit.jupiter.version>6.0.1</junit.jupiter.version>
+    <junit.jupiter.version>6.1.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.5.21</logback.version>
+    <logback.version>1.5.33</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.16</milo.version>
-    <mockito.version>5.20.0</mockito.version>
+    <mockito.version>5.23.0</mockito.version>
     <!-- Netty 4.2.x seems to break the serial transports -->
     <netty.version>4.1.123.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
-    <slf4j.version>2.0.17</slf4j.version>
-    <vavr.version>0.10.7</vavr.version>
+    <slf4j.version>2.0.18</slf4j.version>
+    <vavr.version>1.0.1</vavr.version>
     <xmlunit.version>2.11.0</xmlunit.version>
 
     <!-- Site properties -->
@@ -278,7 +278,7 @@
       <dependency>
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
-        <version>1.31.0</version>
+        <version>1.35.0</version>
       </dependency>
 
       <dependency>
@@ -394,7 +394,7 @@
       <dependency>
         <groupId>net.lingala.zip4j</groupId>
         <artifactId>zip4j</artifactId>
-        <version>2.11.5</version>
+        <version>2.11.6</version>
       </dependency>
 
       <dependency>
@@ -520,7 +520,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20250517</version>
+        <version>20260522</version>
       </dependency>
 
       <dependency>
@@ -542,7 +542,7 @@
       <dependency>
         <groupId>tel.schich</groupId>
         <artifactId>javacan-core</artifactId>
-        <version>3.5.0</version>
+        <version>3.5.2</version>
       </dependency>
 
       <dependency>
@@ -621,7 +621,7 @@
           <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.14.0</version>
+            <version>2.14.2</version>
           </dependency>
           <dependency>
             <groupId>org.apache.groovy</groupId>
@@ -665,125 +665,126 @@
         </executions>
         <configuration>
           <useMavenDefaultExcludes>true</useMavenDefaultExcludes>
-          <excludes>
+          <inputExcludes>
             <!-- Git related files -->
-            <exclude>**/.git/**</exclude>
-            <exclude>**/.gitignore</exclude>
-            <exclude>**/cmake-*/**</exclude>
-            <exclude>**/.lock/**</exclude>
+            <inputExclude>**/.git/**</inputExclude>
+            <inputExclude>**/.gitignore</inputExclude>
+            <inputExclude>**/cmake-*/**</inputExclude>
+            <inputExclude>**/.lock/**</inputExclude>
 
             <!-- License Files for other licenses -->
-            <exclude>**/UNLICENSE</exclude>
-            <exclude>**/CHANGELOG.md</exclude>
-            <exclude>**/EPL-2.0</exclude>
+            <inputExclude>**/UNLICENSE</inputExclude>
+            <inputExclude>**/CHANGELOG.md</inputExclude>
+            <inputExclude>**/EPL-2.0</inputExclude>
 
             <!--
               Files licensed under other compatible licenses.
             -->
-            <exclude>**/Expression.g4</exclude>
+            <excinputExcludelude>**/Expression.g4</excinputExcludelude>
 
             <!-- Maven related files -->
-            <exclude>**/target/**</exclude>
-            <exclude>target/**</exclude>
-            <exclude>out/**</exclude>
+            <inputExclude>**/target/**</inputExclude>
+            <inputExclude>target/**</inputExclude>
+            <inputExclude>out/**</inputExclude>
 
             <!-- Python related files -->
-            <exclude>**/.pytest_cache/**</exclude>
-            <exclude>**/.mypy_cache/**</exclude>
-            <exclude>**/Pipfile</exclude>
-            <exclude>**/Pipfile.lock</exclude>
+            <inputExclude>**/.pytest_cache/**</inputExclude>
+            <inputExclude>**/.mypy_cache/**</inputExclude>
+            <inputExclude>**/Pipfile</inputExclude>
+            <inputExclude>**/Pipfile.lock</inputExclude>
 
             <!-- Eclipse related files -->
-            <exclude>**/.project</exclude>
-            <exclude>**/.settings/**</exclude>
-            <exclude>**/.classpath</exclude>
-            <exclude>**/.factorypath</exclude>
+            <inputExclude>**/.project</inputExclude>
+            <inputExclude>**/.settings/**</inputExclude>
+            <inputExclude>**/.classpath</inputExclude>
+            <inputExclude>**/.factorypath</inputExclude>
 
             <!-- IntelliJ related files -->
-            <exclude>**/.idea/**</exclude>
-            <exclude>**/*.iml</exclude>
-            <exclude>**/.attach_pid*</exclude>
+            <inputExclude>**/.idea/**</inputExclude>
+            <inputExclude>**/*.iml</inputExclude>
+            <inputExclude>**/.attach_pid*</inputExclude>
 
             <!-- Wireshark Captures -->
-            <exclude>**/*.pcap</exclude>
-            <exclude>**/*.pcapng</exclude>
+            <inputExclude>**/*.pcap</inputExclude>
+            <inputExclude>**/*.pcapng</inputExclude>
 
             <!-- JEVN local version files -->
-            <exclude>**/.java-version</exclude>
+            <inputExclude>**/.java-version</inputExclude>
 
             <!-- ASCIIdoctor generated files -->
-            <exclude>**/.asciidoctor/**</exclude>
+            <inputExclude>**/.asciidoctor/**</inputExclude>
 
             <!-- Jenkins build and docker-compose related files -->
-            <exclude>.repository/**</exclude>
-            <exclude>local-snapshots-dir/**</exclude>
-            <exclude>.local-snapshots-dir/**</exclude>
+            <inputExclude>.repository/**</inputExclude>
+            <inputExclude>local-snapshots-dir/**</inputExclude>
+            <inputExclude>.local-snapshots-dir/**</inputExclude>
 
             <!-- Data files created by examples running an embedded elasticsearch -->
-            <exclude>elasticsearch-data/**</exclude>
+            <inputExclude>elasticsearch-data/**</inputExclude>
 
             <!-- JSON doesn't like comments -->
-            <exclude>**/*.json</exclude>
-            <exclude>**/*.avsc</exclude>
+            <inputExclude>**/*.json</inputExclude>
+            <inputExclude>**/*.avsc</inputExclude>
 
             <!-- comments are trouble some for CSVs which are static -->
-            <exclude>**/*.csv</exclude>
+            <inputExclude>**/*.csv</inputExclude>
 
             <!-- Output of the profiler maven extension -->
-            <exclude>**/.profiler/**</exclude>
+            <inputExclude>**/.profiler/**</inputExclude>
 
             <!-- CLion stuff (C++ IDE) -->
-            <exclude>**/cmake-build-debug/**</exclude>
-            <exclude>**/*.make</exclude>
-            <exclude>**/*.cmake</exclude>
-            <exclude>**/*.internal</exclude>
-            <exclude>**/link.txt</exclude>
+            <inputExclude>**/cmake-build-debug/**</inputExclude>
+            <inputExclude>**/*.make</inputExclude>
+            <inputExclude>**/*.cmake</inputExclude>
+            <inputExclude>**/*.internal</inputExclude>
+            <inputExclude>**/link.txt</inputExclude>
             <!-- Not sure why I can't exclude all Makefile's from just the plc4c directory -->
             <!-- exclude>**/Makefile</exclude -->
-            <exclude>**/Makefile</exclude>
-            <exclude>**/*.includecache</exclude>
-            <exclude>**/CMakeFiles/**</exclude>
-            <exclude>**/CMakeCache.txt</exclude>
-            <exclude>**/DartConfiguration.tcl</exclude>
+            <inputExclude>**/Makefile</inputExclude>
+            <inputExclude>**/*.includecache</inputExclude>
+            <inputExclude>**/CMakeFiles/**</inputExclude>
+            <inputExclude>**/CMakeCache.txt</inputExclude>
+            <inputExclude>**/DartConfiguration.tcl</inputExclude>
 
             <!-- .Net stuff -->
-            <exclude>plc4net/plc4net.sln.DotSettings.user</exclude>
+            <inputExclude>plc4net/plc4net.sln.DotSettings.user</inputExclude>
 
             <!-- Stuff created during a plc4net build -->
-            <exclude>**/obj/**</exclude>
+            <inputExclude>**/obj/**</inputExclude>
 
             <!-- Temporarily exclude generated code from thrift in python modules -->
             <!--exclude>generated/**</exclude-->
             <!-- Temporary Python files -->
-            <exclude>**/.eggs/**</exclude>
-            <exclude>**/plc4py.egg-info/**</exclude>
+            <inputExclude>**/.eggs/**</inputExclude>
+            <inputExclude>**/plc4py.egg-info/**</inputExclude>
 
             <!-- Temporary Python virtualenv files-->
-            <exclude>**/venv/**</exclude>
+            <inputExclude>**/venv/**</inputExclude>
 
             <!-- Temporary pytest and mypy folders -->
-            <exclude>**/.mypy_cache/**</exclude>
-            <exclude>**/.pytest_cache/**</exclude>
+            <inputExclude>**/.mypy_cache/**</inputExclude>
+            <inputExclude>**/.pytest_cache/**</inputExclude>
 
             <!-- Exclude a temp file needed by Docker -->
-            <exclude>project_version</exclude>
+            <inputExclude>project_version</inputExclude>
 
             <!-- Exclude files generated by the go build system -->
-            <exclude>**/go.sum</exclude>
+            <inputExclude>**/go.sum</inputExclude>
+            <inputExclude>**/tools.sum</inputExclude>
 
             <!-- Exclude Node related files -->
-            <exclude>ui/frontend/project/dist/**</exclude>
-            <exclude>ui/frontend/project/node/**</exclude>
-            <exclude>ui/frontend/project/node_modules/**</exclude>
+            <inputExclude>ui/frontend/project/dist/**</inputExclude>
+            <inputExclude>ui/frontend/project/node/**</inputExclude>
+            <inputExclude>ui/frontend/project/node_modules/**</inputExclude>
 
-            <exclude>website/node_modules/**</exclude>
+            <inputExclude>website/node_modules/**</inputExclude>
 
-            <exclude>.mvn/**</exclude>
+            <inputExclude>.mvn/**</inputExclude>
 
             <!-- Exclude core dumps-->
-            <exclude>**/hs_err_pid*</exclude>
-            <exclude>**/replay_pid*</exclude>
-          </excludes>
+            <inputExclude>**/hs_err_pid*</inputExclude>
+            <inputExclude>**/replay_pid*</inputExclude>
+          </inputExcludes>
         </configuration>
       </plugin>
 
@@ -909,7 +910,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.11.0</version>
+            <version>1.12.0</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven.shared</groupId>
@@ -950,7 +951,7 @@
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>0.16.1</version>
+          <version>0.18</version>
           <configuration>
             <!--
                 Make rat output the files with missing licensed directly into the
@@ -982,31 +983,31 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.6.2</version>
+          <version>3.6.3</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
-          <version>3.9.1</version>
+          <version>3.10.0</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>6.0.0</version>
+          <version>6.0.2</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.8</version>
+          <version>4.4.11</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.5.0</version>
         </plugin>
 
         <plugin>
@@ -1030,7 +1031,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.14.1</version>
+          <version>3.15.0</version>
           <configuration>
             <!--
               Use the eclipse compiler instead of the normal jdk one, as we were seeing
@@ -1043,18 +1044,18 @@
             <dependency>
               <groupId>org.codehaus.plexus</groupId>
               <artifactId>plexus-compiler-api</artifactId>
-              <version>2.16.1</version>
+              <version>2.16.2</version>
             </dependency>
             <dependency>
               <groupId>org.codehaus.plexus</groupId>
               <artifactId>plexus-compiler-eclipse</artifactId>
-              <version>2.16.1</version>
+              <version>2.16.2</version>
             </dependency>
             <!-- Redundant import, however we might need to bump this version more often -->
             <dependency>
               <groupId>org.eclipse.jdt</groupId>
               <artifactId>ecj</artifactId>
-              <version>3.43.0</version>
+              <version>3.45.0</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -1062,7 +1063,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.5.4</version>
+          <version>3.5.6</version>
           <configuration>
             <excludedGroups>${excluded-test-groups}</excludedGroups>
           </configuration>
@@ -1071,7 +1072,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.5.4</version>
+          <version>3.5.6</version>
         </plugin>
 
         <plugin>
@@ -1083,7 +1084,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.4.0</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -1098,7 +1099,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.7.1</version>
+          <version>3.8.0</version>
           <configuration>
             <finalName>apache-plc4x-${project.version}</finalName>
           </configuration>
@@ -1108,7 +1109,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <!-- Had to move the rat plugin execution to a phase before the shade plugin is executed to avoid errors -->
-          <version>3.6.1</version>
+          <version>3.6.2</version>
           <configuration>
             <outputFile>
               ${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.${project.packaging}
@@ -1196,7 +1197,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>3.6.2</version>
+          <version>3.6.3</version>
         </plugin>
 
         <plugin>
@@ -1215,7 +1216,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.1</version>
           <configuration>
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -1226,13 +1227,13 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>5.3.0.6276</version>
+          <version>5.7.0.6970</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.9.0</version>
+          <version>3.10.0</version>
           <dependencies>
             <!--dependency>
               <groupId>org.apache.maven.shared</groupId>

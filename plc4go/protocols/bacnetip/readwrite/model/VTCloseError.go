@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -159,7 +158,7 @@ func (b *_VTCloseErrorBuilder) Build() (VTCloseError, error) {
 	if b.ErrorType == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'errorType' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VTCloseError.deepCopy(), nil
@@ -330,7 +329,7 @@ func (m *_VTCloseError) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(err, "Error serializing 'errorType' field")
 		}
 
-		if err := WriteOptionalField[VTCloseErrorListOfVTSessionIdentifiers](ctx, "listOfVtSessionIdentifiers", GetRef(m.GetListOfVtSessionIdentifiers()), WriteComplex[VTCloseErrorListOfVTSessionIdentifiers](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[VTCloseErrorListOfVTSessionIdentifiers](ctx, "listOfVtSessionIdentifiers", new(m.GetListOfVtSessionIdentifiers()), WriteComplex[VTCloseErrorListOfVTSessionIdentifiers](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'listOfVtSessionIdentifiers' field")
 		}
 

@@ -209,10 +209,10 @@ func (b BoxSet) contributeToCompressedBoxSet(box AsciiBox) string {
 
 func combineCompressedBoxSets(box1, box2 AsciiBox) string {
 	allSets := make(map[string]any)
-	for _, s := range strings.Split(box1.compressedBoxSet, ",") {
+	for s := range strings.SplitSeq(box1.compressedBoxSet, ",") {
 		allSets[s] = true
 	}
-	for _, s := range strings.Split(box2.compressedBoxSet, ",") {
+	for s := range strings.SplitSeq(box2.compressedBoxSet, ",") {
 		allSets[s] = true
 	}
 	var foundSets []string
@@ -624,7 +624,7 @@ func (a *asciiBoxWriter) BoxSideBySide(box1, box2 AsciiBox, options ...func(*Box
 	box2Lines := box2.Lines()
 	maxRows := int(math.Max(float64(len(box1Lines)), float64(len(box2Lines))))
 	aggregateBox.Grow((box1Width + box2Width + newLineCharWidth) * maxRows)
-	for row := 0; row < maxRows; row++ {
+	for row := range maxRows {
 		ranOutOfLines := false
 		if row >= len(box1Lines) {
 			ranOutOfLines = true

@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,12 +41,13 @@ type IOpcuaNodeIdServicesVariableLog interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableLog_LogObjectType_GetRecords_InputArguments  OpcuaNodeIdServicesVariableLog = 19354
-	OpcuaNodeIdServicesVariableLog_LogObjectType_GetRecords_OutputArguments OpcuaNodeIdServicesVariableLog = 19355
-	OpcuaNodeIdServicesVariableLog_LogObjectType_MaxRecords                 OpcuaNodeIdServicesVariableLog = 19356
-	OpcuaNodeIdServicesVariableLog_LogObjectType_MaxStorageDuration         OpcuaNodeIdServicesVariableLog = 19357
-	OpcuaNodeIdServicesVariableLog_LogObjectType_MinimumSeverity            OpcuaNodeIdServicesVariableLog = 19744
-	OpcuaNodeIdServicesVariableLog_LogRecordMask_OptionSetValues            OpcuaNodeIdServicesVariableLog = 19750
+	OpcuaNodeIdServicesVariableLog_LogObjectType_GetRecords_InputArguments               OpcuaNodeIdServicesVariableLog = 19354
+	OpcuaNodeIdServicesVariableLog_LogObjectType_GetRecords_OutputArguments              OpcuaNodeIdServicesVariableLog = 19355
+	OpcuaNodeIdServicesVariableLog_LogObjectType_MaxRecords                              OpcuaNodeIdServicesVariableLog = 19356
+	OpcuaNodeIdServicesVariableLog_LogObjectType_MaxStorageDuration                      OpcuaNodeIdServicesVariableLog = 19357
+	OpcuaNodeIdServicesVariableLog_LogObjectType_MinimumSeverity                         OpcuaNodeIdServicesVariableLog = 19744
+	OpcuaNodeIdServicesVariableLog_LogRecordMask_OptionSetValues                         OpcuaNodeIdServicesVariableLog = 19750
+	OpcuaNodeIdServicesVariableLog_LogObjectType_ReleaseContinuationPoint_InputArguments OpcuaNodeIdServicesVariableLog = 24373
 )
 
 var OpcuaNodeIdServicesVariableLogValues []OpcuaNodeIdServicesVariableLog
@@ -60,6 +61,7 @@ func init() {
 		OpcuaNodeIdServicesVariableLog_LogObjectType_MaxStorageDuration,
 		OpcuaNodeIdServicesVariableLog_LogObjectType_MinimumSeverity,
 		OpcuaNodeIdServicesVariableLog_LogRecordMask_OptionSetValues,
+		OpcuaNodeIdServicesVariableLog_LogObjectType_ReleaseContinuationPoint_InputArguments,
 	}
 }
 
@@ -77,6 +79,8 @@ func OpcuaNodeIdServicesVariableLogByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableLog_LogObjectType_MinimumSeverity, true
 	case 19750:
 		return OpcuaNodeIdServicesVariableLog_LogRecordMask_OptionSetValues, true
+	case 24373:
+		return OpcuaNodeIdServicesVariableLog_LogObjectType_ReleaseContinuationPoint_InputArguments, true
 	}
 	return 0, false
 }
@@ -95,6 +99,8 @@ func OpcuaNodeIdServicesVariableLogByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableLog_LogObjectType_MinimumSeverity, true
 	case "LogRecordMask_OptionSetValues":
 		return OpcuaNodeIdServicesVariableLog_LogRecordMask_OptionSetValues, true
+	case "LogObjectType_ReleaseContinuationPoint_InputArguments":
+		return OpcuaNodeIdServicesVariableLog_LogObjectType_ReleaseContinuationPoint_InputArguments, true
 	}
 	return 0, false
 }
@@ -178,6 +184,8 @@ func (e OpcuaNodeIdServicesVariableLog) PLC4XEnumName() string {
 		return "LogObjectType_MinimumSeverity"
 	case OpcuaNodeIdServicesVariableLog_LogRecordMask_OptionSetValues:
 		return "LogRecordMask_OptionSetValues"
+	case OpcuaNodeIdServicesVariableLog_LogObjectType_ReleaseContinuationPoint_InputArguments:
+		return "LogObjectType_ReleaseContinuationPoint_InputArguments"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

@@ -1093,7 +1093,7 @@ func (_c *MockTestingLog_Helper_Call) RunAndReturn(run func()) *MockTestingLog_H
 }
 
 // Log provides a mock function for the type MockTestingLog
-func (_mock *MockTestingLog) Log(args ...interface{}) {
+func (_mock *MockTestingLog) Log(args ...any) {
 	if len(args) > 0 {
 		_mock.Called(args)
 	} else {
@@ -1109,18 +1109,18 @@ type MockTestingLog_Log_Call struct {
 }
 
 // Log is a helper method to define mock.On call
-//   - args ...interface{}
+//   - args ...any
 func (_e *MockTestingLog_Expecter) Log(args ...interface{}) *MockTestingLog_Log_Call {
 	return &MockTestingLog_Log_Call{Call: _e.mock.On("Log",
 		append([]interface{}{}, args...)...)}
 }
 
-func (_c *MockTestingLog_Log_Call) Run(run func(args ...interface{})) *MockTestingLog_Log_Call {
+func (_c *MockTestingLog_Log_Call) Run(run func(args ...any)) *MockTestingLog_Log_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 []interface{}
-		var variadicArgs []interface{}
+		var arg0 []any
+		var variadicArgs []any
 		if len(args) > 0 {
-			variadicArgs = args[0].([]interface{})
+			variadicArgs = args[0].([]any)
 		}
 		arg0 = variadicArgs
 		run(
@@ -1135,13 +1135,13 @@ func (_c *MockTestingLog_Log_Call) Return() *MockTestingLog_Log_Call {
 	return _c
 }
 
-func (_c *MockTestingLog_Log_Call) RunAndReturn(run func(args ...interface{})) *MockTestingLog_Log_Call {
+func (_c *MockTestingLog_Log_Call) RunAndReturn(run func(args ...any)) *MockTestingLog_Log_Call {
 	_c.Run(run)
 	return _c
 }
 
 // Logf provides a mock function for the type MockTestingLog
-func (_mock *MockTestingLog) Logf(format string, args ...interface{}) {
+func (_mock *MockTestingLog) Logf(format string, args ...any) {
 	if len(args) > 0 {
 		_mock.Called(format, args)
 	} else {
@@ -1158,22 +1158,22 @@ type MockTestingLog_Logf_Call struct {
 
 // Logf is a helper method to define mock.On call
 //   - format string
-//   - args ...interface{}
+//   - args ...any
 func (_e *MockTestingLog_Expecter) Logf(format interface{}, args ...interface{}) *MockTestingLog_Logf_Call {
 	return &MockTestingLog_Logf_Call{Call: _e.mock.On("Logf",
 		append([]interface{}{format}, args...)...)}
 }
 
-func (_c *MockTestingLog_Logf_Call) Run(run func(format string, args ...interface{})) *MockTestingLog_Logf_Call {
+func (_c *MockTestingLog_Logf_Call) Run(run func(format string, args ...any)) *MockTestingLog_Logf_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 string
 		if args[0] != nil {
 			arg0 = args[0].(string)
 		}
-		var arg1 []interface{}
-		var variadicArgs []interface{}
+		var arg1 []any
+		var variadicArgs []any
 		if len(args) > 1 {
-			variadicArgs = args[1].([]interface{})
+			variadicArgs = args[1].([]any)
 		}
 		arg1 = variadicArgs
 		run(
@@ -1189,7 +1189,7 @@ func (_c *MockTestingLog_Logf_Call) Return() *MockTestingLog_Logf_Call {
 	return _c
 }
 
-func (_c *MockTestingLog_Logf_Call) RunAndReturn(run func(format string, args ...interface{})) *MockTestingLog_Logf_Call {
+func (_c *MockTestingLog_Logf_Call) RunAndReturn(run func(format string, args ...any)) *MockTestingLog_Logf_Call {
 	_c.Run(run)
 	return _c
 }

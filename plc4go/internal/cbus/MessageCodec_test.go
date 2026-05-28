@@ -36,7 +36,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestMessageCodec_Send(t *testing.T) {
@@ -529,7 +528,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 								readWriteModel.NewUnitAddress(4),
 								nil,
 								readWriteModel.NewSerialInterfaceAddress(2),
-								utils.ToPtr(byte(0)),
+								new(byte(0)),
 								nil,
 							),
 						),
@@ -585,7 +584,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 								readWriteModel.NewUnitAddress(49),
 								nil,
 								172,
-								utils.ToPtr(byte(0)),
+								new(byte(0)),
 								nil,
 								readWriteModel.NewSALDataAirConditioning(
 									readWriteModel.NewSALDataAirConditioning(
@@ -715,7 +714,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 			// Now we add a confirmation
 			ti.(*test.TransportInstance).FillReadBuffer([]byte("i."))
 
-			for i := 0; i < 8; i++ {
+			for i := range 8 {
 				t.Logf("%d try", i+1)
 				// We should wait for more data, so no error, no message
 				msg, err = codec.Receive(canceledCtx())

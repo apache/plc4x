@@ -28,6 +28,26 @@ public enum OpcuaNodeIdServicesVariableAlias {
   AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments((int) 23461L),
   AliasNameCategoryType_FindAlias_InputArguments((int) 23463L),
   AliasNameCategoryType_FindAlias_OutputArguments((int) 23464L),
+  AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_InputArguments(
+      (int) 23931L),
+  AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAliasVerbose_OutputArguments(
+      (int) 23935L),
+  AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_InputArguments(
+      (int) 23937L),
+  AliasNameCategoryType_SubAliasNameCategories_Placeholder_AddAliasesToCategory_OutputArguments(
+      (int) 23959L),
+  AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_InputArguments(
+      (int) 23961L),
+  AliasNameCategoryType_SubAliasNameCategories_Placeholder_DeleteAliasesFromCategory_OutputArguments(
+      (int) 23962L),
+  AliasNameCategoryType_FindAliasVerbose_InputArguments((int) 23964L),
+  AliasNameCategoryType_FindAliasVerbose_OutputArguments((int) 23971L),
+  AliasNameCategoryType_AddAliasesToCategory_InputArguments((int) 23973L),
+  AliasNameCategoryType_AddAliasesToCategory_OutputArguments((int) 23974L),
+  AliasNameCategoryType_DeleteAliasesFromCategory_InputArguments((int) 23976L),
+  AliasNameCategoryType_DeleteAliasesFromCategory_OutputArguments((int) 23986L),
+  AliasUpdateDataType_DataSetClassId((int) 24499L),
+  AliasUpdateDataType_DataSetMetaData((int) 24500L),
   AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange((int) 32849L),
   AliasNameCategoryType_LastChange((int) 32850L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableAlias> map;

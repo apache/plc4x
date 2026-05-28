@@ -24,10 +24,11 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"math/big"
 	"strings"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 type WriteBufferJsonBased interface {
@@ -285,24 +286,18 @@ func (j *jsonWriteBuffer) encodeNode(logicalName string, value any, attr map[str
 	switch _context := peek.(type) {
 	case *elementContext:
 		_context.properties[logicalName] = value
-		for key, attrValue := range attr {
-			_context.properties[key] = attrValue
-		}
+		maps.Copy(_context.properties, attr)
 		return nil
 	case *listContext:
 		m := make(map[string]any)
 		m[logicalName] = value
-		for attrKey, attrValue := range attr {
-			m[attrKey] = attrValue
-		}
+		maps.Copy(m, attr)
 		_context.list = append(_context.list, m)
 		return nil
 	default:
 		newContext := &elementContext{logicalName, make(map[string]any)}
 		newContext.properties[logicalName] = value
-		for key, attrValue := range attr {
-			newContext.properties[key] = attrValue
-		}
+		maps.Copy(newContext.properties, attr)
 		j.Push(newContext)
 		return nil
 	}

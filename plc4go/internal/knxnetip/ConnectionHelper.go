@@ -25,14 +25,14 @@ import (
 	"math"
 	"net"
 	"runtime/debug"
+	"slices"
 	"strconv"
 	"sync/atomic"
 	"time"
 
-	"github.com/pkg/errors"
-
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )
@@ -175,11 +175,9 @@ func (m *Connection) getGroupAddressNumLevels() uint8 {
 }
 
 func (m *Connection) addSubscriber(subscriber *Subscriber) {
-	for _, sub := range m.subscribers {
-		if sub == subscriber {
-			m.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber %v already added")
-			return
-		}
+	if slices.Contains(m.subscribers, subscriber) {
+		m.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber %v already added")
+		return
 	}
 	m.subscribers = append(m.subscribers, subscriber)
 }

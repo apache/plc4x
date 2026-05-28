@@ -10,6 +10,8 @@ New Features
 - Subscription of change-of-state values now supports
   providing a min time interval to prevent excessive
   notifications.
+- Added a new PlcCertificateAuthentication to the API module.
+- Initial version of a new Java UMAS driver.
 
 Incompatible changes
 --------------------
@@ -20,7 +22,14 @@ Incompatible changes
   Java 17 to allow alternate driver implementations to support
   Java 17.
 - Updated the signature of the PlcBrowseRequestInterceptor to
-  also accept a tag and item instead of just an item.
+  also accept a queryName, query and item instead of just an
+  item.
+- The ConnectionStateListener interface was updated to no longer
+  have a connected() and disconnected() method, but use a
+  onConnectionStateChanged method instead that accepts
+  PlcConnectionStateChangedEvent events which have many more
+  state change options beyond a simple connected and disconnected
+  event.
 
 Bug Fixes
 ---------

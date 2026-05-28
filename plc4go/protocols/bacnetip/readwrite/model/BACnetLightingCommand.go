@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -229,7 +228,7 @@ func (b *_BACnetLightingCommandBuilder) Build() (BACnetLightingCommand, error) {
 	if b.LightningOperation == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lightningOperation' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLightingCommand.deepCopy(), nil
@@ -462,23 +461,23 @@ func (m *_BACnetLightingCommand) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(err, "Error serializing 'lightningOperation' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagReal](ctx, "targetLevel", GetRef(m.GetTargetLevel()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "targetLevel", new(m.GetTargetLevel()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'targetLevel' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagReal](ctx, "rampRate", GetRef(m.GetRampRate()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "rampRate", new(m.GetRampRate()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'rampRate' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagReal](ctx, "stepIncrement", GetRef(m.GetStepIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "stepIncrement", new(m.GetStepIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'stepIncrement' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "fadeTime", GetRef(m.GetFadeTime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "fadeTime", new(m.GetFadeTime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'fadeTime' field")
 	}
 
-	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", GetRef(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", new(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 

@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -212,7 +211,7 @@ func (b *_BACnetConfirmedServiceRequestReadRangeBuilder) Build() (BACnetConfirme
 	if b.PropertyIdentifier == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'propertyIdentifier' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestReadRange.deepCopy(), nil
@@ -419,11 +418,11 @@ func (m *_BACnetConfirmedServiceRequestReadRange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", GetRef(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", new(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'propertyArrayIndex' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequestReadRangeRange](ctx, "readRange", GetRef(m.GetReadRange()), WriteComplex[BACnetConfirmedServiceRequestReadRangeRange](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestReadRangeRange](ctx, "readRange", new(m.GetReadRange()), WriteComplex[BACnetConfirmedServiceRequestReadRangeRange](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'readRange' field")
 		}
 

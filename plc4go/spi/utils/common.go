@@ -32,11 +32,6 @@ func InlineIf[T any](test bool, a func() T, b func() T) T {
 	}
 }
 
-// ToPtr makes a pointer to T
-func ToPtr[T any](v T) *T {
-	return &v
-}
-
 // CopyPtr copies things that are a pointer to something
 func CopyPtr[T any](t *T) *T {
 	if t == nil {
@@ -78,13 +73,13 @@ func DeepCopySliceWithConverter[I any, O any](in []I, converter func(I) O) (out 
 }
 
 // IsNil when nil checks aren't enough
-func IsNil(v interface{}) bool {
+func IsNil(v any) bool {
 	if v == nil {
 		return true
 	}
 	valueOf := reflect.ValueOf(v)
 	switch valueOf.Kind() {
-	case reflect.Ptr, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
+	case reflect.Pointer, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
 		return valueOf.IsNil()
 	default:
 		return false

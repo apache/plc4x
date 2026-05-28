@@ -51,7 +51,7 @@
 
     <go.cover.flag>-coverprofile=target/coverage.out</go.cover.flag>
 
-    <go.version>1.25.4</go.version>
+    <go.version>1.26.0</go.version>
   </properties>
 
   <build>
@@ -211,7 +211,7 @@
       <plugin>
         <groupId>com.igormaznitsa</groupId>
         <artifactId>gosdk-wrapper-maven-plugin</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.2</version>
         <executions>
           <!-- Run the go code-generation -->
           <execution>
@@ -239,6 +239,7 @@
             <configuration>
               <args>
                 <arg>tool</arg>
+                <arg>-modfile=tools.mod</arg>
                 <arg>mockery</arg>
                 <arg>--log-level</arg>
                 <arg>info</arg>
@@ -272,6 +273,7 @@
               <skip>${skipTests}</skip>
               <args>
                 <arg>tool</arg>
+                <arg>-modfile=tools.mod</arg>
                 <arg>gotestsum</arg>
                 <arg>--junitfile</arg>
                 <arg>target/surefire-reports/go-junit-report.xml</arg>
@@ -292,6 +294,7 @@
             <configuration>
               <args>
                 <arg>tool</arg>
+                <arg>-modfile=tools.mod</arg>
                 <arg>goimports-reviser</arg>
                 <arg>-excludes</arg>
                 <arg>.idea,.git</arg>
@@ -316,6 +319,7 @@
         <configuration>
           <goVersion>${go.version}</goVersion>
           <workDir>${project.basedir}</workDir>
+          <sdkSite>GOSDK_SITE</sdkSite>
         </configuration>
       </plugin>
 

@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -100,6 +100,8 @@ const (
 	OpcuaNodeIdServicesVariableType_MultiStateDictionaryEntryDiscreteBaseType OpcuaNodeIdServicesVariableType = 19077
 	OpcuaNodeIdServicesVariableType_MultiStateDictionaryEntryDiscreteType     OpcuaNodeIdServicesVariableType = 19084
 	OpcuaNodeIdServicesVariableType_PubSubDiagnosticsCounterType              OpcuaNodeIdServicesVariableType = 19725
+	OpcuaNodeIdServicesVariableType_AnalogNumberItemType                      OpcuaNodeIdServicesVariableType = 23906
+	OpcuaNodeIdServicesVariableType_AnalogNumberUnitRangeType                 OpcuaNodeIdServicesVariableType = 23918
 	OpcuaNodeIdServicesVariableType_AlarmStateVariableType                    OpcuaNodeIdServicesVariableType = 32244
 	OpcuaNodeIdServicesVariableType_BitFieldType                              OpcuaNodeIdServicesVariableType = 32431
 	OpcuaNodeIdServicesVariableType_ReferenceDescriptionVariableType          OpcuaNodeIdServicesVariableType = 32657
@@ -169,6 +171,8 @@ func init() {
 		OpcuaNodeIdServicesVariableType_MultiStateDictionaryEntryDiscreteBaseType,
 		OpcuaNodeIdServicesVariableType_MultiStateDictionaryEntryDiscreteType,
 		OpcuaNodeIdServicesVariableType_PubSubDiagnosticsCounterType,
+		OpcuaNodeIdServicesVariableType_AnalogNumberItemType,
+		OpcuaNodeIdServicesVariableType_AnalogNumberUnitRangeType,
 		OpcuaNodeIdServicesVariableType_AlarmStateVariableType,
 		OpcuaNodeIdServicesVariableType_BitFieldType,
 		OpcuaNodeIdServicesVariableType_ReferenceDescriptionVariableType,
@@ -271,6 +275,10 @@ func OpcuaNodeIdServicesVariableTypeByValue(value int32) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableType_MultiStateDiscreteType, true
 	case 2380:
 		return OpcuaNodeIdServicesVariableType_ProgramDiagnosticType, true
+	case 23906:
+		return OpcuaNodeIdServicesVariableType_AnalogNumberItemType, true
+	case 23918:
+		return OpcuaNodeIdServicesVariableType_AnalogNumberUnitRangeType, true
 	case 2755:
 		return OpcuaNodeIdServicesVariableType_StateVariableType, true
 	case 2760:
@@ -401,6 +409,10 @@ func OpcuaNodeIdServicesVariableTypeByName(value string) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableType_MultiStateDiscreteType, true
 	case "ProgramDiagnosticType":
 		return OpcuaNodeIdServicesVariableType_ProgramDiagnosticType, true
+	case "AnalogNumberItemType":
+		return OpcuaNodeIdServicesVariableType_AnalogNumberItemType, true
+	case "AnalogNumberUnitRangeType":
+		return OpcuaNodeIdServicesVariableType_AnalogNumberUnitRangeType, true
 	case "StateVariableType":
 		return OpcuaNodeIdServicesVariableType_StateVariableType, true
 	case "FiniteStateVariableType":
@@ -596,6 +608,10 @@ func (e OpcuaNodeIdServicesVariableType) PLC4XEnumName() string {
 		return "MultiStateDiscreteType"
 	case OpcuaNodeIdServicesVariableType_ProgramDiagnosticType:
 		return "ProgramDiagnosticType"
+	case OpcuaNodeIdServicesVariableType_AnalogNumberItemType:
+		return "AnalogNumberItemType"
+	case OpcuaNodeIdServicesVariableType_AnalogNumberUnitRangeType:
+		return "AnalogNumberUnitRangeType"
 	case OpcuaNodeIdServicesVariableType_StateVariableType:
 		return "StateVariableType"
 	case OpcuaNodeIdServicesVariableType_FiniteStateVariableType:

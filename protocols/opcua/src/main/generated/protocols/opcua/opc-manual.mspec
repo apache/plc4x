@@ -246,6 +246,10 @@
             [simple PascalString alphabeticCode]
             [simple LocalizedText currency]
         ]
+        ['23905' NumberRange
+            [simple Variant low]
+            [simple Variant high]
+        ]
         ['32436' AnnotationDataType
             [simple PascalString annotation]
             [simple PascalString discipline]
@@ -1035,6 +1039,23 @@
             [simple QualifiedName aliasName]
             [implicit int 32 noOfReferencedNodes 'referencedNodes == null ? -1 : COUNT(referencedNodes)']
             [array ExpandedNodeId referencedNodes count 'noOfReferencedNodes']
+        ]
+        ['24053' AliasNameVerboseDataType
+            [simple QualifiedName aliasName]
+            [implicit int 32 noOfReferencedNodes 'referencedNodes == null ? -1 : COUNT(referencedNodes)']
+            [array ExpandedNodeId referencedNodes count 'noOfReferencedNodes']
+            [implicit int 32 noOfServerUris 'serverUris == null ? -1 : COUNT(serverUris)']
+            [array PascalString serverUris count 'noOfServerUris']
+            [simple NodeId aliasNameCategoryId]
+        ]
+        ['24054' AliasCategoryUpdateDataType
+            [simple PortableNodeId('24108') category]
+            [simple uint 32 lastChange]
+        ]
+        ['24055' AliasUpdateDataType
+            [simple PascalString applicationUri]
+            [implicit int 32 noOfCategories 'categories == null ? -1 : COUNT(categories)']
+            [array AliasCategoryUpdateDataType('24054') categories count 'noOfCategories']
         ]
         ['24283' UserManagementDataType
             [simple PascalString userName]
@@ -2735,8 +2756,8 @@
             [array DiagnosticInfo value count 'arrayLength == null ? 1 : arrayLength']
         ]
     ]
-    [optional int 32 noOfArrayDimensions 'arrayDimensionsSpecified']
-    [array bit arrayDimensions count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
+    [optional int 32 noOfArrayDimensions 'arrayDimensionsSpecified'                                                        ]
+    [array    int 32 arrayDimensions     count                      'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
 ]
 
 // node type, with two leading reserved bytes

@@ -22,12 +22,12 @@ package bacnetip
 import (
 	"context"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -46,8 +46,24 @@ var (
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
 	codec := &MessageCodec{}
-	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, append(_options, _default.WithCustomMessageHandler(codec.handleCustomMessage))...)
+	// Register a no-op (always-false) custom handler so the codec's receive
+	// loop keeps polling even when there are zero outstanding expectations.
+	// The default loop skips reading the transport when both `expectations`
+	// is empty AND `customMessageHandling` is nil — that would mean unsolicited
+	// COV notifications arrive in the kernel buffer but nobody drains them.
+	// Returning false here lets the default expectation-matching path run
+	// first, then falls through to defaultIncomingMessageChannel for the
+	// Connection's COV-notification poller.
+	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, append(_options, _default.WithCustomMessageHandler(keepReceiveLoopActive))...)
 	return codec
+}
+
+// keepReceiveLoopActive is a no-op CustomMessageHandler. Its only purpose is
+// to set m.customMessageHandling to non-nil so the codec's receive worker
+// doesn't park when expectations drain to zero. Returning false defers all
+// real handling to HandleMessages → defaultIncomingMessageChannel.
+func keepReceiveLoopActive(_ context.Context, _ _default.DefaultCodecRequirements, _ spi.Message) bool {
+	return false
 }
 
 func (m *MessageCodec) GetCodec() spi.MessageCodec {
@@ -110,13 +126,4 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	}
 	// TODO: maybe we return here a not enough error error
 	return nil, nil
-}
-
-func (m *MessageCodec) handleCustomMessage(ctx context.Context, _ _default.DefaultCodecRequirements, message spi.Message) bool {
-	// For now, we just put them in the incoming channel
-	select {
-	case m.GetDefaultIncomingMessageChannel() <- message:
-	case <-ctx.Done():
-	}
-	return true
 }

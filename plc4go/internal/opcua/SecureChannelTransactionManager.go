@@ -23,8 +23,9 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 //go:generate go tool plc4xGenerator -type=SecureChannelTransactionManager

@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,8 +41,10 @@ type IOpcuaNodeIdServicesVariableFind interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments  OpcuaNodeIdServicesVariableFind = 23466
-	OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments OpcuaNodeIdServicesVariableFind = 23467
+	OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments         OpcuaNodeIdServicesVariableFind = 23466
+	OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments        OpcuaNodeIdServicesVariableFind = 23467
+	OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_InputArguments  OpcuaNodeIdServicesVariableFind = 24015
+	OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_OutputArguments OpcuaNodeIdServicesVariableFind = 24024
 )
 
 var OpcuaNodeIdServicesVariableFindValues []OpcuaNodeIdServicesVariableFind
@@ -52,6 +54,8 @@ func init() {
 	OpcuaNodeIdServicesVariableFindValues = []OpcuaNodeIdServicesVariableFind{
 		OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments,
+		OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_InputArguments,
+		OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_OutputArguments,
 	}
 }
 
@@ -61,6 +65,10 @@ func OpcuaNodeIdServicesVariableFindByValue(value int32) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments, true
 	case 23467:
 		return OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments, true
+	case 24015:
+		return OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_InputArguments, true
+	case 24024:
+		return OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -71,6 +79,10 @@ func OpcuaNodeIdServicesVariableFindByName(value string) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments, true
 	case "FindAliasMethodType_OutputArguments":
 		return OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments, true
+	case "FindAliasVerboseMethodType_InputArguments":
+		return OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_InputArguments, true
+	case "FindAliasVerboseMethodType_OutputArguments":
+		return OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -146,6 +158,10 @@ func (e OpcuaNodeIdServicesVariableFind) PLC4XEnumName() string {
 		return "FindAliasMethodType_InputArguments"
 	case OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments:
 		return "FindAliasMethodType_OutputArguments"
+	case OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_InputArguments:
+		return "FindAliasVerboseMethodType_InputArguments"
+	case OpcuaNodeIdServicesVariableFind_FindAliasVerboseMethodType_OutputArguments:
+		return "FindAliasVerboseMethodType_OutputArguments"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

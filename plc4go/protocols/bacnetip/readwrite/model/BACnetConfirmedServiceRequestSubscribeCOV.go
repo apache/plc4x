@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,7 +210,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) Build() (BACnetConfi
 	if b.MonitoredObjectIdentifier == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
 	}
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestSubscribeCOV.deepCopy(), nil
@@ -418,11 +417,11 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'monitoredObjectIdentifier' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmed", GetRef(m.GetIssueConfirmed()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmed", new(m.GetIssueConfirmed()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'issueConfirmed' field")
 		}
 
-		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetimeInSeconds", GetRef(m.GetLifetimeInSeconds()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetimeInSeconds", new(m.GetLifetimeInSeconds()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'lifetimeInSeconds' field")
 		}
 

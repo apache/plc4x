@@ -22,15 +22,14 @@ package model
 import (
 	"context"
 	"encoding/binary"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -115,7 +114,7 @@ func (b *_AdsDataTypeArrayInfoBuilder) WithNumElements(numElements uint32) AdsDa
 }
 
 func (b *_AdsDataTypeArrayInfoBuilder) Build() (AdsDataTypeArrayInfo, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDataTypeArrayInfo.deepCopy(), nil

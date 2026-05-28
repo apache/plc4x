@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -237,7 +236,7 @@ func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalSalDataBuilder(build
 }
 
 func (b *_MonitoredSALLongFormSmartModeBuilder) Build() (MonitoredSALLongFormSmartMode, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MonitoredSALLongFormSmartMode.deepCopy(), nil
@@ -540,11 +539,11 @@ func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(_isUnitAddressErr, "Error serializing 'isUnitAddress' field")
 		}
 
-		if err := WriteOptionalField[UnitAddress](ctx, "unitAddress", GetRef(m.GetUnitAddress()), WriteComplex[UnitAddress](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[UnitAddress](ctx, "unitAddress", new(m.GetUnitAddress()), WriteComplex[UnitAddress](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'unitAddress' field")
 		}
 
-		if err := WriteOptionalField[BridgeAddress](ctx, "bridgeAddress", GetRef(m.GetBridgeAddress()), WriteComplex[BridgeAddress](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BridgeAddress](ctx, "bridgeAddress", new(m.GetBridgeAddress()), WriteComplex[BridgeAddress](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'bridgeAddress' field")
 		}
 
@@ -556,11 +555,11 @@ func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(err, "Error serializing 'reservedByte' field")
 		}
 
-		if err := WriteOptionalField[ReplyNetwork](ctx, "replyNetwork", GetRef(m.GetReplyNetwork()), WriteComplex[ReplyNetwork](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[ReplyNetwork](ctx, "replyNetwork", new(m.GetReplyNetwork()), WriteComplex[ReplyNetwork](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'replyNetwork' field")
 		}
 
-		if err := WriteOptionalField[SALData](ctx, "salData", GetRef(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[SALData](ctx, "salData", new(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'salData' field")
 		}
 

@@ -29,13 +29,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
@@ -236,7 +236,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		arr := make([]readWriteModel.CipService, nb)
 		read := utils.NewReadBufferByteBased(multipleServiceResponse.GetServicesData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		total := read.GetTotalBytes()
-		for i := uint16(0); i < nb; i++ {
+		for i := range nb {
 			length := uint16(0)
 			offset := multipleServiceResponse.GetOffsets()[i] - multipleServiceResponse.GetOffsets()[0] //Substract first offset as we only have the service in the buffer (not servicesNb and offsets)
 			if i == nb-1 {
@@ -287,7 +287,7 @@ func parsePlcValue(tag PlcTag, data utils.ReadBufferByteBased, _type readWriteMo
 	nb := tag.GetElementNb()
 	if nb > 1 {
 		list := make([]values.PlcValue, 0)
-		for i := uint16(0); i < nb; i++ {
+		for range nb {
 			switch _type {
 			case readWriteModel.CIPDataTypeCode_DINT:
 				readInt32, err := data.ReadInt32("", _type.Size()*8)

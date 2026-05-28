@@ -21,14 +21,13 @@ package interceptors
 
 import (
 	"context"
-	stdErrors "errors"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
@@ -202,7 +201,7 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 		}
 	}
 	var errResult error
-	if err := stdErrors.Join(collectedErrors...); err != nil {
+	if err := errors.Join(collectedErrors...); err != nil {
 		errResult = errors.Wrap(err, "error aggregating")
 	}
 	return &interceptedPlcReadRequestResult{
@@ -270,7 +269,7 @@ func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context,
 		}
 	}
 	var errResult error
-	if err := stdErrors.Join(collectedErrors...); err != nil {
+	if err := errors.Join(collectedErrors...); err != nil {
 		errResult = errors.Wrap(err, "error aggregating results")
 	}
 	return &interceptedPlcWriteRequestResult{

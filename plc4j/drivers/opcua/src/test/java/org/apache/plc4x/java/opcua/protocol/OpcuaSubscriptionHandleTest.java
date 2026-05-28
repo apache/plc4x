@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
-import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
@@ -28,7 +28,6 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.MiloTestContainer;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
-import org.apache.plc4x.java.opcua.KeystoreGenerator;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,7 +37,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -259,11 +257,11 @@ public class OpcuaSubscriptionHandleTest {
             Arguments.of(INT32_IDENTIFIER_READ_WRITE, Integer.class),
             Arguments.of(INT64_IDENTIFIER_READ_WRITE, Long.class),
             Arguments.of(INTEGER_IDENTIFIER_READ_WRITE, Integer.class),
-            Arguments.of(SBYTE_IDENTIFIER_READ_WRITE, byte[].class),
+            Arguments.of(SBYTE_IDENTIFIER_READ_WRITE, Byte.class),
             Arguments.of(STRING_IDENTIFIER_READ_WRITE, String.class),
             Arguments.of(UINT16_IDENTIFIER_READ_WRITE, Integer.class),
             Arguments.of(UINT32_IDENTIFIER_READ_WRITE, Long.class),
-            Arguments.of(UINT64_IDENTIFIER_READ_WRITE, Long.class),
+            Arguments.of(UINT64_IDENTIFIER_READ_WRITE, BigInteger.class),
             Arguments.of(UINTEGER_IDENTIFIER_READ_WRITE, Long.class)
         );
     }

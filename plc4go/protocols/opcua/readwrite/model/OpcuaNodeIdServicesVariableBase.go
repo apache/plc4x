@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -41,26 +41,29 @@ type IOpcuaNodeIdServicesVariableBase interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableBase_BaseEventType_EventId               OpcuaNodeIdServicesVariableBase = 2042
-	OpcuaNodeIdServicesVariableBase_BaseEventType_EventType             OpcuaNodeIdServicesVariableBase = 2043
-	OpcuaNodeIdServicesVariableBase_BaseEventType_SourceNode            OpcuaNodeIdServicesVariableBase = 2044
-	OpcuaNodeIdServicesVariableBase_BaseEventType_SourceName            OpcuaNodeIdServicesVariableBase = 2045
-	OpcuaNodeIdServicesVariableBase_BaseEventType_Time                  OpcuaNodeIdServicesVariableBase = 2046
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ReceiveTime           OpcuaNodeIdServicesVariableBase = 2047
-	OpcuaNodeIdServicesVariableBase_BaseEventType_Message               OpcuaNodeIdServicesVariableBase = 2050
-	OpcuaNodeIdServicesVariableBase_BaseEventType_Severity              OpcuaNodeIdServicesVariableBase = 2051
-	OpcuaNodeIdServicesVariableBase_BaseEventType_LocalTime             OpcuaNodeIdServicesVariableBase = 3190
-	OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentRange      OpcuaNodeIdServicesVariableBase = 17567
-	OpcuaNodeIdServicesVariableBase_BaseAnalogType_EURange              OpcuaNodeIdServicesVariableBase = 17568
-	OpcuaNodeIdServicesVariableBase_BaseAnalogType_EngineeringUnits     OpcuaNodeIdServicesVariableBase = 17569
-	OpcuaNodeIdServicesVariableBase_BaseLogEventType_ConditionClassId   OpcuaNodeIdServicesVariableBase = 19363
-	OpcuaNodeIdServicesVariableBase_BaseLogEventType_ConditionClassName OpcuaNodeIdServicesVariableBase = 19364
-	OpcuaNodeIdServicesVariableBase_BaseLogEventType_ErrorCode          OpcuaNodeIdServicesVariableBase = 19365
-	OpcuaNodeIdServicesVariableBase_BaseLogEventType_ErrorCodeNode      OpcuaNodeIdServicesVariableBase = 19366
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId      OpcuaNodeIdServicesVariableBase = 31771
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassName    OpcuaNodeIdServicesVariableBase = 31772
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassId   OpcuaNodeIdServicesVariableBase = 31773
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassName OpcuaNodeIdServicesVariableBase = 31774
+	OpcuaNodeIdServicesVariableBase_BaseEventType_EventId                OpcuaNodeIdServicesVariableBase = 2042
+	OpcuaNodeIdServicesVariableBase_BaseEventType_EventType              OpcuaNodeIdServicesVariableBase = 2043
+	OpcuaNodeIdServicesVariableBase_BaseEventType_SourceNode             OpcuaNodeIdServicesVariableBase = 2044
+	OpcuaNodeIdServicesVariableBase_BaseEventType_SourceName             OpcuaNodeIdServicesVariableBase = 2045
+	OpcuaNodeIdServicesVariableBase_BaseEventType_Time                   OpcuaNodeIdServicesVariableBase = 2046
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ReceiveTime            OpcuaNodeIdServicesVariableBase = 2047
+	OpcuaNodeIdServicesVariableBase_BaseEventType_Message                OpcuaNodeIdServicesVariableBase = 2050
+	OpcuaNodeIdServicesVariableBase_BaseEventType_Severity               OpcuaNodeIdServicesVariableBase = 2051
+	OpcuaNodeIdServicesVariableBase_BaseEventType_LocalTime              OpcuaNodeIdServicesVariableBase = 3190
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentRange       OpcuaNodeIdServicesVariableBase = 17567
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_EURange               OpcuaNodeIdServicesVariableBase = 17568
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_EngineeringUnits      OpcuaNodeIdServicesVariableBase = 17569
+	OpcuaNodeIdServicesVariableBase_BaseLogEventType_ConditionClassId    OpcuaNodeIdServicesVariableBase = 19363
+	OpcuaNodeIdServicesVariableBase_BaseLogEventType_ConditionClassName  OpcuaNodeIdServicesVariableBase = 19364
+	OpcuaNodeIdServicesVariableBase_BaseLogEventType_ErrorCode           OpcuaNodeIdServicesVariableBase = 19365
+	OpcuaNodeIdServicesVariableBase_BaseLogEventType_ErrorCodeNode       OpcuaNodeIdServicesVariableBase = 19366
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentNumberRange OpcuaNodeIdServicesVariableBase = 23904
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_EUNumberRange         OpcuaNodeIdServicesVariableBase = 23905
+	OpcuaNodeIdServicesVariableBase_BaseLogEventType_TraceContext        OpcuaNodeIdServicesVariableBase = 24376
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId       OpcuaNodeIdServicesVariableBase = 31771
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassName     OpcuaNodeIdServicesVariableBase = 31772
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassId    OpcuaNodeIdServicesVariableBase = 31773
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassName  OpcuaNodeIdServicesVariableBase = 31774
 )
 
 var OpcuaNodeIdServicesVariableBaseValues []OpcuaNodeIdServicesVariableBase
@@ -84,6 +87,9 @@ func init() {
 		OpcuaNodeIdServicesVariableBase_BaseLogEventType_ConditionClassName,
 		OpcuaNodeIdServicesVariableBase_BaseLogEventType_ErrorCode,
 		OpcuaNodeIdServicesVariableBase_BaseLogEventType_ErrorCodeNode,
+		OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentNumberRange,
+		OpcuaNodeIdServicesVariableBase_BaseAnalogType_EUNumberRange,
+		OpcuaNodeIdServicesVariableBase_BaseLogEventType_TraceContext,
 		OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId,
 		OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassName,
 		OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassId,
@@ -123,6 +129,12 @@ func OpcuaNodeIdServicesVariableBaseByValue(value int32) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableBase_BaseEventType_Message, true
 	case 2051:
 		return OpcuaNodeIdServicesVariableBase_BaseEventType_Severity, true
+	case 23904:
+		return OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentNumberRange, true
+	case 23905:
+		return OpcuaNodeIdServicesVariableBase_BaseAnalogType_EUNumberRange, true
+	case 24376:
+		return OpcuaNodeIdServicesVariableBase_BaseLogEventType_TraceContext, true
 	case 31771:
 		return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId, true
 	case 31772:
@@ -169,6 +181,12 @@ func OpcuaNodeIdServicesVariableBaseByName(value string) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableBase_BaseEventType_Message, true
 	case "BaseEventType_Severity":
 		return OpcuaNodeIdServicesVariableBase_BaseEventType_Severity, true
+	case "BaseAnalogType_InstrumentNumberRange":
+		return OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentNumberRange, true
+	case "BaseAnalogType_EUNumberRange":
+		return OpcuaNodeIdServicesVariableBase_BaseAnalogType_EUNumberRange, true
+	case "BaseLogEventType_TraceContext":
+		return OpcuaNodeIdServicesVariableBase_BaseLogEventType_TraceContext, true
 	case "BaseEventType_ConditionClassId":
 		return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId, true
 	case "BaseEventType_ConditionClassName":
@@ -280,6 +298,12 @@ func (e OpcuaNodeIdServicesVariableBase) PLC4XEnumName() string {
 		return "BaseEventType_Message"
 	case OpcuaNodeIdServicesVariableBase_BaseEventType_Severity:
 		return "BaseEventType_Severity"
+	case OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentNumberRange:
+		return "BaseAnalogType_InstrumentNumberRange"
+	case OpcuaNodeIdServicesVariableBase_BaseAnalogType_EUNumberRange:
+		return "BaseAnalogType_EUNumberRange"
+	case OpcuaNodeIdServicesVariableBase_BaseLogEventType_TraceContext:
+		return "BaseLogEventType_TraceContext"
 	case OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId:
 		return "BaseEventType_ConditionClassId"
 	case OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassName:

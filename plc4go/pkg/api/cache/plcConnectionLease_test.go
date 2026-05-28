@@ -22,12 +22,12 @@ package cache
 import (
 	"context"
 	"errors"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/viney-shih/go-lock"
 
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
@@ -50,7 +50,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -84,7 +84,7 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -113,7 +113,7 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -140,7 +140,7 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -167,7 +167,7 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -196,7 +196,7 @@ func TestLeasedPlcConnection_Close(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -225,7 +225,7 @@ func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -256,7 +256,7 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -294,7 +294,7 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -329,7 +329,7 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 func TestLeasedPlcConnection_InvalidateSkipsPingOnClose(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	container := &connectionContainer{
-		lock:             lock.NewCASMutex(),
+		lock:             &sync.RWMutex{},
 		connectionString: "dummy://invalidate",
 		log:              logger,
 	}
@@ -351,7 +351,7 @@ func TestLeasedPlcConnection_InvalidateSkipsPingOnClose(t *testing.T) {
 func TestLeasedPlcConnection_PingAfterInvalidate(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	container := &connectionContainer{
-		lock:             lock.NewCASMutex(),
+		lock:             &sync.RWMutex{},
 		connectionString: "dummy://ping",
 		log:              logger,
 	}
@@ -381,7 +381,7 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -422,7 +422,7 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -532,7 +532,7 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -573,7 +573,7 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}
@@ -622,7 +622,7 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 		driverManager: driverManager,
 		maxLeaseTime:  1 * time.Second,
 		maxWaitTime:   5 * time.Second,
-		cacheLock:     lock.NewCASMutex(),
+		cacheLock:     &sync.RWMutex{},
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
 	}

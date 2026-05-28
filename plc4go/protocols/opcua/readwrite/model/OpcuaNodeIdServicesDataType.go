@@ -23,9 +23,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -497,7 +497,11 @@ const (
 	OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType          OpcuaNodeIdServicesDataType = 23743
 	OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType OpcuaNodeIdServicesDataType = 23744
 	OpcuaNodeIdServicesDataType_UriString                                 OpcuaNodeIdServicesDataType = 23751
+	OpcuaNodeIdServicesDataType_NumberRange                               OpcuaNodeIdServicesDataType = 23903
 	OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType                OpcuaNodeIdServicesDataType = 24033
+	OpcuaNodeIdServicesDataType_AliasNameVerboseDataType                  OpcuaNodeIdServicesDataType = 24051
+	OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType               OpcuaNodeIdServicesDataType = 24052
+	OpcuaNodeIdServicesDataType_AliasUpdateDataType                       OpcuaNodeIdServicesDataType = 24053
 	OpcuaNodeIdServicesDataType_PortableQualifiedName                     OpcuaNodeIdServicesDataType = 24105
 	OpcuaNodeIdServicesDataType_PortableNodeId                            OpcuaNodeIdServicesDataType = 24106
 	OpcuaNodeIdServicesDataType_UnsignedRationalNumber                    OpcuaNodeIdServicesDataType = 24107
@@ -997,7 +1001,11 @@ func init() {
 		OpcuaNodeIdServicesDataType_ApplicationConfigurationDataType,
 		OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType,
 		OpcuaNodeIdServicesDataType_UriString,
+		OpcuaNodeIdServicesDataType_NumberRange,
 		OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType,
+		OpcuaNodeIdServicesDataType_AliasNameVerboseDataType,
+		OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType,
+		OpcuaNodeIdServicesDataType_AliasUpdateDataType,
 		OpcuaNodeIdServicesDataType_PortableQualifiedName,
 		OpcuaNodeIdServicesDataType_PortableNodeId,
 		OpcuaNodeIdServicesDataType_UnsignedRationalNumber,
@@ -1457,10 +1465,18 @@ func OpcuaNodeIdServicesDataTypeByValue(value int32) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType, true
 	case 23751:
 		return OpcuaNodeIdServicesDataType_UriString, true
+	case 23903:
+		return OpcuaNodeIdServicesDataType_NumberRange, true
 	case 24:
 		return OpcuaNodeIdServicesDataType_BaseDataType, true
 	case 24033:
 		return OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType, true
+	case 24051:
+		return OpcuaNodeIdServicesDataType_AliasNameVerboseDataType, true
+	case 24052:
+		return OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType, true
+	case 24053:
+		return OpcuaNodeIdServicesDataType_AliasUpdateDataType, true
 	case 24105:
 		return OpcuaNodeIdServicesDataType_PortableQualifiedName, true
 	case 24106:
@@ -2449,10 +2465,18 @@ func OpcuaNodeIdServicesDataTypeByName(value string) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_AuthorizationServiceConfigurationDataType, true
 	case "UriString":
 		return OpcuaNodeIdServicesDataType_UriString, true
+	case "NumberRange":
+		return OpcuaNodeIdServicesDataType_NumberRange, true
 	case "BaseDataType":
 		return OpcuaNodeIdServicesDataType_BaseDataType, true
 	case "ProgramDiagnostic2DataType":
 		return OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType, true
+	case "AliasNameVerboseDataType":
+		return OpcuaNodeIdServicesDataType_AliasNameVerboseDataType, true
+	case "AliasCategoryUpdateDataType":
+		return OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType, true
+	case "AliasUpdateDataType":
+		return OpcuaNodeIdServicesDataType_AliasUpdateDataType, true
 	case "PortableQualifiedName":
 		return OpcuaNodeIdServicesDataType_PortableQualifiedName, true
 	case "PortableNodeId":
@@ -3506,10 +3530,18 @@ func (e OpcuaNodeIdServicesDataType) PLC4XEnumName() string {
 		return "AuthorizationServiceConfigurationDataType"
 	case OpcuaNodeIdServicesDataType_UriString:
 		return "UriString"
+	case OpcuaNodeIdServicesDataType_NumberRange:
+		return "NumberRange"
 	case OpcuaNodeIdServicesDataType_BaseDataType:
 		return "BaseDataType"
 	case OpcuaNodeIdServicesDataType_ProgramDiagnostic2DataType:
 		return "ProgramDiagnostic2DataType"
+	case OpcuaNodeIdServicesDataType_AliasNameVerboseDataType:
+		return "AliasNameVerboseDataType"
+	case OpcuaNodeIdServicesDataType_AliasCategoryUpdateDataType:
+		return "AliasCategoryUpdateDataType"
+	case OpcuaNodeIdServicesDataType_AliasUpdateDataType:
+		return "AliasUpdateDataType"
 	case OpcuaNodeIdServicesDataType_PortableQualifiedName:
 		return "PortableQualifiedName"
 	case OpcuaNodeIdServicesDataType_PortableNodeId:

@@ -27,11 +27,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -129,8 +128,8 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			// Cut off the starting and ending bracket
 			arrayInfoString = arrayInfoString[1:(len(arrayInfoString) - 1)]
 			// Split the remaining string into separate segments.
-			arrayInfoSegments := strings.Split(arrayInfoString, "][")
-			for _, currentSegment := range arrayInfoSegments {
+			arrayInfoSegments := strings.SplitSeq(arrayInfoString, "][")
+			for currentSegment := range arrayInfoSegments {
 				if match := utils.GetSubgroupMatches(m.arrayInfoSegment, currentSegment); match != nil {
 					if match["startElement"] != "" && match["endElement"] != "" {
 						startElement, err := m.getUint32Value(match["startElement"])
@@ -229,8 +228,8 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			// Cut off the starting and ending bracket
 			arrayInfoString = arrayInfoString[1:(len(arrayInfoString) - 1)]
 			// Split the remaining string into separate segments.
-			arrayInfoSegments := strings.Split(arrayInfoString, "][")
-			for _, currentSegment := range arrayInfoSegments {
+			arrayInfoSegments := strings.SplitSeq(arrayInfoString, "][")
+			for currentSegment := range arrayInfoSegments {
 				if match := utils.GetSubgroupMatches(m.arrayInfoSegment, currentSegment); match != nil {
 					if match["startElement"] != "" && match["endElement"] != "" {
 						startElement, err := m.getUint32Value(match["startElement"])
@@ -284,8 +283,8 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			// Cut off the starting and ending bracket
 			arrayInfoString = arrayInfoString[1:(len(arrayInfoString) - 1)]
 			// Split the remaining string into separate segments.
-			arrayInfoSegments := strings.Split(arrayInfoString, "][")
-			for _, currentSegment := range arrayInfoSegments {
+			arrayInfoSegments := strings.SplitSeq(arrayInfoString, "][")
+			for currentSegment := range arrayInfoSegments {
 				if match := utils.GetSubgroupMatches(m.arrayInfoSegment, currentSegment); match != nil {
 					if match["startElement"] != "" && match["endElement"] != "" {
 						startElement, err := m.getUint32Value(match["startElement"])

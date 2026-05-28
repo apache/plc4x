@@ -21,14 +21,13 @@ package model
 
 import (
 	"context"
-	stdErrors "errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -247,7 +246,7 @@ func (b *_APDUConfirmedRequestBuilder) WithSegment(segment ...byte) APDUConfirme
 }
 
 func (b *_APDUConfirmedRequestBuilder) Build() (APDUConfirmedRequest, error) {
-	if err := stdErrors.Join(b.collectedErr...); err != nil {
+	if err := errors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._APDUConfirmedRequest.deepCopy(), nil
@@ -653,7 +652,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
 
-		if err := WriteOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", GetRef(m.GetServiceRequest()), WriteComplex[BACnetConfirmedServiceRequest](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", new(m.GetServiceRequest()), WriteComplex[BACnetConfirmedServiceRequest](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceRequest' field")
 		}
 
