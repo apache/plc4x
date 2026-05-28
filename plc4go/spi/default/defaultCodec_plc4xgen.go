@@ -157,6 +157,25 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		}
 	}
+
+	if d.transportErrorHandler != nil {
+		if serializableField, ok := any(d.transportErrorHandler).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("transportErrorHandler"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("transportErrorHandler"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.transportErrorHandler)
+			if err := writeBuffer.WriteString("transportErrorHandler", uint32(len(stringValue)*8), stringValue); err != nil {
+				return err
+			}
+		}
+	}
 	if err := writeBuffer.PopContext("defaultCodec"); err != nil {
 		return err
 	}

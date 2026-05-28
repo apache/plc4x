@@ -29,7 +29,6 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/gopacket/gopacket v1.6.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
-	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.35.1
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/net v0.55.0

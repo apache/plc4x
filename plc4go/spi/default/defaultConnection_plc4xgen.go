@@ -53,6 +53,10 @@ func (d *defaultConnection) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return err
 	}
 
+	if err := writeBuffer.WriteBit("invalidated", d.invalidated.Load()); err != nil {
+		return err
+	}
+
 	if d.tagHandler != nil {
 		if serializableField, ok := any(d.tagHandler).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("tagHandler"); err != nil {

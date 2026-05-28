@@ -546,6 +546,57 @@ func (_m *MockTransportInstance) EXPECT() *MockTransportInstance_Expecter {
 	return &MockTransportInstance_Expecter{mock: &_m.Mock}
 }
 
+// ClassifyError provides a mock function for the type MockTransportInstance
+func (_mock *MockTransportInstance) ClassifyError(err error) TransportErrorKind {
+	ret := _mock.Called(err)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ClassifyError")
+	}
+
+	var r0 TransportErrorKind
+	if returnFunc, ok := ret.Get(0).(func(error) TransportErrorKind); ok {
+		r0 = returnFunc(err)
+	} else {
+		r0 = ret.Get(0).(TransportErrorKind)
+	}
+	return r0
+}
+
+// MockTransportInstance_ClassifyError_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ClassifyError'
+type MockTransportInstance_ClassifyError_Call struct {
+	*mock.Call
+}
+
+// ClassifyError is a helper method to define mock.On call
+//   - err error
+func (_e *MockTransportInstance_Expecter) ClassifyError(err interface{}) *MockTransportInstance_ClassifyError_Call {
+	return &MockTransportInstance_ClassifyError_Call{Call: _e.mock.On("ClassifyError", err)}
+}
+
+func (_c *MockTransportInstance_ClassifyError_Call) Run(run func(err error)) *MockTransportInstance_ClassifyError_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 error
+		if args[0] != nil {
+			arg0 = args[0].(error)
+		}
+		run(
+			arg0,
+		)
+	})
+	return _c
+}
+
+func (_c *MockTransportInstance_ClassifyError_Call) Return(transportErrorKind TransportErrorKind) *MockTransportInstance_ClassifyError_Call {
+	_c.Call.Return(transportErrorKind)
+	return _c
+}
+
+func (_c *MockTransportInstance_ClassifyError_Call) RunAndReturn(run func(err error) TransportErrorKind) *MockTransportInstance_ClassifyError_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Close provides a mock function for the type MockTransportInstance
 func (_mock *MockTransportInstance) Close() error {
 	ret := _mock.Called()
@@ -751,57 +802,6 @@ func (_c *MockTransportInstance_GetNumBytesAvailableInBuffer_Call) RunAndReturn(
 	return _c
 }
 
-// ClassifyError provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) ClassifyError(err error) TransportErrorKind {
-	ret := _mock.Called(err)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ClassifyError")
-	}
-
-	var r0 TransportErrorKind
-	if returnFunc, ok := ret.Get(0).(func(error) TransportErrorKind); ok {
-		r0 = returnFunc(err)
-	} else {
-		r0 = ret.Get(0).(TransportErrorKind)
-	}
-	return r0
-}
-
-// MockTransportInstance_ClassifyError_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ClassifyError'
-type MockTransportInstance_ClassifyError_Call struct {
-	*mock.Call
-}
-
-// ClassifyError is a helper method to define mock.On call
-//   - err error
-func (_e *MockTransportInstance_Expecter) ClassifyError(err interface{}) *MockTransportInstance_ClassifyError_Call {
-	return &MockTransportInstance_ClassifyError_Call{Call: _e.mock.On("ClassifyError", err)}
-}
-
-func (_c *MockTransportInstance_ClassifyError_Call) Run(run func(err error)) *MockTransportInstance_ClassifyError_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 error
-		if args[0] != nil {
-			arg0 = args[0].(error)
-		}
-		run(
-			arg0,
-		)
-	})
-	return _c
-}
-
-func (_c *MockTransportInstance_ClassifyError_Call) Return(kind TransportErrorKind) *MockTransportInstance_ClassifyError_Call {
-	_c.Call.Return(kind)
-	return _c
-}
-
-func (_c *MockTransportInstance_ClassifyError_Call) RunAndReturn(run func(err error) TransportErrorKind) *MockTransportInstance_ClassifyError_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // IsConnected provides a mock function for the type MockTransportInstance
 func (_mock *MockTransportInstance) IsConnected() bool {
 	ret := _mock.Called()
@@ -978,46 +978,6 @@ func (_c *MockTransportInstance_Read_Call) Return(bytes []byte, err error) *Mock
 }
 
 func (_c *MockTransportInstance_Read_Call) RunAndReturn(run func(ctx context.Context, numBytes uint32) ([]byte, error)) *MockTransportInstance_Read_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// SetTransportErrorHandler provides a mock function for the type MockTransportInstance
-func (_mock *MockTransportInstance) SetTransportErrorHandler(handler TransportErrorHandler) {
-	_mock.Called(handler)
-	return
-}
-
-// MockTransportInstance_SetTransportErrorHandler_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetTransportErrorHandler'
-type MockTransportInstance_SetTransportErrorHandler_Call struct {
-	*mock.Call
-}
-
-// SetTransportErrorHandler is a helper method to define mock.On call
-//   - handler TransportErrorHandler
-func (_e *MockTransportInstance_Expecter) SetTransportErrorHandler(handler interface{}) *MockTransportInstance_SetTransportErrorHandler_Call {
-	return &MockTransportInstance_SetTransportErrorHandler_Call{Call: _e.mock.On("SetTransportErrorHandler", handler)}
-}
-
-func (_c *MockTransportInstance_SetTransportErrorHandler_Call) Run(run func(handler TransportErrorHandler)) *MockTransportInstance_SetTransportErrorHandler_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 TransportErrorHandler
-		if args[0] != nil {
-			arg0 = args[0].(TransportErrorHandler)
-		}
-		run(
-			arg0,
-		)
-	})
-	return _c
-}
-
-func (_c *MockTransportInstance_SetTransportErrorHandler_Call) Return() *MockTransportInstance_SetTransportErrorHandler_Call {
-	_c.Call.Return()
-	return _c
-}
-
-func (_c *MockTransportInstance_SetTransportErrorHandler_Call) RunAndReturn(run func(handler TransportErrorHandler)) *MockTransportInstance_SetTransportErrorHandler_Call {
 	_c.Call.Return(run)
 	return _c
 }

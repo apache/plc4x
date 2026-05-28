@@ -27,24 +27,24 @@ github:
   dependabot_updates: false
 
   labels:
-    - java
-    - cpp
-    - c
-    - go
-    - python
-    - net
-    - ab
-    - ads
-    - ethernetip
-    - firmata
-    - knx
-    - modbus
-    - opcua
-    - s7
-    - siemens
-    - bacnet
-    - can
-    - iot
+  - java
+  - cpp
+  - c
+  - go
+  - python
+  - net
+  - ab
+  - ads
+  - ethernetip
+  - firmata
+  - knx
+  - modbus
+  - opcua
+  - s7
+  - siemens
+  - bacnet
+  - can
+  - iot
 
   features:
     wiki: true
@@ -81,18 +81,19 @@ github:
     delete_comment_discussion: "Re: [D] {title}"
 
   rulesets:
-    - name: "Default Branch Protection"
-      type: branch
-      branches:
-        includes:
-          - "~DEFAULT_BRANCH"
-          - "release/*"
-          - "rel/*"
-        excludes: []
-      bypass_teams:
-        - root
-      restrict_deletion: true
-      restrict_force_push: true
+  - name: "Default Branch Protection"
+    type: branch
+    branches:
+      includes:
+      - "~DEFAULT_BRANCH"
+      - "release/*"
+      - "rel/*"
+      excludes: [ ]
+    bypass_teams:
+    - root
+    restrict_deletion: true
+    restrict_force_push: true
+
 notifications:
   commits: commits@plc4x.apache.org
   issues: issues@plc4x.apache.org

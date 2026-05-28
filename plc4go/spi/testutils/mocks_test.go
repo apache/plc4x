@@ -168,6 +168,57 @@ func (_m *MockTestTransportInstance) EXPECT() *MockTestTransportInstance_Expecte
 	return &MockTestTransportInstance_Expecter{mock: &_m.Mock}
 }
 
+// ClassifyError provides a mock function for the type MockTestTransportInstance
+func (_mock *MockTestTransportInstance) ClassifyError(err error) transports.TransportErrorKind {
+	ret := _mock.Called(err)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ClassifyError")
+	}
+
+	var r0 transports.TransportErrorKind
+	if returnFunc, ok := ret.Get(0).(func(error) transports.TransportErrorKind); ok {
+		r0 = returnFunc(err)
+	} else {
+		r0 = ret.Get(0).(transports.TransportErrorKind)
+	}
+	return r0
+}
+
+// MockTestTransportInstance_ClassifyError_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ClassifyError'
+type MockTestTransportInstance_ClassifyError_Call struct {
+	*mock.Call
+}
+
+// ClassifyError is a helper method to define mock.On call
+//   - err error
+func (_e *MockTestTransportInstance_Expecter) ClassifyError(err interface{}) *MockTestTransportInstance_ClassifyError_Call {
+	return &MockTestTransportInstance_ClassifyError_Call{Call: _e.mock.On("ClassifyError", err)}
+}
+
+func (_c *MockTestTransportInstance_ClassifyError_Call) Run(run func(err error)) *MockTestTransportInstance_ClassifyError_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 error
+		if args[0] != nil {
+			arg0 = args[0].(error)
+		}
+		run(
+			arg0,
+		)
+	})
+	return _c
+}
+
+func (_c *MockTestTransportInstance_ClassifyError_Call) Return(transportErrorKind transports.TransportErrorKind) *MockTestTransportInstance_ClassifyError_Call {
+	_c.Call.Return(transportErrorKind)
+	return _c
+}
+
+func (_c *MockTestTransportInstance_ClassifyError_Call) RunAndReturn(run func(err error) transports.TransportErrorKind) *MockTestTransportInstance_ClassifyError_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Close provides a mock function for the type MockTestTransportInstance
 func (_mock *MockTestTransportInstance) Close() error {
 	ret := _mock.Called()

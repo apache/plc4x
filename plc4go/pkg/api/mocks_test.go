@@ -247,6 +247,39 @@ func (_c *MockPlcConnection_GetMetadata_Call) RunAndReturn(run func() model.PlcC
 	return _c
 }
 
+// Invalidate provides a mock function for the type MockPlcConnection
+func (_mock *MockPlcConnection) Invalidate() {
+	_mock.Called()
+	return
+}
+
+// MockPlcConnection_Invalidate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Invalidate'
+type MockPlcConnection_Invalidate_Call struct {
+	*mock.Call
+}
+
+// Invalidate is a helper method to define mock.On call
+func (_e *MockPlcConnection_Expecter) Invalidate() *MockPlcConnection_Invalidate_Call {
+	return &MockPlcConnection_Invalidate_Call{Call: _e.mock.On("Invalidate")}
+}
+
+func (_c *MockPlcConnection_Invalidate_Call) Run(run func()) *MockPlcConnection_Invalidate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPlcConnection_Invalidate_Call) Return() *MockPlcConnection_Invalidate_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockPlcConnection_Invalidate_Call) RunAndReturn(run func()) *MockPlcConnection_Invalidate_Call {
+	_c.Run(run)
+	return _c
+}
+
 // IsConnected provides a mock function for the type MockPlcConnection
 func (_mock *MockPlcConnection) IsConnected() bool {
 	ret := _mock.Called()
