@@ -37,6 +37,7 @@ type stopWarnOptions struct {
 	interval               time.Duration
 	extraSkipOffset        int
 	includeGoroutinesStack bool
+	registrar              func(initial StopWarnTick) (onTick func(StopWarnTick), onEnd func())
 }
 
 // StopWarn gives out warning every interval (default 5 seconds) when a function doesn't terminate. Usage: `defer StopWarn(log)()`
@@ -58,9 +59,19 @@ func StopWarn(localLog zerolog.Logger, opts ...func(*stopWarnOptions)) func() {
 	ticker := time.NewTicker(o.interval)
 	wg := new(sync.WaitGroup)
 	done := make(chan struct{})
+	startTime := time.Now()
+	var onTick func(StopWarnTick)
+	var onEnd func()
+	if o.registrar != nil {
+		onTick, onEnd = o.registrar(StopWarnTick{
+			ProcessID:   o.processId,
+			ProcessInfo: o.processInfo,
+			StartTime:   startTime,
+			WarnTime:    startTime,
+		})
+	}
 	wg.Go(func() {
 		localLog.Trace().Msgf("start checking")
-		startTime := time.Now()
 		for {
 			localLog.Trace().Msgf("check cycle")
 			select {
@@ -90,14 +101,24 @@ func StopWarn(localLog zerolog.Logger, opts ...func(*stopWarnOptions)) func() {
 					TimeDiff("inProgressFor", warnTime, startTime).
 					Stringer("stackInfo", stackInfo).
 					Msgf("%sstill in progress", processId)
+				if onTick != nil {
+					onTick(StopWarnTick{
+						ProcessID:   o.processId,
+						ProcessInfo: o.processInfo,
+						StartTime:   startTime,
+						WarnTime:    warnTime,
+					})
+				}
 			}
 		}
 	})
-	start := time.Now()
 	return func() {
-		localLog.Trace().TimeDiff("check duration", time.Now(), start).Msg("done")
+		localLog.Trace().TimeDiff("check duration", time.Now(), startTime).Msg("done")
 		close(done)
 		wg.Wait() // This is to avoid late logs in case when the shutdown is really fast
+		if onEnd != nil {
+			onEnd()
+		}
 	}
 }
 
@@ -133,5 +154,36 @@ func WithStopWarnExtraSkipOffset(offset int) func(*stopWarnOptions) {
 func WithStopWarnIncludeGoroutinesStack() func(*stopWarnOptions) {
 	return func(o *stopWarnOptions) {
 		o.includeGoroutinesStack = true
+	}
+}
+
+// StopWarnTick describes a single "still in progress" event passed to a registrar.
+type StopWarnTick struct {
+	ProcessID   string
+	ProcessInfo string
+	StartTime   time.Time
+	WarnTime    time.Time
+}
+
+// WithStopWarnRegistrar registers an external observer that is notified of the lifecycle
+// of a StopWarn invocation. This allows callers to centralise policies such as rate-limited
+// goroutine stack dumps across many concurrent StopWarn instances without each instance
+// emitting its own dump on every tick.
+//
+// register is called once when StopWarn arms, with the initial tick info (StartTime ==
+// WarnTime). It returns two callbacks:
+//   - onTick: invoked on every warn tick, immediately after the existing Warn log line.
+//     May be nil; if nil, ticks are silently ignored by the registrar.
+//   - onEnd:  invoked exactly once when the returned stop func runs, after the warner
+//     goroutine has drained. May be nil.
+//
+// Neither callback should block for long; the warner goroutine waits on onTick before
+// processing the next tick. Heavy work (stack dumps, I/O) should be dispatched to a
+// background goroutine inside the callback.
+func WithStopWarnRegistrar(
+	register func(initial StopWarnTick) (onTick func(StopWarnTick), onEnd func()),
+) func(*stopWarnOptions) {
+	return func(o *stopWarnOptions) {
+		o.registrar = register
 	}
 }
