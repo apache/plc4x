@@ -170,7 +170,11 @@ func (d *defaultConnection) Close() error {
 	if messageCodec := d.GetMessageCodec(); messageCodec != nil {
 		d.log.Trace().Msg("disconnecting message codec")
 		if err := messageCodec.Disconnect(); err != nil {
-			d.log.Warn().Err(err).Msg("Error disconnecting message code")
+			if err.Error() != "already disconnected" {
+				d.log.Warn().Err(err).Msg("Error disconnecting message codec")
+			} else {
+				d.log.Trace().Msg("message codec already disconnected")
+			}
 		} else {
 			d.log.Trace().Msg("message codec disconnected")
 		}
