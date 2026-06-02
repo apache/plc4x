@@ -34,8 +34,6 @@ The information provided here was provided by the entities named, and is not ver
 |===
 ||Name |Description |Contact Person(s) |Contact Email(s) |Contact Phone(s) |Involvement Level
 
-a|image::users/companies/logo-connectorio.png[connectorio, 200, 200] |https://connectorio.com/solutions/apache-plc4x/[ConnectorIO sp. z o.o.^,opts=nofollow]|workshops, individual software development|Łukasz Dywicki |lukasz@connectorio.com |  |PMC Member
-
 a|image::users/companies/logo-timecho.png[timecho, 200, 200]  |https://www.timecho-global.com/[Timecho Europe GmbH,opts=nofollow] |consulting, workshops, individual software development, protocol/driver development, data-storage solutions |Pengchen Zheng |pengcheng.zheng@timecho.com |  |
 
 a|image::users/companies/logo-toddysoft.png[toddysoft, 200, 159] |https://toddysoft.com/[ToddySoft GmbH,opts=nofollow]|consulting, workshops, individual software development, protocol/driver development |Christofer Dutz |christofer.dutz@toddysoft.com |  |PMC Member
