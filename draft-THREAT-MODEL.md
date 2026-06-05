@@ -614,11 +614,17 @@ important one for an integrator.**
   inside an integrator-provided tunnel *(inferred — §14 Q8)*.
 - **No replay-protection on cleartext protocols.** A request the driver
   sent at *t* can be replayed by an attacker at *t+δ*; PLC4X does not
-  add nonces / sequence-checks of its own.
+  add nonces / sequence-checks of its own. Where a protocol specifies
+  nonces, PLC4X provides those protocol-defined nonces but adds none
+  beyond what the protocol mandates *(maintainer — chrisdutz)*.
 - **No authentication of the embedding application's end users.** PLC4X
   has no concept of end users. See §3 item 4.
 - **No authorization over which tags an embedding application reads or
   writes.** The embedding application owns that decision. See §3 items 3, 4.
+  Where the target protocol has its own permission system, PLC4X **proxies**
+  it — deferring the check to the target PLC and relaying any
+  permission error back to the client — but provides no permission
+  system of its own *(maintainer — chrisdutz)*.
 - **No defense against malformed `.knxproj` ZIP slip, BACnet EDE
   malformed-file robustness, or path-traversal in operator-supplied
   file paths.** The file paths are caller-supplied; XML XXE is the only
@@ -627,7 +633,10 @@ important one for an integrator.**
   is trusted to call the API at a reasonable rate
   *(inferred — §14 Q19)*.
 - **No data-at-rest encryption.** PLC4X does not persist anything to
-  disk on its own at runtime.
+  disk on its own at runtime. (The SPI3 rewrite adds an optional
+  Audit-Log feature that writes debug data to the filesystem — intended
+  for transient debugging, not permanent operation, with no encryption;
+  enabling it in production is an operator choice *(maintainer — chrisdutz)*.)
 - **No constant-time comparison of authentication secrets.** Whatever
   the protocol provides (or doesn't) is what PLC4X passes through.
 - **No defense against side-channel observation of OPC UA crypto.** Per
@@ -853,9 +862,11 @@ every wire-format property of every driver.**
 
 - **"OPC UA driver accepts any server certificate."** True by default
   (`PermissiveCertificateVerifier`); the §10 item 3 contract requires
-  the operator to set `trust-store-file`. **Pending §14 Q15
-  maintainer ruling**; if the maintainer chooses stance (b) — default is
-  dev-only — this is `OUT-OF-MODEL: non-default-build`.
+  the operator to set `trust-store-file`. **Maintainer ruling (chrisdutz,
+  §14 Q15):** this default "should be changed and reported" — it is
+  **not** the supported posture, so a report is **`VALID`** (a gap the
+  PMC intends to fix toward secure-by-default), not
+  `OUT-OF-MODEL: non-default-build`.
 - **"OPC UA driver does discovery in cleartext."** True by spec; not a
   driver bug. → §9 false-friend item 2.
 - **"OPC UA driver auto-generates a self-signed client certificate."**
@@ -939,7 +950,7 @@ A report against PLC4X receives exactly one of the following.
 | `OUT-OF-MODEL: trusted-input` | Requires attacker control of a §6 parameter the model marks trusted — the connection URL, the auth object, the value being written, tag-address strings (per §3 item 5 when the integrator has not opted them into untrusted-string handling). | §6 |
 | `OUT-OF-MODEL: adversary-not-in-scope` | Requires a §7 actor the model excludes — embedding application is hostile, side-channel observer, quantum adversary, OT-network perimeter is the integrator's problem. | §7 |
 | `OUT-OF-MODEL: unsupported-component` | Lands in `plc4c/`, `plc4py/`, `plc4net/`, `tools/`, `code-generation/`, `plc4j/utils/`, `plc4j/drivers/{simulated,mock}`, `plc4x-extras` content, vendored upstream code, or repo infrastructure. | §3 item 2, §3 item 6 |
-| `OUT-OF-MODEL: non-default-build` | Only manifests under a §5a knob the maintainer has ruled is dev/test — pending maintainer rulings in §14 Q14, Q15, Q16 for OPC UA. | §5a |
+| `OUT-OF-MODEL: non-default-build` | Only manifests under a §5a knob the maintainer has ruled is dev/test. **Note:** per the maintainer (chrisdutz, §14 Q14/Q15/Q16) the OPC UA insecure defaults are moving to secure-by-default — the permissive certificate verifier in particular is a gap to fix (`VALID`), not a non-default-build exclusion. | §5a |
 | `BY-DESIGN: protocol-disclaimed` | Concerns a property the **protocol** (not the library) does not provide — every "Modbus / S7 / BACnet / etc. is unauthenticated" report. | §9, §3 item 1, §11a |
 | `BY-DESIGN: property-disclaimed` | Concerns a §9 property the library explicitly does not provide (built-in TLS tunneling, end-user authn, DoS protection at the API). | §9 |
 | `KNOWN-NON-FINDING` | Matches a §11a recurring false positive. | §11a |
@@ -949,6 +960,13 @@ A report against PLC4X receives exactly one of the following.
 
 Every *(inferred)* tag in the body maps to one of these. Proposed
 answers are inline; please confirm, correct, or strike.
+
+**PMC review (chrisdutz, 2026-06-04, PR-approved):** the OPC UA insecure
+defaults (Q14/Q15/Q16) are moving to secure-by-default — the permissive
+certificate verifier in particular is a gap to fix, not a supported
+posture — and the SPI3 rewrite adds TLS transport, hardens the parsers,
+and bounds per-connection allocation (Q8/Q11/Q18/Q19). Answers folded
+below and into the body as *(maintainer)*.
 
 ### Wave 1 — scope, intended use, the OPC UA defaults
 
@@ -1001,22 +1019,31 @@ non-default-build` (stance (b) — operator must flip per §10 item 3)?
 **Proposed: (b)** — the default is convenience for dev/lab. If (a),
 the documentation needs to make clear that "OPC UA" with this driver
 does not by default carry OPC UA's spec-level cryptographic
-properties. *(maps to §5a, §10, §11a, §13)*
+properties.
+
+**Answered (maintainer — chrisdutz):** secure-by-default is the intended
+posture — the SPI3 rewrite makes the insecure path explicitly opt-in and
+the secure path the new default; the current `NONE` default is dev/lab
+convenience, **not** a supported production posture. *(maps to §5a, §10, §11a, §13)*
 
 **Q15.** OPC UA default `PermissiveCertificateVerifier` — the
 single highest-priority question. When `trust-store-file` is unset,
 the driver accepts every server certificate. Is "OPC UA driver accepts
 attacker-presented certificate" `VALID` (stance (a)) or `OUT-OF-MODEL:
-non-default-build` (stance (b))? **Proposed: (b)** for now, but
-consider hardening the default — refuse to negotiate a non-`NONE`
-policy without a trust store, on the grounds that
-"encryption-without-authentication" gives users a false sense of
-security. *(maps to §5a, §10 item 3, §11a)*
+non-default-build` (stance (b))? **Answered (maintainer — chrisdutz):** the permissive default "should be
+changed and reported" — it is **not** the supported posture. A report
+that the OPC UA driver accepts an attacker-presented certificate is
+therefore **`VALID`** (a security gap the PMC intends to fix toward
+secure-by-default), not `OUT-OF-MODEL: non-default-build`. *(maps to §5a, §10 item 3, §11a, §13)*
 
 **Q16.** OPC UA `discovery=true` over `security-policy=NONE`. The
 spec mandates discovery in cleartext; the driver follows the spec.
 Confirm that "OPC UA discovery handshake unauthenticated" is `BY-DESIGN:
 protocol-disclaimed` per §9 false-friend item 2 — not a PLC4X bug.
+
+**Answered (maintainer — chrisdutz):** confirmed — cleartext discovery is
+per the OPC UA spec (`BY-DESIGN: protocol-disclaimed`); separately, the
+broader OPC UA channel is moving to secure-by-default in SPI3 (see Q14/Q15).
 *(maps to §3 item 1, §9, §10 item 5)*
 
 ### Wave 3 — wire-parser robustness, the most likely site of real findings
@@ -1027,8 +1054,12 @@ is a property PLC4X has actually committed to — i.e., a Modbus parser
 that allocates `O(N)` memory in response to a 1-byte length field with
 no upper bound is a bug, not "just OT-protocol weirdness". Are there
 specific drivers where this property has been deliberately weakened
-(e.g. generated code that is faster but not bounded)? *(maps to §4
-reachability, §8 P4, §11a)*
+(e.g. generated code that is faster but not bounded)?
+
+**Answered (maintainer — chrisdutz):** P4 is committed; in the SPI3
+rewrite each connection allocates a fixed-length ring-buffer (length
+varying per protocol), preventing the "huge fake message → huge
+allocation" class of issue. *(maps to §4 reachability, §8 P4, §11a)*
 
 **Q17.** OPC UA secure-channel implementation correctness — §8 P1 /
 P2 / P7. Are these properties tested against the cited reference
@@ -1039,10 +1070,17 @@ only manually at version-bump time? Are there OPC UA test vectors
 
 **Q18.** `.knxproj` (ZIP) handling: confirm ZIP-slip protection in the
 unzip step. BACnet EDE files: confirm parser robustness against
-malformed files. *(maps to §6, §9, §11a)*
+malformed files.
+
+**Answered (maintainer — chrisdutz):** the SPI3 rewrite addresses the
+ETS-parser issues and hardens XML parsing. *(maps to §6, §9, §11a)*
 
 **Q19.** No API-level throttle confirmed? Proposed: yes — the
-embedding application is responsible. *(maps to §6, §9, §10 item 8)*
+embedding application is responsible.
+
+**Answered (maintainer — chrisdutz):** confirmed — no API-level throttle;
+the embedding application is responsible. (SPI3's per-connection
+ring-buffer additionally bounds per-connection allocation.) *(maps to §6, §9, §10 item 8)*
 
 **Q20.** Side-channel posture for OPC UA crypto: out of scope
 *(proposed)*. *(maps to §7, §9)*
@@ -1064,7 +1102,11 @@ unless a JNI path is reached", or do you make a stronger claim?
 responsibility — confirm §9 / §10 item 2. Is there appetite for a
 "TLS-wrap transport" that would terminate at PLC4X (e.g.
 Modbus-over-TLS per Schneider Electric's draft spec)? If yes, that
-changes §12. *(maps to §9, §10 item 2, §12)*
+changes §12.
+
+**Answered (maintainer — chrisdutz):** yes — the SPI3 rewrite adds `tls`
+and `tls-psk` transports that can secure a `tcp` connection where the
+target PLC/gateway supports it. This is a §12-changing addition. *(maps to §9, §10 item 2, §12)*
 
 **Q9.** ADS authentication: when `PlcUsernamePasswordAuthentication`
 is supplied, the credential drives an AMS-route registration
