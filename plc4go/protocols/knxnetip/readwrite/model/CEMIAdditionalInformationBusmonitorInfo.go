@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -175,7 +176,7 @@ func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithSequenceNumber(seq
 }
 
 func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) Build() (CEMIAdditionalInformationBusmonitorInfo, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CEMIAdditionalInformationBusmonitorInfo.deepCopy(), nil

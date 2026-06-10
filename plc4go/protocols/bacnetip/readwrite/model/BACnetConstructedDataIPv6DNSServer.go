@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataIPv6DNSServerBuilder) WithIpv6DnsServer(ipv6DnsSe
 }
 
 func (b *_BACnetConstructedDataIPv6DNSServerBuilder) Build() (BACnetConstructedDataIPv6DNSServer, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataIPv6DNSServer.deepCopy(), nil

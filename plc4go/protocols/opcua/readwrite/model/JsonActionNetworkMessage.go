@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -313,7 +314,7 @@ func (b *_JsonActionNetworkMessageBuilder) Build() (JsonActionNetworkMessage, er
 	if b.RequestorId == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'requestorId' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._JsonActionNetworkMessage.deepCopy(), nil

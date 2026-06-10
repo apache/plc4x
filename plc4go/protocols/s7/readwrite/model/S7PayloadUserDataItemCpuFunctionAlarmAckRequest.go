@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -121,7 +122,7 @@ func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder) WithMessageObj
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmAckRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCpuFunctionAlarmAckRequest.deepCopy(), nil

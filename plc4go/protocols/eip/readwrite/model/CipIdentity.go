@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -255,7 +256,7 @@ func (b *_CipIdentityBuilder) WithState(state uint8) CipIdentityBuilder {
 }
 
 func (b *_CipIdentityBuilder) Build() (CipIdentity, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipIdentity.deepCopy(), nil

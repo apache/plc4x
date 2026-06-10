@@ -1860,6 +1860,15 @@ public enum BACnetVendorId {
   P_SSYSTEC_GMBH((int) 1620, (int) 1620, (String) "PSsystec GmbH"),
   ES_OTOMASYON_SAN_TIC_LTD_STI(
       (int) 1621, (int) 1621, (String) "3ES Otomasyon San. Tic. Ltd. Sti."),
+  NETWORK_CORPORATION((int) 1622, (int) 1622, (String) "Network Corporation"),
+  VEAWE_INFO_DYNAMICS_PRIVATE_LIMITED(
+      (int) 1623, (int) 1623, (String) "Veawe Info Dynamics Private Limited"),
+  VISUAL_SOLUTIONSUK_LTD((int) 1624, (int) 1624, (String) "Visual Solutions UK Ltd"),
+  NICOR_LIGHTING((int) 1625, (int) 1625, (String) "NICOR Lighting"),
+  EME_AUTOMATION((int) 1626, (int) 1626, (String) "EME Automation"),
+  CONTROL_COM_TECHNOLOGIESLLC((int) 1627, (int) 1627, (String) "ControlCom Technologies, LLC"),
+  ELECTR_SOL((int) 1628, (int) 1628, (String) "ElectrSol"),
+  CORPORACIN_EMPRESARIAL_ALTRA((int) 1629, (int) 1629, (String) "Corporación Empresarial Altra’"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

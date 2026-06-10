@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_VariantUInt32Builder) WithValue(value ...uint32) VariantUInt32Builder 
 }
 
 func (b *_VariantUInt32Builder) Build() (VariantUInt32, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantUInt32.deepCopy(), nil

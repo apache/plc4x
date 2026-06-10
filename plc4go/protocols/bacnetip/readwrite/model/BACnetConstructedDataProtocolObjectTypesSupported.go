@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -138,7 +139,7 @@ func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) Build() (BAC
 	if b.ProtocolObjectTypesSupported == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'protocolObjectTypesSupported' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataProtocolObjectTypesSupported.deepCopy(), nil

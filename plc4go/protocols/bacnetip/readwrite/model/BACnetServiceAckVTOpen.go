@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetServiceAckVTOpenBuilder) Build() (BACnetServiceAckVTOpen, error)
 	if b.RemoteVtSessionIdentifier == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'remoteVtSessionIdentifier' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetServiceAckVTOpen.deepCopy(), nil

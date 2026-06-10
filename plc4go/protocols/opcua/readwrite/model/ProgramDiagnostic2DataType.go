@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -328,7 +329,7 @@ func (b *_ProgramDiagnostic2DataTypeBuilder) Build() (ProgramDiagnostic2DataType
 	if b.LastMethodReturnStatus == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lastMethodReturnStatus' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ProgramDiagnostic2DataType.deepCopy(), nil

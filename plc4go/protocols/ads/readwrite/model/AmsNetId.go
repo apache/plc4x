@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -169,7 +170,7 @@ func (b *_AmsNetIdBuilder) WithOctet6(octet6 uint8) AmsNetIdBuilder {
 }
 
 func (b *_AmsNetIdBuilder) Build() (AmsNetId, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AmsNetId.deepCopy(), nil

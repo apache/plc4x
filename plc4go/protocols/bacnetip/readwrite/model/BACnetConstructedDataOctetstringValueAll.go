@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_BACnetConstructedDataOctetstringValueAllBuilder) WithMandatoryFields()
 }
 
 func (b *_BACnetConstructedDataOctetstringValueAllBuilder) Build() (BACnetConstructedDataOctetstringValueAll, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataOctetstringValueAll.deepCopy(), nil

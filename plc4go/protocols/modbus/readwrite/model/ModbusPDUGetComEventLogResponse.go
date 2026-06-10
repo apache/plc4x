@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -150,7 +151,7 @@ func (b *_ModbusPDUGetComEventLogResponseBuilder) WithEvents(events ...byte) Mod
 }
 
 func (b *_ModbusPDUGetComEventLogResponseBuilder) Build() (ModbusPDUGetComEventLogResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUGetComEventLogResponse.deepCopy(), nil

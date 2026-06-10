@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataPortFilterBuilder) WithPortFilter(portFilter ...B
 }
 
 func (b *_BACnetConstructedDataPortFilterBuilder) Build() (BACnetConstructedDataPortFilter, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataPortFilter.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -231,7 +232,7 @@ func (b *_CALReplyLongBuilder) Build() (CALReplyLong, error) {
 	if b.SerialInterfaceAddress == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serialInterfaceAddress' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CALReplyLong.deepCopy(), nil

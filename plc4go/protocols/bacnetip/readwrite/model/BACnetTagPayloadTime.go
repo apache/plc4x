@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -140,7 +141,7 @@ func (b *_BACnetTagPayloadTimeBuilder) WithFractional(fractional uint8) BACnetTa
 }
 
 func (b *_BACnetTagPayloadTimeBuilder) Build() (BACnetTagPayloadTime, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTagPayloadTime.deepCopy(), nil

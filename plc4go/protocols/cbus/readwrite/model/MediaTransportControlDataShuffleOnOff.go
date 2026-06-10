@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -121,7 +122,7 @@ func (b *_MediaTransportControlDataShuffleOnOffBuilder) WithState(state byte) Me
 }
 
 func (b *_MediaTransportControlDataShuffleOnOffBuilder) Build() (MediaTransportControlDataShuffleOnOff, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MediaTransportControlDataShuffleOnOff.deepCopy(), nil

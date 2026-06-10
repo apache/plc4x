@@ -407,7 +407,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_TDE_GMBH = 379,
         M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_ = 380,
         M_EWTECH = 381,
-        M_KLUGER_AUTOMATION_GMBH = 382,
+        M_KLUGER_AUTOMATION = 382,
         M_JOONGANG_CONTROL = 383,
         M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_ = 384,
         M_IME_S_P_A_ = 385,
@@ -787,7 +787,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_STRUCTURED_CABLE_PRODUCTS = 759,
         M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_ = 760,
         M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_ = 761,
-        M_YUEOING_ZHONGYI_ELECTRICALCO__LTD = 762,
+        M_YUEQING_ZHONGYI_ELECTRIC_CO___LTD_ = 762,
         M_HYUNDAI = 763,
         M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_ = 764,
         M_SPECIALCAVI_BALDASSARI_SRL = 765,
@@ -824,8 +824,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_YUNCH = 796,
         M_LUMI_VIETNAM = 797,
         M_ARCOLA_AI_LIMITED = 798,
-        M_ABB___RESERVED = 799,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 800,
+        M_ZHEJIANG_DOOYA_INTELLIGENT_TECHNOLOGY_CO___LTD_ = 799,
+        M_HUARUI = 800,
+        M_TECHNOVATION_ALLIANCE_ENTERPRISE_B_V = 801,
+        M_BI_TECH_ELECTRONICS = 802,
+        M_BELFAST_CABLES_UK_SOLUTIONS_LTD = 803,
+        M_KAYBE_NETWORKING_LLP = 804,
+        M_ABB___RESERVED = 805,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 806,
     }
 
     public static class KnxManufacturerInfo
@@ -1780,7 +1786,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_EWTECH: { /* '381' */
                     return 432;
                 }
-                case KnxManufacturer.M_KLUGER_AUTOMATION_GMBH: { /* '382' */
+                case KnxManufacturer.M_KLUGER_AUTOMATION: { /* '382' */
                     return 433;
                 }
                 case KnxManufacturer.M_JOONGANG_CONTROL: { /* '383' */
@@ -3046,7 +3052,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_: { /* '761' */
                     return 822;
                 }
-                case KnxManufacturer.M_YUEOING_ZHONGYI_ELECTRICALCO__LTD: { /* '762' */
+                case KnxManufacturer.M_YUEQING_ZHONGYI_ELECTRIC_CO___LTD_: { /* '762' */
                     return 823;
                 }
                 case KnxManufacturer.M_HYUNDAI: { /* '763' */
@@ -3166,8 +3172,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ARCOLA_AI_LIMITED: { /* '798' */
                     return 859;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '799' */
-                    return 43954;
+                case KnxManufacturer.M_ZHEJIANG_DOOYA_INTELLIGENT_TECHNOLOGY_CO___LTD_: { /* '799' */
+                    return 860;
                 }
                 case KnxManufacturer.M_HAGER_ELECTRO: { /* '8' */
                     return 9;
@@ -3175,7 +3181,25 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_INTESIS: { /* '80' */
                     return 119;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '800' */
+                case KnxManufacturer.M_HUARUI: { /* '800' */
+                    return 861;
+                }
+                case KnxManufacturer.M_TECHNOVATION_ALLIANCE_ENTERPRISE_B_V: { /* '801' */
+                    return 862;
+                }
+                case KnxManufacturer.M_BI_TECH_ELECTRONICS: { /* '802' */
+                    return 863;
+                }
+                case KnxManufacturer.M_BELFAST_CABLES_UK_SOLUTIONS_LTD: { /* '803' */
+                    return 864;
+                }
+                case KnxManufacturer.M_KAYBE_NETWORKING_LLP: { /* '804' */
+                    return 865;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '805' */
+                    return 43954;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '806' */
                     return 43959;
                 }
                 case KnxManufacturer.M_HERHOLDT_CONTROLS_SRL: { /* '81' */
@@ -4193,8 +4217,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_EWTECH: { /* '381' */
                     return "EWTech";
                 }
-                case KnxManufacturer.M_KLUGER_AUTOMATION_GMBH: { /* '382' */
-                    return "Kluger Automation GmbH";
+                case KnxManufacturer.M_KLUGER_AUTOMATION: { /* '382' */
+                    return "Kluger Automation";
                 }
                 case KnxManufacturer.M_JOONGANG_CONTROL: { /* '383' */
                     return "JoongAng Control";
@@ -5459,8 +5483,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_: { /* '761' */
                     return "Foshan Brisdom Technology Co., Ltd.";
                 }
-                case KnxManufacturer.M_YUEOING_ZHONGYI_ELECTRICALCO__LTD: { /* '762' */
-                    return "YUEOING ZHONGYI ELECTRICALCO.,LTD";
+                case KnxManufacturer.M_YUEQING_ZHONGYI_ELECTRIC_CO___LTD_: { /* '762' */
+                    return "YUEQING ZHONGYI ELECTRIC CO., LTD.";
                 }
                 case KnxManufacturer.M_HYUNDAI: { /* '763' */
                     return "HYUNDAI";
@@ -5579,8 +5603,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ARCOLA_AI_LIMITED: { /* '798' */
                     return "Arcola AI Limited";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '799' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_ZHEJIANG_DOOYA_INTELLIGENT_TECHNOLOGY_CO___LTD_: { /* '799' */
+                    return "Zhejiang Dooya Intelligent Technology Co., Ltd.";
                 }
                 case KnxManufacturer.M_HAGER_ELECTRO: { /* '8' */
                     return "Hager Electro";
@@ -5588,7 +5612,25 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_INTESIS: { /* '80' */
                     return "Intesis";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '800' */
+                case KnxManufacturer.M_HUARUI: { /* '800' */
+                    return "HUARUI";
+                }
+                case KnxManufacturer.M_TECHNOVATION_ALLIANCE_ENTERPRISE_B_V: { /* '801' */
+                    return "Technovation Alliance Enterprise B.V";
+                }
+                case KnxManufacturer.M_BI_TECH_ELECTRONICS: { /* '802' */
+                    return "BI-TECH Electronics";
+                }
+                case KnxManufacturer.M_BELFAST_CABLES_UK_SOLUTIONS_LTD: { /* '803' */
+                    return "BELFAST CABLES UK SOLUTIONS LTD";
+                }
+                case KnxManufacturer.M_KAYBE_NETWORKING_LLP: { /* '804' */
+                    return "KAYBE NETWORKING LLP";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '805' */
+                    return "ABB - reserved";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '806' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_HERHOLDT_CONTROLS_SRL: { /* '81' */

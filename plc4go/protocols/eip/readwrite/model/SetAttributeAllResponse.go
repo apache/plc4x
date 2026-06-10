@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SetAttributeAllResponseBuilder) WithMandatoryFields() SetAttributeAllR
 }
 
 func (b *_SetAttributeAllResponseBuilder) Build() (SetAttributeAllResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SetAttributeAllResponse.deepCopy(), nil

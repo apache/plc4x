@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_VariantExpandedNodeIdBuilder) WithValue(value ...ExpandedNodeId) Varia
 }
 
 func (b *_VariantExpandedNodeIdBuilder) Build() (VariantExpandedNodeId, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantExpandedNodeId.deepCopy(), nil

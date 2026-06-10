@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -103,7 +104,7 @@ func (b *_AmsStringBuilder) WithText(text string) AmsStringBuilder {
 }
 
 func (b *_AmsStringBuilder) Build() (AmsString, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AmsString.deepCopy(), nil

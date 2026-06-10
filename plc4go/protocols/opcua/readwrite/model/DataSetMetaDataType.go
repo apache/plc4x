@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -277,7 +278,7 @@ func (b *_DataSetMetaDataTypeBuilder) Build() (DataSetMetaDataType, error) {
 	if b.ConfigurationVersion == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'configurationVersion' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DataSetMetaDataType.deepCopy(), nil

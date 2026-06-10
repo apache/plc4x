@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -140,7 +141,7 @@ func (b *_GuidValueBuilder) WithData5(data5 ...byte) GuidValueBuilder {
 }
 
 func (b *_GuidValueBuilder) Build() (GuidValue, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._GuidValue.deepCopy(), nil

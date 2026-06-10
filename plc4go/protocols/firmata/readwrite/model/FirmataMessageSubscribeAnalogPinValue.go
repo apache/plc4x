@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -132,7 +133,7 @@ func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) WithEnable(enable bool) 
 }
 
 func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) Build() (FirmataMessageSubscribeAnalogPinValue, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._FirmataMessageSubscribeAnalogPinValue.deepCopy(), nil

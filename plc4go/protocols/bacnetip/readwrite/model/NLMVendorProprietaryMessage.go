@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_NLMVendorProprietaryMessageBuilder) WithProprietaryMessage(proprietary
 }
 
 func (b *_NLMVendorProprietaryMessageBuilder) Build() (NLMVendorProprietaryMessage, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMVendorProprietaryMessage.deepCopy(), nil

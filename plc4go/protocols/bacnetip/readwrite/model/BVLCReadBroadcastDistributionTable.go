@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -105,7 +106,7 @@ func (b *_BVLCReadBroadcastDistributionTableBuilder) WithMandatoryFields() BVLCR
 }
 
 func (b *_BVLCReadBroadcastDistributionTableBuilder) Build() (BVLCReadBroadcastDistributionTable, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCReadBroadcastDistributionTable.deepCopy(), nil

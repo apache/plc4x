@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -130,7 +131,7 @@ func (b *_OpcuaProtocolLimitsBuilder) WithMaxChunkCount(maxChunkCount uint32) Op
 }
 
 func (b *_OpcuaProtocolLimitsBuilder) Build() (OpcuaProtocolLimits, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpcuaProtocolLimits.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -221,7 +222,7 @@ func (b *_PubSubGroupDataTypeBuilder) Build() (PubSubGroupDataType, error) {
 	if b.SecurityGroupId == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityGroupId' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PubSubGroupDataType.deepCopy(), nil

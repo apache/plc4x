@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -119,7 +120,7 @@ func (b *_BVLCResultBuilder) WithCode(code BVLCResultCode) BVLCResultBuilder {
 }
 
 func (b *_BVLCResultBuilder) Build() (BVLCResult, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCResult.deepCopy(), nil

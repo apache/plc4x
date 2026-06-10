@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_DescriptionRequestBuilder) Build() (DescriptionRequest, error) {
 	if b.HpaiControlEndpoint == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'hpaiControlEndpoint' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DescriptionRequest.deepCopy(), nil

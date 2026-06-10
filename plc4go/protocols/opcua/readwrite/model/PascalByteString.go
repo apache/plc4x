@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -110,7 +111,7 @@ func (b *_PascalByteStringBuilder) WithStringValue(stringValue ...byte) PascalBy
 }
 
 func (b *_PascalByteStringBuilder) Build() (PascalByteString, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PascalByteString.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -226,7 +227,7 @@ func (b *_QueryFirstResponseBuilder) Build() (QueryFirstResponse, error) {
 	if b.FilterResult == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'filterResult' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._QueryFirstResponse.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_KnxAddressBuilder) WithSubGroup(subGroup uint8) KnxAddressBuilder {
 }
 
 func (b *_KnxAddressBuilder) Build() (KnxAddress, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._KnxAddress.deepCopy(), nil

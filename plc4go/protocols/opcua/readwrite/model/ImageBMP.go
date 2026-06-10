@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -88,7 +89,7 @@ func (b *_ImageBMPBuilder) WithMandatoryFields() ImageBMPBuilder {
 }
 
 func (b *_ImageBMPBuilder) Build() (ImageBMP, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ImageBMP.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -140,7 +141,7 @@ func (b *_StatusRequestBuilder) WithStatusType(statusType byte) StatusRequestBui
 }
 
 func (b *_StatusRequestBuilder) PartialBuild() (StatusRequestContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._StatusRequest.deepCopy(), nil

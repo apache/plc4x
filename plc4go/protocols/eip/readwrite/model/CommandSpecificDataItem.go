@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_CommandSpecificDataItemBuilder) WithMandatoryFields() CommandSpecificD
 }
 
 func (b *_CommandSpecificDataItemBuilder) PartialBuild() (CommandSpecificDataItemContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CommandSpecificDataItem.deepCopy(), nil

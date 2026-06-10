@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -102,7 +103,7 @@ func (b *_StatusCodeBuilder) WithStatusCode(statusCode uint32) StatusCodeBuilder
 }
 
 func (b *_StatusCodeBuilder) Build() (StatusCode, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._StatusCode.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -164,7 +165,7 @@ func (b *_X509IdentityTokenBuilder) Build() (X509IdentityToken, error) {
 	if b.CertificateData == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'certificateData' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._X509IdentityToken.deepCopy(), nil

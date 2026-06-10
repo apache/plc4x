@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_S7ParameterWriteVarResponseBuilder) WithNumItems(numItems uint8) S7Par
 }
 
 func (b *_S7ParameterWriteVarResponseBuilder) Build() (S7ParameterWriteVarResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7ParameterWriteVarResponse.deepCopy(), nil

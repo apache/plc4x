@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -172,7 +173,7 @@ func (b *_HVACZoneListBuilder) WithZone0(zone0 bool) HVACZoneListBuilder {
 }
 
 func (b *_HVACZoneListBuilder) Build() (HVACZoneList, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HVACZoneList.deepCopy(), nil

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -329,7 +330,7 @@ func (b *_AdsSymbolTableEntryBuilder) WithRest(rest ...byte) AdsSymbolTableEntry
 }
 
 func (b *_AdsSymbolTableEntryBuilder) Build() (AdsSymbolTableEntry, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsSymbolTableEntry.deepCopy(), nil

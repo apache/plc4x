@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -172,7 +173,7 @@ func (b *_AccessControlDataBuilder) WithAccessPointId(accessPointId byte) Access
 }
 
 func (b *_AccessControlDataBuilder) PartialBuild() (AccessControlDataContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AccessControlData.deepCopy(), nil

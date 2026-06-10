@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -182,7 +183,7 @@ func (b *_AdsAddDeviceNotificationRequestBuilder) WithCycleTimeInMs(cycleTimeInM
 }
 
 func (b *_AdsAddDeviceNotificationRequestBuilder) Build() (AdsAddDeviceNotificationRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsAddDeviceNotificationRequest.deepCopy(), nil

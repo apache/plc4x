@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -268,7 +269,7 @@ func (b *_DeviceDescriptorType2Builder) Build() (DeviceDescriptorType2, error) {
 	if b.ChannelInfo4 == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'channelInfo4' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DeviceDescriptorType2.deepCopy(), nil

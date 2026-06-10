@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_InstanceIDBuilder) WithInstance(instance uint8) InstanceIDBuilder {
 }
 
 func (b *_InstanceIDBuilder) Build() (InstanceID, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._InstanceID.deepCopy(), nil

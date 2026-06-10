@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SALDataRoomControlSystemBuilder) WithMandatoryFields() SALDataRoomCont
 }
 
 func (b *_SALDataRoomControlSystemBuilder) Build() (SALDataRoomControlSystem, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataRoomControlSystem.deepCopy(), nil

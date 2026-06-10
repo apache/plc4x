@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_DF1SymbolBuilder) WithMandatoryFields() DF1SymbolBuilder {
 }
 
 func (b *_DF1SymbolBuilder) PartialBuild() (DF1SymbolContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DF1Symbol.deepCopy(), nil

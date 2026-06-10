@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -118,7 +119,7 @@ func (b *_AdsWriteResponseBuilder) WithResult(result ReturnCode) AdsWriteRespons
 }
 
 func (b *_AdsWriteResponseBuilder) Build() (AdsWriteResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsWriteResponse.deepCopy(), nil

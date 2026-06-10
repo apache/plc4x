@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -146,7 +147,7 @@ func (b *_EventFilterBuilder) Build() (EventFilter, error) {
 	if b.WhereClause == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'whereClause' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EventFilter.deepCopy(), nil

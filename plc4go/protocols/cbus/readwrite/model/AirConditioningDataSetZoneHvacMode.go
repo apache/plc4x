@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -255,7 +256,7 @@ func (b *_AirConditioningDataSetZoneHvacModeBuilder) Build() (AirConditioningDat
 	if b.HvacModeAndFlags == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'hvacModeAndFlags' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AirConditioningDataSetZoneHvacMode.deepCopy(), nil

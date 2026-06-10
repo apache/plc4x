@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_ConnectionRequestInformationBuilder) WithMandatoryFields() ConnectionR
 }
 
 func (b *_ConnectionRequestInformationBuilder) PartialBuild() (ConnectionRequestInformationContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConnectionRequestInformation.deepCopy(), nil

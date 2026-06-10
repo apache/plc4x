@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -193,7 +194,7 @@ func (b *_BACnetServiceAckGetAlarmSummaryBuilder) Build() (BACnetServiceAckGetAl
 	if b.AcknowledgedTransitions == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'acknowledgedTransitions' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetServiceAckGetAlarmSummary.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -182,7 +183,7 @@ func (b *_GroupObjectDescriptorRealisationType1Builder) WithValueType(valueType 
 }
 
 func (b *_GroupObjectDescriptorRealisationType1Builder) Build() (GroupObjectDescriptorRealisationType1, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._GroupObjectDescriptorRealisationType1.deepCopy(), nil

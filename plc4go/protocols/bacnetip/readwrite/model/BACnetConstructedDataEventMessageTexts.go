@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -149,7 +150,7 @@ func (b *_BACnetConstructedDataEventMessageTextsBuilder) WithEventMessageTexts(e
 }
 
 func (b *_BACnetConstructedDataEventMessageTextsBuilder) Build() (BACnetConstructedDataEventMessageTexts, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataEventMessageTexts.deepCopy(), nil

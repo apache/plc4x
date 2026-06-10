@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -100,7 +101,7 @@ func (b *_SerialInterfaceAddressBuilder) WithAddress(address byte) SerialInterfa
 }
 
 func (b *_SerialInterfaceAddressBuilder) Build() (SerialInterfaceAddress, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SerialInterfaceAddress.deepCopy(), nil

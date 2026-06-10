@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -154,7 +155,7 @@ func (b *_ClockAndTimekeepingDataBuilder) WithArgument(argument byte) ClockAndTi
 }
 
 func (b *_ClockAndTimekeepingDataBuilder) PartialBuild() (ClockAndTimekeepingDataContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ClockAndTimekeepingData.deepCopy(), nil

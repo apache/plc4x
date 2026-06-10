@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -166,7 +167,7 @@ func (b *_DescriptionResponseBuilder) Build() (DescriptionResponse, error) {
 	if b.DibSuppSvcFamilies == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dibSuppSvcFamilies' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DescriptionResponse.deepCopy(), nil

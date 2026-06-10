@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -238,7 +239,7 @@ func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithRejectedRequestsCount(rej
 }
 
 func (b *_ServerDiagnosticsSummaryDataTypeBuilder) Build() (ServerDiagnosticsSummaryDataType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ServerDiagnosticsSummaryDataType.deepCopy(), nil

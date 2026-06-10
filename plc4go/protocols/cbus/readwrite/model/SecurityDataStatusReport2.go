@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_SecurityDataStatusReport2Builder) WithZoneStatus(zoneStatus ...ZoneSta
 }
 
 func (b *_SecurityDataStatusReport2Builder) Build() (SecurityDataStatusReport2, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataStatusReport2.deepCopy(), nil

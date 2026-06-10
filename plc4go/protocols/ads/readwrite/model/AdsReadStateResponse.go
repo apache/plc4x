@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -142,7 +143,7 @@ func (b *_AdsReadStateResponseBuilder) WithDeviceState(deviceState uint16) AdsRe
 }
 
 func (b *_AdsReadStateResponseBuilder) Build() (AdsReadStateResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsReadStateResponse.deepCopy(), nil

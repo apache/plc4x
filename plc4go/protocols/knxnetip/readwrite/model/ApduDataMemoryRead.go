@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_ApduDataMemoryReadBuilder) WithAddress(address uint16) ApduDataMemoryR
 }
 
 func (b *_ApduDataMemoryReadBuilder) Build() (ApduDataMemoryRead, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataMemoryRead.deepCopy(), nil

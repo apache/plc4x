@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -146,7 +147,7 @@ func (b *_BACnetDateRangeBuilder) Build() (BACnetDateRange, error) {
 	if b.EndDate == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'endDate' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetDateRange.deepCopy(), nil

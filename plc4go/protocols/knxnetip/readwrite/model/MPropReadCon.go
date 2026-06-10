@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -173,7 +174,7 @@ func (b *_MPropReadConBuilder) WithData(data uint16) MPropReadConBuilder {
 }
 
 func (b *_MPropReadConBuilder) Build() (MPropReadCon, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MPropReadCon.deepCopy(), nil

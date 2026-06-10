@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetLogDataLogDataEntryFailureBuilder) Build() (BACnetLogDataLogData
 	if b.Failure == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'failure' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLogDataLogDataEntryFailure.deepCopy(), nil

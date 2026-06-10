@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -275,7 +276,7 @@ func (b *_ReferenceDescriptionBuilder) Build() (ReferenceDescription, error) {
 	if b.TypeDefinition == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'typeDefinition' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ReferenceDescription.deepCopy(), nil

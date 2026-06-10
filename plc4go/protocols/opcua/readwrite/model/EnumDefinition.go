@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_EnumDefinitionBuilder) WithFields(fields ...EnumField) EnumDefinitionB
 }
 
 func (b *_EnumDefinitionBuilder) Build() (EnumDefinition, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EnumDefinition.deepCopy(), nil

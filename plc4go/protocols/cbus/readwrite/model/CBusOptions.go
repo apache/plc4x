@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -189,7 +190,7 @@ func (b *_CBusOptionsBuilder) WithSrchk(srchk bool) CBusOptionsBuilder {
 }
 
 func (b *_CBusOptionsBuilder) Build() (CBusOptions, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusOptions.deepCopy(), nil

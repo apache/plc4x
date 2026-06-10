@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -169,7 +170,7 @@ func (b *_DF1ResponseMessageBuilder) WithTransactionCounter(transactionCounter u
 }
 
 func (b *_DF1ResponseMessageBuilder) PartialBuild() (DF1ResponseMessageContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DF1ResponseMessage.deepCopy(), nil

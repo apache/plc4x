@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -88,7 +89,7 @@ func (b *_RsaEncryptedSecretBuilder) WithMandatoryFields() RsaEncryptedSecretBui
 }
 
 func (b *_RsaEncryptedSecretBuilder) Build() (RsaEncryptedSecret, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RsaEncryptedSecret.deepCopy(), nil

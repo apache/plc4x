@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_SecurityDataEventBuilder) WithData(data ...byte) SecurityDataEventBuil
 }
 
 func (b *_SecurityDataEventBuilder) Build() (SecurityDataEvent, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataEvent.deepCopy(), nil

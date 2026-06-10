@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataVendorNameBuilder) Build() (BACnetConstructedData
 	if b.VendorName == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'vendorName' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataVendorName.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataTimerRunningBuilder) Build() (BACnetConstructedDa
 	if b.TimerRunning == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timerRunning' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTimerRunning.deepCopy(), nil

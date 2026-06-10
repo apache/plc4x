@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -163,7 +164,7 @@ func (b *_APDUSegmentAckBuilder) WithActualWindowSize(actualWindowSize uint8) AP
 }
 
 func (b *_APDUSegmentAckBuilder) Build() (APDUSegmentAck, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._APDUSegmentAck.deepCopy(), nil

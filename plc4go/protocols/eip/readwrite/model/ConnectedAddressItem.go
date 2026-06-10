@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -119,7 +120,7 @@ func (b *_ConnectedAddressItemBuilder) WithConnectionId(connectionId uint32) Con
 }
 
 func (b *_ConnectedAddressItemBuilder) Build() (ConnectedAddressItem, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConnectedAddressItem.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataNodeSubtypeBuilder) Build() (BACnetConstructedDat
 	if b.NodeSubType == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nodeSubType' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataNodeSubtype.deepCopy(), nil

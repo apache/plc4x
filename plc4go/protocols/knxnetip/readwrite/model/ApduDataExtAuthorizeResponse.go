@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_ApduDataExtAuthorizeResponseBuilder) WithLevel(level uint8) ApduDataEx
 }
 
 func (b *_ApduDataExtAuthorizeResponseBuilder) Build() (ApduDataExtAuthorizeResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtAuthorizeResponse.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -132,7 +133,7 @@ func (b *_CBusHeaderBuilder) WithDestinationAddressType(destinationAddressType D
 }
 
 func (b *_CBusHeaderBuilder) Build() (CBusHeader, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusHeader.deepCopy(), nil

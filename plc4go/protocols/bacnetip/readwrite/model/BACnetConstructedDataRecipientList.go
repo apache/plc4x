@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataRecipientListBuilder) WithRecipientList(recipient
 }
 
 func (b *_BACnetConstructedDataRecipientListBuilder) Build() (BACnetConstructedDataRecipientList, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataRecipientList.deepCopy(), nil

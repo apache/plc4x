@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -204,7 +205,7 @@ func (b *_OpenChannelMessageResponseBuilder) Build() (OpenChannelMessageResponse
 	if b.ReceiverCertificateThumbprint == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'receiverCertificateThumbprint' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpenChannelMessageResponse.deepCopy(), nil

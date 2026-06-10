@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -191,7 +192,7 @@ func (b *_S7MessageBuilder) WithOptionalPayloadBuilder(builderSupplier func(S7Pa
 }
 
 func (b *_S7MessageBuilder) PartialBuild() (S7MessageContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7Message.deepCopy(), nil

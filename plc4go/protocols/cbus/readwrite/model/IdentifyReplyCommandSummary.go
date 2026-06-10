@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -139,7 +140,7 @@ func (b *_IdentifyReplyCommandSummaryBuilder) WithVersion(version string) Identi
 }
 
 func (b *_IdentifyReplyCommandSummaryBuilder) Build() (IdentifyReplyCommandSummary, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._IdentifyReplyCommandSummary.deepCopy(), nil

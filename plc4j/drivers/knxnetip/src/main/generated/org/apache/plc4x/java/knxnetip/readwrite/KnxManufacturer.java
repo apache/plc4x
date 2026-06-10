@@ -430,7 +430,7 @@ public enum KnxManufacturer {
   M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_(
       (int) 380, (int) 431, (String) "Nanjing Shufan Information technology Co.,Ltd."),
   M_EWTECH((int) 381, (int) 432, (String) "EWTech"),
-  M_KLUGER_AUTOMATION_GMBH((int) 382, (int) 433, (String) "Kluger Automation GmbH"),
+  M_KLUGER_AUTOMATION((int) 382, (int) 433, (String) "Kluger Automation"),
   M_JOONGANG_CONTROL((int) 383, (int) 434, (String) "JoongAng Control"),
   M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_(
       (int) 384, (int) 435, (String) "GreenControls Technology Sdn. Bhd."),
@@ -895,8 +895,8 @@ public enum KnxManufacturer {
       (int) 760, (int) 821, (String) "Jiwu (Fuzhou) Technology Co., Ltd."),
   M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_(
       (int) 761, (int) 822, (String) "Foshan Brisdom Technology Co., Ltd."),
-  M_YUEOING_ZHONGYI_ELECTRICALCO__LTD(
-      (int) 762, (int) 823, (String) "YUEOING ZHONGYI ELECTRICALCO.,LTD"),
+  M_YUEQING_ZHONGYI_ELECTRIC_CO___LTD_(
+      (int) 762, (int) 823, (String) "YUEQING ZHONGYI ELECTRIC CO., LTD."),
   M_HYUNDAI((int) 763, (int) 824, (String) "HYUNDAI"),
   M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_(
       (int) 764, (int) 825, (String) "Qingdao Hisense TransTech Co.,Ltd."),
@@ -944,9 +944,18 @@ public enum KnxManufacturer {
   M_YUNCH((int) 796, (int) 857, (String) "YUNCH"),
   M_LUMI_VIETNAM((int) 797, (int) 858, (String) "Lumi Vietnam"),
   M_ARCOLA_AI_LIMITED((int) 798, (int) 859, (String) "Arcola AI Limited"),
-  M_ABB___RESERVED((int) 799, (int) 43954, (String) "ABB - reserved"),
+  M_ZHEJIANG_DOOYA_INTELLIGENT_TECHNOLOGY_CO___LTD_(
+      (int) 799, (int) 860, (String) "Zhejiang Dooya Intelligent Technology Co., Ltd."),
+  M_HUARUI((int) 800, (int) 861, (String) "HUARUI"),
+  M_TECHNOVATION_ALLIANCE_ENTERPRISE_B_V(
+      (int) 801, (int) 862, (String) "Technovation Alliance Enterprise B.V"),
+  M_BI_TECH_ELECTRONICS((int) 802, (int) 863, (String) "BI-TECH Electronics"),
+  M_BELFAST_CABLES_UK_SOLUTIONS_LTD(
+      (int) 803, (int) 864, (String) "BELFAST CABLES UK SOLUTIONS LTD"),
+  M_KAYBE_NETWORKING_LLP((int) 804, (int) 865, (String) "KAYBE NETWORKING LLP"),
+  M_ABB___RESERVED((int) 805, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 800, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 806, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

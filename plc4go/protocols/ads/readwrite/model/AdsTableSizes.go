@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -152,7 +153,7 @@ func (b *_AdsTableSizesBuilder) WithExtraLength(extraLength uint32) AdsTableSize
 }
 
 func (b *_AdsTableSizesBuilder) Build() (AdsTableSizes, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsTableSizes.deepCopy(), nil

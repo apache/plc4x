@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -176,7 +177,7 @@ func (b *_ConnectionResponseBuilder) WithOptionalConnectionResponseDataBlockBuil
 }
 
 func (b *_ConnectionResponseBuilder) Build() (ConnectionResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConnectionResponse.deepCopy(), nil

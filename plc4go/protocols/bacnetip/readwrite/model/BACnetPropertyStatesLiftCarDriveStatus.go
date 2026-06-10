@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) Build() (BACnetProperty
 	if b.LiftCarDriveStatus == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'liftCarDriveStatus' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesLiftCarDriveStatus.deepCopy(), nil

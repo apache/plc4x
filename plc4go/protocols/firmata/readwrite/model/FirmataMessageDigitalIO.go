@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -134,7 +135,7 @@ func (b *_FirmataMessageDigitalIOBuilder) WithData(data ...int8) FirmataMessageD
 }
 
 func (b *_FirmataMessageDigitalIOBuilder) Build() (FirmataMessageDigitalIO, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._FirmataMessageDigitalIO.deepCopy(), nil

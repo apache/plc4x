@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -155,7 +156,7 @@ func (b *_AdsMultiRequestItemReadWriteBuilder) WithItemWriteLength(itemWriteLeng
 }
 
 func (b *_AdsMultiRequestItemReadWriteBuilder) Build() (AdsMultiRequestItemReadWrite, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsMultiRequestItemReadWrite.deepCopy(), nil

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -161,7 +162,7 @@ func (b *_ApduDataExtPropertyValueResponseBuilder) WithData(data ...byte) ApduDa
 }
 
 func (b *_ApduDataExtPropertyValueResponseBuilder) Build() (ApduDataExtPropertyValueResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtPropertyValueResponse.deepCopy(), nil

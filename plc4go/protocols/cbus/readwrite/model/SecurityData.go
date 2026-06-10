@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -244,7 +245,7 @@ func (b *_SecurityDataBuilder) WithArgument(argument byte) SecurityDataBuilder {
 }
 
 func (b *_SecurityDataBuilder) PartialBuild() (SecurityDataContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityData.deepCopy(), nil

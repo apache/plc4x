@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_CipReadRequestBuilder) WithElementNb(elementNb uint16) CipReadRequestB
 }
 
 func (b *_CipReadRequestBuilder) Build() (CipReadRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipReadRequest.deepCopy(), nil
