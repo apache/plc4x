@@ -232,7 +232,7 @@
     <dependency>
       <groupId>io.github.pfichtner</groupId>
       <artifactId>testcontainers-virtualavr</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.2</version>
       <scope>test</scope>
     </dependency>
 
