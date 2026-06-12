@@ -188,14 +188,14 @@ class PlcValuesTest {
         List<String> stringList = Arrays.asList("a", "b", "c");
         // PlcValues.of() maps "List" -> "PlcLIST" (uppercase)
         // But the actual class is "PlcList" (camelCase)
-        assertThrows(NoClassDefFoundError.class, () -> PlcValues.of((Object) stringList));
+        assertThrows(PlcIncompatibleDatatypeException.class, () -> PlcValues.of((Object) stringList));
     }
 
     @Test
     void testOfArray() {
         Object[] array = new Object[]{1, 2, 3};
         // PlcValues.of() converts array to List and tries "PlcLIST" (uppercase)
-        assertThrows(NoClassDefFoundError.class, () -> PlcValues.of(array));
+        assertThrows(PlcIncompatibleDatatypeException.class, () -> PlcValues.of(array));
     }
 
     @Test
