@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.firmata;
 
+import com.github.pfichtner.testcontainers.virtualavr.DefaultVirtualAvrConnection;
 import com.github.pfichtner.testcontainers.virtualavr.VirtualAvrConnection;
 import com.github.pfichtner.testcontainers.virtualavr.VirtualAvrConnection.PinReportMode;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
@@ -160,13 +161,13 @@ public class FirmataVirtualAvrIT {
         // assumes the first mapped port is the WS port, which isn't true here.
         URI wsUri = URI.create("ws://" + virtualAvr.getHost() + ":"
             + virtualAvr.getMappedPort(CONTAINER_WEBSOCKET_PORT));
-        virtualAvrConnection = new VirtualAvrConnection(wsUri);
+        virtualAvrConnection = new DefaultVirtualAvrConnection(wsUri);
         long wsDeadline = System.currentTimeMillis() + 10_000L;
-        while (!virtualAvrConnection.isOpen() && System.currentTimeMillis() < wsDeadline) {
+        while (!virtualAvrConnection.isConnected() && System.currentTimeMillis() < wsDeadline) {
             //noinspection BusyWait
             Thread.sleep(100);
         }
-        if (!virtualAvrConnection.isOpen()) {
+        if (!virtualAvrConnection.isConnected()) {
             throw new AssertionError("Could not connect to virtualavr WebSocket at " + wsUri);
         }
         return connection;

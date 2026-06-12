@@ -201,10 +201,6 @@
       <artifactId>pcap4j-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.pcap4j</groupId>
-      <artifactId>pcap4j-packetfactory-static</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
     </dependency>
