@@ -246,7 +246,7 @@ func CastBACnetConstructedDataNotificationThreshold(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataNotificationThreshold) GetTypeName() string {
+func (m *_BACnetConstructedDataNotificationThreshold) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNotificationThreshold"
 }
 

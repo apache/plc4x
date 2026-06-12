@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTimeOfStrikeCountReset(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeOfStrikeCountReset"
 }
 

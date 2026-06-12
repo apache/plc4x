@@ -205,7 +205,7 @@ func CastTelephonyDataRinging(structType any) TelephonyDataRinging {
 	return nil
 }
 
-func (m *_TelephonyDataRinging) GetTypeName() string {
+func (m *_TelephonyDataRinging) GetPlx4xTypeName() string {
 	return "TelephonyDataRinging"
 }
 

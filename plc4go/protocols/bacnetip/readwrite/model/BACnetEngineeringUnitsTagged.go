@@ -224,7 +224,7 @@ func CastBACnetEngineeringUnitsTagged(structType any) BACnetEngineeringUnitsTagg
 	return nil
 }
 
-func (m *_BACnetEngineeringUnitsTagged) GetTypeName() string {
+func (m *_BACnetEngineeringUnitsTagged) GetPlx4xTypeName() string {
 	return "BACnetEngineeringUnitsTagged"
 }
 

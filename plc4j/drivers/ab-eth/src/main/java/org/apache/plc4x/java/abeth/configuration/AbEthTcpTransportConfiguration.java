@@ -16,13 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.abeth.configuration;
 
 import org.apache.plc4x.java.abeth.AbEthDriver;
-import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
+import org.apache.plc4x.java.transport.tcp.config.TcpTransportConfiguration;
 
-public class AbEthTcpTransportConfiguration extends DefaultTcpTransportConfiguration {
+public class AbEthTcpTransportConfiguration extends TcpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {

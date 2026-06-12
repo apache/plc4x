@@ -203,7 +203,7 @@ func CastTriggerControlDataTriggerEvent(structType any) TriggerControlDataTrigge
 	return nil
 }
 
-func (m *_TriggerControlDataTriggerEvent) GetTypeName() string {
+func (m *_TriggerControlDataTriggerEvent) GetPlx4xTypeName() string {
 	return "TriggerControlDataTriggerEvent"
 }
 

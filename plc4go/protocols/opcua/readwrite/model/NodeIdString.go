@@ -265,7 +265,7 @@ func CastNodeIdString(structType any) NodeIdString {
 	return nil
 }
 
-func (m *_NodeIdString) GetTypeName() string {
+func (m *_NodeIdString) GetPlx4xTypeName() string {
 	return "NodeIdString"
 }
 

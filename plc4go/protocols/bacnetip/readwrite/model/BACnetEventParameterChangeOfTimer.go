@@ -353,7 +353,7 @@ func CastBACnetEventParameterChangeOfTimer(structType any) BACnetEventParameterC
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfTimer) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfTimer) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfTimer"
 }
 

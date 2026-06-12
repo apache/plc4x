@@ -365,7 +365,7 @@ func CastAirConditioningDataSetZoneHumidityMode(structType any) AirConditioningD
 	return nil
 }
 
-func (m *_AirConditioningDataSetZoneHumidityMode) GetTypeName() string {
+func (m *_AirConditioningDataSetZoneHumidityMode) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetZoneHumidityMode"
 }
 

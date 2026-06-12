@@ -258,7 +258,7 @@ func CastBACnetConstructedDataNegativeAccessRules(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataNegativeAccessRules) GetTypeName() string {
+func (m *_BACnetConstructedDataNegativeAccessRules) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNegativeAccessRules"
 }
 

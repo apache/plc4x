@@ -161,7 +161,7 @@ func CastBACnetTagPayloadOctetString(structType any) BACnetTagPayloadOctetString
 	return nil
 }
 
-func (m *_BACnetTagPayloadOctetString) GetTypeName() string {
+func (m *_BACnetTagPayloadOctetString) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadOctetString"
 }
 

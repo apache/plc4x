@@ -252,7 +252,7 @@ func CastBACnetConfirmedServiceRequestReinitializeDevice(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReinitializeDevice"
 }
 

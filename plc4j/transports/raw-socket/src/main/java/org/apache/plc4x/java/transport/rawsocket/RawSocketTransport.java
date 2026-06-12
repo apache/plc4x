@@ -18,95 +18,47 @@
  */
 package org.apache.plc4x.java.transport.rawsocket;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
+import org.apache.plc4x.java.transport.rawsocket.config.RawSocketTransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+public class RawSocketTransport implements Transport<RawSocketTransportConfiguration> {
 
-public class RawSocketTransport implements Transport, HasConfiguration<RawSocketTransportConfiguration> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RawSocketTransport.class);
 
-    private static final Pattern TRANSPORT_RAW_SOCKET_IP_PATTERN = Pattern.compile(
-        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?");
-
-    private static final Pattern TRANSPORT_RAW_SOCKET_MAC_PATTERN = Pattern.compile(
-        "^(?<macAddress>[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2})");
-
-    public static final String TRANSPORT_CODE = "raw";
-
-    private RawSocketTransportConfiguration configuration;
+    private final SharedRawSocketManager sharedRawSocketManager = new SharedRawSocketManager();
 
     @Override
     public String getTransportCode() {
-        return TRANSPORT_CODE;
+        return "raw-socket";
     }
 
     @Override
     public String getTransportName() {
-        return "Raw Ethernet Transport";
+        return "Raw Socket (Ethernet)";
     }
 
     @Override
-    public void setConfiguration(RawSocketTransportConfiguration configuration) {
-        this.configuration = configuration;
+    public Class<RawSocketTransportConfiguration> getTransportConfigType() {
+        return RawSocketTransportConfiguration.class;
     }
 
     @Override
-    public ChannelFactory createChannelFactory(String transportConfig) {
-        final Matcher macMatcher = TRANSPORT_RAW_SOCKET_MAC_PATTERN.matcher(transportConfig);
-        if(macMatcher.matches()) {
-            String macAddressString = macMatcher.group("macAddress");
-            try {
-                byte[] macAddress = Hex.decodeHex(macAddressString.replace(":", ""));
-                // Create the fully qualified remote socket address which we should connect to.
-                RawSocketAddress address = new RawSocketAddress(macAddress);
-                return new RawSocketChannelFactory(address);
-            } catch (DecoderException e) {
-                throw new RuntimeException(e);
-            }
+    public TransportInstance<RawSocketTransportConfiguration> createTransportInstance(
+            String transportUrl, TransportConfiguration configuration, AuditLog auditLog) throws TransportException {
+        if (!(configuration instanceof RawSocketTransportConfiguration rawSocketTransportConfiguration)) {
+            throw new IllegalArgumentException(String.format("Expected configuration of type %s but got %s",
+                RawSocketTransportConfiguration.class.getSimpleName(), configuration.getClass().getSimpleName()));
         }
 
-        final Matcher ipMatcher = TRANSPORT_RAW_SOCKET_IP_PATTERN.matcher(transportConfig);
-        if(!ipMatcher.matches()) {
-            throw new PlcRuntimeException("Invalid url for Raw socket transport");
-        }
-
-        String ip = ipMatcher.group("ip");
-        String hostname = ipMatcher.group("hostname");
-        String portString = ipMatcher.group("port");
-
-        // If the port wasn't specified, try to get a default port from the configuration.
-        int port;
-        if(portString != null) {
-            port = Integer.parseInt(portString);
-        } else if ((configuration != null) &&
-            (configuration.getDefaultPort() != RawSocketTransportConfiguration.NO_DEFAULT_PORT)) {
-            port = configuration.getDefaultPort();
-        } else {
-            throw new PlcRuntimeException("No port defined");
-        }
-
-        // Create the fully qualified remote socket address which we should connect to.
-        SocketAddress address = new InetSocketAddress((ip == null) ? hostname : ip, port);
-
-        RawSocketChannelFactory rawSocketChannelFactory = new RawSocketChannelFactory(address);
-        if(configuration != null) {
-            rawSocketChannelFactory.setConfiguration(configuration);
-        }
-        return rawSocketChannelFactory;
-    }
-
-    @Override
-    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
-        return DefaultRawSocketTransportConfiguration.class;
+        LOGGER.debug("Creating raw socket transport instance for protocol 0x{} (reuseInterface={})",
+        String.format("%04X", rawSocketTransportConfiguration.protocolId), rawSocketTransportConfiguration.reuseInterface);
+        return new RawSocketTransportInstance(sharedRawSocketManager, rawSocketTransportConfiguration, auditLog);
     }
 
 }

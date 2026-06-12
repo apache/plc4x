@@ -221,7 +221,7 @@ func CastBACnetRecipientAddress(structType any) BACnetRecipientAddress {
 	return nil
 }
 
-func (m *_BACnetRecipientAddress) GetTypeName() string {
+func (m *_BACnetRecipientAddress) GetPlx4xTypeName() string {
 	return "BACnetRecipientAddress"
 }
 

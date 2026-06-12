@@ -248,7 +248,7 @@ func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType any) S7Payloa
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionReadSzlRequest"
 }
 

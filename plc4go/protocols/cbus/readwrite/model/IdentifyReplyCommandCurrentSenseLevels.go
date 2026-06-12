@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -207,7 +209,7 @@ func CastIdentifyReplyCommandCurrentSenseLevels(structType any) IdentifyReplyCom
 	return nil
 }
 
-func (m *_IdentifyReplyCommandCurrentSenseLevels) GetTypeName() string {
+func (m *_IdentifyReplyCommandCurrentSenseLevels) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandCurrentSenseLevels"
 }
 
@@ -237,7 +239,7 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) parse(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	currentSenseLevels, err := readBuffer.ReadByteArray("currentSenseLevels", int(numBytes))
+	currentSenseLevels, err := readBuffer.ReadByteArray("currentSenseLevels", int(numBytes), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentSenseLevels' field"))
 	}
@@ -251,7 +253,7 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) parse(ctx context.Context, rea
 }
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -268,7 +270,7 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandCurrentSenseLevels")
 		}
 
-		if err := WriteByteArrayField(ctx, "currentSenseLevels", m.GetCurrentSenseLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
+		if err := WriteByteArrayField(ctx, "currentSenseLevels", m.GetCurrentSenseLevels(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentSenseLevels' field")
 		}
 

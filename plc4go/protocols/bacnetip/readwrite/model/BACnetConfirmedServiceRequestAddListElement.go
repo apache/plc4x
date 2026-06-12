@@ -314,7 +314,7 @@ func CastBACnetConfirmedServiceRequestAddListElement(structType any) BACnetConfi
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElement) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAddListElement) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAddListElement"
 }
 

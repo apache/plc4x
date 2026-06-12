@@ -253,7 +253,7 @@ func CastFirmataCommand(structType any) FirmataCommand {
 	return nil
 }
 
-func (m *_FirmataCommand) GetTypeName() string {
+func (m *_FirmataCommand) GetPlx4xTypeName() string {
 	return "FirmataCommand"
 }
 

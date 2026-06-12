@@ -246,7 +246,7 @@ func CastBACnetConstructedDataIntegralConstant(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataIntegralConstant) GetTypeName() string {
+func (m *_BACnetConstructedDataIntegralConstant) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntegralConstant"
 }
 

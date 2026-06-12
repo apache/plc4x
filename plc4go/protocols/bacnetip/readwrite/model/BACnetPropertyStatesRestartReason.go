@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesRestartReason(structType any) BACnetPropertyStatesR
 	return nil
 }
 
-func (m *_BACnetPropertyStatesRestartReason) GetTypeName() string {
+func (m *_BACnetPropertyStatesRestartReason) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesRestartReason"
 }
 

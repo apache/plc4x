@@ -21,12 +21,12 @@ package org.apache.plc4x.java.ads.tag;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 
 public class AdsTagHandler implements PlcTagHandler {
 
     @Override
-    public PlcTag parseTag(String tagAddress) throws PlcInvalidTagException {
+    public PlcTag parseTag(String tagAddress) {
         if (DirectAdsStringTag.matches(tagAddress)) {
             return DirectAdsStringTag.of(tagAddress);
         } else if (DirectAdsTag.matches(tagAddress)) {

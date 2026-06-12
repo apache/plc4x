@@ -246,7 +246,7 @@ func CastBACnetConstructedDataSecurityPDUTimeout(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataSecurityPDUTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSecurityPDUTimeout"
 }
 

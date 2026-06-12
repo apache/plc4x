@@ -246,7 +246,7 @@ func CastBACnetConstructedDataProcessIdentifierFilter(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) GetTypeName() string {
+func (m *_BACnetConstructedDataProcessIdentifierFilter) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProcessIdentifierFilter"
 }
 

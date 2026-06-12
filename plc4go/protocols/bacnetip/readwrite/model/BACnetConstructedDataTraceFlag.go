@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTraceFlag(structType any) BACnetConstructedDataTra
 	return nil
 }
 
-func (m *_BACnetConstructedDataTraceFlag) GetTypeName() string {
+func (m *_BACnetConstructedDataTraceFlag) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTraceFlag"
 }
 

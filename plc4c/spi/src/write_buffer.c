@@ -424,7 +424,7 @@ plc4c_return_code plc4c_spi_write_string(plc4c_spi_write_buffer* buf,
                                          uint8_t num_bits, const char* encoding,
                                          const uint8_t* bytes) {
   // Right now we only support utf-8 and utf-16.
-  if((strcmp(encoding,"UTF-8") != 0) && (strcmp(encoding,"UTF-16") != 0)) {
+  if((strcmp(encoding,"UTF8") != 0) && (strcmp(encoding,"UTF16") != 0)) {
     return INVALID_ARGUMENT;
   }
   // Simply output the bytes to the buffer.

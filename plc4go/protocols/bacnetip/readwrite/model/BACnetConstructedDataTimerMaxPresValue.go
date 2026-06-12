@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTimerMaxPresValue(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimerMaxPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataTimerMaxPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimerMaxPresValue"
 }
 

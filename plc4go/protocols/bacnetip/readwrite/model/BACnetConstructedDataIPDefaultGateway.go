@@ -246,7 +246,7 @@ func CastBACnetConstructedDataIPDefaultGateway(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPDefaultGateway) GetTypeName() string {
+func (m *_BACnetConstructedDataIPDefaultGateway) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPDefaultGateway"
 }
 

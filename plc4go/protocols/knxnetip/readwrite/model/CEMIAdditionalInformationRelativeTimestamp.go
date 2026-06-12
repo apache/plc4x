@@ -241,7 +241,7 @@ func CastCEMIAdditionalInformationRelativeTimestamp(structType any) CEMIAddition
 	return nil
 }
 
-func (m *_CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetPlx4xTypeName() string {
 	return "CEMIAdditionalInformationRelativeTimestamp"
 }
 

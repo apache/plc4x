@@ -22,4 +22,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Constants:
+    MODBUS_UDP_DEFAULT_PORT: int = int(502)
     MODBUS_TCP_DEFAULT_PORT: int = int(502)
+    MODBUS_TCP_TLS_DEFAULT_PORT: int = int(802)

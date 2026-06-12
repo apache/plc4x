@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBackupAndRestoreState(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataBackupAndRestoreState) GetTypeName() string {
+func (m *_BACnetConstructedDataBackupAndRestoreState) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBackupAndRestoreState"
 }
 

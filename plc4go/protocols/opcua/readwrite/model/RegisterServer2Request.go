@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -273,7 +274,7 @@ func CastRegisterServer2Request(structType any) RegisterServer2Request {
 	return nil
 }
 
-func (m *_RegisterServer2Request) GetTypeName() string {
+func (m *_RegisterServer2Request) GetPlx4xTypeName() string {
 	return "RegisterServer2Request"
 }
 
@@ -315,25 +316,25 @@ func (m *_RegisterServer2Request) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	server, err := ReadSimpleField[RegisteredServer](ctx, "server", ReadComplex[RegisteredServer](ExtensionObjectDefinitionParseWithBufferProducer[RegisteredServer]((int32)(int32(434))), readBuffer))
+	server, err := ReadSimpleField[RegisteredServer](ctx, "server", ReadComplex[RegisteredServer](ExtensionObjectDefinitionParseWithBufferProducer[RegisteredServer]((int32)(int32(434))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
 	m.Server = server
 
-	noOfDiscoveryConfiguration, err := ReadImplicitField[int32](ctx, "noOfDiscoveryConfiguration", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiscoveryConfiguration, err := ReadImplicitField[int32](ctx, "noOfDiscoveryConfiguration", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiscoveryConfiguration' field"))
 	}
 	_ = noOfDiscoveryConfiguration
 
-	discoveryConfiguration, err := ReadCountArrayField[ExtensionObject](ctx, "discoveryConfiguration", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfDiscoveryConfiguration))
+	discoveryConfiguration, err := ReadCountArrayField[ExtensionObject](ctx, "discoveryConfiguration", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfDiscoveryConfiguration), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryConfiguration' field"))
 	}
@@ -364,19 +365,19 @@ func (m *_RegisterServer2Request) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for RegisterServer2Request")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteSimpleField[RegisteredServer](ctx, "server", m.GetServer(), WriteComplex[RegisteredServer](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RegisteredServer](ctx, "server", m.GetServer(), WriteComplex[RegisteredServer](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'server' field")
 		}
 		noOfDiscoveryConfiguration := int32(utils.InlineIf(bool((m.GetDiscoveryConfiguration()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiscoveryConfiguration()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfDiscoveryConfiguration", noOfDiscoveryConfiguration, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfDiscoveryConfiguration", noOfDiscoveryConfiguration, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiscoveryConfiguration' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "discoveryConfiguration", m.GetDiscoveryConfiguration(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "discoveryConfiguration", m.GetDiscoveryConfiguration(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'discoveryConfiguration' field")
 		}
 

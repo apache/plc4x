@@ -225,7 +225,7 @@ func CastBACnetFaultParameterFaultLifeSafetyListOfFaultValues(structType any) BA
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultLifeSafetyListOfFaultValues"
 }
 

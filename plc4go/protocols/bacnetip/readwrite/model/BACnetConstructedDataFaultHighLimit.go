@@ -246,7 +246,7 @@ func CastBACnetConstructedDataFaultHighLimit(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataFaultHighLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataFaultHighLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFaultHighLimit"
 }
 

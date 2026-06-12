@@ -193,7 +193,7 @@ func CastBACnetBinaryPVTagged(structType any) BACnetBinaryPVTagged {
 	return nil
 }
 
-func (m *_BACnetBinaryPVTagged) GetTypeName() string {
+func (m *_BACnetBinaryPVTagged) GetPlx4xTypeName() string {
 	return "BACnetBinaryPVTagged"
 }
 

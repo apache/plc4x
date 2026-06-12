@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMaxFailedAttempts(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttempts) GetTypeName() string {
+func (m *_BACnetConstructedDataMaxFailedAttempts) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaxFailedAttempts"
 }
 

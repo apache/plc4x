@@ -25,7 +25,7 @@
     [const          uint 16     UmasTcpDefaultPort 502]
 ]
 
-[discriminatedType ModbusTcpADU byteOrder='BIG_ENDIAN'
+[discriminatedType ModbusTcpADU byteOrder='"BIG_ENDIAN"'
     // It is used for transaction pairing, the Umas server copies in the response the transaction
     // identifier of the request.
     [simple         uint 16     transactionIdentifier]
@@ -60,7 +60,7 @@
     ]
 ]
 
-[type UmasPDUItem(uint 8 umasRequestFunctionKey, uint 16 byteLength) byteOrder='LITTLE_ENDIAN'
+[type UmasPDUItem(uint 8 umasRequestFunctionKey, uint 16 byteLength) byteOrder='"LITTLE_ENDIAN"'
     [simple     uint 8     pairingKey]
     [discriminator     uint 8     umasFunctionKey]
     [typeSwitch umasFunctionKey, umasRequestFunctionKey

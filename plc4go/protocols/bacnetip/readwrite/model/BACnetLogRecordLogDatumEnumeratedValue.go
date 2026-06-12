@@ -221,7 +221,7 @@ func CastBACnetLogRecordLogDatumEnumeratedValue(structType any) BACnetLogRecordL
 	return nil
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetTypeName() string {
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumEnumeratedValue"
 }
 

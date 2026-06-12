@@ -246,7 +246,7 @@ func CastBACnetConstructedDataReliabilityEvaluationInhibit(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetTypeName() string {
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReliabilityEvaluationInhibit"
 }
 

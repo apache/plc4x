@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -302,7 +304,7 @@ func CastReplyEncodedReply(structType any) ReplyEncodedReply {
 	return nil
 }
 
-func (m *_ReplyEncodedReply) GetTypeName() string {
+func (m *_ReplyEncodedReply) GetPlx4xTypeName() string {
 	return "ReplyEncodedReply"
 }
 
@@ -338,25 +340,25 @@ func (m *_ReplyEncodedReply) parse(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 	m.CBusOptions = cBusOptions
 
-	encodedReply, err := ReadManualField[EncodedReply](ctx, "encodedReply", readBuffer, EnsureType[EncodedReply](ReadEncodedReply(ctx, readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())))
+	encodedReply, err := ReadManualField[EncodedReply](ctx, "encodedReply", readBuffer, EnsureType[EncodedReply](ReadEncodedReply(ctx, readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encodedReply' field"))
 	}
 	m.EncodedReply = encodedReply
 
-	encodedReplyDecoded, err := ReadVirtualField[EncodedReply](ctx, "encodedReplyDecoded", (*EncodedReply)(nil), encodedReply)
+	encodedReplyDecoded, err := ReadVirtualField[EncodedReply](ctx, "encodedReplyDecoded", (*EncodedReply)(nil), encodedReply, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encodedReplyDecoded' field"))
 	}
 	_ = encodedReplyDecoded
 
-	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, encodedReply, cBusOptions.GetSrchk())))
+	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, encodedReply, cBusOptions.GetSrchk())), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksum' field"))
 	}
 	m.Chksum = chksum
 
-	chksumDecoded, err := ReadVirtualField[Checksum](ctx, "chksumDecoded", (*Checksum)(nil), chksum)
+	chksumDecoded, err := ReadVirtualField[Checksum](ctx, "chksumDecoded", (*Checksum)(nil), chksum, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksumDecoded' field"))
 	}
@@ -370,7 +372,7 @@ func (m *_ReplyEncodedReply) parse(ctx context.Context, readBuffer utils.ReadBuf
 }
 
 func (m *_ReplyEncodedReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -387,7 +389,7 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ReplyEncodedReply")
 		}
 
-		if err := WriteManualField[EncodedReply](ctx, "encodedReply", func(ctx context.Context) error { return WriteEncodedReply(ctx, writeBuffer, m.GetEncodedReply()) }, writeBuffer); err != nil {
+		if err := WriteManualField[EncodedReply](ctx, "encodedReply", func(ctx context.Context) error { return WriteEncodedReply(ctx, writeBuffer, m.GetEncodedReply()) }, writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'encodedReply' field")
 		}
 		// Virtual field
@@ -399,7 +401,7 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 
 		if err := WriteManualField[Checksum](ctx, "chksum", func(ctx context.Context) error {
 			return CalculateChecksum(ctx, writeBuffer, m.GetEncodedReply(), m.GetCBusOptions().GetSrchk())
-		}, writeBuffer); err != nil {
+		}, writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'chksum' field")
 		}
 		// Virtual field

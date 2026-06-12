@@ -463,7 +463,7 @@ func CastAirConditioningData(structType any) AirConditioningData {
 	return nil
 }
 
-func (m *_AirConditioningData) GetTypeName() string {
+func (m *_AirConditioningData) GetPlx4xTypeName() string {
 	return "AirConditioningData"
 }
 

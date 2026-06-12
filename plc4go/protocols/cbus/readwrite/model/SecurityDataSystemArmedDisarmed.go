@@ -221,7 +221,7 @@ func CastSecurityDataSystemArmedDisarmed(structType any) SecurityDataSystemArmed
 	return nil
 }
 
-func (m *_SecurityDataSystemArmedDisarmed) GetTypeName() string {
+func (m *_SecurityDataSystemArmedDisarmed) GetPlx4xTypeName() string {
 	return "SecurityDataSystemArmedDisarmed"
 }
 

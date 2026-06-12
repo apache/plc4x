@@ -353,7 +353,7 @@ func CastBACnetNotificationParametersChangeOfReliability(structType any) BACnetN
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliability) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfReliability) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfReliability"
 }
 

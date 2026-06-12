@@ -175,7 +175,7 @@ func CastByteStringArray(structType any) ByteStringArray {
 	return nil
 }
 
-func (m *_ByteStringArray) GetTypeName() string {
+func (m *_ByteStringArray) GetPlx4xTypeName() string {
 	return "ByteStringArray"
 }
 

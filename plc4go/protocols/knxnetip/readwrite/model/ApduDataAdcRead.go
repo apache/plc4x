@@ -180,7 +180,7 @@ func CastApduDataAdcRead(structType any) ApduDataAdcRead {
 	return nil
 }
 
-func (m *_ApduDataAdcRead) GetTypeName() string {
+func (m *_ApduDataAdcRead) GetPlx4xTypeName() string {
 	return "ApduDataAdcRead"
 }
 

@@ -217,7 +217,7 @@ func CastConnectionResponseDataBlock(structType any) ConnectionResponseDataBlock
 	return nil
 }
 
-func (m *_ConnectionResponseDataBlock) GetTypeName() string {
+func (m *_ConnectionResponseDataBlock) GetPlx4xTypeName() string {
 	return "ConnectionResponseDataBlock"
 }
 

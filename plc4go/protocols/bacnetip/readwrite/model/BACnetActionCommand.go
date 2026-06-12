@@ -405,7 +405,7 @@ func CastBACnetActionCommand(structType any) BACnetActionCommand {
 	return nil
 }
 
-func (m *_BACnetActionCommand) GetTypeName() string {
+func (m *_BACnetActionCommand) GetPlx4xTypeName() string {
 	return "BACnetActionCommand"
 }
 

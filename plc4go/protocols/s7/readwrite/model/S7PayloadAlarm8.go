@@ -234,7 +234,7 @@ func CastS7PayloadAlarm8(structType any) S7PayloadAlarm8 {
 	return nil
 }
 
-func (m *_S7PayloadAlarm8) GetTypeName() string {
+func (m *_S7PayloadAlarm8) GetPlx4xTypeName() string {
 	return "S7PayloadAlarm8"
 }
 

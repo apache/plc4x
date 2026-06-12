@@ -76,16 +76,15 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
     return NO_MEMORY;
   }
   {
-    // Length array
-    uint8_t _recordDataLength = recordLength;
-    uint8_t recordDataEndPos = plc4c_spi_read_get_pos(readBuffer) + _recordDataLength;
-    while(plc4c_spi_read_get_pos(readBuffer) < recordDataEndPos) {
-      char _value = 0;
-      _res = plc4c_spi_read_char(readBuffer, (char*) &_value);
+    // Count array
+    uint16_t itemCount = (uint16_t) recordLength;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      char* _value = malloc(sizeof(char));
+      _res = plc4c_spi_read_char(readBuffer, (char*) _value);
       if(_res != OK) {
         return _res;
       }
-      plc4c_utils_list_insert_head_value(recordData, &_value);
+      plc4c_utils_list_insert_head_value(recordData, _value);
     }
   }
   (*_message)->record_data = recordData;

@@ -221,7 +221,7 @@ func CastBACnetApplicationTagBitString(structType any) BACnetApplicationTagBitSt
 	return nil
 }
 
-func (m *_BACnetApplicationTagBitString) GetTypeName() string {
+func (m *_BACnetApplicationTagBitString) GetPlx4xTypeName() string {
 	return "BACnetApplicationTagBitString"
 }
 

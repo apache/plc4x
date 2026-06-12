@@ -22,11 +22,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -84,16 +80,4 @@ public class CANOpenHeartbeatTag extends CANOpenTag implements CANOpenSubscripti
         return new CANOpenHeartbeatTag(nodeId);
     }
 
-    @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
-
-        String serviceName = getService().name();
-        writeBuffer.writeString("service",
-            serviceName.getBytes(StandardCharsets.UTF_8).length * 8,
-            serviceName, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
-        writeBuffer.writeInt("node", 64, getNodeId());
-        
-        writeBuffer.popContext(getClass().getSimpleName());
-    }
 }

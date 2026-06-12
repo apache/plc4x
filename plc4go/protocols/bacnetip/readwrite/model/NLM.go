@@ -478,7 +478,7 @@ func CastNLM(structType any) NLM {
 	return nil
 }
 
-func (m *_NLM) GetTypeName() string {
+func (m *_NLM) GetPlx4xTypeName() string {
 	return "NLM"
 }
 

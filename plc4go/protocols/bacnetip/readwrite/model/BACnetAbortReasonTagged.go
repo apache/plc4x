@@ -206,7 +206,7 @@ func CastBACnetAbortReasonTagged(structType any) BACnetAbortReasonTagged {
 	return nil
 }
 
-func (m *_BACnetAbortReasonTagged) GetTypeName() string {
+func (m *_BACnetAbortReasonTagged) GetPlx4xTypeName() string {
 	return "BACnetAbortReasonTagged"
 }
 

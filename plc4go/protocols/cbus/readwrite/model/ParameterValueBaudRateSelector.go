@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -223,7 +225,7 @@ func CastParameterValueBaudRateSelector(structType any) ParameterValueBaudRateSe
 	return nil
 }
 
-func (m *_ParameterValueBaudRateSelector) GetTypeName() string {
+func (m *_ParameterValueBaudRateSelector) GetPlx4xTypeName() string {
 	return "ParameterValueBaudRateSelector"
 }
 
@@ -261,13 +263,13 @@ func (m *_ParameterValueBaudRateSelector) parse(ctx context.Context, readBuffer 
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "BaudRateSelector has exactly one byte"})
 	}
 
-	value, err := ReadEnumField[BaudRateSelector](ctx, "value", "BaudRateSelector", ReadEnum(BaudRateSelectorByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	value, err := ReadEnumField[BaudRateSelector](ctx, "value", "BaudRateSelector", ReadEnum(BaudRateSelectorByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 	m.Value = value
 
-	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(1))))
+	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(1))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
@@ -281,7 +283,7 @@ func (m *_ParameterValueBaudRateSelector) parse(ctx context.Context, readBuffer 
 }
 
 func (m *_ParameterValueBaudRateSelector) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -298,11 +300,11 @@ func (m *_ParameterValueBaudRateSelector) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueBaudRateSelector")
 		}
 
-		if err := WriteSimpleEnumField[BaudRateSelector](ctx, "value", "BaudRateSelector", m.GetValue(), WriteEnum[BaudRateSelector, uint8](BaudRateSelector.GetValue, BaudRateSelector.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[BaudRateSelector](ctx, "value", "BaudRateSelector", m.GetValue(), WriteEnum[BaudRateSelector, uint8](BaudRateSelector.GetValue, BaudRateSelector.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
-		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

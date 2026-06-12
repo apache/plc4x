@@ -188,7 +188,7 @@ func CastS7PayloadUserDataItemCyclicServicesErrorResponse(structType any) S7Payl
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCyclicServicesErrorResponse"
 }
 

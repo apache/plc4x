@@ -258,7 +258,7 @@ func CastBACnetConstructedDataShedLevelDescriptions(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataShedLevelDescriptions) GetTypeName() string {
+func (m *_BACnetConstructedDataShedLevelDescriptions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataShedLevelDescriptions"
 }
 

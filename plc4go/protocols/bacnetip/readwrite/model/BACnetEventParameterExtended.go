@@ -353,7 +353,7 @@ func CastBACnetEventParameterExtended(structType any) BACnetEventParameterExtend
 	return nil
 }
 
-func (m *_BACnetEventParameterExtended) GetTypeName() string {
+func (m *_BACnetEventParameterExtended) GetPlx4xTypeName() string {
 	return "BACnetEventParameterExtended"
 }
 

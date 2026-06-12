@@ -61,9 +61,55 @@ type AdsDataTypeTableEntry interface {
 	// GetOffset returns Offset (property field)
 	GetOffset() uint32
 	// GetDataType returns DataType (property field)
-	GetDataType() uint32
-	// GetFlags returns Flags (property field)
-	GetFlags() uint32
+	GetDataType() AdsDatatypeId
+	// GetFlagPropItem returns FlagPropItem (property field)
+	GetFlagPropItem() bool
+	// GetFlagBitValues returns FlagBitValues (property field)
+	GetFlagBitValues() bool
+	// GetFlagOversample returns FlagOversample (property field)
+	GetFlagOversample() bool
+	// GetFlagMethodRef returns FlagMethodRef (property field)
+	GetFlagMethodRef() bool
+	// GetFlagReferenceTo returns FlagReferenceTo (property field)
+	GetFlagReferenceTo() bool
+	// GetFlagTComInterfacePtr returns FlagTComInterfacePtr (property field)
+	GetFlagTComInterfacePtr() bool
+	// GetFlagCopyMask returns FlagCopyMask (property field)
+	GetFlagCopyMask() bool
+	// GetFlagPersistent returns FlagPersistent (property field)
+	GetFlagPersistent() bool
+	// GetFlagPlcPointerType returns FlagPlcPointerType (property field)
+	// Byte 3
+	GetFlagPlcPointerType() bool
+	// GetFlagInitOnReset returns FlagInitOnReset (property field)
+	GetFlagInitOnReset() bool
+	// GetFlagPersistentDataType returns FlagPersistentDataType (property field)
+	GetFlagPersistentDataType() bool
+	// GetFlagAnySizeArray returns FlagAnySizeArray (property field)
+	GetFlagAnySizeArray() bool
+	// GetFlagIgnorePersist returns FlagIgnorePersist (property field)
+	GetFlagIgnorePersist() bool
+	// GetFlagSoftwareProtectionLevels returns FlagSoftwareProtectionLevels (property field)
+	GetFlagSoftwareProtectionLevels() bool
+	// GetFlagStatic returns FlagStatic (property field)
+	GetFlagStatic() bool
+	// GetFlagAligned returns FlagAligned (property field)
+	GetFlagAligned() bool
+	// GetExtendedFlags returns ExtendedFlags (property field)
+	// Byte 4
+	GetExtendedFlags() bool
+	// GetFlagExtendedEnumInfos returns FlagExtendedEnumInfos (property field)
+	GetFlagExtendedEnumInfos() bool
+	// GetFlagDeRefTypeItem returns FlagDeRefTypeItem (property field)
+	GetFlagDeRefTypeItem() bool
+	// GetFlagContainsOnlineChangePtrRef returns FlagContainsOnlineChangePtrRef (property field)
+	GetFlagContainsOnlineChangePtrRef() bool
+	// GetFlagIncomplete returns FlagIncomplete (property field)
+	GetFlagIncomplete() bool
+	// GetFlagHideSubItems returns FlagHideSubItems (property field)
+	GetFlagHideSubItems() bool
+	// GetFlagRefactorInfo returns FlagRefactorInfo (property field)
+	GetFlagRefactorInfo() bool
 	// GetArrayDimensions returns ArrayDimensions (property field)
 	GetArrayDimensions() uint16
 	// GetNumChildren returns NumChildren (property field)
@@ -78,12 +124,16 @@ type AdsDataTypeTableEntry interface {
 	GetArrayInfo() []AdsDataTypeArrayInfo
 	// GetChildren returns Children (property field)
 	GetChildren() []AdsDataTypeTableEntry
+	// GetGuid returns Guid (property field)
+	GetGuid() []byte
+	// GetMethodInfos returns MethodInfos (property field)
+	GetMethodInfos() AdsMethodInfos
+	// GetAttributes returns Attributes (property field)
+	GetAttributes() AdsDataTypeAttributes
+	// GetExtendedInfos returns ExtendedInfos (property field)
+	GetExtendedInfos() AdsExtendedInfos
 	// GetRest returns Rest (property field)
-	// Gobbling up the rest, but it seems there is content in here, when looking
-	// at the data in wireshark, it seems to be related to the flags field.
-	// Will have to continue searching for more details on how to decode this.
-	// I would assume that we'll have some "optional" fields here which depend
-	// on values in the flags section.
+	// This only consumes the rest in cased of both methodInfos and extendedInfos not being set.
 	GetRest() []byte
 	// IsAdsDataTypeTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDataTypeTableEntry()
@@ -93,29 +143,58 @@ type AdsDataTypeTableEntry interface {
 
 // _AdsDataTypeTableEntry is the data-structure of this message
 type _AdsDataTypeTableEntry struct {
-	EntryLength     uint32
-	Version         uint32
-	HashValue       uint32
-	TypeHashValue   uint32
-	Size            uint32
-	Offset          uint32
-	DataType        uint32
-	Flags           uint32
-	ArrayDimensions uint16
-	NumChildren     uint16
-	MainName        string
-	SecondaryName   string
-	Comment         string
-	ArrayInfo       []AdsDataTypeArrayInfo
-	Children        []AdsDataTypeTableEntry
-	Rest            []byte
+	EntryLength                    uint32
+	Version                        uint32
+	HashValue                      uint32
+	TypeHashValue                  uint32
+	Size                           uint32
+	Offset                         uint32
+	DataType                       AdsDatatypeId
+	FlagPropItem                   bool
+	FlagBitValues                  bool
+	FlagOversample                 bool
+	FlagMethodRef                  bool
+	FlagReferenceTo                bool
+	FlagTComInterfacePtr           bool
+	FlagCopyMask                   bool
+	FlagPersistent                 bool
+	FlagPlcPointerType             bool
+	FlagInitOnReset                bool
+	FlagPersistentDataType         bool
+	FlagAnySizeArray               bool
+	FlagIgnorePersist              bool
+	FlagSoftwareProtectionLevels   bool
+	FlagStatic                     bool
+	FlagAligned                    bool
+	ExtendedFlags                  bool
+	FlagExtendedEnumInfos          bool
+	FlagDeRefTypeItem              bool
+	FlagContainsOnlineChangePtrRef bool
+	FlagIncomplete                 bool
+	FlagHideSubItems               bool
+	FlagRefactorInfo               bool
+	ArrayDimensions                uint16
+	NumChildren                    uint16
+	MainName                       string
+	SecondaryName                  string
+	Comment                        string
+	ArrayInfo                      []AdsDataTypeArrayInfo
+	Children                       []AdsDataTypeTableEntry
+	Guid                           []byte
+	MethodInfos                    AdsMethodInfos
+	Attributes                     AdsDataTypeAttributes
+	ExtendedInfos                  AdsExtendedInfos
+	Rest                           []byte
+	// Reserved Fields
+	reservedField0 *uint8
+	reservedField1 *uint8
 }
 
 var _ AdsDataTypeTableEntry = (*_AdsDataTypeTableEntry)(nil)
 
 // NewAdsDataTypeTableEntry factory function for _AdsDataTypeTableEntry
-func NewAdsDataTypeTableEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, mainName string, secondaryName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, rest []byte) *_AdsDataTypeTableEntry {
-	return &_AdsDataTypeTableEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offset: offset, DataType: dataType, Flags: flags, ArrayDimensions: arrayDimensions, NumChildren: numChildren, MainName: mainName, SecondaryName: secondaryName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Rest: rest}
+func NewAdsDataTypeTableEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType AdsDatatypeId, flagPropItem bool, flagBitValues bool, flagOversample bool, flagMethodRef bool, flagReferenceTo bool, flagTComInterfacePtr bool, flagCopyMask bool, flagPersistent bool, flagPlcPointerType bool, flagInitOnReset bool, flagPersistentDataType bool, flagAnySizeArray bool, flagIgnorePersist bool, flagSoftwareProtectionLevels bool, flagStatic bool, flagAligned bool, ExtendedFlags bool, flagExtendedEnumInfos bool, flagDeRefTypeItem bool, flagContainsOnlineChangePtrRef bool, flagIncomplete bool, flagHideSubItems bool, flagRefactorInfo bool, arrayDimensions uint16, numChildren uint16, mainName string, secondaryName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, guid []byte, methodInfos AdsMethodInfos, attributes AdsDataTypeAttributes, extendedInfos AdsExtendedInfos, rest []byte) *_AdsDataTypeTableEntry {
+	return &_AdsDataTypeTableEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offset: offset, DataType: dataType, FlagPropItem: flagPropItem, FlagBitValues: flagBitValues, FlagOversample: flagOversample, FlagMethodRef: flagMethodRef, FlagReferenceTo: flagReferenceTo, FlagTComInterfacePtr: flagTComInterfacePtr, FlagCopyMask: flagCopyMask, FlagPersistent: flagPersistent, FlagPlcPointerType: flagPlcPointerType, FlagInitOnReset: flagInitOnReset, FlagPersistentDataType: flagPersistentDataType, FlagAnySizeArray: flagAnySizeArray, FlagIgnorePersist: flagIgnorePersist, FlagSoftwareProtectionLevels: flagSoftwareProtectionLevels, FlagStatic: flagStatic, FlagAligned: flagAligned, ExtendedFlags: ExtendedFlags, FlagExtendedEnumInfos: flagExtendedEnumInfos, FlagDeRefTypeItem: flagDeRefTypeItem, FlagContainsOnlineChangePtrRef: flagContainsOnlineChangePtrRef, FlagIncomplete: flagIncomplete, FlagHideSubItems: flagHideSubItems, FlagRefactorInfo: flagRefactorInfo, ArrayDimensions: arrayDimensions, NumChildren: numChildren, MainName: mainName, SecondaryName: secondaryName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Guid: guid, MethodInfos: methodInfos, Attributes: attributes, ExtendedInfos: extendedInfos, Rest: rest}
 }
 
 ///////////////////////////////////////////////////////////
@@ -127,7 +206,7 @@ func NewAdsDataTypeTableEntry(entryLength uint32, version uint32, hashValue uint
 type AdsDataTypeTableEntryBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, mainName string, secondaryName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, rest []byte) AdsDataTypeTableEntryBuilder
+	WithMandatoryFields(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType AdsDatatypeId, flagPropItem bool, flagBitValues bool, flagOversample bool, flagMethodRef bool, flagReferenceTo bool, flagTComInterfacePtr bool, flagCopyMask bool, flagPersistent bool, flagPlcPointerType bool, flagInitOnReset bool, flagPersistentDataType bool, flagAnySizeArray bool, flagIgnorePersist bool, flagSoftwareProtectionLevels bool, flagStatic bool, flagAligned bool, ExtendedFlags bool, flagExtendedEnumInfos bool, flagDeRefTypeItem bool, flagContainsOnlineChangePtrRef bool, flagIncomplete bool, flagHideSubItems bool, flagRefactorInfo bool, arrayDimensions uint16, numChildren uint16, mainName string, secondaryName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, guid []byte, rest []byte) AdsDataTypeTableEntryBuilder
 	// WithEntryLength adds EntryLength (property field)
 	WithEntryLength(uint32) AdsDataTypeTableEntryBuilder
 	// WithVersion adds Version (property field)
@@ -141,9 +220,53 @@ type AdsDataTypeTableEntryBuilder interface {
 	// WithOffset adds Offset (property field)
 	WithOffset(uint32) AdsDataTypeTableEntryBuilder
 	// WithDataType adds DataType (property field)
-	WithDataType(uint32) AdsDataTypeTableEntryBuilder
-	// WithFlags adds Flags (property field)
-	WithFlags(uint32) AdsDataTypeTableEntryBuilder
+	WithDataType(AdsDatatypeId) AdsDataTypeTableEntryBuilder
+	// WithFlagPropItem adds FlagPropItem (property field)
+	WithFlagPropItem(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagBitValues adds FlagBitValues (property field)
+	WithFlagBitValues(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagOversample adds FlagOversample (property field)
+	WithFlagOversample(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagMethodRef adds FlagMethodRef (property field)
+	WithFlagMethodRef(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagReferenceTo adds FlagReferenceTo (property field)
+	WithFlagReferenceTo(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagTComInterfacePtr adds FlagTComInterfacePtr (property field)
+	WithFlagTComInterfacePtr(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagCopyMask adds FlagCopyMask (property field)
+	WithFlagCopyMask(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagPersistent adds FlagPersistent (property field)
+	WithFlagPersistent(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagPlcPointerType adds FlagPlcPointerType (property field)
+	WithFlagPlcPointerType(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagInitOnReset adds FlagInitOnReset (property field)
+	WithFlagInitOnReset(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagPersistentDataType adds FlagPersistentDataType (property field)
+	WithFlagPersistentDataType(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagAnySizeArray adds FlagAnySizeArray (property field)
+	WithFlagAnySizeArray(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagIgnorePersist adds FlagIgnorePersist (property field)
+	WithFlagIgnorePersist(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagSoftwareProtectionLevels adds FlagSoftwareProtectionLevels (property field)
+	WithFlagSoftwareProtectionLevels(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagStatic adds FlagStatic (property field)
+	WithFlagStatic(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagAligned adds FlagAligned (property field)
+	WithFlagAligned(bool) AdsDataTypeTableEntryBuilder
+	// WithExtendedFlags adds ExtendedFlags (property field)
+	WithExtendedFlags(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagExtendedEnumInfos adds FlagExtendedEnumInfos (property field)
+	WithFlagExtendedEnumInfos(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagDeRefTypeItem adds FlagDeRefTypeItem (property field)
+	WithFlagDeRefTypeItem(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagContainsOnlineChangePtrRef adds FlagContainsOnlineChangePtrRef (property field)
+	WithFlagContainsOnlineChangePtrRef(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagIncomplete adds FlagIncomplete (property field)
+	WithFlagIncomplete(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagHideSubItems adds FlagHideSubItems (property field)
+	WithFlagHideSubItems(bool) AdsDataTypeTableEntryBuilder
+	// WithFlagRefactorInfo adds FlagRefactorInfo (property field)
+	WithFlagRefactorInfo(bool) AdsDataTypeTableEntryBuilder
 	// WithArrayDimensions adds ArrayDimensions (property field)
 	WithArrayDimensions(uint16) AdsDataTypeTableEntryBuilder
 	// WithNumChildren adds NumChildren (property field)
@@ -158,6 +281,20 @@ type AdsDataTypeTableEntryBuilder interface {
 	WithArrayInfo(...AdsDataTypeArrayInfo) AdsDataTypeTableEntryBuilder
 	// WithChildren adds Children (property field)
 	WithChildren(...AdsDataTypeTableEntry) AdsDataTypeTableEntryBuilder
+	// WithGuid adds Guid (property field)
+	WithGuid(...byte) AdsDataTypeTableEntryBuilder
+	// WithMethodInfos adds MethodInfos (property field)
+	WithOptionalMethodInfos(AdsMethodInfos) AdsDataTypeTableEntryBuilder
+	// WithOptionalMethodInfosBuilder adds MethodInfos (property field) which is build by the builder
+	WithOptionalMethodInfosBuilder(func(AdsMethodInfosBuilder) AdsMethodInfosBuilder) AdsDataTypeTableEntryBuilder
+	// WithAttributes adds Attributes (property field)
+	WithOptionalAttributes(AdsDataTypeAttributes) AdsDataTypeTableEntryBuilder
+	// WithOptionalAttributesBuilder adds Attributes (property field) which is build by the builder
+	WithOptionalAttributesBuilder(func(AdsDataTypeAttributesBuilder) AdsDataTypeAttributesBuilder) AdsDataTypeTableEntryBuilder
+	// WithExtendedInfos adds ExtendedInfos (property field)
+	WithOptionalExtendedInfos(AdsExtendedInfos) AdsDataTypeTableEntryBuilder
+	// WithOptionalExtendedInfosBuilder adds ExtendedInfos (property field) which is build by the builder
+	WithOptionalExtendedInfosBuilder(func(AdsExtendedInfosBuilder) AdsExtendedInfosBuilder) AdsDataTypeTableEntryBuilder
 	// WithRest adds Rest (property field)
 	WithRest(...byte) AdsDataTypeTableEntryBuilder
 	// Build builds the AdsDataTypeTableEntry or returns an error if something is wrong
@@ -179,8 +316,8 @@ type _AdsDataTypeTableEntryBuilder struct {
 
 var _ (AdsDataTypeTableEntryBuilder) = (*_AdsDataTypeTableEntryBuilder)(nil)
 
-func (b *_AdsDataTypeTableEntryBuilder) WithMandatoryFields(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, mainName string, secondaryName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, rest []byte) AdsDataTypeTableEntryBuilder {
-	return b.WithEntryLength(entryLength).WithVersion(version).WithHashValue(hashValue).WithTypeHashValue(typeHashValue).WithSize(size).WithOffset(offset).WithDataType(dataType).WithFlags(flags).WithArrayDimensions(arrayDimensions).WithNumChildren(numChildren).WithMainName(mainName).WithSecondaryName(secondaryName).WithComment(comment).WithArrayInfo(arrayInfo...).WithChildren(children...).WithRest(rest...)
+func (b *_AdsDataTypeTableEntryBuilder) WithMandatoryFields(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType AdsDatatypeId, flagPropItem bool, flagBitValues bool, flagOversample bool, flagMethodRef bool, flagReferenceTo bool, flagTComInterfacePtr bool, flagCopyMask bool, flagPersistent bool, flagPlcPointerType bool, flagInitOnReset bool, flagPersistentDataType bool, flagAnySizeArray bool, flagIgnorePersist bool, flagSoftwareProtectionLevels bool, flagStatic bool, flagAligned bool, ExtendedFlags bool, flagExtendedEnumInfos bool, flagDeRefTypeItem bool, flagContainsOnlineChangePtrRef bool, flagIncomplete bool, flagHideSubItems bool, flagRefactorInfo bool, arrayDimensions uint16, numChildren uint16, mainName string, secondaryName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, guid []byte, rest []byte) AdsDataTypeTableEntryBuilder {
+	return b.WithEntryLength(entryLength).WithVersion(version).WithHashValue(hashValue).WithTypeHashValue(typeHashValue).WithSize(size).WithOffset(offset).WithDataType(dataType).WithFlagPropItem(flagPropItem).WithFlagBitValues(flagBitValues).WithFlagOversample(flagOversample).WithFlagMethodRef(flagMethodRef).WithFlagReferenceTo(flagReferenceTo).WithFlagTComInterfacePtr(flagTComInterfacePtr).WithFlagCopyMask(flagCopyMask).WithFlagPersistent(flagPersistent).WithFlagPlcPointerType(flagPlcPointerType).WithFlagInitOnReset(flagInitOnReset).WithFlagPersistentDataType(flagPersistentDataType).WithFlagAnySizeArray(flagAnySizeArray).WithFlagIgnorePersist(flagIgnorePersist).WithFlagSoftwareProtectionLevels(flagSoftwareProtectionLevels).WithFlagStatic(flagStatic).WithFlagAligned(flagAligned).WithExtendedFlags(ExtendedFlags).WithFlagExtendedEnumInfos(flagExtendedEnumInfos).WithFlagDeRefTypeItem(flagDeRefTypeItem).WithFlagContainsOnlineChangePtrRef(flagContainsOnlineChangePtrRef).WithFlagIncomplete(flagIncomplete).WithFlagHideSubItems(flagHideSubItems).WithFlagRefactorInfo(flagRefactorInfo).WithArrayDimensions(arrayDimensions).WithNumChildren(numChildren).WithMainName(mainName).WithSecondaryName(secondaryName).WithComment(comment).WithArrayInfo(arrayInfo...).WithChildren(children...).WithGuid(guid...).WithRest(rest...)
 }
 
 func (b *_AdsDataTypeTableEntryBuilder) WithEntryLength(entryLength uint32) AdsDataTypeTableEntryBuilder {
@@ -213,13 +350,123 @@ func (b *_AdsDataTypeTableEntryBuilder) WithOffset(offset uint32) AdsDataTypeTab
 	return b
 }
 
-func (b *_AdsDataTypeTableEntryBuilder) WithDataType(dataType uint32) AdsDataTypeTableEntryBuilder {
+func (b *_AdsDataTypeTableEntryBuilder) WithDataType(dataType AdsDatatypeId) AdsDataTypeTableEntryBuilder {
 	b.DataType = dataType
 	return b
 }
 
-func (b *_AdsDataTypeTableEntryBuilder) WithFlags(flags uint32) AdsDataTypeTableEntryBuilder {
-	b.Flags = flags
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagPropItem(flagPropItem bool) AdsDataTypeTableEntryBuilder {
+	b.FlagPropItem = flagPropItem
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagBitValues(flagBitValues bool) AdsDataTypeTableEntryBuilder {
+	b.FlagBitValues = flagBitValues
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagOversample(flagOversample bool) AdsDataTypeTableEntryBuilder {
+	b.FlagOversample = flagOversample
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagMethodRef(flagMethodRef bool) AdsDataTypeTableEntryBuilder {
+	b.FlagMethodRef = flagMethodRef
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagReferenceTo(flagReferenceTo bool) AdsDataTypeTableEntryBuilder {
+	b.FlagReferenceTo = flagReferenceTo
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagTComInterfacePtr(flagTComInterfacePtr bool) AdsDataTypeTableEntryBuilder {
+	b.FlagTComInterfacePtr = flagTComInterfacePtr
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagCopyMask(flagCopyMask bool) AdsDataTypeTableEntryBuilder {
+	b.FlagCopyMask = flagCopyMask
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagPersistent(flagPersistent bool) AdsDataTypeTableEntryBuilder {
+	b.FlagPersistent = flagPersistent
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagPlcPointerType(flagPlcPointerType bool) AdsDataTypeTableEntryBuilder {
+	b.FlagPlcPointerType = flagPlcPointerType
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagInitOnReset(flagInitOnReset bool) AdsDataTypeTableEntryBuilder {
+	b.FlagInitOnReset = flagInitOnReset
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagPersistentDataType(flagPersistentDataType bool) AdsDataTypeTableEntryBuilder {
+	b.FlagPersistentDataType = flagPersistentDataType
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagAnySizeArray(flagAnySizeArray bool) AdsDataTypeTableEntryBuilder {
+	b.FlagAnySizeArray = flagAnySizeArray
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagIgnorePersist(flagIgnorePersist bool) AdsDataTypeTableEntryBuilder {
+	b.FlagIgnorePersist = flagIgnorePersist
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagSoftwareProtectionLevels(flagSoftwareProtectionLevels bool) AdsDataTypeTableEntryBuilder {
+	b.FlagSoftwareProtectionLevels = flagSoftwareProtectionLevels
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagStatic(flagStatic bool) AdsDataTypeTableEntryBuilder {
+	b.FlagStatic = flagStatic
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagAligned(flagAligned bool) AdsDataTypeTableEntryBuilder {
+	b.FlagAligned = flagAligned
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithExtendedFlags(ExtendedFlags bool) AdsDataTypeTableEntryBuilder {
+	b.ExtendedFlags = ExtendedFlags
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagExtendedEnumInfos(flagExtendedEnumInfos bool) AdsDataTypeTableEntryBuilder {
+	b.FlagExtendedEnumInfos = flagExtendedEnumInfos
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagDeRefTypeItem(flagDeRefTypeItem bool) AdsDataTypeTableEntryBuilder {
+	b.FlagDeRefTypeItem = flagDeRefTypeItem
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagContainsOnlineChangePtrRef(flagContainsOnlineChangePtrRef bool) AdsDataTypeTableEntryBuilder {
+	b.FlagContainsOnlineChangePtrRef = flagContainsOnlineChangePtrRef
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagIncomplete(flagIncomplete bool) AdsDataTypeTableEntryBuilder {
+	b.FlagIncomplete = flagIncomplete
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagHideSubItems(flagHideSubItems bool) AdsDataTypeTableEntryBuilder {
+	b.FlagHideSubItems = flagHideSubItems
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlagRefactorInfo(flagRefactorInfo bool) AdsDataTypeTableEntryBuilder {
+	b.FlagRefactorInfo = flagRefactorInfo
 	return b
 }
 
@@ -255,6 +502,56 @@ func (b *_AdsDataTypeTableEntryBuilder) WithArrayInfo(arrayInfo ...AdsDataTypeAr
 
 func (b *_AdsDataTypeTableEntryBuilder) WithChildren(children ...AdsDataTypeTableEntry) AdsDataTypeTableEntryBuilder {
 	b.Children = children
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithGuid(guid ...byte) AdsDataTypeTableEntryBuilder {
+	b.Guid = guid
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithOptionalMethodInfos(methodInfos AdsMethodInfos) AdsDataTypeTableEntryBuilder {
+	b.MethodInfos = methodInfos
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithOptionalMethodInfosBuilder(builderSupplier func(AdsMethodInfosBuilder) AdsMethodInfosBuilder) AdsDataTypeTableEntryBuilder {
+	builder := builderSupplier(b.MethodInfos.CreateAdsMethodInfosBuilder())
+	var err error
+	b.MethodInfos, err = builder.Build()
+	if err != nil {
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AdsMethodInfosBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithOptionalAttributes(attributes AdsDataTypeAttributes) AdsDataTypeTableEntryBuilder {
+	b.Attributes = attributes
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithOptionalAttributesBuilder(builderSupplier func(AdsDataTypeAttributesBuilder) AdsDataTypeAttributesBuilder) AdsDataTypeTableEntryBuilder {
+	builder := builderSupplier(b.Attributes.CreateAdsDataTypeAttributesBuilder())
+	var err error
+	b.Attributes, err = builder.Build()
+	if err != nil {
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AdsDataTypeAttributesBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithOptionalExtendedInfos(extendedInfos AdsExtendedInfos) AdsDataTypeTableEntryBuilder {
+	b.ExtendedInfos = extendedInfos
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithOptionalExtendedInfosBuilder(builderSupplier func(AdsExtendedInfosBuilder) AdsExtendedInfosBuilder) AdsDataTypeTableEntryBuilder {
+	builder := builderSupplier(b.ExtendedInfos.CreateAdsExtendedInfosBuilder())
+	var err error
+	b.ExtendedInfos, err = builder.Build()
+	if err != nil {
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "AdsExtendedInfosBuilder failed"))
+	}
 	return b
 }
 
@@ -328,12 +625,100 @@ func (m *_AdsDataTypeTableEntry) GetOffset() uint32 {
 	return m.Offset
 }
 
-func (m *_AdsDataTypeTableEntry) GetDataType() uint32 {
+func (m *_AdsDataTypeTableEntry) GetDataType() AdsDatatypeId {
 	return m.DataType
 }
 
-func (m *_AdsDataTypeTableEntry) GetFlags() uint32 {
-	return m.Flags
+func (m *_AdsDataTypeTableEntry) GetFlagPropItem() bool {
+	return m.FlagPropItem
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagBitValues() bool {
+	return m.FlagBitValues
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagOversample() bool {
+	return m.FlagOversample
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagMethodRef() bool {
+	return m.FlagMethodRef
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagReferenceTo() bool {
+	return m.FlagReferenceTo
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagTComInterfacePtr() bool {
+	return m.FlagTComInterfacePtr
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagCopyMask() bool {
+	return m.FlagCopyMask
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagPersistent() bool {
+	return m.FlagPersistent
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagPlcPointerType() bool {
+	return m.FlagPlcPointerType
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagInitOnReset() bool {
+	return m.FlagInitOnReset
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagPersistentDataType() bool {
+	return m.FlagPersistentDataType
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagAnySizeArray() bool {
+	return m.FlagAnySizeArray
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagIgnorePersist() bool {
+	return m.FlagIgnorePersist
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagSoftwareProtectionLevels() bool {
+	return m.FlagSoftwareProtectionLevels
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagStatic() bool {
+	return m.FlagStatic
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagAligned() bool {
+	return m.FlagAligned
+}
+
+func (m *_AdsDataTypeTableEntry) GetExtendedFlags() bool {
+	return m.ExtendedFlags
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagExtendedEnumInfos() bool {
+	return m.FlagExtendedEnumInfos
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagDeRefTypeItem() bool {
+	return m.FlagDeRefTypeItem
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagContainsOnlineChangePtrRef() bool {
+	return m.FlagContainsOnlineChangePtrRef
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagIncomplete() bool {
+	return m.FlagIncomplete
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagHideSubItems() bool {
+	return m.FlagHideSubItems
+}
+
+func (m *_AdsDataTypeTableEntry) GetFlagRefactorInfo() bool {
+	return m.FlagRefactorInfo
 }
 
 func (m *_AdsDataTypeTableEntry) GetArrayDimensions() uint16 {
@@ -362,6 +747,22 @@ func (m *_AdsDataTypeTableEntry) GetArrayInfo() []AdsDataTypeArrayInfo {
 
 func (m *_AdsDataTypeTableEntry) GetChildren() []AdsDataTypeTableEntry {
 	return m.Children
+}
+
+func (m *_AdsDataTypeTableEntry) GetGuid() []byte {
+	return m.Guid
+}
+
+func (m *_AdsDataTypeTableEntry) GetMethodInfos() AdsMethodInfos {
+	return m.MethodInfos
+}
+
+func (m *_AdsDataTypeTableEntry) GetAttributes() AdsDataTypeAttributes {
+	return m.Attributes
+}
+
+func (m *_AdsDataTypeTableEntry) GetExtendedInfos() AdsExtendedInfos {
+	return m.ExtendedInfos
 }
 
 func (m *_AdsDataTypeTableEntry) GetRest() []byte {
@@ -405,7 +806,7 @@ func CastAdsDataTypeTableEntry(structType any) AdsDataTypeTableEntry {
 	return nil
 }
 
-func (m *_AdsDataTypeTableEntry) GetTypeName() string {
+func (m *_AdsDataTypeTableEntry) GetPlx4xTypeName() string {
 	return "AdsDataTypeTableEntry"
 }
 
@@ -433,8 +834,98 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (dataType)
 	lengthInBits += 32
 
-	// Simple field (flags)
-	lengthInBits += 32
+	// Implicit Field (flagTypeGuid)
+	lengthInBits += 1
+
+	// Simple field (flagPropItem)
+	lengthInBits += 1
+
+	// Simple field (flagBitValues)
+	lengthInBits += 1
+
+	// Simple field (flagOversample)
+	lengthInBits += 1
+
+	// Simple field (flagMethodRef)
+	lengthInBits += 1
+
+	// Simple field (flagReferenceTo)
+	lengthInBits += 1
+
+	// Implicit Field (flagDataType)
+	lengthInBits += 1
+
+	// Implicit Field (flagDataItem)
+	lengthInBits += 1
+
+	// Reserved Field (reserved)
+	lengthInBits += 2
+
+	// Implicit Field (flagExtendedInfos)
+	lengthInBits += 1
+
+	// Implicit Field (flagAttributes)
+	lengthInBits += 1
+
+	// Implicit Field (flagMethodInfos)
+	lengthInBits += 1
+
+	// Simple field (flagTComInterfacePtr)
+	lengthInBits += 1
+
+	// Simple field (flagCopyMask)
+	lengthInBits += 1
+
+	// Simple field (flagPersistent)
+	lengthInBits += 1
+
+	// Simple field (flagPlcPointerType)
+	lengthInBits += 1
+
+	// Simple field (flagInitOnReset)
+	lengthInBits += 1
+
+	// Simple field (flagPersistentDataType)
+	lengthInBits += 1
+
+	// Simple field (flagAnySizeArray)
+	lengthInBits += 1
+
+	// Simple field (flagIgnorePersist)
+	lengthInBits += 1
+
+	// Simple field (flagSoftwareProtectionLevels)
+	lengthInBits += 1
+
+	// Simple field (flagStatic)
+	lengthInBits += 1
+
+	// Simple field (flagAligned)
+	lengthInBits += 1
+
+	// Simple field (ExtendedFlags)
+	lengthInBits += 1
+
+	// Reserved Field (reserved)
+	lengthInBits += 1
+
+	// Simple field (flagExtendedEnumInfos)
+	lengthInBits += 1
+
+	// Simple field (flagDeRefTypeItem)
+	lengthInBits += 1
+
+	// Simple field (flagContainsOnlineChangePtrRef)
+	lengthInBits += 1
+
+	// Simple field (flagIncomplete)
+	lengthInBits += 1
+
+	// Simple field (flagHideSubItems)
+	lengthInBits += 1
+
+	// Simple field (flagRefactorInfo)
+	lengthInBits += 1
 
 	// Implicit Field (mainNameLength)
 	lengthInBits += 16
@@ -486,6 +977,26 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBits(ctx context.Context) uint16 {
 	}
 
 	// Array field
+	if len(m.Guid) > 0 {
+		lengthInBits += 8 * uint16(len(m.Guid))
+	}
+
+	// Optional Field (methodInfos)
+	if m.MethodInfos != nil {
+		lengthInBits += m.MethodInfos.GetLengthInBits(ctx)
+	}
+
+	// Optional Field (attributes)
+	if m.Attributes != nil {
+		lengthInBits += m.Attributes.GetLengthInBits(ctx)
+	}
+
+	// Optional Field (extendedInfos)
+	if m.ExtendedInfos != nil {
+		lengthInBits += m.ExtendedInfos.GetLengthInBits(ctx)
+	}
+
+	// Array field
 	if len(m.Rest) > 0 {
 		lengthInBits += 8 * uint16(len(m.Rest))
 	}
@@ -526,133 +1037,349 @@ func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.Rea
 	var startPos = positionAware.GetPos()
 	_ = startPos
 
-	entryLength, err := ReadSimpleField(ctx, "entryLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	entryLength, err := ReadSimpleField(ctx, "entryLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'entryLength' field"))
 	}
 	m.EntryLength = entryLength
 
-	version, err := ReadSimpleField(ctx, "version", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
 	m.Version = version
 
-	hashValue, err := ReadSimpleField(ctx, "hashValue", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	hashValue, err := ReadSimpleField(ctx, "hashValue", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hashValue' field"))
 	}
 	m.HashValue = hashValue
 
-	typeHashValue, err := ReadSimpleField(ctx, "typeHashValue", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	typeHashValue, err := ReadSimpleField(ctx, "typeHashValue", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeHashValue' field"))
 	}
 	m.TypeHashValue = typeHashValue
 
-	size, err := ReadSimpleField(ctx, "size", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	size, err := ReadSimpleField(ctx, "size", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'size' field"))
 	}
 	m.Size = size
 
-	offset, err := ReadSimpleField(ctx, "offset", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	offset, err := ReadSimpleField(ctx, "offset", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offset' field"))
 	}
 	m.Offset = offset
 
-	dataType, err := ReadSimpleField(ctx, "dataType", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	dataType, err := ReadEnumField[AdsDatatypeId](ctx, "dataType", "AdsDatatypeId", ReadEnum(AdsDatatypeIdByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataType' field"))
 	}
 	m.DataType = dataType
 
-	flags, err := ReadSimpleField(ctx, "flags", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	flagTypeGuid, err := ReadImplicitField[bool](ctx, "flagTypeGuid", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flags' field"))
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagTypeGuid' field"))
 	}
-	m.Flags = flags
+	_ = flagTypeGuid
 
-	mainNameLength, err := ReadImplicitField[uint16](ctx, "mainNameLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
+	flagPropItem, err := ReadSimpleField(ctx, "flagPropItem", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagPropItem' field"))
+	}
+	m.FlagPropItem = flagPropItem
+
+	flagBitValues, err := ReadSimpleField(ctx, "flagBitValues", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagBitValues' field"))
+	}
+	m.FlagBitValues = flagBitValues
+
+	flagOversample, err := ReadSimpleField(ctx, "flagOversample", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagOversample' field"))
+	}
+	m.FlagOversample = flagOversample
+
+	flagMethodRef, err := ReadSimpleField(ctx, "flagMethodRef", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagMethodRef' field"))
+	}
+	m.FlagMethodRef = flagMethodRef
+
+	flagReferenceTo, err := ReadSimpleField(ctx, "flagReferenceTo", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagReferenceTo' field"))
+	}
+	m.FlagReferenceTo = flagReferenceTo
+
+	flagDataType, err := ReadImplicitField[bool](ctx, "flagDataType", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagDataType' field"))
+	}
+	_ = flagDataType
+
+	flagDataItem, err := ReadImplicitField[bool](ctx, "flagDataItem", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagDataItem' field"))
+	}
+	_ = flagDataItem
+
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0x0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
+	}
+	m.reservedField0 = reservedField0
+
+	flagExtendedInfos, err := ReadImplicitField[bool](ctx, "flagExtendedInfos", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagExtendedInfos' field"))
+	}
+	_ = flagExtendedInfos
+
+	flagAttributes, err := ReadImplicitField[bool](ctx, "flagAttributes", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagAttributes' field"))
+	}
+	_ = flagAttributes
+
+	flagMethodInfos, err := ReadImplicitField[bool](ctx, "flagMethodInfos", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagMethodInfos' field"))
+	}
+	_ = flagMethodInfos
+
+	flagTComInterfacePtr, err := ReadSimpleField(ctx, "flagTComInterfacePtr", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagTComInterfacePtr' field"))
+	}
+	m.FlagTComInterfacePtr = flagTComInterfacePtr
+
+	flagCopyMask, err := ReadSimpleField(ctx, "flagCopyMask", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagCopyMask' field"))
+	}
+	m.FlagCopyMask = flagCopyMask
+
+	flagPersistent, err := ReadSimpleField(ctx, "flagPersistent", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagPersistent' field"))
+	}
+	m.FlagPersistent = flagPersistent
+
+	flagPlcPointerType, err := ReadSimpleField(ctx, "flagPlcPointerType", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagPlcPointerType' field"))
+	}
+	m.FlagPlcPointerType = flagPlcPointerType
+
+	flagInitOnReset, err := ReadSimpleField(ctx, "flagInitOnReset", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagInitOnReset' field"))
+	}
+	m.FlagInitOnReset = flagInitOnReset
+
+	flagPersistentDataType, err := ReadSimpleField(ctx, "flagPersistentDataType", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagPersistentDataType' field"))
+	}
+	m.FlagPersistentDataType = flagPersistentDataType
+
+	flagAnySizeArray, err := ReadSimpleField(ctx, "flagAnySizeArray", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagAnySizeArray' field"))
+	}
+	m.FlagAnySizeArray = flagAnySizeArray
+
+	flagIgnorePersist, err := ReadSimpleField(ctx, "flagIgnorePersist", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagIgnorePersist' field"))
+	}
+	m.FlagIgnorePersist = flagIgnorePersist
+
+	flagSoftwareProtectionLevels, err := ReadSimpleField(ctx, "flagSoftwareProtectionLevels", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagSoftwareProtectionLevels' field"))
+	}
+	m.FlagSoftwareProtectionLevels = flagSoftwareProtectionLevels
+
+	flagStatic, err := ReadSimpleField(ctx, "flagStatic", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagStatic' field"))
+	}
+	m.FlagStatic = flagStatic
+
+	flagAligned, err := ReadSimpleField(ctx, "flagAligned", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagAligned' field"))
+	}
+	m.FlagAligned = flagAligned
+
+	ExtendedFlags, err := ReadSimpleField(ctx, "ExtendedFlags", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ExtendedFlags' field"))
+	}
+	m.ExtendedFlags = ExtendedFlags
+
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0x0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
+	}
+	m.reservedField1 = reservedField1
+
+	flagExtendedEnumInfos, err := ReadSimpleField(ctx, "flagExtendedEnumInfos", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagExtendedEnumInfos' field"))
+	}
+	m.FlagExtendedEnumInfos = flagExtendedEnumInfos
+
+	flagDeRefTypeItem, err := ReadSimpleField(ctx, "flagDeRefTypeItem", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagDeRefTypeItem' field"))
+	}
+	m.FlagDeRefTypeItem = flagDeRefTypeItem
+
+	flagContainsOnlineChangePtrRef, err := ReadSimpleField(ctx, "flagContainsOnlineChangePtrRef", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagContainsOnlineChangePtrRef' field"))
+	}
+	m.FlagContainsOnlineChangePtrRef = flagContainsOnlineChangePtrRef
+
+	flagIncomplete, err := ReadSimpleField(ctx, "flagIncomplete", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagIncomplete' field"))
+	}
+	m.FlagIncomplete = flagIncomplete
+
+	flagHideSubItems, err := ReadSimpleField(ctx, "flagHideSubItems", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagHideSubItems' field"))
+	}
+	m.FlagHideSubItems = flagHideSubItems
+
+	flagRefactorInfo, err := ReadSimpleField(ctx, "flagRefactorInfo", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagRefactorInfo' field"))
+	}
+	m.FlagRefactorInfo = flagRefactorInfo
+
+	mainNameLength, err := ReadImplicitField[uint16](ctx, "mainNameLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mainNameLength' field"))
 	}
 	_ = mainNameLength
 
-	secondaryNameLength, err := ReadImplicitField[uint16](ctx, "secondaryNameLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
+	secondaryNameLength, err := ReadImplicitField[uint16](ctx, "secondaryNameLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondaryNameLength' field"))
 	}
 	_ = secondaryNameLength
 
-	commentLength, err := ReadImplicitField[uint16](ctx, "commentLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
+	commentLength, err := ReadImplicitField[uint16](ctx, "commentLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentLength' field"))
 	}
 	_ = commentLength
 
-	arrayDimensions, err := ReadSimpleField(ctx, "arrayDimensions", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
+	arrayDimensions, err := ReadSimpleField(ctx, "arrayDimensions", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayDimensions' field"))
 	}
 	m.ArrayDimensions = arrayDimensions
 
-	numChildren, err := ReadSimpleField(ctx, "numChildren", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
+	numChildren, err := ReadSimpleField(ctx, "numChildren", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numChildren' field"))
 	}
 	m.NumChildren = numChildren
 
-	mainName, err := ReadSimpleField(ctx, "mainName", ReadString(readBuffer, uint32(int32(mainNameLength)*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian))
+	mainName, err := ReadSimpleField(ctx, "mainName", ReadString(readBuffer, uint32(int32(mainNameLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mainName' field"))
 	}
 	m.MainName = mainName
 
-	mainNameTerminator, err := ReadConstField[uint8](ctx, "mainNameTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsDataTypeTableEntry_MAINNAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
+	mainNameTerminator, err := ReadConstField[uint8](ctx, "mainNameTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsDataTypeTableEntry_MAINNAMETERMINATOR, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mainNameTerminator' field"))
 	}
 	_ = mainNameTerminator
 
-	secondaryName, err := ReadSimpleField(ctx, "secondaryName", ReadString(readBuffer, uint32(int32(secondaryNameLength)*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian))
+	secondaryName, err := ReadSimpleField(ctx, "secondaryName", ReadString(readBuffer, uint32(int32(secondaryNameLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondaryName' field"))
 	}
 	m.SecondaryName = secondaryName
 
-	secondaryNameTerminator, err := ReadConstField[uint8](ctx, "secondaryNameTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsDataTypeTableEntry_SECONDARYNAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
+	secondaryNameTerminator, err := ReadConstField[uint8](ctx, "secondaryNameTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsDataTypeTableEntry_SECONDARYNAMETERMINATOR, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondaryNameTerminator' field"))
 	}
 	_ = secondaryNameTerminator
 
-	comment, err := ReadSimpleField(ctx, "comment", ReadString(readBuffer, uint32(int32(commentLength)*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian))
+	comment, err := ReadSimpleField(ctx, "comment", ReadString(readBuffer, uint32(int32(commentLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'comment' field"))
 	}
 	m.Comment = comment
 
-	commentTerminator, err := ReadConstField[uint8](ctx, "commentTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsDataTypeTableEntry_COMMENTTERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
+	commentTerminator, err := ReadConstField[uint8](ctx, "commentTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsDataTypeTableEntry_COMMENTTERMINATOR, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentTerminator' field"))
 	}
 	_ = commentTerminator
 
-	arrayInfo, err := ReadCountArrayField[AdsDataTypeArrayInfo](ctx, "arrayInfo", ReadComplex[AdsDataTypeArrayInfo](AdsDataTypeArrayInfoParseWithBuffer, readBuffer), uint64(arrayDimensions), codegen.WithByteOrder(binary.LittleEndian))
+	arrayInfo, err := ReadCountArrayField[AdsDataTypeArrayInfo](ctx, "arrayInfo", ReadComplex[AdsDataTypeArrayInfo](AdsDataTypeArrayInfoParseWithBuffer, readBuffer), uint64(arrayDimensions), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayInfo' field"))
 	}
 	m.ArrayInfo = arrayInfo
 
-	children, err := ReadCountArrayField[AdsDataTypeTableEntry](ctx, "children", ReadComplex[AdsDataTypeTableEntry](AdsDataTypeTableEntryParseWithBuffer, readBuffer), uint64(numChildren), codegen.WithByteOrder(binary.LittleEndian))
+	children, err := ReadCountArrayField[AdsDataTypeTableEntry](ctx, "children", ReadComplex[AdsDataTypeTableEntry](AdsDataTypeTableEntryParseWithBuffer, readBuffer), uint64(numChildren), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'children' field"))
 	}
 	m.Children = children
 
-	rest, err := readBuffer.ReadByteArray("rest", int(int32(entryLength)-int32((positionAware.GetPos()-startPos))), codegen.WithByteOrder(binary.LittleEndian))
+	guid, err := readBuffer.ReadByteArray("guid", int(utils.InlineIf(bool((flagTypeGuid) == (true)), func() any { return int32(int32(16)) }, func() any { return int32(int32(0)) }).(int32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'guid' field"))
+	}
+	m.Guid = guid
+
+	var methodInfos AdsMethodInfos
+	_methodInfos, err := ReadOptionalField[AdsMethodInfos](ctx, "methodInfos", ReadComplex[AdsMethodInfos](AdsMethodInfosParseWithBuffer, readBuffer), flagMethodInfos, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'methodInfos' field"))
+	}
+	if _methodInfos != nil {
+		methodInfos = *_methodInfos
+		m.MethodInfos = methodInfos
+	}
+
+	var attributes AdsDataTypeAttributes
+	_attributes, err := ReadOptionalField[AdsDataTypeAttributes](ctx, "attributes", ReadComplex[AdsDataTypeAttributes](AdsDataTypeAttributesParseWithBuffer, readBuffer), flagAttributes, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributes' field"))
+	}
+	if _attributes != nil {
+		attributes = *_attributes
+		m.Attributes = attributes
+	}
+
+	var extendedInfos AdsExtendedInfos
+	_extendedInfos, err := ReadOptionalField[AdsExtendedInfos](ctx, "extendedInfos", ReadComplex[AdsExtendedInfos](AdsExtendedInfosParseWithBufferProducer((AdsDatatypeId)(dataType)), readBuffer), flagExtendedInfos, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedInfos' field"))
+	}
+	if _extendedInfos != nil {
+		extendedInfos = *_extendedInfos
+		m.ExtendedInfos = extendedInfos
+	}
+
+	rest, err := readBuffer.ReadByteArray("rest", int(int32(entryLength)-int32((int32((positionAware.GetPos()-startPos))/int32(int32(8))))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rest' field"))
 	}
@@ -682,91 +1409,227 @@ func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for AdsDataTypeTableEntry")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "entryLength", m.GetEntryLength(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "entryLength", m.GetEntryLength(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'entryLength' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "version", m.GetVersion(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "version", m.GetVersion(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'version' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "hashValue", m.GetHashValue(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "hashValue", m.GetHashValue(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'hashValue' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "typeHashValue", m.GetTypeHashValue(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "typeHashValue", m.GetTypeHashValue(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'typeHashValue' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "size", m.GetSize(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "size", m.GetSize(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'size' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "offset", m.GetOffset(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "offset", m.GetOffset(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'offset' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "dataType", m.GetDataType(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleEnumField[AdsDatatypeId](ctx, "dataType", "AdsDatatypeId", m.GetDataType(), WriteEnum[AdsDatatypeId, uint32](AdsDatatypeId.GetValue, AdsDatatypeId.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'dataType' field")
 	}
+	flagTypeGuid := bool(bool((len(m.GetGuid())) > (0)))
+	if err := WriteImplicitField(ctx, "flagTypeGuid", flagTypeGuid, WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagTypeGuid' field")
+	}
 
-	if err := WriteSimpleField[uint32](ctx, "flags", m.GetFlags(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'flags' field")
+	if err := WriteSimpleField[bool](ctx, "flagPropItem", m.GetFlagPropItem(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagPropItem' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagBitValues", m.GetFlagBitValues(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagBitValues' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagOversample", m.GetFlagOversample(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagOversample' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagMethodRef", m.GetFlagMethodRef(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagMethodRef' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagReferenceTo", m.GetFlagReferenceTo(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagReferenceTo' field")
+	}
+	flagDataType := bool(bool((m.GetNumChildren()) > (0)))
+	if err := WriteImplicitField(ctx, "flagDataType", flagDataType, WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagDataType' field")
+	}
+	flagDataItem := bool(bool((m.GetNumChildren()) == (0)))
+	if err := WriteImplicitField(ctx, "flagDataItem", flagDataItem, WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagDataItem' field")
+	}
+
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 2), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
+	}
+	flagExtendedInfos := bool(bool((m.GetExtendedInfos()) != (nil)))
+	if err := WriteImplicitField(ctx, "flagExtendedInfos", flagExtendedInfos, WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagExtendedInfos' field")
+	}
+	flagAttributes := bool(bool((m.GetAttributes()) != (nil)))
+	if err := WriteImplicitField(ctx, "flagAttributes", flagAttributes, WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagAttributes' field")
+	}
+	flagMethodInfos := bool(bool((m.GetMethodInfos()) != (nil)))
+	if err := WriteImplicitField(ctx, "flagMethodInfos", flagMethodInfos, WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagMethodInfos' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagTComInterfacePtr", m.GetFlagTComInterfacePtr(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagTComInterfacePtr' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagCopyMask", m.GetFlagCopyMask(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagCopyMask' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagPersistent", m.GetFlagPersistent(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagPersistent' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagPlcPointerType", m.GetFlagPlcPointerType(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagPlcPointerType' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagInitOnReset", m.GetFlagInitOnReset(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagInitOnReset' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagPersistentDataType", m.GetFlagPersistentDataType(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagPersistentDataType' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagAnySizeArray", m.GetFlagAnySizeArray(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagAnySizeArray' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagIgnorePersist", m.GetFlagIgnorePersist(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagIgnorePersist' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagSoftwareProtectionLevels", m.GetFlagSoftwareProtectionLevels(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagSoftwareProtectionLevels' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagStatic", m.GetFlagStatic(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagStatic' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagAligned", m.GetFlagAligned(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagAligned' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "ExtendedFlags", m.GetExtendedFlags(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ExtendedFlags' field")
+	}
+
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 1), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagExtendedEnumInfos", m.GetFlagExtendedEnumInfos(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagExtendedEnumInfos' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagDeRefTypeItem", m.GetFlagDeRefTypeItem(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagDeRefTypeItem' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagContainsOnlineChangePtrRef", m.GetFlagContainsOnlineChangePtrRef(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagContainsOnlineChangePtrRef' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagIncomplete", m.GetFlagIncomplete(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagIncomplete' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagHideSubItems", m.GetFlagHideSubItems(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagHideSubItems' field")
+	}
+
+	if err := WriteSimpleField[bool](ctx, "flagRefactorInfo", m.GetFlagRefactorInfo(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagRefactorInfo' field")
 	}
 	mainNameLength := uint16(uint16(len(m.GetMainName())))
-	if err := WriteImplicitField(ctx, "mainNameLength", mainNameLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "mainNameLength", mainNameLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'mainNameLength' field")
 	}
 	secondaryNameLength := uint16(uint16(len(m.GetSecondaryName())))
-	if err := WriteImplicitField(ctx, "secondaryNameLength", secondaryNameLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "secondaryNameLength", secondaryNameLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'secondaryNameLength' field")
 	}
 	commentLength := uint16(uint16(len(m.GetComment())))
-	if err := WriteImplicitField(ctx, "commentLength", commentLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "commentLength", commentLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'commentLength' field")
 	}
 
-	if err := WriteSimpleField[uint16](ctx, "arrayDimensions", m.GetArrayDimensions(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[uint16](ctx, "arrayDimensions", m.GetArrayDimensions(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'arrayDimensions' field")
 	}
 
-	if err := WriteSimpleField[uint16](ctx, "numChildren", m.GetNumChildren(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[uint16](ctx, "numChildren", m.GetNumChildren(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'numChildren' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "mainName", m.GetMainName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetMainName())))*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[string](ctx, "mainName", m.GetMainName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetMainName())))*int32(int32(8)))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'mainName' field")
 	}
 
-	if err := WriteConstField(ctx, "mainNameTerminator", AdsDataTypeTableEntry_MAINNAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteConstField(ctx, "mainNameTerminator", AdsDataTypeTableEntry_MAINNAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'mainNameTerminator' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "secondaryName", m.GetSecondaryName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetSecondaryName())))*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[string](ctx, "secondaryName", m.GetSecondaryName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetSecondaryName())))*int32(int32(8)))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'secondaryName' field")
 	}
 
-	if err := WriteConstField(ctx, "secondaryNameTerminator", AdsDataTypeTableEntry_SECONDARYNAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteConstField(ctx, "secondaryNameTerminator", AdsDataTypeTableEntry_SECONDARYNAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'secondaryNameTerminator' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "comment", m.GetComment(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetComment())))*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[string](ctx, "comment", m.GetComment(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetComment())))*int32(int32(8)))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'comment' field")
 	}
 
-	if err := WriteConstField(ctx, "commentTerminator", AdsDataTypeTableEntry_COMMENTTERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteConstField(ctx, "commentTerminator", AdsDataTypeTableEntry_COMMENTTERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'commentTerminator' field")
 	}
 
-	if err := WriteComplexTypeArrayField(ctx, "arrayInfo", m.GetArrayInfo(), writeBuffer, codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteComplexTypeArrayField(ctx, "arrayInfo", m.GetArrayInfo(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'arrayInfo' field")
 	}
 
-	if err := WriteComplexTypeArrayField(ctx, "children", m.GetChildren(), writeBuffer, codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteComplexTypeArrayField(ctx, "children", m.GetChildren(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'children' field")
 	}
 
-	if err := WriteByteArrayField(ctx, "rest", m.GetRest(), WriteByteArray(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteByteArrayField(ctx, "guid", m.GetGuid(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'guid' field")
+	}
+
+	if err := WriteOptionalField[AdsMethodInfos](ctx, "methodInfos", new(m.GetMethodInfos()), WriteComplex[AdsMethodInfos](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'methodInfos' field")
+	}
+
+	if err := WriteOptionalField[AdsDataTypeAttributes](ctx, "attributes", new(m.GetAttributes()), WriteComplex[AdsDataTypeAttributes](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'attributes' field")
+	}
+
+	if err := WriteOptionalField[AdsExtendedInfos](ctx, "extendedInfos", new(m.GetExtendedInfos()), WriteComplex[AdsExtendedInfos](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'extendedInfos' field")
+	}
+
+	if err := WriteByteArrayField(ctx, "rest", m.GetRest(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'rest' field")
 	}
 
@@ -794,7 +1657,29 @@ func (m *_AdsDataTypeTableEntry) deepCopy() *_AdsDataTypeTableEntry {
 		m.Size,
 		m.Offset,
 		m.DataType,
-		m.Flags,
+		m.FlagPropItem,
+		m.FlagBitValues,
+		m.FlagOversample,
+		m.FlagMethodRef,
+		m.FlagReferenceTo,
+		m.FlagTComInterfacePtr,
+		m.FlagCopyMask,
+		m.FlagPersistent,
+		m.FlagPlcPointerType,
+		m.FlagInitOnReset,
+		m.FlagPersistentDataType,
+		m.FlagAnySizeArray,
+		m.FlagIgnorePersist,
+		m.FlagSoftwareProtectionLevels,
+		m.FlagStatic,
+		m.FlagAligned,
+		m.ExtendedFlags,
+		m.FlagExtendedEnumInfos,
+		m.FlagDeRefTypeItem,
+		m.FlagContainsOnlineChangePtrRef,
+		m.FlagIncomplete,
+		m.FlagHideSubItems,
+		m.FlagRefactorInfo,
 		m.ArrayDimensions,
 		m.NumChildren,
 		m.MainName,
@@ -802,7 +1687,13 @@ func (m *_AdsDataTypeTableEntry) deepCopy() *_AdsDataTypeTableEntry {
 		m.Comment,
 		utils.DeepCopySlice[AdsDataTypeArrayInfo, AdsDataTypeArrayInfo](m.ArrayInfo),
 		utils.DeepCopySlice[AdsDataTypeTableEntry, AdsDataTypeTableEntry](m.Children),
+		utils.DeepCopySlice[byte, byte](m.Guid),
+		utils.DeepCopy[AdsMethodInfos](m.MethodInfos),
+		utils.DeepCopy[AdsDataTypeAttributes](m.Attributes),
+		utils.DeepCopy[AdsExtendedInfos](m.ExtendedInfos),
 		utils.DeepCopySlice[byte, byte](m.Rest),
+		m.reservedField0,
+		m.reservedField1,
 	}
 	return _AdsDataTypeTableEntryCopy
 }

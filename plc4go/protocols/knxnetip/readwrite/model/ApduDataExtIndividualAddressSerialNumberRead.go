@@ -180,7 +180,7 @@ func CastApduDataExtIndividualAddressSerialNumberRead(structType any) ApduDataEx
 	return nil
 }
 
-func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetTypeName() string {
+func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetPlx4xTypeName() string {
 	return "ApduDataExtIndividualAddressSerialNumberRead"
 }
 

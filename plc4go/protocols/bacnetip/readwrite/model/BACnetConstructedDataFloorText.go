@@ -258,7 +258,7 @@ func CastBACnetConstructedDataFloorText(structType any) BACnetConstructedDataFlo
 	return nil
 }
 
-func (m *_BACnetConstructedDataFloorText) GetTypeName() string {
+func (m *_BACnetConstructedDataFloorText) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFloorText"
 }
 

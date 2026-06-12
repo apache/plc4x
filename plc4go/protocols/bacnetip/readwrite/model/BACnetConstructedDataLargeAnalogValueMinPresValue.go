@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLargeAnalogValueMinPresValue(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueMinPresValue"
 }
 

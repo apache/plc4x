@@ -207,7 +207,7 @@ func CastErrorReportingSystemCategoryTypeBuildingManagementSystems(structType an
 	return nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetTypeName() string {
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategoryTypeBuildingManagementSystems"
 }
 

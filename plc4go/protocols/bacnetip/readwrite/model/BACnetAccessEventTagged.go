@@ -224,7 +224,7 @@ func CastBACnetAccessEventTagged(structType any) BACnetAccessEventTagged {
 	return nil
 }
 
-func (m *_BACnetAccessEventTagged) GetTypeName() string {
+func (m *_BACnetAccessEventTagged) GetPlx4xTypeName() string {
 	return "BACnetAccessEventTagged"
 }
 

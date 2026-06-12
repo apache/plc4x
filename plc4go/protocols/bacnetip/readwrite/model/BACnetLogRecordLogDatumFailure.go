@@ -221,7 +221,7 @@ func CastBACnetLogRecordLogDatumFailure(structType any) BACnetLogRecordLogDatumF
 	return nil
 }
 
-func (m *_BACnetLogRecordLogDatumFailure) GetTypeName() string {
+func (m *_BACnetLogRecordLogDatumFailure) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumFailure"
 }
 

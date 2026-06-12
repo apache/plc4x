@@ -292,7 +292,7 @@ func CastHVACHumidityModeAndFlags(structType any) HVACHumidityModeAndFlags {
 	return nil
 }
 
-func (m *_HVACHumidityModeAndFlags) GetTypeName() string {
+func (m *_HVACHumidityModeAndFlags) GetPlx4xTypeName() string {
 	return "HVACHumidityModeAndFlags"
 }
 

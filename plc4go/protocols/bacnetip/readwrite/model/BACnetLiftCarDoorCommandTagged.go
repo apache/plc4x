@@ -193,7 +193,7 @@ func CastBACnetLiftCarDoorCommandTagged(structType any) BACnetLiftCarDoorCommand
 	return nil
 }
 
-func (m *_BACnetLiftCarDoorCommandTagged) GetTypeName() string {
+func (m *_BACnetLiftCarDoorCommandTagged) GetPlx4xTypeName() string {
 	return "BACnetLiftCarDoorCommandTagged"
 }
 

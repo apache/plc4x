@@ -221,7 +221,7 @@ func CastBACnetValueSourceNone(structType any) BACnetValueSourceNone {
 	return nil
 }
 
-func (m *_BACnetValueSourceNone) GetTypeName() string {
+func (m *_BACnetValueSourceNone) GetPlx4xTypeName() string {
 	return "BACnetValueSourceNone"
 }
 

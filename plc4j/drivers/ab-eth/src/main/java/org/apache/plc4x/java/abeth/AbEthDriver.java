@@ -18,25 +18,23 @@
  */
 package org.apache.plc4x.java.abeth;
 
-import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
 import org.apache.plc4x.java.abeth.configuration.AbEthTcpTransportConfiguration;
 import org.apache.plc4x.java.abeth.tag.AbEthTag;
-import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
-import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
+import java.util.Set;
 
-public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
+public class AbEthDriver extends DriverBase {
 
     public static final int AB_ETH_PORT = 2222;
 
@@ -50,38 +48,35 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
         return "Allen Bradley ETH";
     }
 
-
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+    protected Class<? extends Configuration> getConfigurationClass() {
         return AbEthConfiguration.class;
     }
 
     @Override
-    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(AbEthTcpTransportConfiguration.class);
+    protected Class<? extends TransportConfiguration> getTransportConfigurationClass(Transport<?> transport) {
+        if ("tcp".equals(transport.getTransportCode())) {
+            return AbEthTcpTransportConfiguration.class;
         }
-        return Optional.empty();
+        return super.getTransportConfigurationClass(transport);
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
-        return Optional.of("raw");
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
     }
 
     @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
+    public List<String> getSupportedTransportCodes() {
+        return List.of("tcp", "test");
     }
 
-    /**
-     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
     @Override
-    protected boolean awaitDisconnectComplete() {
-        return false;
+    public Set<Integer> defaultPorts(String transportCode) {
+        if ("tcp".equalsIgnoreCase(transportCode)) {
+            return Set.of(AB_ETH_PORT);
+        }
+        return Collections.emptySet();
     }
 
     @Override
@@ -90,29 +85,14 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     }
 
     @Override
-    protected ProtocolStackConfigurer<CIPEncapsulationPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(CIPEncapsulationPacket.class, CIPEncapsulationPacket::staticParse)
-            .withProtocol(AbEthProtocolLogic.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .build();
-    }
-
-    /**
-     * Estimate the Length of a Packet
-     */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 4) {
-                // In the mspec we subtract 28 from the full size ... so here we gotta add it back.
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2) + 28;
-            }
-            return -1;
-        }
+    protected ConnectionBase<?> getConnection(Configuration configuration,
+                                              TransportInstance<?> transportInstance,
+                                              AuditLog auditLog) {
+        return new AbEthConnection((AbEthConfiguration) configuration, transportInstance, auditLog);
     }
 
     @Override
-    public PlcTag prepareTag(String tagAddress) {
+    public AbEthTag prepareTag(String tagAddress) {
         return AbEthTag.of(tagAddress);
     }
 

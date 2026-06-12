@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -288,7 +289,7 @@ func CastTraceContextDataType(structType any) TraceContextDataType {
 	return nil
 }
 
-func (m *_TraceContextDataType) GetTypeName() string {
+func (m *_TraceContextDataType) GetPlx4xTypeName() string {
 	return "TraceContextDataType"
 }
 
@@ -325,25 +326,25 @@ func (m *_TraceContextDataType) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	traceId, err := ReadSimpleField[GuidValue](ctx, "traceId", ReadComplex[GuidValue](GuidValueParseWithBuffer, readBuffer))
+	traceId, err := ReadSimpleField[GuidValue](ctx, "traceId", ReadComplex[GuidValue](GuidValueParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'traceId' field"))
 	}
 	m.TraceId = traceId
 
-	spanId, err := ReadSimpleField(ctx, "spanId", ReadUnsignedLong(readBuffer, uint8(64)))
+	spanId, err := ReadSimpleField(ctx, "spanId", ReadUnsignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'spanId' field"))
 	}
 	m.SpanId = spanId
 
-	parentSpanId, err := ReadSimpleField(ctx, "parentSpanId", ReadUnsignedLong(readBuffer, uint8(64)))
+	parentSpanId, err := ReadSimpleField(ctx, "parentSpanId", ReadUnsignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parentSpanId' field"))
 	}
 	m.ParentSpanId = parentSpanId
 
-	parentIdentifier, err := ReadSimpleField[PascalString](ctx, "parentIdentifier", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	parentIdentifier, err := ReadSimpleField[PascalString](ctx, "parentIdentifier", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parentIdentifier' field"))
 	}
@@ -374,19 +375,19 @@ func (m *_TraceContextDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for TraceContextDataType")
 		}
 
-		if err := WriteSimpleField[GuidValue](ctx, "traceId", m.GetTraceId(), WriteComplex[GuidValue](writeBuffer)); err != nil {
+		if err := WriteSimpleField[GuidValue](ctx, "traceId", m.GetTraceId(), WriteComplex[GuidValue](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'traceId' field")
 		}
 
-		if err := WriteSimpleField[uint64](ctx, "spanId", m.GetSpanId(), WriteUnsignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[uint64](ctx, "spanId", m.GetSpanId(), WriteUnsignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'spanId' field")
 		}
 
-		if err := WriteSimpleField[uint64](ctx, "parentSpanId", m.GetParentSpanId(), WriteUnsignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[uint64](ctx, "parentSpanId", m.GetParentSpanId(), WriteUnsignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'parentSpanId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "parentIdentifier", m.GetParentIdentifier(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "parentIdentifier", m.GetParentIdentifier(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'parentIdentifier' field")
 		}
 

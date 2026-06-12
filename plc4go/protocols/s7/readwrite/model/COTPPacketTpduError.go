@@ -222,7 +222,7 @@ func CastCOTPPacketTpduError(structType any) COTPPacketTpduError {
 	return nil
 }
 
-func (m *_COTPPacketTpduError) GetTypeName() string {
+func (m *_COTPPacketTpduError) GetPlx4xTypeName() string {
 	return "COTPPacketTpduError"
 }
 

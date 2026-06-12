@@ -258,7 +258,7 @@ func CastBACnetConstructedDataGroupMembers(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataGroupMembers) GetTypeName() string {
+func (m *_BACnetConstructedDataGroupMembers) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataGroupMembers"
 }
 

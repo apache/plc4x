@@ -291,7 +291,7 @@ func CastNodeIdTypeDefinition(structType any) NodeIdTypeDefinition {
 	return nil
 }
 
-func (m *_NodeIdTypeDefinition) GetTypeName() string {
+func (m *_NodeIdTypeDefinition) GetPlx4xTypeName() string {
 	return "NodeIdTypeDefinition"
 }
 

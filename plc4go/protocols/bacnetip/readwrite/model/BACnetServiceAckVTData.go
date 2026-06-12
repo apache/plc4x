@@ -291,7 +291,7 @@ func CastBACnetServiceAckVTData(structType any) BACnetServiceAckVTData {
 	return nil
 }
 
-func (m *_BACnetServiceAckVTData) GetTypeName() string {
+func (m *_BACnetServiceAckVTData) GetPlx4xTypeName() string {
 	return "BACnetServiceAckVTData"
 }
 

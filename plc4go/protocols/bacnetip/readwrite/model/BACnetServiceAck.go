@@ -416,7 +416,7 @@ func CastBACnetServiceAck(structType any) BACnetServiceAck {
 	return nil
 }
 
-func (m *_BACnetServiceAck) GetTypeName() string {
+func (m *_BACnetServiceAck) GetPlx4xTypeName() string {
 	return "BACnetServiceAck"
 }
 

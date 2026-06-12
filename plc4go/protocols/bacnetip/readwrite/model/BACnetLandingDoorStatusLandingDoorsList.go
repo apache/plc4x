@@ -225,7 +225,7 @@ func CastBACnetLandingDoorStatusLandingDoorsList(structType any) BACnetLandingDo
 	return nil
 }
 
-func (m *_BACnetLandingDoorStatusLandingDoorsList) GetTypeName() string {
+func (m *_BACnetLandingDoorStatusLandingDoorsList) GetPlx4xTypeName() string {
 	return "BACnetLandingDoorStatusLandingDoorsList"
 }
 

@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -248,7 +250,7 @@ func CastRequestReset(structType any) RequestReset {
 	return nil
 }
 
-func (m *_RequestReset) GetTypeName() string {
+func (m *_RequestReset) GetPlx4xTypeName() string {
 	return "RequestReset"
 }
 
@@ -283,27 +285,27 @@ func (m *_RequestReset) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	tildePeek, err := ReadPeekField[RequestType](ctx, "tildePeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
+	tildePeek, err := ReadPeekField[RequestType](ctx, "tildePeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tildePeek' field"))
 	}
 	m.TildePeek = tildePeek
 
 	var secondTilde *RequestType
-	secondTilde, err = ReadOptionalField[RequestType](ctx, "secondTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek) == (RequestType_RESET)))
+	secondTilde, err = ReadOptionalField[RequestType](ctx, "secondTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek) == (RequestType_RESET)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondTilde' field"))
 	}
 	m.SecondTilde = secondTilde
 
-	tildePeek2, err := ReadPeekField[RequestType](ctx, "tildePeek2", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
+	tildePeek2, err := ReadPeekField[RequestType](ctx, "tildePeek2", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tildePeek2' field"))
 	}
 	m.TildePeek2 = tildePeek2
 
 	var thirdTilde *RequestType
-	thirdTilde, err = ReadOptionalField[RequestType](ctx, "thirdTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek2) == (RequestType_RESET)))
+	thirdTilde, err = ReadOptionalField[RequestType](ctx, "thirdTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek2) == (RequestType_RESET)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'thirdTilde' field"))
 	}
@@ -317,7 +319,7 @@ func (m *_RequestReset) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 }
 
 func (m *_RequestReset) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -334,11 +336,11 @@ func (m *_RequestReset) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for RequestReset")
 		}
 
-		if err := WriteOptionalEnumField[RequestType](ctx, "secondTilde", "RequestType", m.GetSecondTilde(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetTildePeek()) == (RequestType_RESET))); err != nil {
+		if err := WriteOptionalEnumField[RequestType](ctx, "secondTilde", "RequestType", m.GetSecondTilde(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetTildePeek()) == (RequestType_RESET)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'secondTilde' field")
 		}
 
-		if err := WriteOptionalEnumField[RequestType](ctx, "thirdTilde", "RequestType", m.GetThirdTilde(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetTildePeek2()) == (RequestType_RESET))); err != nil {
+		if err := WriteOptionalEnumField[RequestType](ctx, "thirdTilde", "RequestType", m.GetThirdTilde(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetTildePeek2()) == (RequestType_RESET)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'thirdTilde' field")
 		}
 

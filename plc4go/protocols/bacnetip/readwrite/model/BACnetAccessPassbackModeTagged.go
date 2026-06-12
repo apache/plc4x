@@ -193,7 +193,7 @@ func CastBACnetAccessPassbackModeTagged(structType any) BACnetAccessPassbackMode
 	return nil
 }
 
-func (m *_BACnetAccessPassbackModeTagged) GetTypeName() string {
+func (m *_BACnetAccessPassbackModeTagged) GetPlx4xTypeName() string {
 	return "BACnetAccessPassbackModeTagged"
 }
 

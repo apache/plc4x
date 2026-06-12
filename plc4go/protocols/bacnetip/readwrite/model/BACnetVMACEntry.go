@@ -199,7 +199,7 @@ func CastBACnetVMACEntry(structType any) BACnetVMACEntry {
 	return nil
 }
 
-func (m *_BACnetVMACEntry) GetTypeName() string {
+func (m *_BACnetVMACEntry) GetPlx4xTypeName() string {
 	return "BACnetVMACEntry"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAllowGroupDelayInhibit(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetTypeName() string {
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAllowGroupDelayInhibit"
 }
 

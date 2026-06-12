@@ -284,7 +284,7 @@ func CastAirConditioningDataZoneTemperature(structType any) AirConditioningDataZ
 	return nil
 }
 
-func (m *_AirConditioningDataZoneTemperature) GetTypeName() string {
+func (m *_AirConditioningDataZoneTemperature) GetPlx4xTypeName() string {
 	return "AirConditioningDataZoneTemperature"
 }
 

@@ -205,7 +205,7 @@ func CastBACnetNameValue(structType any) BACnetNameValue {
 	return nil
 }
 
-func (m *_BACnetNameValue) GetTypeName() string {
+func (m *_BACnetNameValue) GetPlx4xTypeName() string {
 	return "BACnetNameValue"
 }
 

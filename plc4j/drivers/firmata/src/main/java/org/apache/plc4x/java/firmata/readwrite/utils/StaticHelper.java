@@ -18,35 +18,55 @@
  */
 package org.apache.plc4x.java.firmata.readwrite.utils;
 
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 
 public class StaticHelper {
 
     public static boolean isSysexEnd(ReadBuffer io) {
-        return ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 1)[0] == (byte) 0xF7;
+        int positionInBits = io.getPositionInBits();
+        try {
+            byte[] bytes = io.readBits(8);
+            return bytes.length == 1 && bytes[0] == (byte) 0xF7;
+        } catch (BufferException e) {
+            return false;
+        } finally {
+            io.setPositionInBits(positionInBits);
+        }
     }
 
     public static byte parseSysexString(ReadBuffer io) {
         try {
-            byte b = io.readByte();
-            // Skip the empty byte.
-            io.readByte();
-            return b;
-        } catch (ParseException e) {
+            // Each "sysex string" byte is followed by a zero padding byte (Firmata
+            // 7-bit MIDI framing). Read both via readBits so the WriteBufferXmlBased
+            // counterpart renders them with the matching dataType="byte" form.
+            byte[] valueBytes = io.readBits(8);
+            byte[] padBytes = io.readBits(8);
+            // padding byte intentionally discarded
+            if (padBytes.length == 1) {
+                // no-op
+            }
+            return valueBytes.length == 1 ? valueBytes[0] : 0;
+        } catch (BufferException e) {
             return 0;
         }
     }
 
     public static void serializeSysexString(WriteBuffer io, byte data) {
         try {
-            io.writeByte(data);
-            io.writeByte((byte) 0x00);
-        } catch (SerializationException e) {
+            io.writeBits(8, new byte[]{data});
+            io.writeBits(8, new byte[]{(byte) 0x00});
+        } catch (BufferException e) {
+            // intentionally ignored — legacy contract
         }
     }
 
     public static int lengthSysexString(byte[] data) {
-        return data.length * 2;
+        // Each byte of the logical sysex "string" is sent on the wire as two
+        // bytes (value + 0x00 padding). The generated SysexCommand length
+        // computation expects this contribution in *bits*, so multiply by 8.
+        return data.length * 2 * 8;
     }
 
 }

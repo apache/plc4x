@@ -225,7 +225,7 @@ func CastBACnetEventParameterChangeOfTimerAlarmValue(structType any) BACnetEvent
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfTimerAlarmValue"
 }
 

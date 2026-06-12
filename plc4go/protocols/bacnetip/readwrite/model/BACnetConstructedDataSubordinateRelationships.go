@@ -258,7 +258,7 @@ func CastBACnetConstructedDataSubordinateRelationships(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataSubordinateRelationships) GetTypeName() string {
+func (m *_BACnetConstructedDataSubordinateRelationships) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSubordinateRelationships"
 }
 

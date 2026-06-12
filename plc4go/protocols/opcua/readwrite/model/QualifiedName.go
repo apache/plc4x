@@ -194,7 +194,7 @@ func CastQualifiedName(structType any) QualifiedName {
 	return nil
 }
 
-func (m *_QualifiedName) GetTypeName() string {
+func (m *_QualifiedName) GetPlx4xTypeName() string {
 	return "QualifiedName"
 }
 

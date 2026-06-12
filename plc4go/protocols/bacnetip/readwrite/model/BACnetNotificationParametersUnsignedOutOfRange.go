@@ -386,7 +386,7 @@ func CastBACnetNotificationParametersUnsignedOutOfRange(structType any) BACnetNo
 	return nil
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRange) GetTypeName() string {
+func (m *_BACnetNotificationParametersUnsignedOutOfRange) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersUnsignedOutOfRange"
 }
 

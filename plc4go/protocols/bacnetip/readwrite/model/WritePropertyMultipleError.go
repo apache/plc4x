@@ -258,7 +258,7 @@ func CastWritePropertyMultipleError(structType any) WritePropertyMultipleError {
 	return nil
 }
 
-func (m *_WritePropertyMultipleError) GetTypeName() string {
+func (m *_WritePropertyMultipleError) GetPlx4xTypeName() string {
 	return "WritePropertyMultipleError"
 }
 

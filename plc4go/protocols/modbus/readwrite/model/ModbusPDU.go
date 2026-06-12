@@ -665,7 +665,7 @@ func CastModbusPDU(structType any) ModbusPDU {
 	return nil
 }
 
-func (m *_ModbusPDU) GetTypeName() string {
+func (m *_ModbusPDU) GetPlx4xTypeName() string {
 	return "ModbusPDU"
 }
 

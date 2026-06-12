@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCredentialDataInputUpdateTime(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetTypeName() string {
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCredentialDataInputUpdateTime"
 }
 

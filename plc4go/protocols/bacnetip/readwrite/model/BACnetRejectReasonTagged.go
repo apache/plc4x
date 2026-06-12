@@ -206,7 +206,7 @@ func CastBACnetRejectReasonTagged(structType any) BACnetRejectReasonTagged {
 	return nil
 }
 
-func (m *_BACnetRejectReasonTagged) GetTypeName() string {
+func (m *_BACnetRejectReasonTagged) GetPlx4xTypeName() string {
 	return "BACnetRejectReasonTagged"
 }
 

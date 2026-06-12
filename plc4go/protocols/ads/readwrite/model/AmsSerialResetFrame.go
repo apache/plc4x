@@ -243,7 +243,7 @@ func CastAmsSerialResetFrame(structType any) AmsSerialResetFrame {
 	return nil
 }
 
-func (m *_AmsSerialResetFrame) GetTypeName() string {
+func (m *_AmsSerialResetFrame) GetPlx4xTypeName() string {
 	return "AmsSerialResetFrame"
 }
 

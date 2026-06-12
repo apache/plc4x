@@ -243,7 +243,7 @@ func CastBACnetDeviceObjectPropertyReferenceEnclosed(structType any) BACnetDevic
 	return nil
 }
 
-func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) GetTypeName() string {
+func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) GetPlx4xTypeName() string {
 	return "BACnetDeviceObjectPropertyReferenceEnclosed"
 }
 

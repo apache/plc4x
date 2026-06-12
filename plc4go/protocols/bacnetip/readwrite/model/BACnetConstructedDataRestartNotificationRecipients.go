@@ -211,7 +211,7 @@ func CastBACnetConstructedDataRestartNotificationRecipients(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipients) GetTypeName() string {
+func (m *_BACnetConstructedDataRestartNotificationRecipients) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRestartNotificationRecipients"
 }
 

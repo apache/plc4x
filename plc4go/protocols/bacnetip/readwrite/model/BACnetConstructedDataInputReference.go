@@ -246,7 +246,7 @@ func CastBACnetConstructedDataInputReference(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataInputReference) GetTypeName() string {
+func (m *_BACnetConstructedDataInputReference) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataInputReference"
 }
 

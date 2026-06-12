@@ -258,7 +258,7 @@ func CastBACnetConstructedDataCarDoorText(structType any) BACnetConstructedDataC
 	return nil
 }
 
-func (m *_BACnetConstructedDataCarDoorText) GetTypeName() string {
+func (m *_BACnetConstructedDataCarDoorText) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCarDoorText"
 }
 

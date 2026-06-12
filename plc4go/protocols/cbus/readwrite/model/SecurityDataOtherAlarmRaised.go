@@ -176,7 +176,7 @@ func CastSecurityDataOtherAlarmRaised(structType any) SecurityDataOtherAlarmRais
 	return nil
 }
 
-func (m *_SecurityDataOtherAlarmRaised) GetTypeName() string {
+func (m *_SecurityDataOtherAlarmRaised) GetPlx4xTypeName() string {
 	return "SecurityDataOtherAlarmRaised"
 }
 

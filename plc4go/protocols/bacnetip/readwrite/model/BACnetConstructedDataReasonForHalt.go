@@ -246,7 +246,7 @@ func CastBACnetConstructedDataReasonForHalt(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataReasonForHalt) GetTypeName() string {
+func (m *_BACnetConstructedDataReasonForHalt) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReasonForHalt"
 }
 

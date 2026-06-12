@@ -266,7 +266,7 @@ func CastTriggerControlDataLabel(structType any) TriggerControlDataLabel {
 	return nil
 }
 
-func (m *_TriggerControlDataLabel) GetTypeName() string {
+func (m *_TriggerControlDataLabel) GetPlx4xTypeName() string {
 	return "TriggerControlDataLabel"
 }
 

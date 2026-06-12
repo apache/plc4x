@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -273,7 +274,7 @@ func CastPublishedEventsDataType(structType any) PublishedEventsDataType {
 	return nil
 }
 
-func (m *_PublishedEventsDataType) GetTypeName() string {
+func (m *_PublishedEventsDataType) GetPlx4xTypeName() string {
 	return "PublishedEventsDataType"
 }
 
@@ -315,25 +316,25 @@ func (m *_PublishedEventsDataType) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	eventNotifier, err := ReadSimpleField[NodeId](ctx, "eventNotifier", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	eventNotifier, err := ReadSimpleField[NodeId](ctx, "eventNotifier", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventNotifier' field"))
 	}
 	m.EventNotifier = eventNotifier
 
-	noOfSelectedFields, err := ReadImplicitField[int32](ctx, "noOfSelectedFields", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSelectedFields, err := ReadImplicitField[int32](ctx, "noOfSelectedFields", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSelectedFields' field"))
 	}
 	_ = noOfSelectedFields
 
-	selectedFields, err := ReadCountArrayField[SimpleAttributeOperand](ctx, "selectedFields", ReadComplex[SimpleAttributeOperand](ExtensionObjectDefinitionParseWithBufferProducer[SimpleAttributeOperand]((int32)(int32(603))), readBuffer), uint64(noOfSelectedFields))
+	selectedFields, err := ReadCountArrayField[SimpleAttributeOperand](ctx, "selectedFields", ReadComplex[SimpleAttributeOperand](ExtensionObjectDefinitionParseWithBufferProducer[SimpleAttributeOperand]((int32)(int32(603))), readBuffer), uint64(noOfSelectedFields), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'selectedFields' field"))
 	}
 	m.SelectedFields = selectedFields
 
-	filter, err := ReadSimpleField[ContentFilter](ctx, "filter", ReadComplex[ContentFilter](ExtensionObjectDefinitionParseWithBufferProducer[ContentFilter]((int32)(int32(588))), readBuffer))
+	filter, err := ReadSimpleField[ContentFilter](ctx, "filter", ReadComplex[ContentFilter](ExtensionObjectDefinitionParseWithBufferProducer[ContentFilter]((int32)(int32(588))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filter' field"))
 	}
@@ -364,19 +365,19 @@ func (m *_PublishedEventsDataType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for PublishedEventsDataType")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "eventNotifier", m.GetEventNotifier(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "eventNotifier", m.GetEventNotifier(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventNotifier' field")
 		}
 		noOfSelectedFields := int32(utils.InlineIf(bool((m.GetSelectedFields()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSelectedFields()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSelectedFields", noOfSelectedFields, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSelectedFields", noOfSelectedFields, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSelectedFields' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "selectedFields", m.GetSelectedFields(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "selectedFields", m.GetSelectedFields(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'selectedFields' field")
 		}
 
-		if err := WriteSimpleField[ContentFilter](ctx, "filter", m.GetFilter(), WriteComplex[ContentFilter](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ContentFilter](ctx, "filter", m.GetFilter(), WriteComplex[ContentFilter](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'filter' field")
 		}
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBelongsTo(structType any) BACnetConstructedDataBel
 	return nil
 }
 
-func (m *_BACnetConstructedDataBelongsTo) GetTypeName() string {
+func (m *_BACnetConstructedDataBelongsTo) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBelongsTo"
 }
 

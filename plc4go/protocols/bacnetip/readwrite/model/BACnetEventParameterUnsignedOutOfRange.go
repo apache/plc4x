@@ -386,7 +386,7 @@ func CastBACnetEventParameterUnsignedOutOfRange(structType any) BACnetEventParam
 	return nil
 }
 
-func (m *_BACnetEventParameterUnsignedOutOfRange) GetTypeName() string {
+func (m *_BACnetEventParameterUnsignedOutOfRange) GetPlx4xTypeName() string {
 	return "BACnetEventParameterUnsignedOutOfRange"
 }
 

@@ -207,7 +207,7 @@ func CastNLMReserved(structType any) NLMReserved {
 	return nil
 }
 
-func (m *_NLMReserved) GetTypeName() string {
+func (m *_NLMReserved) GetPlx4xTypeName() string {
 	return "NLMReserved"
 }
 

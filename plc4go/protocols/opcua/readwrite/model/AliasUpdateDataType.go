@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastAliasUpdateDataType(structType any) AliasUpdateDataType {
 	return nil
 }
 
-func (m *_AliasUpdateDataType) GetTypeName() string {
+func (m *_AliasUpdateDataType) GetPlx4xTypeName() string {
 	return "AliasUpdateDataType"
 }
 
@@ -279,19 +280,19 @@ func (m *_AliasUpdateDataType) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	applicationUri, err := ReadSimpleField[PascalString](ctx, "applicationUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	applicationUri, err := ReadSimpleField[PascalString](ctx, "applicationUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationUri' field"))
 	}
 	m.ApplicationUri = applicationUri
 
-	noOfCategories, err := ReadImplicitField[int32](ctx, "noOfCategories", ReadSignedInt(readBuffer, uint8(32)))
+	noOfCategories, err := ReadImplicitField[int32](ctx, "noOfCategories", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfCategories' field"))
 	}
 	_ = noOfCategories
 
-	categories, err := ReadCountArrayField[AliasCategoryUpdateDataType](ctx, "categories", ReadComplex[AliasCategoryUpdateDataType](ExtensionObjectDefinitionParseWithBufferProducer[AliasCategoryUpdateDataType]((int32)(int32(24054))), readBuffer), uint64(noOfCategories))
+	categories, err := ReadCountArrayField[AliasCategoryUpdateDataType](ctx, "categories", ReadComplex[AliasCategoryUpdateDataType](ExtensionObjectDefinitionParseWithBufferProducer[AliasCategoryUpdateDataType]((int32)(int32(24054))), readBuffer), uint64(noOfCategories), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'categories' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_AliasUpdateDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for AliasUpdateDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "applicationUri", m.GetApplicationUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "applicationUri", m.GetApplicationUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'applicationUri' field")
 		}
 		noOfCategories := int32(utils.InlineIf(bool((m.GetCategories()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetCategories()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfCategories", noOfCategories, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfCategories", noOfCategories, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfCategories' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "categories", m.GetCategories(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "categories", m.GetCategories(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'categories' field")
 		}
 

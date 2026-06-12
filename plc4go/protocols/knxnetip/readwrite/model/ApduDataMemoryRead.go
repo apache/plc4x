@@ -222,7 +222,7 @@ func CastApduDataMemoryRead(structType any) ApduDataMemoryRead {
 	return nil
 }
 
-func (m *_ApduDataMemoryRead) GetTypeName() string {
+func (m *_ApduDataMemoryRead) GetPlx4xTypeName() string {
 	return "ApduDataMemoryRead"
 }
 

@@ -38,6 +38,7 @@
   </properties>
 
   <modules>
+    <module>audit-log</module>
     <!-- Non-default input options -->
     <module>pcap-replay</module>
     <module>pcap-shared</module>
@@ -48,7 +49,8 @@
     <module>test-utils</module>
 
     <!-- Utilities for working with PLCs -->
-    <module>plc-simulator</module>
+    <!-- TODO: Re-Enable as soon as we have ported the driver logic -->
+    <!--module>plc-simulator</module-->
   </modules>
 
 </project>

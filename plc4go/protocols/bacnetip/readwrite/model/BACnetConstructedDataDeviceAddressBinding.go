@@ -211,7 +211,7 @@ func CastBACnetConstructedDataDeviceAddressBinding(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataDeviceAddressBinding) GetTypeName() string {
+func (m *_BACnetConstructedDataDeviceAddressBinding) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDeviceAddressBinding"
 }
 

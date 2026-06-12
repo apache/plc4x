@@ -221,7 +221,7 @@ func CastBACnetEventParameterChangeOfValueCivCriteriaBitmask(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfValueCivCriteriaBitmask"
 }
 

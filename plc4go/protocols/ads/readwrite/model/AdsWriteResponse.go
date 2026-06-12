@@ -60,7 +60,7 @@ var _ AdsWriteResponse = (*_AdsWriteResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsWriteResponse)(nil)
 
 // NewAdsWriteResponse factory function for _AdsWriteResponse
-func NewAdsWriteResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsWriteResponse {
+func NewAdsWriteResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode) *_AdsWriteResponse {
 	_result := &_AdsWriteResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
@@ -212,7 +212,7 @@ func CastAdsWriteResponse(structType any) AdsWriteResponse {
 	return nil
 }
 
-func (m *_AdsWriteResponse) GetTypeName() string {
+func (m *_AdsWriteResponse) GetPlx4xTypeName() string {
 	return "AdsWriteResponse"
 }
 

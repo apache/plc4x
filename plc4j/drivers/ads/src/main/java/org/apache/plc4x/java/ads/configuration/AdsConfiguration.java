@@ -20,16 +20,19 @@ package org.apache.plc4x.java.ads.configuration;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.readwrite.AmsNetId;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.*;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.ConfigurationParameterConverter;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.ParameterConverter;
+import org.apache.plc4x.java.spi.config.annotations.Required;
+import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class AdsConfiguration implements PlcConnectionConfiguration {
+public class AdsConfiguration implements Configuration {
 
     public static final Pattern AMS_NET_ID_PATTERN =
         Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
@@ -134,6 +137,18 @@ public class AdsConfiguration implements PlcConnectionConfiguration {
         String[] split = address.split("\\.");
         short[] shorts = ArrayUtils.toPrimitive(Stream.of(split).map(Integer::parseInt).map(Integer::shortValue).toArray(Short[]::new));
         return new AmsNetId(shorts[0], shorts[1], shorts[2], shorts[3], shorts[4], shorts[5]);
+    }
+
+    @Override
+    public String toString() {
+        return "AdsConfiguration{" +
+            "targetAmsNetId=" + targetAmsNetId +
+            ", targetAmsPort=" + targetAmsPort +
+            ", sourceAmsNetId=" + sourceAmsNetId +
+            ", sourceAmsPort=" + sourceAmsPort +
+            ", timeoutRequest=" + timeoutRequest +
+            ", loadSymbolAndDataTypeTables=" + loadSymbolAndDataTypeTables +
+            '}';
     }
 
 }

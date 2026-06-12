@@ -222,7 +222,7 @@ func CastVariantStatusCode(structType any) VariantStatusCode {
 	return nil
 }
 
-func (m *_VariantStatusCode) GetTypeName() string {
+func (m *_VariantStatusCode) GetPlx4xTypeName() string {
 	return "VariantStatusCode"
 }
 

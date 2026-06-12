@@ -348,7 +348,7 @@ func CastCipUnconnectedRequest(structType any) CipUnconnectedRequest {
 	return nil
 }
 
-func (m *_CipUnconnectedRequest) GetTypeName() string {
+func (m *_CipUnconnectedRequest) GetPlx4xTypeName() string {
 	return "CipUnconnectedRequest"
 }
 

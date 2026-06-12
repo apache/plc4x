@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -226,7 +228,7 @@ func CastSALDataAudioAndVideo(structType any) SALDataAudioAndVideo {
 	return nil
 }
 
-func (m *_SALDataAudioAndVideo) GetTypeName() string {
+func (m *_SALDataAudioAndVideo) GetPlx4xTypeName() string {
 	return "SALDataAudioAndVideo"
 }
 
@@ -254,7 +256,7 @@ func (m *_SALDataAudioAndVideo) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	audioVideoData, err := ReadSimpleField[LightingData](ctx, "audioVideoData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	audioVideoData, err := ReadSimpleField[LightingData](ctx, "audioVideoData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'audioVideoData' field"))
 	}
@@ -268,7 +270,7 @@ func (m *_SALDataAudioAndVideo) parse(ctx context.Context, readBuffer utils.Read
 }
 
 func (m *_SALDataAudioAndVideo) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -285,7 +287,7 @@ func (m *_SALDataAudioAndVideo) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SALDataAudioAndVideo")
 		}
 
-		if err := WriteSimpleField[LightingData](ctx, "audioVideoData", m.GetAudioVideoData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[LightingData](ctx, "audioVideoData", m.GetAudioVideoData(), WriteComplex[LightingData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'audioVideoData' field")
 		}
 

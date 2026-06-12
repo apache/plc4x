@@ -246,7 +246,7 @@ func CastBACnetConstructedDataNextStoppingFloor(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloor) GetTypeName() string {
+func (m *_BACnetConstructedDataNextStoppingFloor) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNextStoppingFloor"
 }
 

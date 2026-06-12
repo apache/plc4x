@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -291,7 +293,7 @@ func CastCBusPointToPointCommand(structType any) CBusPointToPointCommand {
 	return nil
 }
 
-func (m *_CBusPointToPointCommand) GetTypeName() string {
+func (m *_CBusPointToPointCommand) GetPlx4xTypeName() string {
 	return "CBusPointToPointCommand"
 }
 
@@ -315,7 +317,7 @@ func (m *_CBusPointToPointCommand) GetLengthInBytes(ctx context.Context) uint16 
 }
 
 func CBusPointToPointCommandParse[T CBusPointToPointCommand](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
-	return CBusPointToPointCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToPointCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions)
 }
 
 func CBusPointToPointCommandParseWithBufferProducer[T CBusPointToPointCommand](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -352,13 +354,13 @@ func (m *_CBusPointToPointCommand) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bridgeAddressCountPeek, err := ReadPeekField[uint16](ctx, "bridgeAddressCountPeek", ReadUnsignedShort(readBuffer, uint8(16)), 0)
+	bridgeAddressCountPeek, err := ReadPeekField[uint16](ctx, "bridgeAddressCountPeek", ReadUnsignedShort(readBuffer, uint8(16)), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bridgeAddressCountPeek' field"))
 	}
 	m.BridgeAddressCountPeek = bridgeAddressCountPeek
 
-	isDirect, err := ReadVirtualField[bool](ctx, "isDirect", (*bool)(nil), bool((bridgeAddressCountPeek&0x00FF) == (0x0000)))
+	isDirect, err := ReadVirtualField[bool](ctx, "isDirect", (*bool)(nil), bool((bridgeAddressCountPeek&0x00FF) == (0x0000)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDirect' field"))
 	}
@@ -379,7 +381,7 @@ func (m *_CBusPointToPointCommand) parse(ctx context.Context, readBuffer utils.R
 		return nil, errors.Errorf("Unmapped type for parameters [isDirect=%v]", isDirect)
 	}
 
-	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(nil)), readBuffer))
+	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(nil)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
@@ -415,7 +417,7 @@ func (pm *_CBusPointToPointCommand) serializeParent(ctx context.Context, writeBu
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteSimpleField[CALData](ctx, "calData", m.GetCalData(), WriteComplex[CALData](writeBuffer)); err != nil {
+	if err := WriteSimpleField[CALData](ctx, "calData", m.GetCalData(), WriteComplex[CALData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'calData' field")
 	}
 

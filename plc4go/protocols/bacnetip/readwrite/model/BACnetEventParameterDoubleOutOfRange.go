@@ -386,7 +386,7 @@ func CastBACnetEventParameterDoubleOutOfRange(structType any) BACnetEventParamet
 	return nil
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRange) GetTypeName() string {
+func (m *_BACnetEventParameterDoubleOutOfRange) GetPlx4xTypeName() string {
 	return "BACnetEventParameterDoubleOutOfRange"
 }
 

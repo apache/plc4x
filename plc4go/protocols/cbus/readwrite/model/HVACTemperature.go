@@ -179,7 +179,7 @@ func CastHVACTemperature(structType any) HVACTemperature {
 	return nil
 }
 
-func (m *_HVACTemperature) GetTypeName() string {
+func (m *_HVACTemperature) GetPlx4xTypeName() string {
 	return "HVACTemperature"
 }
 

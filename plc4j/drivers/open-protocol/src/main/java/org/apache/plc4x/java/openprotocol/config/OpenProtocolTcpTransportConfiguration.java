@@ -20,9 +20,9 @@
 package org.apache.plc4x.java.openprotocol.config;
 
 import org.apache.plc4x.java.openprotocol.readwrite.Constants;
-import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
+import org.apache.plc4x.java.transport.tcp.config.TcpTransportConfiguration;
 
-public class OpenProtocolTcpTransportConfiguration extends DefaultTcpTransportConfiguration {
+public class OpenProtocolTcpTransportConfiguration extends TcpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {

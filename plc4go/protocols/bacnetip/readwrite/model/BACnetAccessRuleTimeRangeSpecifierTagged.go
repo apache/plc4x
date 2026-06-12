@@ -193,7 +193,7 @@ func CastBACnetAccessRuleTimeRangeSpecifierTagged(structType any) BACnetAccessRu
 	return nil
 }
 
-func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) GetTypeName() string {
+func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) GetPlx4xTypeName() string {
 	return "BACnetAccessRuleTimeRangeSpecifierTagged"
 }
 

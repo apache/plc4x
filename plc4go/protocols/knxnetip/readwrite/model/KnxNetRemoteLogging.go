@@ -208,7 +208,7 @@ func CastKnxNetRemoteLogging(structType any) KnxNetRemoteLogging {
 	return nil
 }
 
-func (m *_KnxNetRemoteLogging) GetTypeName() string {
+func (m *_KnxNetRemoteLogging) GetPlx4xTypeName() string {
 	return "KnxNetRemoteLogging"
 }
 

@@ -36,6 +36,19 @@
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
+  <build>
+    <plugins>
+      <!-- Porting this will be part of a later step -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <!--Jackson-->
     <dependency>
@@ -83,7 +96,7 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-spi-values</artifactId>
       <version>0.14.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>

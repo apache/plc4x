@@ -312,7 +312,7 @@ func CastS7ParameterUserDataItemCPUFunctions(structType any) S7ParameterUserData
 	return nil
 }
 
-func (m *_S7ParameterUserDataItemCPUFunctions) GetTypeName() string {
+func (m *_S7ParameterUserDataItemCPUFunctions) GetPlx4xTypeName() string {
 	return "S7ParameterUserDataItemCPUFunctions"
 }
 

@@ -245,7 +245,7 @@ func CastModbusPDUMaskWriteHoldingRegisterResponse(structType any) ModbusPDUMask
 	return nil
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) GetTypeName() string {
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUMaskWriteHoldingRegisterResponse"
 }
 

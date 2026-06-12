@@ -246,7 +246,7 @@ func CastBACnetConstructedDataProportionalConstantUnits(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataProportionalConstantUnits) GetTypeName() string {
+func (m *_BACnetConstructedDataProportionalConstantUnits) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProportionalConstantUnits"
 }
 

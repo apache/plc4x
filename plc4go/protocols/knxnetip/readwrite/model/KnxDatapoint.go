@@ -258,7 +258,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(8), utils.WithEncoding("UTF-8"))
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(8), utils.WithEncoding("UTF8"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -272,7 +272,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF-16"))
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF8"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -404,14 +404,13 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 		_ = seconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
-		// Simple Field (nanoseconds)
-		nanoseconds, _nanosecondsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("nanoseconds", 32)
-		if _nanosecondsErr != nil {
-			return nil, errors.Wrap(_nanosecondsErr, "Error parsing 'nanoseconds' field")
+		// Simple Field (nanosecondsOfSecond)
+		nanosecondsOfSecond, _nanosecondsOfSecondErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("nanosecondsOfSecond", 32)
+		if _nanosecondsOfSecondErr != nil {
+			return nil, errors.Wrap(_nanosecondsOfSecondErr, "Error parsing 'nanosecondsOfSecond' field")
 		}
-		_ = nanoseconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+		_ = nanosecondsOfSecond // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxDatapoint")
-		return values.NewPlcDATA_AND_TIMEFromSegments(uint32(year), uint32(month), uint32(day), uint32(hour), uint32(minutes), uint32(seconds), uint32(nanoseconds)), nil
 	case datapointType == KnxDatapointType_DT: // DATE_AND_TIME
 		// Reserved Field (Just skip the bytes)
 		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8); _err != nil {
@@ -467,14 +466,13 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 		_ = seconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
-		// Simple Field (nanoseconds)
-		nanoseconds, _nanosecondsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("nanoseconds", 32)
-		if _nanosecondsErr != nil {
-			return nil, errors.Wrap(_nanosecondsErr, "Error parsing 'nanoseconds' field")
+		// Simple Field (nanosecondsOfSecond)
+		nanosecondsOfSecond, _nanosecondsOfSecondErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("nanosecondsOfSecond", 32)
+		if _nanosecondsOfSecondErr != nil {
+			return nil, errors.Wrap(_nanosecondsOfSecondErr, "Error parsing 'nanosecondsOfSecond' field")
 		}
-		_ = nanoseconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+		_ = nanosecondsOfSecond // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxDatapoint")
-		return values.NewPlcDATA_AND_TIMEFromSegments(uint32(year), uint32(month), uint32(day), uint32(hour), uint32(minutes), uint32(seconds), uint32(nanoseconds)), nil
 	case datapointType == KnxDatapointType_DPT_Switch: // BOOL
 		// Reserved Field (Just skip the bytes)
 		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7); _err != nil {
@@ -8532,7 +8530,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF-8)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF8)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_WCHAR: // WCHAR
@@ -8542,7 +8540,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF-16)")); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF8)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_TIME: // TIME
@@ -8636,9 +8634,9 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
-		// Simple Field (nanoseconds)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("nanoseconds", 32, uint32(value.(values.PlcDATE_AND_TIME).GetNanoseconds())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
+		// Simple Field (nanosecondsOfSecond)
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("nanosecondsOfSecond", 32, uint32(value.(values.PlcDATE_AND_TIME).GetNanosecondsOfSecond())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'nanosecondsOfSecond' field")
 		}
 	case datapointType == KnxDatapointType_DT: // DATE_AND_TIME
 		// Reserved Field (Just skip the bytes)
@@ -8681,9 +8679,9 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
-		// Simple Field (nanoseconds)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("nanoseconds", 32, uint32(value.(values.PlcDATE_AND_TIME).GetNanoseconds())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
+		// Simple Field (nanosecondsOfSecond)
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("nanosecondsOfSecond", 32, uint32(value.(values.PlcDATE_AND_TIME).GetNanosecondsOfSecond())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'nanosecondsOfSecond' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Switch: // BOOL
 		// Reserved Field (Just skip the bytes)

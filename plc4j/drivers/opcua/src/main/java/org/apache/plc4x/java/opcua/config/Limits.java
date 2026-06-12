@@ -19,12 +19,12 @@
 
 package org.apache.plc4x.java.opcua.config;
 
-import org.apache.plc4x.java.spi.configuration.PlcConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
-public class Limits implements PlcConfiguration {
+public class Limits implements Configuration {
 
     @ConfigurationParameter("receive-buffer-size")
     @IntDefaultValue(65535)

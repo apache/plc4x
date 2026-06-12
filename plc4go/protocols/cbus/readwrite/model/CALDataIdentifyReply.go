@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -237,7 +239,7 @@ func CastCALDataIdentifyReply(structType any) CALDataIdentifyReply {
 	return nil
 }
 
-func (m *_CALDataIdentifyReply) GetTypeName() string {
+func (m *_CALDataIdentifyReply) GetPlx4xTypeName() string {
 	return "CALDataIdentifyReply"
 }
 
@@ -268,13 +270,13 @@ func (m *_CALDataIdentifyReply) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	attribute, err := ReadEnumField[Attribute](ctx, "attribute", "Attribute", ReadEnum(AttributeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	attribute, err := ReadEnumField[Attribute](ctx, "attribute", "Attribute", ReadEnum(AttributeByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attribute' field"))
 	}
 	m.Attribute = attribute
 
-	identifyReplyCommand, err := ReadSimpleField[IdentifyReplyCommand](ctx, "identifyReplyCommand", ReadComplex[IdentifyReplyCommand](IdentifyReplyCommandParseWithBufferProducer[IdentifyReplyCommand]((Attribute)(attribute), (uint8)(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1)))), readBuffer))
+	identifyReplyCommand, err := ReadSimpleField[IdentifyReplyCommand](ctx, "identifyReplyCommand", ReadComplex[IdentifyReplyCommand](IdentifyReplyCommandParseWithBufferProducer[IdentifyReplyCommand]((Attribute)(attribute), (uint8)(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1)))), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifyReplyCommand' field"))
 	}
@@ -288,7 +290,7 @@ func (m *_CALDataIdentifyReply) parse(ctx context.Context, readBuffer utils.Read
 }
 
 func (m *_CALDataIdentifyReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -305,11 +307,11 @@ func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for CALDataIdentifyReply")
 		}
 
-		if err := WriteSimpleEnumField[Attribute](ctx, "attribute", "Attribute", m.GetAttribute(), WriteEnum[Attribute, uint8](Attribute.GetValue, Attribute.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[Attribute](ctx, "attribute", "Attribute", m.GetAttribute(), WriteEnum[Attribute, uint8](Attribute.GetValue, Attribute.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'attribute' field")
 		}
 
-		if err := WriteSimpleField[IdentifyReplyCommand](ctx, "identifyReplyCommand", m.GetIdentifyReplyCommand(), WriteComplex[IdentifyReplyCommand](writeBuffer)); err != nil {
+		if err := WriteSimpleField[IdentifyReplyCommand](ctx, "identifyReplyCommand", m.GetIdentifyReplyCommand(), WriteComplex[IdentifyReplyCommand](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'identifyReplyCommand' field")
 		}
 

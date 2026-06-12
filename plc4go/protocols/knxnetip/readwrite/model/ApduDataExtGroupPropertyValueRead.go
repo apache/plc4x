@@ -180,7 +180,7 @@ func CastApduDataExtGroupPropertyValueRead(structType any) ApduDataExtGroupPrope
 	return nil
 }
 
-func (m *_ApduDataExtGroupPropertyValueRead) GetTypeName() string {
+func (m *_ApduDataExtGroupPropertyValueRead) GetPlx4xTypeName() string {
 	return "ApduDataExtGroupPropertyValueRead"
 }
 

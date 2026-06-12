@@ -193,7 +193,7 @@ func CastBACnetLightingInProgressTagged(structType any) BACnetLightingInProgress
 	return nil
 }
 
-func (m *_BACnetLightingInProgressTagged) GetTypeName() string {
+func (m *_BACnetLightingInProgressTagged) GetPlx4xTypeName() string {
 	return "BACnetLightingInProgressTagged"
 }
 

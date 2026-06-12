@@ -192,7 +192,7 @@ func CastAdsStampHeader(structType any) AdsStampHeader {
 	return nil
 }
 
-func (m *_AdsStampHeader) GetTypeName() string {
+func (m *_AdsStampHeader) GetPlx4xTypeName() string {
 	return "AdsStampHeader"
 }
 

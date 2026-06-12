@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -291,7 +292,7 @@ func CastPubSubConfigurationValueDataType(structType any) PubSubConfigurationVal
 	return nil
 }
 
-func (m *_PubSubConfigurationValueDataType) GetTypeName() string {
+func (m *_PubSubConfigurationValueDataType) GetPlx4xTypeName() string {
 	return "PubSubConfigurationValueDataType"
 }
 
@@ -325,19 +326,19 @@ func (m *_PubSubConfigurationValueDataType) parse(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	configurationElement, err := ReadSimpleField[PubSubConfigurationRefDataType](ctx, "configurationElement", ReadComplex[PubSubConfigurationRefDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubConfigurationRefDataType]((int32)(int32(25521))), readBuffer))
+	configurationElement, err := ReadSimpleField[PubSubConfigurationRefDataType](ctx, "configurationElement", ReadComplex[PubSubConfigurationRefDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubConfigurationRefDataType]((int32)(int32(25521))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configurationElement' field"))
 	}
 	m.ConfigurationElement = configurationElement
 
-	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 	m.Name = name
 
-	identifier, err := ReadSimpleField[Variant](ctx, "identifier", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	identifier, err := ReadSimpleField[Variant](ctx, "identifier", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
@@ -368,15 +369,15 @@ func (m *_PubSubConfigurationValueDataType) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for PubSubConfigurationValueDataType")
 		}
 
-		if err := WriteSimpleField[PubSubConfigurationRefDataType](ctx, "configurationElement", m.GetConfigurationElement(), WriteComplex[PubSubConfigurationRefDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PubSubConfigurationRefDataType](ctx, "configurationElement", m.GetConfigurationElement(), WriteComplex[PubSubConfigurationRefDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'configurationElement' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
-		if err := WriteSimpleField[Variant](ctx, "identifier", m.GetIdentifier(), WriteComplex[Variant](writeBuffer)); err != nil {
+		if err := WriteSimpleField[Variant](ctx, "identifier", m.GetIdentifier(), WriteComplex[Variant](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'identifier' field")
 		}
 

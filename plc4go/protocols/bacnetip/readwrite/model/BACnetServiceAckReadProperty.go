@@ -312,7 +312,7 @@ func CastBACnetServiceAckReadProperty(structType any) BACnetServiceAckReadProper
 	return nil
 }
 
-func (m *_BACnetServiceAckReadProperty) GetTypeName() string {
+func (m *_BACnetServiceAckReadProperty) GetPlx4xTypeName() string {
 	return "BACnetServiceAckReadProperty"
 }
 

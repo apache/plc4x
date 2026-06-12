@@ -211,7 +211,7 @@ func CastBACnetConstructedDataManualSlaveAddressBinding(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetTypeName() string {
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataManualSlaveAddressBinding"
 }
 

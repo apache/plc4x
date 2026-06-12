@@ -247,7 +247,7 @@ func CastMeasurementData(structType any) MeasurementData {
 	return nil
 }
 
-func (m *_MeasurementData) GetTypeName() string {
+func (m *_MeasurementData) GetPlx4xTypeName() string {
 	return "MeasurementData"
 }
 

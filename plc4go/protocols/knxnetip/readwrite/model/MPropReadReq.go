@@ -267,7 +267,7 @@ func CastMPropReadReq(structType any) MPropReadReq {
 	return nil
 }
 
-func (m *_MPropReadReq) GetTypeName() string {
+func (m *_MPropReadReq) GetPlx4xTypeName() string {
 	return "MPropReadReq"
 }
 

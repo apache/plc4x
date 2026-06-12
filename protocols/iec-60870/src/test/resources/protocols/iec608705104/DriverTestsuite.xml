@@ -22,8 +22,8 @@
 
   <name>IEC-60870-5-104</name>
 
-  <protocolName>iec-60870-5-104</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>iec-60870-5-104</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <driver-name>iec-60870-5-104</driver-name>
 

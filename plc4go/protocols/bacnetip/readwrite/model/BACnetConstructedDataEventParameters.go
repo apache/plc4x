@@ -246,7 +246,7 @@ func CastBACnetConstructedDataEventParameters(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventParameters) GetTypeName() string {
+func (m *_BACnetConstructedDataEventParameters) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventParameters"
 }
 

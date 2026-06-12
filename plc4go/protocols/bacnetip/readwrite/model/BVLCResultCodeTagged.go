@@ -193,7 +193,7 @@ func CastBVLCResultCodeTagged(structType any) BVLCResultCodeTagged {
 	return nil
 }
 
-func (m *_BVLCResultCodeTagged) GetTypeName() string {
+func (m *_BVLCResultCodeTagged) GetPlx4xTypeName() string {
 	return "BVLCResultCodeTagged"
 }
 

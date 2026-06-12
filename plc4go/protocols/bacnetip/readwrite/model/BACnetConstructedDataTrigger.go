@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTrigger(structType any) BACnetConstructedDataTrigg
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrigger) GetTypeName() string {
+func (m *_BACnetConstructedDataTrigger) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrigger"
 }
 

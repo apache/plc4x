@@ -176,7 +176,7 @@ func CastSecurityDataMainsFailure(structType any) SecurityDataMainsFailure {
 	return nil
 }
 
-func (m *_SecurityDataMainsFailure) GetTypeName() string {
+func (m *_SecurityDataMainsFailure) GetPlx4xTypeName() string {
 	return "SecurityDataMainsFailure"
 }
 

@@ -20,8 +20,8 @@
 <test:testsuite xmlns:test='https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd' byteOrder='BIG_ENDIAN'>
   <name>APDUs</name>
 
-  <protocolName>iec-60870-5-104</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>iec-60870-5-104</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>4	&lt;- U (TESTFR act) </name>

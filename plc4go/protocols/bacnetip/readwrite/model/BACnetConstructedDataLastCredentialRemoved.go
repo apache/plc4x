@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLastCredentialRemoved(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemoved) GetTypeName() string {
+func (m *_BACnetConstructedDataLastCredentialRemoved) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastCredentialRemoved"
 }
 

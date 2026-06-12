@@ -225,7 +225,7 @@ func CastBACnetConfirmedServiceRequestDeleteObject(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestDeleteObject) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestDeleteObject) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestDeleteObject"
 }
 

@@ -18,26 +18,24 @@
  */
 package org.apache.plc4x.java.openprotocol;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.openprotocol.config.OpenProtocolConfiguration;
 import org.apache.plc4x.java.openprotocol.config.OpenProtocolTcpTransportConfiguration;
-import org.apache.plc4x.java.openprotocol.protocol.OpenProtocolProtocolLogic;
-import org.apache.plc4x.java.openprotocol.readwrite.OpenProtocolMessage;
+import org.apache.plc4x.java.openprotocol.readwrite.Constants;
 import org.apache.plc4x.java.openprotocol.tag.OpenProtocolTag;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
+import java.util.Set;
 
-public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage> {
+public class OpenProtocolDriver extends DriverBase {
 
     @Override
     public String getProtocolCode() {
@@ -50,37 +48,34 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     }
 
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+    protected Class<? extends Configuration> getConfigurationClass() {
         return OpenProtocolConfiguration.class;
     }
 
     @Override
-    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(OpenProtocolTcpTransportConfiguration.class);
+    protected Class<? extends TransportConfiguration> getTransportConfigurationClass(Transport<?> transport) {
+        if ("tcp".equals(transport.getTransportCode())) {
+            return OpenProtocolTcpTransportConfiguration.class;
         }
-        return Optional.empty();
+        return super.getTransportConfigurationClass(transport);
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
+    public Optional<String> getDefaultTransportCode() {
         return Optional.of("tcp");
     }
 
     @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
+    public List<String> getSupportedTransportCodes() {
+        return List.of("tcp", "test");
     }
 
     @Override
-    protected boolean awaitSetupComplete() {
-        return false;
-    }
-
-    @Override
-    protected boolean awaitDisconnectComplete() {
-        return false;
+    public Set<Integer> defaultPorts(String transportCode) {
+        if ("tcp".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.TCPDEFAULTPORT);
+        }
+        return Collections.emptySet();
     }
 
     @Override
@@ -94,31 +89,15 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     }
 
     @Override
-    protected BaseOptimizer getOptimizer() {
-        return new SingleTagOptimizer();
+    protected ConnectionBase<?> getConnection(Configuration configuration,
+                                              TransportInstance<?> transportInstance,
+                                              AuditLog auditLog) {
+        return new OpenProtocolConnection(
+            (OpenProtocolConfiguration) configuration, transportInstance, auditLog);
     }
 
     @Override
-    protected ProtocolStackConfigurer<OpenProtocolMessage> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(OpenProtocolMessage.class, io -> OpenProtocolMessage.staticParse(io, 1))
-            .withProtocol(OpenProtocolProtocolLogic.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .build();
-    }
-
-    /** Estimate the Length of a Packet */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 6) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4) + 6;
-            }
-            return -1;
-        }
-    }
-
-    @Override
-    public OpenProtocolTag prepareTag(String tagAddress){
+    public OpenProtocolTag prepareTag(String tagAddress) {
         return OpenProtocolTag.of(tagAddress);
     }
 

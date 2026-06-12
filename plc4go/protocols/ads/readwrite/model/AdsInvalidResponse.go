@@ -54,7 +54,7 @@ var _ AdsInvalidResponse = (*_AdsInvalidResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsInvalidResponse)(nil)
 
 // NewAdsInvalidResponse factory function for _AdsInvalidResponse
-func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsInvalidResponse {
+func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32) *_AdsInvalidResponse {
 	_result := &_AdsInvalidResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
@@ -184,7 +184,7 @@ func CastAdsInvalidResponse(structType any) AdsInvalidResponse {
 	return nil
 }
 
-func (m *_AdsInvalidResponse) GetTypeName() string {
+func (m *_AdsInvalidResponse) GetPlx4xTypeName() string {
 	return "AdsInvalidResponse"
 }
 

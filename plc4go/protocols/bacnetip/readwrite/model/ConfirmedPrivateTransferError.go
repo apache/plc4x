@@ -318,7 +318,7 @@ func CastConfirmedPrivateTransferError(structType any) ConfirmedPrivateTransferE
 	return nil
 }
 
-func (m *_ConfirmedPrivateTransferError) GetTypeName() string {
+func (m *_ConfirmedPrivateTransferError) GetPlx4xTypeName() string {
 	return "ConfirmedPrivateTransferError"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMaximumValueTimestamp(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaximumValueTimestamp) GetTypeName() string {
+func (m *_BACnetConstructedDataMaximumValueTimestamp) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaximumValueTimestamp"
 }
 

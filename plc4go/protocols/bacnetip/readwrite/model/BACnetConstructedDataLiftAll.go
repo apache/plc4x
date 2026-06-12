@@ -184,7 +184,7 @@ func CastBACnetConstructedDataLiftAll(structType any) BACnetConstructedDataLiftA
 	return nil
 }
 
-func (m *_BACnetConstructedDataLiftAll) GetTypeName() string {
+func (m *_BACnetConstructedDataLiftAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLiftAll"
 }
 

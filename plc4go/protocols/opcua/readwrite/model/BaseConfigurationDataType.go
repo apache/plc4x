@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -222,7 +223,7 @@ func CastBaseConfigurationDataType(structType any) BaseConfigurationDataType {
 	return nil
 }
 
-func (m *_BaseConfigurationDataType) GetTypeName() string {
+func (m *_BaseConfigurationDataType) GetPlx4xTypeName() string {
 	return "BaseConfigurationDataType"
 }
 
@@ -261,19 +262,19 @@ func (m *_BaseConfigurationDataType) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	configurationVersion, err := ReadSimpleField(ctx, "configurationVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	configurationVersion, err := ReadSimpleField(ctx, "configurationVersion", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configurationVersion' field"))
 	}
 	m.ConfigurationVersion = configurationVersion
 
-	noOfConfigurationProperties, err := ReadImplicitField[int32](ctx, "noOfConfigurationProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfConfigurationProperties, err := ReadImplicitField[int32](ctx, "noOfConfigurationProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConfigurationProperties' field"))
 	}
 	_ = noOfConfigurationProperties
 
-	configurationProperties, err := ReadCountArrayField[KeyValuePair](ctx, "configurationProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfConfigurationProperties))
+	configurationProperties, err := ReadCountArrayField[KeyValuePair](ctx, "configurationProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfConfigurationProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configurationProperties' field"))
 	}
@@ -304,15 +305,15 @@ func (m *_BaseConfigurationDataType) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BaseConfigurationDataType")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "configurationVersion", m.GetConfigurationVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "configurationVersion", m.GetConfigurationVersion(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'configurationVersion' field")
 		}
 		noOfConfigurationProperties := int32(utils.InlineIf(bool((m.GetConfigurationProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetConfigurationProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfConfigurationProperties", noOfConfigurationProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfConfigurationProperties", noOfConfigurationProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfConfigurationProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "configurationProperties", m.GetConfigurationProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "configurationProperties", m.GetConfigurationProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'configurationProperties' field")
 		}
 

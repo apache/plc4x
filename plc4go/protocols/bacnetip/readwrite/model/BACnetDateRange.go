@@ -211,7 +211,7 @@ func CastBACnetDateRange(structType any) BACnetDateRange {
 	return nil
 }
 
-func (m *_BACnetDateRange) GetTypeName() string {
+func (m *_BACnetDateRange) GetPlx4xTypeName() string {
 	return "BACnetDateRange"
 }
 

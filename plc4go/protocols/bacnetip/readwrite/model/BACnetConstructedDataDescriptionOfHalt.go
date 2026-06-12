@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDescriptionOfHalt(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataDescriptionOfHalt) GetTypeName() string {
+func (m *_BACnetConstructedDataDescriptionOfHalt) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDescriptionOfHalt"
 }
 

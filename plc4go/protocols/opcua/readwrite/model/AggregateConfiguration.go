@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -270,7 +271,7 @@ func CastAggregateConfiguration(structType any) AggregateConfiguration {
 	return nil
 }
 
-func (m *_AggregateConfiguration) GetTypeName() string {
+func (m *_AggregateConfiguration) GetPlx4xTypeName() string {
 	return "AggregateConfiguration"
 }
 
@@ -316,43 +317,43 @@ func (m *_AggregateConfiguration) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(6)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(6)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	treatUncertainAsBad, err := ReadSimpleField(ctx, "treatUncertainAsBad", ReadBoolean(readBuffer))
+	treatUncertainAsBad, err := ReadSimpleField(ctx, "treatUncertainAsBad", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'treatUncertainAsBad' field"))
 	}
 	m.TreatUncertainAsBad = treatUncertainAsBad
 
-	useServerCapabilitiesDefaults, err := ReadSimpleField(ctx, "useServerCapabilitiesDefaults", ReadBoolean(readBuffer))
+	useServerCapabilitiesDefaults, err := ReadSimpleField(ctx, "useServerCapabilitiesDefaults", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'useServerCapabilitiesDefaults' field"))
 	}
 	m.UseServerCapabilitiesDefaults = useServerCapabilitiesDefaults
 
-	percentDataBad, err := ReadSimpleField(ctx, "percentDataBad", ReadUnsignedByte(readBuffer, uint8(8)))
+	percentDataBad, err := ReadSimpleField(ctx, "percentDataBad", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'percentDataBad' field"))
 	}
 	m.PercentDataBad = percentDataBad
 
-	percentDataGood, err := ReadSimpleField(ctx, "percentDataGood", ReadUnsignedByte(readBuffer, uint8(8)))
+	percentDataGood, err := ReadSimpleField(ctx, "percentDataGood", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'percentDataGood' field"))
 	}
 	m.PercentDataGood = percentDataGood
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField1 = reservedField1
 
-	useSlopedExtrapolation, err := ReadSimpleField(ctx, "useSlopedExtrapolation", ReadBoolean(readBuffer))
+	useSlopedExtrapolation, err := ReadSimpleField(ctx, "useSlopedExtrapolation", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'useSlopedExtrapolation' field"))
 	}
@@ -383,31 +384,31 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for AggregateConfiguration")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 6), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "treatUncertainAsBad", m.GetTreatUncertainAsBad(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "treatUncertainAsBad", m.GetTreatUncertainAsBad(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'treatUncertainAsBad' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "useServerCapabilitiesDefaults", m.GetUseServerCapabilitiesDefaults(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "useServerCapabilitiesDefaults", m.GetUseServerCapabilitiesDefaults(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'useServerCapabilitiesDefaults' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "percentDataBad", m.GetPercentDataBad(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "percentDataBad", m.GetPercentDataBad(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'percentDataBad' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "percentDataGood", m.GetPercentDataGood(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "percentDataGood", m.GetPercentDataGood(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'percentDataGood' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "useSlopedExtrapolation", m.GetUseSlopedExtrapolation(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "useSlopedExtrapolation", m.GetUseSlopedExtrapolation(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'useSlopedExtrapolation' field")
 		}
 

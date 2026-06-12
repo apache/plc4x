@@ -227,7 +227,7 @@ func CastBVLCOriginalUnicastNPDU(structType any) BVLCOriginalUnicastNPDU {
 	return nil
 }
 
-func (m *_BVLCOriginalUnicastNPDU) GetTypeName() string {
+func (m *_BVLCOriginalUnicastNPDU) GetPlx4xTypeName() string {
 	return "BVLCOriginalUnicastNPDU"
 }
 
@@ -255,7 +255,7 @@ func (m *_BVLCOriginalUnicastNPDU) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	npdu, err := ReadSimpleField[NPDU](ctx, "npdu", ReadComplex[NPDU](NPDUParseWithBufferProducer((uint16)(bvlcPayloadLength)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	npdu, err := ReadSimpleField[NPDU](ctx, "npdu", ReadComplex[NPDU](NPDUParseWithBufferProducer((uint16)(bvlcPayloadLength)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'npdu' field"))
 	}
@@ -286,7 +286,7 @@ func (m *_BVLCOriginalUnicastNPDU) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BVLCOriginalUnicastNPDU")
 		}
 
-		if err := WriteSimpleField[NPDU](ctx, "npdu", m.GetNpdu(), WriteComplex[NPDU](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[NPDU](ctx, "npdu", m.GetNpdu(), WriteComplex[NPDU](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'npdu' field")
 		}
 

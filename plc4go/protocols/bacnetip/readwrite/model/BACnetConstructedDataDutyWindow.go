@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDutyWindow(structType any) BACnetConstructedDataDu
 	return nil
 }
 
-func (m *_BACnetConstructedDataDutyWindow) GetTypeName() string {
+func (m *_BACnetConstructedDataDutyWindow) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDutyWindow"
 }
 

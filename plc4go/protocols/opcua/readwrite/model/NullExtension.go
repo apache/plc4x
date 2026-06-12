@@ -180,7 +180,7 @@ func CastNullExtension(structType any) NullExtension {
 	return nil
 }
 
-func (m *_NullExtension) GetTypeName() string {
+func (m *_NullExtension) GetPlx4xTypeName() string {
 	return "NullExtension"
 }
 

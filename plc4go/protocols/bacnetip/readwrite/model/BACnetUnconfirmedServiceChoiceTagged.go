@@ -193,7 +193,7 @@ func CastBACnetUnconfirmedServiceChoiceTagged(structType any) BACnetUnconfirmedS
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceChoiceTagged) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceChoiceTagged) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceChoiceTagged"
 }
 

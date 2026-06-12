@@ -315,7 +315,7 @@ func CastMessagePDU(structType any) MessagePDU {
 	return nil
 }
 
-func (m *_MessagePDU) GetTypeName() string {
+func (m *_MessagePDU) GetPlx4xTypeName() string {
 	return "MessagePDU"
 }
 

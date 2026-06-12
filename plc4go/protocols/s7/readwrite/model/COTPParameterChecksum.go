@@ -207,7 +207,7 @@ func CastCOTPParameterChecksum(structType any) COTPParameterChecksum {
 	return nil
 }
 
-func (m *_COTPParameterChecksum) GetTypeName() string {
+func (m *_COTPParameterChecksum) GetPlx4xTypeName() string {
 	return "COTPParameterChecksum"
 }
 

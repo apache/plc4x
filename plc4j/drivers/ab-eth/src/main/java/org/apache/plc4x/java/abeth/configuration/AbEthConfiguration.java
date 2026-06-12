@@ -18,15 +18,22 @@
  */
 package org.apache.plc4x.java.abeth.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
-public class AbEthConfiguration implements PlcConnectionConfiguration {
+public class AbEthConfiguration implements Configuration {
 
-    @ConfigurationParameter
-    @Description("Id of the station we want to connect to")
+    @ConfigurationParameter("station")
+    @Description("Id of the station we want to connect to.")
+    @IntDefaultValue(0)
     private int station;
+
+    @ConfigurationParameter("request-timeout")
+    @Description("Maximum time (in milliseconds) to wait for the gateway to acknowledge the connection request or for a read response.")
+    @IntDefaultValue(10_000)
+    private int requestTimeout;
 
     public int getStation() {
         return station;
@@ -34,6 +41,14 @@ public class AbEthConfiguration implements PlcConnectionConfiguration {
 
     public void setStation(int station) {
         this.station = station;
+    }
+
+    public int getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    public void setRequestTimeout(int requestTimeout) {
+        this.requestTimeout = requestTimeout;
     }
 
 }

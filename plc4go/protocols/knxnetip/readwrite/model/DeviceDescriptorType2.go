@@ -365,7 +365,7 @@ func CastDeviceDescriptorType2(structType any) DeviceDescriptorType2 {
 	return nil
 }
 
-func (m *_DeviceDescriptorType2) GetTypeName() string {
+func (m *_DeviceDescriptorType2) GetPlx4xTypeName() string {
 	return "DeviceDescriptorType2"
 }
 

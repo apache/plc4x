@@ -368,7 +368,7 @@ func CastAPDUComplexAck(structType any) APDUComplexAck {
 	return nil
 }
 
-func (m *_APDUComplexAck) GetTypeName() string {
+func (m *_APDUComplexAck) GetPlx4xTypeName() string {
 	return "APDUComplexAck"
 }
 

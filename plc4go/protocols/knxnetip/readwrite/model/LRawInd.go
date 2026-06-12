@@ -180,7 +180,7 @@ func CastLRawInd(structType any) LRawInd {
 	return nil
 }
 
-func (m *_LRawInd) GetTypeName() string {
+func (m *_LRawInd) GetPlx4xTypeName() string {
 	return "LRawInd"
 }
 

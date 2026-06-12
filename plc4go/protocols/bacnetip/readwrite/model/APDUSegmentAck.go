@@ -269,7 +269,7 @@ func CastAPDUSegmentAck(structType any) APDUSegmentAck {
 	return nil
 }
 
-func (m *_APDUSegmentAck) GetTypeName() string {
+func (m *_APDUSegmentAck) GetPlx4xTypeName() string {
 	return "APDUSegmentAck"
 }
 

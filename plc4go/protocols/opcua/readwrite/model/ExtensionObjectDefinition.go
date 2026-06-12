@@ -4439,7 +4439,7 @@ func CastExtensionObjectDefinition(structType any) ExtensionObjectDefinition {
 	return nil
 }
 
-func (m *_ExtensionObjectDefinition) GetTypeName() string {
+func (m *_ExtensionObjectDefinition) GetPlx4xTypeName() string {
 	return "ExtensionObjectDefinition"
 }
 

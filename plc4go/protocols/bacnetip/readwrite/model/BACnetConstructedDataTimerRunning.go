@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTimerRunning(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimerRunning) GetTypeName() string {
+func (m *_BACnetConstructedDataTimerRunning) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimerRunning"
 }
 

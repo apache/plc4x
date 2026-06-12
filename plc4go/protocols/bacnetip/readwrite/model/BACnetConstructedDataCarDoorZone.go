@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCarDoorZone(structType any) BACnetConstructedDataC
 	return nil
 }
 
-func (m *_BACnetConstructedDataCarDoorZone) GetTypeName() string {
+func (m *_BACnetConstructedDataCarDoorZone) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCarDoorZone"
 }
 

@@ -232,7 +232,7 @@ func CastAlarm8MessageQueryType(structType any) Alarm8MessageQueryType {
 	return nil
 }
 
-func (m *_Alarm8MessageQueryType) GetTypeName() string {
+func (m *_Alarm8MessageQueryType) GetPlx4xTypeName() string {
 	return "Alarm8MessageQueryType"
 }
 

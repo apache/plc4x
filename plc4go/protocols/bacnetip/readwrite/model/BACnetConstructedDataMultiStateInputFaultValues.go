@@ -211,7 +211,7 @@ func CastBACnetConstructedDataMultiStateInputFaultValues(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateInputFaultValues"
 }
 

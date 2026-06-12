@@ -220,7 +220,7 @@ func CastNPDUControl(structType any) NPDUControl {
 	return nil
 }
 
-func (m *_NPDUControl) GetTypeName() string {
+func (m *_NPDUControl) GetPlx4xTypeName() string {
 	return "NPDUControl"
 }
 

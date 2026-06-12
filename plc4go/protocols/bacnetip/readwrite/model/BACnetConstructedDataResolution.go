@@ -246,7 +246,7 @@ func CastBACnetConstructedDataResolution(structType any) BACnetConstructedDataRe
 	return nil
 }
 
-func (m *_BACnetConstructedDataResolution) GetTypeName() string {
+func (m *_BACnetConstructedDataResolution) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataResolution"
 }
 

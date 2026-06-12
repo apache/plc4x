@@ -293,7 +293,7 @@ func CastCipConnectionManagerCloseResponse(structType any) CipConnectionManagerC
 	return nil
 }
 
-func (m *_CipConnectionManagerCloseResponse) GetTypeName() string {
+func (m *_CipConnectionManagerCloseResponse) GetPlx4xTypeName() string {
 	return "CipConnectionManagerCloseResponse"
 }
 

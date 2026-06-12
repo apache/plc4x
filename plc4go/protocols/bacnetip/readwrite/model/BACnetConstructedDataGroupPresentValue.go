@@ -211,7 +211,7 @@ func CastBACnetConstructedDataGroupPresentValue(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataGroupPresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataGroupPresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataGroupPresentValue"
 }
 

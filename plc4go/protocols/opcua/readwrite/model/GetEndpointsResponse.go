@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastGetEndpointsResponse(structType any) GetEndpointsResponse {
 	return nil
 }
 
-func (m *_GetEndpointsResponse) GetTypeName() string {
+func (m *_GetEndpointsResponse) GetPlx4xTypeName() string {
 	return "GetEndpointsResponse"
 }
 
@@ -279,19 +280,19 @@ func (m *_GetEndpointsResponse) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfEndpoints, err := ReadImplicitField[int32](ctx, "noOfEndpoints", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEndpoints, err := ReadImplicitField[int32](ctx, "noOfEndpoints", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEndpoints' field"))
 	}
 	_ = noOfEndpoints
 
-	endpoints, err := ReadCountArrayField[EndpointDescription](ctx, "endpoints", ReadComplex[EndpointDescription](ExtensionObjectDefinitionParseWithBufferProducer[EndpointDescription]((int32)(int32(314))), readBuffer), uint64(noOfEndpoints))
+	endpoints, err := ReadCountArrayField[EndpointDescription](ctx, "endpoints", ReadComplex[EndpointDescription](ExtensionObjectDefinitionParseWithBufferProducer[EndpointDescription]((int32)(int32(314))), readBuffer), uint64(noOfEndpoints), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpoints' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_GetEndpointsResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for GetEndpointsResponse")
 		}
 
-		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 		noOfEndpoints := int32(utils.InlineIf(bool((m.GetEndpoints()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEndpoints()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfEndpoints", noOfEndpoints, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfEndpoints", noOfEndpoints, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEndpoints' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "endpoints", m.GetEndpoints(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "endpoints", m.GetEndpoints(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'endpoints' field")
 		}
 

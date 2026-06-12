@@ -180,7 +180,7 @@ func CastS7MessageRequest(structType any) S7MessageRequest {
 	return nil
 }
 
-func (m *_S7MessageRequest) GetTypeName() string {
+func (m *_S7MessageRequest) GetPlx4xTypeName() string {
 	return "S7MessageRequest"
 }
 

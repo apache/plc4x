@@ -176,7 +176,7 @@ func CastAccessControlDataLockAccessPoint(structType any) AccessControlDataLockA
 	return nil
 }
 
-func (m *_AccessControlDataLockAccessPoint) GetTypeName() string {
+func (m *_AccessControlDataLockAccessPoint) GetPlx4xTypeName() string {
 	return "AccessControlDataLockAccessPoint"
 }
 

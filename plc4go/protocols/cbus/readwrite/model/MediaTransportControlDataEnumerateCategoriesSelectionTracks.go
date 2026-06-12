@@ -259,7 +259,7 @@ func CastMediaTransportControlDataEnumerateCategoriesSelectionTracks(structType 
 	return nil
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetTypeName() string {
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataEnumerateCategoriesSelectionTracks"
 }
 

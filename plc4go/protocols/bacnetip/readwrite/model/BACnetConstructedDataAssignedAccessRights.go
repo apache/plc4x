@@ -258,7 +258,7 @@ func CastBACnetConstructedDataAssignedAccessRights(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataAssignedAccessRights) GetTypeName() string {
+func (m *_BACnetConstructedDataAssignedAccessRights) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAssignedAccessRights"
 }
 

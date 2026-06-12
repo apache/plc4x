@@ -211,7 +211,7 @@ func CastBACnetConstructedDataExitPoints(structType any) BACnetConstructedDataEx
 	return nil
 }
 
-func (m *_BACnetConstructedDataExitPoints) GetTypeName() string {
+func (m *_BACnetConstructedDataExitPoints) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExitPoints"
 }
 

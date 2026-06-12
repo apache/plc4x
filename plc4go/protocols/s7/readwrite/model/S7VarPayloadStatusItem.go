@@ -161,7 +161,7 @@ func CastS7VarPayloadStatusItem(structType any) S7VarPayloadStatusItem {
 	return nil
 }
 
-func (m *_S7VarPayloadStatusItem) GetTypeName() string {
+func (m *_S7VarPayloadStatusItem) GetPlx4xTypeName() string {
 	return "S7VarPayloadStatusItem"
 }
 

@@ -237,7 +237,7 @@ func CastCOTPPacketConnectionRequest(structType any) COTPPacketConnectionRequest
 	return nil
 }
 
-func (m *_COTPPacketConnectionRequest) GetTypeName() string {
+func (m *_COTPPacketConnectionRequest) GetPlx4xTypeName() string {
 	return "COTPPacketConnectionRequest"
 }
 

@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesLockStatus(structType any) BACnetPropertyStatesLock
 	return nil
 }
 
-func (m *_BACnetPropertyStatesLockStatus) GetTypeName() string {
+func (m *_BACnetPropertyStatesLockStatus) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesLockStatus"
 }
 

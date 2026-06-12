@@ -291,7 +291,7 @@ func CastBACnetConfirmedServiceRequestVTData(structType any) BACnetConfirmedServ
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTData) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestVTData) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestVTData"
 }
 

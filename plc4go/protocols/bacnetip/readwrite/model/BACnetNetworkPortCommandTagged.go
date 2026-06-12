@@ -224,7 +224,7 @@ func CastBACnetNetworkPortCommandTagged(structType any) BACnetNetworkPortCommand
 	return nil
 }
 
-func (m *_BACnetNetworkPortCommandTagged) GetTypeName() string {
+func (m *_BACnetNetworkPortCommandTagged) GetPlx4xTypeName() string {
 	return "BACnetNetworkPortCommandTagged"
 }
 

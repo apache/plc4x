@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAnalogInputInterfaceValue(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogInputInterfaceValue"
 }
 

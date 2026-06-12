@@ -386,7 +386,7 @@ func CastBACnetNotificationParametersFloatingLimit(structType any) BACnetNotific
 	return nil
 }
 
-func (m *_BACnetNotificationParametersFloatingLimit) GetTypeName() string {
+func (m *_BACnetNotificationParametersFloatingLimit) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersFloatingLimit"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPolarity(structType any) BACnetConstructedDataPola
 	return nil
 }
 
-func (m *_BACnetConstructedDataPolarity) GetTypeName() string {
+func (m *_BACnetConstructedDataPolarity) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPolarity"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataFDSubscriptionLifetime(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetTypeName() string {
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFDSubscriptionLifetime"
 }
 

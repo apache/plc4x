@@ -246,7 +246,7 @@ func CastBACnetConstructedDataIPv6AutoAddressingEnable(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6AutoAddressingEnable"
 }
 

@@ -240,7 +240,7 @@ func CastNLMUpdateKeyDistributionKey(structType any) NLMUpdateKeyDistributionKey
 	return nil
 }
 
-func (m *_NLMUpdateKeyDistributionKey) GetTypeName() string {
+func (m *_NLMUpdateKeyDistributionKey) GetPlx4xTypeName() string {
 	return "NLMUpdateKeyDistributionKey"
 }
 

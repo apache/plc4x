@@ -318,7 +318,7 @@ func CastTriggerControlData(structType any) TriggerControlData {
 	return nil
 }
 
-func (m *_TriggerControlData) GetTypeName() string {
+func (m *_TriggerControlData) GetPlx4xTypeName() string {
 	return "TriggerControlData"
 }
 

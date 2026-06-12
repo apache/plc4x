@@ -30,13 +30,16 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
-import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionResponse;
+import org.apache.plc4x.java.spi.drivers.functions.PlcSubscriber;
+import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,7 +160,7 @@ public class ProfinetDevice implements PlcSubscriber {
     }
 
     @Override
-    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+    public PlcConsumerRegistration registerConsumer(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
         // Register the current consumer for each of the given subscription handles
         for (PlcSubscriptionHandle subscriptionHandle : handles) {
             logger.debug("Registering Consumer");
@@ -174,7 +177,7 @@ public class ProfinetDevice implements PlcSubscriber {
     }
 
     @Override
-    public void unregister(PlcConsumerRegistration registration) {
+    public void unregisterConsumer(PlcConsumerRegistration registration) {
 
     }
 
@@ -241,7 +244,7 @@ public class ProfinetDevice implements PlcSubscriber {
                             case APPLRDY:
                                 ApplicationReadyResponse applicationReadyResponse = new ApplicationReadyResponse(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
                                 send(applicationReadyResponse, ProfinetDeviceContext.DEFAULT_UDP_PORT, deviceContext.getApplicationResponseDestinationPort());
-                                deviceContext.getContext().fireConnected();
+                                deviceContext.getContext().run();
                                 deviceContext.setState(ProfinetDeviceState.CYCLICDATA);
                                 break;
                             // In this state we're receiving data from the remote device and in this part of the
@@ -396,8 +399,8 @@ public class ProfinetDevice implements PlcSubscriber {
         }
     }
 
-    public void setContext(ConversationContext<Ethernet_Frame> context, ProfinetChannel channel) {
-        deviceContext.setContext(context);
+    public void setContext(ProfinetDeviceContext.OnConnectedCallback onConnected, ProfinetChannel channel) {
+        deviceContext.setContext(onConnected);
         deviceContext.setChannel(channel);
     }
 
@@ -454,7 +457,7 @@ public class ProfinetDevice implements PlcSubscriber {
             for (Map.Entry<Consumer<PlcSubscriptionEvent>, Map<String, PlcResponseItem<PlcValue>>> entry : response.entrySet()) {
                 entry.getKey().accept(new DefaultPlcSubscriptionEvent(Instant.now(), entry.getValue()));
             }
-        } catch (ParseException e) {
+        } catch (BufferException e) {
             deviceContext.setState(ProfinetDeviceState.ABORT);
             logger.error("Error Parsing Cyclic Data from device {}", deviceContext.getDeviceName());
         }
@@ -624,11 +627,11 @@ public class ProfinetDevice implements PlcSubscriber {
                 new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 deviceContext.getUuid(),
-                0,
+                0L,
                 id,
                 DceRpc_Operation.CONNECT,
                 (short) 0,
-                new PnIoCm_Packet_Req(ProfinetDeviceContext.DEFAULT_ARGS_MAXIMUM, ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT, 0, blocks)
+                new PnIoCm_Packet_Req((long) ProfinetDeviceContext.DEFAULT_ARGS_MAXIMUM, (long) ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT, 0L, blocks)
             );
         }
 
@@ -696,11 +699,11 @@ public class ProfinetDevice implements PlcSubscriber {
                         (short) 0,
                         seqNumber,
                         ProfinetDeviceContext.ARUUID,
-                        0x00000000,
+                        0x00000000L,
                         0x0000,
                         interfaceModule.getSubslotNumber(),
                         0x8071,
-                        12,
+                        12L,
                         null
                     ));
                 requests.add(
@@ -731,11 +734,11 @@ public class ProfinetDevice implements PlcSubscriber {
                                 (short) 0,
                                 seqNumber,
                                 ProfinetDeviceContext.ARUUID,
-                                0x00000000,
+                                0x00000000L,
                                 index,
                                 0x0001,
                                 record.getIndex(),
-                                record.getLength(),
+                                (long) record.getLength(),
                                 new UserData(ByteBuffer.allocate(4).putInt(Integer.parseInt(record.getRef().getDefaultValue())).array())
                             ));
                         seqNumber += 1;
@@ -754,7 +757,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 (short) 0,
                 seqNumber,
                 ProfinetDeviceContext.ARUUID,
-                0x00000000,
+                0x00000000L,
                 0x0000,
                 0x0000,
                 0xe040,
@@ -767,11 +770,11 @@ public class ProfinetDevice implements PlcSubscriber {
                 new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 deviceContext.getUuid(),
-                0,
+                0L,
                 id,
                 DceRpc_Operation.WRITE,
                 (short) 0,
-                new PnIoCm_Packet_Req(16696, 16696, 0,
+                new PnIoCm_Packet_Req(16696L, 16696L, 0L,
                     requests)
             );
         }
@@ -828,11 +831,11 @@ public class ProfinetDevice implements PlcSubscriber {
                 new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 deviceContext.getUuid(),
-                0,
+                0L,
                 id,
                 DceRpc_Operation.CONTROL,
                 (short) 0,
-                new PnIoCm_Packet_Req(16696, 16696, 0,
+                new PnIoCm_Packet_Req(16696L, 16696L, 0L,
                     Collections.singletonList(
                         new PnIoCm_Control_Request_ParameterEnd(
                             (short) 1,
@@ -904,7 +907,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_ControllerInterface(),
                 activityUuid,
-                0,
+                0L,
                 id,
                 DceRpc_Operation.CONTROL,
                 (short) 0,
@@ -914,7 +917,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     (short) 0,
                     (short) 0,
                     deviceContext.getMaxArrayCount(),
-                    0,
+                    0L,
                     Collections.singletonList(
                         new PnIoCm_Control_Response_ApplicationReady(
                             (short) 1,
@@ -964,7 +967,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + deviceId), Integer.decode("0x" + vendorId)),
                 new DceRpc_InterfaceUuid_ControllerInterface(),
                 activityUuid,
-                0,
+                0L,
                 id,
                 DceRpc_Operation.CONTROL,
                 (short) 0,
@@ -993,7 +996,7 @@ public class ProfinetDevice implements PlcSubscriber {
 
         public Ethernet_Frame create() {
 
-            WriteBufferByteBased buffer = new WriteBufferByteBased(deviceContext.getOutputReq().getDataLength());
+            WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[deviceContext.getOutputReq().getDataLength()]);
             PnIoCm_IoCrBlockReqApi api = deviceContext.getOutputReq().getApis().get(0);
             try {
                 for (PnIoCm_IoCs iocs : api.getIoCss()) {
@@ -1010,8 +1013,8 @@ public class ProfinetDevice implements PlcSubscriber {
                     ioc.serialize(buffer);
                 }
 
-                while (buffer.getPos() < deviceContext.getOutputReq().getDataLength()) {
-                    buffer.writeByte((byte) 0x00);
+                while ((buffer.getPositionInBits() / 8) < deviceContext.getOutputReq().getDataLength()) {
+                    buffer.writeSignedByte(8, (byte) 0x00);
                 }
 
                 // TODO:- Still having issues with this. For the Simcode after a while we received an Alarm low message, Although it might be related to the ping functionality.
@@ -1037,7 +1040,7 @@ public class ProfinetDevice implements PlcSubscriber {
                                 true))
                     ));
                 return frame;
-            } catch (SerializationException e) {
+            } catch (BufferException e) {
                 deviceContext.setState(ProfinetDeviceState.ABORT);
                 logger.error("Error serializing cyclic data for device {}", deviceContext.getDeviceName());
 

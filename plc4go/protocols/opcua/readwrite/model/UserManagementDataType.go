@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -273,7 +274,7 @@ func CastUserManagementDataType(structType any) UserManagementDataType {
 	return nil
 }
 
-func (m *_UserManagementDataType) GetTypeName() string {
+func (m *_UserManagementDataType) GetPlx4xTypeName() string {
 	return "UserManagementDataType"
 }
 
@@ -307,19 +308,19 @@ func (m *_UserManagementDataType) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
 	m.UserName = userName
 
-	userConfiguration, err := ReadEnumField[UserConfigurationMask](ctx, "userConfiguration", "UserConfigurationMask", ReadEnum(UserConfigurationMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	userConfiguration, err := ReadEnumField[UserConfigurationMask](ctx, "userConfiguration", "UserConfigurationMask", ReadEnum(UserConfigurationMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userConfiguration' field"))
 	}
 	m.UserConfiguration = userConfiguration
 
-	description, err := ReadSimpleField[PascalString](ctx, "description", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	description, err := ReadSimpleField[PascalString](ctx, "description", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
@@ -350,15 +351,15 @@ func (m *_UserManagementDataType) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for UserManagementDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
 
-		if err := WriteSimpleEnumField[UserConfigurationMask](ctx, "userConfiguration", "UserConfigurationMask", m.GetUserConfiguration(), WriteEnum[UserConfigurationMask, uint32](UserConfigurationMask.GetValue, UserConfigurationMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[UserConfigurationMask](ctx, "userConfiguration", "UserConfigurationMask", m.GetUserConfiguration(), WriteEnum[UserConfigurationMask, uint32](UserConfigurationMask.GetValue, UserConfigurationMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'userConfiguration' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "description", m.GetDescription(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "description", m.GetDescription(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'description' field")
 		}
 

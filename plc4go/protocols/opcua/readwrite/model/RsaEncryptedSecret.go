@@ -135,7 +135,7 @@ func CastRsaEncryptedSecret(structType any) RsaEncryptedSecret {
 	return nil
 }
 
-func (m *_RsaEncryptedSecret) GetTypeName() string {
+func (m *_RsaEncryptedSecret) GetPlx4xTypeName() string {
 	return "RsaEncryptedSecret"
 }
 

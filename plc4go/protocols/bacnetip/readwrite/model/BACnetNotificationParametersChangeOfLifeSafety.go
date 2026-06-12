@@ -387,7 +387,7 @@ func CastBACnetNotificationParametersChangeOfLifeSafety(structType any) BACnetNo
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafety) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfLifeSafety) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfLifeSafety"
 }
 

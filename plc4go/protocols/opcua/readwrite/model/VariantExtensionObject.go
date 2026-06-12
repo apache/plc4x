@@ -222,7 +222,7 @@ func CastVariantExtensionObject(structType any) VariantExtensionObject {
 	return nil
 }
 
-func (m *_VariantExtensionObject) GetTypeName() string {
+func (m *_VariantExtensionObject) GetPlx4xTypeName() string {
 	return "VariantExtensionObject"
 }
 

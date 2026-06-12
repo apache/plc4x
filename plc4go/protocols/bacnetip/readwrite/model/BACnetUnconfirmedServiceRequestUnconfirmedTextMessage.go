@@ -320,7 +320,7 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType any) B
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"
 }
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -291,7 +292,7 @@ func CastStructureDescription(structType any) StructureDescription {
 	return nil
 }
 
-func (m *_StructureDescription) GetTypeName() string {
+func (m *_StructureDescription) GetPlx4xTypeName() string {
 	return "StructureDescription"
 }
 
@@ -325,19 +326,19 @@ func (m *_StructureDescription) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dataTypeId, err := ReadSimpleField[NodeId](ctx, "dataTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	dataTypeId, err := ReadSimpleField[NodeId](ctx, "dataTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeId' field"))
 	}
 	m.DataTypeId = dataTypeId
 
-	name, err := ReadSimpleField[QualifiedName](ctx, "name", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	name, err := ReadSimpleField[QualifiedName](ctx, "name", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 	m.Name = name
 
-	structureDefinition, err := ReadSimpleField[StructureDefinition](ctx, "structureDefinition", ReadComplex[StructureDefinition](ExtensionObjectDefinitionParseWithBufferProducer[StructureDefinition]((int32)(int32(101))), readBuffer))
+	structureDefinition, err := ReadSimpleField[StructureDefinition](ctx, "structureDefinition", ReadComplex[StructureDefinition](ExtensionObjectDefinitionParseWithBufferProducer[StructureDefinition]((int32)(int32(101))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureDefinition' field"))
 	}
@@ -368,15 +369,15 @@ func (m *_StructureDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for StructureDescription")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "dataTypeId", m.GetDataTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "dataTypeId", m.GetDataTypeId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataTypeId' field")
 		}
 
-		if err := WriteSimpleField[QualifiedName](ctx, "name", m.GetName(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+		if err := WriteSimpleField[QualifiedName](ctx, "name", m.GetName(), WriteComplex[QualifiedName](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
-		if err := WriteSimpleField[StructureDefinition](ctx, "structureDefinition", m.GetStructureDefinition(), WriteComplex[StructureDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[StructureDefinition](ctx, "structureDefinition", m.GetStructureDefinition(), WriteComplex[StructureDefinition](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'structureDefinition' field")
 		}
 

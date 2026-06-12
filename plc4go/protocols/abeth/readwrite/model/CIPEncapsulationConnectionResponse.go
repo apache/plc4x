@@ -181,7 +181,7 @@ func CastCIPEncapsulationConnectionResponse(structType any) CIPEncapsulationConn
 	return nil
 }
 
-func (m *_CIPEncapsulationConnectionResponse) GetTypeName() string {
+func (m *_CIPEncapsulationConnectionResponse) GetPlx4xTypeName() string {
 	return "CIPEncapsulationConnectionResponse"
 }
 

@@ -230,7 +230,7 @@ func CastModbusPDUWriteMultipleHoldingRegistersResponse(structType any) ModbusPD
 	return nil
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) GetTypeName() string {
+func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteMultipleHoldingRegistersResponse"
 }
 

@@ -242,7 +242,7 @@ func CastBACnetContextTagUnsignedInteger(structType any) BACnetContextTagUnsigne
 	return nil
 }
 
-func (m *_BACnetContextTagUnsignedInteger) GetTypeName() string {
+func (m *_BACnetContextTagUnsignedInteger) GetPlx4xTypeName() string {
 	return "BACnetContextTagUnsignedInteger"
 }
 

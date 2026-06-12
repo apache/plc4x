@@ -180,7 +180,7 @@ func CastLRawCon(structType any) LRawCon {
 	return nil
 }
 
-func (m *_LRawCon) GetTypeName() string {
+func (m *_LRawCon) GetPlx4xTypeName() string {
 	return "LRawCon"
 }
 

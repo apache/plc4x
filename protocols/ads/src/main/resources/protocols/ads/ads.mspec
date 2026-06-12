@@ -31,7 +31,7 @@
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
 
-[type AmsTCPPacket byteOrder='LITTLE_ENDIAN'
+[type AmsTCPPacket byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     // AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
     // These bytes must be set to 0.
     [reserved   uint       16       '0x0000'                            ]
@@ -147,18 +147,18 @@
     // 4 bytes	Size of the data range. The unit is byte.
     [implicit      uint        32  length   'lengthInBytes - 32'             ]
     // 4 bytes	AMS error number. See ADS Return Codes.
-    [simple        uint        32  errorCode                                 ]
+    [simple        ReturnCode      errorCode                                 ]
     // free usable field of 4 bytes
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
     [simple        uint        32  invokeId                                  ]
     // The payload
     // TODO: In case of an error code that is not 0, we might not have a payload at all
     [typeSwitch errorCode, commandId, response
-        ['0x00000000', 'INVALID', 'false' AdsInvalidRequest]
-        ['0x00000000', 'INVALID', 'true' AdsInvalidResponse]
+        ['OK', 'INVALID', 'false' AdsInvalidRequest]
+        ['OK', 'INVALID', 'true' AdsInvalidResponse]
 
-        ['0x00000000', 'ADS_READ_DEVICE_INFO', 'false' AdsReadDeviceInfoRequest]
-        ['0x00000000', 'ADS_READ_DEVICE_INFO', 'true' AdsReadDeviceInfoResponse
+        ['OK', 'ADS_READ_DEVICE_INFO', 'false' AdsReadDeviceInfoRequest]
+        ['OK', 'ADS_READ_DEVICE_INFO', 'true' AdsReadDeviceInfoResponse
             // 4 bytes	ADS error number.
             [simple ReturnCode result]
             // Version	1 byte	Major version number
@@ -171,7 +171,7 @@
             [array byte  device count '16']
         ]
 
-        ['0x00000000', 'ADS_READ', 'false' AdsReadRequest
+        ['OK', 'ADS_READ', 'false' AdsReadRequest
             // 4 bytes	Index Group of the data which should be read.
             [simple uint 32 indexGroup]
             // 4 bytes	Index Offset of the data which should be read.
@@ -179,7 +179,7 @@
             // 4 bytes	Length of the data (in bytes) which should be read.
             [simple uint 32 length]
         ]
-        ['0x00000000', 'ADS_READ', 'true' AdsReadResponse
+        ['OK', 'ADS_READ', 'true' AdsReadResponse
             // 4 bytes	ADS error number
             [simple ReturnCode result]
             // 4 bytes	Length of data which are supplied back.
@@ -188,7 +188,7 @@
             [array byte data count 'length']
         ]
 
-        ['0x00000000', 'ADS_WRITE', 'false' AdsWriteRequest
+        ['OK', 'ADS_WRITE', 'false' AdsWriteRequest
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 indexGroup]
             // 4 bytes	Index Offset of the data which should be written.
@@ -198,13 +198,13 @@
             // n bytes	Data which are written in the ADS device.
             [array byte data count 'length']
         ]
-        ['0x00000000', 'ADS_WRITE', 'true' AdsWriteResponse
+        ['OK', 'ADS_WRITE', 'true' AdsWriteResponse
             // 4 bytes	ADS error number
             [simple ReturnCode result]
         ]
 
-        ['0x00000000', 'ADS_READ_STATE', 'false' AdsReadStateRequest]
-        ['0x00000000', 'ADS_READ_STATE', 'true' AdsReadStateResponse
+        ['OK', 'ADS_READ_STATE', 'false' AdsReadStateRequest]
+        ['OK', 'ADS_READ_STATE', 'true' AdsReadStateResponse
             // 4 bytes	ADS error number
             [simple ReturnCode result]
             // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
@@ -213,7 +213,7 @@
             [simple uint 16 deviceState]
         ]
 
-        ['0x00000000', 'ADS_WRITE_CONTROL', 'false' AdsWriteControlRequest
+        ['OK', 'ADS_WRITE_CONTROL', 'false' AdsWriteControlRequest
             // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
             [simple uint 16 adsState]
             // 2 bytes	New device status.
@@ -223,12 +223,12 @@
             // n bytes	Additional data which are sent to the ADS device
             [array byte data count 'length']
         ]
-        ['0x00000000', 'ADS_WRITE_CONTROL', 'true' AdsWriteControlResponse
+        ['OK', 'ADS_WRITE_CONTROL', 'true' AdsWriteControlResponse
             // 4 bytes	ADS error number
             [simple ReturnCode result]
         ]
 
-        ['0x00000000', 'ADS_ADD_DEVICE_NOTIFICATION', 'false' AdsAddDeviceNotificationRequest
+        ['OK', 'ADS_ADD_DEVICE_NOTIFICATION', 'false' AdsAddDeviceNotificationRequest
             // 4 bytes	Index Group of the data, which should be sent per notification.
             [simple     uint 32      indexGroup      ]
             // 4 bytes	Index Offset of the data, which should be sent per notification.
@@ -246,23 +246,23 @@
             [reserved   uint 64      '0x0000'        ]
             [reserved   uint 64      '0x0000'        ]
         ]
-        ['0x00000000', 'ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
+        ['OK', 'ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
             // 4 bytes	ADS error number
             [simple ReturnCode result]
             // 4 bytes	Handle of notification
             [simple uint 32 notificationHandle]
         ]
 
-        ['0x00000000', 'ADS_DELETE_DEVICE_NOTIFICATION', 'false' AdsDeleteDeviceNotificationRequest
+        ['OK', 'ADS_DELETE_DEVICE_NOTIFICATION', 'false' AdsDeleteDeviceNotificationRequest
             // 4 bytes	Handle of notification
             [simple uint 32 notificationHandle]
         ]
-        ['0x00000000', 'ADS_DELETE_DEVICE_NOTIFICATION', 'true' AdsDeleteDeviceNotificationResponse
+        ['OK', 'ADS_DELETE_DEVICE_NOTIFICATION', 'true' AdsDeleteDeviceNotificationResponse
             // 4 bytes	ADS error number
             [simple ReturnCode result]
         ]
 
-        ['0x00000000', 'ADS_DEVICE_NOTIFICATION', 'false' AdsDeviceNotificationRequest
+        ['OK', 'ADS_DEVICE_NOTIFICATION', 'false' AdsDeviceNotificationRequest
             // 4 bytes	Size of data in byte.
             [simple uint 32 length]
             // 4 bytes	Number of elements of type AdsStampHeader.
@@ -270,9 +270,9 @@
             // n bytes	Array with elements of type AdsStampHeader.
             [array AdsStampHeader adsStampHeaders count 'stamps']
         ]
-        ['0x00000000', 'ADS_DEVICE_NOTIFICATION', 'true' AdsDeviceNotificationResponse]
+        ['OK', 'ADS_DEVICE_NOTIFICATION', 'true' AdsDeviceNotificationResponse]
 
-        ['0x00000000', 'ADS_READ_WRITE', 'false' AdsReadWriteRequest
+        ['OK', 'ADS_READ_WRITE', 'false' AdsReadWriteRequest
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 indexGroup]
             // 4 bytes	Index Offset of the data which should be written.
@@ -286,7 +286,7 @@
             // n bytes	Data which are written in the ADS device.
             [array byte data count 'writeLength - (COUNT(items) * 12)']
         ]
-        ['0x00000000', 'ADS_READ_WRITE', 'true' AdsReadWriteResponse
+        ['OK', 'ADS_READ_WRITE', 'true' AdsReadWriteResponse
             // 4 bytes	ADS error number
             [simple ReturnCode result]
             // 4 bytes	Length of data in byte.
@@ -294,7 +294,7 @@
             // n bytes Additional data which are sent to the ADS device
             [array byte data count 'length']
         ]
-        [ErrorResponse
+        [AdsErrorResponse
         ]
     ]
 ]
@@ -392,14 +392,14 @@
     [array byte data count 'sampleSize']
 ]
 
-[dataIo DataItem(PlcValueType plcValueType, int 32 stringLength)
+[dataIo DataItem(PlcValueType plcValueType, int 32 stringLength) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch plcValueType
         // -----------------------------------------
         // Bit
         // -----------------------------------------
         ['BOOL' BOOL
-            [reserved uint 7 '0x00']
-            [simple   bit    value]
+            [reserved uint 7  '0x00']
+            [simple   bit     value]
         ]
 
         // -----------------------------------------
@@ -468,17 +468,17 @@
         // Characters & Strings
         // -----------------------------------------
         ['CHAR' CHAR
-            [simple   string 8                       value    encoding='"Windows-1252"']
+            [simple   string 8                       value    stringEncoding='"WINDOWS1252"']
         ]
         ['WCHAR' WCHAR
-            [simple   string 16                      value    encoding='"UTF-16LE"'    ]
+            [simple   string 16                      value    stringEncoding='"UTF16LE"'    ]
         ]
         ['STRING' STRING
-            [simple   vstring 'stringLength * 8'     value    encoding='"Windows-1252"']
+            [simple   vstring 'stringLength * 8'     value    stringEncoding='"WINDOWS1252"']
             [reserved uint 8                         '0x00'                            ]
         ]
         ['WSTRING' WSTRING
-            [simple   vstring 'stringLength * 8 * 2' value    encoding='"UTF-16LE"'    ]
+            [simple   vstring 'stringLength * 8 * 2' value    stringEncoding='"UTF16LE"'    ]
             [reserved uint 16                        '0x0000'                          ]
         ]
 
@@ -590,283 +590,581 @@
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L222
 // Especially interesting for the sum add/delete notification requests
 // https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_ads_intro/117463563.html&id=
-[enum uint 32 ReservedIndexGroups
-    ['0x0000F000' ADSIGRP_SYMTAB                              ]
-    ['0x0000F001' ADSIGRP_SYMNAME                             ]
-    ['0x0000F002' ADSIGRP_SYMVAL                              ]
-    ['0x0000F003' ADSIGRP_SYM_HNDBYNAME                       ]
-    ['0x0000F004' ADSIGRP_SYM_VALBYNAME                       ]
-    ['0x0000F005' ADSIGRP_SYM_VALBYHND                        ]
-    ['0x0000F006' ADSIGRP_SYM_RELEASEHND                      ]
-    ['0x0000F007' ADSIGRP_SYM_INFOBYNAME                      ]
-    ['0x0000F008' ADSIGRP_SYM_VERSION                         ]
+[enum uint 32 ReservedIndexGroups                             (bit tc2, bit tc3)
+    ['0x0000F000' ADSIGRP_SYMTAB                              ['true' , 'true' ]]
+    ['0x0000F001' ADSIGRP_SYMNAME                             ['true' , 'true' ]]
+    ['0x0000F002' ADSIGRP_SYMVAL                              ['true' , 'true' ]]
+    ['0x0000F003' ADSIGRP_SYM_HNDBYNAME                       ['true' , 'true' ]]
+    ['0x0000F004' ADSIGRP_SYM_VALBYNAME                       ['true' , 'true' ]]
+    ['0x0000F005' ADSIGRP_SYM_VALBYHND                        ['true' , 'true' ]]
+    ['0x0000F006' ADSIGRP_SYM_RELEASEHND                      ['true' , 'true' ]]
+    ['0x0000F007' ADSIGRP_SYM_INFOBYNAME                      ['true' , 'true' ]]
+    ['0x0000F008' ADSIGRP_SYM_VERSION                         ['true' , 'true' ]]
     // We can use this GID to read the type information of a given variable
     // in the operation mode in which we don't read the entire structures on
     // connection start.
-    ['0x0000F009' ADSIGRP_SYM_INFOBYNAMEEX                    ]
-    ['0x0000F00A' ADSIGRP_SYM_DOWNLOAD                        ]
+    ['0x0000F009' ADSIGRP_SYM_INFOBYNAMEEX                    ['true' , 'true' ]]
+    ['0x0000F00A' ADSIGRP_SYM_DOWNLOAD                        ['true' , 'true' ]]
     // Read the symbol-table (All variables defined in the PLC)
-    ['0x0000F00B' ADSIGRP_SYM_UPLOAD                          ]
-    ['0x0000F00C' ADSIGRP_SYM_UPLOADINFO                      ]
+    ['0x0000F00B' ADSIGRP_SYM_UPLOAD                          ['true' , 'true' ]]
+    ['0x0000F00C' ADSIGRP_SYM_UPLOADINFO                      ['true' , 'true' ]]
+    ['0x0000F00D' ADSIGRP_SYM_DOWNLOAD2                       ['true' , 'true' ]]
     // Read the data-type-table (All data-types defined in the PLC)
-    ['0x0000F00E' ADSIGRP_DATA_TYPE_TABLE_UPLOAD              ]
+    ['0x0000F00E' ADSIGRP_DATA_TYPE_TABLE_UPLOAD              ['false', 'true' ]]
     // Read the sizes of the symbol and data-type-tables
-    ['0x0000F00F' ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES          ]
-    ['0x0000F010' ADSIGRP_SYMNOTE                             ]
-    // We can use this GIT to read the data-type information for a given
+    ['0x0000F00F' ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES          ['false', 'true' ]]
+    ['0x0000F010' ADSIGRP_SYMNOTE                             ['true' , 'true' ]]
+    // We can use this GID to read the data-type information for a given
     // data type name in the operation mode in which we don't read the
     // entire structures on connection start.
-    ['0x0000F011' ADSIGRP_DT_INFOBYNAMEEX                     ]
+    ['0x0000F011' ADSIGRP_DT_INFOBYNAMEEX                     ['false', 'true' ]]
+    ['0x0000F012' ADSIGRP_SYM_ADDRBYHND                       ['false', 'true' ]]
+    ['0x0000F013' ADSIGRP_SYM_POINTER_SUPPORT                 ['false', 'true' ]]
+    ['0x0000F014' ADSIGRP_SYM_POINTER_ACCESS                  ['false', 'true' ]]
+    ['0x0000F015' ADSIGRP_SYM_REFERENCE_SUPPORT               ['false', 'true' ]]
+    ['0x0000F016' ADSIGRP_SYM_REFERENCE_ACCESS                ['false', 'true' ]]
+    ['0x0000F018' ADSIGRP_SYM_VALBYHND_WITHMASK               ['false', 'true' ]]
+    ['0x0000F019' ADSIGRP_SYM_NOACCESS_TO_SUBSYM              ['false', 'true' ]]
+    ['0x0000F01A' ADSIGRP_SYM_POINTER_BITACCESS               ['false', 'true' ]]
+    ['0x0000F01B' ADSIGRP_SYM_REFERENCE_BITACCESS             ['false', 'true' ]]
+    ['0x0000F01C' ADSIGRP_SYM_DOWNLOAD3                       ['false', 'true' ]]
+    ['0x0000F01D' ADSIGRP_SYM_FORWARD_ACCESS                  ['false', 'true' ]]
+    ['0x0000F01E' ADSIGRP_SYM_FORWARD_BYHND                   ['false', 'true' ]]
+    ['0x0000F01F' ADSIGRP_SYM_XAF_OBJECTID                    ['false', 'true' ]]
+
     // Access to the %I fields
-    ['0x0000F020' ADSIGRP_IOIMAGE_RWIB                        ]
-    ['0x0000F021' ADSIGRP_IOIMAGE_RWIX                        ]
-    ['0x0000F025' ADSIGRP_IOIMAGE_RISIZE                      ]
+    ['0x0000F020' ADSIGRP_IOIMAGE_RWIB                        ['true' , 'true' ]]
+    ['0x0000F021' ADSIGRP_IOIMAGE_RWIX                        ['true' , 'true' ]]
+    ['0x0000F024' ADSIGRP_SYM_INFOBYHNDEX                     ['true' , 'true' ]]
+    ['0x0000F025' ADSIGRP_IOIMAGE_RISIZE                      ['true' , 'true' ]]
+    ['0x0000F028' ADSIGRP_IOIMAGE_RWIX0                       ['true' , 'true' ]]
+    ['0x0000F029' ADSIGRP_IOIMAGE_RWIX1                       ['true' , 'true' ]]
+    ['0x0000F02A' ADSIGRP_IOIMAGE_RWIX2                       ['true' , 'true' ]]
+    ['0x0000F02B' ADSIGRP_IOIMAGE_RWIX3                       ['true' , 'true' ]]
+    ['0x0000F02C' ADSIGRP_IOIMAGE_RWIX4                       ['true' , 'true' ]]
+    ['0x0000F02D' ADSIGRP_IOIMAGE_RWIX5                       ['true' , 'true' ]]
+    ['0x0000F02E' ADSIGRP_IOIMAGE_RWIX6                       ['true' , 'true' ]]
+    ['0x0000F02F' ADSIGRP_IOIMAGE_RWIX7                       ['true' , 'true' ]]
+
     // Access to the %Q fields
-    ['0x0000F030' ADSIGRP_IOIMAGE_RWOB                        ]
-    ['0x0000F031' ADSIGRP_IOIMAGE_RWOX                        ]
-    ['0x0000F035' ADSIGRP_IOIMAGE_RWOSIZE                     ]
-    ['0x0000F040' ADSIGRP_IOIMAGE_CLEARI                      ]
-    ['0x0000F050' ADSIGRP_IOIMAGE_CLEARO                      ]
-    ['0x0000F060' ADSIGRP_IOIMAGE_RWIOB                       ]
+    ['0x0000F030' ADSIGRP_IOIMAGE_RWOB                        ['true' , 'true' ]]
+    ['0x0000F031' ADSIGRP_IOIMAGE_RWOX                        ['true' , 'true' ]]
+    ['0x0000F035' ADSIGRP_IOIMAGE_RWOSIZE                     ['true' , 'true' ]]
+    ['0x0000F038' ADSIGRP_IOIMAGE_RWOX0                       ['true' , 'true' ]]
+    ['0x0000F039' ADSIGRP_IOIMAGE_RWOX1                       ['true' , 'true' ]]
+    ['0x0000F03A' ADSIGRP_IOIMAGE_RWOX2                       ['true' , 'true' ]]
+    ['0x0000F03B' ADSIGRP_IOIMAGE_RWOX3                       ['true' , 'true' ]]
+    ['0x0000F03C' ADSIGRP_IOIMAGE_RWOX4                       ['true' , 'true' ]]
+    ['0x0000F03D' ADSIGRP_IOIMAGE_RWOX5                       ['true' , 'true' ]]
+    ['0x0000F03E' ADSIGRP_IOIMAGE_RWOX6                       ['true' , 'true' ]]
+    ['0x0000F03F' ADSIGRP_IOIMAGE_RWOX7                       ['true' , 'true' ]]
+
+    ['0x0000F040' ADSIGRP_IOIMAGE_CLEARI                      ['true' , 'true' ]]
+
+    ['0x0000F050' ADSIGRP_IOIMAGE_CLEARO                      ['true' , 'true' ]]
+
+    ['0x0000F060' ADSIGRP_IOIMAGE_RWIOB                       ['true' , 'true' ]]
+    ['0x0000F064' ADSIGRP_IOIMAGE_WATCHDOG                    ['true' , 'true' ]]
+    ['0x0000F068' ADSIGRP_IOIMAGE_CREATE                      ['true' , 'true' ]]
+
+    ['0x0000F070' ADSIGRP_JSON                                ['true' , 'true' ]]
+    ['0x0000F071' ADSIGRP_JSON_DOM_ACCESS_GET                 ['true' , 'true' ]]
+    ['0x0000F072' ADSIGRP_JSON_DOM_ACCESS_SET                 ['true' , 'true' ]]
+    ['0x0000F073' ADSIGRP_JSON_DOM_ACCESS_DEL                 ['true' , 'true' ]]
+    ['0x0000F074' ADSIGRP_JSON_DOM_ACCESS_LEN                 ['true' , 'true' ]]
+    ['0x0000F078' ADSIGRP_ADSWATCH_GETOID                     ['true' , 'true' ]]
+
     // Sum Requests
-    ['0x0000F080' ADSIGRP_MULTIPLE_READ                       ]
-    ['0x0000F081' ADSIGRP_MULTIPLE_WRITE                      ]
-    ['0x0000F082' ADSIGRP_MULTIPLE_READ_WRITE                 ]
-    ['0x0000F083' ADSIGRP_MULTIPLE_RELEASE_HANDLE             ]
-    ['0x0000F084' ADSIGRP_SUMUP_READEX2                       ]
-    ['0x0000F085' ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS   ]
-    ['0x0000F086' ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS]
-    ['0x0000F100' ADSIGRP_DEVICE_DATA                         ]
+    ['0x0000F080' ADSIGRP_MULTIPLE_READ                       ['false', 'true' ]]
+    ['0x0000F081' ADSIGRP_MULTIPLE_WRITE                      ['false', 'true' ]]
+    ['0x0000F082' ADSIGRP_MULTIPLE_READ_WRITE                 ['false', 'true' ]]
+    ['0x0000F083' ADSIGRP_MULTIPLE_RELEASE_HANDLE             ['false', 'true' ]]
+    ['0x0000F084' ADSIGRP_SUMUP_READEX2                       ['false', 'true' ]]
+    ['0x0000F085' ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS   ['false', 'true' ]]
+    ['0x0000F086' ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS['false', 'true' ]]
+    ['0x0000F088' ADSIGRP_EXTERNALTIME                        ['false', 'true' ]]
+
+    ['0x0000F090' ADSIGRP_CHECK_NOTIFICATION                  ['false', 'true' ]]
+    ['0x0000F091' ADSIGRP_DIAG_NOTIFICATION                   ['false', 'true' ]]
+    ['0x0000F098' ADSIGRP_LOGGING_CONFIG                      ['false', 'true' ]]
+
+    ['0x0000F0A0' ADSIGRP_SYM_CONTEXTCYCLE                    ['false', 'true' ]]
+
+    ['0x0000F0B0' ADSIGRP_DEVICE_CONTEXT_DATA                 ['false', 'true' ]]
+
+    ['0x0000F100' ADSIGRP_DEVICE_DATA                         ['true' , 'true' ]]
+
+    ['0x0000F200' ADSIGRP_TASK_DATA                           ['true' , 'true' ]]
+
+    ['0x0000F300' ADSIGRP_CANOPEN_BEGIN                       ['true' , 'true' ]]
     // This Group Index makes ADS access data via AoE (ADS over EtherCAT) and
     // can be used to access telemetry data on the DeviceManager or from attached
     // EtherCAT devices.
     // https://infosys.beckhoff.com/index.php?content=../content/1031/eap/1521731467.html
-    ['0x0000F302' ADS_OVER_ETHERCAT                           ]
-    ['0x00000000' ADSIOFFS_DEVDATA_ADSSTATE                   ]
-    ['0x00000002' ADSIOFFS_DEVDATA_DEVSTATE                   ]
+    //['0x0000F302' ADS_OVER_ETHERCAT                           ['true' , 'true' ]]
+    ['0x0000F302' ADSIGRP_CANOPEN_SDO                         ['true' , 'true' ]]
+    ['0x0000F303' ADSIGRP_CANOPEN_SDO_LASTERROR               ['true' , 'true' ]]
+    ['0x0000F304' ADSIGRP_CANOPEN_SDO_SUMUP_READ              ['true' , 'true' ]]
+    ['0x0000F305' ADSIGRP_CANOPEN_SDO_SUMUP_WRITE             ['true' , 'true' ]]
+
+    ['0x0000F3F8' ADSIGRP_CANOPEN_TXPDO_ACCESS                ['true' , 'true' ]]
+    ['0x0000F3F9' ADSIGRP_CANOPEN_RXPDO_ACCESS                ['true' , 'true' ]]
+    ['0x0000F3FB' ADSIGRP_CANOPEN_SDO_ENI_CONTENT             ['true' , 'true' ]]
+    ['0x0000F3FC' ADSIGRP_CANOPEN_SDO_INFO_LIST               ['true' , 'true' ]]
+    ['0x0000F3FD' ADSIGRP_CANOPEN_SDO_INFO_OBJ                ['true' , 'true' ]]
+    ['0x0000F3FE' ADSIGRP_CANOPEN_SDO_INFO_ENTRY              ['true' , 'true' ]]
+    ['0x0000F3FF' ADSIGRP_CANOPEN_END                         ['true' , 'true' ]]
+
+    ['0x8001F302' ADSIGRP_ECAT_EMCY_SERVER                    ['true' , 'true' ]]
+    ['0xF8200101' ADSIOFFS_ECAT_EMCY_SERVER_CONNECT           ['true' , 'true' ]]
+
+    ['0x0000F400' ADSIGRP_ECAT_FOE_BEGIN                      ['true' , 'true' ]]
+    ['0x0000F401' ADSIGRP_ECAT_FOE_FOPENREAD                  ['true' , 'true' ]]
+    ['0x0000F402' ADSIGRP_ECAT_FOE_FOPENWRITE                 ['true' , 'true' ]]
+    ['0x0000F403' ADSIGRP_ECAT_FOE_FCLOSE                     ['true' , 'true' ]]
+    ['0x0000F404' ADSIGRP_ECAT_FOE_FREAD                      ['true' , 'true' ]]
+    ['0x0000F405' ADSIGRP_ECAT_FOE_FWRITE                     ['true' , 'true' ]]
+    ['0x0000F406' ADSIGRP_ECAT_FOE_PROGRESSINFO               ['true' , 'true' ]]
+    ['0x0000F407' ADSIGRP_ECAT_FOE_LASTERROR                  ['true' , 'true' ]]
+
+    ['0x0000F41F' ADSIGRP_ECAT_FOE_END                        ['true' , 'true' ]]
+
+    ['0x0000F420' ADSIGRP_ECAT_SOE                            ['true' , 'true' ]]
+    ['0x0000F421' ADSIGRP_ECAT_SOE_LASTERROR                  ['true' , 'true' ]]
+
+    ['0x0000F430' ADSIGRP_ECAT_VOE                            ['true' , 'true' ]]
+
+    ['0x00000000' ADSIOFFS_DEVDATA_ADSSTATE                   ['true' , 'true' ]]
+    ['0x00000002' ADSIOFFS_DEVDATA_DEVSTATE                   ['true' , 'true' ]]
 ]
 
 [enum uint 32 ReturnCode
     // Global Return Codes
-    ['0x00' OK]
-    ['0x01' INTERNAL_ERROR]
-    ['0x02' NO_REALTIME]
-    ['0x03' SAVE_ERROR]
-    ['0x04' MAILBOX_FULL]
-    ['0x05' WRONG_HMSG]
-    ['0x06' TARGET_PORT_NOT_FOUND]
-    ['0x07' TARGET_HOST_NOT_FOUND]
-    ['0x08' UNKNOWN_COMMAND_ID]
-    ['0x09' UNKNOWN_TASK_ID]
-    ['0x0A' NO_IO]
-    ['0x0B' UNKNOWN_ADS_COMMAND]
-    ['0x0C' WIN32_ERROR]
-    ['0x0D' PORT_NOT_CONNECTED]
-    ['0x0E' INVALID_ADS_LENGTH]
-    ['0x0F' INVALID_AMS_NET_ID]
-    ['0x10' LOW_INSTALLATION_LEVEL]
-    ['0x11' NO_DEBUGGING_AVAILABLE]
-    ['0x12' PORT_DEACTIVATED]
-    ['0x13' PORT_ALREADY_CONNECTED]
-    ['0x14' ADS_SYNC_WIN32_ERROR]
-    ['0x15' ADS_SYNC_TIMEOUT]
-    ['0x16' ADS_SYNC_AMS_ERROR]
-    ['0x17' NO_INDEX_MAP_FOR_ADS_AVAILABLE]
-    ['0x18' INVALID_ADS_PORT]
-    ['0x19' NO_MEMORY]
-    ['0x1A' TCP_SENDING_ERROR]
-    ['0x1B' HOST_NOT_REACHABLE]
-    ['0x1C' INVALID_AMS_FRAGMENT]
+    ['0x00000000' OK]
+    ['0x00000001' INTERNAL_ERROR]
+    ['0x00000002' NO_REALTIME]
+    ['0x00000003' SAVE_ERROR]
+    ['0x00000004' MAILBOX_FULL]
+    ['0x00000005' WRONG_HMSG]
+    ['0x00000006' TARGET_PORT_NOT_FOUND]
+    ['0x00000007' TARGET_HOST_NOT_FOUND]
+    ['0x00000008' UNKNOWN_COMMAND_ID]
+    ['0x00000009' UNKNOWN_TASK_ID]
+    ['0x0000000A' NO_IO]
+    ['0x0000000B' UNKNOWN_ADS_COMMAND]
+    ['0x0000000C' WIN32_ERROR]
+    ['0x0000000D' PORT_NOT_CONNECTED]
+    ['0x0000000E' INVALID_ADS_LENGTH]
+    ['0x0000000F' INVALID_AMS_NET_ID]
+    ['0x00000010' LOW_INSTALLATION_LEVEL]
+    ['0x00000011' NO_DEBUGGING_AVAILABLE]
+    ['0x00000012' PORT_DEACTIVATED]
+    ['0x00000013' PORT_ALREADY_CONNECTED]
+    ['0x00000014' ADS_SYNC_WIN32_ERROR]
+    ['0x00000015' ADS_SYNC_TIMEOUT]
+    ['0x00000016' ADS_SYNC_AMS_ERROR]
+    ['0x00000017' NO_INDEX_MAP_FOR_ADS_AVAILABLE]
+    ['0x00000018' INVALID_ADS_PORT]
+    ['0x00000019' NO_MEMORY]
+    ['0x0000001A' TCP_SENDING_ERROR]
+    ['0x0000001B' HOST_NOT_REACHABLE]
+    ['0x0000001C' INVALID_AMS_FRAGMENT]
 
     // Router Error-Codes
-    ['0x500' ROUTERERR_NOLOCKEDMEMORY]
-    ['0x501' ROUTERERR_RESIZEMEMORY]
-    ['0x502' ROUTERERR_MAILBOXFULL]
-    ['0x503' ROUTERERR_DEBUGBOXFULL]
-    ['0x504' ROUTERERR_UNKNOWNPORTTYPE]
-    ['0x505' ROUTERERR_NOTINITIALIZED]
-    ['0x506' ROUTERERR_PORTALREADYINUSE]
-    ['0x507' ROUTERERR_NOTREGISTERED]
-    ['0x508' ROUTERERR_NOMOREQUEUES]
-    ['0x509' ROUTERERR_INVALIDPORT]
-    ['0x50A' ROUTERERR_NOTACTIVATED]
+    ['0x00000500' ROUTERERR_NOLOCKEDMEMORY]
+    ['0x00000501' ROUTERERR_RESIZEMEMORY]
+    ['0x00000502' ROUTERERR_MAILBOXFULL]
+    ['0x00000503' ROUTERERR_DEBUGBOXFULL]
+    ['0x00000504' ROUTERERR_UNKNOWNPORTTYPE]
+    ['0x00000505' ROUTERERR_NOTINITIALIZED]
+    ['0x00000506' ROUTERERR_PORTALREADYINUSE]
+    ['0x00000507' ROUTERERR_NOTREGISTERED]
+    ['0x00000508' ROUTERERR_NOMOREQUEUES]
+    ['0x00000509' ROUTERERR_INVALIDPORT]
+    ['0x0000050A' ROUTERERR_NOTACTIVATED]
 
     // General ADS Error-Codes
-    ['0x700' ADSERR_DEVICE_ERROR]
-    ['0x701' ADSERR_DEVICE_SRVNOTSUPP]
-    ['0x702' ADSERR_DEVICE_INVALIDGRP]
-    ['0x703' ADSERR_DEVICE_INVALIDOFFSET]
-    ['0x704' ADSERR_DEVICE_INVALIDACCESS]
-    ['0x705' ADSERR_DEVICE_INVALIDSIZE]
-    ['0x706' ADSERR_DEVICE_INVALIDDATA]
-    ['0x707' ADSERR_DEVICE_NOTREADY]
-    ['0x708' ADSERR_DEVICE_BUSY]
-    ['0x709' ADSERR_DEVICE_INVALIDCONTEXT]
-    ['0x70A' ADSERR_DEVICE_NOMEMORY]
-    ['0x70B' ADSERR_DEVICE_INVALIDPARM]
-    ['0x70C' ADSERR_DEVICE_NOTFOUND]
-    ['0x70D' ADSERR_DEVICE_SYNTAX]
-    ['0x70E' ADSERR_DEVICE_INCOMPATIBLE]
-    ['0x70F' ADSERR_DEVICE_EXISTS]
-    ['0x710' ADSERR_DEVICE_SYMBOLNOTFOUND]
-    ['0x711' ADSERR_DEVICE_SYMBOLVERSIONINVALID]
-    ['0x712' ADSERR_DEVICE_INVALIDSTATE]
-    ['0x713' ADSERR_DEVICE_TRANSMODENOTSUPP]
-    ['0x714' ADSERR_DEVICE_NOTIFYHNDINVALID]
-    ['0x715' ADSERR_DEVICE_CLIENTUNKNOWN]
-    ['0x716' ADSERR_DEVICE_NOMOREHDLS]
-    ['0x717' ADSERR_DEVICE_INVALIDWATCHSIZE]
-    ['0x718' ADSERR_DEVICE_NOTINIT]
-    ['0x719' ADSERR_DEVICE_TIMEOUT]
-    ['0x71A' ADSERR_DEVICE_NOINTERFACE]
-    ['0x71B' ADSERR_DEVICE_INVALIDINTERFACE]
-    ['0x71C' ADSERR_DEVICE_INVALIDCLSID]
-    ['0x71D' ADSERR_DEVICE_INVALIDOBJID]
-    ['0x71E' ADSERR_DEVICE_PENDING]
-    ['0x71F' ADSERR_DEVICE_ABORTED]
-    ['0x720' ADSERR_DEVICE_WARNING]
-    ['0x721' ADSERR_DEVICE_INVALIDARRAYIDX]
-    ['0x722' ADSERR_DEVICE_SYMBOLNOTACTIVE]
-    ['0x723' ADSERR_DEVICE_ACCESSDENIED]
-    ['0x724' ADSERR_DEVICE_LICENSENOTFOUND]
-    ['0x725' ADSERR_DEVICE_LICENSEEXPIRED]
-    ['0x726' ADSERR_DEVICE_LICENSEEXCEEDED]
-    ['0x727' ADSERR_DEVICE_LICENSEINVALID]
-    ['0x728' ADSERR_DEVICE_LICENSESYSTEMID]
-    ['0x729' ADSERR_DEVICE_LICENSENOTIMELIMIT]
-    ['0x72A' ADSERR_DEVICE_LICENSEFUTUREISSUE]
-    ['0x72B' ADSERR_DEVICE_LICENSETIMETOLONG]
-    ['0x72c' ADSERR_DEVICE_EXCEPTION]
-    ['0x72D' ADSERR_DEVICE_LICENSEDUPLICATED]
-    ['0x72E' ADSERR_DEVICE_SIGNATUREINVALID]
-    ['0x72F' ADSERR_DEVICE_CERTIFICATEINVALID]
-    ['0x740' ADSERR_CLIENT_ERROR]
-    ['0x741' ADSERR_CLIENT_INVALIDPARM]
-    ['0x742' ADSERR_CLIENT_LISTEMPTY]
-    ['0x743' ADSERR_CLIENT_VARUSED]
-    ['0x744' ADSERR_CLIENT_DUPLINVOKEID]
-    ['0x745' ADSERR_CLIENT_SYNCTIMEOUT]
-    ['0x746' ADSERR_CLIENT_W32ERROR]
-    ['0x747' ADSERR_CLIENT_TIMEOUTINVALID]
-    ['0x748' ADSERR_CLIENT_PORTNOTOPEN]
-    ['0x750' ADSERR_CLIENT_NOAMSADDR]
-    ['0x751' ADSERR_CLIENT_SYNCINTERNAL]
-    ['0x752' ADSERR_CLIENT_ADDHASH]
-    ['0x753' ADSERR_CLIENT_REMOVEHASH]
-    ['0x754' ADSERR_CLIENT_NOMORESYM]
-    ['0x755' ADSERR_CLIENT_SYNCRESINVALID]
+    ['0x00000700' ADSERR_DEVICE_ERROR]
+    ['0x00000701' ADSERR_DEVICE_SRVNOTSUPP]
+    ['0x00000702' ADSERR_DEVICE_INVALIDGRP]
+    ['0x00000703' ADSERR_DEVICE_INVALIDOFFSET]
+    ['0x00000704' ADSERR_DEVICE_INVALIDACCESS]
+    ['0x00000705' ADSERR_DEVICE_INVALIDSIZE]
+    ['0x00000706' ADSERR_DEVICE_INVALIDDATA]
+    ['0x00000707' ADSERR_DEVICE_NOTREADY]
+    ['0x00000708' ADSERR_DEVICE_BUSY]
+    ['0x00000709' ADSERR_DEVICE_INVALIDCONTEXT]
+    ['0x0000070A' ADSERR_DEVICE_NOMEMORY]
+    ['0x0000070B' ADSERR_DEVICE_INVALIDPARM]
+    ['0x0000070C' ADSERR_DEVICE_NOTFOUND]
+    ['0x0000070D' ADSERR_DEVICE_SYNTAX]
+    ['0x0000070E' ADSERR_DEVICE_INCOMPATIBLE]
+    ['0x0000070F' ADSERR_DEVICE_EXISTS]
+    ['0x00000710' ADSERR_DEVICE_SYMBOLNOTFOUND]
+    ['0x00000711' ADSERR_DEVICE_SYMBOLVERSIONINVALID]
+    ['0x00000712' ADSERR_DEVICE_INVALIDSTATE]
+    ['0x00000713' ADSERR_DEVICE_TRANSMODENOTSUPP]
+    ['0x00000714' ADSERR_DEVICE_NOTIFYHNDINVALID]
+    ['0x00000715' ADSERR_DEVICE_CLIENTUNKNOWN]
+    ['0x00000716' ADSERR_DEVICE_NOMOREHDLS]
+    ['0x00000717' ADSERR_DEVICE_INVALIDWATCHSIZE]
+    ['0x00000718' ADSERR_DEVICE_NOTINIT]
+    ['0x00000719' ADSERR_DEVICE_TIMEOUT]
+    ['0x0000071A' ADSERR_DEVICE_NOINTERFACE]
+    ['0x0000071B' ADSERR_DEVICE_INVALIDINTERFACE]
+    ['0x0000071C' ADSERR_DEVICE_INVALIDCLSID]
+    ['0x0000071D' ADSERR_DEVICE_INVALIDOBJID]
+    ['0x0000071E' ADSERR_DEVICE_PENDING]
+    ['0x0000071F' ADSERR_DEVICE_ABORTED]
+    ['0x00000720' ADSERR_DEVICE_WARNING]
+    ['0x00000721' ADSERR_DEVICE_INVALIDARRAYIDX]
+    ['0x00000722' ADSERR_DEVICE_SYMBOLNOTACTIVE]
+    ['0x00000723' ADSERR_DEVICE_ACCESSDENIED]
+    ['0x00000724' ADSERR_DEVICE_LICENSENOTFOUND]
+    ['0x00000725' ADSERR_DEVICE_LICENSEEXPIRED]
+    ['0x00000726' ADSERR_DEVICE_LICENSEEXCEEDED]
+    ['0x00000727' ADSERR_DEVICE_LICENSEINVALID]
+    ['0x00000728' ADSERR_DEVICE_LICENSESYSTEMID]
+    ['0x00000729' ADSERR_DEVICE_LICENSENOTIMELIMIT]
+    ['0x0000072A' ADSERR_DEVICE_LICENSEFUTUREISSUE]
+    ['0x0000072B' ADSERR_DEVICE_LICENSETIMETOLONG]
+    ['0x0000072c' ADSERR_DEVICE_EXCEPTION]
+    ['0x0000072D' ADSERR_DEVICE_LICENSEDUPLICATED]
+    ['0x0000072E' ADSERR_DEVICE_SIGNATUREINVALID]
+    ['0x0000072F' ADSERR_DEVICE_CERTIFICATEINVALID]
+    ['0x00000740' ADSERR_CLIENT_ERROR]
+    ['0x00000741' ADSERR_CLIENT_INVALIDPARM]
+    ['0x00000742' ADSERR_CLIENT_LISTEMPTY]
+    ['0x00000743' ADSERR_CLIENT_VARUSED]
+    ['0x00000744' ADSERR_CLIENT_DUPLINVOKEID]
+    ['0x00000745' ADSERR_CLIENT_SYNCTIMEOUT]
+    ['0x00000746' ADSERR_CLIENT_W32ERROR]
+    ['0x00000747' ADSERR_CLIENT_TIMEOUTINVALID]
+    ['0x00000748' ADSERR_CLIENT_PORTNOTOPEN]
+    ['0x00000750' ADSERR_CLIENT_NOAMSADDR]
+    ['0x00000751' ADSERR_CLIENT_SYNCINTERNAL]
+    ['0x00000752' ADSERR_CLIENT_ADDHASH]
+    ['0x00000753' ADSERR_CLIENT_REMOVEHASH]
+    ['0x00000754' ADSERR_CLIENT_NOMORESYM]
+    ['0x00000755' ADSERR_CLIENT_SYNCRESINVALID]
 
     // RTime Error-Codes
-    ['0x1000' RTERR_INTERNAL]
-    ['0x1001' RTERR_BADTIMERPERIODS]
-    ['0x1002' RTERR_INVALIDTASKPTR]
-    ['0x1003' RTERR_INVALIDSTACKPTR]
-    ['0x1004' RTERR_PRIOEXISTS]
-    ['0x1005' RTERR_NOMORETCB]
-    ['0x1006' RTERR_NOMORESEMAS]
-    ['0x1007' RTERR_NOMOREQUEUES]
-    ['0x100D' RTERR_EXTIRQALREADYDEF]
-    ['0x100E' RTERR_EXTIRQNOTDEF]
-    ['0x100F' RTERR_EXTIRQINSTALLFAILED]
-    ['0x1010' RTERR_IRQLNOTLESSOREQUAL]
-    ['0x1017' RTERR_VMXNOTSUPPORTED]
-    ['0x1018' RTERR_VMXDISABLED]
-    ['0x1019' RTERR_VMXCONTROLSMISSING]
-    ['0x101A' RTERR_VMXENABLEFAILS]
+    ['0x00001000' RTERR_INTERNAL]
+    ['0x00001001' RTERR_BADTIMERPERIODS]
+    ['0x00001002' RTERR_INVALIDTASKPTR]
+    ['0x00001003' RTERR_INVALIDSTACKPTR]
+    ['0x00001004' RTERR_PRIOEXISTS]
+    ['0x00001005' RTERR_NOMORETCB]
+    ['0x00001006' RTERR_NOMORESEMAS]
+    ['0x00001007' RTERR_NOMOREQUEUES]
+    ['0x0000100D' RTERR_EXTIRQALREADYDEF]
+    ['0x0000100E' RTERR_EXTIRQNOTDEF]
+    ['0x0000100F' RTERR_EXTIRQINSTALLFAILED]
+    ['0x00001010' RTERR_IRQLNOTLESSOREQUAL]
+    ['0x00001017' RTERR_VMXNOTSUPPORTED]
+    ['0x00001018' RTERR_VMXDISABLED]
+    ['0x00001019' RTERR_VMXCONTROLSMISSING]
+    ['0x0000101A' RTERR_VMXENABLEFAILS]
 
     // TCP Windsock Error-Codes
-    ['0x274C' WSAETIMEDOUT]
-    ['0x274D' WSAECONNREFUSED]
-    ['0x2751' WSAEHOSTUNREACH]
+    ['0x0000274C' WSAETIMEDOUT]
+    ['0x0000274D' WSAECONNREFUSED]
+    ['0x00002751' WSAEHOSTUNREACH]
 ]
 
-[type AdsTableSizes byteOrder='LITTLE_ENDIAN'
+[type AdsTableSizes byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"'
 	[simple   uint 32 symbolCount   ]
 	[simple   uint 32 symbolLength  ]
 	[simple   uint 32 dataTypeCount ]
 	[simple   uint 32 dataTypeLength]
-	[simple   uint 32 extraCount    ]
-	[simple   uint 32 extraLength   ]
+	[simple   uint 32 aliasCount    ]
+	[simple   uint 32 aliasLength   ]
 ]
 
-[type AdsSymbolTableEntry byteOrder='LITTLE_ENDIAN'
-  	[simple   uint 32                          entryLength                                     ]
-    [simple   uint 32                          group                                           ]
-    [simple   uint 32                          offset                                          ]
-    [simple   uint 32                          size                                            ]
-    [simple   uint 32                          dataType                                        ]
+[type AdsSymbolTableEntry byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' stringEncoding='"UTF8"'
+  	[simple   uint 32                          entryLength                                                             ]
+    [simple   uint 32                          group                                                                   ]
+    [simple   uint 32                          offset                                                                  ]
+    [simple   uint 32                          size                                                                    ]
+    [simple   uint 32                          dataType                                                                ]
     // Start: Flags
-    // https://github.com/jisotalo/ads-server/blob/master/src/ads-commons.ts#L631
+    // https://github.com/jisotalo/ads-client/blob/master/src/ads-commons.ts#L619
     // Order of the bits if read Little-Endian and then accessing the bit flags
-    // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8  |  23 22 21 20 19 18 17 16 | 31 30 29 28 27 26 25 24
-    [simple   bit                              flagMethodDeref                                 ]
-    [simple   bit                              flagItfMethodAccess                             ]
-    [simple   bit                              flagReadOnly                                    ]
-    [simple   bit                              flagTComInterfacePointer                        ]
-    [simple   bit                              flagTypeGuid                                    ]
-    [simple   bit                              flagReferenceTo                                 ]
-    [simple   bit                              flagBitValue                                    ]
-    [simple   bit                              flagPersistent                                  ]
-    [reserved uint 3                           '0x00'                                          ]
-    [simple   bit                              flagExtendedFlags                               ]
-    [simple   bit                              flagInitOnReset                                 ]
-    [simple   bit                              flagStatic                                      ]
-    [simple   bit                              flagAttributes                                  ]
-    [simple   bit                              flagContextMask                                 ]
-    [reserved uint 16                          '0x0000'                                        ]
+    // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8
+    [simple   bit                              flagMethodDeref                                                         ]
+    [simple   bit                              flagItfMethodAccess                                                     ]
+    [simple   bit                              flagReadOnly                                                            ]
+    [simple   bit                              flagTComInterfacePointer                                                ]
+    [implicit bit                              flagTypeGuid               'COUNT(guid) > 0'                            ]
+    [simple   bit                              flagReferenceTo                                                         ]
+    [simple   bit                              flagBitValue                                                            ]
+    [simple   bit                              flagPersistent                                                          ]
+    [simple   bit                              flagCompilerGenerated                                                   ]
+    [reserved uint 1                           '0x0'                                                                   ]
+    [simple   bit                              flagSystemServiceSymbol                                                 ]
+    [simple   bit                              flagExtendedFlags                                                       ]
+    [simple   bit                              flagInitOnReset                                                         ]
+    [simple   bit                              flagStatic                                                              ]
+    [implicit bit                              flagAttributes             'attributes != null'                         ]
+    [implicit bit                              flagContextMask            'contextMask != null'                        ]
+    // https://github.com/jisotalo/ads-client/blob/master/src/ads-commons.ts#L679
+    // Order of the bits if read Little-Endian and then accessing the bit flags
+    // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8
+    [reserved uint 3                          '0x0'                                                                    ]
+    [simple   bit                              flagVariantType                                                         ]
+    [simple   bit                              flagOnlineChangePtrRefType                                              ]
+    [simple   bit                              flagRefactorInfo                                                        ]
+    [simple   bit                              flagRedundancyIgnore                                                    ]
+    [simple   bit                              flagPlcPointerType                                                      ]
+    [reserved uint 8                           '0x00'                                                                  ]
     // End: Flags
-    [implicit uint 16                          nameLength               'STR_LEN(name)'        ]
-    [implicit uint 16                          dataTypeNameLength       'STR_LEN(dataTypeName)']
-    [implicit uint 16                          commentLength            'STR_LEN(comment)'     ]
-	[simple   vstring 'nameLength * 8'         name                                            ]
-	[const    uint 8                           nameTerminator           0x00                   ]
-	[simple   vstring 'dataTypeNameLength * 8' dataTypeName                                    ]
-	[const    uint 8                           dataTypeNameTerminator   0x00                   ]
-	[simple   vstring 'commentLength * 8'      comment                                         ]
-	[const    uint 8                           commentTerminator        0x00                   ]
-	// Gobbling up the rest, but it seems there is content in here, when looking
-	// at the data in wireshark, it seems to be related to the flags field.
-	// Will have to continue searching for more details on how to decode this.
-	// I would assume that we'll have some "optional" fields here which depend
-	// on values in the flags section.
-	[array    byte                             rest             length 'entryLength - curPos'  ]
+    [implicit uint 16                          nameLength                 'STR_LEN(name)'                              ]
+    [implicit uint 16                          dataTypeNameLength         'STR_LEN(dataTypeName)'                      ]
+    [implicit uint 16                          commentLength              'STR_LEN(comment)'                           ]
+	[simple   vstring 'nameLength * 8'         name                                                                    ]
+	[const    uint 8                           nameTerminator             0x00                                         ]
+	[simple   vstring 'dataTypeNameLength * 8' dataTypeName                                                            ]
+	[const    uint 8                           dataTypeNameTerminator     0x00                                         ]
+	[simple   vstring 'commentLength * 8'      comment                                                                 ]
+	[const    uint 8                           commentTerminator          0x00                                         ]
+	[optional uint 32                          contextMask                'flagContextMask'                            ]
+    [array    byte                             guid                       count         'flagTypeGuid == true ? 16 : 0']
+    [optional AdsDataTypeAttributes            attributes                 'flagAttributes'                             ]
+    // Gobbling up the rest, but it seems there is only empty padding bytes in it.
+	[array    byte                             rest                       count            'entryLength - (curPos / 8)']
 ]
 
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L15
-[type AdsDataTypeTableEntry byteOrder='LITTLE_ENDIAN'
-	[simple   uint 32                            entryLength                                                            ]
-	[simple   uint 32                            version                                                                ]
-	[simple   uint 32                            hashValue                                                              ]
-	[simple   uint 32                            typeHashValue                                                          ]
-	[simple   uint 32                            size                                                                   ]
-	[simple   uint 32                            offset                                                                 ]
-	[simple   uint 32                            dataType                                                               ]
-	[simple   uint 32                            flags                                                                  ]
-	[implicit uint 16                            mainNameLength           'STR_LEN(mainName)'                           ]
-	[implicit uint 16                            secondaryNameLength      'STR_LEN(secondaryName)'                      ]
-	[implicit uint 16                            commentLength            'STR_LEN(comment)'                            ]
-	[simple   uint 16                            arrayDimensions                                                        ]
-	[simple   uint 16                            numChildren                                                            ]
-	[simple   vstring 'mainNameLength * 8'       mainName                                                               ]
-	[const    uint 8                             mainNameTerminator       0x00                                          ]
-	[simple   vstring 'secondaryNameLength * 8'  secondaryName                                                          ]
-	[const    uint 8                             secondaryNameTerminator  0x00                                          ]
-	[simple   vstring 'commentLength * 8'        comment                                                                ]
-	[const    uint 8                             commentTerminator        0x00                                          ]
-    [array    AdsDataTypeArrayInfo               arrayInfo                count                   'arrayDimensions'     ]
-   	[array    AdsDataTypeTableEntry              children                 count                   'numChildren'         ]
-	// Gobbling up the rest, but it seems there is content in here, when looking
-	// at the data in wireshark, it seems to be related to the flags field.
-	// Will have to continue searching for more details on how to decode this.
-	// I would assume that we'll have some "optional" fields here which depend
-	// on values in the flags section.
-	[array    byte                               rest                     length                  'entryLength - curPos']
+[type AdsDataTypeTableEntry byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' stringEncoding='"UTF8"'
+	[simple   uint 32                            entryLength                                                           ]
+	[simple   uint 32                            version                                                               ]
+	[simple   uint 32                            hashValue                                                             ]
+	[simple   uint 32                            typeHashValue                                                         ]
+	[simple   uint 32                            size                                                                  ]
+	[simple   uint 32                            offset                                                                ]
+	[simple   AdsDatatypeId                      dataType                                                              ]
+	// Begin: Data Type Flags
+	// Source (https://github.com/jisotalo/ads-client/blob/master/src/ads-commons.ts#L724)
+    // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8  |  23 22 21 20 19 18 17 16 | 31 30 29 28 27 26 25 24
+	// Byte 1
+	[implicit bit                                flagTypeGuid               'COUNT(guid) > 0'                          ]
+	[simple   bit                                flagPropItem                                                          ]
+	[simple   bit                                flagBitValues                                                         ]
+	[simple   bit                                flagOversample                                                        ]
+	[simple   bit                                flagMethodRef                                                         ]
+	[simple   bit                                flagReferenceTo                                                       ]
+	[implicit bit                                flagDataType               'numChildren > 0'                         ]
+	[implicit bit                                flagDataItem               'numChildren == 0'                          ]
+	// Byte 2
+    [reserved uint 2                             '0x0'                                                                 ]
+  	[implicit bit                                flagExtendedInfos          'extendedInfos != null'                    ]
+  	[implicit bit                                flagAttributes             'attributes != null'                       ]
+  	[implicit bit                                flagMethodInfos            'methodInfos != null'                      ]
+  	[simple   bit                                flagTComInterfacePtr                                                  ]
+  	[simple   bit                                flagCopyMask                                                          ]
+  	[simple   bit                                flagPersistent                                                        ]
+	// Byte 3
+    [simple   bit                                flagPlcPointerType                                                    ]
+    [simple   bit                                flagInitOnReset                                                       ]
+    [simple   bit                                flagPersistentDataType                                                ]
+    [simple   bit                                flagAnySizeArray                                                      ]
+    [simple   bit                                flagIgnorePersist                                                     ]
+    [simple   bit                                flagSoftwareProtectionLevels                                          ]
+    [simple   bit                                flagStatic                                                            ]
+    [simple   bit                                flagAligned                                                           ]
+	// Byte 4
+    [simple   bit                                ExtendedFlags                                                         ]
+    [reserved uint 1                             '0x0'                                                                 ]
+    [simple   bit                                flagExtendedEnumInfos                                                 ]
+    [simple   bit                                flagDeRefTypeItem                                                     ]
+    [simple   bit                                flagContainsOnlineChangePtrRef                                        ]
+    [simple   bit                                flagIncomplete                                                        ]
+    [simple   bit                                flagHideSubItems                                                      ]
+    [simple   bit                                flagRefactorInfo                                                      ]
+    // End: Data Type Flags
+	[implicit uint 16                            mainNameLength           'STR_LEN(mainName)'                          ]
+	[implicit uint 16                            secondaryNameLength      'STR_LEN(secondaryName)'                     ]
+	[implicit uint 16                            commentLength            'STR_LEN(comment)'                           ]
+	[simple   uint 16                            arrayDimensions                                                       ]
+	[simple   uint 16                            numChildren                                                           ]
+	[simple   vstring 'mainNameLength * 8'       mainName                                                              ]
+	[const    uint 8                             mainNameTerminator       0x00                                         ]
+	[simple   vstring 'secondaryNameLength * 8'  secondaryName                                                         ]
+	[const    uint 8                             secondaryNameTerminator  0x00                                         ]
+	[simple   vstring 'commentLength * 8'        comment                                                               ]
+	[const    uint 8                             commentTerminator        0x00                                         ]
+    [array    AdsDataTypeArrayInfo               arrayInfo                count                     'arrayDimensions'  ]
+   	[array    AdsDataTypeTableEntry              children                 count                     'numChildren'      ]
+    [array    byte                               guid                     count         'flagTypeGuid == true ? 16 : 0']
+	[optional AdsMethodInfos                     methodInfos              'flagMethodInfos'                            ]
+    [optional AdsDataTypeAttributes              attributes               'flagAttributes'                             ]
+    [optional AdsExtendedInfos('dataType')       extendedInfos            'flagExtendedInfos'                          ]
+	// This only consumes the rest in cased of both methodInfos and extendedInfos not being set.
+	[array    byte                               rest                     count            'entryLength - (curPos / 8)']
 ]
 
-[type AdsDataTypeArrayInfo byteOrder='LITTLE_ENDIAN'
+[type AdsDataTypeArrayInfo byteOrder='"LITTLE_ENDIAN"'
     [simple  uint 32 lowerBound                                                                                        ]
     [simple  uint 32 numElements                                                                                       ]
     [virtual uint 32 upperBound  'lowerBound + (numElements - 1)'                                                      ]
+]
+
+[type AdsMethodInfos
+    [implicit uint 16       numMethodInfos 'COUNT(methodInfos)'                                                        ]
+    [array    AdsMethodInfo methodInfos    count                'numMethodInfos'                                       ]
+]
+
+[type AdsMethodInfo
+    [implicit uint 32                      methodInfoLength   'lengthInBytes'                                          ]
+    [simple   uint 32                      header1                                                                     ]
+    [simple   uint 32                      header2                                                                     ]
+    [simple   uint 32                      header3                                                                     ]
+    [simple   uint 32                      header4                                                                     ]
+    [simple   uint 32                      header5                                                                     ]
+    [array    byte                         guid               count               '16'                                 ]
+    // Potentially optional
+    [simple   uint 32                      methodId                                                                    ]
+    // Potentially optional
+    [simple   uint 32                      methodFlags                                                                 ]
+    // If the two above are optional, we need a reserved 0x0000 instead.
+    [implicit uint 16                      nameLength         'STR_LEN(name)'                                          ]
+    [implicit uint 16                      typeNameLength     'STR_LEN(typeName)'                                      ]
+    [implicit uint 16                      commentLength      'STR_LEN(comment)'                                       ]
+    [implicit uint 16                      parameterCount     'COUNT(parameters)'                                      ]
+	[simple   vstring 'nameLength * 8'     name                                                                        ]
+	[const    uint 8                       nameTerminator     0x00                                                     ]
+	[simple   vstring 'typeNameLength * 8' typeName                                                                    ]
+	[const    uint 8                       typeNameTerminator 0x00                                                     ]
+	[simple   vstring 'commentLength * 8'  comment                                                                     ]
+	[const    uint 8                       commentTerminator  0x00                                                     ]
+    [array    AdsMethodParam               parameters         count         'parameterCount'                           ]
+	// This only consumes the rest in cases, where we haven't quite figgured out the full structure of this type.
+	[array    byte                         rest               count         'methodInfoLength - (curPos / 8)'          ]
+]
+
+// A single parameter descriptor. Matches your “tail”: length + 5 headers + GUID +
+// optional ids/flags + lengths + strings + terminators.
+[type AdsMethodParam
+    [implicit uint 32  paramLength          'lengthInBytes'                                                            ]
+    [simple   uint 32  header1                                                                                         ]
+    [simple   uint 32  header2                                                                                         ]
+    [simple   uint 32  header3                                                                                         ]
+    [simple   uint 32  header4                                                                                         ]
+    [simple   uint 32  header5                                                                                         ]
+    [array    byte     guid                 count               '16'                                                   ]
+    [reserved uint 16  '0x0000'                                                                                        ]
+    [implicit uint 16  nameLength           'STR_LEN(name)'                                                            ]
+    [implicit uint 16  typeNameLength       'STR_LEN(typeName)'                                                        ]
+    [implicit uint 16  commentLength        'STR_LEN(comment)'                                                         ]
+    [simple   vstring  'nameLength * 8'     name                                                                       ]
+    [const    uint 8   nameTerminator       0x00                                                                       ]
+    [simple   vstring  'typeNameLength * 8' typeName                                                                   ]
+    [const    uint 8   typeNameTerminator   0x00                                                                       ]
+    [simple   vstring  'commentLength * 8'  comment                                                                    ]
+    [const    uint 8   commentTerminator    0x00                                                                       ]
+]
+
+[type AdsString(uint 16 stringLength)
+	[manual vstring stringValue 'STATIC_CALL("parseZeroTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeZeroTerminatedString", writeBuffer, stringValue)' 'STATIC_CALL("lengthZeroTerminatedString", stringValue)'                                                                   ]
+]
+
+[type AdsDataTypeAttributes
+    [implicit uint 16                        numAttributes   'COUNT(attributes)'                                       ]
+    [array    AdsAttributeEntry              attributes      count               'numAttributes'                       ]
+]
+
+[type AdsAttributeEntry
+    [implicit      uint 8                    nameLength      'STR_LEN(name)'                                           ]
+    [implicit      uint 8                    valueLength     'STR_LEN(value)'                                          ]
+    [simple        vstring 'nameLength * 8'  name                                                                      ]
+    [const         uint 8                    nameTerminator  0x00                                                      ]
+    [simple        vstring 'valueLength * 8' value                                                                     ]
+    // This is an evil hack allowing us to parse dataypte tables containg TcLinkTo elements.
+    [implicit      uint 8                    valueTerminator '0x00'                                                    ]
+    [validation    'valueTerminator == 0x00' 'unexpected char instead of terminator' shouldFail=false                  ]
+]
+
+[type AdsExtendedInfos(AdsDatatypeId dataType)
+    [implicit uint 16                          count           'COUNT(entries)']
+    [array    AdsExtendedInfoEntry('dataType') entries         count 'count'    ]
+]
+
+[discriminatedType AdsExtendedInfoEntry(AdsDatatypeId dataType)
+    [implicit uint 8                   nameLength      'STR_LEN(name)'                                                 ]
+    [simple   vstring 'nameLength * 8' name                                                                            ]
+    [const    uint 8                   nameTerminator  0x00                                                            ]
+    [typeSwitch dataType
+        ['ADST_VOID' *Void
+        ]
+        ['ADST_INT8' *Int8
+            [simple   int 8                  value]
+        ]
+        ['ADST_UINT8' *Uint8
+            [simple   uint 8                 value]
+        ]
+        ['ADST_INT16' *Int16
+            [simple   int 16                 value]
+        ]
+        ['ADST_UINT16' *Uint16
+            [simple   uint 16                value]
+        ]
+        ['ADST_INT32' *Int32
+            [simple   int 32                  value]
+        ]
+        ['ADST_UINT32' *Uint32
+            [simple   uint 32                 value]
+        ]
+        ['ADST_INT64' *Int64
+            [simple   int 64                  value]
+        ]
+        ['ADST_UINT64' *Uint64
+            [simple   uint 64                 value]
+        ]
+        ['ADST_REAL32' *Real32
+            [simple   float 32                value]
+        ]
+        ['ADST_REAL64' *Real64
+            [simple   float 64                value]
+        ]
+        ['ADST_BIGTYPE' *BigType
+            // TODO: Find out
+        ]
+        ['ADST_STRING' *String
+            // TODO: Find out
+        ]
+        ['ADST_WSTRING' *Wstring
+            // TODO: Find out
+        ]
+        ['ADST_REAL80' *Real80
+            // TODO: Find out
+        ]
+        ['ADST_BIT' *Bit
+            // TODO: Find out
+        ]
+        ['ADST_MAXTYPES' *MaxTypes
+            // TODO: Find out
+        ]
+    ]
+]
+
+[enum uint 32 AdsDatatypeId
+    ['0'    ADST_VOID       ]
+    ['16'   ADST_INT8       ]
+    ['17'   ADST_UINT8      ]
+    ['2'    ADST_INT16      ]
+    ['18'   ADST_UINT16     ]
+    ['3'    ADST_INT32      ]
+    ['19'   ADST_UINT32     ]
+    ['20'   ADST_INT64      ]
+    ['21'   ADST_UINT64     ]
+    ['4'    ADST_REAL32     ]
+    ['5'    ADST_REAL64     ]
+    ['65'   ADST_BIGTYPE    ]
+    ['30'   ADST_STRING     ]
+    ['31'   ADST_WSTRING    ]
+    ['32'   ADST_REAL80     ]
+    ['33'   ADST_BIT        ]
+    ['34'   ADST_MAXTYPES   ]
 ]
 
 // From: https://infosys.beckhoff.com/english.php?content=../content/1033/tcplclib_tc2_system/31064331.html&id=

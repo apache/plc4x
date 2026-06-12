@@ -176,7 +176,7 @@ func CastTriggerControlDataTriggerMax(structType any) TriggerControlDataTriggerM
 	return nil
 }
 
-func (m *_TriggerControlDataTriggerMax) GetTypeName() string {
+func (m *_TriggerControlDataTriggerMax) GetPlx4xTypeName() string {
 	return "TriggerControlDataTriggerMax"
 }
 

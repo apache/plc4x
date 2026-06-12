@@ -227,7 +227,7 @@ func CastCIPEncapsulationReadResponse(structType any) CIPEncapsulationReadRespon
 	return nil
 }
 
-func (m *_CIPEncapsulationReadResponse) GetTypeName() string {
+func (m *_CIPEncapsulationReadResponse) GetPlx4xTypeName() string {
 	return "CIPEncapsulationReadResponse"
 }
 
@@ -255,7 +255,7 @@ func (m *_CIPEncapsulationReadResponse) parse(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	response, err := ReadSimpleField[DF1ResponseMessage](ctx, "response", ReadComplex[DF1ResponseMessage](DF1ResponseMessageParseWithBufferProducer[DF1ResponseMessage]((uint16)(packetLen)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	response, err := ReadSimpleField[DF1ResponseMessage](ctx, "response", ReadComplex[DF1ResponseMessage](DF1ResponseMessageParseWithBufferProducer[DF1ResponseMessage]((uint16)(packetLen)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'response' field"))
 	}
@@ -286,7 +286,7 @@ func (m *_CIPEncapsulationReadResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for CIPEncapsulationReadResponse")
 		}
 
-		if err := WriteSimpleField[DF1ResponseMessage](ctx, "response", m.GetResponse(), WriteComplex[DF1ResponseMessage](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[DF1ResponseMessage](ctx, "response", m.GetResponse(), WriteComplex[DF1ResponseMessage](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'response' field")
 		}
 

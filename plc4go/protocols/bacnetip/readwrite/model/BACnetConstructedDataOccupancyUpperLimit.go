@@ -246,7 +246,7 @@ func CastBACnetConstructedDataOccupancyUpperLimit(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataOccupancyUpperLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataOccupancyUpperLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOccupancyUpperLimit"
 }
 

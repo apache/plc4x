@@ -207,7 +207,7 @@ func CastHPAIControlEndpoint(structType any) HPAIControlEndpoint {
 	return nil
 }
 
-func (m *_HPAIControlEndpoint) GetTypeName() string {
+func (m *_HPAIControlEndpoint) GetPlx4xTypeName() string {
 	return "HPAIControlEndpoint"
 }
 

@@ -237,7 +237,7 @@ func CastKnxGroupAddress3Level(structType any) KnxGroupAddress3Level {
 	return nil
 }
 
-func (m *_KnxGroupAddress3Level) GetTypeName() string {
+func (m *_KnxGroupAddress3Level) GetPlx4xTypeName() string {
 	return "KnxGroupAddress3Level"
 }
 

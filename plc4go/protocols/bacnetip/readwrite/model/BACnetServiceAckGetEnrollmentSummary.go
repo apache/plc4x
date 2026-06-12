@@ -351,7 +351,7 @@ func CastBACnetServiceAckGetEnrollmentSummary(structType any) BACnetServiceAckGe
 	return nil
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummary) GetTypeName() string {
+func (m *_BACnetServiceAckGetEnrollmentSummary) GetPlx4xTypeName() string {
 	return "BACnetServiceAckGetEnrollmentSummary"
 }
 

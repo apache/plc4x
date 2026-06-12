@@ -285,7 +285,7 @@ func CastBACnetConfirmedServiceRequestReadProperty(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadProperty) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReadProperty) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReadProperty"
 }
 

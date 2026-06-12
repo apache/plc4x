@@ -211,7 +211,7 @@ func CastBACnetConstructedDataVTClassesSupported(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataVTClassesSupported) GetTypeName() string {
+func (m *_BACnetConstructedDataVTClassesSupported) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataVTClassesSupported"
 }
 

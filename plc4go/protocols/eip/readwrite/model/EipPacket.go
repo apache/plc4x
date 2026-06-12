@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -419,7 +420,7 @@ func CastEipPacket(structType any) EipPacket {
 	return nil
 }
 
-func (m *_EipPacket) GetTypeName() string {
+func (m *_EipPacket) GetPlx4xTypeName() string {
 	return "EipPacket"
 }
 
@@ -494,36 +495,36 @@ func (m *_EipPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, res
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	command, err := ReadDiscriminatorField[uint16](ctx, "command", ReadUnsignedShort(readBuffer, uint8(16)))
+	command, err := ReadDiscriminatorField[uint16](ctx, "command", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
 
-	packetLength, err := ReadImplicitField[uint16](ctx, "packetLength", ReadUnsignedShort(readBuffer, uint8(16)))
+	packetLength, err := ReadImplicitField[uint16](ctx, "packetLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetLength' field"))
 	}
 	_ = packetLength
 
-	sessionHandle, err := ReadSimpleField(ctx, "sessionHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	sessionHandle, err := ReadSimpleField(ctx, "sessionHandle", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionHandle' field"))
 	}
 	m.SessionHandle = sessionHandle
 
-	status, err := ReadSimpleField(ctx, "status", ReadUnsignedInt(readBuffer, uint8(32)))
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 	m.Status = status
 
-	senderContext, err := readBuffer.ReadByteArray("senderContext", int(int32(8)))
+	senderContext, err := readBuffer.ReadByteArray("senderContext", int(int32(8)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'senderContext' field"))
 	}
 	m.SenderContext = senderContext
 
-	options, err := ReadSimpleField(ctx, "options", ReadUnsignedInt(readBuffer, uint8(32)))
+	options, err := ReadSimpleField(ctx, "options", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'options' field"))
 	}
@@ -607,27 +608,27 @@ func (pm *_EipPacket) serializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(pushErr, "Error pushing for EipPacket")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "command", m.GetCommand(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "command", m.GetCommand(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'command' field")
 	}
 	packetLength := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(24)))
-	if err := WriteImplicitField(ctx, "packetLength", packetLength, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+	if err := WriteImplicitField(ctx, "packetLength", packetLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'packetLength' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "sessionHandle", m.GetSessionHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "sessionHandle", m.GetSessionHandle(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'sessionHandle' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "status", m.GetStatus(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "status", m.GetStatus(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
-	if err := WriteByteArrayField(ctx, "senderContext", m.GetSenderContext(), WriteByteArray(writeBuffer, 8)); err != nil {
+	if err := WriteByteArrayField(ctx, "senderContext", m.GetSenderContext(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'senderContext' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "options", m.GetOptions(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "options", m.GetOptions(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'options' field")
 	}
 

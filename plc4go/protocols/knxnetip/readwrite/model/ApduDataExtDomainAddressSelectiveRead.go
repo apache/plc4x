@@ -180,7 +180,7 @@ func CastApduDataExtDomainAddressSelectiveRead(structType any) ApduDataExtDomain
 	return nil
 }
 
-func (m *_ApduDataExtDomainAddressSelectiveRead) GetTypeName() string {
+func (m *_ApduDataExtDomainAddressSelectiveRead) GetPlx4xTypeName() string {
 	return "ApduDataExtDomainAddressSelectiveRead"
 }
 

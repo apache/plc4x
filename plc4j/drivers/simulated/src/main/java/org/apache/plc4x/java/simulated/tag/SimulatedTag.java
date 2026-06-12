@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.simulated.types.SimulatedTagType;
-import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
+import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.util.Collections;
 import java.util.List;

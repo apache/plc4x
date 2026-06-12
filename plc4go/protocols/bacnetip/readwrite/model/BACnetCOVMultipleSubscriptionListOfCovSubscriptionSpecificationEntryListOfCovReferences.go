@@ -225,7 +225,7 @@ func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLis
 	return nil
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) GetTypeName() string {
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) GetPlx4xTypeName() string {
 	return "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences"
 }
 

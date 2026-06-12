@@ -184,7 +184,7 @@ func CastBACnetConstructedDataScheduleAll(structType any) BACnetConstructedDataS
 	return nil
 }
 
-func (m *_BACnetConstructedDataScheduleAll) GetTypeName() string {
+func (m *_BACnetConstructedDataScheduleAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataScheduleAll"
 }
 

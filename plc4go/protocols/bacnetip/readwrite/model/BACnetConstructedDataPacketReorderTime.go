@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPacketReorderTime(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataPacketReorderTime) GetTypeName() string {
+func (m *_BACnetConstructedDataPacketReorderTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPacketReorderTime"
 }
 

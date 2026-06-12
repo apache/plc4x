@@ -413,7 +413,7 @@ func CastAPDUConfirmedRequest(structType any) APDUConfirmedRequest {
 	return nil
 }
 
-func (m *_APDUConfirmedRequest) GetTypeName() string {
+func (m *_APDUConfirmedRequest) GetPlx4xTypeName() string {
 	return "APDUConfirmedRequest"
 }
 

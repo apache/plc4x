@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesFileAccessMethod(structType any) BACnetPropertyStat
 	return nil
 }
 
-func (m *_BACnetPropertyStatesFileAccessMethod) GetTypeName() string {
+func (m *_BACnetPropertyStatesFileAccessMethod) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesFileAccessMethod"
 }
 

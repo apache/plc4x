@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -270,7 +271,7 @@ func CastFindServersOnNetworkRequest(structType any) FindServersOnNetworkRequest
 	return nil
 }
 
-func (m *_FindServersOnNetworkRequest) GetTypeName() string {
+func (m *_FindServersOnNetworkRequest) GetPlx4xTypeName() string {
 	return "FindServersOnNetworkRequest"
 }
 
@@ -315,31 +316,31 @@ func (m *_FindServersOnNetworkRequest) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	startingRecordId, err := ReadSimpleField(ctx, "startingRecordId", ReadUnsignedInt(readBuffer, uint8(32)))
+	startingRecordId, err := ReadSimpleField(ctx, "startingRecordId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingRecordId' field"))
 	}
 	m.StartingRecordId = startingRecordId
 
-	maxRecordsToReturn, err := ReadSimpleField(ctx, "maxRecordsToReturn", ReadUnsignedInt(readBuffer, uint8(32)))
+	maxRecordsToReturn, err := ReadSimpleField(ctx, "maxRecordsToReturn", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxRecordsToReturn' field"))
 	}
 	m.MaxRecordsToReturn = maxRecordsToReturn
 
-	noOfServerCapabilityFilter, err := ReadImplicitField[int32](ctx, "noOfServerCapabilityFilter", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerCapabilityFilter, err := ReadImplicitField[int32](ctx, "noOfServerCapabilityFilter", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerCapabilityFilter' field"))
 	}
 	_ = noOfServerCapabilityFilter
 
-	serverCapabilityFilter, err := ReadCountArrayField[PascalString](ctx, "serverCapabilityFilter", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilityFilter))
+	serverCapabilityFilter, err := ReadCountArrayField[PascalString](ctx, "serverCapabilityFilter", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilityFilter), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverCapabilityFilter' field"))
 	}
@@ -370,23 +371,23 @@ func (m *_FindServersOnNetworkRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for FindServersOnNetworkRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "startingRecordId", m.GetStartingRecordId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "startingRecordId", m.GetStartingRecordId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'startingRecordId' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "maxRecordsToReturn", m.GetMaxRecordsToReturn(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "maxRecordsToReturn", m.GetMaxRecordsToReturn(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxRecordsToReturn' field")
 		}
 		noOfServerCapabilityFilter := int32(utils.InlineIf(bool((m.GetServerCapabilityFilter()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerCapabilityFilter()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfServerCapabilityFilter", noOfServerCapabilityFilter, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfServerCapabilityFilter", noOfServerCapabilityFilter, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerCapabilityFilter' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "serverCapabilityFilter", m.GetServerCapabilityFilter(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "serverCapabilityFilter", m.GetServerCapabilityFilter(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverCapabilityFilter' field")
 		}
 

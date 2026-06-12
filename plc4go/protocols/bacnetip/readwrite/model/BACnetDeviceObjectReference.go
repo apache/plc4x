@@ -205,7 +205,7 @@ func CastBACnetDeviceObjectReference(structType any) BACnetDeviceObjectReference
 	return nil
 }
 
-func (m *_BACnetDeviceObjectReference) GetTypeName() string {
+func (m *_BACnetDeviceObjectReference) GetPlx4xTypeName() string {
 	return "BACnetDeviceObjectReference"
 }
 

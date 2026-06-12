@@ -259,7 +259,7 @@ func CastPayload(structType any) Payload {
 	return nil
 }
 
-func (m *_Payload) GetTypeName() string {
+func (m *_Payload) GetPlx4xTypeName() string {
 	return "Payload"
 }
 

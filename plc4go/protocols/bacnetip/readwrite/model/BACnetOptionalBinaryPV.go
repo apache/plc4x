@@ -277,7 +277,7 @@ func CastBACnetOptionalBinaryPV(structType any) BACnetOptionalBinaryPV {
 	return nil
 }
 
-func (m *_BACnetOptionalBinaryPV) GetTypeName() string {
+func (m *_BACnetOptionalBinaryPV) GetPlx4xTypeName() string {
 	return "BACnetOptionalBinaryPV"
 }
 

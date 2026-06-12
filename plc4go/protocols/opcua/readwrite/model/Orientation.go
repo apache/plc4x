@@ -180,7 +180,7 @@ func CastOrientation(structType any) Orientation {
 	return nil
 }
 
-func (m *_Orientation) GetTypeName() string {
+func (m *_Orientation) GetPlx4xTypeName() string {
 	return "Orientation"
 }
 

@@ -175,7 +175,7 @@ func CastModbusDeviceInformationObject(structType any) ModbusDeviceInformationOb
 	return nil
 }
 
-func (m *_ModbusDeviceInformationObject) GetTypeName() string {
+func (m *_ModbusDeviceInformationObject) GetPlx4xTypeName() string {
 	return "ModbusDeviceInformationObject"
 }
 

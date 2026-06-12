@@ -230,7 +230,7 @@ func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(structType a
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse"
 }
 

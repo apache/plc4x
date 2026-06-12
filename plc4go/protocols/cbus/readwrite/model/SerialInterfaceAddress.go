@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -161,7 +163,7 @@ func CastSerialInterfaceAddress(structType any) SerialInterfaceAddress {
 	return nil
 }
 
-func (m *_SerialInterfaceAddress) GetTypeName() string {
+func (m *_SerialInterfaceAddress) GetPlx4xTypeName() string {
 	return "SerialInterfaceAddress"
 }
 
@@ -179,7 +181,7 @@ func (m *_SerialInterfaceAddress) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func SerialInterfaceAddressParse(ctx context.Context, theBytes []byte) (SerialInterfaceAddress, error) {
-	return SerialInterfaceAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return SerialInterfaceAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func SerialInterfaceAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SerialInterfaceAddress, error) {
@@ -205,7 +207,7 @@ func (m *_SerialInterfaceAddress) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	address, err := ReadSimpleField(ctx, "address", ReadByte(readBuffer, 8))
+	address, err := ReadSimpleField(ctx, "address", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
@@ -219,7 +221,7 @@ func (m *_SerialInterfaceAddress) parse(ctx context.Context, readBuffer utils.Re
 }
 
 func (m *_SerialInterfaceAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -235,7 +237,7 @@ func (m *_SerialInterfaceAddress) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(pushErr, "Error pushing for SerialInterfaceAddress")
 	}
 
-	if err := WriteSimpleField[byte](ctx, "address", m.GetAddress(), WriteByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[byte](ctx, "address", m.GetAddress(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'address' field")
 	}
 

@@ -188,7 +188,7 @@ func CastEipDisconnectRequest(structType any) EipDisconnectRequest {
 	return nil
 }
 
-func (m *_EipDisconnectRequest) GetTypeName() string {
+func (m *_EipDisconnectRequest) GetPlx4xTypeName() string {
 	return "EipDisconnectRequest"
 }
 

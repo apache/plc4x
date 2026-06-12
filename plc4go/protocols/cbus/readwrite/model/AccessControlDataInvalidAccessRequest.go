@@ -218,7 +218,7 @@ func CastAccessControlDataInvalidAccessRequest(structType any) AccessControlData
 	return nil
 }
 
-func (m *_AccessControlDataInvalidAccessRequest) GetTypeName() string {
+func (m *_AccessControlDataInvalidAccessRequest) GetPlx4xTypeName() string {
 	return "AccessControlDataInvalidAccessRequest"
 }
 

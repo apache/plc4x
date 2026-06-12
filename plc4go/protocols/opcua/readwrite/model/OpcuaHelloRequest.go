@@ -277,7 +277,7 @@ func CastOpcuaHelloRequest(structType any) OpcuaHelloRequest {
 	return nil
 }
 
-func (m *_OpcuaHelloRequest) GetTypeName() string {
+func (m *_OpcuaHelloRequest) GetPlx4xTypeName() string {
 	return "OpcuaHelloRequest"
 }
 

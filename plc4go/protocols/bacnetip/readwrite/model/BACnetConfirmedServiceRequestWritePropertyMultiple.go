@@ -207,7 +207,7 @@ func CastBACnetConfirmedServiceRequestWritePropertyMultiple(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestWritePropertyMultiple"
 }
 

@@ -209,7 +209,7 @@ func CastAssociatedValueType(structType any) AssociatedValueType {
 	return nil
 }
 
-func (m *_AssociatedValueType) GetTypeName() string {
+func (m *_AssociatedValueType) GetPlx4xTypeName() string {
 	return "AssociatedValueType"
 }
 

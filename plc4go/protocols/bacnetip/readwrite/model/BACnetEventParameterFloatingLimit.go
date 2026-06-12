@@ -419,7 +419,7 @@ func CastBACnetEventParameterFloatingLimit(structType any) BACnetEventParameterF
 	return nil
 }
 
-func (m *_BACnetEventParameterFloatingLimit) GetTypeName() string {
+func (m *_BACnetEventParameterFloatingLimit) GetPlx4xTypeName() string {
 	return "BACnetEventParameterFloatingLimit"
 }
 

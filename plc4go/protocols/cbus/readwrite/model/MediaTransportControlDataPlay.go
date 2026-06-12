@@ -176,7 +176,7 @@ func CastMediaTransportControlDataPlay(structType any) MediaTransportControlData
 	return nil
 }
 
-func (m *_MediaTransportControlDataPlay) GetTypeName() string {
+func (m *_MediaTransportControlDataPlay) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataPlay"
 }
 

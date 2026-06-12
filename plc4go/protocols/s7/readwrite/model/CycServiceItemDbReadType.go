@@ -218,7 +218,7 @@ func CastCycServiceItemDbReadType(structType any) CycServiceItemDbReadType {
 	return nil
 }
 
-func (m *_CycServiceItemDbReadType) GetTypeName() string {
+func (m *_CycServiceItemDbReadType) GetPlx4xTypeName() string {
 	return "CycServiceItemDbReadType"
 }
 

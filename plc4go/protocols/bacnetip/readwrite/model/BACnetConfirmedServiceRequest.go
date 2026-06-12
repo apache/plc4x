@@ -620,7 +620,7 @@ func CastBACnetConfirmedServiceRequest(structType any) BACnetConfirmedServiceReq
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequest) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequest) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequest"
 }
 

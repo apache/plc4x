@@ -180,7 +180,7 @@ func CastNotificationData(structType any) NotificationData {
 	return nil
 }
 
-func (m *_NotificationData) GetTypeName() string {
+func (m *_NotificationData) GetPlx4xTypeName() string {
 	return "NotificationData"
 }
 

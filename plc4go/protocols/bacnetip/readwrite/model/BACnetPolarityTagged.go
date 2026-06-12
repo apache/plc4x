@@ -193,7 +193,7 @@ func CastBACnetPolarityTagged(structType any) BACnetPolarityTagged {
 	return nil
 }
 
-func (m *_BACnetPolarityTagged) GetTypeName() string {
+func (m *_BACnetPolarityTagged) GetPlx4xTypeName() string {
 	return "BACnetPolarityTagged"
 }
 

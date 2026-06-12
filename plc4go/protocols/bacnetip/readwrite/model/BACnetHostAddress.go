@@ -289,7 +289,7 @@ func CastBACnetHostAddress(structType any) BACnetHostAddress {
 	return nil
 }
 
-func (m *_BACnetHostAddress) GetTypeName() string {
+func (m *_BACnetHostAddress) GetPlx4xTypeName() string {
 	return "BACnetHostAddress"
 }
 

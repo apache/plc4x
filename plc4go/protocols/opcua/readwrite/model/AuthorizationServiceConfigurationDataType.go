@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -321,7 +322,7 @@ func CastAuthorizationServiceConfigurationDataType(structType any) Authorization
 	return nil
 }
 
-func (m *_AuthorizationServiceConfigurationDataType) GetTypeName() string {
+func (m *_AuthorizationServiceConfigurationDataType) GetPlx4xTypeName() string {
 	return "AuthorizationServiceConfigurationDataType"
 }
 
@@ -377,43 +378,43 @@ func (m *_AuthorizationServiceConfigurationDataType) parse(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 	m.Name = name
 
-	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRecordProperties' field"))
 	}
 	_ = noOfRecordProperties
 
-	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties))
+	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordProperties' field"))
 	}
 	m.RecordProperties = recordProperties
 
-	serviceUri, err := ReadSimpleField[PascalString](ctx, "serviceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	serviceUri, err := ReadSimpleField[PascalString](ctx, "serviceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceUri' field"))
 	}
 	m.ServiceUri = serviceUri
 
-	noOfServiceCertificates, err := ReadImplicitField[int32](ctx, "noOfServiceCertificates", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServiceCertificates, err := ReadImplicitField[int32](ctx, "noOfServiceCertificates", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServiceCertificates' field"))
 	}
 	_ = noOfServiceCertificates
 
-	serviceCertificates, err := ReadCountArrayField[ServiceCertificateDataType](ctx, "serviceCertificates", ReadComplex[ServiceCertificateDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCertificateDataType]((int32)(int32(23726))), readBuffer), uint64(noOfServiceCertificates))
+	serviceCertificates, err := ReadCountArrayField[ServiceCertificateDataType](ctx, "serviceCertificates", ReadComplex[ServiceCertificateDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCertificateDataType]((int32)(int32(23726))), readBuffer), uint64(noOfServiceCertificates), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceCertificates' field"))
 	}
 	m.ServiceCertificates = serviceCertificates
 
-	issuerEndpointSettings, err := ReadSimpleField[PascalString](ctx, "issuerEndpointSettings", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	issuerEndpointSettings, err := ReadSimpleField[PascalString](ctx, "issuerEndpointSettings", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuerEndpointSettings' field"))
 	}
@@ -444,31 +445,31 @@ func (m *_AuthorizationServiceConfigurationDataType) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for AuthorizationServiceConfigurationDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 		noOfRecordProperties := int32(utils.InlineIf(bool((m.GetRecordProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRecordProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRecordProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'recordProperties' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "serviceUri", m.GetServiceUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "serviceUri", m.GetServiceUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceUri' field")
 		}
 		noOfServiceCertificates := int32(utils.InlineIf(bool((m.GetServiceCertificates()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServiceCertificates()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfServiceCertificates", noOfServiceCertificates, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfServiceCertificates", noOfServiceCertificates, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServiceCertificates' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "serviceCertificates", m.GetServiceCertificates(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "serviceCertificates", m.GetServiceCertificates(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceCertificates' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "issuerEndpointSettings", m.GetIssuerEndpointSettings(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "issuerEndpointSettings", m.GetIssuerEndpointSettings(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'issuerEndpointSettings' field")
 		}
 

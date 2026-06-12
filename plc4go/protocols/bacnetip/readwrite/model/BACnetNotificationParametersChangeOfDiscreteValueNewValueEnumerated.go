@@ -221,7 +221,7 @@ func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(str
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated"
 }
 

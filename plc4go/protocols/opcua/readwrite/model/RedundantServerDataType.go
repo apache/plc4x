@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -255,7 +256,7 @@ func CastRedundantServerDataType(structType any) RedundantServerDataType {
 	return nil
 }
 
-func (m *_RedundantServerDataType) GetTypeName() string {
+func (m *_RedundantServerDataType) GetPlx4xTypeName() string {
 	return "RedundantServerDataType"
 }
 
@@ -289,19 +290,19 @@ func (m *_RedundantServerDataType) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	serverId, err := ReadSimpleField[PascalString](ctx, "serverId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	serverId, err := ReadSimpleField[PascalString](ctx, "serverId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverId' field"))
 	}
 	m.ServerId = serverId
 
-	serviceLevel, err := ReadSimpleField(ctx, "serviceLevel", ReadUnsignedByte(readBuffer, uint8(8)))
+	serviceLevel, err := ReadSimpleField(ctx, "serviceLevel", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceLevel' field"))
 	}
 	m.ServiceLevel = serviceLevel
 
-	serverState, err := ReadEnumField[ServerState](ctx, "serverState", "ServerState", ReadEnum(ServerStateByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	serverState, err := ReadEnumField[ServerState](ctx, "serverState", "ServerState", ReadEnum(ServerStateByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverState' field"))
 	}
@@ -332,15 +333,15 @@ func (m *_RedundantServerDataType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for RedundantServerDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "serverId", m.GetServerId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "serverId", m.GetServerId(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverId' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "serviceLevel", m.GetServiceLevel(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "serviceLevel", m.GetServiceLevel(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceLevel' field")
 		}
 
-		if err := WriteSimpleEnumField[ServerState](ctx, "serverState", "ServerState", m.GetServerState(), WriteEnum[ServerState, uint32](ServerState.GetValue, ServerState.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[ServerState](ctx, "serverState", "ServerState", m.GetServerState(), WriteEnum[ServerState, uint32](ServerState.GetValue, ServerState.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverState' field")
 		}
 

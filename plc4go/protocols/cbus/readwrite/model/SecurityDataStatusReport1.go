@@ -302,7 +302,7 @@ func CastSecurityDataStatusReport1(structType any) SecurityDataStatusReport1 {
 	return nil
 }
 
-func (m *_SecurityDataStatusReport1) GetTypeName() string {
+func (m *_SecurityDataStatusReport1) GetPlx4xTypeName() string {
 	return "SecurityDataStatusReport1"
 }
 

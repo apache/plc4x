@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDoorPulseTime(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoorPulseTime) GetTypeName() string {
+func (m *_BACnetConstructedDataDoorPulseTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoorPulseTime"
 }
 

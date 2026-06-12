@@ -184,7 +184,7 @@ func CastBACnetConstructedDataAccessCredentialAll(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessCredentialAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessCredentialAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessCredentialAll"
 }
 

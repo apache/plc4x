@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastDeleteEventDetails(structType any) DeleteEventDetails {
 	return nil
 }
 
-func (m *_DeleteEventDetails) GetTypeName() string {
+func (m *_DeleteEventDetails) GetPlx4xTypeName() string {
 	return "DeleteEventDetails"
 }
 
@@ -279,19 +280,19 @@ func (m *_DeleteEventDetails) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 	m.NodeId = nodeId
 
-	noOfEventIds, err := ReadImplicitField[int32](ctx, "noOfEventIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEventIds, err := ReadImplicitField[int32](ctx, "noOfEventIds", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEventIds' field"))
 	}
 	_ = noOfEventIds
 
-	eventIds, err := ReadCountArrayField[PascalByteString](ctx, "eventIds", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfEventIds))
+	eventIds, err := ReadCountArrayField[PascalByteString](ctx, "eventIds", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfEventIds), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventIds' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_DeleteEventDetails) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for DeleteEventDetails")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 		noOfEventIds := int32(utils.InlineIf(bool((m.GetEventIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEventIds()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfEventIds", noOfEventIds, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfEventIds", noOfEventIds, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEventIds' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "eventIds", m.GetEventIds(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "eventIds", m.GetEventIds(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventIds' field")
 		}
 

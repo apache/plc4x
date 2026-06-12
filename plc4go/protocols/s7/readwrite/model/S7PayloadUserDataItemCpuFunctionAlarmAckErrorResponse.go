@@ -188,7 +188,7 @@ func CastS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse(structType any) S
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse"
 }
 

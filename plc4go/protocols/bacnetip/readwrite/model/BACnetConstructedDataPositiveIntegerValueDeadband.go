@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPositiveIntegerValueDeadband(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetTypeName() string {
+func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPositiveIntegerValueDeadband"
 }
 

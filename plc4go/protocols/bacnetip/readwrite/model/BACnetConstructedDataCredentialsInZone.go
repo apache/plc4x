@@ -211,7 +211,7 @@ func CastBACnetConstructedDataCredentialsInZone(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataCredentialsInZone) GetTypeName() string {
+func (m *_BACnetConstructedDataCredentialsInZone) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCredentialsInZone"
 }
 

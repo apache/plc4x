@@ -180,7 +180,7 @@ func CastHistoryReadDetails(structType any) HistoryReadDetails {
 	return nil
 }
 
-func (m *_HistoryReadDetails) GetTypeName() string {
+func (m *_HistoryReadDetails) GetPlx4xTypeName() string {
 	return "HistoryReadDetails"
 }
 

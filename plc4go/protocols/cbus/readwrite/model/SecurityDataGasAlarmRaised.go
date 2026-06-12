@@ -176,7 +176,7 @@ func CastSecurityDataGasAlarmRaised(structType any) SecurityDataGasAlarmRaised {
 	return nil
 }
 
-func (m *_SecurityDataGasAlarmRaised) GetTypeName() string {
+func (m *_SecurityDataGasAlarmRaised) GetPlx4xTypeName() string {
 	return "SecurityDataGasAlarmRaised"
 }
 

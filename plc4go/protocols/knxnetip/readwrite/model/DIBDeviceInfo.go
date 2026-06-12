@@ -363,7 +363,7 @@ func CastDIBDeviceInfo(structType any) DIBDeviceInfo {
 	return nil
 }
 
-func (m *_DIBDeviceInfo) GetTypeName() string {
+func (m *_DIBDeviceInfo) GetPlx4xTypeName() string {
 	return "DIBDeviceInfo"
 }
 

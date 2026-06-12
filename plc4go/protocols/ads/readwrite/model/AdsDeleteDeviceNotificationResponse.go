@@ -60,7 +60,7 @@ var _ AdsDeleteDeviceNotificationResponse = (*_AdsDeleteDeviceNotificationRespon
 var _ AmsPacketRequirements = (*_AdsDeleteDeviceNotificationResponse)(nil)
 
 // NewAdsDeleteDeviceNotificationResponse factory function for _AdsDeleteDeviceNotificationResponse
-func NewAdsDeleteDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsDeleteDeviceNotificationResponse {
+func NewAdsDeleteDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode) *_AdsDeleteDeviceNotificationResponse {
 	_result := &_AdsDeleteDeviceNotificationResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
@@ -212,7 +212,7 @@ func CastAdsDeleteDeviceNotificationResponse(structType any) AdsDeleteDeviceNoti
 	return nil
 }
 
-func (m *_AdsDeleteDeviceNotificationResponse) GetTypeName() string {
+func (m *_AdsDeleteDeviceNotificationResponse) GetPlx4xTypeName() string {
 	return "AdsDeleteDeviceNotificationResponse"
 }
 

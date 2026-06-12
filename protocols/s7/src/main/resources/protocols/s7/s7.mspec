@@ -21,7 +21,7 @@
 // IsoOnTcp/TPKT
 ////////////////////////////////////////////////////////////////
 
-[type TPKTPacket byteOrder='BIG_ENDIAN'
+[type TPKTPacket byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [const    uint 8                 protocolId 0x03]
     [reserved uint 8                 '0x00']
     [implicit uint 16                len       'payload.lengthInBytes + 4']
@@ -518,6 +518,9 @@
             [simple  uint 8  jobId]
         ]
 
+        ['0x02', '0x08', '0x01', '0x00' S7PayloadUserDataItemCyclicServicesSubscribeEmptyResponse
+        ]
+
         ['0x02', '0x08', '0x01' S7PayloadUserDataItemCyclicServicesSubscribeResponse
             [simple uint 16 itemsCount]
             [array AssociatedValueType items count 'itemsCount']
@@ -532,6 +535,37 @@
         ['0x02', '0x08', '0x05'  S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
             [simple uint 16 itemsCount]
             [array AssociatedQueryValueType  items count 'itemsCount']
+        ]
+
+        // Block Services (cpuFunctionGroup=0x03). Subfunctions:
+        //   0x01 - List blocks (count by type, no request payload)
+        //   0x02 - List of blocks of type (request: 2 ASCII-byte block-type code)
+        //   0x03 - Get block info (request: type + 5-char number + filesystem char)
+        // Response payloads are kept as a raw byte array; the structured per-type parsing
+        // lives in the driver's S7BrowseService / block-info helpers.
+        ['0x03', '0x04', '0x01' S7PayloadUserDataItemCpuFunctionListBlocksRequest
+        ]
+
+        ['0x03', '0x08', '0x01' S7PayloadUserDataItemCpuFunctionListBlocksResponse(uint 16 dataLength)
+            [array byte items count 'dataLength']
+        ]
+
+        ['0x03', '0x04', '0x02' S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest
+            [simple uint 16 blockType]
+        ]
+
+        ['0x03', '0x08', '0x02' S7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponse(uint 16 dataLength)
+            [array byte items count 'dataLength']
+        ]
+
+        ['0x03', '0x04', '0x03' S7PayloadUserDataItemCpuFunctionGetBlockInfoRequest
+            [simple uint 16 blockType]
+            [simple string 40 blockNumber  encoding='"UTF8"']
+            [simple uint 8  filesystem]
+        ]
+
+        ['0x03', '0x08', '0x03' S7PayloadUserDataItemCpuFunctionGetBlockInfoResponse(uint 16 dataLength)
+            [array byte items count 'dataLength']
         ]
 
         //USER and SYSTEM Messages
@@ -590,15 +624,15 @@
         ]
 
         //Subscription to PUSH messages
-        ['0x04', '0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
+        ['0x04', '0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(uint 16 dataLength)
             [simple   uint 8         subscription]
             [reserved uint 8         '0x00']
-            [simple   string 64      magicKey           ]
-            [optional AlarmStateType alarmtype    'subscription >= 128']
-            [optional uint 8         reserve      'subscription >= 128']
+            [simple   string 64      magicKey     encoding='"UTF8"']
+            [optional AlarmStateType alarmtype    'dataLength >= 12']
+            [optional uint 8         reserve      'dataLength >= 12']
         ]
 
-	['0x04', '0x08', '0x02', '0x00' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse]
+	    ['0x04', '0x08', '0x02', '0x00' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse]
 
         ['0x04', '0x08', '0x02', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
             [simple uint 8 result]
@@ -606,11 +640,11 @@
         ]
 
         ['0x04', '0x08', '0x02', '0x05' S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
-            [simple uint 8    result]
-            [simple uint 8    reserved01]
-            [simple AlarmType alarmType]
-            [simple uint 8    reserved02]
-            [simple uint 8    reserved03]
+            [simple uint 8         result]
+            [simple uint 8         reserved01]
+            [simple AlarmStateType alarmType]
+            [simple uint 8         reserved02]
+            [simple uint 8         reserved03]
         ]
 
         //ALARM_ACK Acknowledgment of alarms
@@ -753,18 +787,18 @@
         // Characters & Strings
         // -----------------------------------------
         ['"IEC61131_CHAR"' CHAR
-            [simple string 8 value encoding='"UTF-8"']
+            [simple string 8 value encoding='"UTF8"']
         ]
         ['"IEC61131_WCHAR"' CHAR
-            [simple string 16 value encoding='"UTF-16"']
+            [simple string 16 value encoding='"UTF16BE"']
         ]
         ['"IEC61131_STRING"' STRING
             // TODO: Fix this length
-            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 8) + 16' encoding='"UTF-8"']
+            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 8) + 16' encoding='"UTF8"']
         ]
         ['"IEC61131_WSTRING"' STRING
             // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 16) + 32' encoding='"UTF-16"']
+            [manual vstring value 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 16) + 32' encoding='"UTF16BE"']
         ]
 
         // -----------------------------------------
@@ -838,7 +872,7 @@
             // One byte representing 00 - 59
             [simple uint 8  seconds              ]
             // Four byte with 3 4-bit values representing 0 - 999
-            [simple uint 32 nannosecondsOfSecond ]
+            [simple uint 32 nanosecondsOfSecond ]
         ]
     ]
 ]
@@ -967,17 +1001,26 @@
 ]
 
 [enum uint 8 SzlSublist
-    ['0x00' NONE]    
+    ['0x00' NONE]
     ['0x11' MODULE_IDENTIFICATION]
     ['0x12' CPU_FEATURES]
     ['0x13' USER_MEMORY_AREA]
     ['0x14' SYSTEM_AREAS]
     ['0x15' BLOCK_TYPES]
+    ['0x16' PRIORITY_CLASSES]
+    ['0x17' EXTENDED_PRIORITY_CLASSES]
+    ['0x18' OPERATING_SYSTEM]
     ['0x19' STATUS_MODULE_LEDS]
     ['0x1C' COMPONENT_IDENTIFICATION]
+    ['0x21' INTERRUPT_INFO]
     ['0x22' INTERRUPT_STATUS]
+    ['0x23' OPERATION_HISTORY]
+    ['0x24' OPERATING_MODES]
     ['0x25' ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS]
+    ['0x31' COMMUNICATION_MODE_DATA]
     ['0x32' COMMUNICATION_STATUS_DATA]
+    ['0x33' DIAGNOSTIC_DATA_ON_COMM_OBJECTS]
+    ['0x70' STATUS_H_SYSTEM]
     ['0x71' H_CPU_GROUP_INFORMATION]
     ['0x74' STATUS_SINGLE_MODULE_LED]
     ['0x75' SWITCHED_DP_SLAVES_H_SYSTEM]

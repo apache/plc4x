@@ -27,7 +27,7 @@ class GenericCANTagHandlerTest {
 
     @Test
     void checkTagSyntax() {
-        GenericCANTag tag = new GenericCANTagHandler().parseTag("200:BYTE[8]");
+        GenericCANTag tag = (GenericCANTag) new GenericCANTagHandler().parseTag("200:BYTE[8]");
 
         assertEquals(200, tag.getNodeId());
         assertEquals(PlcValueType.BYTE, tag.getPlcValueType());

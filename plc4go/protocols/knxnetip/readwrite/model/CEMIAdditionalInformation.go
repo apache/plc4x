@@ -217,7 +217,7 @@ func CastCEMIAdditionalInformation(structType any) CEMIAdditionalInformation {
 	return nil
 }
 
-func (m *_CEMIAdditionalInformation) GetTypeName() string {
+func (m *_CEMIAdditionalInformation) GetPlx4xTypeName() string {
 	return "CEMIAdditionalInformation"
 }
 

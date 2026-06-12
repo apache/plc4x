@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMultiStateOutputRelinquishDefault(structType any) 
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateOutputRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateOutputRelinquishDefault"
 }
 

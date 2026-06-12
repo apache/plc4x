@@ -262,7 +262,7 @@ func CastOpcuaOpenResponse(structType any) OpcuaOpenResponse {
 	return nil
 }
 
-func (m *_OpcuaOpenResponse) GetTypeName() string {
+func (m *_OpcuaOpenResponse) GetPlx4xTypeName() string {
 	return "OpcuaOpenResponse"
 }
 

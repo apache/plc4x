@@ -27,7 +27,7 @@
     <version>0.14.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-transport-virtualcan</artifactId>
+  <artifactId>plc4j-transports-virtualcan</artifactId>
   <name>PLC4J: Transports: VirtualCAN</name>
   <description>Virtual CAN transport which does work without any real CAN interface.</description>
 
@@ -48,12 +48,12 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-can</artifactId>
+      <artifactId>plc4j-transports-can</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-test</artifactId>
+      <artifactId>plc4j-transports-test</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
 

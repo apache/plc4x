@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -222,7 +223,7 @@ func CastHistoryModifiedEvent(structType any) HistoryModifiedEvent {
 	return nil
 }
 
-func (m *_HistoryModifiedEvent) GetTypeName() string {
+func (m *_HistoryModifiedEvent) GetPlx4xTypeName() string {
 	return "HistoryModifiedEvent"
 }
 
@@ -269,25 +270,25 @@ func (m *_HistoryModifiedEvent) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfEvents, err := ReadImplicitField[int32](ctx, "noOfEvents", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEvents, err := ReadImplicitField[int32](ctx, "noOfEvents", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEvents' field"))
 	}
 	_ = noOfEvents
 
-	events, err := ReadCountArrayField[HistoryEventFieldList](ctx, "events", ReadComplex[HistoryEventFieldList](ExtensionObjectDefinitionParseWithBufferProducer[HistoryEventFieldList]((int32)(int32(922))), readBuffer), uint64(noOfEvents))
+	events, err := ReadCountArrayField[HistoryEventFieldList](ctx, "events", ReadComplex[HistoryEventFieldList](ExtensionObjectDefinitionParseWithBufferProducer[HistoryEventFieldList]((int32)(int32(922))), readBuffer), uint64(noOfEvents), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'events' field"))
 	}
 	m.Events = events
 
-	noOfModificationInfos, err := ReadImplicitField[int32](ctx, "noOfModificationInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfModificationInfos, err := ReadImplicitField[int32](ctx, "noOfModificationInfos", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfModificationInfos' field"))
 	}
 	_ = noOfModificationInfos
 
-	modificationInfos, err := ReadCountArrayField[ModificationInfo](ctx, "modificationInfos", ReadComplex[ModificationInfo](ExtensionObjectDefinitionParseWithBufferProducer[ModificationInfo]((int32)(int32(11218))), readBuffer), uint64(noOfModificationInfos))
+	modificationInfos, err := ReadCountArrayField[ModificationInfo](ctx, "modificationInfos", ReadComplex[ModificationInfo](ExtensionObjectDefinitionParseWithBufferProducer[ModificationInfo]((int32)(int32(11218))), readBuffer), uint64(noOfModificationInfos), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modificationInfos' field"))
 	}
@@ -318,19 +319,19 @@ func (m *_HistoryModifiedEvent) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for HistoryModifiedEvent")
 		}
 		noOfEvents := int32(utils.InlineIf(bool((m.GetEvents()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEvents()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfEvents", noOfEvents, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfEvents", noOfEvents, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEvents' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "events", m.GetEvents(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "events", m.GetEvents(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'events' field")
 		}
 		noOfModificationInfos := int32(utils.InlineIf(bool((m.GetModificationInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetModificationInfos()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfModificationInfos", noOfModificationInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfModificationInfos", noOfModificationInfos, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfModificationInfos' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "modificationInfos", m.GetModificationInfos(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "modificationInfos", m.GetModificationInfos(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'modificationInfos' field")
 		}
 

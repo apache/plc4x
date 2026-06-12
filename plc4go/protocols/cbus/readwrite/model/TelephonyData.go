@@ -395,7 +395,7 @@ func CastTelephonyData(structType any) TelephonyData {
 	return nil
 }
 
-func (m *_TelephonyData) GetTypeName() string {
+func (m *_TelephonyData) GetPlx4xTypeName() string {
 	return "TelephonyData"
 }
 

@@ -21,15 +21,10 @@ package org.apache.plc4x.java.plc4x.tag;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.utils.Serializable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class Plc4xTag implements PlcTag, Serializable {
+public class Plc4xTag implements PlcTag {
 
     private final String address;
     private final PlcValueType valueType;
@@ -52,18 +47,6 @@ public class Plc4xTag implements PlcTag, Serializable {
     @Override
     public List<ArrayInfo> getArrayInfo() {
         return PlcTag.super.getArrayInfo();
-    }
-
-    @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
-
-        writeBuffer.writeUnsignedInt("addressLength", 16, address.length());
-        writeBuffer.writeString("address",
-            address.length() * 8,
-            address, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
-
-        writeBuffer.popContext(getClass().getSimpleName());
     }
 
 }

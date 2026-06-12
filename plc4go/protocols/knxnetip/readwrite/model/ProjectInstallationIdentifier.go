@@ -175,7 +175,7 @@ func CastProjectInstallationIdentifier(structType any) ProjectInstallationIdenti
 	return nil
 }
 
-func (m *_ProjectInstallationIdentifier) GetTypeName() string {
+func (m *_ProjectInstallationIdentifier) GetPlx4xTypeName() string {
 	return "ProjectInstallationIdentifier"
 }
 

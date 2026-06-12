@@ -285,7 +285,7 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType an
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"
 }
 

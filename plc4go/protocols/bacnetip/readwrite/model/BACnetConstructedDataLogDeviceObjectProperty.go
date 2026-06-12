@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLogDeviceObjectProperty(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetTypeName() string {
+func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLogDeviceObjectProperty"
 }
 

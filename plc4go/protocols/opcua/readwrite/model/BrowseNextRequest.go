@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -257,7 +258,7 @@ func CastBrowseNextRequest(structType any) BrowseNextRequest {
 	return nil
 }
 
-func (m *_BrowseNextRequest) GetTypeName() string {
+func (m *_BrowseNextRequest) GetPlx4xTypeName() string {
 	return "BrowseNextRequest"
 }
 
@@ -302,31 +303,31 @@ func (m *_BrowseNextRequest) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	releaseContinuationPoints, err := ReadSimpleField(ctx, "releaseContinuationPoints", ReadBoolean(readBuffer))
+	releaseContinuationPoints, err := ReadSimpleField(ctx, "releaseContinuationPoints", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'releaseContinuationPoints' field"))
 	}
 	m.ReleaseContinuationPoints = releaseContinuationPoints
 
-	noOfContinuationPoints, err := ReadImplicitField[int32](ctx, "noOfContinuationPoints", ReadSignedInt(readBuffer, uint8(32)))
+	noOfContinuationPoints, err := ReadImplicitField[int32](ctx, "noOfContinuationPoints", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfContinuationPoints' field"))
 	}
 	_ = noOfContinuationPoints
 
-	continuationPoints, err := ReadCountArrayField[PascalByteString](ctx, "continuationPoints", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfContinuationPoints))
+	continuationPoints, err := ReadCountArrayField[PascalByteString](ctx, "continuationPoints", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfContinuationPoints), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'continuationPoints' field"))
 	}
@@ -357,23 +358,23 @@ func (m *_BrowseNextRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for BrowseNextRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "releaseContinuationPoints", m.GetReleaseContinuationPoints(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "releaseContinuationPoints", m.GetReleaseContinuationPoints(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'releaseContinuationPoints' field")
 		}
 		noOfContinuationPoints := int32(utils.InlineIf(bool((m.GetContinuationPoints()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetContinuationPoints()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfContinuationPoints", noOfContinuationPoints, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfContinuationPoints", noOfContinuationPoints, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfContinuationPoints' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "continuationPoints", m.GetContinuationPoints(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "continuationPoints", m.GetContinuationPoints(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'continuationPoints' field")
 		}
 

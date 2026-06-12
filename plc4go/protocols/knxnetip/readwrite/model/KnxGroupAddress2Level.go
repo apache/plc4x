@@ -222,7 +222,7 @@ func CastKnxGroupAddress2Level(structType any) KnxGroupAddress2Level {
 	return nil
 }
 
-func (m *_KnxGroupAddress2Level) GetTypeName() string {
+func (m *_KnxGroupAddress2Level) GetPlx4xTypeName() string {
 	return "KnxGroupAddress2Level"
 }
 

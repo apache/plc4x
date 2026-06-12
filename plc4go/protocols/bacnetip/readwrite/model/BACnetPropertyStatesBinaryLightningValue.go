@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesBinaryLightningValue(structType any) BACnetProperty
 	return nil
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValue) GetTypeName() string {
+func (m *_BACnetPropertyStatesBinaryLightningValue) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesBinaryLightningValue"
 }
 

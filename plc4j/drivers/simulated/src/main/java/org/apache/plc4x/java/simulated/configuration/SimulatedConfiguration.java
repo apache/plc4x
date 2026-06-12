@@ -19,7 +19,13 @@
 
 package org.apache.plc4x.java.simulated.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.config.Configuration;
 
-public class SimulatedConfiguration implements PlcConnectionConfiguration {
+/**
+ * No configurable parameters — the simulated driver only takes a device name on
+ * the URL and runs entirely in-process. Kept as a real type so
+ * {@link org.apache.plc4x.java.spi.drivers.DriverBase} has something to hand
+ * to the connection.
+ */
+public class SimulatedConfiguration implements Configuration {
 }

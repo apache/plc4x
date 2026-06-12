@@ -180,7 +180,7 @@ func CastApduControlAck(structType any) ApduControlAck {
 	return nil
 }
 
-func (m *_ApduControlAck) GetTypeName() string {
+func (m *_ApduControlAck) GetPlx4xTypeName() string {
 	return "ApduControlAck"
 }
 

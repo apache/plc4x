@@ -221,7 +221,7 @@ func CastBACnetChannelValueLightingCommand(structType any) BACnetChannelValueLig
 	return nil
 }
 
-func (m *_BACnetChannelValueLightingCommand) GetTypeName() string {
+func (m *_BACnetChannelValueLightingCommand) GetPlx4xTypeName() string {
 	return "BACnetChannelValueLightingCommand"
 }
 

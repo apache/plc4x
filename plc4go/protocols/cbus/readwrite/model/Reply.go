@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -253,7 +255,7 @@ func CastReply(structType any) Reply {
 	return nil
 }
 
-func (m *_Reply) GetTypeName() string {
+func (m *_Reply) GetPlx4xTypeName() string {
 	return "Reply"
 }
 
@@ -272,7 +274,7 @@ func (m *_Reply) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func ReplyParse[T Reply](ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
-	return ReplyParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return ReplyParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext)
 }
 
 func ReplyParseWithBufferProducer[T Reply](cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -309,7 +311,7 @@ func (m *_Reply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOpt
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	peekedByte, err := ReadPeekField[byte](ctx, "peekedByte", ReadByte(readBuffer, 8), 0)
+	peekedByte, err := ReadPeekField[byte](ctx, "peekedByte", ReadByte(readBuffer, 8), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedByte' field"))
 	}

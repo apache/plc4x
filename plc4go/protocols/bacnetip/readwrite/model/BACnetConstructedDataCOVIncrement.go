@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCOVIncrement(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataCOVIncrement) GetTypeName() string {
+func (m *_BACnetConstructedDataCOVIncrement) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCOVIncrement"
 }
 

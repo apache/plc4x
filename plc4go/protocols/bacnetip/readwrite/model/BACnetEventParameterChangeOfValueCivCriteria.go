@@ -341,7 +341,7 @@ func CastBACnetEventParameterChangeOfValueCivCriteria(structType any) BACnetEven
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfValueCivCriteria"
 }
 

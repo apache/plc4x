@@ -184,7 +184,7 @@ func CastBACnetConstructedDataCalendarAll(structType any) BACnetConstructedDataC
 	return nil
 }
 
-func (m *_BACnetConstructedDataCalendarAll) GetTypeName() string {
+func (m *_BACnetConstructedDataCalendarAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCalendarAll"
 }
 

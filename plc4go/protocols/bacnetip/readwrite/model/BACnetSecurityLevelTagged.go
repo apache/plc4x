@@ -193,7 +193,7 @@ func CastBACnetSecurityLevelTagged(structType any) BACnetSecurityLevelTagged {
 	return nil
 }
 
-func (m *_BACnetSecurityLevelTagged) GetTypeName() string {
+func (m *_BACnetSecurityLevelTagged) GetPlx4xTypeName() string {
 	return "BACnetSecurityLevelTagged"
 }
 

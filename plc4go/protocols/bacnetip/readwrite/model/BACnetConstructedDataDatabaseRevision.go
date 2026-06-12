@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDatabaseRevision(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataDatabaseRevision) GetTypeName() string {
+func (m *_BACnetConstructedDataDatabaseRevision) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDatabaseRevision"
 }
 

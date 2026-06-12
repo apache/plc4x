@@ -258,7 +258,7 @@ func CastBACnetConstructedDataChannelListOfObjectPropertyReferences(structType a
 	return nil
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetTypeName() string {
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataChannelListOfObjectPropertyReferences"
 }
 

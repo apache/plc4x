@@ -510,7 +510,7 @@ func CastBACnetTagPayloadUnsignedInteger(structType any) BACnetTagPayloadUnsigne
 	return nil
 }
 
-func (m *_BACnetTagPayloadUnsignedInteger) GetTypeName() string {
+func (m *_BACnetTagPayloadUnsignedInteger) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadUnsignedInteger"
 }
 

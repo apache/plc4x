@@ -258,7 +258,7 @@ func CastChangeListAddError(structType any) ChangeListAddError {
 	return nil
 }
 
-func (m *_ChangeListAddError) GetTypeName() string {
+func (m *_ChangeListAddError) GetPlx4xTypeName() string {
 	return "ChangeListAddError"
 }
 

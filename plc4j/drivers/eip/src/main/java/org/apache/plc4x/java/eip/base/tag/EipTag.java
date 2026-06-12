@@ -24,10 +24,10 @@ import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.spi.buffers.api.Serializable;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -131,16 +131,18 @@ public class EipTag implements PlcTag, Serializable {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+    public void serialize(WriteBuffer writeBuffer) throws BufferException {
+        writeBuffer.pushContext(WithOption.WithName(getClass().getSimpleName()));
 
-        writeBuffer.writeString("node", tag.getBytes(StandardCharsets.UTF_8).length * 8, tag, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        writeBuffer.writeString(tag.getBytes(StandardCharsets.UTF_8).length * 8, tag,
+            WithOption.WithName("node"), WithOption.WithEncoding("UTF8"));
         if (type != null) {
-            writeBuffer.writeString("type", type.name().getBytes(StandardCharsets.UTF_8).length * 8, type.name(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+            writeBuffer.writeString(type.name().getBytes(StandardCharsets.UTF_8).length * 8, type.name(),
+                WithOption.WithName("type"), WithOption.WithEncoding("UTF8"));
         }
-        writeBuffer.writeUnsignedInt("elementNb", 16, elementNb);
+        writeBuffer.writeUnsignedInt(16, elementNb, WithOption.WithName("elementNb"));
 
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext(WithOption.WithName(getClass().getSimpleName()));
     }
 
 }

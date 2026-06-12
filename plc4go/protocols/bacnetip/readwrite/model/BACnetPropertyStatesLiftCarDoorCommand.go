@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesLiftCarDoorCommand(structType any) BACnetPropertySt
 	return nil
 }
 
-func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetTypeName() string {
+func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesLiftCarDoorCommand"
 }
 

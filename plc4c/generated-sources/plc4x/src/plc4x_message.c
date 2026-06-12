@@ -121,7 +121,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_CONNECT_REQUEST ) {
 
   // Simple Field (connectionString)
   char* connectionString = "";
-  _res = plc4c_spi_read_string(readBuffer, (connectionStringLen) * (8), "UTF-8", (char**) &connectionString);
+  _res = plc4c_spi_read_string(readBuffer, (connectionStringLen) * (8), "UTF8", (char**) &connectionString);
   if(_res != OK) {
     return _res;
   }
@@ -365,7 +365,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_conte
   }
 
   // Simple Field (connectionString)
-  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->plc4x_connect_request_connection_string)) * (8), "UTF-8", (const uint8_t*) _message->plc4x_connect_request_connection_string);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->plc4x_connect_request_connection_string)) * (8), "UTF8", (const uint8_t*) _message->plc4x_connect_request_connection_string);
   if(_res != OK) {
     return _res;
   }

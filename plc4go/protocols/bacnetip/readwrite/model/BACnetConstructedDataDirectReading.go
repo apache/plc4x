@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDirectReading(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataDirectReading) GetTypeName() string {
+func (m *_BACnetConstructedDataDirectReading) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDirectReading"
 }
 

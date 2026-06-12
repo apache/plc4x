@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBackupFailureTimeout(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataBackupFailureTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBackupFailureTimeout"
 }
 

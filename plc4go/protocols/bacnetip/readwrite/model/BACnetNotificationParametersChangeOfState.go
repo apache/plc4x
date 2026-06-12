@@ -320,7 +320,7 @@ func CastBACnetNotificationParametersChangeOfState(structType any) BACnetNotific
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfState) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfState) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfState"
 }
 

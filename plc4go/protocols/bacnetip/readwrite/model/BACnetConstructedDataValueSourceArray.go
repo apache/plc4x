@@ -258,7 +258,7 @@ func CastBACnetConstructedDataValueSourceArray(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataValueSourceArray) GetTypeName() string {
+func (m *_BACnetConstructedDataValueSourceArray) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataValueSourceArray"
 }
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -366,7 +367,7 @@ func CastPublishedVariableDataType(structType any) PublishedVariableDataType {
 	return nil
 }
 
-func (m *_PublishedVariableDataType) GetTypeName() string {
+func (m *_PublishedVariableDataType) GetPlx4xTypeName() string {
 	return "PublishedVariableDataType"
 }
 
@@ -423,55 +424,55 @@ func (m *_PublishedVariableDataType) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	publishedVariable, err := ReadSimpleField[NodeId](ctx, "publishedVariable", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	publishedVariable, err := ReadSimpleField[NodeId](ctx, "publishedVariable", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishedVariable' field"))
 	}
 	m.PublishedVariable = publishedVariable
 
-	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
 	m.AttributeId = attributeId
 
-	samplingIntervalHint, err := ReadSimpleField(ctx, "samplingIntervalHint", ReadDouble(readBuffer, uint8(64)))
+	samplingIntervalHint, err := ReadSimpleField(ctx, "samplingIntervalHint", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'samplingIntervalHint' field"))
 	}
 	m.SamplingIntervalHint = samplingIntervalHint
 
-	deadbandType, err := ReadSimpleField(ctx, "deadbandType", ReadUnsignedInt(readBuffer, uint8(32)))
+	deadbandType, err := ReadSimpleField(ctx, "deadbandType", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadbandType' field"))
 	}
 	m.DeadbandType = deadbandType
 
-	deadbandValue, err := ReadSimpleField(ctx, "deadbandValue", ReadDouble(readBuffer, uint8(64)))
+	deadbandValue, err := ReadSimpleField(ctx, "deadbandValue", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadbandValue' field"))
 	}
 	m.DeadbandValue = deadbandValue
 
-	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexRange' field"))
 	}
 	m.IndexRange = indexRange
 
-	substituteValue, err := ReadSimpleField[Variant](ctx, "substituteValue", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	substituteValue, err := ReadSimpleField[Variant](ctx, "substituteValue", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'substituteValue' field"))
 	}
 	m.SubstituteValue = substituteValue
 
-	noOfMetaDataProperties, err := ReadImplicitField[int32](ctx, "noOfMetaDataProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfMetaDataProperties, err := ReadImplicitField[int32](ctx, "noOfMetaDataProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMetaDataProperties' field"))
 	}
 	_ = noOfMetaDataProperties
 
-	metaDataProperties, err := ReadCountArrayField[QualifiedName](ctx, "metaDataProperties", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer), uint64(noOfMetaDataProperties))
+	metaDataProperties, err := ReadCountArrayField[QualifiedName](ctx, "metaDataProperties", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer), uint64(noOfMetaDataProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'metaDataProperties' field"))
 	}
@@ -502,39 +503,39 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for PublishedVariableDataType")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "publishedVariable", m.GetPublishedVariable(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "publishedVariable", m.GetPublishedVariable(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishedVariable' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "samplingIntervalHint", m.GetSamplingIntervalHint(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "samplingIntervalHint", m.GetSamplingIntervalHint(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'samplingIntervalHint' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "deadbandType", m.GetDeadbandType(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "deadbandType", m.GetDeadbandType(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'deadbandType' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "deadbandValue", m.GetDeadbandValue(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "deadbandValue", m.GetDeadbandValue(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'deadbandValue' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'indexRange' field")
 		}
 
-		if err := WriteSimpleField[Variant](ctx, "substituteValue", m.GetSubstituteValue(), WriteComplex[Variant](writeBuffer)); err != nil {
+		if err := WriteSimpleField[Variant](ctx, "substituteValue", m.GetSubstituteValue(), WriteComplex[Variant](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'substituteValue' field")
 		}
 		noOfMetaDataProperties := int32(utils.InlineIf(bool((m.GetMetaDataProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetMetaDataProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfMetaDataProperties", noOfMetaDataProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfMetaDataProperties", noOfMetaDataProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfMetaDataProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "metaDataProperties", m.GetMetaDataProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "metaDataProperties", m.GetMetaDataProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'metaDataProperties' field")
 		}
 

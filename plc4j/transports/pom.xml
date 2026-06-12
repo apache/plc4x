@@ -38,16 +38,18 @@
   </properties>
 
   <modules>
+    <module>api</module>
     <module>can</module>
+    <module>can-socketcan</module>
+    <module>can-virtualcan</module>
+    <module>cotp</module>
     <module>pcap-replay</module>
-    <module>pcap-shared</module>
     <module>raw-socket</module>
-    <module>socketcan</module>
     <module>serial</module>
+    <module>test</module>
+    <module>tls</module>
     <module>tcp</module>
     <module>udp</module>
-    <module>virtualcan</module>
-    <module>test</module>
   </modules>
 
 </project>

@@ -211,7 +211,7 @@ func CastBACnetConstructedDataRoutingTable(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataRoutingTable) GetTypeName() string {
+func (m *_BACnetConstructedDataRoutingTable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRoutingTable"
 }
 

@@ -300,7 +300,7 @@ func CastBACnetServicesSupportedTagged(structType any) BACnetServicesSupportedTa
 	return nil
 }
 
-func (m *_BACnetServicesSupportedTagged) GetTypeName() string {
+func (m *_BACnetServicesSupportedTagged) GetPlx4xTypeName() string {
 	return "BACnetServicesSupportedTagged"
 }
 

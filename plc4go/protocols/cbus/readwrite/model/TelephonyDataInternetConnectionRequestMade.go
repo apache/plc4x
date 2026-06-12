@@ -176,7 +176,7 @@ func CastTelephonyDataInternetConnectionRequestMade(structType any) TelephonyDat
 	return nil
 }
 
-func (m *_TelephonyDataInternetConnectionRequestMade) GetTypeName() string {
+func (m *_TelephonyDataInternetConnectionRequestMade) GetPlx4xTypeName() string {
 	return "TelephonyDataInternetConnectionRequestMade"
 }
 

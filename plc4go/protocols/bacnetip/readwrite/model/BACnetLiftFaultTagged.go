@@ -224,7 +224,7 @@ func CastBACnetLiftFaultTagged(structType any) BACnetLiftFaultTagged {
 	return nil
 }
 
-func (m *_BACnetLiftFaultTagged) GetTypeName() string {
+func (m *_BACnetLiftFaultTagged) GetPlx4xTypeName() string {
 	return "BACnetLiftFaultTagged"
 }
 

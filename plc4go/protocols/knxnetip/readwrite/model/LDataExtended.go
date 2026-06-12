@@ -325,7 +325,7 @@ func CastLDataExtended(structType any) LDataExtended {
 	return nil
 }
 
-func (m *_LDataExtended) GetTypeName() string {
+func (m *_LDataExtended) GetPlx4xTypeName() string {
 	return "LDataExtended"
 }
 

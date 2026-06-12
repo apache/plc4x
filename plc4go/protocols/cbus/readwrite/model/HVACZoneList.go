@@ -276,7 +276,7 @@ func CastHVACZoneList(structType any) HVACZoneList {
 	return nil
 }
 
-func (m *_HVACZoneList) GetTypeName() string {
+func (m *_HVACZoneList) GetPlx4xTypeName() string {
 	return "HVACZoneList"
 }
 

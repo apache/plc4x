@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -342,7 +344,7 @@ func CastIdentifyReplyCommandDSIStatus(structType any) IdentifyReplyCommandDSISt
 	return nil
 }
 
-func (m *_IdentifyReplyCommandDSIStatus) GetTypeName() string {
+func (m *_IdentifyReplyCommandDSIStatus) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandDSIStatus"
 }
 
@@ -397,61 +399,61 @@ func (m *_IdentifyReplyCommandDSIStatus) parse(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	channelStatus1, err := ReadEnumField[ChannelStatus](ctx, "channelStatus1", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	channelStatus1, err := ReadEnumField[ChannelStatus](ctx, "channelStatus1", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus1' field"))
 	}
 	m.ChannelStatus1 = channelStatus1
 
-	channelStatus2, err := ReadEnumField[ChannelStatus](ctx, "channelStatus2", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	channelStatus2, err := ReadEnumField[ChannelStatus](ctx, "channelStatus2", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus2' field"))
 	}
 	m.ChannelStatus2 = channelStatus2
 
-	channelStatus3, err := ReadEnumField[ChannelStatus](ctx, "channelStatus3", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	channelStatus3, err := ReadEnumField[ChannelStatus](ctx, "channelStatus3", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus3' field"))
 	}
 	m.ChannelStatus3 = channelStatus3
 
-	channelStatus4, err := ReadEnumField[ChannelStatus](ctx, "channelStatus4", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	channelStatus4, err := ReadEnumField[ChannelStatus](ctx, "channelStatus4", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus4' field"))
 	}
 	m.ChannelStatus4 = channelStatus4
 
-	channelStatus5, err := ReadEnumField[ChannelStatus](ctx, "channelStatus5", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	channelStatus5, err := ReadEnumField[ChannelStatus](ctx, "channelStatus5", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus5' field"))
 	}
 	m.ChannelStatus5 = channelStatus5
 
-	channelStatus6, err := ReadEnumField[ChannelStatus](ctx, "channelStatus6", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	channelStatus6, err := ReadEnumField[ChannelStatus](ctx, "channelStatus6", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus6' field"))
 	}
 	m.ChannelStatus6 = channelStatus6
 
-	channelStatus7, err := ReadEnumField[ChannelStatus](ctx, "channelStatus7", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	channelStatus7, err := ReadEnumField[ChannelStatus](ctx, "channelStatus7", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus7' field"))
 	}
 	m.ChannelStatus7 = channelStatus7
 
-	channelStatus8, err := ReadEnumField[ChannelStatus](ctx, "channelStatus8", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	channelStatus8, err := ReadEnumField[ChannelStatus](ctx, "channelStatus8", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus8' field"))
 	}
 	m.ChannelStatus8 = channelStatus8
 
-	unitStatus, err := ReadEnumField[UnitStatus](ctx, "unitStatus", "UnitStatus", ReadEnum(UnitStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	unitStatus, err := ReadEnumField[UnitStatus](ctx, "unitStatus", "UnitStatus", ReadEnum(UnitStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitStatus' field"))
 	}
 	m.UnitStatus = unitStatus
 
-	dimmingUCRevisionNumber, err := ReadSimpleField(ctx, "dimmingUCRevisionNumber", ReadByte(readBuffer, 8))
+	dimmingUCRevisionNumber, err := ReadSimpleField(ctx, "dimmingUCRevisionNumber", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dimmingUCRevisionNumber' field"))
 	}
@@ -465,7 +467,7 @@ func (m *_IdentifyReplyCommandDSIStatus) parse(ctx context.Context, readBuffer u
 }
 
 func (m *_IdentifyReplyCommandDSIStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -482,43 +484,43 @@ func (m *_IdentifyReplyCommandDSIStatus) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandDSIStatus")
 		}
 
-		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus1", "ChannelStatus", m.GetChannelStatus1(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus1", "ChannelStatus", m.GetChannelStatus1(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'channelStatus1' field")
 		}
 
-		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus2", "ChannelStatus", m.GetChannelStatus2(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus2", "ChannelStatus", m.GetChannelStatus2(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'channelStatus2' field")
 		}
 
-		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus3", "ChannelStatus", m.GetChannelStatus3(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus3", "ChannelStatus", m.GetChannelStatus3(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'channelStatus3' field")
 		}
 
-		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus4", "ChannelStatus", m.GetChannelStatus4(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus4", "ChannelStatus", m.GetChannelStatus4(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'channelStatus4' field")
 		}
 
-		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus5", "ChannelStatus", m.GetChannelStatus5(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus5", "ChannelStatus", m.GetChannelStatus5(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'channelStatus5' field")
 		}
 
-		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus6", "ChannelStatus", m.GetChannelStatus6(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus6", "ChannelStatus", m.GetChannelStatus6(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'channelStatus6' field")
 		}
 
-		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus7", "ChannelStatus", m.GetChannelStatus7(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus7", "ChannelStatus", m.GetChannelStatus7(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'channelStatus7' field")
 		}
 
-		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus8", "ChannelStatus", m.GetChannelStatus8(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus8", "ChannelStatus", m.GetChannelStatus8(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'channelStatus8' field")
 		}
 
-		if err := WriteSimpleEnumField[UnitStatus](ctx, "unitStatus", "UnitStatus", m.GetUnitStatus(), WriteEnum[UnitStatus, uint8](UnitStatus.GetValue, UnitStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[UnitStatus](ctx, "unitStatus", "UnitStatus", m.GetUnitStatus(), WriteEnum[UnitStatus, uint8](UnitStatus.GetValue, UnitStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unitStatus' field")
 		}
 
-		if err := WriteSimpleField[byte](ctx, "dimmingUCRevisionNumber", m.GetDimmingUCRevisionNumber(), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[byte](ctx, "dimmingUCRevisionNumber", m.GetDimmingUCRevisionNumber(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'dimmingUCRevisionNumber' field")
 		}
 

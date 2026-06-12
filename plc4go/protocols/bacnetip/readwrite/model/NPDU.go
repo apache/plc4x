@@ -421,7 +421,7 @@ func CastNPDU(structType any) NPDU {
 	return nil
 }
 
-func (m *_NPDU) GetTypeName() string {
+func (m *_NPDU) GetPlx4xTypeName() string {
 	return "NPDU"
 }
 

@@ -222,7 +222,7 @@ func CastPortSegmentNormal(structType any) PortSegmentNormal {
 	return nil
 }
 
-func (m *_PortSegmentNormal) GetTypeName() string {
+func (m *_PortSegmentNormal) GetPlx4xTypeName() string {
 	return "PortSegmentNormal"
 }
 

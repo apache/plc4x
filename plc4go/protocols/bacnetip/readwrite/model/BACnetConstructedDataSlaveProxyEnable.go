@@ -246,7 +246,7 @@ func CastBACnetConstructedDataSlaveProxyEnable(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataSlaveProxyEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSlaveProxyEnable"
 }
 

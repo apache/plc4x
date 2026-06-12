@@ -244,7 +244,7 @@ func CastBACnetEventTransitionBitsTagged(structType any) BACnetEventTransitionBi
 	return nil
 }
 
-func (m *_BACnetEventTransitionBitsTagged) GetTypeName() string {
+func (m *_BACnetEventTransitionBitsTagged) GetPlx4xTypeName() string {
 	return "BACnetEventTransitionBitsTagged"
 }
 

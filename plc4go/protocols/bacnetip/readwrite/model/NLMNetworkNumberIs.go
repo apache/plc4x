@@ -224,7 +224,7 @@ func CastNLMNetworkNumberIs(structType any) NLMNetworkNumberIs {
 	return nil
 }
 
-func (m *_NLMNetworkNumberIs) GetTypeName() string {
+func (m *_NLMNetworkNumberIs) GetPlx4xTypeName() string {
 	return "NLMNetworkNumberIs"
 }
 

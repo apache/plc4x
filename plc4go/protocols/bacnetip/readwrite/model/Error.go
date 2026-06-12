@@ -211,7 +211,7 @@ func CastError(structType any) Error {
 	return nil
 }
 
-func (m *_Error) GetTypeName() string {
+func (m *_Error) GetPlx4xTypeName() string {
 	return "Error"
 }
 

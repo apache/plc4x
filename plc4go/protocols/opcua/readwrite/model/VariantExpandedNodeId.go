@@ -222,7 +222,7 @@ func CastVariantExpandedNodeId(structType any) VariantExpandedNodeId {
 	return nil
 }
 
-func (m *_VariantExpandedNodeId) GetTypeName() string {
+func (m *_VariantExpandedNodeId) GetPlx4xTypeName() string {
 	return "VariantExpandedNodeId"
 }
 

@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -221,7 +223,7 @@ func CastCBusCommandPointToMultiPoint(structType any) CBusCommandPointToMultiPoi
 	return nil
 }
 
-func (m *_CBusCommandPointToMultiPoint) GetTypeName() string {
+func (m *_CBusCommandPointToMultiPoint) GetPlx4xTypeName() string {
 	return "CBusCommandPointToMultiPoint"
 }
 
@@ -249,7 +251,7 @@ func (m *_CBusCommandPointToMultiPoint) parse(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	command, err := ReadSimpleField[CBusPointToMultiPointCommand](ctx, "command", ReadComplex[CBusPointToMultiPointCommand](CBusPointToMultiPointCommandParseWithBufferProducer[CBusPointToMultiPointCommand]((CBusOptions)(cBusOptions)), readBuffer))
+	command, err := ReadSimpleField[CBusPointToMultiPointCommand](ctx, "command", ReadComplex[CBusPointToMultiPointCommand](CBusPointToMultiPointCommandParseWithBufferProducer[CBusPointToMultiPointCommand]((CBusOptions)(cBusOptions)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
@@ -263,7 +265,7 @@ func (m *_CBusCommandPointToMultiPoint) parse(ctx context.Context, readBuffer ut
 }
 
 func (m *_CBusCommandPointToMultiPoint) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -280,7 +282,7 @@ func (m *_CBusCommandPointToMultiPoint) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for CBusCommandPointToMultiPoint")
 		}
 
-		if err := WriteSimpleField[CBusPointToMultiPointCommand](ctx, "command", m.GetCommand(), WriteComplex[CBusPointToMultiPointCommand](writeBuffer)); err != nil {
+		if err := WriteSimpleField[CBusPointToMultiPointCommand](ctx, "command", m.GetCommand(), WriteComplex[CBusPointToMultiPointCommand](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'command' field")
 		}
 

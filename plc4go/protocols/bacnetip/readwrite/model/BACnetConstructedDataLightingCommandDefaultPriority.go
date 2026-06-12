@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLightingCommandDefaultPriority(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetTypeName() string {
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLightingCommandDefaultPriority"
 }
 

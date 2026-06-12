@@ -338,7 +338,7 @@ func CastBACnetTagHeader(structType any) BACnetTagHeader {
 	return nil
 }
 
-func (m *_BACnetTagHeader) GetTypeName() string {
+func (m *_BACnetTagHeader) GetPlx4xTypeName() string {
 	return "BACnetTagHeader"
 }
 

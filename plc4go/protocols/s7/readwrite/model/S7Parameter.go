@@ -279,7 +279,7 @@ func CastS7Parameter(structType any) S7Parameter {
 	return nil
 }
 
-func (m *_S7Parameter) GetTypeName() string {
+func (m *_S7Parameter) GetPlx4xTypeName() string {
 	return "S7Parameter"
 }
 

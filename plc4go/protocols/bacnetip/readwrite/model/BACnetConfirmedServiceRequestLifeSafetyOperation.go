@@ -318,7 +318,7 @@ func CastBACnetConfirmedServiceRequestLifeSafetyOperation(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestLifeSafetyOperation"
 }
 

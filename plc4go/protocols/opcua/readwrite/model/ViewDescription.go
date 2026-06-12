@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -255,7 +256,7 @@ func CastViewDescription(structType any) ViewDescription {
 	return nil
 }
 
-func (m *_ViewDescription) GetTypeName() string {
+func (m *_ViewDescription) GetPlx4xTypeName() string {
 	return "ViewDescription"
 }
 
@@ -289,19 +290,19 @@ func (m *_ViewDescription) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	viewId, err := ReadSimpleField[NodeId](ctx, "viewId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	viewId, err := ReadSimpleField[NodeId](ctx, "viewId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'viewId' field"))
 	}
 	m.ViewId = viewId
 
-	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)))
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 	m.Timestamp = timestamp
 
-	viewVersion, err := ReadSimpleField(ctx, "viewVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	viewVersion, err := ReadSimpleField(ctx, "viewVersion", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'viewVersion' field"))
 	}
@@ -332,15 +333,15 @@ func (m *_ViewDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for ViewDescription")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "viewId", m.GetViewId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "viewId", m.GetViewId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'viewId' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "viewVersion", m.GetViewVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "viewVersion", m.GetViewVersion(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'viewVersion' field")
 		}
 

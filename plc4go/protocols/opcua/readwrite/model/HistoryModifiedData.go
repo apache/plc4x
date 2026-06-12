@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -222,7 +223,7 @@ func CastHistoryModifiedData(structType any) HistoryModifiedData {
 	return nil
 }
 
-func (m *_HistoryModifiedData) GetTypeName() string {
+func (m *_HistoryModifiedData) GetPlx4xTypeName() string {
 	return "HistoryModifiedData"
 }
 
@@ -269,25 +270,25 @@ func (m *_HistoryModifiedData) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfDataValues, err := ReadImplicitField[int32](ctx, "noOfDataValues", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDataValues, err := ReadImplicitField[int32](ctx, "noOfDataValues", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataValues' field"))
 	}
 	_ = noOfDataValues
 
-	dataValues, err := ReadCountArrayField[DataValue](ctx, "dataValues", ReadComplex[DataValue](DataValueParseWithBuffer, readBuffer), uint64(noOfDataValues))
+	dataValues, err := ReadCountArrayField[DataValue](ctx, "dataValues", ReadComplex[DataValue](DataValueParseWithBuffer, readBuffer), uint64(noOfDataValues), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataValues' field"))
 	}
 	m.DataValues = dataValues
 
-	noOfModificationInfos, err := ReadImplicitField[int32](ctx, "noOfModificationInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfModificationInfos, err := ReadImplicitField[int32](ctx, "noOfModificationInfos", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfModificationInfos' field"))
 	}
 	_ = noOfModificationInfos
 
-	modificationInfos, err := ReadCountArrayField[ModificationInfo](ctx, "modificationInfos", ReadComplex[ModificationInfo](ExtensionObjectDefinitionParseWithBufferProducer[ModificationInfo]((int32)(int32(11218))), readBuffer), uint64(noOfModificationInfos))
+	modificationInfos, err := ReadCountArrayField[ModificationInfo](ctx, "modificationInfos", ReadComplex[ModificationInfo](ExtensionObjectDefinitionParseWithBufferProducer[ModificationInfo]((int32)(int32(11218))), readBuffer), uint64(noOfModificationInfos), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modificationInfos' field"))
 	}
@@ -318,19 +319,19 @@ func (m *_HistoryModifiedData) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for HistoryModifiedData")
 		}
 		noOfDataValues := int32(utils.InlineIf(bool((m.GetDataValues()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDataValues()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfDataValues", noOfDataValues, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfDataValues", noOfDataValues, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDataValues' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "dataValues", m.GetDataValues(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "dataValues", m.GetDataValues(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataValues' field")
 		}
 		noOfModificationInfos := int32(utils.InlineIf(bool((m.GetModificationInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetModificationInfos()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfModificationInfos", noOfModificationInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfModificationInfos", noOfModificationInfos, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfModificationInfos' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "modificationInfos", m.GetModificationInfos(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "modificationInfos", m.GetModificationInfos(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'modificationInfos' field")
 		}
 

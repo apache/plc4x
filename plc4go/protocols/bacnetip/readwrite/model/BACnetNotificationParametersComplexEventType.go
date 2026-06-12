@@ -221,7 +221,7 @@ func CastBACnetNotificationParametersComplexEventType(structType any) BACnetNoti
 	return nil
 }
 
-func (m *_BACnetNotificationParametersComplexEventType) GetTypeName() string {
+func (m *_BACnetNotificationParametersComplexEventType) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersComplexEventType"
 }
 

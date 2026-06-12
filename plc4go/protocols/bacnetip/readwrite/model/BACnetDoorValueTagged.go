@@ -193,7 +193,7 @@ func CastBACnetDoorValueTagged(structType any) BACnetDoorValueTagged {
 	return nil
 }
 
-func (m *_BACnetDoorValueTagged) GetTypeName() string {
+func (m *_BACnetDoorValueTagged) GetPlx4xTypeName() string {
 	return "BACnetDoorValueTagged"
 }
 

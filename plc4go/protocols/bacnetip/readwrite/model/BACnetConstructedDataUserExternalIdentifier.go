@@ -246,7 +246,7 @@ func CastBACnetConstructedDataUserExternalIdentifier(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataUserExternalIdentifier) GetTypeName() string {
+func (m *_BACnetConstructedDataUserExternalIdentifier) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUserExternalIdentifier"
 }
 

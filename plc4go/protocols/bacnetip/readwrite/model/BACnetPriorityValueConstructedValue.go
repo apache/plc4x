@@ -221,7 +221,7 @@ func CastBACnetPriorityValueConstructedValue(structType any) BACnetPriorityValue
 	return nil
 }
 
-func (m *_BACnetPriorityValueConstructedValue) GetTypeName() string {
+func (m *_BACnetPriorityValueConstructedValue) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueConstructedValue"
 }
 

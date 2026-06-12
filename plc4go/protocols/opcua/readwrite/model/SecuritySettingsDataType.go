@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -303,7 +304,7 @@ func CastSecuritySettingsDataType(structType any) SecuritySettingsDataType {
 	return nil
 }
 
-func (m *_SecuritySettingsDataType) GetTypeName() string {
+func (m *_SecuritySettingsDataType) GetPlx4xTypeName() string {
 	return "SecuritySettingsDataType"
 }
 
@@ -367,49 +368,49 @@ func (m *_SecuritySettingsDataType) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 	m.Name = name
 
-	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRecordProperties' field"))
 	}
 	_ = noOfRecordProperties
 
-	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties))
+	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordProperties' field"))
 	}
 	m.RecordProperties = recordProperties
 
-	noOfSecurityModes, err := ReadImplicitField[int32](ctx, "noOfSecurityModes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSecurityModes, err := ReadImplicitField[int32](ctx, "noOfSecurityModes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecurityModes' field"))
 	}
 	_ = noOfSecurityModes
 
-	securityModes, err := ReadCountArrayField[MessageSecurityMode](ctx, "securityModes", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))), uint64(noOfSecurityModes))
+	securityModes, err := ReadCountArrayField[MessageSecurityMode](ctx, "securityModes", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))), uint64(noOfSecurityModes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityModes' field"))
 	}
 	m.SecurityModes = securityModes
 
-	noOfSecurityPolicyUris, err := ReadImplicitField[int32](ctx, "noOfSecurityPolicyUris", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSecurityPolicyUris, err := ReadImplicitField[int32](ctx, "noOfSecurityPolicyUris", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecurityPolicyUris' field"))
 	}
 	_ = noOfSecurityPolicyUris
 
-	securityPolicyUris, err := ReadCountArrayField[PascalString](ctx, "securityPolicyUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityPolicyUris))
+	securityPolicyUris, err := ReadCountArrayField[PascalString](ctx, "securityPolicyUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityPolicyUris), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUris' field"))
 	}
 	m.SecurityPolicyUris = securityPolicyUris
 
-	certificateGroupName, err := ReadSimpleField[PascalString](ctx, "certificateGroupName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	certificateGroupName, err := ReadSimpleField[PascalString](ctx, "certificateGroupName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'certificateGroupName' field"))
 	}
@@ -440,35 +441,35 @@ func (m *_SecuritySettingsDataType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for SecuritySettingsDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 		noOfRecordProperties := int32(utils.InlineIf(bool((m.GetRecordProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRecordProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRecordProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'recordProperties' field")
 		}
 		noOfSecurityModes := int32(utils.InlineIf(bool((m.GetSecurityModes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSecurityModes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSecurityModes", noOfSecurityModes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSecurityModes", noOfSecurityModes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSecurityModes' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "securityModes", m.GetSecurityModes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "securityModes", m.GetSecurityModes(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityModes' field")
 		}
 		noOfSecurityPolicyUris := int32(utils.InlineIf(bool((m.GetSecurityPolicyUris()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSecurityPolicyUris()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSecurityPolicyUris", noOfSecurityPolicyUris, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSecurityPolicyUris", noOfSecurityPolicyUris, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSecurityPolicyUris' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "securityPolicyUris", m.GetSecurityPolicyUris(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "securityPolicyUris", m.GetSecurityPolicyUris(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityPolicyUris' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "certificateGroupName", m.GetCertificateGroupName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "certificateGroupName", m.GetCertificateGroupName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'certificateGroupName' field")
 		}
 

@@ -225,7 +225,7 @@ func CastAdsDiscoveryBlockRouteName(structType any) AdsDiscoveryBlockRouteName {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockRouteName) GetTypeName() string {
+func (m *_AdsDiscoveryBlockRouteName) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockRouteName"
 }
 

@@ -257,7 +257,7 @@ func CastBACnetWriteAccessSpecification(structType any) BACnetWriteAccessSpecifi
 	return nil
 }
 
-func (m *_BACnetWriteAccessSpecification) GetTypeName() string {
+func (m *_BACnetWriteAccessSpecification) GetPlx4xTypeName() string {
 	return "BACnetWriteAccessSpecification"
 }
 

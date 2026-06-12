@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMachineRoomID(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataMachineRoomID) GetTypeName() string {
+func (m *_BACnetConstructedDataMachineRoomID) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMachineRoomID"
 }
 

@@ -207,7 +207,7 @@ func CastApduDataDeviceDescriptorRead(structType any) ApduDataDeviceDescriptorRe
 	return nil
 }
 
-func (m *_ApduDataDeviceDescriptorRead) GetTypeName() string {
+func (m *_ApduDataDeviceDescriptorRead) GetPlx4xTypeName() string {
 	return "ApduDataDeviceDescriptorRead"
 }
 

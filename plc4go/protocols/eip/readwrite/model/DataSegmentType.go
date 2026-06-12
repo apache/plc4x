@@ -205,7 +205,7 @@ func CastDataSegmentType(structType any) DataSegmentType {
 	return nil
 }
 
-func (m *_DataSegmentType) GetTypeName() string {
+func (m *_DataSegmentType) GetPlx4xTypeName() string {
 	return "DataSegmentType"
 }
 

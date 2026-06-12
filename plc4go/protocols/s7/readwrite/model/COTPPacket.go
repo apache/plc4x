@@ -315,7 +315,7 @@ func CastCOTPPacket(structType any) COTPPacket {
 	return nil
 }
 
-func (m *_COTPPacket) GetTypeName() string {
+func (m *_COTPPacket) GetPlx4xTypeName() string {
 	return "COTPPacket"
 }
 

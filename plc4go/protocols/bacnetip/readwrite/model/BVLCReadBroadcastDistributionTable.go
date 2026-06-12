@@ -181,7 +181,7 @@ func CastBVLCReadBroadcastDistributionTable(structType any) BVLCReadBroadcastDis
 	return nil
 }
 
-func (m *_BVLCReadBroadcastDistributionTable) GetTypeName() string {
+func (m *_BVLCReadBroadcastDistributionTable) GetPlx4xTypeName() string {
 	return "BVLCReadBroadcastDistributionTable"
 }
 

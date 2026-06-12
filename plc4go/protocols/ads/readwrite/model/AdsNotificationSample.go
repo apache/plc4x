@@ -192,7 +192,7 @@ func CastAdsNotificationSample(structType any) AdsNotificationSample {
 	return nil
 }
 
-func (m *_AdsNotificationSample) GetTypeName() string {
+func (m *_AdsNotificationSample) GetPlx4xTypeName() string {
 	return "AdsNotificationSample"
 }
 

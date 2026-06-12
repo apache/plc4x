@@ -193,7 +193,7 @@ func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged"
 }
 

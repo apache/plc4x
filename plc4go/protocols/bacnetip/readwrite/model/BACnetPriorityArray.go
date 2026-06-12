@@ -387,7 +387,7 @@ func CastBACnetPriorityArray(structType any) BACnetPriorityArray {
 	return nil
 }
 
-func (m *_BACnetPriorityArray) GetTypeName() string {
+func (m *_BACnetPriorityArray) GetPlx4xTypeName() string {
 	return "BACnetPriorityArray"
 }
 

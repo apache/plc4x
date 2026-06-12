@@ -176,7 +176,7 @@ func CastClockAndTimekeepingDataRequestRefresh(structType any) ClockAndTimekeepi
 	return nil
 }
 
-func (m *_ClockAndTimekeepingDataRequestRefresh) GetTypeName() string {
+func (m *_ClockAndTimekeepingDataRequestRefresh) GetPlx4xTypeName() string {
 	return "ClockAndTimekeepingDataRequestRefresh"
 }
 

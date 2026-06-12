@@ -180,7 +180,7 @@ func CastApduDataExtReadRouterMemoryRequest(structType any) ApduDataExtReadRoute
 	return nil
 }
 
-func (m *_ApduDataExtReadRouterMemoryRequest) GetTypeName() string {
+func (m *_ApduDataExtReadRouterMemoryRequest) GetPlx4xTypeName() string {
 	return "ApduDataExtReadRouterMemoryRequest"
 }
 

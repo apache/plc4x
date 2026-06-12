@@ -218,7 +218,7 @@ func CastLightingDataRampToLevel(structType any) LightingDataRampToLevel {
 	return nil
 }
 
-func (m *_LightingDataRampToLevel) GetTypeName() string {
+func (m *_LightingDataRampToLevel) GetPlx4xTypeName() string {
 	return "LightingDataRampToLevel"
 }
 

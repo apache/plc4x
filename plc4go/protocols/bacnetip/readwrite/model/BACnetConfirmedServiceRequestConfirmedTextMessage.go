@@ -318,7 +318,7 @@ func CastBACnetConfirmedServiceRequestConfirmedTextMessage(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedTextMessage"
 }
 

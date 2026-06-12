@@ -1,0 +1,42 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.plc4x.java.umas.tag;
+
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.model.PlcTag;
+
+/**
+ * Marker interface for all UMAS tag types.
+ * UMAS tags use symbolic names that correspond to variables in the Schneider Electric
+ * PLC project.
+ */
+public interface UmasTag extends PlcTag {
+
+    default int getTotalNumberOfElements() {
+        if (getArrayInfo() == null || getArrayInfo().isEmpty()) {
+            return 1;
+        }
+        int total = 1;
+        for (ArrayInfo arrayInfo : getArrayInfo()) {
+            total *= arrayInfo.getSize();
+        }
+        return total;
+    }
+
+}

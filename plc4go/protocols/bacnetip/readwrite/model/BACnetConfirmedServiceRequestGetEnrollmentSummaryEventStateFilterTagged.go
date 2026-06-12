@@ -193,7 +193,7 @@ func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged"
 }
 

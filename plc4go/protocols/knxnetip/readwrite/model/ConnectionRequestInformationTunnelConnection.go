@@ -209,7 +209,7 @@ func CastConnectionRequestInformationTunnelConnection(structType any) Connection
 	return nil
 }
 
-func (m *_ConnectionRequestInformationTunnelConnection) GetTypeName() string {
+func (m *_ConnectionRequestInformationTunnelConnection) GetPlx4xTypeName() string {
 	return "ConnectionRequestInformationTunnelConnection"
 }
 

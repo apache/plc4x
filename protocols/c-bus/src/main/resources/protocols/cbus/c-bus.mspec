@@ -21,7 +21,7 @@
     [const    uint 16     cbusTcpDefaultPort 10001]
 ]
 
-[type RequestContext
+[type RequestContext byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
     [simple   bit       sendIdentifyRequestBefore   ]
 ]
@@ -55,7 +55,7 @@
 //[simple bit srchk ]
 //]
 
-[type CBusOptions
+[type CBusOptions byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     // Defines that SAL messages can occur at any time
     [simple bit connect]
     // Disable echo of characters. When used with connect SAL have a long option. Select long from of most CAL replies
@@ -76,7 +76,7 @@
     [simple bit srchk ]
 ]
 
-[type CBusMessage(bit isResponse, RequestContext requestContext, CBusOptions cBusOptions)
+[type CBusMessage(bit isResponse, RequestContext requestContext, CBusOptions cBusOptions) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [validation 'requestContext != null' "requestContext required"  ]
     [validation 'cBusOptions != null'    "cBusOptions required"     ]
     [typeSwitch isResponse
@@ -89,7 +89,7 @@
     ]
 ]
 
-[type Request(CBusOptions cBusOptions)
+[type Request(CBusOptions cBusOptions) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [peek     RequestType peekedByte                                        ]
     [optional RequestType startingCR       'peekedByte == RequestType.EMPTY']
     [optional RequestType resetMode        'peekedByte == RequestType.RESET']
@@ -167,7 +167,7 @@
     ['0x0D' EMPTY                   ['0x00']] // empty doesn't have a "control char" so we just consume the rest
 ]
 
-[discriminatedType CBusCommand(CBusOptions cBusOptions)
+[discriminatedType CBusCommand(CBusOptions cBusOptions) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple  CBusHeader header           ]
     [virtual bit        isDeviceManagement 'header.dp']
     // TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
@@ -191,7 +191,7 @@
     ]
 ]
 
-[type CBusHeader
+[type CBusHeader byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple   PriorityClass          priorityClass         ]
     [simple   bit                    dp                    ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
     [simple   uint 2                 rc                    ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
@@ -211,29 +211,29 @@
     ['0x06' PointToPoint            ] // P-P
 ]
 
-[type UnitAddress
+[type UnitAddress byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple byte address]
 ]
 
-[type BridgeAddress
+[type BridgeAddress byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple byte address]
 ]
 
-[type SerialInterfaceAddress
+[type SerialInterfaceAddress byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple byte address]
 ]
 
-[type Alpha
+[type Alpha byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple byte character]
     [validation '(character >= 0x67) && (character <= 0x7A)' "character not in alpha space" shouldFail=false] // Read if the peeked byte is between 'g' and 'z'
 ]
 
-[type NetworkRoute
+[type NetworkRoute byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple NetworkProtocolControlInformation networkPCI                                ]
     [array  BridgeAddress additionalBridgeAddresses count 'networkPCI.stackDepth-1'     ] // We substract 1 as when a route is used we always have one prefixed
 ]
 
-[discriminatedType CBusPointToPointCommand(CBusOptions cBusOptions)
+[discriminatedType CBusPointToPointCommand(CBusOptions cBusOptions) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [peek    uint 16     bridgeAddressCountPeek ]
     [virtual bit         isDirect  '(bridgeAddressCountPeek & 0x00FF) == 0x0000']
     [typeSwitch isDirect
@@ -250,7 +250,7 @@
     [simple   CALData('null') calData                                                           ]
 ]
 
-[discriminatedType CBusPointToMultiPointCommand(CBusOptions cBusOptions)
+[discriminatedType CBusPointToMultiPointCommand(CBusOptions cBusOptions) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [peek    byte     peekedApplication                                                                ]
     [typeSwitch peekedApplication
         ['0xFF'   *Status
@@ -266,7 +266,7 @@
     ]
 ]
 
-[discriminatedType CBusPointToPointToMultiPointCommand(CBusOptions cBusOptions)
+[discriminatedType CBusPointToPointToMultiPointCommand(CBusOptions cBusOptions) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple BridgeAddress bridgeAddress                                                              ]
     [simple NetworkRoute  networkRoute                                                               ]
     [peek    byte       peekedApplication                                                            ]
@@ -580,7 +580,7 @@
     ['0xFF' NETWORK_CONTROL                       ['NETWORK_CONTROL'                   , 'NO'                  ]]
 ]
 
-[type CALData(RequestContext requestContext)
+[type CALData(RequestContext requestContext) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [state                           requestContext                                         ]
     //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
     [validation 'STATIC_CALL("knowsCALCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
@@ -932,7 +932,7 @@
     ['10' CUSTOM_TYPE                            ]
 ]
 
-[type ParameterValue(ParameterType parameterType, uint 8 numBytes)
+[type ParameterValue(ParameterType parameterType, uint 8 numBytes) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch parameterType
         ['APPLICATION_ADDRESS_1'    *ApplicationAddress1
             [validation 'numBytes >= 1' "ApplicationAddress1 has exactly one byte"  ]
@@ -992,18 +992,18 @@
     ]
 ]
 
-[type ApplicationAddress1 // Note 1
+[type ApplicationAddress1 byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'  // Note 1
     [simple  byte address                       ]
     // if wildcard is set address 2 should set to wildcard as well
     [virtual bit  isWildcard 'address == 0xFF'  ]
 ]
 
-[type ApplicationAddress2 // Note 1
+[type ApplicationAddress2 byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'  // Note 1
     [simple  byte address                       ]
     [virtual bit  isWildcard 'address == 0xFF'  ]
 ]
 
-[type InterfaceOptions1 // Note 2
+[type InterfaceOptions1 byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'  // Note 2
     [reserved bit  'false'                       ]
     [simple   bit  idmon                         ]
     [simple   bit  monitor                       ]
@@ -1024,7 +1024,7 @@
     ['0xFF' SELECTED_9600_BAUD]
 ]
 
-[type InterfaceOptions2 // Note 4
+[type InterfaceOptions2 byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'  // Note 4
     [reserved bit  'false'                       ]
     [simple   bit  burden                        ]
     [reserved bit  'false'                       ]
@@ -1035,11 +1035,11 @@
     [simple   bit  clockGen                      ]
 ]
 
-[type InterfaceOptions1PowerUpSettings // Note 5
+[type InterfaceOptions1PowerUpSettings byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'  // Note 5
     [simple InterfaceOptions1 interfaceOptions1  ]
 ]
 
-[type InterfaceOptions3 // Note 6
+[type InterfaceOptions3 byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'  // Note 6
     [reserved bit  'false'                       ]
     [reserved bit  'false'                       ]
     [reserved bit  'false'                       ]
@@ -1050,19 +1050,19 @@
     [simple   bit  pcn                           ]
 ]
 
-[type CustomManufacturer(uint 8 numBytes) // Note 7
+[type CustomManufacturer(uint 8 numBytes) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'  // Note 7
     [state                         numBytes     ]
     [simple vstring '8 * numBytes' customString ]
 ]
 
-[type SerialNumber // Note 8
+[type SerialNumber byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'  // Note 8
     [simple byte octet1]
     [simple byte octet2]
     [simple byte octet3]
     [simple byte octet4]
 ]
 
-[type CustomTypes(uint 8 numBytes) // Note 9
+[type CustomTypes(uint 8 numBytes) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'  // Note 9
     [state                         numBytes     ]
     [simple vstring '8 * numBytes' customString ]
 ]
@@ -1088,7 +1088,7 @@
     ['0x11' DSIStatus                 ['10']]
 ]
 
-[type IdentifyReplyCommand(Attribute attribute, uint 5 numBytes)
+[type IdentifyReplyCommand(Attribute attribute, uint 5 numBytes) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch attribute
         ['Manufacturer'                 IdentifyReplyCommandManufacturer
             [simple string 64  manufacturerName ]
@@ -1188,7 +1188,7 @@
     ]
 ]
 
-[type IdentifyReplyCommandUnitSummary
+[type IdentifyReplyCommandUnitSummary byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple bit assertingNetworkBurden  ]
     [simple bit restrikeTimingActive    ]
     [simple bit remoteOFFInputAsserted  ]
@@ -1199,7 +1199,7 @@
     [simple bit unitGeneratingClock     ]
 ]
 
-[type LogicAssignment
+[type LogicAssignment byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple   bit greaterOfOrLogic  ]
     [simple   bit reStrikeDelay     ]
     [reserved bit 'false'           ]
@@ -1359,7 +1359,7 @@
     ['0x12' STATUS_EXTENDED]
 ]
 
-[type StatusRequest
+[type StatusRequest byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [peek    byte     statusType           ]
     [typeSwitch statusType
         ['0x7A' *BinaryState
@@ -1390,7 +1390,7 @@
 ]
 
 // TODO: this is currently lightning only so we need more typeSwitched based on the applicationid
-[type SALData(ApplicationId applicationId)
+[type SALData(ApplicationId applicationId) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch applicationId
         ['RESERVED'                             *Reserved
             [validation '1==2' "RESERVED Not yet implemented"] // TODO: implement me
@@ -1471,7 +1471,7 @@
     [optional SALData('applicationId') salData                                  ]
 ]
 
-[type ReplyOrConfirmation(CBusOptions cBusOptions, RequestContext requestContext)
+[type ReplyOrConfirmation(CBusOptions cBusOptions, RequestContext requestContext) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [peek    byte peekedByte                                                ]
     [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'    ]
     [typeSwitch isAlpha, peekedByte
@@ -1489,7 +1489,7 @@
     ]
 ]
 
-[type Reply(CBusOptions cBusOptions, RequestContext requestContext)
+[type Reply(CBusOptions cBusOptions, RequestContext requestContext) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [peek    byte peekedByte                                                                ]
     [typeSwitch peekedByte
         ['0x2B' PowerUpReply // is a +
@@ -1518,7 +1518,7 @@
     ]
 ]
 
-[type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
+[type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [state                  requestContext                     ]
     [peek    byte           peekedByte                         ]
     // TODO: if we reliable can detect this with the mask we don't need the request context anymore
@@ -1533,7 +1533,7 @@
     ]
 ]
 
-[type CALReply(CBusOptions cBusOptions, RequestContext requestContext)
+[type CALReply(CBusOptions cBusOptions, RequestContext requestContext) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [peek    byte     calType                                                                    ]
     [typeSwitch calType
         ['0x86' CALReplyLong
@@ -1554,7 +1554,7 @@
     [simple   CALData('requestContext')   calData                                                ]
 ]
 
-[type MonitoredSAL(CBusOptions cBusOptions)
+[type MonitoredSAL(CBusOptions cBusOptions) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [peek    byte     salType             ]
     [typeSwitch salType
         ['0x05' *LongFormSmartMode
@@ -1581,7 +1581,7 @@
     ]
 ]
 
-[type Confirmation
+[type Confirmation byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple   Alpha           alpha                                                     ]
     // TODO: seem like sometimes there are two alphas in a confirmation... check that
     [optional Alpha           secondAlpha                                               ]
@@ -1598,22 +1598,22 @@
     ['0x21'    CHECKSUM_FAILURE                         ] // "!"
 ]
 
-[type PowerUp
+[type PowerUp byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [const    byte        powerUpIndicator1       0x2B                  ] // "+"
     [const    byte        powerUpIndicator2       0x2B                  ] // "+"
 ]
 
-[type ParameterChange
+[type ParameterChange byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [const    byte        specialChar1      0x3D                    ] // "="
     [const    byte        specialChar2      0x3D                    ] // "="
 ]
 
-[type ReplyNetwork
+[type ReplyNetwork byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple NetworkRoute  networkRoute                              ]
     [simple UnitAddress   unitAddress                               ]
 ]
 
-[type Checksum
+[type Checksum byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple byte value]
 ]
 
@@ -1624,14 +1624,14 @@
     ['0x47' LEVEL_BY_ELSEWHERE                  ]
 ]
 
-[type StatusByte
+[type StatusByte byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple GAVState    gav3                                        ]
     [simple GAVState    gav2                                        ]
     [simple GAVState    gav1                                        ]
     [simple GAVState    gav0                                        ]
 ]
 
-[type LevelInformation
+[type LevelInformation byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [peek    uint 16    raw                                         ]
     [virtual uint 4     nibble1 '(raw & 0xF000) >> 12'              ]
     [virtual uint 4     nibble2 '(raw & 0x0F00) >> 8'               ]
@@ -1686,17 +1686,17 @@
     ['3' ERROR                                                      ]
 ]
 
-[type NetworkProtocolControlInformation
+[type NetworkProtocolControlInformation byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [reserved   uint 2  '0x0'           ]
     [simple     uint 3  stackCounter    ] // Number of bridges required to transmit information from source to destination
     [simple     uint 3  stackDepth      ] // Number of bridges required to complete the transmission from source to destination
 ]
 
-[type RequestTermination
+[type RequestTermination byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
 ]
 
-[type ResponseTermination
+[type ResponseTermination byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
     [const      byte    lf  0x0A                                    ] // 0xA == "<lf>"
 ]

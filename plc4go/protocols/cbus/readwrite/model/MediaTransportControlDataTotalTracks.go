@@ -248,7 +248,7 @@ func CastMediaTransportControlDataTotalTracks(structType any) MediaTransportCont
 	return nil
 }
 
-func (m *_MediaTransportControlDataTotalTracks) GetTypeName() string {
+func (m *_MediaTransportControlDataTotalTracks) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataTotalTracks"
 }
 

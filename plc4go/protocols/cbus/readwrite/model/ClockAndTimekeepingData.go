@@ -287,7 +287,7 @@ func CastClockAndTimekeepingData(structType any) ClockAndTimekeepingData {
 	return nil
 }
 
-func (m *_ClockAndTimekeepingData) GetTypeName() string {
+func (m *_ClockAndTimekeepingData) GetPlx4xTypeName() string {
 	return "ClockAndTimekeepingData"
 }
 

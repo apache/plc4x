@@ -246,7 +246,7 @@ func CastBACnetConstructedDataNetworkPortMaxInfoFrames(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetTypeName() string {
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNetworkPortMaxInfoFrames"
 }
 

@@ -75,7 +75,7 @@ type AmsPacketContract interface {
 	GetSourceAmsPort() uint16
 	// GetErrorCode returns ErrorCode (property field)
 	// 4 bytes	AMS error number. See ADS Return Codes.
-	GetErrorCode() uint32
+	GetErrorCode() ReturnCode
 	// GetInvokeId returns InvokeId (property field)
 	// free usable field of 4 bytes
 	// 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
@@ -93,7 +93,7 @@ type AmsPacketRequirements interface {
 	// GetCommandId returns CommandId (discriminator field)
 	GetCommandId() CommandId
 	// GetErrorCode returns ErrorCode (discriminator field)
-	GetErrorCode() uint32
+	GetErrorCode() ReturnCode
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
 }
@@ -108,7 +108,7 @@ type _AmsPacket struct {
 	TargetAmsPort  uint16
 	SourceAmsNetId AmsNetId
 	SourceAmsPort  uint16
-	ErrorCode      uint32
+	ErrorCode      ReturnCode
 	InvokeId       uint32
 	// Reserved Fields
 	reservedField0 *int8
@@ -117,7 +117,7 @@ type _AmsPacket struct {
 var _ AmsPacketContract = (*_AmsPacket)(nil)
 
 // NewAmsPacket factory function for _AmsPacket
-func NewAmsPacket(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AmsPacket {
+func NewAmsPacket(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32) *_AmsPacket {
 	if targetAmsNetId == nil {
 		panic("targetAmsNetId of type AmsNetId for AmsPacket must not be nil")
 	}
@@ -136,7 +136,7 @@ func NewAmsPacket(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId 
 type AmsPacketBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) AmsPacketBuilder
+	WithMandatoryFields(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32) AmsPacketBuilder
 	// WithTargetAmsNetId adds TargetAmsNetId (property field)
 	WithTargetAmsNetId(AmsNetId) AmsPacketBuilder
 	// WithTargetAmsNetIdBuilder adds TargetAmsNetId (property field) which is build by the builder
@@ -150,7 +150,7 @@ type AmsPacketBuilder interface {
 	// WithSourceAmsPort adds SourceAmsPort (property field)
 	WithSourceAmsPort(uint16) AmsPacketBuilder
 	// WithErrorCode adds ErrorCode (property field)
-	WithErrorCode(uint32) AmsPacketBuilder
+	WithErrorCode(ReturnCode) AmsPacketBuilder
 	// WithInvokeId adds InvokeId (property field)
 	WithInvokeId(uint32) AmsPacketBuilder
 	// AsAdsInvalidRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
@@ -193,8 +193,8 @@ type AmsPacketBuilder interface {
 	AsAdsReadWriteRequest() AdsReadWriteRequestBuilder
 	// AsAdsReadWriteResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
 	AsAdsReadWriteResponse() AdsReadWriteResponseBuilder
-	// AsErrorResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsErrorResponse() ErrorResponseBuilder
+	// AsAdsErrorResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsErrorResponse() AdsErrorResponseBuilder
 	// Build builds the AmsPacket or returns an error if something is wrong
 	PartialBuild() (AmsPacketContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -226,7 +226,7 @@ type _AmsPacketBuilder struct {
 
 var _ (AmsPacketBuilder) = (*_AmsPacketBuilder)(nil)
 
-func (b *_AmsPacketBuilder) WithMandatoryFields(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) AmsPacketBuilder {
+func (b *_AmsPacketBuilder) WithMandatoryFields(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32) AmsPacketBuilder {
 	return b.WithTargetAmsNetId(targetAmsNetId).WithTargetAmsPort(targetAmsPort).WithSourceAmsNetId(sourceAmsNetId).WithSourceAmsPort(sourceAmsPort).WithErrorCode(errorCode).WithInvokeId(invokeId)
 }
 
@@ -270,7 +270,7 @@ func (b *_AmsPacketBuilder) WithSourceAmsPort(sourceAmsPort uint16) AmsPacketBui
 	return b
 }
 
-func (b *_AmsPacketBuilder) WithErrorCode(errorCode uint32) AmsPacketBuilder {
+func (b *_AmsPacketBuilder) WithErrorCode(errorCode ReturnCode) AmsPacketBuilder {
 	b.ErrorCode = errorCode
 	return b
 }
@@ -501,11 +501,11 @@ func (b *_AmsPacketBuilder) AsAdsReadWriteResponse() AdsReadWriteResponseBuilder
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsErrorResponse() ErrorResponseBuilder {
-	if cb, ok := b.childBuilder.(ErrorResponseBuilder); ok {
+func (b *_AmsPacketBuilder) AsAdsErrorResponse() AdsErrorResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsErrorResponseBuilder); ok {
 		return cb
 	}
-	cb := NewErrorResponseBuilder().(*_ErrorResponseBuilder)
+	cb := NewAdsErrorResponseBuilder().(*_AdsErrorResponseBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -575,7 +575,7 @@ func (m *_AmsPacket) GetSourceAmsPort() uint16 {
 	return m.SourceAmsPort
 }
 
-func (m *_AmsPacket) GetErrorCode() uint32 {
+func (m *_AmsPacket) GetErrorCode() ReturnCode {
 	return m.ErrorCode
 }
 
@@ -640,7 +640,7 @@ func CastAmsPacket(structType any) AmsPacket {
 	return nil
 }
 
-func (m *_AmsPacket) GetTypeName() string {
+func (m *_AmsPacket) GetPlx4xTypeName() string {
 	return "AmsPacket"
 }
 
@@ -842,7 +842,7 @@ func (m *_AmsPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	}
 	_ = length
 
-	errorCode, err := ReadSimpleField(ctx, "errorCode", ReadUnsignedInt(readBuffer, uint8(32)))
+	errorCode, err := ReadEnumField[ReturnCode](ctx, "errorCode", "ReturnCode", ReadEnum(ReturnCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorCode' field"))
 	}
@@ -857,89 +857,89 @@ func (m *_AmsPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _child AmsPacket
 	switch {
-	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
 		if _child, err = new(_AdsInvalidRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsInvalidRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
 		if _child, err = new(_AdsInvalidResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsInvalidResponse for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
 		if _child, err = new(_AdsReadDeviceInfoRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadDeviceInfoRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
 		if _child, err = new(_AdsReadDeviceInfoResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadDeviceInfoResponse for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
 		if _child, err = new(_AdsReadRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
 		if _child, err = new(_AdsReadResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadResponse for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
 		if _child, err = new(_AdsWriteRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
 		if _child, err = new(_AdsWriteResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteResponse for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
 		if _child, err = new(_AdsReadStateRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadStateRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
 		if _child, err = new(_AdsReadStateResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadStateResponse for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
 		if _child, err = new(_AdsWriteControlRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteControlRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
 		if _child, err = new(_AdsWriteControlResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteControlResponse for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
 		if _child, err = new(_AdsAddDeviceNotificationRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsAddDeviceNotificationRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
 		if _child, err = new(_AdsAddDeviceNotificationResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsAddDeviceNotificationResponse for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
 		if _child, err = new(_AdsDeleteDeviceNotificationRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeleteDeviceNotificationRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
 		if _child, err = new(_AdsDeleteDeviceNotificationResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeleteDeviceNotificationResponse for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
 		if _child, err = new(_AdsDeviceNotificationRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeviceNotificationRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
 		if _child, err = new(_AdsDeviceNotificationResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeviceNotificationResponse for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
 		if _child, err = new(_AdsReadWriteRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadWriteRequest for type-switch of AmsPacket")
 		}
-	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
+	case errorCode == ReturnCode_OK && commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
 		if _child, err = new(_AdsReadWriteResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadWriteResponse for type-switch of AmsPacket")
 		}
-	case true: // ErrorResponse
-		if _child, err = new(_ErrorResponse).parse(ctx, readBuffer, m); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type ErrorResponse for type-switch of AmsPacket")
+	case true: // AdsErrorResponse
+		if _child, err = new(_AdsErrorResponse).parse(ctx, readBuffer, m); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type AdsErrorResponse for type-switch of AmsPacket")
 		}
 	default:
 		return nil, errors.Errorf("Unmapped type for parameters [errorCode=%v, commandId=%v, response=%v]", errorCode, commandId, response)
@@ -1028,7 +1028,7 @@ func (pm *_AmsPacket) serializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(err, "Error serializing 'length' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "errorCode", m.GetErrorCode(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+	if err := WriteSimpleEnumField[ReturnCode](ctx, "errorCode", "ReturnCode", m.GetErrorCode(), WriteEnum[ReturnCode, uint32](ReturnCode.GetValue, ReturnCode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
 		return errors.Wrap(err, "Error serializing 'errorCode' field")
 	}
 

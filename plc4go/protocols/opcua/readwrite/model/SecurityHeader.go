@@ -175,7 +175,7 @@ func CastSecurityHeader(structType any) SecurityHeader {
 	return nil
 }
 
-func (m *_SecurityHeader) GetTypeName() string {
+func (m *_SecurityHeader) GetPlx4xTypeName() string {
 	return "SecurityHeader"
 }
 

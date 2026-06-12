@@ -18,23 +18,34 @@
  */
 package org.apache.plc4x.java.eip.logix;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.eip.base.EipTcpConnection;
+import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
+import org.apache.plc4x.java.eip.base.configuration.EipTcpTransportConfiguration;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
-import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
-import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
-import org.apache.plc4x.java.eip.logix.configuration.LogixTcpTransportConfiguration;
-import org.apache.plc4x.java.eip.readwrite.EipPacket;
-import org.apache.plc4x.java.spi.connection.*;
+import org.apache.plc4x.java.eip.readwrite.Constants;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.ToIntFunction;
+import java.util.Set;
 
-public class LogixDriver extends GeneratedDriverBase<EipPacket> {
+/**
+ * Thin alias over {@link org.apache.plc4x.java.eip.base.EIPDriver} that
+ * registers the {@code logix} protocol code and forces little-endian wire
+ * encoding (the Logix family of controllers always speaks LE on CIP, whereas
+ * generic EIP devices may go either way). All actual protocol logic lives in
+ * {@link EipTcpConnection} and {@link EIPConfiguration}; this class just
+ * provides the {@code logix://...} URL prefix that existing Logix tooling
+ * documentation uses.
+ */
+public class LogixDriver extends DriverBase {
 
     @Override
     public String getProtocolCode() {
@@ -47,32 +58,34 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
-        return LogixConfiguration.class;
+    protected Class<? extends Configuration> getConfigurationClass() {
+        return EIPConfiguration.class;
     }
 
     @Override
-    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(LogixTcpTransportConfiguration.class);
+    protected Class<? extends TransportConfiguration> getTransportConfigurationClass(Transport<?> transport) {
+        if ("tcp".equals(transport.getTransportCode())) {
+            return EipTcpTransportConfiguration.class;
         }
-        return Optional.empty();
+        return super.getTransportConfigurationClass(transport);
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
+    public Optional<String> getDefaultTransportCode() {
         return Optional.of("tcp");
     }
 
     @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
+    public List<String> getSupportedTransportCodes() {
+        return List.of("tcp", "test");
     }
 
     @Override
-    protected boolean awaitDisconnectComplete() {
-        return true;
+    public Set<Integer> defaultPorts(String transportCode) {
+        if ("tcp".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.EIPTCPDEFAULTPORT);
+        }
+        return Collections.emptySet();
     }
 
     @Override
@@ -86,41 +99,15 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    protected ProtocolStackConfigurer<EipPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(EipPacket.class, io -> EipPacket.staticParse(io, true))
-            .withProtocol(EipProtocolLogic.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .withCorruptPacketRemover(CorruptPackageCleaner.class)
-            .littleEndian()
-            .build();
-    }
-
-    /** Estimate the Length of a Packet */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 4) {
-                //Second word for the size and then add the header size 24
-                return byteBuf.getUnsignedShortLE(byteBuf.readerIndex()+2)+24;
-            }
-            return -1;
-        }
-    }
-
-     /**Consumes all Bytes till another Magic Byte is found */
-    public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
-        @Override
-        public void accept(ByteBuf byteBuf) {
-            while (byteBuf.getUnsignedByte(0) != 0x00) {
-                // Just consume the bytes till the next possible start position.
-                byteBuf.readByte();
-            }
-        }
+    protected ConnectionBase<?> getConnection(Configuration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
+        // Logix CIP is always little-endian on the wire; pass false explicitly
+        // so the user doesn't have to remember big-endian=false on the URL.
+        return new EipTcpConnection((EIPConfiguration) configuration, transportInstance, auditLog, false);
     }
 
     @Override
-    public EipTag prepareTag(String query){
-        return EipTag.of(query);
+    public EipTag prepareTag(String tagAddress) {
+        return EipTag.of(tagAddress);
     }
 
 }

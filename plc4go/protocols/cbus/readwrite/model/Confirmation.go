@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -239,7 +241,7 @@ func CastConfirmation(structType any) Confirmation {
 	return nil
 }
 
-func (m *_Confirmation) GetTypeName() string {
+func (m *_Confirmation) GetPlx4xTypeName() string {
 	return "Confirmation"
 }
 
@@ -267,7 +269,7 @@ func (m *_Confirmation) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func ConfirmationParse(ctx context.Context, theBytes []byte) (Confirmation, error) {
-	return ConfirmationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return ConfirmationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func ConfirmationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
@@ -293,14 +295,14 @@ func (m *_Confirmation) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	alpha, err := ReadSimpleField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer))
+	alpha, err := ReadSimpleField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alpha' field"))
 	}
 	m.Alpha = alpha
 
 	var secondAlpha Alpha
-	_secondAlpha, err := ReadOptionalField[Alpha](ctx, "secondAlpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
+	_secondAlpha, err := ReadOptionalField[Alpha](ctx, "secondAlpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondAlpha' field"))
 	}
@@ -309,13 +311,13 @@ func (m *_Confirmation) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 		m.SecondAlpha = secondAlpha
 	}
 
-	confirmationType, err := ReadEnumField[ConfirmationType](ctx, "confirmationType", "ConfirmationType", ReadEnum(ConfirmationTypeByValue, ReadByte(readBuffer, 8)))
+	confirmationType, err := ReadEnumField[ConfirmationType](ctx, "confirmationType", "ConfirmationType", ReadEnum(ConfirmationTypeByValue, ReadByte(readBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'confirmationType' field"))
 	}
 	m.ConfirmationType = confirmationType
 
-	isSuccess, err := ReadVirtualField[bool](ctx, "isSuccess", (*bool)(nil), bool((confirmationType) == (ConfirmationType_CONFIRMATION_SUCCESSFUL)))
+	isSuccess, err := ReadVirtualField[bool](ctx, "isSuccess", (*bool)(nil), bool((confirmationType) == (ConfirmationType_CONFIRMATION_SUCCESSFUL)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSuccess' field"))
 	}
@@ -329,7 +331,7 @@ func (m *_Confirmation) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 }
 
 func (m *_Confirmation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -345,15 +347,15 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for Confirmation")
 	}
 
-	if err := WriteSimpleField[Alpha](ctx, "alpha", m.GetAlpha(), WriteComplex[Alpha](writeBuffer)); err != nil {
+	if err := WriteSimpleField[Alpha](ctx, "alpha", m.GetAlpha(), WriteComplex[Alpha](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'alpha' field")
 	}
 
-	if err := WriteOptionalField[Alpha](ctx, "secondAlpha", new(m.GetSecondAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[Alpha](ctx, "secondAlpha", new(m.GetSecondAlpha()), WriteComplex[Alpha](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'secondAlpha' field")
 	}
 
-	if err := WriteSimpleEnumField[ConfirmationType](ctx, "confirmationType", "ConfirmationType", m.GetConfirmationType(), WriteEnum[ConfirmationType, byte](ConfirmationType.GetValue, ConfirmationType.PLC4XEnumName, WriteByte(writeBuffer, 8))); err != nil {
+	if err := WriteSimpleEnumField[ConfirmationType](ctx, "confirmationType", "ConfirmationType", m.GetConfirmationType(), WriteEnum[ConfirmationType, byte](ConfirmationType.GetValue, ConfirmationType.PLC4XEnumName, WriteByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'confirmationType' field")
 	}
 	// Virtual field

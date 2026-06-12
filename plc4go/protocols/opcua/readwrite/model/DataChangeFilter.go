@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -237,7 +238,7 @@ func CastDataChangeFilter(structType any) DataChangeFilter {
 	return nil
 }
 
-func (m *_DataChangeFilter) GetTypeName() string {
+func (m *_DataChangeFilter) GetPlx4xTypeName() string {
 	return "DataChangeFilter"
 }
 
@@ -271,19 +272,19 @@ func (m *_DataChangeFilter) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	trigger, err := ReadEnumField[DataChangeTrigger](ctx, "trigger", "DataChangeTrigger", ReadEnum(DataChangeTriggerByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	trigger, err := ReadEnumField[DataChangeTrigger](ctx, "trigger", "DataChangeTrigger", ReadEnum(DataChangeTriggerByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trigger' field"))
 	}
 	m.Trigger = trigger
 
-	deadbandType, err := ReadSimpleField(ctx, "deadbandType", ReadUnsignedInt(readBuffer, uint8(32)))
+	deadbandType, err := ReadSimpleField(ctx, "deadbandType", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadbandType' field"))
 	}
 	m.DeadbandType = deadbandType
 
-	deadbandValue, err := ReadSimpleField(ctx, "deadbandValue", ReadDouble(readBuffer, uint8(64)))
+	deadbandValue, err := ReadSimpleField(ctx, "deadbandValue", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadbandValue' field"))
 	}
@@ -314,15 +315,15 @@ func (m *_DataChangeFilter) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for DataChangeFilter")
 		}
 
-		if err := WriteSimpleEnumField[DataChangeTrigger](ctx, "trigger", "DataChangeTrigger", m.GetTrigger(), WriteEnum[DataChangeTrigger, uint32](DataChangeTrigger.GetValue, DataChangeTrigger.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[DataChangeTrigger](ctx, "trigger", "DataChangeTrigger", m.GetTrigger(), WriteEnum[DataChangeTrigger, uint32](DataChangeTrigger.GetValue, DataChangeTrigger.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'trigger' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "deadbandType", m.GetDeadbandType(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "deadbandType", m.GetDeadbandType(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'deadbandType' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "deadbandValue", m.GetDeadbandValue(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "deadbandValue", m.GetDeadbandValue(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'deadbandValue' field")
 		}
 

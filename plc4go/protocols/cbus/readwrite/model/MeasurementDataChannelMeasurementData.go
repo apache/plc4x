@@ -303,7 +303,7 @@ func CastMeasurementDataChannelMeasurementData(structType any) MeasurementDataCh
 	return nil
 }
 
-func (m *_MeasurementDataChannelMeasurementData) GetTypeName() string {
+func (m *_MeasurementDataChannelMeasurementData) GetPlx4xTypeName() string {
 	return "MeasurementDataChannelMeasurementData"
 }
 

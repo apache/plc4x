@@ -229,7 +229,7 @@ func CastPathSegment(structType any) PathSegment {
 	return nil
 }
 
-func (m *_PathSegment) GetTypeName() string {
+func (m *_PathSegment) GetPlx4xTypeName() string {
 	return "PathSegment"
 }
 

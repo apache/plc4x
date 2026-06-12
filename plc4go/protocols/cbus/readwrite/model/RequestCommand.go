@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -351,7 +353,7 @@ func CastRequestCommand(structType any) RequestCommand {
 	return nil
 }
 
-func (m *_RequestCommand) GetTypeName() string {
+func (m *_RequestCommand) GetPlx4xTypeName() string {
 	return "RequestCommand"
 }
 
@@ -395,38 +397,38 @@ func (m *_RequestCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 	m.CBusOptions = cBusOptions
 
-	initiator, err := ReadConstField[byte](ctx, "initiator", ReadByte(readBuffer, 8), RequestCommand_INITIATOR)
+	initiator, err := ReadConstField[byte](ctx, "initiator", ReadByte(readBuffer, 8), RequestCommand_INITIATOR, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initiator' field"))
 	}
 	_ = initiator
 
-	cbusCommand, err := ReadManualField[CBusCommand](ctx, "cbusCommand", readBuffer, EnsureType[CBusCommand](ReadCBusCommand(ctx, readBuffer, cBusOptions, cBusOptions.GetSrchk())))
+	cbusCommand, err := ReadManualField[CBusCommand](ctx, "cbusCommand", readBuffer, EnsureType[CBusCommand](ReadCBusCommand(ctx, readBuffer, cBusOptions, cBusOptions.GetSrchk())), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cbusCommand' field"))
 	}
 	m.CbusCommand = cbusCommand
 
-	cbusCommandDecoded, err := ReadVirtualField[CBusCommand](ctx, "cbusCommandDecoded", (*CBusCommand)(nil), cbusCommand)
+	cbusCommandDecoded, err := ReadVirtualField[CBusCommand](ctx, "cbusCommandDecoded", (*CBusCommand)(nil), cbusCommand, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cbusCommandDecoded' field"))
 	}
 	_ = cbusCommandDecoded
 
-	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, cbusCommand, cBusOptions.GetSrchk())))
+	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, cbusCommand, cBusOptions.GetSrchk())), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksum' field"))
 	}
 	m.Chksum = chksum
 
-	chksumDecoded, err := ReadVirtualField[Checksum](ctx, "chksumDecoded", (*Checksum)(nil), chksum)
+	chksumDecoded, err := ReadVirtualField[Checksum](ctx, "chksumDecoded", (*Checksum)(nil), chksum, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksumDecoded' field"))
 	}
 	_ = chksumDecoded
 
 	var alpha Alpha
-	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
+	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alpha' field"))
 	}
@@ -443,7 +445,7 @@ func (m *_RequestCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer
 }
 
 func (m *_RequestCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -460,11 +462,11 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for RequestCommand")
 		}
 
-		if err := WriteConstField(ctx, "initiator", RequestCommand_INITIATOR, WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteConstField(ctx, "initiator", RequestCommand_INITIATOR, WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'initiator' field")
 		}
 
-		if err := WriteManualField[CBusCommand](ctx, "cbusCommand", func(ctx context.Context) error { return WriteCBusCommand(ctx, writeBuffer, m.GetCbusCommand()) }, writeBuffer); err != nil {
+		if err := WriteManualField[CBusCommand](ctx, "cbusCommand", func(ctx context.Context) error { return WriteCBusCommand(ctx, writeBuffer, m.GetCbusCommand()) }, writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'cbusCommand' field")
 		}
 		// Virtual field
@@ -476,7 +478,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		if err := WriteManualField[Checksum](ctx, "chksum", func(ctx context.Context) error {
 			return CalculateChecksum(ctx, writeBuffer, m.GetCbusCommand(), m.GetCBusOptions().GetSrchk())
-		}, writeBuffer); err != nil {
+		}, writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'chksum' field")
 		}
 		// Virtual field
@@ -486,7 +488,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_chksumDecodedErr, "Error serializing 'chksumDecoded' field")
 		}
 
-		if err := WriteOptionalField[Alpha](ctx, "alpha", new(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[Alpha](ctx, "alpha", new(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'alpha' field")
 		}
 

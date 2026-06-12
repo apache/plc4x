@@ -175,7 +175,7 @@ func CastCIPDataConnected(structType any) CIPDataConnected {
 	return nil
 }
 
-func (m *_CIPDataConnected) GetTypeName() string {
+func (m *_CIPDataConnected) GetPlx4xTypeName() string {
 	return "CIPDataConnected"
 }
 

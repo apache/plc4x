@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastAddReferencesRequest(structType any) AddReferencesRequest {
 	return nil
 }
 
-func (m *_AddReferencesRequest) GetTypeName() string {
+func (m *_AddReferencesRequest) GetPlx4xTypeName() string {
 	return "AddReferencesRequest"
 }
 
@@ -279,19 +280,19 @@ func (m *_AddReferencesRequest) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfReferencesToAdd, err := ReadImplicitField[int32](ctx, "noOfReferencesToAdd", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReferencesToAdd, err := ReadImplicitField[int32](ctx, "noOfReferencesToAdd", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencesToAdd' field"))
 	}
 	_ = noOfReferencesToAdd
 
-	referencesToAdd, err := ReadCountArrayField[AddReferencesItem](ctx, "referencesToAdd", ReadComplex[AddReferencesItem](ExtensionObjectDefinitionParseWithBufferProducer[AddReferencesItem]((int32)(int32(381))), readBuffer), uint64(noOfReferencesToAdd))
+	referencesToAdd, err := ReadCountArrayField[AddReferencesItem](ctx, "referencesToAdd", ReadComplex[AddReferencesItem](ExtensionObjectDefinitionParseWithBufferProducer[AddReferencesItem]((int32)(int32(381))), readBuffer), uint64(noOfReferencesToAdd), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencesToAdd' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for AddReferencesRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfReferencesToAdd := int32(utils.InlineIf(bool((m.GetReferencesToAdd()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReferencesToAdd()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfReferencesToAdd", noOfReferencesToAdd, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfReferencesToAdd", noOfReferencesToAdd, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReferencesToAdd' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "referencesToAdd", m.GetReferencesToAdd(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "referencesToAdd", m.GetReferencesToAdd(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'referencesToAdd' field")
 		}
 

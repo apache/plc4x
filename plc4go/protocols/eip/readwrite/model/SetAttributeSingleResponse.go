@@ -188,7 +188,7 @@ func CastSetAttributeSingleResponse(structType any) SetAttributeSingleResponse {
 	return nil
 }
 
-func (m *_SetAttributeSingleResponse) GetTypeName() string {
+func (m *_SetAttributeSingleResponse) GetPlx4xTypeName() string {
 	return "SetAttributeSingleResponse"
 }
 

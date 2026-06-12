@@ -184,7 +184,7 @@ func CastBACnetConstructedDataDeviceAll(structType any) BACnetConstructedDataDev
 	return nil
 }
 
-func (m *_BACnetConstructedDataDeviceAll) GetTypeName() string {
+func (m *_BACnetConstructedDataDeviceAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDeviceAll"
 }
 

@@ -241,7 +241,7 @@ func CastAdsMultiRequestItemWrite(structType any) AdsMultiRequestItemWrite {
 	return nil
 }
 
-func (m *_AdsMultiRequestItemWrite) GetTypeName() string {
+func (m *_AdsMultiRequestItemWrite) GetPlx4xTypeName() string {
 	return "AdsMultiRequestItemWrite"
 }
 

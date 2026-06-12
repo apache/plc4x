@@ -246,7 +246,7 @@ func CastBACnetConstructedDataUserType(structType any) BACnetConstructedDataUser
 	return nil
 }
 
-func (m *_BACnetConstructedDataUserType) GetTypeName() string {
+func (m *_BACnetConstructedDataUserType) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUserType"
 }
 

@@ -203,7 +203,7 @@ func CastInstanceSegment(structType any) InstanceSegment {
 	return nil
 }
 
-func (m *_InstanceSegment) GetTypeName() string {
+func (m *_InstanceSegment) GetPlx4xTypeName() string {
 	return "InstanceSegment"
 }
 

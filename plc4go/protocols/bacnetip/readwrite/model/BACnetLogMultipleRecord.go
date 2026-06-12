@@ -211,7 +211,7 @@ func CastBACnetLogMultipleRecord(structType any) BACnetLogMultipleRecord {
 	return nil
 }
 
-func (m *_BACnetLogMultipleRecord) GetTypeName() string {
+func (m *_BACnetLogMultipleRecord) GetPlx4xTypeName() string {
 	return "BACnetLogMultipleRecord"
 }
 

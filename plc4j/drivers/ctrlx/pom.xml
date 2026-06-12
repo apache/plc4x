@@ -100,6 +100,49 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- OpenAPI-generated REST client for the ctrlX Data Layer REST API. -->
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/rest/**</exclude>
+                <!-- I/O-heavy driver-shell classes. -->
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/CtrlXDriver.class</exclude>
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/connection/CtrlXConnection*.class</exclude>
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/discovery/CtrlXPlcDiscoverer*.class</exclude>
+                <!-- REST + OAuth glue; requires live HTTPS service. -->
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/ApiClientFactory.class</exclude>
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/OauthHelper.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check-coverage</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/rest/**</exclude>
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/CtrlXDriver.class</exclude>
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/connection/CtrlXConnection*.class</exclude>
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/discovery/CtrlXPlcDiscoverer*.class</exclude>
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/ApiClientFactory.class</exclude>
+                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/OauthHelper.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -107,7 +150,7 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.canopen.CANOpenPlcDriver</Export-Service>
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.ctrlx.CtrlXDriver</Export-Service>
             <Import-Package>
               *
             </Import-Package>
@@ -123,10 +166,19 @@
       <artifactId>plc4j-api</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
 

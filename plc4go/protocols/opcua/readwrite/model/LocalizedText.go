@@ -229,7 +229,7 @@ func CastLocalizedText(structType any) LocalizedText {
 	return nil
 }
 
-func (m *_LocalizedText) GetTypeName() string {
+func (m *_LocalizedText) GetPlx4xTypeName() string {
 	return "LocalizedText"
 }
 

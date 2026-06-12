@@ -188,7 +188,7 @@ func CastModbusPDUGetComEventCounterRequest(structType any) ModbusPDUGetComEvent
 	return nil
 }
 
-func (m *_ModbusPDUGetComEventCounterRequest) GetTypeName() string {
+func (m *_ModbusPDUGetComEventCounterRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUGetComEventCounterRequest"
 }
 

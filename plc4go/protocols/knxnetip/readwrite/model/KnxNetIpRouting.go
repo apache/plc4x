@@ -207,7 +207,7 @@ func CastKnxNetIpRouting(structType any) KnxNetIpRouting {
 	return nil
 }
 
-func (m *_KnxNetIpRouting) GetTypeName() string {
+func (m *_KnxNetIpRouting) GetPlx4xTypeName() string {
 	return "KnxNetIpRouting"
 }
 

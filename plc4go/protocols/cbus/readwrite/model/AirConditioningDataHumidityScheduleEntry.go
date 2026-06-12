@@ -386,7 +386,7 @@ func CastAirConditioningDataHumidityScheduleEntry(structType any) AirConditionin
 	return nil
 }
 
-func (m *_AirConditioningDataHumidityScheduleEntry) GetTypeName() string {
+func (m *_AirConditioningDataHumidityScheduleEntry) GetPlx4xTypeName() string {
 	return "AirConditioningDataHumidityScheduleEntry"
 }
 

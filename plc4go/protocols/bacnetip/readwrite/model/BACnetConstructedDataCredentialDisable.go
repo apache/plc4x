@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCredentialDisable(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataCredentialDisable) GetTypeName() string {
+func (m *_BACnetConstructedDataCredentialDisable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCredentialDisable"
 }
 

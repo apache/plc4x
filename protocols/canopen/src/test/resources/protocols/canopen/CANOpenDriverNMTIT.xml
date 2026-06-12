@@ -22,8 +22,8 @@
 
   <name>CANOpen SDO Segmentation</name>
 
-  <protocolName>canopen</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>canopen</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <driver-name>canopen</driver-name>
 

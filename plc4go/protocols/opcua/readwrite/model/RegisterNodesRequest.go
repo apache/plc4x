@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastRegisterNodesRequest(structType any) RegisterNodesRequest {
 	return nil
 }
 
-func (m *_RegisterNodesRequest) GetTypeName() string {
+func (m *_RegisterNodesRequest) GetPlx4xTypeName() string {
 	return "RegisterNodesRequest"
 }
 
@@ -279,19 +280,19 @@ func (m *_RegisterNodesRequest) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfNodesToRegister, err := ReadImplicitField[int32](ctx, "noOfNodesToRegister", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToRegister, err := ReadImplicitField[int32](ctx, "noOfNodesToRegister", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToRegister' field"))
 	}
 	_ = noOfNodesToRegister
 
-	nodesToRegister, err := ReadCountArrayField[NodeId](ctx, "nodesToRegister", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfNodesToRegister))
+	nodesToRegister, err := ReadCountArrayField[NodeId](ctx, "nodesToRegister", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfNodesToRegister), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToRegister' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_RegisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for RegisterNodesRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfNodesToRegister := int32(utils.InlineIf(bool((m.GetNodesToRegister()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToRegister()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNodesToRegister", noOfNodesToRegister, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNodesToRegister", noOfNodesToRegister, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToRegister' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "nodesToRegister", m.GetNodesToRegister(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "nodesToRegister", m.GetNodesToRegister(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodesToRegister' field")
 		}
 

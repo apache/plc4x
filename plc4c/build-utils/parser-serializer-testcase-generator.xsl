@@ -8,8 +8,8 @@
     <xsl:output omit-xml-declaration="yes" />
 
     <xsl:template match="/test:testsuite">
-        <xsl:variable name="protocolName" select="protocolName/text()"/>
-        <xsl:variable name="outputFlavor" select="outputFlavor/text()"/>
+        <xsl:variable name="protocolName" select="protocol-name/text()"/>
+        <xsl:variable name="outputFlavor" select="output-flavor/text()"/>
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -329,7 +330,7 @@ func CastEndpointConfiguration(structType any) EndpointConfiguration {
 	return nil
 }
 
-func (m *_EndpointConfiguration) GetTypeName() string {
+func (m *_EndpointConfiguration) GetPlx4xTypeName() string {
 	return "EndpointConfiguration"
 }
 
@@ -384,61 +385,61 @@ func (m *_EndpointConfiguration) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	operationTimeout, err := ReadSimpleField(ctx, "operationTimeout", ReadSignedInt(readBuffer, uint8(32)))
+	operationTimeout, err := ReadSimpleField(ctx, "operationTimeout", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operationTimeout' field"))
 	}
 	m.OperationTimeout = operationTimeout
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	useBinaryEncoding, err := ReadSimpleField(ctx, "useBinaryEncoding", ReadBoolean(readBuffer))
+	useBinaryEncoding, err := ReadSimpleField(ctx, "useBinaryEncoding", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'useBinaryEncoding' field"))
 	}
 	m.UseBinaryEncoding = useBinaryEncoding
 
-	maxStringLength, err := ReadSimpleField(ctx, "maxStringLength", ReadSignedInt(readBuffer, uint8(32)))
+	maxStringLength, err := ReadSimpleField(ctx, "maxStringLength", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxStringLength' field"))
 	}
 	m.MaxStringLength = maxStringLength
 
-	maxByteStringLength, err := ReadSimpleField(ctx, "maxByteStringLength", ReadSignedInt(readBuffer, uint8(32)))
+	maxByteStringLength, err := ReadSimpleField(ctx, "maxByteStringLength", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxByteStringLength' field"))
 	}
 	m.MaxByteStringLength = maxByteStringLength
 
-	maxArrayLength, err := ReadSimpleField(ctx, "maxArrayLength", ReadSignedInt(readBuffer, uint8(32)))
+	maxArrayLength, err := ReadSimpleField(ctx, "maxArrayLength", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxArrayLength' field"))
 	}
 	m.MaxArrayLength = maxArrayLength
 
-	maxMessageSize, err := ReadSimpleField(ctx, "maxMessageSize", ReadSignedInt(readBuffer, uint8(32)))
+	maxMessageSize, err := ReadSimpleField(ctx, "maxMessageSize", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxMessageSize' field"))
 	}
 	m.MaxMessageSize = maxMessageSize
 
-	maxBufferSize, err := ReadSimpleField(ctx, "maxBufferSize", ReadSignedInt(readBuffer, uint8(32)))
+	maxBufferSize, err := ReadSimpleField(ctx, "maxBufferSize", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxBufferSize' field"))
 	}
 	m.MaxBufferSize = maxBufferSize
 
-	channelLifetime, err := ReadSimpleField(ctx, "channelLifetime", ReadSignedInt(readBuffer, uint8(32)))
+	channelLifetime, err := ReadSimpleField(ctx, "channelLifetime", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelLifetime' field"))
 	}
 	m.ChannelLifetime = channelLifetime
 
-	securityTokenLifetime, err := ReadSimpleField(ctx, "securityTokenLifetime", ReadSignedInt(readBuffer, uint8(32)))
+	securityTokenLifetime, err := ReadSimpleField(ctx, "securityTokenLifetime", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityTokenLifetime' field"))
 	}
@@ -469,43 +470,43 @@ func (m *_EndpointConfiguration) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for EndpointConfiguration")
 		}
 
-		if err := WriteSimpleField[int32](ctx, "operationTimeout", m.GetOperationTimeout(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[int32](ctx, "operationTimeout", m.GetOperationTimeout(), WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'operationTimeout' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "useBinaryEncoding", m.GetUseBinaryEncoding(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "useBinaryEncoding", m.GetUseBinaryEncoding(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'useBinaryEncoding' field")
 		}
 
-		if err := WriteSimpleField[int32](ctx, "maxStringLength", m.GetMaxStringLength(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[int32](ctx, "maxStringLength", m.GetMaxStringLength(), WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxStringLength' field")
 		}
 
-		if err := WriteSimpleField[int32](ctx, "maxByteStringLength", m.GetMaxByteStringLength(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[int32](ctx, "maxByteStringLength", m.GetMaxByteStringLength(), WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxByteStringLength' field")
 		}
 
-		if err := WriteSimpleField[int32](ctx, "maxArrayLength", m.GetMaxArrayLength(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[int32](ctx, "maxArrayLength", m.GetMaxArrayLength(), WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxArrayLength' field")
 		}
 
-		if err := WriteSimpleField[int32](ctx, "maxMessageSize", m.GetMaxMessageSize(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[int32](ctx, "maxMessageSize", m.GetMaxMessageSize(), WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxMessageSize' field")
 		}
 
-		if err := WriteSimpleField[int32](ctx, "maxBufferSize", m.GetMaxBufferSize(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[int32](ctx, "maxBufferSize", m.GetMaxBufferSize(), WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxBufferSize' field")
 		}
 
-		if err := WriteSimpleField[int32](ctx, "channelLifetime", m.GetChannelLifetime(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[int32](ctx, "channelLifetime", m.GetChannelLifetime(), WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'channelLifetime' field")
 		}
 
-		if err := WriteSimpleField[int32](ctx, "securityTokenLifetime", m.GetSecurityTokenLifetime(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[int32](ctx, "securityTokenLifetime", m.GetSecurityTokenLifetime(), WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityTokenLifetime' field")
 		}
 

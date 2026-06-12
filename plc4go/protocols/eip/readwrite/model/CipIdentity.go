@@ -410,7 +410,7 @@ func CastCipIdentity(structType any) CipIdentity {
 	return nil
 }
 
-func (m *_CipIdentity) GetTypeName() string {
+func (m *_CipIdentity) GetPlx4xTypeName() string {
 	return "CipIdentity"
 }
 

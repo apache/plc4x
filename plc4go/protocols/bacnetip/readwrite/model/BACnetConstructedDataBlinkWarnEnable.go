@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBlinkWarnEnable(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataBlinkWarnEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBlinkWarnEnable"
 }
 

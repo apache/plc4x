@@ -386,7 +386,7 @@ func CastBVLC(structType any) BVLC {
 	return nil
 }
 
-func (m *_BVLC) GetTypeName() string {
+func (m *_BVLC) GetPlx4xTypeName() string {
 	return "BVLC"
 }
 
@@ -452,24 +452,24 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bacnetType, err := ReadConstField[uint8](ctx, "bacnetType", ReadUnsignedByte(readBuffer, uint8(8)), BVLC_BACNETTYPE, codegen.WithByteOrder(binary.BigEndian))
+	bacnetType, err := ReadConstField[uint8](ctx, "bacnetType", ReadUnsignedByte(readBuffer, uint8(8)), BVLC_BACNETTYPE, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetType' field"))
 	}
 	_ = bacnetType
 
-	bvlcFunction, err := ReadDiscriminatorField[uint8](ctx, "bvlcFunction", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	bvlcFunction, err := ReadDiscriminatorField[uint8](ctx, "bvlcFunction", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcFunction' field"))
 	}
 
-	bvlcLength, err := ReadImplicitField[uint16](ctx, "bvlcLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	bvlcLength, err := ReadImplicitField[uint16](ctx, "bvlcLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcLength' field"))
 	}
 	_ = bvlcLength
 
-	bvlcPayloadLength, err := ReadVirtualField[uint16](ctx, "bvlcPayloadLength", (*uint16)(nil), uint16(bvlcLength)-uint16(uint16(4)), codegen.WithByteOrder(binary.BigEndian))
+	bvlcPayloadLength, err := ReadVirtualField[uint16](ctx, "bvlcPayloadLength", (*uint16)(nil), uint16(bvlcLength)-uint16(uint16(4)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcPayloadLength' field"))
 	}
@@ -553,15 +553,15 @@ func (pm *_BVLC) serializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 		return errors.Wrap(pushErr, "Error pushing for BVLC")
 	}
 
-	if err := WriteConstField(ctx, "bacnetType", BVLC_BACNETTYPE, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteConstField(ctx, "bacnetType", BVLC_BACNETTYPE, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'bacnetType' field")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "bvlcFunction", m.GetBvlcFunction(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "bvlcFunction", m.GetBvlcFunction(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'bvlcFunction' field")
 	}
 	bvlcLength := uint16(uint16(m.GetLengthInBytes(ctx)))
-	if err := WriteImplicitField(ctx, "bvlcLength", bvlcLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "bvlcLength", bvlcLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'bvlcLength' field")
 	}
 	// Virtual field

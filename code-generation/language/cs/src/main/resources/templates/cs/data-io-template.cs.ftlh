@@ -324,7 +324,11 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 return new PlcStruct(_map);
                     <#break>
                     <#case "List">
+                    <#if helper.isRawByteArray(case)>
+                return new PlcRawByteArray(value);
+                    <#else>
                 return new PlcList(value);
+                    </#if>
                     <#break>
                     <#default>
                 return new Plc${case.name}(value);

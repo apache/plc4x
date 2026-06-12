@@ -230,7 +230,7 @@ func CastModbusPDUWriteSingleCoilRequest(structType any) ModbusPDUWriteSingleCoi
 	return nil
 }
 
-func (m *_ModbusPDUWriteSingleCoilRequest) GetTypeName() string {
+func (m *_ModbusPDUWriteSingleCoilRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteSingleCoilRequest"
 }
 

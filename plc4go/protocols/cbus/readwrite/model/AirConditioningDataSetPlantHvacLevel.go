@@ -365,7 +365,7 @@ func CastAirConditioningDataSetPlantHvacLevel(structType any) AirConditioningDat
 	return nil
 }
 
-func (m *_AirConditioningDataSetPlantHvacLevel) GetTypeName() string {
+func (m *_AirConditioningDataSetPlantHvacLevel) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetPlantHvacLevel"
 }
 

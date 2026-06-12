@@ -351,7 +351,7 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(struc
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"
 }
 

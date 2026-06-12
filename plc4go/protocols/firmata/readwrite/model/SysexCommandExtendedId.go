@@ -211,7 +211,7 @@ func CastSysexCommandExtendedId(structType any) SysexCommandExtendedId {
 	return nil
 }
 
-func (m *_SysexCommandExtendedId) GetTypeName() string {
+func (m *_SysexCommandExtendedId) GetPlx4xTypeName() string {
 	return "SysexCommandExtendedId"
 }
 

@@ -252,7 +252,7 @@ func CastApduDataExtPropertyValueRead(structType any) ApduDataExtPropertyValueRe
 	return nil
 }
 
-func (m *_ApduDataExtPropertyValueRead) GetTypeName() string {
+func (m *_ApduDataExtPropertyValueRead) GetPlx4xTypeName() string {
 	return "ApduDataExtPropertyValueRead"
 }
 

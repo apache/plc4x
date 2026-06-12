@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -237,7 +239,7 @@ func CastIdentifyReplyCommandSummary(structType any) IdentifyReplyCommandSummary
 	return nil
 }
 
-func (m *_IdentifyReplyCommandSummary) GetTypeName() string {
+func (m *_IdentifyReplyCommandSummary) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandSummary"
 }
 
@@ -271,19 +273,19 @@ func (m *_IdentifyReplyCommandSummary) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	partName, err := ReadSimpleField(ctx, "partName", ReadString(readBuffer, uint32(48)))
+	partName, err := ReadSimpleField(ctx, "partName", ReadString(readBuffer, uint32(48)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'partName' field"))
 	}
 	m.PartName = partName
 
-	unitServiceType, err := ReadSimpleField(ctx, "unitServiceType", ReadByte(readBuffer, 8))
+	unitServiceType, err := ReadSimpleField(ctx, "unitServiceType", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitServiceType' field"))
 	}
 	m.UnitServiceType = unitServiceType
 
-	version, err := ReadSimpleField(ctx, "version", ReadString(readBuffer, uint32(32)))
+	version, err := ReadSimpleField(ctx, "version", ReadString(readBuffer, uint32(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
@@ -297,7 +299,7 @@ func (m *_IdentifyReplyCommandSummary) parse(ctx context.Context, readBuffer uti
 }
 
 func (m *_IdentifyReplyCommandSummary) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -314,15 +316,15 @@ func (m *_IdentifyReplyCommandSummary) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandSummary")
 		}
 
-		if err := WriteSimpleField[string](ctx, "partName", m.GetPartName(), WriteString(writeBuffer, 48)); err != nil {
+		if err := WriteSimpleField[string](ctx, "partName", m.GetPartName(), WriteString(writeBuffer, 48), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'partName' field")
 		}
 
-		if err := WriteSimpleField[byte](ctx, "unitServiceType", m.GetUnitServiceType(), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[byte](ctx, "unitServiceType", m.GetUnitServiceType(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unitServiceType' field")
 		}
 
-		if err := WriteSimpleField[string](ctx, "version", m.GetVersion(), WriteString(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[string](ctx, "version", m.GetVersion(), WriteString(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'version' field")
 		}
 

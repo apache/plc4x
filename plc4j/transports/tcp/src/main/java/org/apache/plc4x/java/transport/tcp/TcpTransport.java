@@ -18,23 +18,27 @@
  */
 package org.apache.plc4x.java.transport.tcp;
 
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
+import org.apache.plc4x.java.transport.tcp.config.TcpTransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TcpTransport implements Transport, HasConfiguration<TcpTransportConfiguration> {
+public class TcpTransport implements Transport<TcpTransportConfiguration> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TcpTransport.class);
 
     private static final Pattern TRANSPORT_TCP_PATTERN = Pattern.compile(
         "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?.*");
 
-    private TcpTransportConfiguration configuration;
 
     @Override
     public String getTransportCode() {
@@ -43,19 +47,24 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
 
     @Override
     public String getTransportName() {
-        return "IP/TCP Transport";
+        return "TCP";
     }
 
     @Override
-    public void setConfiguration(TcpTransportConfiguration configuration) {
-        this.configuration = configuration;
+    public Class<TcpTransportConfiguration> getTransportConfigType() {
+        return TcpTransportConfiguration.class;
     }
 
     @Override
-    public ChannelFactory createChannelFactory(String transportConfig) {
-        final Matcher matcher = TRANSPORT_TCP_PATTERN.matcher(transportConfig);
+    public TransportInstance<TcpTransportConfiguration> createTransportInstance(String transportUrl, TransportConfiguration configuration, AuditLog auditLog) throws TransportException {
+        if (!(configuration instanceof TcpTransportConfiguration tcpTransportConfiguration)) {
+            throw new IllegalArgumentException(String.format("Expected configuration of type %s but got %s",
+                TcpTransportConfiguration.class.getSimpleName(), configuration.getClass().getSimpleName()));
+        }
+
+        final Matcher matcher = TRANSPORT_TCP_PATTERN.matcher(transportUrl);
         if (!matcher.matches()) {
-            throw new PlcRuntimeException("Invalid url for TCP transport: " + transportConfig);
+            throw new PlcRuntimeException("Invalid url for TCP transport: " + transportUrl);
         }
         String ip = matcher.group("ip");
         String hostname = matcher.group("hostname");
@@ -65,27 +74,16 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
         int port;
         if (portString != null) {
             port = Integer.parseInt(portString);
-        } else if ((configuration != null) &&
-            (configuration.getDefaultPort() != TcpTransportConfiguration.NO_DEFAULT_PORT)) {
-            port = configuration.getDefaultPort();
+        } else if (tcpTransportConfiguration.getDefaultPort() != TcpTransportConfiguration.NO_DEFAULT_PORT) {
+            port = tcpTransportConfiguration.getDefaultPort();
         } else {
             throw new PlcRuntimeException("No port defined");
         }
 
-        // Create the fully qualified remote socket address which we should connect to.
-        SocketAddress address = new InetSocketAddress((ip == null) ? hostname : ip, port);
+        InetSocketAddress remoteAddress = new InetSocketAddress((ip != null) ? ip : hostname, port);
 
-        // Initialize the channel factory with the default socket address we want to connect to.
-        TcpChannelFactory tcpChannelFactory = new TcpChannelFactory(address);
-        if(configuration != null) {
-            tcpChannelFactory.setConfiguration(configuration);
-        }
-        return tcpChannelFactory;
-    }
-
-    @Override
-    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
-        return DefaultTcpTransportConfiguration.class;
+        LOGGER.debug("Creating TCP transport instance for {}:{}", (ip != null) ? ip : hostname, port);
+        return new TcpTransportInstance(remoteAddress, tcpTransportConfiguration, auditLog);
     }
 
 }

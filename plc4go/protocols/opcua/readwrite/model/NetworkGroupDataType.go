@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastNetworkGroupDataType(structType any) NetworkGroupDataType {
 	return nil
 }
 
-func (m *_NetworkGroupDataType) GetTypeName() string {
+func (m *_NetworkGroupDataType) GetPlx4xTypeName() string {
 	return "NetworkGroupDataType"
 }
 
@@ -279,19 +280,19 @@ func (m *_NetworkGroupDataType) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUri' field"))
 	}
 	m.ServerUri = serverUri
 
-	noOfNetworkPaths, err := ReadImplicitField[int32](ctx, "noOfNetworkPaths", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNetworkPaths, err := ReadImplicitField[int32](ctx, "noOfNetworkPaths", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNetworkPaths' field"))
 	}
 	_ = noOfNetworkPaths
 
-	networkPaths, err := ReadCountArrayField[EndpointUrlListDataType](ctx, "networkPaths", ReadComplex[EndpointUrlListDataType](ExtensionObjectDefinitionParseWithBufferProducer[EndpointUrlListDataType]((int32)(int32(11945))), readBuffer), uint64(noOfNetworkPaths))
+	networkPaths, err := ReadCountArrayField[EndpointUrlListDataType](ctx, "networkPaths", ReadComplex[EndpointUrlListDataType](ExtensionObjectDefinitionParseWithBufferProducer[EndpointUrlListDataType]((int32)(int32(11945))), readBuffer), uint64(noOfNetworkPaths), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPaths' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_NetworkGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for NetworkGroupDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverUri' field")
 		}
 		noOfNetworkPaths := int32(utils.InlineIf(bool((m.GetNetworkPaths()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNetworkPaths()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNetworkPaths", noOfNetworkPaths, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNetworkPaths", noOfNetworkPaths, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNetworkPaths' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "networkPaths", m.GetNetworkPaths(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "networkPaths", m.GetNetworkPaths(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkPaths' field")
 		}
 

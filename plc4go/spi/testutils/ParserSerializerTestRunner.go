@@ -271,9 +271,9 @@ func ParseParserSerializerTestSuite(t *testing.T, node xmldom.Node, parser Parse
 		switch child.Name {
 		case "name":
 			testsuiteName = child.Text
-		case "protocolName":
+		case "protocol-name":
 			protocolName = child.Text
-		case "outputFlavor":
+		case "output-flavor":
 			outputFlavor = child.Text
 		case "driver-parameters":
 			parameterList := child.FindByName("parameter")

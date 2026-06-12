@@ -222,7 +222,7 @@ func CastClassID(structType any) ClassID {
 	return nil
 }
 
-func (m *_ClassID) GetTypeName() string {
+func (m *_ClassID) GetPlx4xTypeName() string {
 	return "ClassID"
 }
 

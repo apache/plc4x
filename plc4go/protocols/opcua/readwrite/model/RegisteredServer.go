@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -386,7 +387,7 @@ func CastRegisteredServer(structType any) RegisteredServer {
 	return nil
 }
 
-func (m *_RegisteredServer) GetTypeName() string {
+func (m *_RegisteredServer) GetPlx4xTypeName() string {
 	return "RegisteredServer"
 }
 
@@ -454,67 +455,67 @@ func (m *_RegisteredServer) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUri' field"))
 	}
 	m.ServerUri = serverUri
 
-	productUri, err := ReadSimpleField[PascalString](ctx, "productUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	productUri, err := ReadSimpleField[PascalString](ctx, "productUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productUri' field"))
 	}
 	m.ProductUri = productUri
 
-	noOfServerNames, err := ReadImplicitField[int32](ctx, "noOfServerNames", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerNames, err := ReadImplicitField[int32](ctx, "noOfServerNames", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerNames' field"))
 	}
 	_ = noOfServerNames
 
-	serverNames, err := ReadCountArrayField[LocalizedText](ctx, "serverNames", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), uint64(noOfServerNames))
+	serverNames, err := ReadCountArrayField[LocalizedText](ctx, "serverNames", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), uint64(noOfServerNames), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverNames' field"))
 	}
 	m.ServerNames = serverNames
 
-	serverType, err := ReadEnumField[ApplicationType](ctx, "serverType", "ApplicationType", ReadEnum(ApplicationTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	serverType, err := ReadEnumField[ApplicationType](ctx, "serverType", "ApplicationType", ReadEnum(ApplicationTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverType' field"))
 	}
 	m.ServerType = serverType
 
-	gatewayServerUri, err := ReadSimpleField[PascalString](ctx, "gatewayServerUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	gatewayServerUri, err := ReadSimpleField[PascalString](ctx, "gatewayServerUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gatewayServerUri' field"))
 	}
 	m.GatewayServerUri = gatewayServerUri
 
-	noOfDiscoveryUrls, err := ReadImplicitField[int32](ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiscoveryUrls, err := ReadImplicitField[int32](ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiscoveryUrls' field"))
 	}
 	_ = noOfDiscoveryUrls
 
-	discoveryUrls, err := ReadCountArrayField[PascalString](ctx, "discoveryUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfDiscoveryUrls))
+	discoveryUrls, err := ReadCountArrayField[PascalString](ctx, "discoveryUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfDiscoveryUrls), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryUrls' field"))
 	}
 	m.DiscoveryUrls = discoveryUrls
 
-	semaphoreFilePath, err := ReadSimpleField[PascalString](ctx, "semaphoreFilePath", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	semaphoreFilePath, err := ReadSimpleField[PascalString](ctx, "semaphoreFilePath", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'semaphoreFilePath' field"))
 	}
 	m.SemaphoreFilePath = semaphoreFilePath
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	isOnline, err := ReadSimpleField(ctx, "isOnline", ReadBoolean(readBuffer))
+	isOnline, err := ReadSimpleField(ctx, "isOnline", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOnline' field"))
 	}
@@ -545,47 +546,47 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for RegisteredServer")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverUri' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "productUri", m.GetProductUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "productUri", m.GetProductUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'productUri' field")
 		}
 		noOfServerNames := int32(utils.InlineIf(bool((m.GetServerNames()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerNames()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfServerNames", noOfServerNames, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfServerNames", noOfServerNames, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerNames' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "serverNames", m.GetServerNames(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "serverNames", m.GetServerNames(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverNames' field")
 		}
 
-		if err := WriteSimpleEnumField[ApplicationType](ctx, "serverType", "ApplicationType", m.GetServerType(), WriteEnum[ApplicationType, uint32](ApplicationType.GetValue, ApplicationType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[ApplicationType](ctx, "serverType", "ApplicationType", m.GetServerType(), WriteEnum[ApplicationType, uint32](ApplicationType.GetValue, ApplicationType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverType' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "gatewayServerUri", m.GetGatewayServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "gatewayServerUri", m.GetGatewayServerUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'gatewayServerUri' field")
 		}
 		noOfDiscoveryUrls := int32(utils.InlineIf(bool((m.GetDiscoveryUrls()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiscoveryUrls()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfDiscoveryUrls", noOfDiscoveryUrls, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfDiscoveryUrls", noOfDiscoveryUrls, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiscoveryUrls' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "discoveryUrls", m.GetDiscoveryUrls(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "discoveryUrls", m.GetDiscoveryUrls(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'discoveryUrls' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "semaphoreFilePath", m.GetSemaphoreFilePath(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "semaphoreFilePath", m.GetSemaphoreFilePath(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'semaphoreFilePath' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "isOnline", m.GetIsOnline(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "isOnline", m.GetIsOnline(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'isOnline' field")
 		}
 

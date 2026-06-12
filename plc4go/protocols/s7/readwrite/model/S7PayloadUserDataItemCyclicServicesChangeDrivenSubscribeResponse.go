@@ -230,7 +230,7 @@ func CastS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse(struct
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse"
 }
 

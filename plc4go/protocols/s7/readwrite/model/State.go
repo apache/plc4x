@@ -259,7 +259,7 @@ func CastState(structType any) State {
 	return nil
 }
 
-func (m *_State) GetTypeName() string {
+func (m *_State) GetPlx4xTypeName() string {
 	return "State"
 }
 

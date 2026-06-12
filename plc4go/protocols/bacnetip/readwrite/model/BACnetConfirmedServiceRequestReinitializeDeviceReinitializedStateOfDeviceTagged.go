@@ -193,7 +193,7 @@ func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevi
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged"
 }
 

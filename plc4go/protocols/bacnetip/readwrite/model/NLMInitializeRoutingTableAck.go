@@ -222,7 +222,7 @@ func CastNLMInitializeRoutingTableAck(structType any) NLMInitializeRoutingTableA
 	return nil
 }
 
-func (m *_NLMInitializeRoutingTableAck) GetTypeName() string {
+func (m *_NLMInitializeRoutingTableAck) GetPlx4xTypeName() string {
 	return "NLMInitializeRoutingTableAck"
 }
 

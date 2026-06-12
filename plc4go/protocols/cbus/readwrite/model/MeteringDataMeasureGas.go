@@ -176,7 +176,7 @@ func CastMeteringDataMeasureGas(structType any) MeteringDataMeasureGas {
 	return nil
 }
 
-func (m *_MeteringDataMeasureGas) GetTypeName() string {
+func (m *_MeteringDataMeasureGas) GetPlx4xTypeName() string {
 	return "MeteringDataMeasureGas"
 }
 

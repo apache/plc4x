@@ -255,7 +255,7 @@ func CastFirmataMessage(structType any) FirmataMessage {
 	return nil
 }
 
-func (m *_FirmataMessage) GetTypeName() string {
+func (m *_FirmataMessage) GetPlx4xTypeName() string {
 	return "FirmataMessage"
 }
 
@@ -313,7 +313,7 @@ func (m *_FirmataMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithByteOrder(binary.BigEndian))
+	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithEncoding("UTF16LE"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
@@ -364,7 +364,7 @@ func (pm *_FirmataMessage) serializeParent(ctx context.Context, writeBuffer util
 		return errors.Wrap(pushErr, "Error pushing for FirmataMessage")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "messageType", m.GetMessageType(), WriteUnsignedByte(writeBuffer, 4), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "messageType", m.GetMessageType(), WriteUnsignedByte(writeBuffer, 4), codegen.WithEncoding("UTF16LE"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'messageType' field")
 	}
 

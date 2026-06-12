@@ -246,7 +246,7 @@ func CastBACnetConstructedDataElevatorGroup(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataElevatorGroup) GetTypeName() string {
+func (m *_BACnetConstructedDataElevatorGroup) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataElevatorGroup"
 }
 

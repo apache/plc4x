@@ -227,7 +227,7 @@ func CastAPDUUnconfirmedRequest(structType any) APDUUnconfirmedRequest {
 	return nil
 }
 
-func (m *_APDUUnconfirmedRequest) GetTypeName() string {
+func (m *_APDUUnconfirmedRequest) GetPlx4xTypeName() string {
 	return "APDUUnconfirmedRequest"
 }
 

@@ -225,7 +225,7 @@ func CastBACnetEventParameterChangeOfStateListOfValues(structType any) BACnetEve
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfStateListOfValues) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfStateListOfValues) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfStateListOfValues"
 }
 

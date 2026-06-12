@@ -211,7 +211,7 @@ func CastS7ParameterUserData(structType any) S7ParameterUserData {
 	return nil
 }
 
-func (m *_S7ParameterUserData) GetTypeName() string {
+func (m *_S7ParameterUserData) GetPlx4xTypeName() string {
 	return "S7ParameterUserData"
 }
 

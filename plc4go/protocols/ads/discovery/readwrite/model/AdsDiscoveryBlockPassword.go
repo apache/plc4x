@@ -225,7 +225,7 @@ func CastAdsDiscoveryBlockPassword(structType any) AdsDiscoveryBlockPassword {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockPassword) GetTypeName() string {
+func (m *_AdsDiscoveryBlockPassword) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockPassword"
 }
 

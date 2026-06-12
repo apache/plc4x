@@ -221,7 +221,7 @@ func CastBACnetOptionalUnsignedValue(structType any) BACnetOptionalUnsignedValue
 	return nil
 }
 
-func (m *_BACnetOptionalUnsignedValue) GetTypeName() string {
+func (m *_BACnetOptionalUnsignedValue) GetPlx4xTypeName() string {
 	return "BACnetOptionalUnsignedValue"
 }
 

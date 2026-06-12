@@ -188,7 +188,7 @@ func CastNullListServicesResponse(structType any) NullListServicesResponse {
 	return nil
 }
 
-func (m *_NullListServicesResponse) GetTypeName() string {
+func (m *_NullListServicesResponse) GetPlx4xTypeName() string {
 	return "NullListServicesResponse"
 }
 

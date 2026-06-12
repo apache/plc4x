@@ -19,7 +19,10 @@
 package org.apache.plc4x.java.umas.readwrite.utils;
 
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -43,9 +46,9 @@ public class StaticHelper {
      * @param readBuffer   the buffer to read from
      * @param stringLength the fixed number of bytes to read, or -1 for variable-length
      * @return the decoded string (without null terminator)
-     * @throws ParseException if reading fails
+     * @throws BufferException if reading fails
      */
-    public static String parseTerminatedString(ReadBuffer readBuffer, int stringLength) throws ParseException  {
+    public static String parseTerminatedString(ReadBuffer readBuffer, int stringLength) throws BufferException {
         if (stringLength == -1) {
             // Variable-length: scan for null terminator
             List<Byte> stringBytes = new ArrayList<>();
@@ -75,23 +78,23 @@ public class StaticHelper {
      * @param writeBuffer  the buffer to write to
      * @param value        the string value to serialize
      * @param stringLength the fixed field width, or -1 for variable-length
-     * @throws SerializationException if writing fails
+     * @throws BufferException if writing fails
      */
-    public static void serializeTerminatedString(WriteBuffer writeBuffer, String value, int stringLength) throws SerializationException {
+    public static void serializeTerminatedString(WriteBuffer writeBuffer, String value, int stringLength) throws BufferException {
         byte[] stringBytes = value.getBytes(StandardCharsets.UTF_8);
 
         if (stringLength == -1) {
             // Variable-length: write string + null terminator
-            writeBuffer.writeString("value", stringBytes.length * 8, value, WithReaderWriterArgs.WithEncoding("UTF-8"));
-            writeBuffer.writeSignedByte("terminator", 8, (byte) 0x00);
+            writeBuffer.writeString(stringBytes.length * 8, value, WithOption.WithName("value"), WithOption.WithEncoding("UTF8"));
+            writeBuffer.writeSignedByte(8, (byte) 0x00, WithOption.WithName("terminator"));
         } else {
             // Fixed-length: write string + null padding to fill stringLength bytes
             int bytesToWrite = Math.min(stringBytes.length, stringLength);
             if (bytesToWrite > 0) {
-                writeBuffer.writeString("value", bytesToWrite * 8, value.substring(0, bytesToWrite), WithReaderWriterArgs.WithEncoding("UTF-8"));
+                writeBuffer.writeString(bytesToWrite * 8, value.substring(0, bytesToWrite), WithOption.WithName("value"), WithOption.WithEncoding("UTF8"));
             }
             for (int i = bytesToWrite; i < stringLength; i++) {
-                writeBuffer.writeSignedByte("padding", 8, (byte) 0x00);
+                writeBuffer.writeSignedByte(8, (byte) 0x00, WithOption.WithName("terminator"));
             }
         }
     }
@@ -100,7 +103,7 @@ public class StaticHelper {
      * Overload accepting {@link PlcValue} for use in DataItem serialization context,
      * where the code generator passes a PlcValue rather than a raw String.
      */
-    public static void serializeTerminatedString(WriteBuffer writeBuffer, PlcValue value, int stringLength) throws SerializationException {
+    public static void serializeTerminatedString(WriteBuffer writeBuffer, PlcValue value, int stringLength) throws BufferException {
         serializeTerminatedString(writeBuffer, value.getString(), stringLength);
     }
 
@@ -134,10 +137,10 @@ public class StaticHelper {
      * @param readBuffer     the buffer to read from
      * @param numberOfValues the maximum number of bytes to read
      * @return the decoded string
-     * @throws ParseException if reading fails
+     * @throws BufferException if reading fails
      */
-    public static String parseTerminatedStringBytes(ReadBuffer readBuffer, int numberOfValues) throws ParseException {
-        byte[] bytes = readBuffer.readByteArray("value", numberOfValues);
+    public static String parseTerminatedStringBytes(ReadBuffer readBuffer, int numberOfValues) throws BufferException {
+        byte[] bytes = readBuffer.readBits(numberOfValues, WithOption.WithName("value"));
         for (int i = 0; i < bytes.length; i++) {
             if (bytes[i] == 0x00) {
                 return new String(bytes, 0, i, StandardCharsets.UTF_8);

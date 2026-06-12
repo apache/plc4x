@@ -272,7 +272,7 @@ func CastHVACStatusFlags(structType any) HVACStatusFlags {
 	return nil
 }
 
-func (m *_HVACStatusFlags) GetTypeName() string {
+func (m *_HVACStatusFlags) GetPlx4xTypeName() string {
 	return "HVACStatusFlags"
 }
 

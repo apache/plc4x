@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -447,7 +448,7 @@ func CastJsonActionRequestMessage(structType any) JsonActionRequestMessage {
 	return nil
 }
 
-func (m *_JsonActionRequestMessage) GetTypeName() string {
+func (m *_JsonActionRequestMessage) GetPlx4xTypeName() string {
 	return "JsonActionRequestMessage"
 }
 
@@ -505,67 +506,67 @@ func (m *_JsonActionRequestMessage) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dataSetWriterId, err := ReadSimpleField(ctx, "dataSetWriterId", ReadUnsignedShort(readBuffer, uint8(16)))
+	dataSetWriterId, err := ReadSimpleField(ctx, "dataSetWriterId", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetWriterId' field"))
 	}
 	m.DataSetWriterId = dataSetWriterId
 
-	actionTargetId, err := ReadSimpleField(ctx, "actionTargetId", ReadUnsignedShort(readBuffer, uint8(16)))
+	actionTargetId, err := ReadSimpleField(ctx, "actionTargetId", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionTargetId' field"))
 	}
 	m.ActionTargetId = actionTargetId
 
-	dataSetWriterName, err := ReadSimpleField[PascalString](ctx, "dataSetWriterName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	dataSetWriterName, err := ReadSimpleField[PascalString](ctx, "dataSetWriterName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetWriterName' field"))
 	}
 	m.DataSetWriterName = dataSetWriterName
 
-	writerGroupName, err := ReadSimpleField[PascalString](ctx, "writerGroupName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	writerGroupName, err := ReadSimpleField[PascalString](ctx, "writerGroupName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writerGroupName' field"))
 	}
 	m.WriterGroupName = writerGroupName
 
-	metaDataVersion, err := ReadSimpleField[ConfigurationVersionDataType](ctx, "metaDataVersion", ReadComplex[ConfigurationVersionDataType](ExtensionObjectDefinitionParseWithBufferProducer[ConfigurationVersionDataType]((int32)(int32(14595))), readBuffer))
+	metaDataVersion, err := ReadSimpleField[ConfigurationVersionDataType](ctx, "metaDataVersion", ReadComplex[ConfigurationVersionDataType](ExtensionObjectDefinitionParseWithBufferProducer[ConfigurationVersionDataType]((int32)(int32(14595))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'metaDataVersion' field"))
 	}
 	m.MetaDataVersion = metaDataVersion
 
-	minorVersion, err := ReadSimpleField(ctx, "minorVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	minorVersion, err := ReadSimpleField(ctx, "minorVersion", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minorVersion' field"))
 	}
 	m.MinorVersion = minorVersion
 
-	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)))
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 	m.Timestamp = timestamp
 
-	messageType, err := ReadSimpleField[PascalString](ctx, "messageType", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	messageType, err := ReadSimpleField[PascalString](ctx, "messageType", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 	m.MessageType = messageType
 
-	requestId, err := ReadSimpleField(ctx, "requestId", ReadUnsignedShort(readBuffer, uint8(16)))
+	requestId, err := ReadSimpleField(ctx, "requestId", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestId' field"))
 	}
 	m.RequestId = requestId
 
-	actionState, err := ReadEnumField[ActionState](ctx, "actionState", "ActionState", ReadEnum(ActionStateByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	actionState, err := ReadEnumField[ActionState](ctx, "actionState", "ActionState", ReadEnum(ActionStateByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionState' field"))
 	}
 	m.ActionState = actionState
 
-	payload, err := ReadSimpleField[ExtensionObject](ctx, "payload", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
+	payload, err := ReadSimpleField[ExtensionObject](ctx, "payload", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
@@ -596,47 +597,47 @@ func (m *_JsonActionRequestMessage) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for JsonActionRequestMessage")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "dataSetWriterId", m.GetDataSetWriterId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "dataSetWriterId", m.GetDataSetWriterId(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetWriterId' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "actionTargetId", m.GetActionTargetId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "actionTargetId", m.GetActionTargetId(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'actionTargetId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "dataSetWriterName", m.GetDataSetWriterName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "dataSetWriterName", m.GetDataSetWriterName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetWriterName' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "writerGroupName", m.GetWriterGroupName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "writerGroupName", m.GetWriterGroupName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'writerGroupName' field")
 		}
 
-		if err := WriteSimpleField[ConfigurationVersionDataType](ctx, "metaDataVersion", m.GetMetaDataVersion(), WriteComplex[ConfigurationVersionDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ConfigurationVersionDataType](ctx, "metaDataVersion", m.GetMetaDataVersion(), WriteComplex[ConfigurationVersionDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'metaDataVersion' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "minorVersion", m.GetMinorVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "minorVersion", m.GetMinorVersion(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'minorVersion' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "messageType", m.GetMessageType(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "messageType", m.GetMessageType(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageType' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "requestId", m.GetRequestId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "requestId", m.GetRequestId(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestId' field")
 		}
 
-		if err := WriteSimpleEnumField[ActionState](ctx, "actionState", "ActionState", m.GetActionState(), WriteEnum[ActionState, uint32](ActionState.GetValue, ActionState.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[ActionState](ctx, "actionState", "ActionState", m.GetActionState(), WriteEnum[ActionState, uint32](ActionState.GetValue, ActionState.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'actionState' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObject](ctx, "payload", m.GetPayload(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ExtensionObject](ctx, "payload", m.GetPayload(), WriteComplex[ExtensionObject](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 

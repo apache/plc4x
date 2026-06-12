@@ -135,7 +135,7 @@ func CastApplicationInstanceCertificate(structType any) ApplicationInstanceCerti
 	return nil
 }
 
-func (m *_ApplicationInstanceCertificate) GetTypeName() string {
+func (m *_ApplicationInstanceCertificate) GetPlx4xTypeName() string {
 	return "ApplicationInstanceCertificate"
 }
 

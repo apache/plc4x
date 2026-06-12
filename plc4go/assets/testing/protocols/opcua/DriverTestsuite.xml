@@ -24,9 +24,11 @@
 
   <name>Opcua</name>
 
-  <protocolName>opcua</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>opcua</protocol-name>
+  <output-flavor>read-write</output-flavor>
+
   <driver-name>opcua</driver-name>
+
   <driver-parameters>
     <parameter>
       <name>discovery</name>

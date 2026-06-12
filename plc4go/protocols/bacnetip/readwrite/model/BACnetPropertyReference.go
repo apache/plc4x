@@ -205,7 +205,7 @@ func CastBACnetPropertyReference(structType any) BACnetPropertyReference {
 	return nil
 }
 
-func (m *_BACnetPropertyReference) GetTypeName() string {
+func (m *_BACnetPropertyReference) GetPlx4xTypeName() string {
 	return "BACnetPropertyReference"
 }
 

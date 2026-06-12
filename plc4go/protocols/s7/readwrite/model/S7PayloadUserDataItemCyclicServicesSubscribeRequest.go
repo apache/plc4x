@@ -260,7 +260,7 @@ func CastS7PayloadUserDataItemCyclicServicesSubscribeRequest(structType any) S7P
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCyclicServicesSubscribeRequest"
 }
 

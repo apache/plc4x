@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -399,7 +400,7 @@ func CastPubSubKeyPushTargetDataType(structType any) PubSubKeyPushTargetDataType
 	return nil
 }
 
-func (m *_PubSubKeyPushTargetDataType) GetTypeName() string {
+func (m *_PubSubKeyPushTargetDataType) GetPlx4xTypeName() string {
 	return "PubSubKeyPushTargetDataType"
 }
 
@@ -475,73 +476,73 @@ func (m *_PubSubKeyPushTargetDataType) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	applicationUri, err := ReadSimpleField[PascalString](ctx, "applicationUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	applicationUri, err := ReadSimpleField[PascalString](ctx, "applicationUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationUri' field"))
 	}
 	m.ApplicationUri = applicationUri
 
-	noOfPushTargetFolder, err := ReadImplicitField[int32](ctx, "noOfPushTargetFolder", ReadSignedInt(readBuffer, uint8(32)))
+	noOfPushTargetFolder, err := ReadImplicitField[int32](ctx, "noOfPushTargetFolder", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPushTargetFolder' field"))
 	}
 	_ = noOfPushTargetFolder
 
-	pushTargetFolder, err := ReadCountArrayField[PascalString](ctx, "pushTargetFolder", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfPushTargetFolder))
+	pushTargetFolder, err := ReadCountArrayField[PascalString](ctx, "pushTargetFolder", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfPushTargetFolder), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pushTargetFolder' field"))
 	}
 	m.PushTargetFolder = pushTargetFolder
 
-	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
 	m.EndpointUrl = endpointUrl
 
-	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
 	m.SecurityPolicyUri = securityPolicyUri
 
-	userTokenType, err := ReadSimpleField[UserTokenPolicy](ctx, "userTokenType", ReadComplex[UserTokenPolicy](ExtensionObjectDefinitionParseWithBufferProducer[UserTokenPolicy]((int32)(int32(306))), readBuffer))
+	userTokenType, err := ReadSimpleField[UserTokenPolicy](ctx, "userTokenType", ReadComplex[UserTokenPolicy](ExtensionObjectDefinitionParseWithBufferProducer[UserTokenPolicy]((int32)(int32(306))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userTokenType' field"))
 	}
 	m.UserTokenType = userTokenType
 
-	requestedKeyCount, err := ReadSimpleField(ctx, "requestedKeyCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	requestedKeyCount, err := ReadSimpleField(ctx, "requestedKeyCount", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedKeyCount' field"))
 	}
 	m.RequestedKeyCount = requestedKeyCount
 
-	retryInterval, err := ReadSimpleField(ctx, "retryInterval", ReadDouble(readBuffer, uint8(64)))
+	retryInterval, err := ReadSimpleField(ctx, "retryInterval", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'retryInterval' field"))
 	}
 	m.RetryInterval = retryInterval
 
-	noOfPushTargetProperties, err := ReadImplicitField[int32](ctx, "noOfPushTargetProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfPushTargetProperties, err := ReadImplicitField[int32](ctx, "noOfPushTargetProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPushTargetProperties' field"))
 	}
 	_ = noOfPushTargetProperties
 
-	pushTargetProperties, err := ReadCountArrayField[KeyValuePair](ctx, "pushTargetProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfPushTargetProperties))
+	pushTargetProperties, err := ReadCountArrayField[KeyValuePair](ctx, "pushTargetProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfPushTargetProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pushTargetProperties' field"))
 	}
 	m.PushTargetProperties = pushTargetProperties
 
-	noOfSecurityGroups, err := ReadImplicitField[int32](ctx, "noOfSecurityGroups", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSecurityGroups, err := ReadImplicitField[int32](ctx, "noOfSecurityGroups", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecurityGroups' field"))
 	}
 	_ = noOfSecurityGroups
 
-	securityGroups, err := ReadCountArrayField[PascalString](ctx, "securityGroups", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityGroups))
+	securityGroups, err := ReadCountArrayField[PascalString](ctx, "securityGroups", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityGroups), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityGroups' field"))
 	}
@@ -572,51 +573,51 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for PubSubKeyPushTargetDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "applicationUri", m.GetApplicationUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "applicationUri", m.GetApplicationUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'applicationUri' field")
 		}
 		noOfPushTargetFolder := int32(utils.InlineIf(bool((m.GetPushTargetFolder()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetPushTargetFolder()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfPushTargetFolder", noOfPushTargetFolder, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfPushTargetFolder", noOfPushTargetFolder, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfPushTargetFolder' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "pushTargetFolder", m.GetPushTargetFolder(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "pushTargetFolder", m.GetPushTargetFolder(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'pushTargetFolder' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
-		if err := WriteSimpleField[UserTokenPolicy](ctx, "userTokenType", m.GetUserTokenType(), WriteComplex[UserTokenPolicy](writeBuffer)); err != nil {
+		if err := WriteSimpleField[UserTokenPolicy](ctx, "userTokenType", m.GetUserTokenType(), WriteComplex[UserTokenPolicy](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'userTokenType' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "requestedKeyCount", m.GetRequestedKeyCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "requestedKeyCount", m.GetRequestedKeyCount(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestedKeyCount' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "retryInterval", m.GetRetryInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "retryInterval", m.GetRetryInterval(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'retryInterval' field")
 		}
 		noOfPushTargetProperties := int32(utils.InlineIf(bool((m.GetPushTargetProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetPushTargetProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfPushTargetProperties", noOfPushTargetProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfPushTargetProperties", noOfPushTargetProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfPushTargetProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "pushTargetProperties", m.GetPushTargetProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "pushTargetProperties", m.GetPushTargetProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'pushTargetProperties' field")
 		}
 		noOfSecurityGroups := int32(utils.InlineIf(bool((m.GetSecurityGroups()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSecurityGroups()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSecurityGroups", noOfSecurityGroups, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSecurityGroups", noOfSecurityGroups, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSecurityGroups' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "securityGroups", m.GetSecurityGroups(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "securityGroups", m.GetSecurityGroups(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityGroups' field")
 		}
 

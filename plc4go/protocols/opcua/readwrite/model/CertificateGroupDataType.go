@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -320,7 +321,7 @@ func CastCertificateGroupDataType(structType any) CertificateGroupDataType {
 	return nil
 }
 
-func (m *_CertificateGroupDataType) GetTypeName() string {
+func (m *_CertificateGroupDataType) GetPlx4xTypeName() string {
 	return "CertificateGroupDataType"
 }
 
@@ -387,61 +388,61 @@ func (m *_CertificateGroupDataType) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 	m.Name = name
 
-	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRecordProperties' field"))
 	}
 	_ = noOfRecordProperties
 
-	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties))
+	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordProperties' field"))
 	}
 	m.RecordProperties = recordProperties
 
-	purpose, err := ReadSimpleField[NodeId](ctx, "purpose", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	purpose, err := ReadSimpleField[NodeId](ctx, "purpose", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'purpose' field"))
 	}
 	m.Purpose = purpose
 
-	noOfCertificateTypes, err := ReadImplicitField[int32](ctx, "noOfCertificateTypes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfCertificateTypes, err := ReadImplicitField[int32](ctx, "noOfCertificateTypes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfCertificateTypes' field"))
 	}
 	_ = noOfCertificateTypes
 
-	certificateTypes, err := ReadCountArrayField[NodeId](ctx, "certificateTypes", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfCertificateTypes))
+	certificateTypes, err := ReadCountArrayField[NodeId](ctx, "certificateTypes", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfCertificateTypes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'certificateTypes' field"))
 	}
 	m.CertificateTypes = certificateTypes
 
-	noOfIsCertificateAssigned, err := ReadImplicitField[int32](ctx, "noOfIsCertificateAssigned", ReadSignedInt(readBuffer, uint8(32)))
+	noOfIsCertificateAssigned, err := ReadImplicitField[int32](ctx, "noOfIsCertificateAssigned", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfIsCertificateAssigned' field"))
 	}
 	_ = noOfIsCertificateAssigned
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	isCertificateAssigned, err := ReadCountArrayField[bool](ctx, "isCertificateAssigned", ReadBoolean(readBuffer), uint64(noOfIsCertificateAssigned))
+	isCertificateAssigned, err := ReadCountArrayField[bool](ctx, "isCertificateAssigned", ReadBoolean(readBuffer), uint64(noOfIsCertificateAssigned), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCertificateAssigned' field"))
 	}
 	m.IsCertificateAssigned = isCertificateAssigned
 
-	validationOptions, err := ReadEnumField[TrustListValidationOptions](ctx, "validationOptions", "TrustListValidationOptions", ReadEnum(TrustListValidationOptionsByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	validationOptions, err := ReadEnumField[TrustListValidationOptions](ctx, "validationOptions", "TrustListValidationOptions", ReadEnum(TrustListValidationOptionsByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'validationOptions' field"))
 	}
@@ -472,43 +473,43 @@ func (m *_CertificateGroupDataType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for CertificateGroupDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 		noOfRecordProperties := int32(utils.InlineIf(bool((m.GetRecordProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRecordProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRecordProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'recordProperties' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "purpose", m.GetPurpose(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "purpose", m.GetPurpose(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'purpose' field")
 		}
 		noOfCertificateTypes := int32(utils.InlineIf(bool((m.GetCertificateTypes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetCertificateTypes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfCertificateTypes", noOfCertificateTypes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfCertificateTypes", noOfCertificateTypes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfCertificateTypes' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "certificateTypes", m.GetCertificateTypes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "certificateTypes", m.GetCertificateTypes(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'certificateTypes' field")
 		}
 		noOfIsCertificateAssigned := int32(utils.InlineIf(bool((m.GetIsCertificateAssigned()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetIsCertificateAssigned()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfIsCertificateAssigned", noOfIsCertificateAssigned, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfIsCertificateAssigned", noOfIsCertificateAssigned, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfIsCertificateAssigned' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "isCertificateAssigned", m.GetIsCertificateAssigned(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "isCertificateAssigned", m.GetIsCertificateAssigned(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'isCertificateAssigned' field")
 		}
 
-		if err := WriteSimpleEnumField[TrustListValidationOptions](ctx, "validationOptions", "TrustListValidationOptions", m.GetValidationOptions(), WriteEnum[TrustListValidationOptions, uint32](TrustListValidationOptions.GetValue, TrustListValidationOptions.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[TrustListValidationOptions](ctx, "validationOptions", "TrustListValidationOptions", m.GetValidationOptions(), WriteEnum[TrustListValidationOptions, uint32](TrustListValidationOptions.GetValue, TrustListValidationOptions.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'validationOptions' field")
 		}
 

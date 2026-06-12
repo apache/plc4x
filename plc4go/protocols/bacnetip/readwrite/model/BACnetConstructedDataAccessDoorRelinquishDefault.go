@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAccessDoorRelinquishDefault(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessDoorRelinquishDefault"
 }
 

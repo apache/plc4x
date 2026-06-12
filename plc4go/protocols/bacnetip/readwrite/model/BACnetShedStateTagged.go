@@ -193,7 +193,7 @@ func CastBACnetShedStateTagged(structType any) BACnetShedStateTagged {
 	return nil
 }
 
-func (m *_BACnetShedStateTagged) GetTypeName() string {
+func (m *_BACnetShedStateTagged) GetPlx4xTypeName() string {
 	return "BACnetShedStateTagged"
 }
 

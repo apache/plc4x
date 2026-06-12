@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -306,7 +307,7 @@ func CastDatagramDataSetReaderTransportDataType(structType any) DatagramDataSetR
 	return nil
 }
 
-func (m *_DatagramDataSetReaderTransportDataType) GetTypeName() string {
+func (m *_DatagramDataSetReaderTransportDataType) GetPlx4xTypeName() string {
 	return "DatagramDataSetReaderTransportDataType"
 }
 
@@ -351,31 +352,31 @@ func (m *_DatagramDataSetReaderTransportDataType) parse(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	address, err := ReadSimpleField[ExtensionObject](ctx, "address", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
+	address, err := ReadSimpleField[ExtensionObject](ctx, "address", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
 	m.Address = address
 
-	qosCategory, err := ReadSimpleField[PascalString](ctx, "qosCategory", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	qosCategory, err := ReadSimpleField[PascalString](ctx, "qosCategory", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'qosCategory' field"))
 	}
 	m.QosCategory = qosCategory
 
-	noOfDatagramQos, err := ReadImplicitField[int32](ctx, "noOfDatagramQos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDatagramQos, err := ReadImplicitField[int32](ctx, "noOfDatagramQos", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDatagramQos' field"))
 	}
 	_ = noOfDatagramQos
 
-	datagramQos, err := ReadCountArrayField[ExtensionObject](ctx, "datagramQos", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfDatagramQos))
+	datagramQos, err := ReadCountArrayField[ExtensionObject](ctx, "datagramQos", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfDatagramQos), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'datagramQos' field"))
 	}
 	m.DatagramQos = datagramQos
 
-	topic, err := ReadSimpleField[PascalString](ctx, "topic", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	topic, err := ReadSimpleField[PascalString](ctx, "topic", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'topic' field"))
 	}
@@ -406,23 +407,23 @@ func (m *_DatagramDataSetReaderTransportDataType) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for DatagramDataSetReaderTransportDataType")
 		}
 
-		if err := WriteSimpleField[ExtensionObject](ctx, "address", m.GetAddress(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ExtensionObject](ctx, "address", m.GetAddress(), WriteComplex[ExtensionObject](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "qosCategory", m.GetQosCategory(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "qosCategory", m.GetQosCategory(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'qosCategory' field")
 		}
 		noOfDatagramQos := int32(utils.InlineIf(bool((m.GetDatagramQos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDatagramQos()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfDatagramQos", noOfDatagramQos, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfDatagramQos", noOfDatagramQos, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDatagramQos' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "datagramQos", m.GetDatagramQos(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "datagramQos", m.GetDatagramQos(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'datagramQos' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "topic", m.GetTopic(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "topic", m.GetTopic(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'topic' field")
 		}
 

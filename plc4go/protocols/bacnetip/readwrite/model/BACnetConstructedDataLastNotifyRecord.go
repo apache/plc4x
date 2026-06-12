@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLastNotifyRecord(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastNotifyRecord) GetTypeName() string {
+func (m *_BACnetConstructedDataLastNotifyRecord) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastNotifyRecord"
 }
 

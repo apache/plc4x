@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBinaryInputPresentValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataBinaryInputPresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataBinaryInputPresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBinaryInputPresentValue"
 }
 

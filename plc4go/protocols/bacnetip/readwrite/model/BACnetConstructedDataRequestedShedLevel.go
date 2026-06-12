@@ -246,7 +246,7 @@ func CastBACnetConstructedDataRequestedShedLevel(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataRequestedShedLevel) GetTypeName() string {
+func (m *_BACnetConstructedDataRequestedShedLevel) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRequestedShedLevel"
 }
 

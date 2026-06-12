@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLastRestartReason(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastRestartReason) GetTypeName() string {
+func (m *_BACnetConstructedDataLastRestartReason) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastRestartReason"
 }
 

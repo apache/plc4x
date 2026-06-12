@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -226,7 +228,7 @@ func CastSALDataHvacActuator(structType any) SALDataHvacActuator {
 	return nil
 }
 
-func (m *_SALDataHvacActuator) GetTypeName() string {
+func (m *_SALDataHvacActuator) GetPlx4xTypeName() string {
 	return "SALDataHvacActuator"
 }
 
@@ -254,7 +256,7 @@ func (m *_SALDataHvacActuator) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	hvacActuatorData, err := ReadSimpleField[LightingData](ctx, "hvacActuatorData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	hvacActuatorData, err := ReadSimpleField[LightingData](ctx, "hvacActuatorData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hvacActuatorData' field"))
 	}
@@ -268,7 +270,7 @@ func (m *_SALDataHvacActuator) parse(ctx context.Context, readBuffer utils.ReadB
 }
 
 func (m *_SALDataHvacActuator) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -285,7 +287,7 @@ func (m *_SALDataHvacActuator) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for SALDataHvacActuator")
 		}
 
-		if err := WriteSimpleField[LightingData](ctx, "hvacActuatorData", m.GetHvacActuatorData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[LightingData](ctx, "hvacActuatorData", m.GetHvacActuatorData(), WriteComplex[LightingData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'hvacActuatorData' field")
 		}
 

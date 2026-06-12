@@ -307,7 +307,7 @@ func CastBACnetEventPriorities(structType any) BACnetEventPriorities {
 	return nil
 }
 
-func (m *_BACnetEventPriorities) GetTypeName() string {
+func (m *_BACnetEventPriorities) GetPlx4xTypeName() string {
 	return "BACnetEventPriorities"
 }
 

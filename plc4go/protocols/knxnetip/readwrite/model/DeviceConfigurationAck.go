@@ -227,7 +227,7 @@ func CastDeviceConfigurationAck(structType any) DeviceConfigurationAck {
 	return nil
 }
 
-func (m *_DeviceConfigurationAck) GetTypeName() string {
+func (m *_DeviceConfigurationAck) GetPlx4xTypeName() string {
 	return "DeviceConfigurationAck"
 }
 
@@ -255,7 +255,7 @@ func (m *_DeviceConfigurationAck) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	deviceConfigurationAckDataBlock, err := ReadSimpleField[DeviceConfigurationAckDataBlock](ctx, "deviceConfigurationAckDataBlock", ReadComplex[DeviceConfigurationAckDataBlock](DeviceConfigurationAckDataBlockParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	deviceConfigurationAckDataBlock, err := ReadSimpleField[DeviceConfigurationAckDataBlock](ctx, "deviceConfigurationAckDataBlock", ReadComplex[DeviceConfigurationAckDataBlock](DeviceConfigurationAckDataBlockParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceConfigurationAckDataBlock' field"))
 	}
@@ -286,7 +286,7 @@ func (m *_DeviceConfigurationAck) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for DeviceConfigurationAck")
 		}
 
-		if err := WriteSimpleField[DeviceConfigurationAckDataBlock](ctx, "deviceConfigurationAckDataBlock", m.GetDeviceConfigurationAckDataBlock(), WriteComplex[DeviceConfigurationAckDataBlock](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[DeviceConfigurationAckDataBlock](ctx, "deviceConfigurationAckDataBlock", m.GetDeviceConfigurationAckDataBlock(), WriteComplex[DeviceConfigurationAckDataBlock](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'deviceConfigurationAckDataBlock' field")
 		}
 

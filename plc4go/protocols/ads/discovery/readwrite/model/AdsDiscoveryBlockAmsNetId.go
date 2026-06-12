@@ -241,7 +241,7 @@ func CastAdsDiscoveryBlockAmsNetId(structType any) AdsDiscoveryBlockAmsNetId {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockAmsNetId) GetTypeName() string {
+func (m *_AdsDiscoveryBlockAmsNetId) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockAmsNetId"
 }
 

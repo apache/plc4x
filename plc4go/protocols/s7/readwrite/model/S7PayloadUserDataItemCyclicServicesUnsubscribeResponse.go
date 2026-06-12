@@ -188,7 +188,7 @@ func CastS7PayloadUserDataItemCyclicServicesUnsubscribeResponse(structType any) 
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCyclicServicesUnsubscribeResponse"
 }
 

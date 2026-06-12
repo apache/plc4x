@@ -217,7 +217,7 @@ func CastGuidValue(structType any) GuidValue {
 	return nil
 }
 
-func (m *_GuidValue) GetTypeName() string {
+func (m *_GuidValue) GetPlx4xTypeName() string {
 	return "GuidValue"
 }
 

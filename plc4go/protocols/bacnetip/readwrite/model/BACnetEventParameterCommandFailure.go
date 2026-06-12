@@ -320,7 +320,7 @@ func CastBACnetEventParameterCommandFailure(structType any) BACnetEventParameter
 	return nil
 }
 
-func (m *_BACnetEventParameterCommandFailure) GetTypeName() string {
+func (m *_BACnetEventParameterCommandFailure) GetPlx4xTypeName() string {
 	return "BACnetEventParameterCommandFailure"
 }
 

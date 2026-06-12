@@ -180,7 +180,7 @@ func CastFilterOperand(structType any) FilterOperand {
 	return nil
 }
 
-func (m *_FilterOperand) GetTypeName() string {
+func (m *_FilterOperand) GetPlx4xTypeName() string {
 	return "FilterOperand"
 }
 

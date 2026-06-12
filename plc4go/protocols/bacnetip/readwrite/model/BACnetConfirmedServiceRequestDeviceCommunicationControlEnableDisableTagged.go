@@ -193,7 +193,7 @@ func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTag
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged"
 }
 

@@ -46,14 +46,14 @@ import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy.SignatureAlgorithm;
-import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
-import org.apache.plc4x.java.spi.transaction.RequestTransactionManager.RequestTransaction;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.opcua.protocol.chunk.PayloadConverter;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -86,7 +86,6 @@ public class SecureChannel {
     private final PascalString endpoint;
     private final String username;
     private final String password;
-    private final RequestTransactionManager tm;
     private final OpcuaConfiguration configuration;
     private final OpcuaDriverContext driverContext;
     private final Conversation conversation;
@@ -94,9 +93,8 @@ public class SecureChannel {
     private double sessionTimeout;
     private long revisedLifetime;
 
-    public SecureChannel(Conversation conversation, RequestTransactionManager tm, OpcuaDriverContext driverContext, OpcuaConfiguration configuration, PlcAuthentication authentication) {
+    public SecureChannel(Conversation conversation, OpcuaDriverContext driverContext, OpcuaConfiguration configuration, PlcAuthentication authentication) {
         this.conversation = conversation;
-        this.tm = tm;
         this.configuration = configuration;
         this.driverContext = driverContext;
         this.endpoint = new PascalString(driverContext.getEndpoint());
@@ -151,7 +149,7 @@ public class SecureChannel {
         if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
             openSecureChannelRequest = new OpenSecureChannelRequest(
                 requestHeader,
-                OpcuaConstants.PROTOCOLVERSION,
+                (long) OpcuaConstants.PROTOCOLVERSION,
                 securityTokenRequestType,
                 configuration.getMessageSecurity().getMode(),
                 new PascalByteString(localNonce.length, localNonce),
@@ -160,7 +158,7 @@ public class SecureChannel {
         } else {
             openSecureChannelRequest = new OpenSecureChannelRequest(
                 requestHeader,
-                OpcuaConstants.PROTOCOLVERSION,
+                (long) OpcuaConstants.PROTOCOLVERSION,
                 securityTokenRequestType,
                 MessageSecurityMode.messageSecurityModeNone,
                 NULL_BYTE_STRING,
@@ -409,7 +407,7 @@ public class SecureChannel {
 
     private OpenSecureChannelResponse onOpenResponse(OpcuaOpenResponse opcuaOpenResponse) {
         try {
-            ReadBuffer readBuffer = toBuffer(opcuaOpenResponse::getMessage);
+            ReadBufferByteBased readBuffer = toBuffer(opcuaOpenResponse::getMessage);
             ExtensionObject message = ExtensionObject.staticParse(readBuffer, false);
 
             if (message.getBody() instanceof ServiceFault) {
@@ -419,7 +417,7 @@ public class SecureChannel {
 
             LOGGER.debug("Received valid answer for open secure channel request, forwarding it to call initiator");
             return (OpenSecureChannelResponse) message.getBody();
-        } catch (ParseException e) {
+        } catch (BufferException e) {
             throw new IllegalArgumentException("Could not handle response", e);
         }
     }
@@ -432,25 +430,21 @@ public class SecureChannel {
         long keepAliveTime = (long) Math.ceil(revisedLifetime * 0.75f);
         LOGGER.debug("Scheduling session keep alive to happen within {}s", TimeUnit.MILLISECONDS.toSeconds(keepAliveTime));
         keepAlive = KEEP_ALIVE_EXECUTOR.scheduleAtFixedRate(() -> {
-            RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> {
-                int securityChannelId = this.conversation.getSecurityChannelId();
-                int requestId = this.conversation.getRequestId();
-                onConnectOpenSecureChannel(SecurityTokenRequestType.securityTokenRequestTypeRenew, securityChannelId, requestId)
-                    .whenComplete((response, error) -> {
-                        if (error != null) {
-                            transaction.failRequest(error);
-                            return;
-                        }
-                        // make sure we still honor channel lifetime boundary
-                        long newKeepAliveTime = (long) Math.ceil(revisedLifetime * 0.75f);
-                        if (newKeepAliveTime != keepAliveTime) {
-                            renewToken();
-                        }
-                        transaction.endRequest();
-
-                    });
-            });
+            int securityChannelId = this.conversation.getSecurityChannelId();
+            int requestId = this.conversation.getRequestId();
+            onConnectOpenSecureChannel(SecurityTokenRequestType.securityTokenRequestTypeRenew, securityChannelId, requestId)
+                .whenComplete((response, error) -> {
+                    if (error != null) {
+                        LOGGER.warn("Token renewal failed", error);
+                        return;
+                    }
+                    // Honor any new lifetime the server gave us — if it differs
+                    // from what's currently scheduled, reschedule the next renew.
+                    long newKeepAliveTime = (long) Math.ceil(revisedLifetime * 0.75f);
+                    if (newKeepAliveTime != keepAliveTime) {
+                        renewToken();
+                    }
+                });
         }, keepAliveTime, keepAliveTime, TimeUnit.MILLISECONDS);
     }
 
@@ -459,7 +453,7 @@ public class SecureChannel {
         if (!(payload instanceof BinaryPayload)) {
             throw new IllegalArgumentException("Unexpected payload kind");
         }
-        return new ReadBufferByteBased(((BinaryPayload) payload).getPayload(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
+        return new ReadBufferByteBased(((BinaryPayload) payload).getPayload(), PayloadConverter.LITTLE_ENDIAN);
     }
 
     /**
@@ -570,7 +564,7 @@ public class SecureChannel {
                 byte[] remoteNonce = conversation.getRemoteNonce();
                 byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes();
                 ByteBuffer encodeableBuffer = ByteBuffer.allocate(4 + passwordBytes.length + remoteNonce.length);
-                encodeableBuffer.order(ByteOrder.LITTLE_ENDIAN);
+                encodeableBuffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
                 encodeableBuffer.putInt(passwordBytes.length + remoteNonce.length);
                 encodeableBuffer.put(passwordBytes);
                 encodeableBuffer.put(remoteNonce);

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataSegmentationSupported(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataSegmentationSupported) GetTypeName() string {
+func (m *_BACnetConstructedDataSegmentationSupported) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSegmentationSupported"
 }
 

@@ -275,7 +275,7 @@ func CastBACnetAccumulatorRecord(structType any) BACnetAccumulatorRecord {
 	return nil
 }
 
-func (m *_BACnetAccumulatorRecord) GetTypeName() string {
+func (m *_BACnetAccumulatorRecord) GetPlx4xTypeName() string {
 	return "BACnetAccumulatorRecord"
 }
 

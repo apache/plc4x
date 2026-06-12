@@ -188,7 +188,7 @@ func CastNullEipConnectionResponse(structType any) NullEipConnectionResponse {
 	return nil
 }
 
-func (m *_NullEipConnectionResponse) GetTypeName() string {
+func (m *_NullEipConnectionResponse) GetPlx4xTypeName() string {
 	return "NullEipConnectionResponse"
 }
 

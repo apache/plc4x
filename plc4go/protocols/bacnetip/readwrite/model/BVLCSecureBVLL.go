@@ -209,7 +209,7 @@ func CastBVLCSecureBVLL(structType any) BVLCSecureBVLL {
 	return nil
 }
 
-func (m *_BVLCSecureBVLL) GetTypeName() string {
+func (m *_BVLCSecureBVLL) GetPlx4xTypeName() string {
 	return "BVLCSecureBVLL"
 }
 
@@ -239,7 +239,7 @@ func (m *_BVLCSecureBVLL) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	securityWrapper, err := readBuffer.ReadByteArray("securityWrapper", int(bvlcPayloadLength), codegen.WithByteOrder(binary.BigEndian))
+	securityWrapper, err := readBuffer.ReadByteArray("securityWrapper", int(bvlcPayloadLength), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityWrapper' field"))
 	}
@@ -270,7 +270,7 @@ func (m *_BVLCSecureBVLL) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for BVLCSecureBVLL")
 		}
 
-		if err := WriteByteArrayField(ctx, "securityWrapper", m.GetSecurityWrapper(), WriteByteArray(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteByteArrayField(ctx, "securityWrapper", m.GetSecurityWrapper(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityWrapper' field")
 		}
 

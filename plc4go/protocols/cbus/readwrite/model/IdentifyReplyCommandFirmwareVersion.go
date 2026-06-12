@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -207,7 +209,7 @@ func CastIdentifyReplyCommandFirmwareVersion(structType any) IdentifyReplyComman
 	return nil
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersion) GetTypeName() string {
+func (m *_IdentifyReplyCommandFirmwareVersion) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandFirmwareVersion"
 }
 
@@ -235,7 +237,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) parse(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	firmwareVersion, err := ReadSimpleField(ctx, "firmwareVersion", ReadString(readBuffer, uint32(64)))
+	firmwareVersion, err := ReadSimpleField(ctx, "firmwareVersion", ReadString(readBuffer, uint32(64)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firmwareVersion' field"))
 	}
@@ -249,7 +251,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) parse(ctx context.Context, readBu
 }
 
 func (m *_IdentifyReplyCommandFirmwareVersion) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -266,7 +268,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandFirmwareVersion")
 		}
 
-		if err := WriteSimpleField[string](ctx, "firmwareVersion", m.GetFirmwareVersion(), WriteString(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[string](ctx, "firmwareVersion", m.GetFirmwareVersion(), WriteString(writeBuffer, 64), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'firmwareVersion' field")
 		}
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastRolePermissionType(structType any) RolePermissionType {
 	return nil
 }
 
-func (m *_RolePermissionType) GetTypeName() string {
+func (m *_RolePermissionType) GetPlx4xTypeName() string {
 	return "RolePermissionType"
 }
 
@@ -271,13 +272,13 @@ func (m *_RolePermissionType) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	roleId, err := ReadSimpleField[NodeId](ctx, "roleId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	roleId, err := ReadSimpleField[NodeId](ctx, "roleId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'roleId' field"))
 	}
 	m.RoleId = roleId
 
-	permissions, err := ReadEnumField[PermissionType](ctx, "permissions", "PermissionType", ReadEnum(PermissionTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	permissions, err := ReadEnumField[PermissionType](ctx, "permissions", "PermissionType", ReadEnum(PermissionTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'permissions' field"))
 	}
@@ -308,11 +309,11 @@ func (m *_RolePermissionType) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for RolePermissionType")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "roleId", m.GetRoleId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "roleId", m.GetRoleId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'roleId' field")
 		}
 
-		if err := WriteSimpleEnumField[PermissionType](ctx, "permissions", "PermissionType", m.GetPermissions(), WriteEnum[PermissionType, uint32](PermissionType.GetValue, PermissionType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[PermissionType](ctx, "permissions", "PermissionType", m.GetPermissions(), WriteEnum[PermissionType, uint32](PermissionType.GetValue, PermissionType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'permissions' field")
 		}
 

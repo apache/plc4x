@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCOVResubscriptionInterval(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetTypeName() string {
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCOVResubscriptionInterval"
 }
 

@@ -225,7 +225,7 @@ func CastBACnetActionList(structType any) BACnetActionList {
 	return nil
 }
 
-func (m *_BACnetActionList) GetTypeName() string {
+func (m *_BACnetActionList) GetPlx4xTypeName() string {
 	return "BACnetActionList"
 }
 

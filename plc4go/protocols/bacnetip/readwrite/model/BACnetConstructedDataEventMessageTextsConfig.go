@@ -288,7 +288,7 @@ func CastBACnetConstructedDataEventMessageTextsConfig(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventMessageTextsConfig) GetTypeName() string {
+func (m *_BACnetConstructedDataEventMessageTextsConfig) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventMessageTextsConfig"
 }
 

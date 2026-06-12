@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -432,7 +433,7 @@ func CastProgramDiagnosticDataType(structType any) ProgramDiagnosticDataType {
 	return nil
 }
 
-func (m *_ProgramDiagnosticDataType) GetTypeName() string {
+func (m *_ProgramDiagnosticDataType) GetPlx4xTypeName() string {
 	return "ProgramDiagnosticDataType"
 }
 
@@ -503,73 +504,73 @@ func (m *_ProgramDiagnosticDataType) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	createSessionId, err := ReadSimpleField[NodeId](ctx, "createSessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	createSessionId, err := ReadSimpleField[NodeId](ctx, "createSessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createSessionId' field"))
 	}
 	m.CreateSessionId = createSessionId
 
-	createClientName, err := ReadSimpleField[PascalString](ctx, "createClientName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	createClientName, err := ReadSimpleField[PascalString](ctx, "createClientName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createClientName' field"))
 	}
 	m.CreateClientName = createClientName
 
-	invocationCreationTime, err := ReadSimpleField(ctx, "invocationCreationTime", ReadSignedLong(readBuffer, uint8(64)))
+	invocationCreationTime, err := ReadSimpleField(ctx, "invocationCreationTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'invocationCreationTime' field"))
 	}
 	m.InvocationCreationTime = invocationCreationTime
 
-	lastTransitionTime, err := ReadSimpleField(ctx, "lastTransitionTime", ReadSignedLong(readBuffer, uint8(64)))
+	lastTransitionTime, err := ReadSimpleField(ctx, "lastTransitionTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastTransitionTime' field"))
 	}
 	m.LastTransitionTime = lastTransitionTime
 
-	lastMethodCall, err := ReadSimpleField[PascalString](ctx, "lastMethodCall", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	lastMethodCall, err := ReadSimpleField[PascalString](ctx, "lastMethodCall", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodCall' field"))
 	}
 	m.LastMethodCall = lastMethodCall
 
-	lastMethodSessionId, err := ReadSimpleField[NodeId](ctx, "lastMethodSessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	lastMethodSessionId, err := ReadSimpleField[NodeId](ctx, "lastMethodSessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodSessionId' field"))
 	}
 	m.LastMethodSessionId = lastMethodSessionId
 
-	noOfLastMethodInputArguments, err := ReadImplicitField[int32](ctx, "noOfLastMethodInputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLastMethodInputArguments, err := ReadImplicitField[int32](ctx, "noOfLastMethodInputArguments", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLastMethodInputArguments' field"))
 	}
 	_ = noOfLastMethodInputArguments
 
-	lastMethodInputArguments, err := ReadCountArrayField[Argument](ctx, "lastMethodInputArguments", ReadComplex[Argument](ExtensionObjectDefinitionParseWithBufferProducer[Argument]((int32)(int32(298))), readBuffer), uint64(noOfLastMethodInputArguments))
+	lastMethodInputArguments, err := ReadCountArrayField[Argument](ctx, "lastMethodInputArguments", ReadComplex[Argument](ExtensionObjectDefinitionParseWithBufferProducer[Argument]((int32)(int32(298))), readBuffer), uint64(noOfLastMethodInputArguments), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodInputArguments' field"))
 	}
 	m.LastMethodInputArguments = lastMethodInputArguments
 
-	noOfLastMethodOutputArguments, err := ReadImplicitField[int32](ctx, "noOfLastMethodOutputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLastMethodOutputArguments, err := ReadImplicitField[int32](ctx, "noOfLastMethodOutputArguments", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLastMethodOutputArguments' field"))
 	}
 	_ = noOfLastMethodOutputArguments
 
-	lastMethodOutputArguments, err := ReadCountArrayField[Argument](ctx, "lastMethodOutputArguments", ReadComplex[Argument](ExtensionObjectDefinitionParseWithBufferProducer[Argument]((int32)(int32(298))), readBuffer), uint64(noOfLastMethodOutputArguments))
+	lastMethodOutputArguments, err := ReadCountArrayField[Argument](ctx, "lastMethodOutputArguments", ReadComplex[Argument](ExtensionObjectDefinitionParseWithBufferProducer[Argument]((int32)(int32(298))), readBuffer), uint64(noOfLastMethodOutputArguments), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodOutputArguments' field"))
 	}
 	m.LastMethodOutputArguments = lastMethodOutputArguments
 
-	lastMethodCallTime, err := ReadSimpleField(ctx, "lastMethodCallTime", ReadSignedLong(readBuffer, uint8(64)))
+	lastMethodCallTime, err := ReadSimpleField(ctx, "lastMethodCallTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodCallTime' field"))
 	}
 	m.LastMethodCallTime = lastMethodCallTime
 
-	lastMethodReturnStatus, err := ReadSimpleField[StatusResult](ctx, "lastMethodReturnStatus", ReadComplex[StatusResult](ExtensionObjectDefinitionParseWithBufferProducer[StatusResult]((int32)(int32(301))), readBuffer))
+	lastMethodReturnStatus, err := ReadSimpleField[StatusResult](ctx, "lastMethodReturnStatus", ReadComplex[StatusResult](ExtensionObjectDefinitionParseWithBufferProducer[StatusResult]((int32)(int32(301))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodReturnStatus' field"))
 	}
@@ -600,51 +601,51 @@ func (m *_ProgramDiagnosticDataType) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for ProgramDiagnosticDataType")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "createSessionId", m.GetCreateSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "createSessionId", m.GetCreateSessionId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'createSessionId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "createClientName", m.GetCreateClientName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "createClientName", m.GetCreateClientName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'createClientName' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "invocationCreationTime", m.GetInvocationCreationTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "invocationCreationTime", m.GetInvocationCreationTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'invocationCreationTime' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "lastTransitionTime", m.GetLastTransitionTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "lastTransitionTime", m.GetLastTransitionTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastTransitionTime' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "lastMethodCall", m.GetLastMethodCall(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "lastMethodCall", m.GetLastMethodCall(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodCall' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "lastMethodSessionId", m.GetLastMethodSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "lastMethodSessionId", m.GetLastMethodSessionId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodSessionId' field")
 		}
 		noOfLastMethodInputArguments := int32(utils.InlineIf(bool((m.GetLastMethodInputArguments()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLastMethodInputArguments()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfLastMethodInputArguments", noOfLastMethodInputArguments, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfLastMethodInputArguments", noOfLastMethodInputArguments, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLastMethodInputArguments' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "lastMethodInputArguments", m.GetLastMethodInputArguments(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "lastMethodInputArguments", m.GetLastMethodInputArguments(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodInputArguments' field")
 		}
 		noOfLastMethodOutputArguments := int32(utils.InlineIf(bool((m.GetLastMethodOutputArguments()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLastMethodOutputArguments()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfLastMethodOutputArguments", noOfLastMethodOutputArguments, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfLastMethodOutputArguments", noOfLastMethodOutputArguments, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLastMethodOutputArguments' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "lastMethodOutputArguments", m.GetLastMethodOutputArguments(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "lastMethodOutputArguments", m.GetLastMethodOutputArguments(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodOutputArguments' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "lastMethodCallTime", m.GetLastMethodCallTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "lastMethodCallTime", m.GetLastMethodCallTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodCallTime' field")
 		}
 
-		if err := WriteSimpleField[StatusResult](ctx, "lastMethodReturnStatus", m.GetLastMethodReturnStatus(), WriteComplex[StatusResult](writeBuffer)); err != nil {
+		if err := WriteSimpleField[StatusResult](ctx, "lastMethodReturnStatus", m.GetLastMethodReturnStatus(), WriteComplex[StatusResult](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodReturnStatus' field")
 		}
 

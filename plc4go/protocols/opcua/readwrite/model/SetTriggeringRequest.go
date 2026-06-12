@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -285,7 +286,7 @@ func CastSetTriggeringRequest(structType any) SetTriggeringRequest {
 	return nil
 }
 
-func (m *_SetTriggeringRequest) GetTypeName() string {
+func (m *_SetTriggeringRequest) GetPlx4xTypeName() string {
 	return "SetTriggeringRequest"
 }
 
@@ -335,43 +336,43 @@ func (m *_SetTriggeringRequest) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
 	m.SubscriptionId = subscriptionId
 
-	triggeringItemId, err := ReadSimpleField(ctx, "triggeringItemId", ReadUnsignedInt(readBuffer, uint8(32)))
+	triggeringItemId, err := ReadSimpleField(ctx, "triggeringItemId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'triggeringItemId' field"))
 	}
 	m.TriggeringItemId = triggeringItemId
 
-	noOfLinksToAdd, err := ReadImplicitField[int32](ctx, "noOfLinksToAdd", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLinksToAdd, err := ReadImplicitField[int32](ctx, "noOfLinksToAdd", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLinksToAdd' field"))
 	}
 	_ = noOfLinksToAdd
 
-	linksToAdd, err := ReadCountArrayField[uint32](ctx, "linksToAdd", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfLinksToAdd))
+	linksToAdd, err := ReadCountArrayField[uint32](ctx, "linksToAdd", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfLinksToAdd), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linksToAdd' field"))
 	}
 	m.LinksToAdd = linksToAdd
 
-	noOfLinksToRemove, err := ReadImplicitField[int32](ctx, "noOfLinksToRemove", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLinksToRemove, err := ReadImplicitField[int32](ctx, "noOfLinksToRemove", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLinksToRemove' field"))
 	}
 	_ = noOfLinksToRemove
 
-	linksToRemove, err := ReadCountArrayField[uint32](ctx, "linksToRemove", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfLinksToRemove))
+	linksToRemove, err := ReadCountArrayField[uint32](ctx, "linksToRemove", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfLinksToRemove), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linksToRemove' field"))
 	}
@@ -402,31 +403,31 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SetTriggeringRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "triggeringItemId", m.GetTriggeringItemId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "triggeringItemId", m.GetTriggeringItemId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'triggeringItemId' field")
 		}
 		noOfLinksToAdd := int32(utils.InlineIf(bool((m.GetLinksToAdd()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLinksToAdd()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfLinksToAdd", noOfLinksToAdd, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfLinksToAdd", noOfLinksToAdd, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLinksToAdd' field")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "linksToAdd", m.GetLinksToAdd(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "linksToAdd", m.GetLinksToAdd(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'linksToAdd' field")
 		}
 		noOfLinksToRemove := int32(utils.InlineIf(bool((m.GetLinksToRemove()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLinksToRemove()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfLinksToRemove", noOfLinksToRemove, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfLinksToRemove", noOfLinksToRemove, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLinksToRemove' field")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "linksToRemove", m.GetLinksToRemove(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "linksToRemove", m.GetLinksToRemove(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'linksToRemove' field")
 		}
 

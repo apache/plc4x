@@ -231,7 +231,7 @@ func CastModbusPDUReadInputRegistersRequest(structType any) ModbusPDUReadInputRe
 	return nil
 }
 
-func (m *_ModbusPDUReadInputRegistersRequest) GetTypeName() string {
+func (m *_ModbusPDUReadInputRegistersRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReadInputRegistersRequest"
 }
 

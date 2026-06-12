@@ -16,24 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.modbus.base.optimizer;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.modbus.base.context.ModbusContext;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagCoil;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHoldingRegister;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.PlcReader;
-import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagItem;
-import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
 import org.opentest4j.AssertionFailedError;
 
 import java.util.Collections;
@@ -48,198 +40,147 @@ class ModbusOptimizerTest {
     private static Stream<Arguments> coilInputData() {
         return Stream.of(
             // Simple one tag coil test
-            Arguments.of(new PlcTag[]{
+            Arguments.of(new ModbusTag[]{
                     new ModbusTagCoil(0, 1, ModbusDataType.BOOL, Collections.emptyMap())
                 },
-                (CheckResult) readRequests -> {
-                    assertEquals(1, readRequests.size());
-                    PlcReadRequest firstReadRequest = readRequests.get(0);
-                    assertEquals(1, firstReadRequest.getNumberOfTags());
-                    PlcTag firstTag = firstReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagCoil.class, firstTag);
-                    ModbusTagCoil coil = (ModbusTagCoil) firstTag;
-                    assertEquals(0, coil.getAddress());
-                    assertEquals(1, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
+                (CheckResult) optimizedReads -> {
+                    assertEquals(1, optimizedReads.size());
+                    ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                    assertInstanceOf(ModbusTagCoil.class, mergedTag);
+                    assertEquals(0, mergedTag.getAddress());
+                    assertEquals(1, mergedTag.getNumberOfElements());
                 }),
 
             // In this test, the two adjacent coils will be joined together to one array.
-            Arguments.of(new PlcTag[]{
+            Arguments.of(new ModbusTag[]{
                     new ModbusTagCoil(0, 1, ModbusDataType.BOOL, Collections.emptyMap()),
                     new ModbusTagCoil(1, 1, ModbusDataType.BOOL, Collections.emptyMap())
                 },
-                (CheckResult) readRequests -> {
-                    assertEquals(1, readRequests.size());
-                    PlcReadRequest firstReadRequest = readRequests.get(0);
-                    assertEquals(1, firstReadRequest.getNumberOfTags());
-                    PlcTag firstTag = firstReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagCoil.class, firstTag);
-                    ModbusTagCoil coil = (ModbusTagCoil) firstTag;
-                    assertEquals(0, coil.getAddress());
-                    assertEquals(2, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
+                (CheckResult) optimizedReads -> {
+                    assertEquals(1, optimizedReads.size());
+                    ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                    assertInstanceOf(ModbusTagCoil.class, mergedTag);
+                    assertEquals(0, mergedTag.getAddress());
+                    assertEquals(2, mergedTag.getNumberOfElements());
                 }),
 
             // In this test, the two coils with a larger gap will be joined together to one array.
-            Arguments.of(new PlcTag[]{
+            Arguments.of(new ModbusTag[]{
                     new ModbusTagCoil(0, 1, ModbusDataType.BOOL, Collections.emptyMap()),
                     new ModbusTagCoil(100, 1, ModbusDataType.BOOL, Collections.emptyMap())
                 },
-                (CheckResult) readRequests -> {
-                    assertEquals(1, readRequests.size());
-                    PlcReadRequest firstReadRequest = readRequests.get(0);
-                    assertEquals(1, firstReadRequest.getNumberOfTags());
-                    PlcTag firstTag = firstReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagCoil.class, firstTag);
-                    ModbusTagCoil coil = (ModbusTagCoil) firstTag;
-                    assertEquals(0, coil.getAddress());
-                    assertEquals(101, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
+                (CheckResult) optimizedReads -> {
+                    assertEquals(1, optimizedReads.size());
+                    ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                    assertInstanceOf(ModbusTagCoil.class, mergedTag);
+                    assertEquals(0, mergedTag.getAddress());
+                    assertEquals(101, mergedTag.getNumberOfElements());
                 }),
 
-            // In this test, the two coils have a too large gap to be read in one block, therefore the result
-            // should be a list with two sub-requests.
-            Arguments.of(new PlcTag[]{
+            // In this test, the two coils have a too large gap to be read in one block.
+            Arguments.of(new ModbusTag[]{
                     new ModbusTagCoil(0, 1, ModbusDataType.BOOL, Collections.emptyMap()),
                     new ModbusTagCoil(2100, 1, ModbusDataType.BOOL, Collections.emptyMap())
                 },
-                (CheckResult) readRequests -> {
-                    assertEquals(2, readRequests.size());
-                    PlcReadRequest firstReadRequest = readRequests.get(0);
-                    assertEquals(1, firstReadRequest.getNumberOfTags());
-                    PlcTag firstTag = firstReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagCoil.class, firstTag);
-                    ModbusTagCoil coil = (ModbusTagCoil) firstTag;
-                    assertEquals(0, coil.getAddress());
-                    assertEquals(1, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
-                    PlcReadRequest secondReadRequest = readRequests.get(1);
-                    assertEquals(1, secondReadRequest.getNumberOfTags());
-                    firstTag = secondReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagCoil.class, firstTag);
-                    coil = (ModbusTagCoil) firstTag;
-                    assertEquals(2100, coil.getAddress());
-                    assertEquals(1, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
+                (CheckResult) optimizedReads -> {
+                    assertEquals(2, optimizedReads.size());
+                    ModbusTag first = optimizedReads.getFirst().mergedTag;
+                    assertInstanceOf(ModbusTagCoil.class, first);
+                    assertEquals(0, first.getAddress());
+                    assertEquals(1, first.getNumberOfElements());
+                    ModbusTag second = optimizedReads.get(1).mergedTag;
+                    assertInstanceOf(ModbusTagCoil.class, second);
+                    assertEquals(2100, second.getAddress());
+                    assertEquals(1, second.getNumberOfElements());
                 })
         );
     }
 
     @ParameterizedTest
     @MethodSource("coilInputData")
-    void coilTests(PlcTag[] tags, CheckResult check) {
+    void coilTests(ModbusTag[] tags, CheckResult check) {
         processReadRequest(tags, check);
     }
 
     private static Stream<Arguments> holdingRegisterInputData() {
         return Stream.of(
-            // Simple one tag coil test
-            Arguments.of(new PlcTag[]{
+            // Simple one tag register test
+            Arguments.of(new ModbusTag[]{
                     new ModbusTagHoldingRegister(0, 1, ModbusDataType.INT, Collections.emptyMap())
                 },
-                (CheckResult) readRequests -> {
-                    assertEquals(1, readRequests.size());
-                    PlcReadRequest firstReadRequest = readRequests.get(0);
-                    assertEquals(1, firstReadRequest.getNumberOfTags());
-                    PlcTag firstTag = firstReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagHoldingRegister.class, firstTag);
-                    ModbusTagHoldingRegister holdingRegister = (ModbusTagHoldingRegister) firstTag;
-                    assertEquals(0, holdingRegister.getAddress());
-                    assertEquals(1, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
+                (CheckResult) optimizedReads -> {
+                    assertEquals(1, optimizedReads.size());
+                    ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                    assertInstanceOf(ModbusTagHoldingRegister.class, mergedTag);
+                    assertEquals(0, mergedTag.getAddress());
+                    assertEquals(1, mergedTag.getNumberOfElements());
                 }),
 
-            // In this test, the two adjacent coils will be joined together to one array.
-            Arguments.of(new PlcTag[]{
+            // Two adjacent registers joined together.
+            Arguments.of(new ModbusTag[]{
                     new ModbusTagHoldingRegister(0, 1, ModbusDataType.INT, Collections.emptyMap()),
                     new ModbusTagHoldingRegister(1, 1, ModbusDataType.INT, Collections.emptyMap())
                 },
-                (CheckResult) readRequests -> {
-                    assertEquals(1, readRequests.size());
-                    PlcReadRequest firstReadRequest = readRequests.get(0);
-                    assertEquals(1, firstReadRequest.getNumberOfTags());
-                    PlcTag firstTag = firstReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagHoldingRegister.class, firstTag);
-                    ModbusTagHoldingRegister holdingRegister = (ModbusTagHoldingRegister) firstTag;
-                    assertEquals(0, holdingRegister.getAddress());
-                    assertEquals(2, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
+                (CheckResult) optimizedReads -> {
+                    assertEquals(1, optimizedReads.size());
+                    ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                    assertInstanceOf(ModbusTagHoldingRegister.class, mergedTag);
+                    assertEquals(0, mergedTag.getAddress());
+                    assertEquals(2, mergedTag.getNumberOfElements());
                 }),
 
-            // In this test, the two coils with a larger gap will be joined together to one array.
-            Arguments.of(new PlcTag[]{
+            // Two registers with a larger gap joined together.
+            Arguments.of(new ModbusTag[]{
                     new ModbusTagHoldingRegister(0, 1, ModbusDataType.INT, Collections.emptyMap()),
                     new ModbusTagHoldingRegister(100, 1, ModbusDataType.INT, Collections.emptyMap())
                 },
-                (CheckResult) readRequests -> {
-                    assertEquals(1, readRequests.size());
-                    PlcReadRequest firstReadRequest = readRequests.get(0);
-                    assertEquals(1, firstReadRequest.getNumberOfTags());
-                    PlcTag firstTag = firstReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagHoldingRegister.class, firstTag);
-                    ModbusTagHoldingRegister holdingRegister = (ModbusTagHoldingRegister) firstTag;
-                    assertEquals(0, holdingRegister.getAddress());
-                    assertEquals(101, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
+                (CheckResult) optimizedReads -> {
+                    assertEquals(1, optimizedReads.size());
+                    ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                    assertInstanceOf(ModbusTagHoldingRegister.class, mergedTag);
+                    assertEquals(0, mergedTag.getAddress());
+                    assertEquals(101, mergedTag.getNumberOfElements());
                 }),
 
-            // In this test, the two coils have a too large gap to be read in one block, therefore the result
-            // should be a list with two sub-requests.
-            Arguments.of(new PlcTag[]{
+            // Two registers too far apart - split into two requests.
+            Arguments.of(new ModbusTag[]{
                     new ModbusTagHoldingRegister(0, 1, ModbusDataType.INT, Collections.emptyMap()),
                     new ModbusTagHoldingRegister(2100, 1, ModbusDataType.INT, Collections.emptyMap())
                 },
-                (CheckResult) readRequests -> {
-                    assertEquals(2, readRequests.size());
-                    PlcReadRequest firstReadRequest = readRequests.get(0);
-                    assertEquals(1, firstReadRequest.getNumberOfTags());
-                    PlcTag firstTag = firstReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagHoldingRegister.class, firstTag);
-                    ModbusTagHoldingRegister holdingRegister = (ModbusTagHoldingRegister) firstTag;
-                    assertEquals(0, holdingRegister.getAddress());
-                    assertEquals(1, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
-                    PlcReadRequest secondReadRequest = readRequests.get(1);
-                    assertEquals(1, secondReadRequest.getNumberOfTags());
-                    firstTag = secondReadRequest.getTags().get(0);
-                    assertInstanceOf(ModbusTagHoldingRegister.class, firstTag);
-                    holdingRegister = (ModbusTagHoldingRegister) firstTag;
-                    assertEquals(2100, holdingRegister.getAddress());
-                    assertEquals(1, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
+                (CheckResult) optimizedReads -> {
+                    assertEquals(2, optimizedReads.size());
+                    ModbusTag first = optimizedReads.getFirst().mergedTag;
+                    assertInstanceOf(ModbusTagHoldingRegister.class, first);
+                    assertEquals(0, first.getAddress());
+                    assertEquals(1, first.getNumberOfElements());
+                    ModbusTag second = optimizedReads.get(1).mergedTag;
+                    assertInstanceOf(ModbusTagHoldingRegister.class, second);
+                    assertEquals(2100, second.getAddress());
+                    assertEquals(1, second.getNumberOfElements());
                 })
         );
     }
 
     @ParameterizedTest
     @MethodSource("holdingRegisterInputData")
-    void holdingRegisterTests(PlcTag[] tags, CheckResult check) {
+    void holdingRegisterTests(ModbusTag[] tags, CheckResult check) {
         processReadRequest(tags, check);
     }
 
-
-
-
-
-    void processReadRequest(PlcTag[] tags, CheckResult check) {
-        PlcReader reader = Mockito.mock(PlcReader.class);
-        ModbusContext driverContext = Mockito.mock(ModbusContext.class);
-        Mockito.when(driverContext.getByteOrder()).thenReturn(ModbusByteOrder.BIG_ENDIAN);
-        Mockito.when(driverContext.getMaxCoilsPerRequest()).thenReturn(2000);
-        Mockito.when(driverContext.getMaxRegistersPerRequest()).thenReturn(125);
-        LinkedHashMap<String, PlcTagItem<PlcTag>> tagMap = new LinkedHashMap<>();
+    void processReadRequest(ModbusTag[] tags, CheckResult check) {
+        ModbusReadOptimizer optimizer = new ModbusReadOptimizer(2000, 125, ModbusByteOrder.BIG_ENDIAN);
+        LinkedHashMap<String, ModbusTag> tagMap = new LinkedHashMap<>();
         int i = 0;
-        for (PlcTag tag : tags) {
-            tagMap.put("tag" + i++, new DefaultPlcTagItem<>(tag));
+        for (ModbusTag tag : tags) {
+            tagMap.put("tag" + i++, tag);
         }
-        ModbusOptimizer sut = new ModbusOptimizer();
-        List<PlcReadRequest> plcReadRequests = sut.processReadRequest(new DefaultPlcReadRequest(reader, tagMap), driverContext);
-        check.isValid(plcReadRequests);
+        List<ModbusReadOptimizer.OptimizedRead> optimizedReads = optimizer.optimizeReads(tagMap);
+        check.isValid(optimizedReads);
     }
 
     @FunctionalInterface
     protected interface CheckResult {
-        void isValid(List<PlcReadRequest> readRequests) throws AssertionFailedError;
+        void isValid(List<ModbusReadOptimizer.OptimizedRead> optimizedReads) throws AssertionFailedError;
     }
 
 }

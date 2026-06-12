@@ -135,7 +135,7 @@ func CastBitFieldMaskDataType(structType any) BitFieldMaskDataType {
 	return nil
 }
 
-func (m *_BitFieldMaskDataType) GetTypeName() string {
+func (m *_BitFieldMaskDataType) GetPlx4xTypeName() string {
 	return "BitFieldMaskDataType"
 }
 

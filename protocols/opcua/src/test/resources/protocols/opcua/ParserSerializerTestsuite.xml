@@ -22,8 +22,8 @@
 
   <name>OPCUA</name>
 
-  <protocolName>opcua</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>opcua</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>OPC UA Node Id</name>

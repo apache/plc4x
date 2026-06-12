@@ -287,7 +287,7 @@ func CastBACnetFaultParameterFaultState(structType any) BACnetFaultParameterFaul
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultState) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultState) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultState"
 }
 

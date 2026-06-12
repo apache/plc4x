@@ -193,7 +193,7 @@ func CastBACnetFaultTypeTagged(structType any) BACnetFaultTypeTagged {
 	return nil
 }
 
-func (m *_BACnetFaultTypeTagged) GetTypeName() string {
+func (m *_BACnetFaultTypeTagged) GetPlx4xTypeName() string {
 	return "BACnetFaultTypeTagged"
 }
 

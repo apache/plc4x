@@ -724,7 +724,7 @@ func CastBACnetNotificationParametersExtendedParameters(structType any) BACnetNo
 	return nil
 }
 
-func (m *_BACnetNotificationParametersExtendedParameters) GetTypeName() string {
+func (m *_BACnetNotificationParametersExtendedParameters) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersExtendedParameters"
 }
 

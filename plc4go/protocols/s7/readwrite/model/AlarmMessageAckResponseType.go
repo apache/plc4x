@@ -189,7 +189,7 @@ func CastAlarmMessageAckResponseType(structType any) AlarmMessageAckResponseType
 	return nil
 }
 
-func (m *_AlarmMessageAckResponseType) GetTypeName() string {
+func (m *_AlarmMessageAckResponseType) GetPlx4xTypeName() string {
 	return "AlarmMessageAckResponseType"
 }
 

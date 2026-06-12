@@ -22,8 +22,8 @@
 
   <name>Beckhoff ADS/AMS</name>
 
-  <protocolName>ads</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>ads</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <driver-name>ads</driver-name>
   <driver-parameters>
@@ -89,7 +89,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">0</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">1</invokeId>
             <AdsReadDeviceInfoRequest>
             </AdsReadDeviceInfoRequest>
@@ -1077,8 +1079,10 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
-              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
+              <invokeId dataType="uint" bitLength="32">1</invokeId>
               <AdsReadRequest>
                 <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
                 <indexOffset dataType="uint" bitLength="32">417176</indexOffset>
@@ -1130,8 +1134,10 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">344</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
-              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
+              <invokeId dataType="uint" bitLength="32">1</invokeId>
               <AdsReadResponse>
                 <result>
                   <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>

@@ -211,7 +211,7 @@ func CastBACnetConstructedDataVirtualMACAddressTable(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataVirtualMACAddressTable) GetTypeName() string {
+func (m *_BACnetConstructedDataVirtualMACAddressTable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataVirtualMACAddressTable"
 }
 

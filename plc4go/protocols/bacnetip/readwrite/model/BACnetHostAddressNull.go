@@ -221,7 +221,7 @@ func CastBACnetHostAddressNull(structType any) BACnetHostAddressNull {
 	return nil
 }
 
-func (m *_BACnetHostAddressNull) GetTypeName() string {
+func (m *_BACnetHostAddressNull) GetPlx4xTypeName() string {
 	return "BACnetHostAddressNull"
 }
 

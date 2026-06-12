@@ -25,7 +25,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.oio.OioEventLoopGroup;
 import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketPassiveAddress;
-import org.apache.plc4x.test.RequirePcap;
+import org.apache.plc4x.java.utils.testutils.RequirePcap;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapNetworkInterface;

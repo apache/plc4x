@@ -176,7 +176,7 @@ func CastSecurityDataLowBatteryCorrected(structType any) SecurityDataLowBatteryC
 	return nil
 }
 
-func (m *_SecurityDataLowBatteryCorrected) GetTypeName() string {
+func (m *_SecurityDataLowBatteryCorrected) GetPlx4xTypeName() string {
 	return "SecurityDataLowBatteryCorrected"
 }
 

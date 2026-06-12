@@ -180,7 +180,7 @@ func CastApduDataExtNetworkParameterRead(structType any) ApduDataExtNetworkParam
 	return nil
 }
 
-func (m *_ApduDataExtNetworkParameterRead) GetTypeName() string {
+func (m *_ApduDataExtNetworkParameterRead) GetPlx4xTypeName() string {
 	return "ApduDataExtNetworkParameterRead"
 }
 

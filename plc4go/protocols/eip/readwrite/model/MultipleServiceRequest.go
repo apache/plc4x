@@ -255,7 +255,7 @@ func CastMultipleServiceRequest(structType any) MultipleServiceRequest {
 	return nil
 }
 
-func (m *_MultipleServiceRequest) GetTypeName() string {
+func (m *_MultipleServiceRequest) GetPlx4xTypeName() string {
 	return "MultipleServiceRequest"
 }
 

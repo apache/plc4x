@@ -181,7 +181,7 @@ func CastApduDataAdcResponse(structType any) ApduDataAdcResponse {
 	return nil
 }
 
-func (m *_ApduDataAdcResponse) GetTypeName() string {
+func (m *_ApduDataAdcResponse) GetPlx4xTypeName() string {
 	return "ApduDataAdcResponse"
 }
 

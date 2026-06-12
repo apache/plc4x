@@ -30,6 +30,7 @@ import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
@@ -42,7 +43,13 @@ import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXQuery;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTag;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTagHandler;
 import org.apache.plc4x.java.ctrlx.readwrite.utils.ApiClientFactory;
-import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcBrowseItem;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcBrowseRequest;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcBrowseResponse;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcPingRequest;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcPingResponse;
+import org.apache.plc4x.java.spi.drivers.functions.PlcBrowser;
+import org.apache.plc4x.java.spi.drivers.functions.PlcPinger;
 import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
@@ -276,7 +283,9 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                             matchingQueryNames.forEach(queryName -> responseItems.get(queryName).add(
                                 new DefaultPlcBrowseItem(
                                     new CtrlXTag(curNode, PlcValueType.BOOL, Collections.emptyList()),
-                                    curNode, true, true, true, false,
+                                    curNode, true, true,
+                                    EnumSet.of(PlcSubscriptionType.CYCLIC, PlcSubscriptionType.CHANGE_OF_STATE, PlcSubscriptionType.EVENT),
+                                    false,
                                     Collections.emptyList(), Collections.emptyMap(), Collections.emptyMap())));
                         }
                     }

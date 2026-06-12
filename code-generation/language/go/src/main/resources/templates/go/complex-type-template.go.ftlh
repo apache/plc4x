@@ -649,7 +649,7 @@ func Cast${type.name}(structType any) ${type.name} {
 	return nil
 }
 
-func (m *_${type.name}) GetTypeName() string {
+func (m *_${type.name}) GetPlx4xTypeName() string {
 	return "${type.name}"
 }
 

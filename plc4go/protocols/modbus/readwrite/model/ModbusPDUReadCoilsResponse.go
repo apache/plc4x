@@ -215,7 +215,7 @@ func CastModbusPDUReadCoilsResponse(structType any) ModbusPDUReadCoilsResponse {
 	return nil
 }
 
-func (m *_ModbusPDUReadCoilsResponse) GetTypeName() string {
+func (m *_ModbusPDUReadCoilsResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUReadCoilsResponse"
 }
 

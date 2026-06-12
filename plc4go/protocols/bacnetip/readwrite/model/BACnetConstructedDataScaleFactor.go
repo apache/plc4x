@@ -246,7 +246,7 @@ func CastBACnetConstructedDataScaleFactor(structType any) BACnetConstructedDataS
 	return nil
 }
 
-func (m *_BACnetConstructedDataScaleFactor) GetTypeName() string {
+func (m *_BACnetConstructedDataScaleFactor) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataScaleFactor"
 }
 

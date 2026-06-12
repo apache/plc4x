@@ -180,7 +180,7 @@ func CastMFuncPropCommandReq(structType any) MFuncPropCommandReq {
 	return nil
 }
 
-func (m *_MFuncPropCommandReq) GetTypeName() string {
+func (m *_MFuncPropCommandReq) GetPlx4xTypeName() string {
 	return "MFuncPropCommandReq"
 }
 

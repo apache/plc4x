@@ -27,7 +27,7 @@
     <version>0.14.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-transport-socketcan</artifactId>
+  <artifactId>plc4j-transports-socketcan</artifactId>
   <name>PLC4J: Transports: SocketCAN</name>
   <description>Base classes needed to implement plc4x drivers based on SocketCAN connections. Powered by javacan library.</description>
 
@@ -37,9 +37,6 @@
 
   <build>
     <plugins>
-      <!--
-       Generate an OSGI compatible MANIFEST file.
-      -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -48,7 +45,7 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.apache.plc4x.java.osgi.TransportActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.spi.transport.Transport,org.apache.plc4x.java.transport.socketcan.SocketCANTransport</Export-Service>
+            <Export-Service>org.apache.plc4x.java.spi.transports.api.Transport,org.apache.plc4x.java.transport.socketcan.SocketCANTransport</Export-Service>
           </instructions>
         </configuration>
       </plugin>
@@ -58,31 +55,41 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-can</artifactId>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-fields</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-api</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>tel.schich</groupId>
       <artifactId>javacan-core</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
 
@@ -123,7 +130,7 @@
 
         <dependency>
           <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-java</artifactId>
+          <artifactId>plc4x-code-generation-language-java-jp</artifactId>
           <version>0.14.0-SNAPSHOT</version>
           <scope>provided</scope>
         </dependency>

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBACnetIPNATTraversal(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetTypeName() string {
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBACnetIPNATTraversal"
 }
 

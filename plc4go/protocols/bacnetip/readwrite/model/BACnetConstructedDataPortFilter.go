@@ -258,7 +258,7 @@ func CastBACnetConstructedDataPortFilter(structType any) BACnetConstructedDataPo
 	return nil
 }
 
-func (m *_BACnetConstructedDataPortFilter) GetTypeName() string {
+func (m *_BACnetConstructedDataPortFilter) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPortFilter"
 }
 

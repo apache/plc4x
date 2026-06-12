@@ -125,7 +125,7 @@ func (m modbusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return err
 	}
 	dataType := m.Datatype.String()
-	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(dataType))*8), dataType); err != nil {
+	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(dataType))*8), dataType, utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 

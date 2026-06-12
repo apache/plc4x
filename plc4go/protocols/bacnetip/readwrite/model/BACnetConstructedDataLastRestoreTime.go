@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLastRestoreTime(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastRestoreTime) GetTypeName() string {
+func (m *_BACnetConstructedDataLastRestoreTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastRestoreTime"
 }
 

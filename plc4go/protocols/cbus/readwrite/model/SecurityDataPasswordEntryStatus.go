@@ -252,7 +252,7 @@ func CastSecurityDataPasswordEntryStatus(structType any) SecurityDataPasswordEnt
 	return nil
 }
 
-func (m *_SecurityDataPasswordEntryStatus) GetTypeName() string {
+func (m *_SecurityDataPasswordEntryStatus) GetPlx4xTypeName() string {
 	return "SecurityDataPasswordEntryStatus"
 }
 

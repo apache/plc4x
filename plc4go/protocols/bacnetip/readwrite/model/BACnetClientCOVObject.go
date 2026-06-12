@@ -221,7 +221,7 @@ func CastBACnetClientCOVObject(structType any) BACnetClientCOVObject {
 	return nil
 }
 
-func (m *_BACnetClientCOVObject) GetTypeName() string {
+func (m *_BACnetClientCOVObject) GetPlx4xTypeName() string {
 	return "BACnetClientCOVObject"
 }
 

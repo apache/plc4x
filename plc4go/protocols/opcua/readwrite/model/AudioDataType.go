@@ -135,7 +135,7 @@ func CastAudioDataType(structType any) AudioDataType {
 	return nil
 }
 
-func (m *_AudioDataType) GetTypeName() string {
+func (m *_AudioDataType) GetPlx4xTypeName() string {
 	return "AudioDataType"
 }
 

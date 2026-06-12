@@ -258,7 +258,7 @@ func CastBACnetConstructedDataIPDNSServer(structType any) BACnetConstructedDataI
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPDNSServer) GetTypeName() string {
+func (m *_BACnetConstructedDataIPDNSServer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPDNSServer"
 }
 

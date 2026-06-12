@@ -203,7 +203,7 @@ func CastNLMInitializeRoutingTablePortMapping(structType any) NLMInitializeRouti
 	return nil
 }
 
-func (m *_NLMInitializeRoutingTablePortMapping) GetTypeName() string {
+func (m *_NLMInitializeRoutingTablePortMapping) GetPlx4xTypeName() string {
 	return "NLMInitializeRoutingTablePortMapping"
 }
 

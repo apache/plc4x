@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLimitMonitoringInterval(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringInterval) GetTypeName() string {
+func (m *_BACnetConstructedDataLimitMonitoringInterval) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLimitMonitoringInterval"
 }
 

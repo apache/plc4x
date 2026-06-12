@@ -224,7 +224,7 @@ func CastBACnetNetworkTypeTagged(structType any) BACnetNetworkTypeTagged {
 	return nil
 }
 
-func (m *_BACnetNetworkTypeTagged) GetTypeName() string {
+func (m *_BACnetNetworkTypeTagged) GetPlx4xTypeName() string {
 	return "BACnetNetworkTypeTagged"
 }
 

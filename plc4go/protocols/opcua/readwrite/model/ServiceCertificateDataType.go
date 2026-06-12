@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -270,7 +271,7 @@ func CastServiceCertificateDataType(structType any) ServiceCertificateDataType {
 	return nil
 }
 
-func (m *_ServiceCertificateDataType) GetTypeName() string {
+func (m *_ServiceCertificateDataType) GetPlx4xTypeName() string {
 	return "ServiceCertificateDataType"
 }
 
@@ -315,31 +316,31 @@ func (m *_ServiceCertificateDataType) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	certificate, err := ReadSimpleField[PascalByteString](ctx, "certificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	certificate, err := ReadSimpleField[PascalByteString](ctx, "certificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'certificate' field"))
 	}
 	m.Certificate = certificate
 
-	noOfIssuers, err := ReadImplicitField[int32](ctx, "noOfIssuers", ReadSignedInt(readBuffer, uint8(32)))
+	noOfIssuers, err := ReadImplicitField[int32](ctx, "noOfIssuers", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfIssuers' field"))
 	}
 	_ = noOfIssuers
 
-	issuers, err := ReadCountArrayField[PascalByteString](ctx, "issuers", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfIssuers))
+	issuers, err := ReadCountArrayField[PascalByteString](ctx, "issuers", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfIssuers), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuers' field"))
 	}
 	m.Issuers = issuers
 
-	validFrom, err := ReadSimpleField(ctx, "validFrom", ReadSignedLong(readBuffer, uint8(64)))
+	validFrom, err := ReadSimpleField(ctx, "validFrom", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'validFrom' field"))
 	}
 	m.ValidFrom = validFrom
 
-	validTo, err := ReadSimpleField(ctx, "validTo", ReadSignedLong(readBuffer, uint8(64)))
+	validTo, err := ReadSimpleField(ctx, "validTo", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'validTo' field"))
 	}
@@ -370,23 +371,23 @@ func (m *_ServiceCertificateDataType) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for ServiceCertificateDataType")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "certificate", m.GetCertificate(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "certificate", m.GetCertificate(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'certificate' field")
 		}
 		noOfIssuers := int32(utils.InlineIf(bool((m.GetIssuers()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetIssuers()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfIssuers", noOfIssuers, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfIssuers", noOfIssuers, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfIssuers' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "issuers", m.GetIssuers(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "issuers", m.GetIssuers(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'issuers' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "validFrom", m.GetValidFrom(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "validFrom", m.GetValidFrom(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'validFrom' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "validTo", m.GetValidTo(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "validTo", m.GetValidTo(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'validTo' field")
 		}
 

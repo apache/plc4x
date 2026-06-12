@@ -246,7 +246,7 @@ func CastBACnetConstructedDataRecordsSinceNotification(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotification) GetTypeName() string {
+func (m *_BACnetConstructedDataRecordsSinceNotification) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRecordsSinceNotification"
 }
 

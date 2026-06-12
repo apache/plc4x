@@ -221,7 +221,7 @@ func CastBACnetApplicationTagDate(structType any) BACnetApplicationTagDate {
 	return nil
 }
 
-func (m *_BACnetApplicationTagDate) GetTypeName() string {
+func (m *_BACnetApplicationTagDate) GetPlx4xTypeName() string {
 	return "BACnetApplicationTagDate"
 }
 

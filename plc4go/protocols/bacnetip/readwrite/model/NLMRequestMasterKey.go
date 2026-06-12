@@ -222,7 +222,7 @@ func CastNLMRequestMasterKey(structType any) NLMRequestMasterKey {
 	return nil
 }
 
-func (m *_NLMRequestMasterKey) GetTypeName() string {
+func (m *_NLMRequestMasterKey) GetPlx4xTypeName() string {
 	return "NLMRequestMasterKey"
 }
 

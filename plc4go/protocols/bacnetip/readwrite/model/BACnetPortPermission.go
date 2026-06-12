@@ -205,7 +205,7 @@ func CastBACnetPortPermission(structType any) BACnetPortPermission {
 	return nil
 }
 
-func (m *_BACnetPortPermission) GetTypeName() string {
+func (m *_BACnetPortPermission) GetPlx4xTypeName() string {
 	return "BACnetPortPermission"
 }
 

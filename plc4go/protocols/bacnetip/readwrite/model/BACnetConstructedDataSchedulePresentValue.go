@@ -246,7 +246,7 @@ func CastBACnetConstructedDataSchedulePresentValue(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataSchedulePresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSchedulePresentValue"
 }
 

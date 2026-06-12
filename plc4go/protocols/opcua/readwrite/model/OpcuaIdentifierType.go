@@ -121,7 +121,7 @@ func OpcuaIdentifierTypeParse(ctx context.Context, theBytes []byte) (OpcuaIdenti
 func OpcuaIdentifierTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaIdentifierType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("OpcuaIdentifierType", uint32(8), utils.WithEncoding("UTF-8"))
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("OpcuaIdentifierType", uint32(8), utils.WithEncoding("UTF8"))
 	if err != nil {
 		return "", errors.Wrap(err, "error reading OpcuaIdentifierType")
 	}
@@ -144,7 +144,7 @@ func (e OpcuaIdentifierType) Serialize() ([]byte, error) {
 func (e OpcuaIdentifierType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return /*TODO: migrate me*/ writeBuffer.WriteString("OpcuaIdentifierType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF-8)"))
+	return /*TODO: migrate me*/ writeBuffer.WriteString("OpcuaIdentifierType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8)"))
 }
 
 func (e OpcuaIdentifierType) GetValue() string {

@@ -283,7 +283,7 @@ func CastMPropReadCon(structType any) MPropReadCon {
 	return nil
 }
 
-func (m *_MPropReadCon) GetTypeName() string {
+func (m *_MPropReadCon) GetPlx4xTypeName() string {
 	return "MPropReadCon"
 }
 

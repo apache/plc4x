@@ -180,7 +180,7 @@ func CastTDataIndividualReq(structType any) TDataIndividualReq {
 	return nil
 }
 
-func (m *_TDataIndividualReq) GetTypeName() string {
+func (m *_TDataIndividualReq) GetPlx4xTypeName() string {
 	return "TDataIndividualReq"
 }
 

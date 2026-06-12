@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesAccessCredentialDisableReason(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetTypeName() string {
+func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesAccessCredentialDisableReason"
 }
 

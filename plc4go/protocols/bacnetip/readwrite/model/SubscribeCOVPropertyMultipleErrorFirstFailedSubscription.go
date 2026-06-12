@@ -307,7 +307,7 @@ func CastSubscribeCOVPropertyMultipleErrorFirstFailedSubscription(structType any
 	return nil
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetTypeName() string {
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetPlx4xTypeName() string {
 	return "SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"
 }
 

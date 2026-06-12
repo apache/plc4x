@@ -175,7 +175,7 @@ func CastSequenceHeader(structType any) SequenceHeader {
 	return nil
 }
 
-func (m *_SequenceHeader) GetTypeName() string {
+func (m *_SequenceHeader) GetPlx4xTypeName() string {
 	return "SequenceHeader"
 }
 

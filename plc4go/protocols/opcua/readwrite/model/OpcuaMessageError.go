@@ -244,7 +244,7 @@ func CastOpcuaMessageError(structType any) OpcuaMessageError {
 	return nil
 }
 
-func (m *_OpcuaMessageError) GetTypeName() string {
+func (m *_OpcuaMessageError) GetPlx4xTypeName() string {
 	return "OpcuaMessageError"
 }
 

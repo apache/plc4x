@@ -246,7 +246,7 @@ func CastBACnetConstructedDataFDBBMDAddress(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddress) GetTypeName() string {
+func (m *_BACnetConstructedDataFDBBMDAddress) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFDBBMDAddress"
 }
 

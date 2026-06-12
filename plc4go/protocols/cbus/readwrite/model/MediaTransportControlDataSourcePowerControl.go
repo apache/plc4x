@@ -228,7 +228,7 @@ func CastMediaTransportControlDataSourcePowerControl(structType any) MediaTransp
 	return nil
 }
 
-func (m *_MediaTransportControlDataSourcePowerControl) GetTypeName() string {
+func (m *_MediaTransportControlDataSourcePowerControl) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataSourcePowerControl"
 }
 

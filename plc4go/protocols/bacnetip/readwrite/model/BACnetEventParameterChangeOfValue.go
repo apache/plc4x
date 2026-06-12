@@ -320,7 +320,7 @@ func CastBACnetEventParameterChangeOfValue(structType any) BACnetEventParameterC
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfValue) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfValue) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfValue"
 }
 

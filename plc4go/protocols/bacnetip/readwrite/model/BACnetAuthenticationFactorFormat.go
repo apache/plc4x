@@ -231,7 +231,7 @@ func CastBACnetAuthenticationFactorFormat(structType any) BACnetAuthenticationFa
 	return nil
 }
 
-func (m *_BACnetAuthenticationFactorFormat) GetTypeName() string {
+func (m *_BACnetAuthenticationFactorFormat) GetPlx4xTypeName() string {
 	return "BACnetAuthenticationFactorFormat"
 }
 

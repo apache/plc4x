@@ -258,7 +258,7 @@ func CastBACnetConstructedDataSubordinateNodeTypes(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypes) GetTypeName() string {
+func (m *_BACnetConstructedDataSubordinateNodeTypes) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSubordinateNodeTypes"
 }
 

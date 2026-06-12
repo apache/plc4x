@@ -194,7 +194,7 @@ func CastPanicStatus(structType any) PanicStatus {
 	return nil
 }
 
-func (m *_PanicStatus) GetTypeName() string {
+func (m *_PanicStatus) GetPlx4xTypeName() string {
 	return "PanicStatus"
 }
 

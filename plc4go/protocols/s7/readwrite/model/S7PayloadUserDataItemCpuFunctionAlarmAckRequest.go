@@ -232,7 +232,7 @@ func CastS7PayloadUserDataItemCpuFunctionAlarmAckRequest(structType any) S7Paylo
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmAckRequest"
 }
 

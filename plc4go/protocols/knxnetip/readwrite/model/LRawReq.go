@@ -180,7 +180,7 @@ func CastLRawReq(structType any) LRawReq {
 	return nil
 }
 
-func (m *_LRawReq) GetTypeName() string {
+func (m *_LRawReq) GetPlx4xTypeName() string {
 	return "LRawReq"
 }
 

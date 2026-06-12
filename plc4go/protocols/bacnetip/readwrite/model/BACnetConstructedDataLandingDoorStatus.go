@@ -258,7 +258,7 @@ func CastBACnetConstructedDataLandingDoorStatus(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataLandingDoorStatus) GetTypeName() string {
+func (m *_BACnetConstructedDataLandingDoorStatus) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLandingDoorStatus"
 }
 

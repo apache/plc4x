@@ -21,7 +21,7 @@
     [const          uint 16     plc4xTcpDefaultPort 59837] // Hex of CAFE
 ]
 
-[discriminatedType Plc4xMessage byteOrder='BIG_ENDIAN'
+[discriminatedType Plc4xMessage byteOrder='"BIG_ENDIAN"'
     [const         uint 8           version      0x01           ]
     [implicit      uint 16          packetLength 'lengthInBytes']
     [simple        uint 16          requestId                   ]
@@ -173,7 +173,7 @@
             [simple   string 8                   value                           ]
         ]
         ['WCHAR'         STRING
-            [simple   string 16                  value        encoding='"UTF-16"']
+            [simple   string 16                  value        encoding='"UTF16"']
         ]
         //['STRING'        STRING
         //    [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
@@ -181,7 +181,7 @@
         //]
         //['WSTRING'       STRING
         //    [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
-        //    [simple   vstring 'stringLength * 2' value        encoding='"UTF-16"']
+        //    [simple   vstring 'stringLength * 2' value        encoding='"UTF16"']
         //]
 
         // Times and Dates

@@ -608,7 +608,7 @@ plc4c_return_code plc4c_spi_read_string(plc4c_spi_read_buffer* buf,
                                         char** value) {
 
   // Right now we only support utf-8 and utf-16.
-  if((strcmp(encoding,"UTF-8") != 0) && (strcmp(encoding,"UTF-16") != 0)) {
+  if((strcmp(encoding,"UTF8") != 0) && (strcmp(encoding,"UTF16") != 0)) {
       return INVALID_ARGUMENT;
   }
 

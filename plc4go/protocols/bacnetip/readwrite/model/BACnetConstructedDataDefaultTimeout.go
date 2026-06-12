@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDefaultTimeout(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataDefaultTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataDefaultTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDefaultTimeout"
 }
 

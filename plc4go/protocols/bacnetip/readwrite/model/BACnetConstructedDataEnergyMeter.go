@@ -246,7 +246,7 @@ func CastBACnetConstructedDataEnergyMeter(structType any) BACnetConstructedDataE
 	return nil
 }
 
-func (m *_BACnetConstructedDataEnergyMeter) GetTypeName() string {
+func (m *_BACnetConstructedDataEnergyMeter) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEnergyMeter"
 }
 

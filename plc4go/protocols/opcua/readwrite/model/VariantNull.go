@@ -180,7 +180,7 @@ func CastVariantNull(structType any) VariantNull {
 	return nil
 }
 
-func (m *_VariantNull) GetTypeName() string {
+func (m *_VariantNull) GetPlx4xTypeName() string {
 	return "VariantNull"
 }
 

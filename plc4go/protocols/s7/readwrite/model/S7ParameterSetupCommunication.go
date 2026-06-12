@@ -243,7 +243,7 @@ func CastS7ParameterSetupCommunication(structType any) S7ParameterSetupCommunica
 	return nil
 }
 
-func (m *_S7ParameterSetupCommunication) GetTypeName() string {
+func (m *_S7ParameterSetupCommunication) GetPlx4xTypeName() string {
 	return "S7ParameterSetupCommunication"
 }
 

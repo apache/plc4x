@@ -224,7 +224,7 @@ func CastBACnetEscalatorOperationDirectionTagged(structType any) BACnetEscalator
 	return nil
 }
 
-func (m *_BACnetEscalatorOperationDirectionTagged) GetTypeName() string {
+func (m *_BACnetEscalatorOperationDirectionTagged) GetPlx4xTypeName() string {
 	return "BACnetEscalatorOperationDirectionTagged"
 }
 

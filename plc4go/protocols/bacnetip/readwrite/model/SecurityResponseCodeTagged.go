@@ -193,7 +193,7 @@ func CastSecurityResponseCodeTagged(structType any) SecurityResponseCodeTagged {
 	return nil
 }
 
-func (m *_SecurityResponseCodeTagged) GetTypeName() string {
+func (m *_SecurityResponseCodeTagged) GetPlx4xTypeName() string {
 	return "SecurityResponseCodeTagged"
 }
 

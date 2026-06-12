@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesBacnetIpMode(structType any) BACnetPropertyStatesBa
 	return nil
 }
 
-func (m *_BACnetPropertyStatesBacnetIpMode) GetTypeName() string {
+func (m *_BACnetPropertyStatesBacnetIpMode) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesBacnetIpMode"
 }
 

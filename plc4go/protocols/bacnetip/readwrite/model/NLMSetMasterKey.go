@@ -225,7 +225,7 @@ func CastNLMSetMasterKey(structType any) NLMSetMasterKey {
 	return nil
 }
 
-func (m *_NLMSetMasterKey) GetTypeName() string {
+func (m *_NLMSetMasterKey) GetPlx4xTypeName() string {
 	return "NLMSetMasterKey"
 }
 

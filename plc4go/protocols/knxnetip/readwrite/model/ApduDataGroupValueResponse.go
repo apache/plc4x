@@ -222,7 +222,7 @@ func CastApduDataGroupValueResponse(structType any) ApduDataGroupValueResponse {
 	return nil
 }
 
-func (m *_ApduDataGroupValueResponse) GetTypeName() string {
+func (m *_ApduDataGroupValueResponse) GetPlx4xTypeName() string {
 	return "ApduDataGroupValueResponse"
 }
 

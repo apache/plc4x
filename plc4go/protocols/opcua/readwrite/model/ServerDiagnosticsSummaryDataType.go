@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -372,7 +373,7 @@ func CastServerDiagnosticsSummaryDataType(structType any) ServerDiagnosticsSumma
 	return nil
 }
 
-func (m *_ServerDiagnosticsSummaryDataType) GetTypeName() string {
+func (m *_ServerDiagnosticsSummaryDataType) GetPlx4xTypeName() string {
 	return "ServerDiagnosticsSummaryDataType"
 }
 
@@ -433,73 +434,73 @@ func (m *_ServerDiagnosticsSummaryDataType) parse(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	serverViewCount, err := ReadSimpleField(ctx, "serverViewCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	serverViewCount, err := ReadSimpleField(ctx, "serverViewCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverViewCount' field"))
 	}
 	m.ServerViewCount = serverViewCount
 
-	currentSessionCount, err := ReadSimpleField(ctx, "currentSessionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	currentSessionCount, err := ReadSimpleField(ctx, "currentSessionCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentSessionCount' field"))
 	}
 	m.CurrentSessionCount = currentSessionCount
 
-	cumulatedSessionCount, err := ReadSimpleField(ctx, "cumulatedSessionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	cumulatedSessionCount, err := ReadSimpleField(ctx, "cumulatedSessionCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cumulatedSessionCount' field"))
 	}
 	m.CumulatedSessionCount = cumulatedSessionCount
 
-	securityRejectedSessionCount, err := ReadSimpleField(ctx, "securityRejectedSessionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	securityRejectedSessionCount, err := ReadSimpleField(ctx, "securityRejectedSessionCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityRejectedSessionCount' field"))
 	}
 	m.SecurityRejectedSessionCount = securityRejectedSessionCount
 
-	rejectedSessionCount, err := ReadSimpleField(ctx, "rejectedSessionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	rejectedSessionCount, err := ReadSimpleField(ctx, "rejectedSessionCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rejectedSessionCount' field"))
 	}
 	m.RejectedSessionCount = rejectedSessionCount
 
-	sessionTimeoutCount, err := ReadSimpleField(ctx, "sessionTimeoutCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	sessionTimeoutCount, err := ReadSimpleField(ctx, "sessionTimeoutCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionTimeoutCount' field"))
 	}
 	m.SessionTimeoutCount = sessionTimeoutCount
 
-	sessionAbortCount, err := ReadSimpleField(ctx, "sessionAbortCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	sessionAbortCount, err := ReadSimpleField(ctx, "sessionAbortCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionAbortCount' field"))
 	}
 	m.SessionAbortCount = sessionAbortCount
 
-	currentSubscriptionCount, err := ReadSimpleField(ctx, "currentSubscriptionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	currentSubscriptionCount, err := ReadSimpleField(ctx, "currentSubscriptionCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentSubscriptionCount' field"))
 	}
 	m.CurrentSubscriptionCount = currentSubscriptionCount
 
-	cumulatedSubscriptionCount, err := ReadSimpleField(ctx, "cumulatedSubscriptionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	cumulatedSubscriptionCount, err := ReadSimpleField(ctx, "cumulatedSubscriptionCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cumulatedSubscriptionCount' field"))
 	}
 	m.CumulatedSubscriptionCount = cumulatedSubscriptionCount
 
-	publishingIntervalCount, err := ReadSimpleField(ctx, "publishingIntervalCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	publishingIntervalCount, err := ReadSimpleField(ctx, "publishingIntervalCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishingIntervalCount' field"))
 	}
 	m.PublishingIntervalCount = publishingIntervalCount
 
-	securityRejectedRequestsCount, err := ReadSimpleField(ctx, "securityRejectedRequestsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	securityRejectedRequestsCount, err := ReadSimpleField(ctx, "securityRejectedRequestsCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityRejectedRequestsCount' field"))
 	}
 	m.SecurityRejectedRequestsCount = securityRejectedRequestsCount
 
-	rejectedRequestsCount, err := ReadSimpleField(ctx, "rejectedRequestsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	rejectedRequestsCount, err := ReadSimpleField(ctx, "rejectedRequestsCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rejectedRequestsCount' field"))
 	}
@@ -530,51 +531,51 @@ func (m *_ServerDiagnosticsSummaryDataType) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for ServerDiagnosticsSummaryDataType")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "serverViewCount", m.GetServerViewCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "serverViewCount", m.GetServerViewCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverViewCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "currentSessionCount", m.GetCurrentSessionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "currentSessionCount", m.GetCurrentSessionCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentSessionCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "cumulatedSessionCount", m.GetCumulatedSessionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "cumulatedSessionCount", m.GetCumulatedSessionCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'cumulatedSessionCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "securityRejectedSessionCount", m.GetSecurityRejectedSessionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "securityRejectedSessionCount", m.GetSecurityRejectedSessionCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityRejectedSessionCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "rejectedSessionCount", m.GetRejectedSessionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "rejectedSessionCount", m.GetRejectedSessionCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'rejectedSessionCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "sessionTimeoutCount", m.GetSessionTimeoutCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "sessionTimeoutCount", m.GetSessionTimeoutCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sessionTimeoutCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "sessionAbortCount", m.GetSessionAbortCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "sessionAbortCount", m.GetSessionAbortCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sessionAbortCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "currentSubscriptionCount", m.GetCurrentSubscriptionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "currentSubscriptionCount", m.GetCurrentSubscriptionCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentSubscriptionCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "cumulatedSubscriptionCount", m.GetCumulatedSubscriptionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "cumulatedSubscriptionCount", m.GetCumulatedSubscriptionCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'cumulatedSubscriptionCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "publishingIntervalCount", m.GetPublishingIntervalCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "publishingIntervalCount", m.GetPublishingIntervalCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishingIntervalCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "securityRejectedRequestsCount", m.GetSecurityRejectedRequestsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "securityRejectedRequestsCount", m.GetSecurityRejectedRequestsCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityRejectedRequestsCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "rejectedRequestsCount", m.GetRejectedRequestsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "rejectedRequestsCount", m.GetRejectedRequestsCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'rejectedRequestsCount' field")
 		}
 

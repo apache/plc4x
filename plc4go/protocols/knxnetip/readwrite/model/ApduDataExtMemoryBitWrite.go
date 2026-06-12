@@ -180,7 +180,7 @@ func CastApduDataExtMemoryBitWrite(structType any) ApduDataExtMemoryBitWrite {
 	return nil
 }
 
-func (m *_ApduDataExtMemoryBitWrite) GetTypeName() string {
+func (m *_ApduDataExtMemoryBitWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtMemoryBitWrite"
 }
 

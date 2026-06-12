@@ -540,7 +540,7 @@ func CastConfirmedEventNotificationRequest(structType any) ConfirmedEventNotific
 	return nil
 }
 
-func (m *_ConfirmedEventNotificationRequest) GetTypeName() string {
+func (m *_ConfirmedEventNotificationRequest) GetPlx4xTypeName() string {
 	return "ConfirmedEventNotificationRequest"
 }
 

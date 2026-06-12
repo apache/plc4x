@@ -193,7 +193,7 @@ func CastBACnetNetworkNumberQualityTagged(structType any) BACnetNetworkNumberQua
 	return nil
 }
 
-func (m *_BACnetNetworkNumberQualityTagged) GetTypeName() string {
+func (m *_BACnetNetworkNumberQualityTagged) GetPlx4xTypeName() string {
 	return "BACnetNetworkNumberQualityTagged"
 }
 

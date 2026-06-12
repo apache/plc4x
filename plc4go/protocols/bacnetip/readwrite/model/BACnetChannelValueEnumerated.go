@@ -221,7 +221,7 @@ func CastBACnetChannelValueEnumerated(structType any) BACnetChannelValueEnumerat
 	return nil
 }
 
-func (m *_BACnetChannelValueEnumerated) GetTypeName() string {
+func (m *_BACnetChannelValueEnumerated) GetPlx4xTypeName() string {
 	return "BACnetChannelValueEnumerated"
 }
 

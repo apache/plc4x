@@ -339,7 +339,7 @@ func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType an
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"
 }
 

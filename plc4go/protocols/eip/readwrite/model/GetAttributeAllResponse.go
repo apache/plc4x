@@ -259,7 +259,7 @@ func CastGetAttributeAllResponse(structType any) GetAttributeAllResponse {
 	return nil
 }
 
-func (m *_GetAttributeAllResponse) GetTypeName() string {
+func (m *_GetAttributeAllResponse) GetPlx4xTypeName() string {
 	return "GetAttributeAllResponse"
 }
 

@@ -18,39 +18,45 @@
  */
 package org.apache.plc4x.java.transport.pcapreplay;
 
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.utils.pcapreplay.netty.address.PcapReplayAddress;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
+import org.apache.plc4x.java.transport.pcapreplay.config.PcapReplayTransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.pcap4j.core.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
+public class PcapReplayTransport implements Transport<PcapReplayTransportConfiguration> {
 
-public class PcapReplayTransport implements Transport {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PcapReplayTransport.class);
 
     @Override
     public String getTransportCode() {
-        return "pcap";
+        return "pcap-replay";
     }
 
     @Override
     public String getTransportName() {
-        return "PCAP(NG) Playback Transport";
+        return "PCAP Replay";
     }
 
     @Override
-    public ChannelFactory createChannelFactory(String transportConfig) {
-        File pcapFile = new File(transportConfig);
-        if(!pcapFile.exists() || !pcapFile.isFile()) {
-            throw new PlcRuntimeException("File not found at " + transportConfig);
+    public Class<PcapReplayTransportConfiguration> getTransportConfigType() {
+        return PcapReplayTransportConfiguration.class;
+    }
+
+    @Override
+    public TransportInstance<PcapReplayTransportConfiguration> createTransportInstance(
+        String transportUrl, TransportConfiguration configuration, AuditLog auditLog) throws TransportException {
+        if (!(configuration instanceof PcapReplayTransportConfiguration pcapReplayTransportConfiguration)) {
+            throw new IllegalArgumentException(String.format("Expected configuration of type %s but got %s",
+                PcapReplayTransportConfiguration.class.getSimpleName(), configuration.getClass().getSimpleName()));
         }
-        PcapReplayAddress address = new PcapReplayAddress(pcapFile);
-        return new PcapReplayChannelFactory(address);
-    }
 
-    @Override
-    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
-        return DefaultPcapReplayTransportConfiguration.class;
+        LOGGER.debug("Creating PCAP replay transport for file: {}", pcapReplayTransportConfiguration.pcapFile);
+        return new PcapReplayTransportInstance(pcapReplayTransportConfiguration, auditLog);
     }
 
 }

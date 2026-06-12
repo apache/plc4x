@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLastKeyServer(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastKeyServer) GetTypeName() string {
+func (m *_BACnetConstructedDataLastKeyServer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastKeyServer"
 }
 

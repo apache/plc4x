@@ -288,7 +288,7 @@ func CastBACnetEventLogRecordLogDatumNotification(structType any) BACnetEventLog
 	return nil
 }
 
-func (m *_BACnetEventLogRecordLogDatumNotification) GetTypeName() string {
+func (m *_BACnetEventLogRecordLogDatumNotification) GetPlx4xTypeName() string {
 	return "BACnetEventLogRecordLogDatumNotification"
 }
 

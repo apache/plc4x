@@ -217,7 +217,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4x_spi_context ctx
 
                 // Simple Field (value)
                 char* value = "";
-                _res = plc4c_spi_read_string(readBuffer, 8, "UTF-8", (char**) &value);
+                _res = plc4c_spi_read_string(readBuffer, 8, "UTF8", (char**) &value);
                 if(_res != OK) {
                     return _res;
                 }
@@ -228,7 +228,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4x_spi_context ctx
 
                 // Simple Field (value)
                 char* value = "";
-                _res = plc4c_spi_read_string(readBuffer, 16, "UTF-16", (char**) &value);
+                _res = plc4c_spi_read_string(readBuffer, 16, "UTF16", (char**) &value);
                 if(_res != OK) {
                     return _res;
                 }
@@ -440,14 +440,14 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_serialize(plc4x_spi_context
         } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_CHAR) { /* STRING */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (const uint8_t*) &(*data_item)->data.string_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF8", (const uint8_t*) &(*data_item)->data.string_value);
                     if(_res != OK) {
                         return _res;
                     }
         } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WCHAR) { /* STRING */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (const uint8_t*) &(*data_item)->data.string_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF16", (const uint8_t*) &(*data_item)->data.string_value);
                     if(_res != OK) {
                         return _res;
                     }

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataValidSamples(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataValidSamples) GetTypeName() string {
+func (m *_BACnetConstructedDataValidSamples) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataValidSamples"
 }
 

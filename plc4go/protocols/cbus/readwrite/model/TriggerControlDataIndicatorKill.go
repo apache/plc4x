@@ -176,7 +176,7 @@ func CastTriggerControlDataIndicatorKill(structType any) TriggerControlDataIndic
 	return nil
 }
 
-func (m *_TriggerControlDataIndicatorKill) GetTypeName() string {
+func (m *_TriggerControlDataIndicatorKill) GetPlx4xTypeName() string {
 	return "TriggerControlDataIndicatorKill"
 }
 

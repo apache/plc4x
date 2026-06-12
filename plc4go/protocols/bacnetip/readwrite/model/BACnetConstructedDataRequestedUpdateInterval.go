@@ -246,7 +246,7 @@ func CastBACnetConstructedDataRequestedUpdateInterval(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataRequestedUpdateInterval) GetTypeName() string {
+func (m *_BACnetConstructedDataRequestedUpdateInterval) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRequestedUpdateInterval"
 }
 

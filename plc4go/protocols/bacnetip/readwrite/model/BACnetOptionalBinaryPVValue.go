@@ -221,7 +221,7 @@ func CastBACnetOptionalBinaryPVValue(structType any) BACnetOptionalBinaryPVValue
 	return nil
 }
 
-func (m *_BACnetOptionalBinaryPVValue) GetTypeName() string {
+func (m *_BACnetOptionalBinaryPVValue) GetPlx4xTypeName() string {
 	return "BACnetOptionalBinaryPVValue"
 }
 

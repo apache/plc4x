@@ -211,7 +211,7 @@ func CastBACnetConstructedDataReasonForDisable(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataReasonForDisable) GetTypeName() string {
+func (m *_BACnetConstructedDataReasonForDisable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReasonForDisable"
 }
 

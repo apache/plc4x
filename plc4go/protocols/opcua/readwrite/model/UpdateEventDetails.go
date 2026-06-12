@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -288,7 +289,7 @@ func CastUpdateEventDetails(structType any) UpdateEventDetails {
 	return nil
 }
 
-func (m *_UpdateEventDetails) GetTypeName() string {
+func (m *_UpdateEventDetails) GetPlx4xTypeName() string {
 	return "UpdateEventDetails"
 }
 
@@ -333,31 +334,31 @@ func (m *_UpdateEventDetails) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 	m.NodeId = nodeId
 
-	performInsertReplace, err := ReadEnumField[PerformUpdateType](ctx, "performInsertReplace", "PerformUpdateType", ReadEnum(PerformUpdateTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	performInsertReplace, err := ReadEnumField[PerformUpdateType](ctx, "performInsertReplace", "PerformUpdateType", ReadEnum(PerformUpdateTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'performInsertReplace' field"))
 	}
 	m.PerformInsertReplace = performInsertReplace
 
-	filter, err := ReadSimpleField[EventFilter](ctx, "filter", ReadComplex[EventFilter](ExtensionObjectDefinitionParseWithBufferProducer[EventFilter]((int32)(int32(727))), readBuffer))
+	filter, err := ReadSimpleField[EventFilter](ctx, "filter", ReadComplex[EventFilter](ExtensionObjectDefinitionParseWithBufferProducer[EventFilter]((int32)(int32(727))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filter' field"))
 	}
 	m.Filter = filter
 
-	noOfEventData, err := ReadImplicitField[int32](ctx, "noOfEventData", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEventData, err := ReadImplicitField[int32](ctx, "noOfEventData", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEventData' field"))
 	}
 	_ = noOfEventData
 
-	eventData, err := ReadCountArrayField[HistoryEventFieldList](ctx, "eventData", ReadComplex[HistoryEventFieldList](ExtensionObjectDefinitionParseWithBufferProducer[HistoryEventFieldList]((int32)(int32(922))), readBuffer), uint64(noOfEventData))
+	eventData, err := ReadCountArrayField[HistoryEventFieldList](ctx, "eventData", ReadComplex[HistoryEventFieldList](ExtensionObjectDefinitionParseWithBufferProducer[HistoryEventFieldList]((int32)(int32(922))), readBuffer), uint64(noOfEventData), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventData' field"))
 	}
@@ -388,23 +389,23 @@ func (m *_UpdateEventDetails) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for UpdateEventDetails")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		if err := WriteSimpleEnumField[PerformUpdateType](ctx, "performInsertReplace", "PerformUpdateType", m.GetPerformInsertReplace(), WriteEnum[PerformUpdateType, uint32](PerformUpdateType.GetValue, PerformUpdateType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[PerformUpdateType](ctx, "performInsertReplace", "PerformUpdateType", m.GetPerformInsertReplace(), WriteEnum[PerformUpdateType, uint32](PerformUpdateType.GetValue, PerformUpdateType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'performInsertReplace' field")
 		}
 
-		if err := WriteSimpleField[EventFilter](ctx, "filter", m.GetFilter(), WriteComplex[EventFilter](writeBuffer)); err != nil {
+		if err := WriteSimpleField[EventFilter](ctx, "filter", m.GetFilter(), WriteComplex[EventFilter](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'filter' field")
 		}
 		noOfEventData := int32(utils.InlineIf(bool((m.GetEventData()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEventData()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfEventData", noOfEventData, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfEventData", noOfEventData, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEventData' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "eventData", m.GetEventData(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "eventData", m.GetEventData(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventData' field")
 		}
 

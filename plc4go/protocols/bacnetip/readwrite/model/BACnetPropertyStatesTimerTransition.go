@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesTimerTransition(structType any) BACnetPropertyState
 	return nil
 }
 
-func (m *_BACnetPropertyStatesTimerTransition) GetTypeName() string {
+func (m *_BACnetPropertyStatesTimerTransition) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesTimerTransition"
 }
 

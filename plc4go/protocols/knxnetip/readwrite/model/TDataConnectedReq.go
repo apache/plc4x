@@ -180,7 +180,7 @@ func CastTDataConnectedReq(structType any) TDataConnectedReq {
 	return nil
 }
 
-func (m *_TDataConnectedReq) GetTypeName() string {
+func (m *_TDataConnectedReq) GetPlx4xTypeName() string {
 	return "TDataConnectedReq"
 }
 

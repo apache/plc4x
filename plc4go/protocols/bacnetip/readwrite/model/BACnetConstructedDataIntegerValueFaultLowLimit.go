@@ -246,7 +246,7 @@ func CastBACnetConstructedDataIntegerValueFaultLowLimit(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataIntegerValueFaultLowLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataIntegerValueFaultLowLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntegerValueFaultLowLimit"
 }
 

@@ -257,7 +257,7 @@ func CastBACnetPropertyWriteDefinition(structType any) BACnetPropertyWriteDefini
 	return nil
 }
 
-func (m *_BACnetPropertyWriteDefinition) GetTypeName() string {
+func (m *_BACnetPropertyWriteDefinition) GetPlx4xTypeName() string {
 	return "BACnetPropertyWriteDefinition"
 }
 

@@ -180,7 +180,7 @@ func CastApduDataExtLinkRead(structType any) ApduDataExtLinkRead {
 	return nil
 }
 
-func (m *_ApduDataExtLinkRead) GetTypeName() string {
+func (m *_ApduDataExtLinkRead) GetPlx4xTypeName() string {
 	return "ApduDataExtLinkRead"
 }
 

@@ -232,7 +232,7 @@ func CastCipWriteResponse(structType any) CipWriteResponse {
 	return nil
 }
 
-func (m *_CipWriteResponse) GetTypeName() string {
+func (m *_CipWriteResponse) GetPlx4xTypeName() string {
 	return "CipWriteResponse"
 }
 

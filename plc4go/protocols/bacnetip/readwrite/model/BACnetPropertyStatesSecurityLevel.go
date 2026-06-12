@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesSecurityLevel(structType any) BACnetPropertyStatesS
 	return nil
 }
 
-func (m *_BACnetPropertyStatesSecurityLevel) GetTypeName() string {
+func (m *_BACnetPropertyStatesSecurityLevel) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesSecurityLevel"
 }
 

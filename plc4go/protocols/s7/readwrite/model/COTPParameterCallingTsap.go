@@ -207,7 +207,7 @@ func CastCOTPParameterCallingTsap(structType any) COTPParameterCallingTsap {
 	return nil
 }
 
-func (m *_COTPParameterCallingTsap) GetTypeName() string {
+func (m *_COTPParameterCallingTsap) GetPlx4xTypeName() string {
 	return "COTPParameterCallingTsap"
 }
 

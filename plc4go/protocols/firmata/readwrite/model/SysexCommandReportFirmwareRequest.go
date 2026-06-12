@@ -184,7 +184,7 @@ func CastSysexCommandReportFirmwareRequest(structType any) SysexCommandReportFir
 	return nil
 }
 
-func (m *_SysexCommandReportFirmwareRequest) GetTypeName() string {
+func (m *_SysexCommandReportFirmwareRequest) GetPlx4xTypeName() string {
 	return "SysexCommandReportFirmwareRequest"
 }
 

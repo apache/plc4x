@@ -180,7 +180,7 @@ func CastApduControlConnect(structType any) ApduControlConnect {
 	return nil
 }
 
-func (m *_ApduControlConnect) GetTypeName() string {
+func (m *_ApduControlConnect) GetPlx4xTypeName() string {
 	return "ApduControlConnect"
 }
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -258,7 +259,7 @@ func CastBrowsePath(structType any) BrowsePath {
 	return nil
 }
 
-func (m *_BrowsePath) GetTypeName() string {
+func (m *_BrowsePath) GetPlx4xTypeName() string {
 	return "BrowsePath"
 }
 
@@ -289,13 +290,13 @@ func (m *_BrowsePath) parse(ctx context.Context, readBuffer utils.ReadBuffer, pa
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	startingNode, err := ReadSimpleField[NodeId](ctx, "startingNode", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	startingNode, err := ReadSimpleField[NodeId](ctx, "startingNode", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingNode' field"))
 	}
 	m.StartingNode = startingNode
 
-	relativePath, err := ReadSimpleField[RelativePath](ctx, "relativePath", ReadComplex[RelativePath](ExtensionObjectDefinitionParseWithBufferProducer[RelativePath]((int32)(int32(542))), readBuffer))
+	relativePath, err := ReadSimpleField[RelativePath](ctx, "relativePath", ReadComplex[RelativePath](ExtensionObjectDefinitionParseWithBufferProducer[RelativePath]((int32)(int32(542))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relativePath' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_BrowsePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(pushErr, "Error pushing for BrowsePath")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "startingNode", m.GetStartingNode(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "startingNode", m.GetStartingNode(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'startingNode' field")
 		}
 
-		if err := WriteSimpleField[RelativePath](ctx, "relativePath", m.GetRelativePath(), WriteComplex[RelativePath](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RelativePath](ctx, "relativePath", m.GetRelativePath(), WriteComplex[RelativePath](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'relativePath' field")
 		}
 

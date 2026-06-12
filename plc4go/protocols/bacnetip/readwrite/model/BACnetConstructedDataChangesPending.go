@@ -246,7 +246,7 @@ func CastBACnetConstructedDataChangesPending(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataChangesPending) GetTypeName() string {
+func (m *_BACnetConstructedDataChangesPending) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataChangesPending"
 }
 

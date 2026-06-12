@@ -40,9 +40,9 @@
   <modules>
     <module>capture-replay</module>
     <module>connection-cache</module>
-    <module>opm</module>
-    <module>scraper</module>
-    <module>scraper-ng</module>
+    <!--module>opm</module-->
+    <!--module>scraper</module>
+    <module>scraper-ng</module-->
   </modules>
 
 </project>

@@ -312,7 +312,7 @@ func CastBACnetConfirmedServiceRequestRemoveListElement(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestRemoveListElement"
 }
 

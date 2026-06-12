@@ -211,7 +211,7 @@ func CastBACnetAddressBinding(structType any) BACnetAddressBinding {
 	return nil
 }
 
-func (m *_BACnetAddressBinding) GetTypeName() string {
+func (m *_BACnetAddressBinding) GetPlx4xTypeName() string {
 	return "BACnetAddressBinding"
 }
 

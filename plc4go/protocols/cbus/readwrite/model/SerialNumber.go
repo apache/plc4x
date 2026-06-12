@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -204,7 +206,7 @@ func CastSerialNumber(structType any) SerialNumber {
 	return nil
 }
 
-func (m *_SerialNumber) GetTypeName() string {
+func (m *_SerialNumber) GetPlx4xTypeName() string {
 	return "SerialNumber"
 }
 
@@ -231,7 +233,7 @@ func (m *_SerialNumber) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func SerialNumberParse(ctx context.Context, theBytes []byte) (SerialNumber, error) {
-	return SerialNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return SerialNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func SerialNumberParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SerialNumber, error) {
@@ -257,25 +259,25 @@ func (m *_SerialNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	octet1, err := ReadSimpleField(ctx, "octet1", ReadByte(readBuffer, 8))
+	octet1, err := ReadSimpleField(ctx, "octet1", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet1' field"))
 	}
 	m.Octet1 = octet1
 
-	octet2, err := ReadSimpleField(ctx, "octet2", ReadByte(readBuffer, 8))
+	octet2, err := ReadSimpleField(ctx, "octet2", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet2' field"))
 	}
 	m.Octet2 = octet2
 
-	octet3, err := ReadSimpleField(ctx, "octet3", ReadByte(readBuffer, 8))
+	octet3, err := ReadSimpleField(ctx, "octet3", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet3' field"))
 	}
 	m.Octet3 = octet3
 
-	octet4, err := ReadSimpleField(ctx, "octet4", ReadByte(readBuffer, 8))
+	octet4, err := ReadSimpleField(ctx, "octet4", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet4' field"))
 	}
@@ -289,7 +291,7 @@ func (m *_SerialNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 }
 
 func (m *_SerialNumber) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -305,19 +307,19 @@ func (m *_SerialNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for SerialNumber")
 	}
 
-	if err := WriteSimpleField[byte](ctx, "octet1", m.GetOctet1(), WriteByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[byte](ctx, "octet1", m.GetOctet1(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'octet1' field")
 	}
 
-	if err := WriteSimpleField[byte](ctx, "octet2", m.GetOctet2(), WriteByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[byte](ctx, "octet2", m.GetOctet2(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'octet2' field")
 	}
 
-	if err := WriteSimpleField[byte](ctx, "octet3", m.GetOctet3(), WriteByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[byte](ctx, "octet3", m.GetOctet3(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'octet3' field")
 	}
 
-	if err := WriteSimpleField[byte](ctx, "octet4", m.GetOctet4(), WriteByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[byte](ctx, "octet4", m.GetOctet4(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'octet4' field")
 	}
 

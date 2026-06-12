@@ -224,7 +224,7 @@ func CastBACnetLightingTransitionTagged(structType any) BACnetLightingTransition
 	return nil
 }
 
-func (m *_BACnetLightingTransitionTagged) GetTypeName() string {
+func (m *_BACnetLightingTransitionTagged) GetPlx4xTypeName() string {
 	return "BACnetLightingTransitionTagged"
 }
 

@@ -19,14 +19,14 @@
 package org.apache.plc4x.java.modbus.tcp.config;
 
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
-import org.apache.plc4x.java.spi.configuration.annotations.Since;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.Since;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
 
-public class ModbusTcpConfiguration implements PlcConnectionConfiguration {
+public class ModbusTcpConfiguration implements Configuration {
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(5_000)

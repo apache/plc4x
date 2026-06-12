@@ -161,7 +161,7 @@ func CastTwoByteNodeId(structType any) TwoByteNodeId {
 	return nil
 }
 
-func (m *_TwoByteNodeId) GetTypeName() string {
+func (m *_TwoByteNodeId) GetPlx4xTypeName() string {
 	return "TwoByteNodeId"
 }
 

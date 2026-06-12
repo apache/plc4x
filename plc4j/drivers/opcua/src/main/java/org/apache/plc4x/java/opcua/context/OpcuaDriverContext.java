@@ -32,8 +32,6 @@ import org.apache.plc4x.java.opcua.security.CertificateVerifier;
 import org.apache.plc4x.java.opcua.security.PermissiveCertificateVerifier;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.opcua.security.TrustStoreCertificateVerifier;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.context.DriverContext;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +46,12 @@ import java.security.cert.X509Certificate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OpcuaDriverContext implements DriverContext, HasConfiguration<OpcuaConfiguration> {
+/**
+ * Per-connection OPC UA state. Used to be wired up as the old SPI's
+ * {@code DriverContext} + {@code HasConfiguration<OpcuaConfiguration>}; with
+ * the new SPI the connection just owns one of these directly.
+ */
+public class OpcuaDriverContext {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaDriverContext.class);
 
@@ -131,7 +134,45 @@ public class OpcuaDriverContext implements DriverContext, HasConfiguration<Opcua
         return certificateKeyPair;
     }
 
-    @Override
+    /**
+     * Initialises the per-connection state from the URL components the new SPI
+     * already resolved (the {@code protocol-code}/{@code transport-code}/
+     * {@code transport-config} fields on {@link OpcuaConfiguration} are
+     * never populated by the framework — they're URL components, not
+     * configuration parameters).
+     *
+     * @param transportCode   resolved transport code ({@code "tcp"}, etc.)
+     * @param host            remote host (from the transport's resolved socket address)
+     * @param port            remote port as a string, or {@code null}
+     * @param transportEndpoint path part of the URL after host:port, may be empty
+     */
+    public void initialize(String transportCode, String host, String port, String transportEndpoint,
+                           OpcuaConfiguration configuration) {
+        this.code = transportCode;
+        this.host = host;
+        this.port = port;
+        this.transportEndpoint = transportEndpoint != null ? transportEndpoint : "";
+
+        String portAddition = port != null ? ":" + port : "";
+        this.endpoint = "opc." + transportCode + "://" + host + portAddition + this.transportEndpoint;
+
+        if (configuration.getSecurityPolicy() != null && configuration.getSecurityPolicy() != SecurityPolicy.NONE) {
+            try {
+                openKeyStore(configuration);
+            } catch (IOException | GeneralSecurityException e) {
+                throw new PlcRuntimeException("Unable to open keystore, please confirm you have the correct permissions", e);
+            }
+        }
+    }
+
+    /**
+     * @deprecated since 0.14 — superseded by
+     * {@link #initialize(String, String, String, String, OpcuaConfiguration)}. The
+     * URL-derived parameters this method reads from {@link OpcuaConfiguration}
+     * are not populated by the SPI; kept here so the legacy URL-pattern unit
+     * tests keep compiling.
+     */
+    @Deprecated
     public void setConfiguration(OpcuaConfiguration configuration) {
         Matcher matcher = getMatcher(configuration);
         code = matcher.group("transportCode");

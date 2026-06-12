@@ -222,7 +222,7 @@ func CastVariantDiagnosticInfo(structType any) VariantDiagnosticInfo {
 	return nil
 }
 
-func (m *_VariantDiagnosticInfo) GetTypeName() string {
+func (m *_VariantDiagnosticInfo) GetPlx4xTypeName() string {
 	return "VariantDiagnosticInfo"
 }
 

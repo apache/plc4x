@@ -258,7 +258,7 @@ func CastBACnetConstructedDataTags(structType any) BACnetConstructedDataTags {
 	return nil
 }
 
-func (m *_BACnetConstructedDataTags) GetTypeName() string {
+func (m *_BACnetConstructedDataTags) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTags"
 }
 

@@ -293,7 +293,7 @@ func CastConnectionRequest(structType any) ConnectionRequest {
 	return nil
 }
 
-func (m *_ConnectionRequest) GetTypeName() string {
+func (m *_ConnectionRequest) GetPlx4xTypeName() string {
 	return "ConnectionRequest"
 }
 
@@ -327,19 +327,19 @@ func (m *_ConnectionRequest) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	hpaiDiscoveryEndpoint, err := ReadSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiDiscoveryEndpoint", ReadComplex[HPAIDiscoveryEndpoint](HPAIDiscoveryEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	hpaiDiscoveryEndpoint, err := ReadSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiDiscoveryEndpoint", ReadComplex[HPAIDiscoveryEndpoint](HPAIDiscoveryEndpointParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiDiscoveryEndpoint' field"))
 	}
 	m.HpaiDiscoveryEndpoint = hpaiDiscoveryEndpoint
 
-	hpaiDataEndpoint, err := ReadSimpleField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", ReadComplex[HPAIDataEndpoint](HPAIDataEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	hpaiDataEndpoint, err := ReadSimpleField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", ReadComplex[HPAIDataEndpoint](HPAIDataEndpointParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiDataEndpoint' field"))
 	}
 	m.HpaiDataEndpoint = hpaiDataEndpoint
 
-	connectionRequestInformation, err := ReadSimpleField[ConnectionRequestInformation](ctx, "connectionRequestInformation", ReadComplex[ConnectionRequestInformation](ConnectionRequestInformationParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	connectionRequestInformation, err := ReadSimpleField[ConnectionRequestInformation](ctx, "connectionRequestInformation", ReadComplex[ConnectionRequestInformation](ConnectionRequestInformationParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionRequestInformation' field"))
 	}
@@ -370,15 +370,15 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ConnectionRequest")
 		}
 
-		if err := WriteSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiDiscoveryEndpoint", m.GetHpaiDiscoveryEndpoint(), WriteComplex[HPAIDiscoveryEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiDiscoveryEndpoint", m.GetHpaiDiscoveryEndpoint(), WriteComplex[HPAIDiscoveryEndpoint](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'hpaiDiscoveryEndpoint' field")
 		}
 
-		if err := WriteSimpleField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", m.GetHpaiDataEndpoint(), WriteComplex[HPAIDataEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", m.GetHpaiDataEndpoint(), WriteComplex[HPAIDataEndpoint](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'hpaiDataEndpoint' field")
 		}
 
-		if err := WriteSimpleField[ConnectionRequestInformation](ctx, "connectionRequestInformation", m.GetConnectionRequestInformation(), WriteComplex[ConnectionRequestInformation](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[ConnectionRequestInformation](ctx, "connectionRequestInformation", m.GetConnectionRequestInformation(), WriteComplex[ConnectionRequestInformation](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'connectionRequestInformation' field")
 		}
 

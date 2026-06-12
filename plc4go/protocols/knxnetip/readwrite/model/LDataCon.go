@@ -255,7 +255,7 @@ func CastLDataCon(structType any) LDataCon {
 	return nil
 }
 
-func (m *_LDataCon) GetTypeName() string {
+func (m *_LDataCon) GetPlx4xTypeName() string {
 	return "LDataCon"
 }
 

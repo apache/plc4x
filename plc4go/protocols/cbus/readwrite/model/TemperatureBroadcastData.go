@@ -214,7 +214,7 @@ func CastTemperatureBroadcastData(structType any) TemperatureBroadcastData {
 	return nil
 }
 
-func (m *_TemperatureBroadcastData) GetTypeName() string {
+func (m *_TemperatureBroadcastData) GetPlx4xTypeName() string {
 	return "TemperatureBroadcastData"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLargeAnalogValueCOVIncrement(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueCOVIncrement"
 }
 

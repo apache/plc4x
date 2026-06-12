@@ -302,7 +302,7 @@ func CastAirConditioningDataSetHumiditySetbackLimit(structType any) AirCondition
 	return nil
 }
 
-func (m *_AirConditioningDataSetHumiditySetbackLimit) GetTypeName() string {
+func (m *_AirConditioningDataSetHumiditySetbackLimit) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetHumiditySetbackLimit"
 }
 

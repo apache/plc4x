@@ -193,7 +193,7 @@ func CastBACnetRouterEntryStatusTagged(structType any) BACnetRouterEntryStatusTa
 	return nil
 }
 
-func (m *_BACnetRouterEntryStatusTagged) GetTypeName() string {
+func (m *_BACnetRouterEntryStatusTagged) GetPlx4xTypeName() string {
 	return "BACnetRouterEntryStatusTagged"
 }
 

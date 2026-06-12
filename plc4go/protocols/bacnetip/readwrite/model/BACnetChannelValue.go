@@ -432,7 +432,7 @@ func CastBACnetChannelValue(structType any) BACnetChannelValue {
 	return nil
 }
 
-func (m *_BACnetChannelValue) GetTypeName() string {
+func (m *_BACnetChannelValue) GetPlx4xTypeName() string {
 	return "BACnetChannelValue"
 }
 

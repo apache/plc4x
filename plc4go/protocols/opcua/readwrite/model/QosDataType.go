@@ -180,7 +180,7 @@ func CastQosDataType(structType any) QosDataType {
 	return nil
 }
 
-func (m *_QosDataType) GetTypeName() string {
+func (m *_QosDataType) GetPlx4xTypeName() string {
 	return "QosDataType"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMaxSegmentsAccepted(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetTypeName() string {
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaxSegmentsAccepted"
 }
 

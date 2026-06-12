@@ -189,7 +189,7 @@ func CastKnxAddress(structType any) KnxAddress {
 	return nil
 }
 
-func (m *_KnxAddress) GetTypeName() string {
+func (m *_KnxAddress) GetPlx4xTypeName() string {
 	return "KnxAddress"
 }
 

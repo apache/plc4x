@@ -246,7 +246,7 @@ func CastBACnetConstructedDataRestoreCompletionTime(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataRestoreCompletionTime) GetTypeName() string {
+func (m *_BACnetConstructedDataRestoreCompletionTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRestoreCompletionTime"
 }
 

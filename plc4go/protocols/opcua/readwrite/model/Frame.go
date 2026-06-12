@@ -180,7 +180,7 @@ func CastFrame(structType any) Frame {
 	return nil
 }
 
-func (m *_Frame) GetTypeName() string {
+func (m *_Frame) GetPlx4xTypeName() string {
 	return "Frame"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataEventAlgorithmInhibit(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetTypeName() string {
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventAlgorithmInhibit"
 }
 

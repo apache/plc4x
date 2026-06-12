@@ -621,9 +621,9 @@ func ParseDriverTestsuite(t *testing.T, node xmldom.Node, parser XmlParser, root
 		switch child.Name {
 		case "name":
 			testsuiteName = child.Text
-		case "protocolName":
+		case "protocol-name":
 			protocolName = child.Text
-		case "outputFlavor":
+		case "output-flavor":
 			outputFlavor = child.Text
 		case "driver-name":
 			driverName = child.Text

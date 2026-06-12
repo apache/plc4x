@@ -288,7 +288,7 @@ func CastBACnetConstructedDataEventTimeStamps(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventTimeStamps) GetTypeName() string {
+func (m *_BACnetConstructedDataEventTimeStamps) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventTimeStamps"
 }
 

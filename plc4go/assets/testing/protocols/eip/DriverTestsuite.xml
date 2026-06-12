@@ -22,8 +22,8 @@
 
   <name>EIP</name>
 
-  <protocolName>eip</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>eip</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <driver-name>eip</driver-name>
   <driver-parameters>

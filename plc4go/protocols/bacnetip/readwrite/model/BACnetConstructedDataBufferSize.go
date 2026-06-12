@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBufferSize(structType any) BACnetConstructedDataBu
 	return nil
 }
 
-func (m *_BACnetConstructedDataBufferSize) GetTypeName() string {
+func (m *_BACnetConstructedDataBufferSize) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBufferSize"
 }
 

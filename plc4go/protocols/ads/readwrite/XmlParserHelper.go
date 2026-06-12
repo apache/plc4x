@@ -45,8 +45,6 @@ func init() {
 
 func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (any, error) {
 	switch typeName {
-	case "AmsSerialFrame":
-		return AmsSerialFrameParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DataItem":
 		plcValueType, _ := api.PlcValueTypeByName(parserArguments[0])
 		parsedInt1, err := strconv.ParseInt(parserArguments[1], 10, 32)
@@ -55,8 +53,6 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		}
 		stringLength := int32(parsedInt1)
 		return DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), plcValueType, stringLength)
-	case "AdsTableSizes":
-		return AdsTableSizesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsMultiRequestItem":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
@@ -64,6 +60,33 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		}
 		indexGroup := uint32(parsedUint0)
 		return AdsMultiRequestItemParseWithBuffer[AdsMultiRequestItem](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), indexGroup)
+	case "AdsExtendedInfoEntry":
+		dataType, _ := AdsDatatypeIdByName(parserArguments[0])
+		return AdsExtendedInfoEntryParseWithBuffer[AdsExtendedInfoEntry](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType)
+	case "AmsTCPPacket":
+		return AmsTCPPacketParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AmsPacket":
+		return AmsPacketParseWithBuffer[AmsPacket](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDataTypeAttributes":
+		return AdsDataTypeAttributesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsExtendedInfos":
+		dataType, _ := AdsDatatypeIdByName(parserArguments[0])
+		return AdsExtendedInfosParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType)
+	case "AdsString":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		stringLength := uint16(parsedUint0)
+		return AdsStringParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), stringLength)
+	case "AmsSerialFrame":
+		return AmsSerialFrameParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsMethodInfo":
+		return AdsMethodInfoParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsMethodInfos":
+		return AdsMethodInfosParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsTableSizes":
+		return AdsTableSizesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsSerialAcknowledgeFrame":
 		return AmsSerialAcknowledgeFrameParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsDataTypeArrayInfo":
@@ -76,14 +99,14 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		return AdsStampHeaderParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsSerialResetFrame":
 		return AmsSerialResetFrameParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsMethodParam":
+		return AdsMethodParamParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsNotificationSample":
 		return AdsNotificationSampleParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsSymbolTableEntry":
 		return AdsSymbolTableEntryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AmsTCPPacket":
-		return AmsTCPPacketParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AmsPacket":
-		return AmsPacketParseWithBuffer[AmsPacket](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsAttributeEntry":
+		return AdsAttributeEntryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

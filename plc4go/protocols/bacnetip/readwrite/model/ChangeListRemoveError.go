@@ -258,7 +258,7 @@ func CastChangeListRemoveError(structType any) ChangeListRemoveError {
 	return nil
 }
 
-func (m *_ChangeListRemoveError) GetTypeName() string {
+func (m *_ChangeListRemoveError) GetPlx4xTypeName() string {
 	return "ChangeListRemoveError"
 }
 

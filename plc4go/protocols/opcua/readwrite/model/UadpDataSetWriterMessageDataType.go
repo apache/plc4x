@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -252,7 +253,7 @@ func CastUadpDataSetWriterMessageDataType(structType any) UadpDataSetWriterMessa
 	return nil
 }
 
-func (m *_UadpDataSetWriterMessageDataType) GetTypeName() string {
+func (m *_UadpDataSetWriterMessageDataType) GetPlx4xTypeName() string {
 	return "UadpDataSetWriterMessageDataType"
 }
 
@@ -289,25 +290,25 @@ func (m *_UadpDataSetWriterMessageDataType) parse(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dataSetMessageContentMask, err := ReadEnumField[UadpDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "UadpDataSetMessageContentMask", ReadEnum(UadpDataSetMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	dataSetMessageContentMask, err := ReadEnumField[UadpDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "UadpDataSetMessageContentMask", ReadEnum(UadpDataSetMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetMessageContentMask' field"))
 	}
 	m.DataSetMessageContentMask = dataSetMessageContentMask
 
-	configuredSize, err := ReadSimpleField(ctx, "configuredSize", ReadUnsignedShort(readBuffer, uint8(16)))
+	configuredSize, err := ReadSimpleField(ctx, "configuredSize", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configuredSize' field"))
 	}
 	m.ConfiguredSize = configuredSize
 
-	networkMessageNumber, err := ReadSimpleField(ctx, "networkMessageNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	networkMessageNumber, err := ReadSimpleField(ctx, "networkMessageNumber", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkMessageNumber' field"))
 	}
 	m.NetworkMessageNumber = networkMessageNumber
 
-	dataSetOffset, err := ReadSimpleField(ctx, "dataSetOffset", ReadUnsignedShort(readBuffer, uint8(16)))
+	dataSetOffset, err := ReadSimpleField(ctx, "dataSetOffset", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetOffset' field"))
 	}
@@ -338,19 +339,19 @@ func (m *_UadpDataSetWriterMessageDataType) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for UadpDataSetWriterMessageDataType")
 		}
 
-		if err := WriteSimpleEnumField[UadpDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "UadpDataSetMessageContentMask", m.GetDataSetMessageContentMask(), WriteEnum[UadpDataSetMessageContentMask, uint32](UadpDataSetMessageContentMask.GetValue, UadpDataSetMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[UadpDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "UadpDataSetMessageContentMask", m.GetDataSetMessageContentMask(), WriteEnum[UadpDataSetMessageContentMask, uint32](UadpDataSetMessageContentMask.GetValue, UadpDataSetMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetMessageContentMask' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "configuredSize", m.GetConfiguredSize(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "configuredSize", m.GetConfiguredSize(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'configuredSize' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "networkMessageNumber", m.GetNetworkMessageNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "networkMessageNumber", m.GetNetworkMessageNumber(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkMessageNumber' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "dataSetOffset", m.GetDataSetOffset(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "dataSetOffset", m.GetDataSetOffset(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetOffset' field")
 		}
 

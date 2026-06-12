@@ -18,15 +18,14 @@
  */
 package org.apache.plc4x.java.eip.base.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
-import org.apache.plc4x.java.spi.configuration.annotations.Since;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.Since;
+import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
-public class EIPConfiguration implements PlcConnectionConfiguration {
+public class EIPConfiguration implements Configuration {
 
     @ConfigurationParameter
     @IntDefaultValue(1)
@@ -49,6 +48,20 @@ public class EIPConfiguration implements PlcConnectionConfiguration {
     @Since("0.13.0")
     private boolean forceUnconnectedOperation = false;
 
+    @ConfigurationParameter("request-timeout")
+    @IntDefaultValue(10_000)
+    @Description("Default timeout for all types of requests.")
+    private int requestTimeout;
+
+    @ConfigurationParameter("communication-path")
+    @Description("The communication path allows for connection routing across multiple backplanes. " +
+        "It uses a common format found in Logix controllers.\n" +
+        "It consists of pairs of values, each pair begins with either 1 (Backplane) or 2 (Ethernet), " +
+        "followed by a slot in the case of a backplane address, or if using Ethernet an ip address. " +
+        "e.g. [1,4,2,192.168.0.1,1,1] - Routes to the 4th slot in the first rack, which is an Ethernet " +
+        "module, it then connects to the address 192.168.0.1, then finds the module in slot 1.")
+    private String communicationPath;
+
     public int getBackplane() {
         return backplane;
     }
@@ -65,12 +78,12 @@ public class EIPConfiguration implements PlcConnectionConfiguration {
         this.slot = slot;
     }
 
-    public ByteOrder getByteOrder() {
-        return this.bigEndian ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
+    public boolean isBigEndian() {
+        return bigEndian;
     }
 
-    public void setByteOrder(ByteOrder byteOrder) {
-        this.bigEndian = byteOrder == ByteOrder.BIG_ENDIAN;
+    public void setBigEndian(boolean bigEndian) {
+        this.bigEndian = bigEndian;
     }
 
     public boolean isForceUnconnectedOperation() {
@@ -79,6 +92,22 @@ public class EIPConfiguration implements PlcConnectionConfiguration {
 
     public void setForceUnconnectedOperation(boolean forceUnconnectedOperation) {
         this.forceUnconnectedOperation = forceUnconnectedOperation;
+    }
+
+    public int getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    public void setRequestTimeout(int requestTimeout) {
+        this.requestTimeout = requestTimeout;
+    }
+
+    public String getCommunicationPath() {
+        return communicationPath;
+    }
+
+    public void setCommunicationPath(String communicationPath) {
+        this.communicationPath = communicationPath;
     }
 
 }

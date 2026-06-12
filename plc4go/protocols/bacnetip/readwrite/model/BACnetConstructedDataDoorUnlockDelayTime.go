@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDoorUnlockDelayTime(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetTypeName() string {
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoorUnlockDelayTime"
 }
 

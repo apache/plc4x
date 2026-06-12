@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLightingCommand(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataLightingCommand) GetTypeName() string {
+func (m *_BACnetConstructedDataLightingCommand) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLightingCommand"
 }
 

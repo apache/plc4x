@@ -180,7 +180,7 @@ func CastCartesianCoordinates(structType any) CartesianCoordinates {
 	return nil
 }
 
-func (m *_CartesianCoordinates) GetTypeName() string {
+func (m *_CartesianCoordinates) GetPlx4xTypeName() string {
 	return "CartesianCoordinates"
 }
 

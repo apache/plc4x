@@ -263,7 +263,7 @@ func CastClockAndTimekeepingDataUpdateDate(structType any) ClockAndTimekeepingDa
 	return nil
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDate) GetTypeName() string {
+func (m *_ClockAndTimekeepingDataUpdateDate) GetPlx4xTypeName() string {
 	return "ClockAndTimekeepingDataUpdateDate"
 }
 

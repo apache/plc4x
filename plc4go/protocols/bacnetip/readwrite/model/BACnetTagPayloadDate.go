@@ -300,7 +300,7 @@ func CastBACnetTagPayloadDate(structType any) BACnetTagPayloadDate {
 	return nil
 }
 
-func (m *_BACnetTagPayloadDate) GetTypeName() string {
+func (m *_BACnetTagPayloadDate) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadDate"
 }
 

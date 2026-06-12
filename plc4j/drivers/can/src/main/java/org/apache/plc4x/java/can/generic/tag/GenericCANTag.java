@@ -21,6 +21,9 @@ package org.apache.plc4x.java.can.generic.tag;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.genericcan.readwrite.GenericCANDataType;
+import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,13 +31,10 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.genericcan.readwrite.GenericCANDataType;
-import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
-
 public class GenericCANTag implements PlcTag {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<nodeId>\\d+):(?<dataType>\\w+)(?:\\[(?<arraySize>\\d+)\\])?");
+    public static final Pattern ADDRESS_PATTERN =
+        Pattern.compile("(?<nodeId>\\d+):(?<dataType>\\w+)(?:\\[(?<arraySize>\\d+)\\])?");
     private final int nodeId;
     private final GenericCANDataType dataType;
     private final int arraySize;
@@ -52,7 +52,7 @@ public class GenericCANTag implements PlcTag {
     @Override
     public String getAddressString() {
         String address = nodeId + ":" + dataType.name();
-        if(arraySize != 1) {
+        if (arraySize != 1) {
             address += "[" + arraySize + "]";
         }
         return address;
@@ -65,7 +65,7 @@ public class GenericCANTag implements PlcTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(arraySize > 1) {
+        if (arraySize > 1) {
             return Collections.singletonList(new DefaultArrayInfo(0, arraySize));
         }
         return Collections.emptyList();
@@ -81,24 +81,23 @@ public class GenericCANTag implements PlcTag {
 
     public static Optional<GenericCANTag> matches(String tagQuery) {
         Matcher matcher = ADDRESS_PATTERN.matcher(tagQuery);
-        return matcher.matches() ? Optional.of(GenericCANTag.create(matcher)) : Optional.empty();
+        return matcher.matches() ? Optional.of(create(matcher)) : Optional.empty();
     }
 
     static GenericCANTag create(Matcher tagQuery) {
         int nodeId = Integer.parseInt(tagQuery.group("nodeId"));
         String type = tagQuery.group("dataType");
-
         GenericCANDataType dataType;
         try {
-             dataType = GenericCANDataType.valueOf(type);
+            dataType = GenericCANDataType.valueOf(type);
         } catch (IllegalArgumentException e) {
             throw new PlcRuntimeException("Could not create tag with data type " + type, e);
         }
         int arraySize = tagQuery.group("arraySize") != null ? Integer.parseInt(tagQuery.group("arraySize")) : 0;
-
         return new GenericCANTag(nodeId, dataType, arraySize);
     }
 
+    @Override
     public String toString() {
         return "GenericCANTag(" + nodeId + ":" + dataType.name() + (arraySize == 0 ? "" : "[" + arraySize + "]");
     }

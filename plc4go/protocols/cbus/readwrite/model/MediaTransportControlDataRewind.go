@@ -276,7 +276,7 @@ func CastMediaTransportControlDataRewind(structType any) MediaTransportControlDa
 	return nil
 }
 
-func (m *_MediaTransportControlDataRewind) GetTypeName() string {
+func (m *_MediaTransportControlDataRewind) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataRewind"
 }
 

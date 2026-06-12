@@ -207,7 +207,7 @@ func CastAdsDiscoveryBlockFingerprint(structType any) AdsDiscoveryBlockFingerpri
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockFingerprint) GetTypeName() string {
+func (m *_AdsDiscoveryBlockFingerprint) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockFingerprint"
 }
 

@@ -184,7 +184,7 @@ func CastBACnetConstructedDataAnalogInputAll(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogInputAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogInputAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogInputAll"
 }
 

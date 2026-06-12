@@ -388,7 +388,7 @@ func CastBACnetEventParameterChangeOfLifeSavety(structType any) BACnetEventParam
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavety) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfLifeSavety) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfLifeSavety"
 }
 

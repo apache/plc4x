@@ -184,7 +184,7 @@ func CastBACnetConstructedDataCharacterstringValueAll(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataCharacterstringValueAll) GetTypeName() string {
+func (m *_BACnetConstructedDataCharacterstringValueAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCharacterstringValueAll"
 }
 

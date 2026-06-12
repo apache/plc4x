@@ -135,7 +135,7 @@ func CastDecimalString(structType any) DecimalString {
 	return nil
 }
 
-func (m *_DecimalString) GetTypeName() string {
+func (m *_DecimalString) GetPlx4xTypeName() string {
 	return "DecimalString"
 }
 

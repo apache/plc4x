@@ -181,7 +181,7 @@ func CastApduDataUserMessage(structType any) ApduDataUserMessage {
 	return nil
 }
 
-func (m *_ApduDataUserMessage) GetTypeName() string {
+func (m *_ApduDataUserMessage) GetPlx4xTypeName() string {
 	return "ApduDataUserMessage"
 }
 

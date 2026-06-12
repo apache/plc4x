@@ -221,7 +221,7 @@ func CastBACnetLogDataLogDataEntryIntegerValue(structType any) BACnetLogDataLogD
 	return nil
 }
 
-func (m *_BACnetLogDataLogDataEntryIntegerValue) GetTypeName() string {
+func (m *_BACnetLogDataLogDataEntryIntegerValue) GetPlx4xTypeName() string {
 	return "BACnetLogDataLogDataEntryIntegerValue"
 }
 

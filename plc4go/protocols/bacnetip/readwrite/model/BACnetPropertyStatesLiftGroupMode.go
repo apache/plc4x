@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesLiftGroupMode(structType any) BACnetPropertyStatesL
 	return nil
 }
 
-func (m *_BACnetPropertyStatesLiftGroupMode) GetTypeName() string {
+func (m *_BACnetPropertyStatesLiftGroupMode) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesLiftGroupMode"
 }
 

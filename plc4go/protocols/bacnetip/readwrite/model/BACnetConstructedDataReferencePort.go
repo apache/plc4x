@@ -246,7 +246,7 @@ func CastBACnetConstructedDataReferencePort(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataReferencePort) GetTypeName() string {
+func (m *_BACnetConstructedDataReferencePort) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReferencePort"
 }
 

@@ -135,7 +135,7 @@ func CastNumericRange(structType any) NumericRange {
 	return nil
 }
 
-func (m *_NumericRange) GetTypeName() string {
+func (m *_NumericRange) GetPlx4xTypeName() string {
 	return "NumericRange"
 }
 

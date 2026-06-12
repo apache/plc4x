@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCOVUPeriod(structType any) BACnetConstructedDataCO
 	return nil
 }
 
-func (m *_BACnetConstructedDataCOVUPeriod) GetTypeName() string {
+func (m *_BACnetConstructedDataCOVUPeriod) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCOVUPeriod"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataChangeOfStateCount(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataChangeOfStateCount) GetTypeName() string {
+func (m *_BACnetConstructedDataChangeOfStateCount) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataChangeOfStateCount"
 }
 

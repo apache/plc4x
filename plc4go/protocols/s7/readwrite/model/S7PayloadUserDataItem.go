@@ -118,6 +118,8 @@ type S7PayloadUserDataItemBuilder interface {
 	AsS7PayloadUserDataItemCyclicServicesSubscribeRequest() S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
 	// AsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
 	AsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	// AsS7PayloadUserDataItemCyclicServicesSubscribeEmptyResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
+	AsS7PayloadUserDataItemCyclicServicesSubscribeEmptyResponse() S7PayloadUserDataItemCyclicServicesSubscribeEmptyResponseBuilder
 	// AsS7PayloadUserDataItemCyclicServicesSubscribeResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
 	AsS7PayloadUserDataItemCyclicServicesSubscribeResponse() S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder
 	// AsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
@@ -126,6 +128,18 @@ type S7PayloadUserDataItemBuilder interface {
 	AsS7PayloadUserDataItemCyclicServicesErrorResponse() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
 	// AsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
 	AsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse() S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder
+	// AsS7PayloadUserDataItemCpuFunctionListBlocksRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
+	AsS7PayloadUserDataItemCpuFunctionListBlocksRequest() S7PayloadUserDataItemCpuFunctionListBlocksRequestBuilder
+	// AsS7PayloadUserDataItemCpuFunctionListBlocksResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
+	AsS7PayloadUserDataItemCpuFunctionListBlocksResponse() S7PayloadUserDataItemCpuFunctionListBlocksResponseBuilder
+	// AsS7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
+	AsS7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest() S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequestBuilder
+	// AsS7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
+	AsS7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponse() S7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponseBuilder
+	// AsS7PayloadUserDataItemCpuFunctionGetBlockInfoRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
+	AsS7PayloadUserDataItemCpuFunctionGetBlockInfoRequest() S7PayloadUserDataItemCpuFunctionGetBlockInfoRequestBuilder
+	// AsS7PayloadUserDataItemCpuFunctionGetBlockInfoResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
+	AsS7PayloadUserDataItemCpuFunctionGetBlockInfoResponse() S7PayloadUserDataItemCpuFunctionGetBlockInfoResponseBuilder
 	// AsS7PayloadDiagnosticMessage converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
 	AsS7PayloadDiagnosticMessage() S7PayloadDiagnosticMessageBuilder
 	// AsS7PayloadAlarm8 converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
@@ -283,6 +297,16 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesUns
 	return cb
 }
 
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesSubscribeEmptyResponse() S7PayloadUserDataItemCyclicServicesSubscribeEmptyResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesSubscribeEmptyResponseBuilder); ok {
+		return cb
+	}
+	cb := NewS7PayloadUserDataItemCyclicServicesSubscribeEmptyResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesSubscribeEmptyResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesSubscribeResponse() S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder {
 	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder); ok {
 		return cb
@@ -318,6 +342,66 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesCha
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionListBlocksRequest() S7PayloadUserDataItemCpuFunctionListBlocksRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionListBlocksRequestBuilder); ok {
+		return cb
+	}
+	cb := NewS7PayloadUserDataItemCpuFunctionListBlocksRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionListBlocksRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionListBlocksResponse() S7PayloadUserDataItemCpuFunctionListBlocksResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionListBlocksResponseBuilder); ok {
+		return cb
+	}
+	cb := NewS7PayloadUserDataItemCpuFunctionListBlocksResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionListBlocksResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest() S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequestBuilder); ok {
+		return cb
+	}
+	cb := NewS7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponse() S7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponseBuilder); ok {
+		return cb
+	}
+	cb := NewS7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionGetBlockInfoRequest() S7PayloadUserDataItemCpuFunctionGetBlockInfoRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionGetBlockInfoRequestBuilder); ok {
+		return cb
+	}
+	cb := NewS7PayloadUserDataItemCpuFunctionGetBlockInfoRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionGetBlockInfoRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionGetBlockInfoResponse() S7PayloadUserDataItemCpuFunctionGetBlockInfoResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionGetBlockInfoResponseBuilder); ok {
+		return cb
+	}
+	cb := NewS7PayloadUserDataItemCpuFunctionGetBlockInfoResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionGetBlockInfoResponseBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -659,7 +743,7 @@ func CastS7PayloadUserDataItem(structType any) S7PayloadUserDataItem {
 	return nil
 }
 
-func (m *_S7PayloadUserDataItem) GetTypeName() string {
+func (m *_S7PayloadUserDataItem) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItem"
 }
 
@@ -761,6 +845,10 @@ func (m *_S7PayloadUserDataItem) parse(ctx context.Context, readBuffer utils.Rea
 		if _child, err = new(_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesUnsubscribeRequest for type-switch of S7PayloadUserDataItem")
 		}
+	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x08 && cpuSubfunction == 0x01 && dataLength == 0x00: // S7PayloadUserDataItemCyclicServicesSubscribeEmptyResponse
+		if _child, err = new(_S7PayloadUserDataItemCyclicServicesSubscribeEmptyResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesSubscribeEmptyResponse for type-switch of S7PayloadUserDataItem")
+		}
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x08 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCyclicServicesSubscribeResponse
 		if _child, err = new(_S7PayloadUserDataItemCyclicServicesSubscribeResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesSubscribeResponse for type-switch of S7PayloadUserDataItem")
@@ -776,6 +864,30 @@ func (m *_S7PayloadUserDataItem) parse(ctx context.Context, readBuffer utils.Rea
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x08 && cpuSubfunction == 0x05: // S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
 		if _child, err = new(_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse for type-switch of S7PayloadUserDataItem")
+		}
+	case cpuFunctionGroup == 0x03 && cpuFunctionType == 0x04 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionListBlocksRequest
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionListBlocksRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionListBlocksRequest for type-switch of S7PayloadUserDataItem")
+		}
+	case cpuFunctionGroup == 0x03 && cpuFunctionType == 0x08 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionListBlocksResponse
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionListBlocksResponse).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionListBlocksResponse for type-switch of S7PayloadUserDataItem")
+		}
+	case cpuFunctionGroup == 0x03 && cpuFunctionType == 0x04 && cpuSubfunction == 0x02: // S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest for type-switch of S7PayloadUserDataItem")
+		}
+	case cpuFunctionGroup == 0x03 && cpuFunctionType == 0x08 && cpuSubfunction == 0x02: // S7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponse
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponse).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponse for type-switch of S7PayloadUserDataItem")
+		}
+	case cpuFunctionGroup == 0x03 && cpuFunctionType == 0x04 && cpuSubfunction == 0x03: // S7PayloadUserDataItemCpuFunctionGetBlockInfoRequest
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionGetBlockInfoRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionGetBlockInfoRequest for type-switch of S7PayloadUserDataItem")
+		}
+	case cpuFunctionGroup == 0x03 && cpuFunctionType == 0x08 && cpuSubfunction == 0x03: // S7PayloadUserDataItemCpuFunctionGetBlockInfoResponse
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionGetBlockInfoResponse).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionGetBlockInfoResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x00 && cpuSubfunction == 0x03: // S7PayloadDiagnosticMessage
 		if _child, err = new(_S7PayloadDiagnosticMessage).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
@@ -822,7 +934,7 @@ func (m *_S7PayloadUserDataItem) parse(ctx context.Context, readBuffer utils.Rea
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionReadSzlResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x04 && cpuSubfunction == 0x02: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
-		if _child, err = new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x00: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse

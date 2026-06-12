@@ -184,7 +184,7 @@ func CastSysexCommandExtendedAnalog(structType any) SysexCommandExtendedAnalog {
 	return nil
 }
 
-func (m *_SysexCommandExtendedAnalog) GetTypeName() string {
+func (m *_SysexCommandExtendedAnalog) GetPlx4xTypeName() string {
 	return "SysexCommandExtendedAnalog"
 }
 

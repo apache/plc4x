@@ -243,7 +243,7 @@ func CastBACnetPropertyReferenceEnclosed(structType any) BACnetPropertyReference
 	return nil
 }
 
-func (m *_BACnetPropertyReferenceEnclosed) GetTypeName() string {
+func (m *_BACnetPropertyReferenceEnclosed) GetPlx4xTypeName() string {
 	return "BACnetPropertyReferenceEnclosed"
 }
 

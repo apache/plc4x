@@ -181,7 +181,7 @@ func CastOpcuaAPU(structType any) OpcuaAPU {
 	return nil
 }
 
-func (m *_OpcuaAPU) GetTypeName() string {
+func (m *_OpcuaAPU) GetPlx4xTypeName() string {
 	return "OpcuaAPU"
 }
 

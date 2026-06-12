@@ -180,7 +180,7 @@ func CastConnectionResponseDataBlockDeviceManagement(structType any) ConnectionR
 	return nil
 }
 
-func (m *_ConnectionResponseDataBlockDeviceManagement) GetTypeName() string {
+func (m *_ConnectionResponseDataBlockDeviceManagement) GetPlx4xTypeName() string {
 	return "ConnectionResponseDataBlockDeviceManagement"
 }
 

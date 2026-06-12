@@ -258,7 +258,7 @@ func CastBACnetConstructedDataLinkSpeeds(structType any) BACnetConstructedDataLi
 	return nil
 }
 
-func (m *_BACnetConstructedDataLinkSpeeds) GetTypeName() string {
+func (m *_BACnetConstructedDataLinkSpeeds) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLinkSpeeds"
 }
 

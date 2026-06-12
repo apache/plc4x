@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
@@ -407,7 +408,7 @@ func CastIdentifyReplyCommand(structType any) IdentifyReplyCommand {
 	return nil
 }
 
-func (m *_IdentifyReplyCommand) GetTypeName() string {
+func (m *_IdentifyReplyCommand) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommand"
 }
 
@@ -426,7 +427,7 @@ func (m *_IdentifyReplyCommand) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func IdentifyReplyCommandParse[T IdentifyReplyCommand](ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (T, error) {
-	return IdentifyReplyCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes)
 }
 
 func IdentifyReplyCommandParseWithBufferProducer[T IdentifyReplyCommand](attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {

@@ -28,13 +28,12 @@ import org.apache.plc4x.java.profinet.ProfinetDriver;
 import org.apache.plc4x.java.profinet.channel.ProfinetChannel;
 import org.apache.plc4x.java.profinet.packets.PnDcpPacketFactory;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
-import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.drivers.functions.PlcDiscoverer;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryItem;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryResponse;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransport;
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNativeException;
@@ -89,10 +88,10 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
 
             // Construct and send the search request.
             Ethernet_Frame identificationRequest = PnDcpPacketFactory.createIdentificationRequest(localMacAddress, PROFINET_BROADCAST_MAC_ADDRESS);
-            WriteBufferByteBased buffer = new WriteBufferByteBased(identificationRequest.getLengthInBytes());
+            WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[identificationRequest.getLengthInBytes()]);
             try {
                 identificationRequest.serialize(buffer);
-            } catch (SerializationException e) {
+            } catch (BufferException e) {
                 throw new RuntimeException(e);
             }
             try {
@@ -153,7 +152,7 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
 
             Map<String, PnDcp_Block> blocks = new HashMap<>();
             for (PnDcp_Block block : identifyResPDU.getBlocks()) {
-                String blockName = block.getOption().name() + "-" + block.getSuboption().toString();
+                String blockName = block.getOption().name() + "-" + block.getSuboption();
                 blocks.put(blockName, block);
             }
 
@@ -244,7 +243,7 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
             String name = deviceTypeName + " - " + deviceName;
 
             PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
-                ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
+                ProfinetDriver.DRIVER_CODE, "raw-socket",
                 remoteAddress, options, name, attributes);
             values.add(value);
 

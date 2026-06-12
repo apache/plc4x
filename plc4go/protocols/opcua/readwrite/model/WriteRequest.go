@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastWriteRequest(structType any) WriteRequest {
 	return nil
 }
 
-func (m *_WriteRequest) GetTypeName() string {
+func (m *_WriteRequest) GetPlx4xTypeName() string {
 	return "WriteRequest"
 }
 
@@ -279,19 +280,19 @@ func (m *_WriteRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfNodesToWrite, err := ReadImplicitField[int32](ctx, "noOfNodesToWrite", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToWrite, err := ReadImplicitField[int32](ctx, "noOfNodesToWrite", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToWrite' field"))
 	}
 	_ = noOfNodesToWrite
 
-	nodesToWrite, err := ReadCountArrayField[WriteValue](ctx, "nodesToWrite", ReadComplex[WriteValue](ExtensionObjectDefinitionParseWithBufferProducer[WriteValue]((int32)(int32(670))), readBuffer), uint64(noOfNodesToWrite))
+	nodesToWrite, err := ReadCountArrayField[WriteValue](ctx, "nodesToWrite", ReadComplex[WriteValue](ExtensionObjectDefinitionParseWithBufferProducer[WriteValue]((int32)(int32(670))), readBuffer), uint64(noOfNodesToWrite), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToWrite' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_WriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for WriteRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfNodesToWrite := int32(utils.InlineIf(bool((m.GetNodesToWrite()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToWrite()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNodesToWrite", noOfNodesToWrite, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNodesToWrite", noOfNodesToWrite, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToWrite' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "nodesToWrite", m.GetNodesToWrite(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "nodesToWrite", m.GetNodesToWrite(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodesToWrite' field")
 		}
 

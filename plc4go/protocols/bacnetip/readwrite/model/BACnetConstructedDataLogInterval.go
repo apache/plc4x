@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLogInterval(structType any) BACnetConstructedDataL
 	return nil
 }
 
-func (m *_BACnetConstructedDataLogInterval) GetTypeName() string {
+func (m *_BACnetConstructedDataLogInterval) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLogInterval"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataObjectIdentifier(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataObjectIdentifier) GetTypeName() string {
+func (m *_BACnetConstructedDataObjectIdentifier) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataObjectIdentifier"
 }
 

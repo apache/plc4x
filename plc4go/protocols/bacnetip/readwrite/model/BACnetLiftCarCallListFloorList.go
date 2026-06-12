@@ -225,7 +225,7 @@ func CastBACnetLiftCarCallListFloorList(structType any) BACnetLiftCarCallListFlo
 	return nil
 }
 
-func (m *_BACnetLiftCarCallListFloorList) GetTypeName() string {
+func (m *_BACnetLiftCarCallListFloorList) GetPlx4xTypeName() string {
 	return "BACnetLiftCarCallListFloorList"
 }
 

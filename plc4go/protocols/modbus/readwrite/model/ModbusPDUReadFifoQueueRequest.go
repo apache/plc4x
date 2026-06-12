@@ -215,7 +215,7 @@ func CastModbusPDUReadFifoQueueRequest(structType any) ModbusPDUReadFifoQueueReq
 	return nil
 }
 
-func (m *_ModbusPDUReadFifoQueueRequest) GetTypeName() string {
+func (m *_ModbusPDUReadFifoQueueRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReadFifoQueueRequest"
 }
 

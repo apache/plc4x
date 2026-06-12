@@ -222,7 +222,7 @@ func CastNLMEstablishConnectionToNetwork(structType any) NLMEstablishConnectionT
 	return nil
 }
 
-func (m *_NLMEstablishConnectionToNetwork) GetTypeName() string {
+func (m *_NLMEstablishConnectionToNetwork) GetPlx4xTypeName() string {
 	return "NLMEstablishConnectionToNetwork"
 }
 

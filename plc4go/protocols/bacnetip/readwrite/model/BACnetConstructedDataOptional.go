@@ -184,7 +184,7 @@ func CastBACnetConstructedDataOptional(structType any) BACnetConstructedDataOpti
 	return nil
 }
 
-func (m *_BACnetConstructedDataOptional) GetTypeName() string {
+func (m *_BACnetConstructedDataOptional) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOptional"
 }
 

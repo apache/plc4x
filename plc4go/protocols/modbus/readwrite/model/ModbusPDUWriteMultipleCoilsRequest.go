@@ -245,7 +245,7 @@ func CastModbusPDUWriteMultipleCoilsRequest(structType any) ModbusPDUWriteMultip
 	return nil
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsRequest) GetTypeName() string {
+func (m *_ModbusPDUWriteMultipleCoilsRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteMultipleCoilsRequest"
 }
 

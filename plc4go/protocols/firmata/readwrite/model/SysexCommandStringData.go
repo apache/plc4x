@@ -184,7 +184,7 @@ func CastSysexCommandStringData(structType any) SysexCommandStringData {
 	return nil
 }
 
-func (m *_SysexCommandStringData) GetTypeName() string {
+func (m *_SysexCommandStringData) GetPlx4xTypeName() string {
 	return "SysexCommandStringData"
 }
 

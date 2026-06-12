@@ -246,7 +246,7 @@ func CastBACnetConstructedDataReadOnly(structType any) BACnetConstructedDataRead
 	return nil
 }
 
-func (m *_BACnetConstructedDataReadOnly) GetTypeName() string {
+func (m *_BACnetConstructedDataReadOnly) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReadOnly"
 }
 

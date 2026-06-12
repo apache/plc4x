@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLastAccessPoint(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastAccessPoint) GetTypeName() string {
+func (m *_BACnetConstructedDataLastAccessPoint) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastAccessPoint"
 }
 

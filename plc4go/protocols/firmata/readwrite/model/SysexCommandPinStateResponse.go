@@ -241,7 +241,7 @@ func CastSysexCommandPinStateResponse(structType any) SysexCommandPinStateRespon
 	return nil
 }
 
-func (m *_SysexCommandPinStateResponse) GetTypeName() string {
+func (m *_SysexCommandPinStateResponse) GetPlx4xTypeName() string {
 	return "SysexCommandPinStateResponse"
 }
 

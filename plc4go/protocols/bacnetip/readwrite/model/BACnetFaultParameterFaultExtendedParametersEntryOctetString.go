@@ -221,7 +221,7 @@ func CastBACnetFaultParameterFaultExtendedParametersEntryOctetString(structType 
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultExtendedParametersEntryOctetString"
 }
 

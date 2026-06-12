@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -351,7 +352,7 @@ func CastRequestHeader(structType any) RequestHeader {
 	return nil
 }
 
-func (m *_RequestHeader) GetTypeName() string {
+func (m *_RequestHeader) GetPlx4xTypeName() string {
 	return "RequestHeader"
 }
 
@@ -397,43 +398,43 @@ func (m *_RequestHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	authenticationToken, err := ReadSimpleField[NodeId](ctx, "authenticationToken", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	authenticationToken, err := ReadSimpleField[NodeId](ctx, "authenticationToken", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationToken' field"))
 	}
 	m.AuthenticationToken = authenticationToken
 
-	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)))
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 	m.Timestamp = timestamp
 
-	requestHandle, err := ReadSimpleField(ctx, "requestHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	requestHandle, err := ReadSimpleField(ctx, "requestHandle", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHandle' field"))
 	}
 	m.RequestHandle = requestHandle
 
-	returnDiagnostics, err := ReadSimpleField(ctx, "returnDiagnostics", ReadUnsignedInt(readBuffer, uint8(32)))
+	returnDiagnostics, err := ReadSimpleField(ctx, "returnDiagnostics", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'returnDiagnostics' field"))
 	}
 	m.ReturnDiagnostics = returnDiagnostics
 
-	auditEntryId, err := ReadSimpleField[PascalString](ctx, "auditEntryId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	auditEntryId, err := ReadSimpleField[PascalString](ctx, "auditEntryId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'auditEntryId' field"))
 	}
 	m.AuditEntryId = auditEntryId
 
-	timeoutHint, err := ReadSimpleField(ctx, "timeoutHint", ReadUnsignedInt(readBuffer, uint8(32)))
+	timeoutHint, err := ReadSimpleField(ctx, "timeoutHint", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeoutHint' field"))
 	}
 	m.TimeoutHint = timeoutHint
 
-	additionalHeader, err := ReadSimpleField[ExtensionObject](ctx, "additionalHeader", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
+	additionalHeader, err := ReadSimpleField[ExtensionObject](ctx, "additionalHeader", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalHeader' field"))
 	}
@@ -464,31 +465,31 @@ func (m *_RequestHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for RequestHeader")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "authenticationToken", m.GetAuthenticationToken(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "authenticationToken", m.GetAuthenticationToken(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'authenticationToken' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "requestHandle", m.GetRequestHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "requestHandle", m.GetRequestHandle(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHandle' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "returnDiagnostics", m.GetReturnDiagnostics(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "returnDiagnostics", m.GetReturnDiagnostics(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'returnDiagnostics' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "auditEntryId", m.GetAuditEntryId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "auditEntryId", m.GetAuditEntryId(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'auditEntryId' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "timeoutHint", m.GetTimeoutHint(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "timeoutHint", m.GetTimeoutHint(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'timeoutHint' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObject](ctx, "additionalHeader", m.GetAdditionalHeader(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ExtensionObject](ctx, "additionalHeader", m.GetAdditionalHeader(), WriteComplex[ExtensionObject](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'additionalHeader' field")
 		}
 

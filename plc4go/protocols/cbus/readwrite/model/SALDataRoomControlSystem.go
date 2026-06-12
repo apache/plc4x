@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
@@ -180,7 +181,7 @@ func CastSALDataRoomControlSystem(structType any) SALDataRoomControlSystem {
 	return nil
 }
 
-func (m *_SALDataRoomControlSystem) GetTypeName() string {
+func (m *_SALDataRoomControlSystem) GetPlx4xTypeName() string {
 	return "SALDataRoomControlSystem"
 }
 
@@ -218,7 +219,7 @@ func (m *_SALDataRoomControlSystem) parse(ctx context.Context, readBuffer utils.
 }
 
 func (m *_SALDataRoomControlSystem) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

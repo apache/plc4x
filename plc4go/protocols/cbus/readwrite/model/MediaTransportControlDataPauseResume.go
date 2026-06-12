@@ -228,7 +228,7 @@ func CastMediaTransportControlDataPauseResume(structType any) MediaTransportCont
 	return nil
 }
 
-func (m *_MediaTransportControlDataPauseResume) GetTypeName() string {
+func (m *_MediaTransportControlDataPauseResume) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataPauseResume"
 }
 

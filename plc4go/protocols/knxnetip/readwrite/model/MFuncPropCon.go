@@ -180,7 +180,7 @@ func CastMFuncPropCon(structType any) MFuncPropCon {
 	return nil
 }
 
-func (m *_MFuncPropCon) GetTypeName() string {
+func (m *_MFuncPropCon) GetPlx4xTypeName() string {
 	return "MFuncPropCon"
 }
 

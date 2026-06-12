@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPassbackMode(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataPassbackMode) GetTypeName() string {
+func (m *_BACnetConstructedDataPassbackMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPassbackMode"
 }
 

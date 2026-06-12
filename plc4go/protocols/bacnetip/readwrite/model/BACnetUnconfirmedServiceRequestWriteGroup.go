@@ -318,7 +318,7 @@ func CastBACnetUnconfirmedServiceRequestWriteGroup(structType any) BACnetUnconfi
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWriteGroup"
 }
 

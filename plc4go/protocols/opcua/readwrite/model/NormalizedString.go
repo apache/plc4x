@@ -135,7 +135,7 @@ func CastNormalizedString(structType any) NormalizedString {
 	return nil
 }
 
-func (m *_NormalizedString) GetTypeName() string {
+func (m *_NormalizedString) GetPlx4xTypeName() string {
 	return "NormalizedString"
 }
 

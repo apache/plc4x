@@ -184,7 +184,7 @@ func CastBACnetConstructedDataLifeSafetyZoneAll(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetTypeName() string {
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLifeSafetyZoneAll"
 }
 

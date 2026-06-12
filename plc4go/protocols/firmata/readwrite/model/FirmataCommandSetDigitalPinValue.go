@@ -224,7 +224,7 @@ func CastFirmataCommandSetDigitalPinValue(structType any) FirmataCommandSetDigit
 	return nil
 }
 
-func (m *_FirmataCommandSetDigitalPinValue) GetTypeName() string {
+func (m *_FirmataCommandSetDigitalPinValue) GetPlx4xTypeName() string {
 	return "FirmataCommandSetDigitalPinValue"
 }
 

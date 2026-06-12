@@ -135,7 +135,7 @@ func CastSessionAuthenticationToken(structType any) SessionAuthenticationToken {
 	return nil
 }
 
-func (m *_SessionAuthenticationToken) GetTypeName() string {
+func (m *_SessionAuthenticationToken) GetPlx4xTypeName() string {
 	return "SessionAuthenticationToken"
 }
 

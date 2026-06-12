@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAbsenteeLimit(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataAbsenteeLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataAbsenteeLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAbsenteeLimit"
 }
 

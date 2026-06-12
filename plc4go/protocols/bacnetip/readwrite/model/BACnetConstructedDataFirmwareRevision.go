@@ -246,7 +246,7 @@ func CastBACnetConstructedDataFirmwareRevision(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataFirmwareRevision) GetTypeName() string {
+func (m *_BACnetConstructedDataFirmwareRevision) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFirmwareRevision"
 }
 

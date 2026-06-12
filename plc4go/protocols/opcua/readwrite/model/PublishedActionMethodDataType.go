@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -255,7 +256,7 @@ func CastPublishedActionMethodDataType(structType any) PublishedActionMethodData
 	return nil
 }
 
-func (m *_PublishedActionMethodDataType) GetTypeName() string {
+func (m *_PublishedActionMethodDataType) GetPlx4xTypeName() string {
 	return "PublishedActionMethodDataType"
 }
 
@@ -305,31 +306,31 @@ func (m *_PublishedActionMethodDataType) parse(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestDataSetMetaData, err := ReadSimpleField[DataSetMetaDataType](ctx, "requestDataSetMetaData", ReadComplex[DataSetMetaDataType](ExtensionObjectDefinitionParseWithBufferProducer[DataSetMetaDataType]((int32)(int32(14525))), readBuffer))
+	requestDataSetMetaData, err := ReadSimpleField[DataSetMetaDataType](ctx, "requestDataSetMetaData", ReadComplex[DataSetMetaDataType](ExtensionObjectDefinitionParseWithBufferProducer[DataSetMetaDataType]((int32)(int32(14525))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestDataSetMetaData' field"))
 	}
 	m.RequestDataSetMetaData = requestDataSetMetaData
 
-	noOfActionTargets, err := ReadImplicitField[int32](ctx, "noOfActionTargets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfActionTargets, err := ReadImplicitField[int32](ctx, "noOfActionTargets", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfActionTargets' field"))
 	}
 	_ = noOfActionTargets
 
-	actionTargets, err := ReadCountArrayField[ActionTargetDataType](ctx, "actionTargets", ReadComplex[ActionTargetDataType](ExtensionObjectDefinitionParseWithBufferProducer[ActionTargetDataType]((int32)(int32(18595))), readBuffer), uint64(noOfActionTargets))
+	actionTargets, err := ReadCountArrayField[ActionTargetDataType](ctx, "actionTargets", ReadComplex[ActionTargetDataType](ExtensionObjectDefinitionParseWithBufferProducer[ActionTargetDataType]((int32)(int32(18595))), readBuffer), uint64(noOfActionTargets), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionTargets' field"))
 	}
 	m.ActionTargets = actionTargets
 
-	noOfActionMethods, err := ReadImplicitField[int32](ctx, "noOfActionMethods", ReadSignedInt(readBuffer, uint8(32)))
+	noOfActionMethods, err := ReadImplicitField[int32](ctx, "noOfActionMethods", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfActionMethods' field"))
 	}
 	_ = noOfActionMethods
 
-	actionMethods, err := ReadCountArrayField[ActionMethodDataType](ctx, "actionMethods", ReadComplex[ActionMethodDataType](ExtensionObjectDefinitionParseWithBufferProducer[ActionMethodDataType]((int32)(int32(18599))), readBuffer), uint64(noOfActionMethods))
+	actionMethods, err := ReadCountArrayField[ActionMethodDataType](ctx, "actionMethods", ReadComplex[ActionMethodDataType](ExtensionObjectDefinitionParseWithBufferProducer[ActionMethodDataType]((int32)(int32(18599))), readBuffer), uint64(noOfActionMethods), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionMethods' field"))
 	}
@@ -360,23 +361,23 @@ func (m *_PublishedActionMethodDataType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for PublishedActionMethodDataType")
 		}
 
-		if err := WriteSimpleField[DataSetMetaDataType](ctx, "requestDataSetMetaData", m.GetRequestDataSetMetaData(), WriteComplex[DataSetMetaDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[DataSetMetaDataType](ctx, "requestDataSetMetaData", m.GetRequestDataSetMetaData(), WriteComplex[DataSetMetaDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestDataSetMetaData' field")
 		}
 		noOfActionTargets := int32(utils.InlineIf(bool((m.GetActionTargets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetActionTargets()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfActionTargets", noOfActionTargets, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfActionTargets", noOfActionTargets, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfActionTargets' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "actionTargets", m.GetActionTargets(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "actionTargets", m.GetActionTargets(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'actionTargets' field")
 		}
 		noOfActionMethods := int32(utils.InlineIf(bool((m.GetActionMethods()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetActionMethods()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfActionMethods", noOfActionMethods, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfActionMethods", noOfActionMethods, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfActionMethods' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "actionMethods", m.GetActionMethods(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "actionMethods", m.GetActionMethods(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'actionMethods' field")
 		}
 

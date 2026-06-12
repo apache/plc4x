@@ -246,7 +246,7 @@ func CastBACnetConstructedDataEgressTime(structType any) BACnetConstructedDataEg
 	return nil
 }
 
-func (m *_BACnetConstructedDataEgressTime) GetTypeName() string {
+func (m *_BACnetConstructedDataEgressTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEgressTime"
 }
 

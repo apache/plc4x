@@ -1,0 +1,217 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.plc4x.java.spi.values;
+
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.api.types.PlcValueType;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+
+public class PlcSTRING extends PlcIECValue<String> {
+
+    public static PlcSTRING of(Object value) {
+        if (value instanceof PlcSTRING plcSTRING) {
+            return plcSTRING;
+        }
+        if (value instanceof String string) {
+            return new PlcSTRING(string);
+        }
+        return new PlcSTRING(String.valueOf(value));
+    }
+
+    public PlcSTRING(String value) {
+        this.value = value;
+        this.isNullable = false;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.STRING;
+    }
+
+    @Override
+    public boolean isString() {
+        return true;
+    }
+
+    @Override
+    public String getString() {
+        return value;
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public boolean isBoolean() {
+        try {
+            Boolean.parseBoolean(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean getBoolean() {
+        return Boolean.parseBoolean(value);
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public boolean isByte() {
+        try {
+            Byte.parseByte(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public byte getByte() {
+        return Byte.parseByte(value);
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public boolean isShort() {
+        try {
+            Short.parseShort(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public short getShort() {
+        return Short.parseShort(value);
+    }
+
+    @Override
+    public boolean isInteger() {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public int getInteger() {
+        return Integer.parseInt(value);
+    }
+
+    @Override
+    public boolean isLong() {
+        try {
+            Long.parseLong(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public long getLong() {
+        return Long.parseLong(value);
+    }
+
+    @Override
+    public boolean isBigInteger() {
+        try {
+            new BigInteger(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public BigInteger getBigInteger() {
+        return new BigInteger(value);
+    }
+
+    @Override
+    public boolean isFloat() {
+        try {
+            Float.parseFloat(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public float getFloat() {
+        return Float.parseFloat(value);
+    }
+
+    @Override
+    public boolean isDouble() {
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public double getDouble() {
+        return Double.parseDouble(value);
+    }
+
+    @Override
+    public boolean isBigDecimal() {
+        try {
+            new BigDecimal(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public BigDecimal getBigDecimal() {
+        return new BigDecimal(value);
+    }
+
+    @Override
+    public int getLength() {
+        return value.length();
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws BufferException {
+        String valueString = value;
+        writeBuffer.writeString(valueString.getBytes(StandardCharsets.UTF_8).length * 8,
+            valueString, WithOption.WithName(getClass().getSimpleName()), WithOption.WithEncoding("UTF8"));
+    }
+
+}

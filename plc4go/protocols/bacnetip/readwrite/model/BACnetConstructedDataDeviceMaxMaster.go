@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDeviceMaxMaster(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMaster) GetTypeName() string {
+func (m *_BACnetConstructedDataDeviceMaxMaster) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDeviceMaxMaster"
 }
 

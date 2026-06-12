@@ -280,7 +280,7 @@ func CastS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(structType any) S7Pay
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmQueryRequest"
 }
 

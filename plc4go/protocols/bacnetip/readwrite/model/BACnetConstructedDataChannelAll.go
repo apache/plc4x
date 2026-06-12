@@ -184,7 +184,7 @@ func CastBACnetConstructedDataChannelAll(structType any) BACnetConstructedDataCh
 	return nil
 }
 
-func (m *_BACnetConstructedDataChannelAll) GetTypeName() string {
+func (m *_BACnetConstructedDataChannelAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataChannelAll"
 }
 

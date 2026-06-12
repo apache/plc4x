@@ -115,7 +115,7 @@ func ChunkTypeParse(ctx context.Context, theBytes []byte) (ChunkType, error) {
 func ChunkTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ChunkType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("ChunkType", uint32(8), utils.WithEncoding("UTF-8"))
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("ChunkType", uint32(8), utils.WithEncoding("UTF8"))
 	if err != nil {
 		return "", errors.Wrap(err, "error reading ChunkType")
 	}
@@ -138,7 +138,7 @@ func (e ChunkType) Serialize() ([]byte, error) {
 func (e ChunkType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return /*TODO: migrate me*/ writeBuffer.WriteString("ChunkType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF-8)"))
+	return /*TODO: migrate me*/ writeBuffer.WriteString("ChunkType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF8)"))
 }
 
 func (e ChunkType) GetValue() string {

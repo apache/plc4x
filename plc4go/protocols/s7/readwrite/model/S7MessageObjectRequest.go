@@ -261,7 +261,7 @@ func CastS7MessageObjectRequest(structType any) S7MessageObjectRequest {
 	return nil
 }
 
-func (m *_S7MessageObjectRequest) GetTypeName() string {
+func (m *_S7MessageObjectRequest) GetPlx4xTypeName() string {
 	return "S7MessageObjectRequest"
 }
 

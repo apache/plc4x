@@ -19,24 +19,35 @@
 package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.simulated.tag.SimulatedTag;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.simulated.readwrite.DataItem;
 import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
-import org.apache.plc4x.java.spi.generation.*;
-
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
-
+import org.apache.plc4x.java.simulated.tag.SimulatedTag;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.SecureRandom;
 import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -103,11 +114,13 @@ public class SimulatedDevice {
                         break;
                     default:
                         try {
-                            final int lengthInBits = DataItem.getLengthInBits(value, tag.getPlcValueType().name(), (tag.getArrayInfo().isEmpty()) ? 1 : tag.getArrayInfo().get(0).getSize());
-                            final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                            DataItem.staticSerialize(writeBuffer, value, tag.getPlcValueType().name(), (tag.getArrayInfo().isEmpty()) ? 1 : tag.getArrayInfo().get(0).getSize(), ByteOrder.BIG_ENDIAN);
-                        } catch (SerializationException e) {
-                            LOGGER.info("Write failed");
+                            int numElements = tag.getArrayInfo().isEmpty() ? 1 : tag.getArrayInfo().get(0).getSize();
+                            int lengthInBits = DataItem.getLengthInBits(value, tag.getPlcValueType().name(), numElements);
+                            int sizeInBytes = (int) Math.ceil(((float) lengthInBits) / 8.0f);
+                            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(new byte[sizeInBytes]);
+                            DataItem.staticSerialize(writeBuffer, value, tag.getPlcValueType().name(), numElements);
+                        } catch (BufferException e) {
+                            LOGGER.info("Write failed", e);
                         }
                 }
                 LOGGER.info("TEST PLC RANDOM [{}]: {}", tag.getName(), value);
@@ -117,16 +130,14 @@ public class SimulatedDevice {
     }
 
     private PlcValue randomValue(SimulatedTag tag) {
-
         short tagDataTypeSize = SimulatedDataTypeSizes.valueOf(tag.getPlcValueType().name()).getDataTypeSize();
-
-        byte[] b = new byte[tagDataTypeSize * ((tag.getArrayInfo().isEmpty()) ? 1 : tag.getArrayInfo().get(0).getSize())];
+        int numElements = tag.getArrayInfo().isEmpty() ? 1 : tag.getArrayInfo().get(0).getSize();
+        byte[] b = new byte[tagDataTypeSize * numElements];
         random.nextBytes(b);
-
-        ReadBuffer io = new ReadBufferByteBased(b);
+        ReadBufferByteBased io = new ReadBufferByteBased(b);
         try {
-            return DataItem.staticParse(io, tag.getPlcValueType().name(), ((tag.getArrayInfo().isEmpty()) ? 1 : tag.getArrayInfo().get(0).getSize()));
-        } catch (ParseException e) {
+            return DataItem.staticParse(io, tag.getPlcValueType().name(), numElements);
+        } catch (BufferException e) {
             return null;
         }
     }
@@ -136,7 +147,8 @@ public class SimulatedDevice {
         return name;
     }
 
-    public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionTag subscriptionTag, Duration duration) {
+    public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle,
+                                      PlcSubscriptionTag subscriptionTag, Duration duration) {
         LOGGER.debug("Adding cyclic subscription: {}, {}, {}, {}", consumer, handle, subscriptionTag, duration);
         assert subscriptionTag instanceof DefaultPlcSubscriptionTag;
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
@@ -151,60 +163,58 @@ public class SimulatedDevice {
         cyclicSubscriptions.put(handle, scheduledFuture);
     }
 
-    public void addChangeOfStateSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionTag subscriptionTag) {
+    public void addChangeOfStateSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle,
+                                             PlcSubscriptionTag subscriptionTag) {
         LOGGER.debug("Adding change of state subscription: {}, {}, {}", consumer, handle, subscriptionTag);
-        changeOfStateSubscriptions.put(handle, Pair.of((SimulatedTag) ((DefaultPlcSubscriptionTag) subscriptionTag).getTag(), consumer));
+        changeOfStateSubscriptions.put(handle,
+            Pair.of((SimulatedTag) ((DefaultPlcSubscriptionTag) subscriptionTag).getTag(), consumer));
     }
 
-    public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionTag subscriptionTag) {
+    public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle,
+                                     PlcSubscriptionTag subscriptionTag) {
         LOGGER.debug("Adding event subscription: {}, {}, {}", consumer, handle, subscriptionTag);
         assert subscriptionTag instanceof DefaultPlcSubscriptionTag;
         Future<?> submit = pool.submit(() -> {
-            LOGGER.debug("WORKER: starting for {}, {}, {}", consumer, handle, subscriptionTag);
             while (!Thread.currentThread().isInterrupted()) {
-                LOGGER.debug("WORKER: running for {}, {}, {}", consumer, handle, subscriptionTag);
                 PlcTag innerPlcTag = ((DefaultPlcSubscriptionTag) subscriptionTag).getTag();
                 assert innerPlcTag instanceof SimulatedTag;
                 PlcValue baseDefaultPlcValue = state.get(innerPlcTag);
-                if (baseDefaultPlcValue == null) {
-                    LOGGER.debug("WORKER: no value for {}, {}, {}", consumer, handle, subscriptionTag);
-                    continue;
+                if (baseDefaultPlcValue != null) {
+                    consumer.accept(baseDefaultPlcValue);
                 }
-                LOGGER.debug("WORKER: accepting {} for {}, {}, {}", baseDefaultPlcValue, consumer, handle, subscriptionTag);
-                consumer.accept(baseDefaultPlcValue);
                 try {
-                    long sleepTime = Math.min(random.nextInt((int) TimeUnit.SECONDS.toNanos(5)), TimeUnit.MILLISECONDS.toNanos(500));
-                    LOGGER.debug("WORKER: sleeping {} milliseconds for {}, {}, {}", TimeUnit.NANOSECONDS.toMillis(sleepTime), consumer, handle, subscriptionTag);
+                    long sleepTime = Math.min(random.nextInt((int) TimeUnit.SECONDS.toNanos(5)),
+                        TimeUnit.MILLISECONDS.toNanos(500));
                     TimeUnit.NANOSECONDS.sleep(sleepTime);
                 } catch (InterruptedException ignore) {
                     Thread.currentThread().interrupt();
-                    LOGGER.debug("WORKER: got interrupted for {}, {}, {}", consumer, handle, subscriptionTag);
                     return;
                 }
             }
         });
-
         eventSubscriptions.put(handle, submit);
     }
 
-    public void removeHandles(Collection<? extends PlcSubscriptionHandle> internalPlcSubscriptionHandles) {
-        LOGGER.debug("remove handles {}", internalPlcSubscriptionHandles);
-        internalPlcSubscriptionHandles.forEach(handle -> {
+    public void removeHandles(Collection<? extends PlcSubscriptionHandle> handles) {
+        LOGGER.debug("remove handles {}", handles);
+        handles.forEach(handle -> {
             ScheduledFuture<?> remove = cyclicSubscriptions.remove(handle);
-            if (remove == null) {
-                LOGGER.debug("nothing to cancel {}", handle);
-                return;
+            if (remove != null) {
+                remove.cancel(true);
             }
-            remove.cancel(true);
         });
-        internalPlcSubscriptionHandles.forEach(handle -> {
+        handles.forEach(handle -> {
             Future<?> remove = eventSubscriptions.remove(handle);
-            if (remove == null) {
-                LOGGER.debug("nothing to cancel {}", handle);
-                return;
+            if (remove != null) {
+                remove.cancel(true);
             }
-            remove.cancel(true);
         });
-        internalPlcSubscriptionHandles.forEach(changeOfStateSubscriptions::remove);
+        handles.forEach(changeOfStateSubscriptions::remove);
     }
+
+    public void shutdown() {
+        scheduler.shutdownNow();
+        pool.shutdownNow();
+    }
+
 }

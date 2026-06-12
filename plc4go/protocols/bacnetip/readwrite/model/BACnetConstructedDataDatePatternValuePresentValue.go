@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDatePatternValuePresentValue(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataDatePatternValuePresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataDatePatternValuePresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDatePatternValuePresentValue"
 }
 

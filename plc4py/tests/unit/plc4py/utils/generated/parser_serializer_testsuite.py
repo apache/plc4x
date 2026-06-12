@@ -88,7 +88,7 @@ class Testsuite:
     protocol_name: Optional[str] = field(
         default=None,
         metadata={
-            "name": "protocolName",
+            "name": "protocol-name",
             "type": "Element",
             "namespace": "",
             "required": True,
@@ -97,7 +97,7 @@ class Testsuite:
     output_flavor: Optional[str] = field(
         default=None,
         metadata={
-            "name": "outputFlavor",
+            "name": "output-flavor",
             "type": "Element",
             "namespace": "",
             "required": True,

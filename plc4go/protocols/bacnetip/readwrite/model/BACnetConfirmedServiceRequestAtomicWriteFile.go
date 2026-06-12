@@ -345,7 +345,7 @@ func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType any) BACnetConf
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicWriteFile"
 }
 

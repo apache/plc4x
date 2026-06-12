@@ -193,7 +193,7 @@ func CastByteStringNodeId(structType any) ByteStringNodeId {
 	return nil
 }
 
-func (m *_ByteStringNodeId) GetTypeName() string {
+func (m *_ByteStringNodeId) GetPlx4xTypeName() string {
 	return "ByteStringNodeId"
 }
 

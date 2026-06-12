@@ -135,7 +135,7 @@ func CastUriString(structType any) UriString {
 	return nil
 }
 
-func (m *_UriString) GetTypeName() string {
+func (m *_UriString) GetPlx4xTypeName() string {
 	return "UriString"
 }
 

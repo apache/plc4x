@@ -18,20 +18,18 @@
  */
 package org.apache.plc4x.java.bacnetip.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
 
 import java.io.File;
 
-public class BacNetIpConfiguration implements PlcConnectionConfiguration {
+public class BacNetIpConfiguration implements Configuration {
 
-    // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")
     @Description("Path to the location of a single EDE file, that contains the descriptor for the target device.")
     private File edeFile;
 
-    // Path to a directory containing many EDE files.
     @ConfigurationParameter("ede-directory-path")
     @Description("Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.")
     private File edeDirectory;

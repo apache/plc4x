@@ -225,7 +225,7 @@ func CastUnConnectedDataItem(structType any) UnConnectedDataItem {
 	return nil
 }
 
-func (m *_UnConnectedDataItem) GetTypeName() string {
+func (m *_UnConnectedDataItem) GetPlx4xTypeName() string {
 	return "UnConnectedDataItem"
 }
 

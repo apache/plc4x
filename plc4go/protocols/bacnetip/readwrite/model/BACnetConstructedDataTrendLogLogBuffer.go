@@ -211,7 +211,7 @@ func CastBACnetConstructedDataTrendLogLogBuffer(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrendLogLogBuffer) GetTypeName() string {
+func (m *_BACnetConstructedDataTrendLogLogBuffer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrendLogLogBuffer"
 }
 

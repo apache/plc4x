@@ -222,7 +222,7 @@ func CastCOTPPacketData(structType any) COTPPacketData {
 	return nil
 }
 
-func (m *_COTPPacketData) GetTypeName() string {
+func (m *_COTPPacketData) GetPlx4xTypeName() string {
 	return "COTPPacketData"
 }
 

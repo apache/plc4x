@@ -246,7 +246,7 @@ func CastBACnetConstructedDataObjectPropertyReference(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReference) GetTypeName() string {
+func (m *_BACnetConstructedDataObjectPropertyReference) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataObjectPropertyReference"
 }
 

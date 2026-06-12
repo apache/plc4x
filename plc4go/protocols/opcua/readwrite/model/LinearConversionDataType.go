@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -252,7 +253,7 @@ func CastLinearConversionDataType(structType any) LinearConversionDataType {
 	return nil
 }
 
-func (m *_LinearConversionDataType) GetTypeName() string {
+func (m *_LinearConversionDataType) GetPlx4xTypeName() string {
 	return "LinearConversionDataType"
 }
 
@@ -289,25 +290,25 @@ func (m *_LinearConversionDataType) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	initialAddend, err := ReadSimpleField(ctx, "initialAddend", ReadFloat(readBuffer, uint8(32)))
+	initialAddend, err := ReadSimpleField(ctx, "initialAddend", ReadFloat(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initialAddend' field"))
 	}
 	m.InitialAddend = initialAddend
 
-	multiplicand, err := ReadSimpleField(ctx, "multiplicand", ReadFloat(readBuffer, uint8(32)))
+	multiplicand, err := ReadSimpleField(ctx, "multiplicand", ReadFloat(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'multiplicand' field"))
 	}
 	m.Multiplicand = multiplicand
 
-	divisor, err := ReadSimpleField(ctx, "divisor", ReadFloat(readBuffer, uint8(32)))
+	divisor, err := ReadSimpleField(ctx, "divisor", ReadFloat(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'divisor' field"))
 	}
 	m.Divisor = divisor
 
-	finalAddend, err := ReadSimpleField(ctx, "finalAddend", ReadFloat(readBuffer, uint8(32)))
+	finalAddend, err := ReadSimpleField(ctx, "finalAddend", ReadFloat(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'finalAddend' field"))
 	}
@@ -338,19 +339,19 @@ func (m *_LinearConversionDataType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for LinearConversionDataType")
 		}
 
-		if err := WriteSimpleField[float32](ctx, "initialAddend", m.GetInitialAddend(), WriteFloat(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[float32](ctx, "initialAddend", m.GetInitialAddend(), WriteFloat(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'initialAddend' field")
 		}
 
-		if err := WriteSimpleField[float32](ctx, "multiplicand", m.GetMultiplicand(), WriteFloat(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[float32](ctx, "multiplicand", m.GetMultiplicand(), WriteFloat(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'multiplicand' field")
 		}
 
-		if err := WriteSimpleField[float32](ctx, "divisor", m.GetDivisor(), WriteFloat(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[float32](ctx, "divisor", m.GetDivisor(), WriteFloat(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'divisor' field")
 		}
 
-		if err := WriteSimpleField[float32](ctx, "finalAddend", m.GetFinalAddend(), WriteFloat(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[float32](ctx, "finalAddend", m.GetFinalAddend(), WriteFloat(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'finalAddend' field")
 		}
 

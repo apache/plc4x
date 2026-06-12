@@ -18,26 +18,23 @@
  */
 package org.apache.plc4x.java.cbus;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.cbus.configuration.CBusConfiguration;
 import org.apache.plc4x.java.cbus.configuration.CBusTcpTransportConfiguration;
-import org.apache.plc4x.java.cbus.context.CBusDriverContext;
-import org.apache.plc4x.java.cbus.protocol.CBusProtocolLogic;
-import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.cbus.readwrite.Constants;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.ToIntFunction;
+import java.util.Set;
 
-public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
+public class CBusDriver extends DriverBase {
 
     @Override
     public String getProtocolCode() {
@@ -49,6 +46,36 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
         return "Clipsal C-Bus";
     }
 
+    @Override
+    protected Class<? extends Configuration> getConfigurationClass() {
+        return CBusConfiguration.class;
+    }
+
+    @Override
+    protected Class<? extends TransportConfiguration> getTransportConfigurationClass(Transport<?> transport) {
+        if ("tcp".equals(transport.getTransportCode())) {
+            return CBusTcpTransportConfiguration.class;
+        }
+        return super.getTransportConfigurationClass(transport);
+    }
+
+    @Override
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    public List<String> getSupportedTransportCodes() {
+        return List.of("tcp", "test");
+    }
+
+    @Override
+    public Set<Integer> defaultPorts(String transportCode) {
+        if ("tcp".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.CBUSTCPDEFAULTPORT);
+        }
+        return Collections.emptySet();
+    }
 
     @Override
     protected boolean canRead() {
@@ -56,76 +83,10 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
     }
 
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
-        return CBusConfiguration.class;
-    }
-
-    @Override
-    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(CBusTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    protected Optional<String> getDefaultTransportCode() {
-        return Optional.of("tcp");
-    }
-
-    @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    @Override
-    protected ProtocolStackConfigurer<CBusCommand> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(CBusCommand.class, io ->
-                CBusCommand.staticParse(io, new CBusOptions(false, false, false, false, false, false, false, false, false)))
-            .withProtocol(CBusProtocolLogic.class)
-            .withDriverContext(CBusDriverContext.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .withCorruptPacketRemover(CorruptPackageCleaner.class)
-            .build();
-    }
-
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            // TODO: we might need to try multiple times because the ln might not be here in time
-            for (int i = 0; i < byteBuf.readableBytes(); i++) {
-                boolean hasOneMore = i + 1 < byteBuf.readableBytes();
-
-                char currentChar = (char) byteBuf.getByte(i);
-
-                boolean isCR = currentChar == '\r';
-                boolean followUpIsLF = hasOneMore && (byteBuf.getByte(i + 1) == '\n');
-                boolean followUpIsNotLF = hasOneMore && (byteBuf.getByte(i + 1) != '\n');
-
-                if ((!hasOneMore && isCR) || (isCR && followUpIsNotLF)) {
-                    return i + 1;
-                }
-                if (isCR && followUpIsLF) {
-                    return i + 2;
-                }
-            }
-            return -1;
-        }
-    }
-
-    /**
-     * Consumes all Bytes till a backslash is found
-     */
-    public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
-        @Override
-        public void accept(ByteBuf byteBuf) {
-            // Consume every byte until the next byte would be a backslash.
-            while (byteBuf.getUnsignedByte(0) != '\\') {
-                // Just consume the bytes till the next possible start position.
-                byteBuf.readByte();
-            }
-        }
+    protected ConnectionBase<?> getConnection(Configuration configuration,
+                                              TransportInstance<?> transportInstance,
+                                              AuditLog auditLog) {
+        return new CBusConnection((CBusConfiguration) configuration, transportInstance, auditLog);
     }
 
 }

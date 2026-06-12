@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDoorAlarmState(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoorAlarmState) GetTypeName() string {
+func (m *_BACnetConstructedDataDoorAlarmState) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoorAlarmState"
 }
 

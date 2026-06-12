@@ -180,7 +180,7 @@ func CastApduDataExtLinkWrite(structType any) ApduDataExtLinkWrite {
 	return nil
 }
 
-func (m *_ApduDataExtLinkWrite) GetTypeName() string {
+func (m *_ApduDataExtLinkWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtLinkWrite"
 }
 

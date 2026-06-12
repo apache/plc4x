@@ -135,7 +135,7 @@ func CastVersionTime(structType any) VersionTime {
 	return nil
 }
 
-func (m *_VersionTime) GetTypeName() string {
+func (m *_VersionTime) GetPlx4xTypeName() string {
 	return "VersionTime"
 }
 

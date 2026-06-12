@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -207,7 +208,7 @@ func CastJsonDataSetWriterMessageDataType(structType any) JsonDataSetWriterMessa
 	return nil
 }
 
-func (m *_JsonDataSetWriterMessageDataType) GetTypeName() string {
+func (m *_JsonDataSetWriterMessageDataType) GetPlx4xTypeName() string {
 	return "JsonDataSetWriterMessageDataType"
 }
 
@@ -235,7 +236,7 @@ func (m *_JsonDataSetWriterMessageDataType) parse(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dataSetMessageContentMask, err := ReadEnumField[JsonDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "JsonDataSetMessageContentMask", ReadEnum(JsonDataSetMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	dataSetMessageContentMask, err := ReadEnumField[JsonDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "JsonDataSetMessageContentMask", ReadEnum(JsonDataSetMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetMessageContentMask' field"))
 	}
@@ -266,7 +267,7 @@ func (m *_JsonDataSetWriterMessageDataType) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for JsonDataSetWriterMessageDataType")
 		}
 
-		if err := WriteSimpleEnumField[JsonDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "JsonDataSetMessageContentMask", m.GetDataSetMessageContentMask(), WriteEnum[JsonDataSetMessageContentMask, uint32](JsonDataSetMessageContentMask.GetValue, JsonDataSetMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[JsonDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "JsonDataSetMessageContentMask", m.GetDataSetMessageContentMask(), WriteEnum[JsonDataSetMessageContentMask, uint32](JsonDataSetMessageContentMask.GetValue, JsonDataSetMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetMessageContentMask' field")
 		}
 

@@ -225,7 +225,7 @@ func CastBACnetDailySchedule(structType any) BACnetDailySchedule {
 	return nil
 }
 
-func (m *_BACnetDailySchedule) GetTypeName() string {
+func (m *_BACnetDailySchedule) GetPlx4xTypeName() string {
 	return "BACnetDailySchedule"
 }
 

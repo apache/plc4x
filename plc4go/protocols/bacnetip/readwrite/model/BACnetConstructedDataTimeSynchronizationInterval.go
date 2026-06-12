@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTimeSynchronizationInterval(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeSynchronizationInterval"
 }
 

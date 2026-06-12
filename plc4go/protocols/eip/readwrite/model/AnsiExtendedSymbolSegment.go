@@ -222,7 +222,7 @@ func CastAnsiExtendedSymbolSegment(structType any) AnsiExtendedSymbolSegment {
 	return nil
 }
 
-func (m *_AnsiExtendedSymbolSegment) GetTypeName() string {
+func (m *_AnsiExtendedSymbolSegment) GetPlx4xTypeName() string {
 	return "AnsiExtendedSymbolSegment"
 }
 

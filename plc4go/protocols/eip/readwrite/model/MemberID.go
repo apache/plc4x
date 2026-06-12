@@ -222,7 +222,7 @@ func CastMemberID(structType any) MemberID {
 	return nil
 }
 
-func (m *_MemberID) GetTypeName() string {
+func (m *_MemberID) GetPlx4xTypeName() string {
 	return "MemberID"
 }
 

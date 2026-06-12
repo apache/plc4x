@@ -221,7 +221,7 @@ func CastBACnetTimeStampSequence(structType any) BACnetTimeStampSequence {
 	return nil
 }
 
-func (m *_BACnetTimeStampSequence) GetTypeName() string {
+func (m *_BACnetTimeStampSequence) GetPlx4xTypeName() string {
 	return "BACnetTimeStampSequence"
 }
 

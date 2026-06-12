@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -180,7 +182,7 @@ func CastInterfaceOptions1PowerUpSettings(structType any) InterfaceOptions1Power
 	return nil
 }
 
-func (m *_InterfaceOptions1PowerUpSettings) GetTypeName() string {
+func (m *_InterfaceOptions1PowerUpSettings) GetPlx4xTypeName() string {
 	return "InterfaceOptions1PowerUpSettings"
 }
 
@@ -198,7 +200,7 @@ func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBytes(ctx context.Context
 }
 
 func InterfaceOptions1PowerUpSettingsParse(ctx context.Context, theBytes []byte) (InterfaceOptions1PowerUpSettings, error) {
-	return InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func InterfaceOptions1PowerUpSettingsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
@@ -224,7 +226,7 @@ func (m *_InterfaceOptions1PowerUpSettings) parse(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	interfaceOptions1, err := ReadSimpleField[InterfaceOptions1](ctx, "interfaceOptions1", ReadComplex[InterfaceOptions1](InterfaceOptions1ParseWithBuffer, readBuffer))
+	interfaceOptions1, err := ReadSimpleField[InterfaceOptions1](ctx, "interfaceOptions1", ReadComplex[InterfaceOptions1](InterfaceOptions1ParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceOptions1' field"))
 	}
@@ -238,7 +240,7 @@ func (m *_InterfaceOptions1PowerUpSettings) parse(ctx context.Context, readBuffe
 }
 
 func (m *_InterfaceOptions1PowerUpSettings) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -254,7 +256,7 @@ func (m *_InterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(ctx context
 		return errors.Wrap(pushErr, "Error pushing for InterfaceOptions1PowerUpSettings")
 	}
 
-	if err := WriteSimpleField[InterfaceOptions1](ctx, "interfaceOptions1", m.GetInterfaceOptions1(), WriteComplex[InterfaceOptions1](writeBuffer)); err != nil {
+	if err := WriteSimpleField[InterfaceOptions1](ctx, "interfaceOptions1", m.GetInterfaceOptions1(), WriteComplex[InterfaceOptions1](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'interfaceOptions1' field")
 	}
 

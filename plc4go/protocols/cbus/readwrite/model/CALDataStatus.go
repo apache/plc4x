@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -234,7 +236,7 @@ func CastCALDataStatus(structType any) CALDataStatus {
 	return nil
 }
 
-func (m *_CALDataStatus) GetTypeName() string {
+func (m *_CALDataStatus) GetPlx4xTypeName() string {
 	return "CALDataStatus"
 }
 
@@ -273,19 +275,19 @@ func (m *_CALDataStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 	m.Application = application
 
-	blockStart, err := ReadSimpleField(ctx, "blockStart", ReadUnsignedByte(readBuffer, uint8(8)))
+	blockStart, err := ReadSimpleField(ctx, "blockStart", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blockStart' field"))
 	}
 	m.BlockStart = blockStart
 
-	statusBytes, err := ReadCountArrayField[StatusByte](ctx, "statusBytes", ReadComplex[StatusByte](StatusByteParseWithBuffer, readBuffer), uint64(int32(commandTypeContainer.NumBytes())-int32(int32(2))))
+	statusBytes, err := ReadCountArrayField[StatusByte](ctx, "statusBytes", ReadComplex[StatusByte](StatusByteParseWithBuffer, readBuffer), uint64(int32(commandTypeContainer.NumBytes())-int32(int32(2))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusBytes' field"))
 	}
@@ -299,7 +301,7 @@ func (m *_CALDataStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 }
 
 func (m *_CALDataStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -316,15 +318,15 @@ func (m *_CALDataStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for CALDataStatus")
 		}
 
-		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "blockStart", m.GetBlockStart(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "blockStart", m.GetBlockStart(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'blockStart' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "statusBytes", m.GetStatusBytes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "statusBytes", m.GetStatusBytes(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusBytes' field")
 		}
 

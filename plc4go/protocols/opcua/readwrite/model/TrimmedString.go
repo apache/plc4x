@@ -135,7 +135,7 @@ func CastTrimmedString(structType any) TrimmedString {
 	return nil
 }
 
-func (m *_TrimmedString) GetTypeName() string {
+func (m *_TrimmedString) GetPlx4xTypeName() string {
 	return "TrimmedString"
 }
 

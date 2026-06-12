@@ -225,7 +225,7 @@ func CastLogicalSegment(structType any) LogicalSegment {
 	return nil
 }
 
-func (m *_LogicalSegment) GetTypeName() string {
+func (m *_LogicalSegment) GetPlx4xTypeName() string {
 	return "LogicalSegment"
 }
 

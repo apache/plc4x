@@ -246,7 +246,7 @@ func CastBACnetConstructedDataIPv6DHCPLeaseTimeRemaining(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6DHCPLeaseTimeRemaining"
 }
 

@@ -207,7 +207,7 @@ func CastErrorReportingSystemCategoryTypeInputUnits(structType any) ErrorReporti
 	return nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetTypeName() string {
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategoryTypeInputUnits"
 }
 

@@ -225,7 +225,7 @@ func CastBACnetErrorGeneral(structType any) BACnetErrorGeneral {
 	return nil
 }
 
-func (m *_BACnetErrorGeneral) GetTypeName() string {
+func (m *_BACnetErrorGeneral) GetPlx4xTypeName() string {
 	return "BACnetErrorGeneral"
 }
 

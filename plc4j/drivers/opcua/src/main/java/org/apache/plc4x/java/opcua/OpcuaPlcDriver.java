@@ -18,24 +18,18 @@
  */
 package org.apache.plc4x.java.opcua;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
-import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
-import org.apache.plc4x.java.opcua.optimizer.OpcuaOptimizer;
-import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
 
-public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
+public class OpcuaPlcDriver extends DriverBase {
 
     @Override
     public String getProtocolCode() {
@@ -48,18 +42,18 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+    protected Class<? extends Configuration> getConfigurationClass() {
         return OpcuaConfiguration.class;
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
+    public Optional<String> getDefaultTransportCode() {
         return Optional.of("tcp");
     }
 
     @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
+    public List<String> getSupportedTransportCodes() {
+        return List.of("tcp");
     }
 
     @Override
@@ -78,42 +72,10 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected OpcuaOptimizer getOptimizer() {
-        return new OpcuaOptimizer();
-    }
-
-    @Override
-    protected boolean fireDiscoverEvent() {
-        return true;
-    }
-
-    @Override
-    protected boolean awaitDiscoverComplete() {
-        return true;
-    }
-
-
-    @Override
-    protected ProtocolStackConfigurer<OpcuaAPU> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(OpcuaAPU.class, io -> OpcuaAPU.staticParse(io, true, true))
-            .withProtocol(OpcuaProtocolLogic.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .withDriverContext(OpcuaDriverContext.class)
-            .littleEndian()
-            .build();
-    }
-
-    /**
-     * Estimate the Length of a Packet
-     */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 8) {
-                return Integer.reverseBytes(byteBuf.getInt(byteBuf.readerIndex() + 4));
-            }
-            return -1;
-        }
+    protected ConnectionBase<?> getConnection(Configuration configuration,
+                                              TransportInstance<?> transportInstance,
+                                              AuditLog auditLog) {
+        return new OpcuaConnection((OpcuaConfiguration) configuration, transportInstance, auditLog);
     }
 
     @Override

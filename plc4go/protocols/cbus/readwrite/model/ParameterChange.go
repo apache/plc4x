@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -159,7 +161,7 @@ func CastParameterChange(structType any) ParameterChange {
 	return nil
 }
 
-func (m *_ParameterChange) GetTypeName() string {
+func (m *_ParameterChange) GetPlx4xTypeName() string {
 	return "ParameterChange"
 }
 
@@ -180,7 +182,7 @@ func (m *_ParameterChange) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func ParameterChangeParse(ctx context.Context, theBytes []byte) (ParameterChange, error) {
-	return ParameterChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return ParameterChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func ParameterChangeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChange, error) {
@@ -206,13 +208,13 @@ func (m *_ParameterChange) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	specialChar1, err := ReadConstField[byte](ctx, "specialChar1", ReadByte(readBuffer, 8), ParameterChange_SPECIALCHAR1)
+	specialChar1, err := ReadConstField[byte](ctx, "specialChar1", ReadByte(readBuffer, 8), ParameterChange_SPECIALCHAR1, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'specialChar1' field"))
 	}
 	_ = specialChar1
 
-	specialChar2, err := ReadConstField[byte](ctx, "specialChar2", ReadByte(readBuffer, 8), ParameterChange_SPECIALCHAR2)
+	specialChar2, err := ReadConstField[byte](ctx, "specialChar2", ReadByte(readBuffer, 8), ParameterChange_SPECIALCHAR2, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'specialChar2' field"))
 	}
@@ -226,7 +228,7 @@ func (m *_ParameterChange) parse(ctx context.Context, readBuffer utils.ReadBuffe
 }
 
 func (m *_ParameterChange) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -242,11 +244,11 @@ func (m *_ParameterChange) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for ParameterChange")
 	}
 
-	if err := WriteConstField(ctx, "specialChar1", ParameterChange_SPECIALCHAR1, WriteByte(writeBuffer, 8)); err != nil {
+	if err := WriteConstField(ctx, "specialChar1", ParameterChange_SPECIALCHAR1, WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'specialChar1' field")
 	}
 
-	if err := WriteConstField(ctx, "specialChar2", ParameterChange_SPECIALCHAR2, WriteByte(writeBuffer, 8)); err != nil {
+	if err := WriteConstField(ctx, "specialChar2", ParameterChange_SPECIALCHAR2, WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'specialChar2' field")
 	}
 

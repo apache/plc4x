@@ -495,7 +495,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
                 }
@@ -505,7 +505,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     encoding + "\"" + ", (char**) " + valueString + ")";
             }
             case VSTRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
                 }
@@ -566,16 +566,18 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 int numChars;
-                if("UTF-8".equalsIgnoreCase(encoding)) {
+                if ("UTF8".equalsIgnoreCase(encoding)) {
                     numChars = simpleTypeReference.getSizeInBits() / 8;
-                } else if("UTF-16".equalsIgnoreCase(encoding)) {
+                } else if ("UTF16".equalsIgnoreCase(encoding)) {
+                    numChars = simpleTypeReference.getSizeInBits() / 16;
+                } else if ("UTF16BE".equalsIgnoreCase(encoding)) {
                     numChars = simpleTypeReference.getSizeInBits() / 16;
                 } else {
                     throw new FreemarkerException("Unsupported encoding " + encoding);
@@ -584,7 +586,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     encoding + "\", (const uint8_t*) " + (numChars == 1 ? "&" : "") + fieldName + ")";
             }
             case VSTRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
                 }
@@ -907,7 +909,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         tracer = tracer.dive("type");
         if (variableLiteral.getChild().isPresent() && "encoding".equals(variableLiteral.getChild().get().getName()) && (field instanceof TypedField) && ((((TypedField) field).getType() instanceof StringTypeReference) || (((TypedField) field).getType() instanceof VstringTypeReference))) {
             // TODO: replace with map join
-            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
             if (!(encodingTerm instanceof StringLiteral)) {
                 throw new FreemarkerException("Encoding must be a quoted string value");
             }
@@ -1096,7 +1098,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     if (!(typedField.getType() instanceof StringTypeReference)) {
                         throw new FreemarkerException("Can only access 'encoding' for string types.");
                     }
-                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                     if (!(encodingTerm instanceof StringLiteral)) {
                         throw new FreemarkerException("Encoding must be a quoted string value");
                     }
@@ -1188,7 +1190,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                 if (!(typedField.getType() instanceof StringTypeReference)) {
                                     throw new FreemarkerException("Can only access 'encoding' for string types.");
                                 }
-                                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                                 if (!(encodingTerm instanceof StringLiteral)) {
                                     throw new FreemarkerException("Encoding must be a quoted string value");
                                 }
@@ -1265,7 +1267,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                             if (!(typedField.getType() instanceof StringTypeReference)) {
                                 throw new FreemarkerException("Can only access 'encoding' for string types.");
                             }
-                            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                             if (!(encodingTerm instanceof StringLiteral)) {
                                 throw new FreemarkerException("Encoding must be a quoted string value");
                             }

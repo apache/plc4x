@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAPDULength(structType any) BACnetConstructedDataAP
 	return nil
 }
 
-func (m *_BACnetConstructedDataAPDULength) GetTypeName() string {
+func (m *_BACnetConstructedDataAPDULength) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAPDULength"
 }
 

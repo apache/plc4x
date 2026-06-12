@@ -203,7 +203,7 @@ func CastMeteringDataOilConsumption(structType any) MeteringDataOilConsumption {
 	return nil
 }
 
-func (m *_MeteringDataOilConsumption) GetTypeName() string {
+func (m *_MeteringDataOilConsumption) GetPlx4xTypeName() string {
 	return "MeteringDataOilConsumption"
 }
 

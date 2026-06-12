@@ -285,7 +285,7 @@ func CastBACnetServiceAckConfirmedPrivateTransfer(structType any) BACnetServiceA
 	return nil
 }
 
-func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetTypeName() string {
+func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetPlx4xTypeName() string {
 	return "BACnetServiceAckConfirmedPrivateTransfer"
 }
 

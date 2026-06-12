@@ -283,7 +283,7 @@ func CastAlarmMessageAckObjectPushType(structType any) AlarmMessageAckObjectPush
 	return nil
 }
 
-func (m *_AlarmMessageAckObjectPushType) GetTypeName() string {
+func (m *_AlarmMessageAckObjectPushType) GetPlx4xTypeName() string {
 	return "AlarmMessageAckObjectPushType"
 }
 

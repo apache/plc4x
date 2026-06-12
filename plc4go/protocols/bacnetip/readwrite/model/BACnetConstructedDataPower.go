@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPower(structType any) BACnetConstructedDataPower {
 	return nil
 }
 
-func (m *_BACnetConstructedDataPower) GetTypeName() string {
+func (m *_BACnetConstructedDataPower) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPower"
 }
 

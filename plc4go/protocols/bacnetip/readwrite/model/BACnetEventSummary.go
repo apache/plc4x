@@ -371,7 +371,7 @@ func CastBACnetEventSummary(structType any) BACnetEventSummary {
 	return nil
 }
 
-func (m *_BACnetEventSummary) GetTypeName() string {
+func (m *_BACnetEventSummary) GetPlx4xTypeName() string {
 	return "BACnetEventSummary"
 }
 

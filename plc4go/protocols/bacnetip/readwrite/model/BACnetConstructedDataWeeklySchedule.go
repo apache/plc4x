@@ -258,7 +258,7 @@ func CastBACnetConstructedDataWeeklySchedule(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataWeeklySchedule) GetTypeName() string {
+func (m *_BACnetConstructedDataWeeklySchedule) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataWeeklySchedule"
 }
 

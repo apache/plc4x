@@ -277,7 +277,7 @@ func CastMultipleServiceResponse(structType any) MultipleServiceResponse {
 	return nil
 }
 
-func (m *_MultipleServiceResponse) GetTypeName() string {
+func (m *_MultipleServiceResponse) GetPlx4xTypeName() string {
 	return "MultipleServiceResponse"
 }
 

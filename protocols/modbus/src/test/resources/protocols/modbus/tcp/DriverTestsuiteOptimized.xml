@@ -24,8 +24,8 @@
 
   <name>Modbus</name>
 
-  <protocolName>modbus</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>modbus</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <driver-name>modbus-tcp</driver-name>
 
@@ -116,7 +116,7 @@
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927</PlcREAL>
                 </value>
               </PlcResponseItem>
             </hurz>
@@ -214,8 +214,8 @@
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcList>
-                    <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-                    <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                    <PlcREAL dataType="float" bitLength="32">3.1415927</PlcREAL>
+                    <PlcREAL dataType="float" bitLength="32">3.1415927</PlcREAL>
                   </PlcList>
                 </value>
               </PlcResponseItem>
@@ -328,7 +328,7 @@
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927</PlcREAL>
                 </value>
               </PlcResponseItem>
             </hurz1>
@@ -336,7 +336,7 @@
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927</PlcREAL>
                 </value>
               </PlcResponseItem>
             </hurz2>
@@ -426,7 +426,7 @@
                         </ModbusTagHoldingRegister>
                       </tag>
                       <value>
-                        <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                        <PlcREAL dataType="float" bitLength="32">3.1415927</PlcREAL>
                       </value>
                     </PlcTagValueItem>
                   </hurz>
@@ -526,8 +526,8 @@
                       </tag>
                       <value>
                         <PlcList>
-                          <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-                          <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                          <PlcREAL dataType="float" bitLength="32">3.1415927</PlcREAL>
+                          <PlcREAL dataType="float" bitLength="32">3.1415927</PlcREAL>
                         </PlcList>
                       </value>
                     </PlcTagValueItem>

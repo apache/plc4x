@@ -258,7 +258,7 @@ func CastBACnetConstructedDataSupportedFormatClasses(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataSupportedFormatClasses) GetTypeName() string {
+func (m *_BACnetConstructedDataSupportedFormatClasses) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSupportedFormatClasses"
 }
 

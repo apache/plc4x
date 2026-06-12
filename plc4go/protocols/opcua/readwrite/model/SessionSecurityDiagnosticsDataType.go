@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -453,7 +454,7 @@ func CastSessionSecurityDiagnosticsDataType(structType any) SessionSecurityDiagn
 	return nil
 }
 
-func (m *_SessionSecurityDiagnosticsDataType) GetTypeName() string {
+func (m *_SessionSecurityDiagnosticsDataType) GetPlx4xTypeName() string {
 	return "SessionSecurityDiagnosticsDataType"
 }
 
@@ -513,61 +514,61 @@ func (m *_SessionSecurityDiagnosticsDataType) parse(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionId' field"))
 	}
 	m.SessionId = sessionId
 
-	clientUserIdOfSession, err := ReadSimpleField[PascalString](ctx, "clientUserIdOfSession", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	clientUserIdOfSession, err := ReadSimpleField[PascalString](ctx, "clientUserIdOfSession", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientUserIdOfSession' field"))
 	}
 	m.ClientUserIdOfSession = clientUserIdOfSession
 
-	noOfClientUserIdHistory, err := ReadImplicitField[int32](ctx, "noOfClientUserIdHistory", ReadSignedInt(readBuffer, uint8(32)))
+	noOfClientUserIdHistory, err := ReadImplicitField[int32](ctx, "noOfClientUserIdHistory", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfClientUserIdHistory' field"))
 	}
 	_ = noOfClientUserIdHistory
 
-	clientUserIdHistory, err := ReadCountArrayField[PascalString](ctx, "clientUserIdHistory", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfClientUserIdHistory))
+	clientUserIdHistory, err := ReadCountArrayField[PascalString](ctx, "clientUserIdHistory", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfClientUserIdHistory), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientUserIdHistory' field"))
 	}
 	m.ClientUserIdHistory = clientUserIdHistory
 
-	authenticationMechanism, err := ReadSimpleField[PascalString](ctx, "authenticationMechanism", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	authenticationMechanism, err := ReadSimpleField[PascalString](ctx, "authenticationMechanism", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationMechanism' field"))
 	}
 	m.AuthenticationMechanism = authenticationMechanism
 
-	encoding, err := ReadSimpleField[PascalString](ctx, "encoding", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	encoding, err := ReadSimpleField[PascalString](ctx, "encoding", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encoding' field"))
 	}
 	m.Encoding = encoding
 
-	transportProtocol, err := ReadSimpleField[PascalString](ctx, "transportProtocol", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	transportProtocol, err := ReadSimpleField[PascalString](ctx, "transportProtocol", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportProtocol' field"))
 	}
 	m.TransportProtocol = transportProtocol
 
-	securityMode, err := ReadEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	securityMode, err := ReadEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityMode' field"))
 	}
 	m.SecurityMode = securityMode
 
-	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
 	m.SecurityPolicyUri = securityPolicyUri
 
-	clientCertificate, err := ReadSimpleField[PascalByteString](ctx, "clientCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	clientCertificate, err := ReadSimpleField[PascalByteString](ctx, "clientCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientCertificate' field"))
 	}
@@ -598,43 +599,43 @@ func (m *_SessionSecurityDiagnosticsDataType) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for SessionSecurityDiagnosticsDataType")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sessionId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "clientUserIdOfSession", m.GetClientUserIdOfSession(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "clientUserIdOfSession", m.GetClientUserIdOfSession(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientUserIdOfSession' field")
 		}
 		noOfClientUserIdHistory := int32(utils.InlineIf(bool((m.GetClientUserIdHistory()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetClientUserIdHistory()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfClientUserIdHistory", noOfClientUserIdHistory, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfClientUserIdHistory", noOfClientUserIdHistory, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfClientUserIdHistory' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "clientUserIdHistory", m.GetClientUserIdHistory(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "clientUserIdHistory", m.GetClientUserIdHistory(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientUserIdHistory' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "authenticationMechanism", m.GetAuthenticationMechanism(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "authenticationMechanism", m.GetAuthenticationMechanism(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'authenticationMechanism' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "encoding", m.GetEncoding(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "encoding", m.GetEncoding(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'encoding' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "transportProtocol", m.GetTransportProtocol(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "transportProtocol", m.GetTransportProtocol(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'transportProtocol' field")
 		}
 
-		if err := WriteSimpleEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", m.GetSecurityMode(), WriteEnum[MessageSecurityMode, uint32](MessageSecurityMode.GetValue, MessageSecurityMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", m.GetSecurityMode(), WriteEnum[MessageSecurityMode, uint32](MessageSecurityMode.GetValue, MessageSecurityMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityMode' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "clientCertificate", m.GetClientCertificate(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "clientCertificate", m.GetClientCertificate(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientCertificate' field")
 		}
 

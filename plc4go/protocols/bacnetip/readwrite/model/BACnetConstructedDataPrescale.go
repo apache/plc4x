@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPrescale(structType any) BACnetConstructedDataPres
 	return nil
 }
 
-func (m *_BACnetConstructedDataPrescale) GetTypeName() string {
+func (m *_BACnetConstructedDataPrescale) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPrescale"
 }
 

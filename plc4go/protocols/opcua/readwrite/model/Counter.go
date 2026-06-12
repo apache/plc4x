@@ -135,7 +135,7 @@ func CastCounter(structType any) Counter {
 	return nil
 }
 
-func (m *_Counter) GetTypeName() string {
+func (m *_Counter) GetPlx4xTypeName() string {
 	return "Counter"
 }
 

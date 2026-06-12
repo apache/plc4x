@@ -180,7 +180,7 @@ func CastMonitoringFilter(structType any) MonitoringFilter {
 	return nil
 }
 
-func (m *_MonitoringFilter) GetTypeName() string {
+func (m *_MonitoringFilter) GetPlx4xTypeName() string {
 	return "MonitoringFilter"
 }
 

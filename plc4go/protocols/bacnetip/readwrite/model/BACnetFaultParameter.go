@@ -349,7 +349,7 @@ func CastBACnetFaultParameter(structType any) BACnetFaultParameter {
 	return nil
 }
 
-func (m *_BACnetFaultParameter) GetTypeName() string {
+func (m *_BACnetFaultParameter) GetPlx4xTypeName() string {
 	return "BACnetFaultParameter"
 }
 

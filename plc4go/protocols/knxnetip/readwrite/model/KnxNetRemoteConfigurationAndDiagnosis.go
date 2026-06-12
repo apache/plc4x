@@ -208,7 +208,7 @@ func CastKnxNetRemoteConfigurationAndDiagnosis(structType any) KnxNetRemoteConfi
 	return nil
 }
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetTypeName() string {
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetPlx4xTypeName() string {
 	return "KnxNetRemoteConfigurationAndDiagnosis"
 }
 

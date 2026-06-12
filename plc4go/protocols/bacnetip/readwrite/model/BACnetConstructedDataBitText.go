@@ -258,7 +258,7 @@ func CastBACnetConstructedDataBitText(structType any) BACnetConstructedDataBitTe
 	return nil
 }
 
-func (m *_BACnetConstructedDataBitText) GetTypeName() string {
+func (m *_BACnetConstructedDataBitText) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBitText"
 }
 

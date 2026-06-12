@@ -210,7 +210,7 @@ func CastHVACStartTime(structType any) HVACStartTime {
 	return nil
 }
 
-func (m *_HVACStartTime) GetTypeName() string {
+func (m *_HVACStartTime) GetPlx4xTypeName() string {
 	return "HVACStartTime"
 }
 

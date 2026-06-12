@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCurrentCommandPriority(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) GetTypeName() string {
+func (m *_BACnetConstructedDataCurrentCommandPriority) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCurrentCommandPriority"
 }
 

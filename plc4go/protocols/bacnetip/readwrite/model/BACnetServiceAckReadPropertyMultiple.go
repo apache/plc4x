@@ -207,7 +207,7 @@ func CastBACnetServiceAckReadPropertyMultiple(structType any) BACnetServiceAckRe
 	return nil
 }
 
-func (m *_BACnetServiceAckReadPropertyMultiple) GetTypeName() string {
+func (m *_BACnetServiceAckReadPropertyMultiple) GetPlx4xTypeName() string {
 	return "BACnetServiceAckReadPropertyMultiple"
 }
 

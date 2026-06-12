@@ -22,7 +22,7 @@ package org.apache.plc4x.java.ctrlx.readwrite.discovery;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
-import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
+import org.apache.plc4x.java.spi.drivers.functions.PlcDiscoverer;
 
 import java.util.concurrent.CompletableFuture;
 

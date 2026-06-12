@@ -243,7 +243,7 @@ func CastBACnetVTSession(structType any) BACnetVTSession {
 	return nil
 }
 
-func (m *_BACnetVTSession) GetTypeName() string {
+func (m *_BACnetVTSession) GetPlx4xTypeName() string {
 	return "BACnetVTSession"
 }
 

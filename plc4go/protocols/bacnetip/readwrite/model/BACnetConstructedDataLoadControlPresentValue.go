@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLoadControlPresentValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataLoadControlPresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataLoadControlPresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLoadControlPresentValue"
 }
 

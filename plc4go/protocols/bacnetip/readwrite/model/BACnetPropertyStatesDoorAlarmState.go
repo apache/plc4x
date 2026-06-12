@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesDoorAlarmState(structType any) BACnetPropertyStates
 	return nil
 }
 
-func (m *_BACnetPropertyStatesDoorAlarmState) GetTypeName() string {
+func (m *_BACnetPropertyStatesDoorAlarmState) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesDoorAlarmState"
 }
 

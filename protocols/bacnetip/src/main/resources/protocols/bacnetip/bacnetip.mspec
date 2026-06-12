@@ -21,7 +21,7 @@
     [const    uint 16     bacnetUdpDefaultPort 47808]
 ]
 
-[discriminatedType BVLC byteOrder='BIG_ENDIAN'
+[discriminatedType BVLC byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [const         uint 8   bacnetType   0x81                   ]
     [discriminator uint 8   bvlcFunction                        ]
     [implicit      uint 16  bvlcLength          'lengthInBytes' ]

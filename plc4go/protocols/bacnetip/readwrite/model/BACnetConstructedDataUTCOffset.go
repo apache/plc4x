@@ -246,7 +246,7 @@ func CastBACnetConstructedDataUTCOffset(structType any) BACnetConstructedDataUTC
 	return nil
 }
 
-func (m *_BACnetConstructedDataUTCOffset) GetTypeName() string {
+func (m *_BACnetConstructedDataUTCOffset) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUTCOffset"
 }
 

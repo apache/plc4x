@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBinaryOutputRelinquishDefault(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBinaryOutputRelinquishDefault"
 }
 

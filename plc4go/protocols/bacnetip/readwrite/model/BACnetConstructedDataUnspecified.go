@@ -259,7 +259,7 @@ func CastBACnetConstructedDataUnspecified(structType any) BACnetConstructedDataU
 	return nil
 }
 
-func (m *_BACnetConstructedDataUnspecified) GetTypeName() string {
+func (m *_BACnetConstructedDataUnspecified) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUnspecified"
 }
 

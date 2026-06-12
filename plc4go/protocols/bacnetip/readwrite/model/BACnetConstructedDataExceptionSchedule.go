@@ -258,7 +258,7 @@ func CastBACnetConstructedDataExceptionSchedule(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataExceptionSchedule) GetTypeName() string {
+func (m *_BACnetConstructedDataExceptionSchedule) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExceptionSchedule"
 }
 

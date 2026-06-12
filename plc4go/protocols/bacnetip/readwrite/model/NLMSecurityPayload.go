@@ -222,7 +222,7 @@ func CastNLMSecurityPayload(structType any) NLMSecurityPayload {
 	return nil
 }
 
-func (m *_NLMSecurityPayload) GetTypeName() string {
+func (m *_NLMSecurityPayload) GetPlx4xTypeName() string {
 	return "NLMSecurityPayload"
 }
 

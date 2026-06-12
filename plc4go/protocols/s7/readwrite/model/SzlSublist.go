@@ -47,11 +47,20 @@ const (
 	SzlSublist_USER_MEMORY_AREA                                              SzlSublist = 0x13
 	SzlSublist_SYSTEM_AREAS                                                  SzlSublist = 0x14
 	SzlSublist_BLOCK_TYPES                                                   SzlSublist = 0x15
+	SzlSublist_PRIORITY_CLASSES                                              SzlSublist = 0x16
+	SzlSublist_EXTENDED_PRIORITY_CLASSES                                     SzlSublist = 0x17
+	SzlSublist_OPERATING_SYSTEM                                              SzlSublist = 0x18
 	SzlSublist_STATUS_MODULE_LEDS                                            SzlSublist = 0x19
 	SzlSublist_COMPONENT_IDENTIFICATION                                      SzlSublist = 0x1C
+	SzlSublist_INTERRUPT_INFO                                                SzlSublist = 0x21
 	SzlSublist_INTERRUPT_STATUS                                              SzlSublist = 0x22
+	SzlSublist_OPERATION_HISTORY                                             SzlSublist = 0x23
+	SzlSublist_OPERATING_MODES                                               SzlSublist = 0x24
 	SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS           SzlSublist = 0x25
+	SzlSublist_COMMUNICATION_MODE_DATA                                       SzlSublist = 0x31
 	SzlSublist_COMMUNICATION_STATUS_DATA                                     SzlSublist = 0x32
+	SzlSublist_DIAGNOSTIC_DATA_ON_COMM_OBJECTS                               SzlSublist = 0x33
+	SzlSublist_STATUS_H_SYSTEM                                               SzlSublist = 0x70
 	SzlSublist_H_CPU_GROUP_INFORMATION                                       SzlSublist = 0x71
 	SzlSublist_STATUS_SINGLE_MODULE_LED                                      SzlSublist = 0x74
 	SzlSublist_SWITCHED_DP_SLAVES_H_SYSTEM                                   SzlSublist = 0x75
@@ -80,11 +89,20 @@ func init() {
 		SzlSublist_USER_MEMORY_AREA,
 		SzlSublist_SYSTEM_AREAS,
 		SzlSublist_BLOCK_TYPES,
+		SzlSublist_PRIORITY_CLASSES,
+		SzlSublist_EXTENDED_PRIORITY_CLASSES,
+		SzlSublist_OPERATING_SYSTEM,
 		SzlSublist_STATUS_MODULE_LEDS,
 		SzlSublist_COMPONENT_IDENTIFICATION,
+		SzlSublist_INTERRUPT_INFO,
 		SzlSublist_INTERRUPT_STATUS,
+		SzlSublist_OPERATION_HISTORY,
+		SzlSublist_OPERATING_MODES,
 		SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS,
+		SzlSublist_COMMUNICATION_MODE_DATA,
 		SzlSublist_COMMUNICATION_STATUS_DATA,
+		SzlSublist_DIAGNOSTIC_DATA_ON_COMM_OBJECTS,
+		SzlSublist_STATUS_H_SYSTEM,
 		SzlSublist_H_CPU_GROUP_INFORMATION,
 		SzlSublist_STATUS_SINGLE_MODULE_LED,
 		SzlSublist_SWITCHED_DP_SLAVES_H_SYSTEM,
@@ -117,16 +135,34 @@ func SzlSublistByValue(value uint8) (enum SzlSublist, ok bool) {
 		return SzlSublist_SYSTEM_AREAS, true
 	case 0x15:
 		return SzlSublist_BLOCK_TYPES, true
+	case 0x16:
+		return SzlSublist_PRIORITY_CLASSES, true
+	case 0x17:
+		return SzlSublist_EXTENDED_PRIORITY_CLASSES, true
+	case 0x18:
+		return SzlSublist_OPERATING_SYSTEM, true
 	case 0x19:
 		return SzlSublist_STATUS_MODULE_LEDS, true
 	case 0x1C:
 		return SzlSublist_COMPONENT_IDENTIFICATION, true
+	case 0x21:
+		return SzlSublist_INTERRUPT_INFO, true
 	case 0x22:
 		return SzlSublist_INTERRUPT_STATUS, true
+	case 0x23:
+		return SzlSublist_OPERATION_HISTORY, true
+	case 0x24:
+		return SzlSublist_OPERATING_MODES, true
 	case 0x25:
 		return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS, true
+	case 0x31:
+		return SzlSublist_COMMUNICATION_MODE_DATA, true
 	case 0x32:
 		return SzlSublist_COMMUNICATION_STATUS_DATA, true
+	case 0x33:
+		return SzlSublist_DIAGNOSTIC_DATA_ON_COMM_OBJECTS, true
+	case 0x70:
+		return SzlSublist_STATUS_H_SYSTEM, true
 	case 0x71:
 		return SzlSublist_H_CPU_GROUP_INFORMATION, true
 	case 0x74:
@@ -175,16 +211,34 @@ func SzlSublistByName(value string) (enum SzlSublist, ok bool) {
 		return SzlSublist_SYSTEM_AREAS, true
 	case "BLOCK_TYPES":
 		return SzlSublist_BLOCK_TYPES, true
+	case "PRIORITY_CLASSES":
+		return SzlSublist_PRIORITY_CLASSES, true
+	case "EXTENDED_PRIORITY_CLASSES":
+		return SzlSublist_EXTENDED_PRIORITY_CLASSES, true
+	case "OPERATING_SYSTEM":
+		return SzlSublist_OPERATING_SYSTEM, true
 	case "STATUS_MODULE_LEDS":
 		return SzlSublist_STATUS_MODULE_LEDS, true
 	case "COMPONENT_IDENTIFICATION":
 		return SzlSublist_COMPONENT_IDENTIFICATION, true
+	case "INTERRUPT_INFO":
+		return SzlSublist_INTERRUPT_INFO, true
 	case "INTERRUPT_STATUS":
 		return SzlSublist_INTERRUPT_STATUS, true
+	case "OPERATION_HISTORY":
+		return SzlSublist_OPERATION_HISTORY, true
+	case "OPERATING_MODES":
+		return SzlSublist_OPERATING_MODES, true
 	case "ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS":
 		return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS, true
+	case "COMMUNICATION_MODE_DATA":
+		return SzlSublist_COMMUNICATION_MODE_DATA, true
 	case "COMMUNICATION_STATUS_DATA":
 		return SzlSublist_COMMUNICATION_STATUS_DATA, true
+	case "DIAGNOSTIC_DATA_ON_COMM_OBJECTS":
+		return SzlSublist_DIAGNOSTIC_DATA_ON_COMM_OBJECTS, true
+	case "STATUS_H_SYSTEM":
+		return SzlSublist_STATUS_H_SYSTEM, true
 	case "H_CPU_GROUP_INFORMATION":
 		return SzlSublist_H_CPU_GROUP_INFORMATION, true
 	case "STATUS_SINGLE_MODULE_LED":
@@ -298,16 +352,34 @@ func (e SzlSublist) PLC4XEnumName() string {
 		return "SYSTEM_AREAS"
 	case SzlSublist_BLOCK_TYPES:
 		return "BLOCK_TYPES"
+	case SzlSublist_PRIORITY_CLASSES:
+		return "PRIORITY_CLASSES"
+	case SzlSublist_EXTENDED_PRIORITY_CLASSES:
+		return "EXTENDED_PRIORITY_CLASSES"
+	case SzlSublist_OPERATING_SYSTEM:
+		return "OPERATING_SYSTEM"
 	case SzlSublist_STATUS_MODULE_LEDS:
 		return "STATUS_MODULE_LEDS"
 	case SzlSublist_COMPONENT_IDENTIFICATION:
 		return "COMPONENT_IDENTIFICATION"
+	case SzlSublist_INTERRUPT_INFO:
+		return "INTERRUPT_INFO"
 	case SzlSublist_INTERRUPT_STATUS:
 		return "INTERRUPT_STATUS"
+	case SzlSublist_OPERATION_HISTORY:
+		return "OPERATION_HISTORY"
+	case SzlSublist_OPERATING_MODES:
+		return "OPERATING_MODES"
 	case SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS:
 		return "ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS"
+	case SzlSublist_COMMUNICATION_MODE_DATA:
+		return "COMMUNICATION_MODE_DATA"
 	case SzlSublist_COMMUNICATION_STATUS_DATA:
 		return "COMMUNICATION_STATUS_DATA"
+	case SzlSublist_DIAGNOSTIC_DATA_ON_COMM_OBJECTS:
+		return "DIAGNOSTIC_DATA_ON_COMM_OBJECTS"
+	case SzlSublist_STATUS_H_SYSTEM:
+		return "STATUS_H_SYSTEM"
 	case SzlSublist_H_CPU_GROUP_INFORMATION:
 		return "H_CPU_GROUP_INFORMATION"
 	case SzlSublist_STATUS_SINGLE_MODULE_LED:

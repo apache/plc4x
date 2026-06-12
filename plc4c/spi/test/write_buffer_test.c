@@ -873,7 +873,7 @@ void test_plc4c_spi_write_string(void) {
   // Prepare input data
   plc4c_spi_write_buffer* write_buffer;
   plc4c_spi_write_buffer_create(32, &write_buffer);
-  test_plc4c_spi_write_string_args("Simple 32 bit string (4 chars)", write_buffer, 32, "UTF-8", OK, (const uint8_t*) "Hurz");
+  test_plc4c_spi_write_string_args("Simple 32 bit string (4 chars)", write_buffer, 32, "UTF8", OK, (const uint8_t*) "Hurz");
   uint8_t expected_data[] = {0x48, 0x75, 0x72, 0x7a};
   internal_write_buffer_assert_arrays_equal((uint8_t*) &expected_data, write_buffer, 4);
   plc4c_spi_write_buffer_destroy(write_buffer);

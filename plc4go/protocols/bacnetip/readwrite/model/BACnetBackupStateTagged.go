@@ -193,7 +193,7 @@ func CastBACnetBackupStateTagged(structType any) BACnetBackupStateTagged {
 	return nil
 }
 
-func (m *_BACnetBackupStateTagged) GetTypeName() string {
+func (m *_BACnetBackupStateTagged) GetPlx4xTypeName() string {
 	return "BACnetBackupStateTagged"
 }
 

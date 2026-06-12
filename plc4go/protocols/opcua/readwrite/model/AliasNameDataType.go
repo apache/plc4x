@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastAliasNameDataType(structType any) AliasNameDataType {
 	return nil
 }
 
-func (m *_AliasNameDataType) GetTypeName() string {
+func (m *_AliasNameDataType) GetPlx4xTypeName() string {
 	return "AliasNameDataType"
 }
 
@@ -279,19 +280,19 @@ func (m *_AliasNameDataType) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	aliasName, err := ReadSimpleField[QualifiedName](ctx, "aliasName", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	aliasName, err := ReadSimpleField[QualifiedName](ctx, "aliasName", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'aliasName' field"))
 	}
 	m.AliasName = aliasName
 
-	noOfReferencedNodes, err := ReadImplicitField[int32](ctx, "noOfReferencedNodes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReferencedNodes, err := ReadImplicitField[int32](ctx, "noOfReferencedNodes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencedNodes' field"))
 	}
 	_ = noOfReferencedNodes
 
-	referencedNodes, err := ReadCountArrayField[ExpandedNodeId](ctx, "referencedNodes", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer), uint64(noOfReferencedNodes))
+	referencedNodes, err := ReadCountArrayField[ExpandedNodeId](ctx, "referencedNodes", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer), uint64(noOfReferencedNodes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencedNodes' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_AliasNameDataType) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for AliasNameDataType")
 		}
 
-		if err := WriteSimpleField[QualifiedName](ctx, "aliasName", m.GetAliasName(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+		if err := WriteSimpleField[QualifiedName](ctx, "aliasName", m.GetAliasName(), WriteComplex[QualifiedName](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'aliasName' field")
 		}
 		noOfReferencedNodes := int32(utils.InlineIf(bool((m.GetReferencedNodes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReferencedNodes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfReferencedNodes", noOfReferencedNodes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfReferencedNodes", noOfReferencedNodes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReferencedNodes' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "referencedNodes", m.GetReferencedNodes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "referencedNodes", m.GetReferencedNodes(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'referencedNodes' field")
 		}
 

@@ -227,7 +227,7 @@ func CastBACnetServiceAckCreateObject(structType any) BACnetServiceAckCreateObje
 	return nil
 }
 
-func (m *_BACnetServiceAckCreateObject) GetTypeName() string {
+func (m *_BACnetServiceAckCreateObject) GetPlx4xTypeName() string {
 	return "BACnetServiceAckCreateObject"
 }
 

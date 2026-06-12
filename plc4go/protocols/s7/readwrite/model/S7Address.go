@@ -205,7 +205,7 @@ func CastS7Address(structType any) S7Address {
 	return nil
 }
 
-func (m *_S7Address) GetTypeName() string {
+func (m *_S7Address) GetPlx4xTypeName() string {
 	return "S7Address"
 }
 

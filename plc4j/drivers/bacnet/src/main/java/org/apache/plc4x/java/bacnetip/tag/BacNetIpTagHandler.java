@@ -19,14 +19,14 @@
 package org.apache.plc4x.java.bacnetip.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 
 public class BacNetIpTagHandler implements PlcTagHandler {
 
     @Override
-    public PlcTag parseTag(String tagAddress) throws PlcInvalidTagException {
+    public PlcTag parseTag(String tagAddress) {
         if (BacNetIpTag.matches(tagAddress)) {
             return BacNetIpTag.of(tagAddress);
         }

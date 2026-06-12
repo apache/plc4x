@@ -28,15 +28,21 @@ import org.apache.plc4x.java.profinet.readwrite.DceRpc_ActivityUuid;
 import org.apache.plc4x.java.profinet.readwrite.DceRpc_ObjectUuid;
 import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.profinet.readwrite.Uuid;
-import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ProfinetDriverContext implements DriverContext {
+/**
+ * Per-connection PROFINET state. Used to be wired up as the old SPI's
+ * {@code DriverContext}; with the new SPI the connection just owns one of
+ * these directly.
+ */
+public class ProfinetDriverContext {
 
     public static final int DEFAULT_UDP_PORT = 34964;
     public static final int DEFAULT_ARGS_MAXIMUM = 16696;
@@ -98,13 +104,13 @@ public class ProfinetDriverContext implements DriverContext {
     public static DceRpc_ActivityUuid generateActivityUuid() {
         UUID number = UUID.randomUUID();
         try {
-            WriteBufferByteBased wb = new WriteBufferByteBased(128);
-            wb.writeLong(64, number.getMostSignificantBits());
-            wb.writeLong(64, number.getLeastSignificantBits());
+            WriteBufferByteBased wb = new WriteBufferByteBased(new byte[16]);
+            wb.writeSignedLong(64, number.getMostSignificantBits());
+            wb.writeSignedLong(64, number.getLeastSignificantBits());
 
-            ReadBuffer rb = new ReadBufferByteBased(wb.getBytes());
-            return new DceRpc_ActivityUuid(rb.readLong(32), rb.readInt(16), rb.readInt(16), rb.readByteArray(8));
-        } catch (SerializationException | ParseException e) {
+            ReadBufferByteBased rb = new ReadBufferByteBased(wb.getBytes());
+            return new DceRpc_ActivityUuid(rb.readUnsignedLong(32), rb.readUnsignedInt(16), rb.readUnsignedInt(16), rb.readBits(64));
+        } catch (BufferException e) {
             // Ignore ... this should actually never happen.
         }
         return null;

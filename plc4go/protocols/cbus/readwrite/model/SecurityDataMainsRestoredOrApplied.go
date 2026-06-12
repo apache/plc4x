@@ -176,7 +176,7 @@ func CastSecurityDataMainsRestoredOrApplied(structType any) SecurityDataMainsRes
 	return nil
 }
 
-func (m *_SecurityDataMainsRestoredOrApplied) GetTypeName() string {
+func (m *_SecurityDataMainsRestoredOrApplied) GetPlx4xTypeName() string {
 	return "SecurityDataMainsRestoredOrApplied"
 }
 

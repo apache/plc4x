@@ -203,7 +203,7 @@ func CastMeteringDataElectricityConsumption(structType any) MeteringDataElectric
 	return nil
 }
 
-func (m *_MeteringDataElectricityConsumption) GetTypeName() string {
+func (m *_MeteringDataElectricityConsumption) GetPlx4xTypeName() string {
 	return "MeteringDataElectricityConsumption"
 }
 

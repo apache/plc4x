@@ -18,31 +18,28 @@
  */
 package org.apache.plc4x.java.modbus.rtu;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.modbus.readwrite.ModbusADU;
-import org.apache.plc4x.java.modbus.rtu.context.ModbusRtuContext;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
-import org.apache.plc4x.java.modbus.readwrite.DriverType;
-import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
-import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
-import org.apache.plc4x.java.modbus.rtu.protocol.ModbusRtuProtocolLogic;
-import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
+import org.apache.plc4x.java.modbus.readwrite.Constants;
+import org.apache.plc4x.java.modbus.rtu.config.*;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.transport.serial.SerialTransport;
+import org.apache.plc4x.java.transport.tcp.TcpTransport;
+import org.apache.plc4x.java.transport.tls.PskTlsTransport;
+import org.apache.plc4x.java.transport.tls.TlsTransport;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.bouncycastle.tls.UDPTransport;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
+import java.util.Set;
 
-public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
+public class ModbusRtuDriver extends DriverBase {
 
     @Override
     public String getProtocolCode() {
@@ -55,45 +52,48 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     }
 
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+    protected Class<? extends Configuration> getConfigurationClass() {
         return ModbusRtuConfiguration.class;
     }
 
     @Override
-    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(ModbusTcpTransportConfiguration.class);
+    protected Class<? extends TransportConfiguration> getTransportConfigurationClass(Transport<?> transport) {
+        if (transport instanceof SerialTransport) {
+            return ModbusRtuSerialTransportConfiguration.class;
         }
-        return Optional.empty();
+        // ASCII can use TCP for serial-to-IP gateways
+        else if (transport instanceof TcpTransport) {
+            return ModbusRtuTcpTransportConfiguration.class;
+        } else if (transport instanceof TlsTransport) {
+            return ModbusRtuTlsTransportConfiguration.class;
+        } else if (transport instanceof PskTlsTransport) {
+            return ModbusRtuPskTlsTransportConfiguration.class;
+        } else if (transport instanceof UDPTransport) {
+            return ModbusRtuUdpTransportConfiguration.class;
+        }
+        return super.getTransportConfigurationClass(transport);
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
+    public Optional<String> getDefaultTransportCode() {
         return Optional.of("serial");
     }
 
     @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Arrays.asList("tcp", "serial");
+    public List<String> getSupportedTransportCodes() {
+        return List.of("serial", "tcp", "tls", "tls-psk", "udp", "test");
     }
 
-    /**
-     * Modbus doesn't have a login procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
     @Override
-    protected boolean awaitSetupComplete() {
-        return false;
-    }
-
-    /**
-     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
-    @Override
-    protected boolean awaitDisconnectComplete() {
-        return false;
+    public Set<Integer> defaultPorts(String transportCode) {
+        if ("tcp".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.MODBUSTCPDEFAULTPORT);
+        } else if ("tls".equalsIgnoreCase(transportCode) || "tls-psk".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.MODBUSTCPTLSDEFAULTPORT);
+        } else if ("udp".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.MODBUSUDPDEFAULTPORT);
+        }
+        return Collections.emptySet();
     }
 
     @Override
@@ -112,52 +112,12 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     }
 
     @Override
-    protected BaseOptimizer getOptimizer() {
-        return new SingleTagOptimizer();
+    protected ConnectionBase<ModbusRtuConfiguration> getConnection(Configuration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
+        return new ModbusRtuConnection((ModbusRtuConfiguration) configuration, transportInstance, auditLog);
     }
 
     @Override
-    protected ProtocolStackConfigurer<ModbusRtuADU> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(ModbusRtuADU.class, io -> (ModbusRtuADU) ModbusRtuADU.staticParse(io, DriverType.MODBUS_RTU, true))
-            .withProtocol(ModbusRtuProtocolLogic.class)
-            .withDriverContext(ModbusRtuContext.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .build();
-    }
-
-    /** Estimate the Length of a Packet */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            // A Modbus RTU packet has the absolute minimum size of 4 (if it has absolutely no payload)
-            if (byteBuf.readableBytes() >= 4) {
-                // Fetch what's currently in the buffer
-                byte[] buf = new byte[byteBuf.readableBytes()];
-                byteBuf.getBytes(byteBuf.readerIndex(), buf);
-                ReadBufferByteBased reader = new ReadBufferByteBased(buf);
-
-                // Try to parse the buffer content.
-                try {
-                    ModbusADU modbusADU = ModbusRtuADU.staticParse(reader, DriverType.MODBUS_RTU, true);
-
-                    // Theoretically, the buffer could contain more than one message.
-                    return modbusADU.getLengthInBytes();
-                } catch (ParseException e) {
-                    return -1;
-                }
-                // If we're getting this error, manually compact the buffer.
-                // Hopefully now there will be enough space for another attempt.
-                catch (ArrayIndexOutOfBoundsException e) {
-                    byteBuf.discardReadBytes();
-                    return -1;
-                }
-            }
-            return -1;
-        }
-    }
-
-    @Override
-    public ModbusTag prepareTag(String tagAddress){
+    public ModbusTag prepareTag(String tagAddress) {
         return ModbusTag.of(tagAddress);
     }
 

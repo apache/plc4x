@@ -184,7 +184,7 @@ func CastBACnetConstructedDataEventLogAll(structType any) BACnetConstructedDataE
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventLogAll) GetTypeName() string {
+func (m *_BACnetConstructedDataEventLogAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventLogAll"
 }
 

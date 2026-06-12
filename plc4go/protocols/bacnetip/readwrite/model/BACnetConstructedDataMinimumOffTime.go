@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMinimumOffTime(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataMinimumOffTime) GetTypeName() string {
+func (m *_BACnetConstructedDataMinimumOffTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMinimumOffTime"
 }
 

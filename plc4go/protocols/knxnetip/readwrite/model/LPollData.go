@@ -274,7 +274,7 @@ func CastLPollData(structType any) LPollData {
 	return nil
 }
 
-func (m *_LPollData) GetTypeName() string {
+func (m *_LPollData) GetPlx4xTypeName() string {
 	return "LPollData"
 }
 

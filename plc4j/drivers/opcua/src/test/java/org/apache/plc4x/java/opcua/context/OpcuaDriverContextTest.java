@@ -26,9 +26,76 @@ import java.util.stream.Stream;
 
 import static org.apache.plc4x.java.opcua.context.OpcuaDriverContext.INET_ADDRESS_PATTERN;
 import static org.apache.plc4x.java.opcua.context.OpcuaDriverContext.URI_PATTERN;
+import java.lang.reflect.Field;
+import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class OpcuaDriverContextTest {
+
+    @Test
+    void initializeBuildsEndpointFromUrlComponents() {
+        OpcuaDriverContext ctx = new OpcuaDriverContext();
+        OpcuaConfiguration cfg = new OpcuaConfiguration();
+        try {
+            java.lang.reflect.Field f = cfg.getClass().getDeclaredField("securityPolicy");
+            f.setAccessible(true);
+            f.set(cfg, SecurityPolicy.NONE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        ctx.initialize("tcp", "192.168.0.1", "4840", "/UA/SampleServer", cfg);
+        assertThat(ctx.getHost()).isEqualTo("192.168.0.1");
+        assertThat(ctx.getPort()).isEqualTo("4840");
+        assertThat(ctx.getTransportEndpoint()).isEqualTo("/UA/SampleServer");
+        assertThat(ctx.getEndpoint()).isEqualTo("opc.tcp://192.168.0.1:4840/UA/SampleServer");
+    }
+
+    @Test
+    void initializeAcceptsNullPortAndNullTransportEndpoint() {
+        OpcuaDriverContext ctx = new OpcuaDriverContext();
+        OpcuaConfiguration cfg = new OpcuaConfiguration();
+        try {
+            java.lang.reflect.Field f = cfg.getClass().getDeclaredField("securityPolicy");
+            f.setAccessible(true);
+            f.set(cfg, SecurityPolicy.NONE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        ctx.initialize("tcp", "host", null, null, cfg);
+        assertThat(ctx.getEndpoint()).isEqualTo("opc.tcp://host");
+        assertThat(ctx.getTransportEndpoint()).isEmpty();
+    }
+
+    @Test
+    void setConfigurationParsesUriIntoHostPortAndEndpoint() throws Exception {
+        OpcuaConfiguration cfg = new OpcuaConfiguration();
+        setField(cfg, "protocolCode", "opcua");
+        setField(cfg, "transportCode", "tcp");
+        setField(cfg, "transportConfig", "localhost:4840/UA/SampleServer");
+        // SecurityPolicy.NONE skips keystore loading, so no files are needed.
+        setField(cfg, "securityPolicy", SecurityPolicy.NONE);
+
+        OpcuaDriverContext ctx = new OpcuaDriverContext();
+        ctx.setConfiguration(cfg);
+
+        assertThat(ctx.getHost()).isEqualTo("localhost");
+        assertThat(ctx.getPort()).isEqualTo("4840");
+        assertThat(ctx.getTransportEndpoint()).isEqualTo("/UA/SampleServer");
+        assertThat(ctx.getEndpoint()).isEqualTo("opc.tcp://localhost:4840/UA/SampleServer");
+        // No keystore was loaded → no certificate / thumbprint / verifier.
+        assertThat(ctx.getCertificateKeyPair()).isNull();
+        assertThat(ctx.getServerCertificate()).isNull();
+        assertThat(ctx.getApplicationUri()).isEmpty();
+    }
+
+    private static void setField(Object target, String name, Object value) throws Exception {
+        Field f = target.getClass().getDeclaredField(name);
+        f.setAccessible(true);
+        f.set(target, value);
+    }
+
 
     @Test
     public void testOpcuaAddressPattern() {

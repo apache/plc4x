@@ -597,7 +597,7 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(structType 
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestUnconfirmedEventNotification"
 }
 

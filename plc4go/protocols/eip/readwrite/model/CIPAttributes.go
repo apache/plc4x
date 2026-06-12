@@ -203,7 +203,7 @@ func CastCIPAttributes(structType any) CIPAttributes {
 	return nil
 }
 
-func (m *_CIPAttributes) GetTypeName() string {
+func (m *_CIPAttributes) GetPlx4xTypeName() string {
 	return "CIPAttributes"
 }
 

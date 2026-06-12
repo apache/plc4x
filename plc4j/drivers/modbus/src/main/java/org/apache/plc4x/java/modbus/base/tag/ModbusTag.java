@@ -24,11 +24,11 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
-import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.spi.buffers.api.Serializable;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -195,20 +195,20 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+    public void serialize(WriteBuffer writeBuffer) throws BufferException {
+        writeBuffer.pushContext(WithOption.WithName(getClass().getSimpleName()));
 
-        writeBuffer.writeUnsignedInt("address", 16, address);
-        writeBuffer.writeUnsignedInt("numberOfElements", 16, getNumberOfElements());
+        writeBuffer.writeUnsignedInt(16, address, WithOption.WithName("address"));
+        writeBuffer.writeUnsignedInt(16, getNumberOfElements(), WithOption.WithName("numberOfElements"));
         String dataType = getDataType().name();
-        writeBuffer.writeString("dataType",
+        writeBuffer.writeString(
             dataType.getBytes(StandardCharsets.UTF_8).length * 8,
-            dataType, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+            dataType, WithOption.WithName("dataType"), WithOption.WithEncoding("UTF8"));
 
         if (unitId != null) {
-            writeBuffer.writeUnsignedInt("unitId", 8, unitId);
+            writeBuffer.writeUnsignedInt(8, unitId, WithOption.WithName("unitId"));
         }
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext(WithOption.WithName(getClass().getSimpleName()));
     }
 
 }

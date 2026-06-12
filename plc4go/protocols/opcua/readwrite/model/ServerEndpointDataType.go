@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -396,7 +397,7 @@ func CastServerEndpointDataType(structType any) ServerEndpointDataType {
 	return nil
 }
 
-func (m *_ServerEndpointDataType) GetTypeName() string {
+func (m *_ServerEndpointDataType) GetPlx4xTypeName() string {
 	return "ServerEndpointDataType"
 }
 
@@ -499,97 +500,97 @@ func (m *_ServerEndpointDataType) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 	m.Name = name
 
-	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRecordProperties' field"))
 	}
 	_ = noOfRecordProperties
 
-	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties))
+	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordProperties' field"))
 	}
 	m.RecordProperties = recordProperties
 
-	noOfDiscoveryUrls, err := ReadImplicitField[int32](ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiscoveryUrls, err := ReadImplicitField[int32](ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiscoveryUrls' field"))
 	}
 	_ = noOfDiscoveryUrls
 
-	discoveryUrls, err := ReadCountArrayField[PascalString](ctx, "discoveryUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfDiscoveryUrls))
+	discoveryUrls, err := ReadCountArrayField[PascalString](ctx, "discoveryUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfDiscoveryUrls), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryUrls' field"))
 	}
 	m.DiscoveryUrls = discoveryUrls
 
-	networkName, err := ReadSimpleField[PascalString](ctx, "networkName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	networkName, err := ReadSimpleField[PascalString](ctx, "networkName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkName' field"))
 	}
 	m.NetworkName = networkName
 
-	port, err := ReadSimpleField(ctx, "port", ReadUnsignedShort(readBuffer, uint8(16)))
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
 	m.Port = port
 
-	noOfEndpointUrls, err := ReadImplicitField[int32](ctx, "noOfEndpointUrls", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEndpointUrls, err := ReadImplicitField[int32](ctx, "noOfEndpointUrls", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEndpointUrls' field"))
 	}
 	_ = noOfEndpointUrls
 
-	endpointUrls, err := ReadCountArrayField[PascalString](ctx, "endpointUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfEndpointUrls))
+	endpointUrls, err := ReadCountArrayField[PascalString](ctx, "endpointUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfEndpointUrls), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrls' field"))
 	}
 	m.EndpointUrls = endpointUrls
 
-	noOfSecuritySettingNames, err := ReadImplicitField[int32](ctx, "noOfSecuritySettingNames", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSecuritySettingNames, err := ReadImplicitField[int32](ctx, "noOfSecuritySettingNames", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecuritySettingNames' field"))
 	}
 	_ = noOfSecuritySettingNames
 
-	securitySettingNames, err := ReadCountArrayField[PascalString](ctx, "securitySettingNames", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecuritySettingNames))
+	securitySettingNames, err := ReadCountArrayField[PascalString](ctx, "securitySettingNames", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecuritySettingNames), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securitySettingNames' field"))
 	}
 	m.SecuritySettingNames = securitySettingNames
 
-	transportProfileUri, err := ReadSimpleField[PascalString](ctx, "transportProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	transportProfileUri, err := ReadSimpleField[PascalString](ctx, "transportProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportProfileUri' field"))
 	}
 	m.TransportProfileUri = transportProfileUri
 
-	noOfUserTokenSettingNames, err := ReadImplicitField[int32](ctx, "noOfUserTokenSettingNames", ReadSignedInt(readBuffer, uint8(32)))
+	noOfUserTokenSettingNames, err := ReadImplicitField[int32](ctx, "noOfUserTokenSettingNames", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfUserTokenSettingNames' field"))
 	}
 	_ = noOfUserTokenSettingNames
 
-	userTokenSettingNames, err := ReadCountArrayField[PascalString](ctx, "userTokenSettingNames", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfUserTokenSettingNames))
+	userTokenSettingNames, err := ReadCountArrayField[PascalString](ctx, "userTokenSettingNames", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfUserTokenSettingNames), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userTokenSettingNames' field"))
 	}
 	m.UserTokenSettingNames = userTokenSettingNames
 
-	noOfReverseConnectUrls, err := ReadImplicitField[int32](ctx, "noOfReverseConnectUrls", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReverseConnectUrls, err := ReadImplicitField[int32](ctx, "noOfReverseConnectUrls", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReverseConnectUrls' field"))
 	}
 	_ = noOfReverseConnectUrls
 
-	reverseConnectUrls, err := ReadCountArrayField[PascalString](ctx, "reverseConnectUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfReverseConnectUrls))
+	reverseConnectUrls, err := ReadCountArrayField[PascalString](ctx, "reverseConnectUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfReverseConnectUrls), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reverseConnectUrls' field"))
 	}
@@ -620,67 +621,67 @@ func (m *_ServerEndpointDataType) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for ServerEndpointDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 		noOfRecordProperties := int32(utils.InlineIf(bool((m.GetRecordProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRecordProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRecordProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'recordProperties' field")
 		}
 		noOfDiscoveryUrls := int32(utils.InlineIf(bool((m.GetDiscoveryUrls()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiscoveryUrls()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfDiscoveryUrls", noOfDiscoveryUrls, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfDiscoveryUrls", noOfDiscoveryUrls, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiscoveryUrls' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "discoveryUrls", m.GetDiscoveryUrls(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "discoveryUrls", m.GetDiscoveryUrls(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'discoveryUrls' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "networkName", m.GetNetworkName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "networkName", m.GetNetworkName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkName' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "port", m.GetPort(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "port", m.GetPort(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'port' field")
 		}
 		noOfEndpointUrls := int32(utils.InlineIf(bool((m.GetEndpointUrls()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEndpointUrls()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfEndpointUrls", noOfEndpointUrls, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfEndpointUrls", noOfEndpointUrls, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEndpointUrls' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "endpointUrls", m.GetEndpointUrls(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "endpointUrls", m.GetEndpointUrls(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'endpointUrls' field")
 		}
 		noOfSecuritySettingNames := int32(utils.InlineIf(bool((m.GetSecuritySettingNames()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSecuritySettingNames()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSecuritySettingNames", noOfSecuritySettingNames, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSecuritySettingNames", noOfSecuritySettingNames, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSecuritySettingNames' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "securitySettingNames", m.GetSecuritySettingNames(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "securitySettingNames", m.GetSecuritySettingNames(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securitySettingNames' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "transportProfileUri", m.GetTransportProfileUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "transportProfileUri", m.GetTransportProfileUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'transportProfileUri' field")
 		}
 		noOfUserTokenSettingNames := int32(utils.InlineIf(bool((m.GetUserTokenSettingNames()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetUserTokenSettingNames()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfUserTokenSettingNames", noOfUserTokenSettingNames, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfUserTokenSettingNames", noOfUserTokenSettingNames, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfUserTokenSettingNames' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "userTokenSettingNames", m.GetUserTokenSettingNames(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "userTokenSettingNames", m.GetUserTokenSettingNames(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'userTokenSettingNames' field")
 		}
 		noOfReverseConnectUrls := int32(utils.InlineIf(bool((m.GetReverseConnectUrls()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReverseConnectUrls()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfReverseConnectUrls", noOfReverseConnectUrls, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfReverseConnectUrls", noOfReverseConnectUrls, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReverseConnectUrls' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "reverseConnectUrls", m.GetReverseConnectUrls(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "reverseConnectUrls", m.GetReverseConnectUrls(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reverseConnectUrls' field")
 		}
 

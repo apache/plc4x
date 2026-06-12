@@ -307,7 +307,7 @@ func CastBACnetCOVMultipleSubscription(structType any) BACnetCOVMultipleSubscrip
 	return nil
 }
 
-func (m *_BACnetCOVMultipleSubscription) GetTypeName() string {
+func (m *_BACnetCOVMultipleSubscription) GetPlx4xTypeName() string {
 	return "BACnetCOVMultipleSubscription"
 }
 

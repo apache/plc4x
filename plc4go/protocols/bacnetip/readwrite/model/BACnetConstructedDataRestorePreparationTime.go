@@ -246,7 +246,7 @@ func CastBACnetConstructedDataRestorePreparationTime(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataRestorePreparationTime) GetTypeName() string {
+func (m *_BACnetConstructedDataRestorePreparationTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRestorePreparationTime"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataInactiveText(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataInactiveText) GetTypeName() string {
+func (m *_BACnetConstructedDataInactiveText) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataInactiveText"
 }
 

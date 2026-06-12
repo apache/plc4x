@@ -221,7 +221,7 @@ func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(structType any
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger"
 }
 

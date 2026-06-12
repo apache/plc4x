@@ -222,7 +222,7 @@ func CastBACnetEventParameterNone(structType any) BACnetEventParameterNone {
 	return nil
 }
 
-func (m *_BACnetEventParameterNone) GetTypeName() string {
+func (m *_BACnetEventParameterNone) GetPlx4xTypeName() string {
 	return "BACnetEventParameterNone"
 }
 

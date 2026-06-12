@@ -189,7 +189,7 @@ func CastBACnetTagPayloadBitString(structType any) BACnetTagPayloadBitString {
 	return nil
 }
 
-func (m *_BACnetTagPayloadBitString) GetTypeName() string {
+func (m *_BACnetTagPayloadBitString) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadBitString"
 }
 

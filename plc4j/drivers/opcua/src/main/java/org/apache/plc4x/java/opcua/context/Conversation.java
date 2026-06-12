@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.opcua.context;
 
 import static org.apache.plc4x.java.opcua.readwrite.ChunkType.ABORT;
@@ -27,6 +26,7 @@ import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
@@ -73,14 +73,33 @@ import org.apache.plc4x.java.opcua.readwrite.ServiceFault;
 import org.apache.plc4x.java.opcua.readwrite.SignatureData;
 import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
-import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.ConversationContext.SendRequestContext;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.opcua.protocol.chunk.PayloadConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Conversation {
+/**
+ * Owns the per-connection OPC UA conversation state: the security header /
+ * token id, the sequence number cursor, and the encryption handler. Provides
+ * three primitives on top of an {@link OpcuaWire}:
+ *
+ * <ul>
+ *   <li>{@link #requestHello()} — the initial Hello/Acknowledge exchange</li>
+ *   <li>{@link #requestChannelOpen(Function)} / {@link #requestChannelClose(Function)} —
+ *       the {@code OPN}/{@code CLO} exchange that sets up / tears down the
+ *       secure channel</li>
+ *   <li>{@link #submit(ExtensionObjectDefinition, Class)} — every other service
+ *       call (CreateSession, ActivateSession, Read, Write, Browse, Publish, ...)</li>
+ * </ul>
+ *
+ * <p>Ported from the old SPI's fluent
+ * {@code context.sendRequest(...).expectResponse(...).check(...).unwrap(...).handle(...)}
+ * pattern to the new SPI's listener+future model: each request registers a
+ * multi-fire listener (so multi-chunk responses can be accumulated) and
+ * sends out its chunks, then unsubscribes once the FINAL chunk lands.</p>
+ */
+public class Conversation implements SecureChannelState {
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
 
     private static final ExpandedNodeId NULL_EXPANDED_NODE_ID = new ExpandedNodeId(false,
@@ -95,14 +114,17 @@ public class Conversation {
         new ExtensionObjectEncodingMask(false, false, false)
     );
 
+    /** Empty PascalString — handy for request-header placeholders. */
+    public static final PascalString NULL_STRING = new PascalString("");
+
 
     private final Logger logger = LoggerFactory.getLogger(Conversation.class);
-    private final AtomicReference<SecurityHeader> securityHeader = new AtomicReference<>(new SecurityHeader(1, 1));
+    private final AtomicReference<SecurityHeader> securityHeader = new AtomicReference<>(new SecurityHeader(1L, 1L));
     private final AtomicLong senderSequenceNumber = new AtomicLong(-1);
 
     private final AtomicReference<NodeIdTypeDefinition> authenticationToken = new AtomicReference<>(new NodeIdTwoByte((short) 0));
 
-    private final ConversationContext<OpcuaAPU> context;
+    private final OpcuaWire wire;
     private final SecureChannelTransactionManager tm;
 
     private final SecurityPolicy securityPolicy;
@@ -118,6 +140,11 @@ public class Conversation {
     private byte[] remoteNonce;
     private byte[] localNonce;
 
+    /**
+     * Validates the incoming sequence number for monotonic increase. The first
+     * received sequence number anchors the counter; every subsequent number
+     * must equal the previous one plus one.
+     */
     private final BiPredicate<SequenceHeader, CompletableFuture<?>> sequenceValidator = (sequenceHeader, callback) -> {
         if (senderSequenceNumber.get() == -1L) {
             senderSequenceNumber.set(sequenceHeader.getSequenceNumber());
@@ -133,8 +160,8 @@ public class Conversation {
         return true;
     };
 
-    public Conversation(ConversationContext<OpcuaAPU> context, OpcuaDriverContext driverContext, OpcuaConfiguration configuration) {
-        this.context = context;
+    public Conversation(OpcuaWire wire, OpcuaDriverContext driverContext, OpcuaConfiguration configuration) {
+        this.wire = wire;
         this.tm = new SecureChannelTransactionManager();
         this.driverContext = driverContext;
         this.configuration = configuration;
@@ -143,7 +170,8 @@ public class Conversation {
         CertificateKeyPair senderKeyPair = driverContext.getCertificateKeyPair();
 
         if (this.securityPolicy != SecurityPolicy.NONE) {
-            //Sender Certificate gets populated during the 'discover' phase when encryption is enabled.
+            // The remote certificate gets populated during the 'discover' phase
+            // when encryption is enabled.
             this.messageSecurity = configuration.getMessageSecurity();
             this.remoteCertificate = configuration.getServerCertificate();
             this.encryptionHandler = new EncryptionHandler(this, senderKeyPair.getPrivateKey());
@@ -155,17 +183,17 @@ public class Conversation {
 
         Limits encodingLimits = configuration.getEncodingLimits();
         limits = new OpcuaProtocolLimits(
-            encodingLimits.getReceiveBufferSize(),
-            encodingLimits.getSendBufferSize(),
-            encodingLimits.getMaxMessageSize(),
-            encodingLimits.getMaxChunkCount()
+            (long) encodingLimits.getReceiveBufferSize(),
+            (long) encodingLimits.getSendBufferSize(),
+            (long) encodingLimits.getMaxMessageSize(),
+            (long) encodingLimits.getMaxChunkCount()
         );
     }
 
     public CompletableFuture<OpcuaAcknowledgeResponse> requestHello() {
         logger.debug("Sending hello message to {}", this.driverContext.getEndpoint());
         OpcuaHelloRequest request = new OpcuaHelloRequest(FINAL,
-            OpcuaConstants.PROTOCOLVERSION,
+            (long) OpcuaConstants.PROTOCOLVERSION,
             new OpcuaProtocolLimits(
                 limits.getReceiveBufferSize(),
                 limits.getSendBufferSize(),
@@ -175,28 +203,34 @@ public class Conversation {
             new PascalString(driverContext.getEndpoint())
         );
 
-        // open messages are guaranteed to fit into 8192 bytes limit
-        //CompletableFuture<OpcuaAcknowledgeResponse> future = new CompletableFuture<>();
-
         CompletableFuture<OpcuaAcknowledgeResponse> future = new CompletableFuture<>();
-        sendRequest(request, future, configuration.getNegotiationTimeout())
-            .unwrap(OpcuaAPU::getMessage)
-            .check(OpcuaAcknowledgeResponse.class::isInstance)
-            .unwrap(OpcuaAcknowledgeResponse.class::cast)
-            .handle(opcuaAcknowledgeResponse -> {
-                OpcuaProtocolLimits limits = opcuaAcknowledgeResponse.getLimits();
-                // merge encoding limits to match common minimum:
-                // our receipt buffer should not exceed server send buffer size,
-                // our send buffer size should not exceed server receive buffer size
-                // chunks and message sizes should match too
+
+        // Hello/Acknowledge is a simple single-frame exchange — no chunking,
+        // no encryption — so the one-shot {@link OpcuaWire#expect} primitive
+        // is enough.
+        wire.expect(apu -> apu.getMessage() instanceof OpcuaAcknowledgeResponse,
+                Duration.ofMillis(configuration.getNegotiationTimeout()))
+            .whenComplete((apu, error) -> {
+                if (error != null) {
+                    future.completeExceptionally(error);
+                    return;
+                }
+                OpcuaAcknowledgeResponse opcuaAcknowledgeResponse = (OpcuaAcknowledgeResponse) apu.getMessage();
+                OpcuaProtocolLimits ackLimits = opcuaAcknowledgeResponse.getLimits();
+                // Merge encoding limits to match common minimum:
+                //  - our receive buffer must not exceed the server's send buffer
+                //  - our send buffer must not exceed the server's receive buffer
+                //  - chunks + message sizes negotiate down to the smaller of the two
                 this.limits = new OpcuaProtocolLimits(
-                    Math.min(this.limits.getReceiveBufferSize(), limits.getSendBufferSize()),
-                    Math.min(this.limits.getSendBufferSize(), limits.getReceiveBufferSize()),
-                    Math.min(this.limits.getMaxMessageSize(), limits.getMaxMessageSize()),
-                    Math.min(this.limits.getMaxChunkCount(), limits.getMaxChunkCount())
+                    Math.min(this.limits.getReceiveBufferSize(), ackLimits.getSendBufferSize()),
+                    Math.min(this.limits.getSendBufferSize(), ackLimits.getReceiveBufferSize()),
+                    Math.min(this.limits.getMaxMessageSize(), ackLimits.getMaxMessageSize()),
+                    Math.min(this.limits.getMaxChunkCount(), ackLimits.getMaxChunkCount())
                 );
                 future.complete(opcuaAcknowledgeResponse);
             });
+
+        wire.sendToWire(new OpcuaAPU(request));
         return future;
     }
 
@@ -217,10 +251,27 @@ public class Conversation {
             (rsp) -> rsp.getMessage().getSequenceHeader(),
             OpcuaMessageResponse::getMessage
         ).whenComplete((r, e) -> {
-            context.fireDisconnected();
+            wire.fireDisconnected();
         }).thenApply(r -> null);
     }
 
+    /**
+     * Generic request/response that handles encryption + multi-chunk response
+     * accumulation. The caller supplies:
+     * <ul>
+     *   <li>{@code replyType} — the expected response PDU class</li>
+     *   <li>{@code request} — given a {@link CallContext}, builds the outgoing PDU</li>
+     *   <li>{@code chunkAssembler} — combines a partial reply + accumulated body
+     *       bytes into a fully reassembled reply</li>
+     *   <li>{@code sequenceHeaderExtractor} / {@code chunkExtractor} — pull the
+     *       sequence header and payload out of an incoming chunk</li>
+     * </ul>
+     *
+     * <p>The wire-level flow is: serialise the request, split into chunks via
+     * the encryption handler, fire the first N-1 chunks with
+     * {@link OpcuaWire#sendToWire}, then for the last chunk both send it and
+     * wait for the response.</p>
+     */
     private <T extends MessagePDU, R extends MessagePDU> CompletableFuture<R> request(
         Class<R> replyType, Function<CallContext, T> request,
         BiFunction<R, BinaryPayload, R> chunkAssembler,
@@ -236,30 +287,80 @@ public class Conversation {
         MemoryChunkStorage chunkStorage = new MemoryChunkStorage();
         List<MessagePDU> chunks = encryptionHandler.encodeMessage(messagePDU, tm.getSequenceSupplier());
         CompletableFuture<R> future = new CompletableFuture<>();
-        for (int count = chunks.size(), index = 0; index < count; index++) {
-            boolean last = index + 1 == count;
-            if (last) {
-                sendRequest(chunks.get(index), future, configuration.getNegotiationTimeout())
-                    .unwrap(OpcuaAPU::getMessage)
-                    .check(replyType::isInstance)
-                    .unwrap(replyType::cast)
-                    .unwrap(msg -> encryptionHandler.decodeMessage(msg))
-                    .check(replyType::isInstance)
-                    .unwrap(replyType::cast)
-                    .check(reply -> requestId == sequenceHeaderExtractor.apply(reply).getRequestId())
-                    .check(reply -> sequenceValidator.test(sequenceHeaderExtractor.apply(reply), future))
-                    .check(msg -> accumulateChunkUntilFinal(chunkStorage, msg.getChunk(), chunkExtractor.apply(msg)))
-                    .unwrap(msg -> mergeChunks(chunkStorage, msg, sequenceHeaderExtractor.apply(msg), chunkAssembler))
-                    .handle(response -> {
-                        future.complete(response);
-                    });
-            } else {
-                context.sendToWire(new OpcuaAPU(chunks.get(index)));
-            }
+
+        // Subscribe before sending the final chunk so we don't lose a fast reply.
+        // The listener stays registered until either FINAL chunk arrives, an
+        // error fires, or the timeout elapses.
+        AtomicReference<OpcuaWire.Subscription> subRef = new AtomicReference<>();
+        OpcuaWire.Subscription sub = wire.subscribe(
+            apu -> {
+                MessagePDU msg = apu.getMessage();
+                if (!replyType.isInstance(msg)) {
+                    return false;
+                }
+                MessagePDU decoded;
+                try {
+                    decoded = encryptionHandler.decodeMessage(replyType.cast(msg));
+                } catch (Exception e) {
+                    // Decryption failure isn't a "skip this packet" — surface it.
+                    future.completeExceptionally(e);
+                    return true;
+                }
+                if (!replyType.isInstance(decoded)) {
+                    return false;
+                }
+                R reply = replyType.cast(decoded);
+                return requestId == sequenceHeaderExtractor.apply(reply).getRequestId();
+            },
+            apu -> {
+                try {
+                    R reply = replyType.cast(encryptionHandler.decodeMessage(replyType.cast(apu.getMessage())));
+                    if (!sequenceValidator.test(sequenceHeaderExtractor.apply(reply), future)) {
+                        unsubscribeQuietly(subRef);
+                        return;
+                    }
+                    boolean done = accumulateChunkUntilFinal(chunkStorage, reply.getChunk(), chunkExtractor.apply(reply));
+                    if (done) {
+                        unsubscribeQuietly(subRef);
+                        R merged = mergeChunks(chunkStorage, reply, sequenceHeaderExtractor.apply(reply), chunkAssembler);
+                        future.complete(merged);
+                    }
+                } catch (Exception e) {
+                    unsubscribeQuietly(subRef);
+                    future.completeExceptionally(e);
+                }
+            });
+        subRef.set(sub);
+
+        // If the caller never completes the future, fail it via timeout — and
+        // make sure to drop the listener so we don't leak.
+        future.orTimeout(configuration.getNegotiationTimeout(), java.util.concurrent.TimeUnit.MILLISECONDS)
+            .exceptionally(error -> {
+                if (error instanceof TimeoutException) {
+                    unsubscribeQuietly(subRef);
+                }
+                return null;
+            });
+
+        for (MessagePDU chunk : chunks) {
+            wire.sendToWire(new OpcuaAPU(chunk));
         }
         return future;
     }
 
+    private static void unsubscribeQuietly(AtomicReference<OpcuaWire.Subscription> ref) {
+        OpcuaWire.Subscription sub = ref.get();
+        if (sub != null) {
+            sub.unsubscribe();
+        }
+    }
+
+    /**
+     * Sends an OPC UA service request (Read, Write, Browse, Publish, ...) and
+     * returns its response. Wraps the request as a {@link RootExtensionObject}
+     * inside an {@link ExtensiblePayload}, applies symmetric encryption per the
+     * current security context, and reassembles multi-chunk replies.
+     */
     public <T extends ExtensionObjectDefinition, R extends ExtensionObjectDefinition> CompletableFuture<R> submit(T object, Class<R> replyType) {
         return submit(object).thenApply(response -> {
             if (replyType.isInstance(response)) {
@@ -273,8 +374,8 @@ public class Conversation {
         Integer requestId = tm.getTransactionIdentifier();
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(
-            false,           //Namespace Uri Specified
-            false,            //Server Index Specified
+            false,
+            false,
             new NodeIdFourByte((short) 0, requestDefinition.getExtensionId()),
             null,
             null
@@ -293,69 +394,92 @@ public class Conversation {
 
         List<MessagePDU> chunks = encryptionHandler.encodeMessage(request, tm.getSequenceSupplier());
         CompletableFuture<Object> future = new CompletableFuture<>();
-        for (int count = chunks.size(), index = 0; index < count; index++) {
-            boolean last = index + 1 == count;
-            if (last) {
-                BiFunction<OpcuaMessageResponse, BinaryPayload, OpcuaMessageResponse> chunkAssembler = (src, chunkPayload) ->
-                    new OpcuaMessageResponse(src.getChunk(), src.getSecurityHeader(), chunkPayload);
 
-                sendRequest(chunks.get(index), future, configuration.getRequestTimeout())
-                    .unwrap(OpcuaAPU::getMessage)
-                    .check(OpcuaMessageResponse.class::isInstance)
-                    .unwrap(OpcuaMessageResponse.class::cast)
-                    .unwrap(msg -> encryptionHandler.decodeMessage(msg))
-                    .check(OpcuaMessageResponse.class::isInstance)
-                    .unwrap(OpcuaMessageResponse.class::cast)
-                    .check(OpcuaMessageResponse.class::isInstance)
-                    .unwrap(OpcuaMessageResponse.class::cast)
-                    .check(msg -> msg.getMessage().getSequenceHeader().getRequestId() == requestId)
-                    .check(reply -> sequenceValidator.test(reply.getMessage().getSequenceHeader(), future))
-                    .check(msg -> accumulateChunkUntilFinal(chunkStorage, msg.getChunk(), msg.getMessage()))
-                    .unwrap(msg -> mergeChunks(chunkStorage, msg, msg.getMessage().getSequenceHeader(), chunkAssembler))
-                    .handle(response -> {
-                        if (response.getChunk().equals(FINAL)) {
-                            logger.debug("Received response made of {} bytes for message id: {}, channel id:{}, token:{}",
-                                response.getLengthInBytes(), requestId, response.getSecurityHeader().getSecureChannelId(),
-                                response.getSecurityHeader().getSecureTokenId()
-                            );
-                            securityHeader.set(response.getSecurityHeader());
+        BiFunction<OpcuaMessageResponse, BinaryPayload, OpcuaMessageResponse> chunkAssembler = (src, chunkPayload) ->
+            new OpcuaMessageResponse(src.getChunk(), src.getSecurityHeader(), chunkPayload);
 
-                            Payload message = response.getMessage();
-                            ExtensionObjectDefinition extensionObjectBody;
-                            if (message instanceof ExtensiblePayload) {
-                                extensionObjectBody = (((ExtensiblePayload) message).getPayload()).getBody();
-                            } else {
-                                try {
-                                    BinaryPayload binary = (BinaryPayload) message;
-                                    ReadBufferByteBased buffer = new ReadBufferByteBased(binary.getPayload(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-                                    extensionObjectBody = ExtensionObject.staticParse(buffer, false).getBody();
-                                } catch (ParseException e) {
-                                    future.completeExceptionally(e);
-                                    return;
-                                }
-                            }
+        AtomicReference<OpcuaWire.Subscription> subRef = new AtomicReference<>();
+        OpcuaWire.Subscription sub = wire.subscribe(
+            apu -> {
+                MessagePDU msg = apu.getMessage();
+                if (!(msg instanceof OpcuaMessageResponse)) {
+                    return false;
+                }
+                try {
+                    MessagePDU decoded = encryptionHandler.decodeMessage((OpcuaMessageResponse) msg);
+                    if (!(decoded instanceof OpcuaMessageResponse)) {
+                        return false;
+                    }
+                    return ((OpcuaMessageResponse) decoded).getMessage().getSequenceHeader().getRequestId() == requestId;
+                } catch (Exception e) {
+                    future.completeExceptionally(e);
+                    return true;
+                }
+            },
+            apu -> {
+                try {
+                    OpcuaMessageResponse response = (OpcuaMessageResponse) encryptionHandler.decodeMessage((OpcuaMessageResponse) apu.getMessage());
+                    if (!sequenceValidator.test(response.getMessage().getSequenceHeader(), future)) {
+                        unsubscribeQuietly(subRef);
+                        return;
+                    }
+                    boolean done = accumulateChunkUntilFinal(chunkStorage, response.getChunk(), response.getMessage());
+                    if (!done) {
+                        return;
+                    }
+                    OpcuaMessageResponse merged = mergeChunks(chunkStorage, response, response.getMessage().getSequenceHeader(), chunkAssembler);
+                    unsubscribeQuietly(subRef);
 
-                            if (extensionObjectBody instanceof ServiceFault) {
-                                ServiceFault fault = (ServiceFault) extensionObjectBody;
-                                future.completeExceptionally(toProtocolException(fault));
-                            } else {
-                                future.complete(extensionObjectBody);
+                    if (merged.getChunk().equals(FINAL)) {
+                        logger.debug("Received response made of {} bytes for message id: {}, channel id:{}, token:{}",
+                            merged.getLengthInBytes(), requestId, merged.getSecurityHeader().getSecureChannelId(),
+                            merged.getSecurityHeader().getSecureTokenId()
+                        );
+                        securityHeader.set(merged.getSecurityHeader());
+
+                        Payload message = merged.getMessage();
+                        ExtensionObjectDefinition extensionObjectBody;
+                        if (message instanceof ExtensiblePayload) {
+                            extensionObjectBody = (((ExtensiblePayload) message).getPayload()).getBody();
+                        } else {
+                            try {
+                                BinaryPayload binary = (BinaryPayload) message;
+                                ReadBufferByteBased buffer = new ReadBufferByteBased(binary.getPayload(),
+                                    PayloadConverter.LITTLE_ENDIAN);
+                                extensionObjectBody = ExtensionObject.staticParse(buffer, false).getBody();
+                            } catch (BufferException e) {
+                                future.completeExceptionally(e);
+                                return;
                             }
                         }
-                    });
 
-            } else {
-                context.sendToWire(new OpcuaAPU(chunks.get(index)));
+                        if (extensionObjectBody instanceof ServiceFault) {
+                            ServiceFault fault = (ServiceFault) extensionObjectBody;
+                            future.completeExceptionally(toProtocolException(fault));
+                        } else {
+                            future.complete(extensionObjectBody);
+                        }
+                    }
+                } catch (Exception e) {
+                    unsubscribeQuietly(subRef);
+                    future.completeExceptionally(e);
+                }
             }
+        );
+        subRef.set(sub);
+
+        future.orTimeout(configuration.getRequestTimeout(), java.util.concurrent.TimeUnit.MILLISECONDS)
+            .exceptionally(error -> {
+                if (error instanceof TimeoutException) {
+                    unsubscribeQuietly(subRef);
+                }
+                return null;
+            });
+
+        for (MessagePDU chunk : chunks) {
+            wire.sendToWire(new OpcuaAPU(chunk));
         }
         return future;
-    }
-
-    private SendRequestContext<OpcuaAPU> sendRequest(MessagePDU messagePDU, CompletableFuture<?> future, long timeout) {
-        return context.sendRequest(new OpcuaAPU(messagePDU))
-            .onError((req, err) -> future.completeExceptionally(err))
-            .expectResponse(OpcuaAPU.class, Duration.ofMillis(timeout))
-            .onTimeout((e) -> future.completeExceptionally(e));
     }
 
     private <T> T mergeChunks(ChunkStorage chunkStorage, T source, SequenceHeader sequenceHeader, BiFunction<T, BinaryPayload, T> producer) {
@@ -386,7 +510,7 @@ public class Conversation {
         this.localNonce = localNonce;
     }
 
-    // generate nonce used for setting up signing/encryption keys
+    // Generate a nonce used for setting up signing/encryption keys.
     byte[] createNonce() {
         return createNonce(securityPolicy.getNonceLength());
     }
@@ -395,17 +519,20 @@ public class Conversation {
         return RandomUtils.nextBytes(nonceLength);
     }
 
+    @Override
     public boolean isSymmetricEncryptionEnabled() {
         return messageSecurity == MessageSecurity.SIGN_ENCRYPT;
     }
 
+    @Override
     public boolean isSymmetricSigningEnabled() {
         return (messageSecurity == MessageSecurity.SIGN_ENCRYPT || messageSecurity == MessageSecurity.SIGN);
     }
 
     static SecurityPolicy determineSecurityPolicy(OpcuaConfiguration configuration) {
         if (configuration.isDiscovery() && configuration.getServerCertificate() == null) {
-            // discovery is enabled and sender certificate is not known yet
+            // Discovery is enabled and the sender certificate isn't known yet,
+            // so the discovery phase always runs with security disabled.
             return SecurityPolicy.NONE;
         }
 
@@ -422,14 +549,17 @@ public class Conversation {
         return new PlcProtocolException("Unexpected service fault");
     }
 
+    @Override
     public OpcuaProtocolLimits getLimits() {
         return limits;
     }
 
+    @Override
     public byte[] getLocalNonce() {
         return localNonce;
     }
 
+    @Override
     public X509Certificate getLocalCertificate() {
         return localCertificate;
     }
@@ -438,18 +568,22 @@ public class Conversation {
         this.remoteNonce = remoteNonce;
     }
 
+    @Override
     public byte[] getRemoteNonce() {
         return remoteNonce;
     }
 
+    @Override
     public X509Certificate getRemoteCertificate() {
         return remoteCertificate;
     }
 
+    @Override
     public SecurityPolicy getSecurityPolicy() {
         return securityPolicy;
     }
 
+    @Override
     public MessageSecurity getMessageSecurity() {
         return messageSecurity;
     }
@@ -478,9 +612,9 @@ public class Conversation {
         return new RequestHeader(
             new NodeId(authenticationToken.get()),
             getCurrentDateTime(),
-            requestHandle,                                         //RequestHandle
+            (long) requestHandle,
             0L,
-            SecureChannel.NULL_STRING,
+            NULL_STRING,
             requestTimeout,
             NULL_EXTENSION_OBJECT
         );

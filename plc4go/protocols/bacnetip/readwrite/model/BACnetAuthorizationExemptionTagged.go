@@ -224,7 +224,7 @@ func CastBACnetAuthorizationExemptionTagged(structType any) BACnetAuthorizationE
 	return nil
 }
 
-func (m *_BACnetAuthorizationExemptionTagged) GetTypeName() string {
+func (m *_BACnetAuthorizationExemptionTagged) GetPlx4xTypeName() string {
 	return "BACnetAuthorizationExemptionTagged"
 }
 

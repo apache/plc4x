@@ -434,7 +434,7 @@ func CastBACnetNotificationParametersChangeOfTimer(structType any) BACnetNotific
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimer) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfTimer) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfTimer"
 }
 

@@ -254,7 +254,7 @@ func CastBACnetConfirmedServiceRequestAtomicReadFileRecord(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicReadFileRecord"
 }
 

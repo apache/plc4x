@@ -225,7 +225,7 @@ func CastVTCloseErrorListOfVTSessionIdentifiers(structType any) VTCloseErrorList
 	return nil
 }
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiers) GetTypeName() string {
+func (m *_VTCloseErrorListOfVTSessionIdentifiers) GetPlx4xTypeName() string {
 	return "VTCloseErrorListOfVTSessionIdentifiers"
 }
 

@@ -211,7 +211,7 @@ func CastBACnetAssignedLandingCallsLandingCallsListEntry(structType any) BACnetA
 	return nil
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetTypeName() string {
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetPlx4xTypeName() string {
 	return "BACnetAssignedLandingCallsLandingCallsListEntry"
 }
 

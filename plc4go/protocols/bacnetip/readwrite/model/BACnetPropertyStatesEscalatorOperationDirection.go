@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesEscalatorOperationDirection(structType any) BACnetP
 	return nil
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetTypeName() string {
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesEscalatorOperationDirection"
 }
 

@@ -403,7 +403,7 @@ func CastCipConnectionManagerCloseRequest(structType any) CipConnectionManagerCl
 	return nil
 }
 
-func (m *_CipConnectionManagerCloseRequest) GetTypeName() string {
+func (m *_CipConnectionManagerCloseRequest) GetPlx4xTypeName() string {
 	return "CipConnectionManagerCloseRequest"
 }
 

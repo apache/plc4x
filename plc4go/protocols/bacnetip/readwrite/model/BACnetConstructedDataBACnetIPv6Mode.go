@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBACnetIPv6Mode(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6Mode) GetTypeName() string {
+func (m *_BACnetConstructedDataBACnetIPv6Mode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBACnetIPv6Mode"
 }
 

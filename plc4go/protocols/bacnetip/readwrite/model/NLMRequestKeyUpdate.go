@@ -297,7 +297,7 @@ func CastNLMRequestKeyUpdate(structType any) NLMRequestKeyUpdate {
 	return nil
 }
 
-func (m *_NLMRequestKeyUpdate) GetTypeName() string {
+func (m *_NLMRequestKeyUpdate) GetPlx4xTypeName() string {
 	return "NLMRequestKeyUpdate"
 }
 

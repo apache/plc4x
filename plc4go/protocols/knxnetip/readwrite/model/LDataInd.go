@@ -255,7 +255,7 @@ func CastLDataInd(structType any) LDataInd {
 	return nil
 }
 
-func (m *_LDataInd) GetTypeName() string {
+func (m *_LDataInd) GetPlx4xTypeName() string {
 	return "LDataInd"
 }
 

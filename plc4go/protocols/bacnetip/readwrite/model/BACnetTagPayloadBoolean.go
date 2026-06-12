@@ -193,7 +193,7 @@ func CastBACnetTagPayloadBoolean(structType any) BACnetTagPayloadBoolean {
 	return nil
 }
 
-func (m *_BACnetTagPayloadBoolean) GetTypeName() string {
+func (m *_BACnetTagPayloadBoolean) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadBoolean"
 }
 

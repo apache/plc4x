@@ -221,7 +221,7 @@ func CastBACnetFaultParameterNone(structType any) BACnetFaultParameterNone {
 	return nil
 }
 
-func (m *_BACnetFaultParameterNone) GetTypeName() string {
+func (m *_BACnetFaultParameterNone) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterNone"
 }
 

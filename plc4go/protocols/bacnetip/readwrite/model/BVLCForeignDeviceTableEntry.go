@@ -203,7 +203,7 @@ func CastBVLCForeignDeviceTableEntry(structType any) BVLCForeignDeviceTableEntry
 	return nil
 }
 
-func (m *_BVLCForeignDeviceTableEntry) GetTypeName() string {
+func (m *_BVLCForeignDeviceTableEntry) GetPlx4xTypeName() string {
 	return "BVLCForeignDeviceTableEntry"
 }
 

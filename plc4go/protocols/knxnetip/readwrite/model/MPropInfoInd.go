@@ -180,7 +180,7 @@ func CastMPropInfoInd(structType any) MPropInfoInd {
 	return nil
 }
 
-func (m *_MPropInfoInd) GetTypeName() string {
+func (m *_MPropInfoInd) GetPlx4xTypeName() string {
 	return "MPropInfoInd"
 }
 

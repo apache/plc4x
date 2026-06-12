@@ -221,7 +221,7 @@ func CastBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement"
 }
 

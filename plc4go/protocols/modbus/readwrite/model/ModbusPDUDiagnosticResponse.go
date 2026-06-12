@@ -230,7 +230,7 @@ func CastModbusPDUDiagnosticResponse(structType any) ModbusPDUDiagnosticResponse
 	return nil
 }
 
-func (m *_ModbusPDUDiagnosticResponse) GetTypeName() string {
+func (m *_ModbusPDUDiagnosticResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUDiagnosticResponse"
 }
 

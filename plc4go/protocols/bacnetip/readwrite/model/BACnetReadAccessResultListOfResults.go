@@ -225,7 +225,7 @@ func CastBACnetReadAccessResultListOfResults(structType any) BACnetReadAccessRes
 	return nil
 }
 
-func (m *_BACnetReadAccessResultListOfResults) GetTypeName() string {
+func (m *_BACnetReadAccessResultListOfResults) GetPlx4xTypeName() string {
 	return "BACnetReadAccessResultListOfResults"
 }
 

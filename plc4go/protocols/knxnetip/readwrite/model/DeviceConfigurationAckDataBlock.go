@@ -189,7 +189,7 @@ func CastDeviceConfigurationAckDataBlock(structType any) DeviceConfigurationAckD
 	return nil
 }
 
-func (m *_DeviceConfigurationAckDataBlock) GetTypeName() string {
+func (m *_DeviceConfigurationAckDataBlock) GetPlx4xTypeName() string {
 	return "DeviceConfigurationAckDataBlock"
 }
 

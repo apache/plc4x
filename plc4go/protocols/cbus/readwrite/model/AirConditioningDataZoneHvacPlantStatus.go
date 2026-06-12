@@ -299,7 +299,7 @@ func CastAirConditioningDataZoneHvacPlantStatus(structType any) AirConditioningD
 	return nil
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatus) GetTypeName() string {
+func (m *_AirConditioningDataZoneHvacPlantStatus) GetPlx4xTypeName() string {
 	return "AirConditioningDataZoneHvacPlantStatus"
 }
 

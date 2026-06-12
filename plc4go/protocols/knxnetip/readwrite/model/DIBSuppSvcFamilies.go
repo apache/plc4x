@@ -175,7 +175,7 @@ func CastDIBSuppSvcFamilies(structType any) DIBSuppSvcFamilies {
 	return nil
 }
 
-func (m *_DIBSuppSvcFamilies) GetTypeName() string {
+func (m *_DIBSuppSvcFamilies) GetPlx4xTypeName() string {
 	return "DIBSuppSvcFamilies"
 }
 

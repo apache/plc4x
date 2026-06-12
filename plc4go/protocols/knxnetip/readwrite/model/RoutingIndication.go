@@ -181,7 +181,7 @@ func CastRoutingIndication(structType any) RoutingIndication {
 	return nil
 }
 
-func (m *_RoutingIndication) GetTypeName() string {
+func (m *_RoutingIndication) GetPlx4xTypeName() string {
 	return "RoutingIndication"
 }
 

@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -506,7 +508,7 @@ func CastSALData(structType any) SALData {
 	return nil
 }
 
-func (m *_SALData) GetTypeName() string {
+func (m *_SALData) GetPlx4xTypeName() string {
 	return "SALData"
 }
 
@@ -530,7 +532,7 @@ func (m *_SALData) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func SALDataParse[T SALData](ctx context.Context, theBytes []byte, applicationId ApplicationId) (T, error) {
-	return SALDataParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId)
 }
 
 func SALDataParseWithBufferProducer[T SALData](applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -667,7 +669,7 @@ func (m *_SALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, appli
 	}
 
 	var salData SALData
-	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(applicationId)), readBuffer), true)
+	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(applicationId)), readBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
 	}
@@ -700,7 +702,7 @@ func (pm *_SALData) serializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteOptionalField[SALData](ctx, "salData", new(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[SALData](ctx, "salData", new(m.GetSalData()), WriteComplex[SALData](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'salData' field")
 	}
 

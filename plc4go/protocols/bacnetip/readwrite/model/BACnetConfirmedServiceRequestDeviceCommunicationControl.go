@@ -279,7 +279,7 @@ func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType any)
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestDeviceCommunicationControl"
 }
 

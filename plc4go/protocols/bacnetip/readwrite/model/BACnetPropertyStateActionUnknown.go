@@ -221,7 +221,7 @@ func CastBACnetPropertyStateActionUnknown(structType any) BACnetPropertyStateAct
 	return nil
 }
 
-func (m *_BACnetPropertyStateActionUnknown) GetTypeName() string {
+func (m *_BACnetPropertyStateActionUnknown) GetPlx4xTypeName() string {
 	return "BACnetPropertyStateActionUnknown"
 }
 

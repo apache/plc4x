@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -426,7 +428,7 @@ func CastCALData(structType any) CALData {
 	return nil
 }
 
-func (m *_CALData) GetTypeName() string {
+func (m *_CALData) GetPlx4xTypeName() string {
 	return "CALData"
 }
 
@@ -457,7 +459,7 @@ func (m *_CALData) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func CALDataParse[T CALData](ctx context.Context, theBytes []byte, requestContext RequestContext) (T, error) {
-	return CALDataParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
+	return CALDataParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext)
 }
 
 func CALDataParseWithBufferProducer[T CALData](requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -500,19 +502,19 @@ func (m *_CALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, reque
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	commandTypeContainer, err := ReadEnumField[CALCommandTypeContainer](ctx, "commandTypeContainer", "CALCommandTypeContainer", ReadEnum(CALCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	commandTypeContainer, err := ReadEnumField[CALCommandTypeContainer](ctx, "commandTypeContainer", "CALCommandTypeContainer", ReadEnum(CALCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 	m.CommandTypeContainer = commandTypeContainer
 
-	commandType, err := ReadVirtualField[CALCommandType](ctx, "commandType", (*CALCommandType)(nil), commandTypeContainer.CommandType())
+	commandType, err := ReadVirtualField[CALCommandType](ctx, "commandType", (*CALCommandType)(nil), commandTypeContainer.CommandType(), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
 	_ = commandType
 
-	sendIdentifyRequestBefore, err := ReadVirtualField[bool](ctx, "sendIdentifyRequestBefore", (*bool)(nil), utils.InlineIf(bool((requestContext) != (nil)), func() any { return bool(requestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool))
+	sendIdentifyRequestBefore, err := ReadVirtualField[bool](ctx, "sendIdentifyRequestBefore", (*bool)(nil), utils.InlineIf(bool((requestContext) != (nil)), func() any { return bool(requestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendIdentifyRequestBefore' field"))
 	}
@@ -566,7 +568,7 @@ func (m *_CALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, reque
 	}
 
 	var additionalData CALData
-	_additionalData, err := ReadOptionalField[CALData](ctx, "additionalData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(nil)), readBuffer), true)
+	_additionalData, err := ReadOptionalField[CALData](ctx, "additionalData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(nil)), readBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalData' field"))
 	}
@@ -594,7 +596,7 @@ func (pm *_CALData) serializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(pushErr, "Error pushing for CALData")
 	}
 
-	if err := WriteSimpleEnumField[CALCommandTypeContainer](ctx, "commandTypeContainer", "CALCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[CALCommandTypeContainer, uint8](CALCommandTypeContainer.GetValue, CALCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+	if err := WriteSimpleEnumField[CALCommandTypeContainer](ctx, "commandTypeContainer", "CALCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[CALCommandTypeContainer, uint8](CALCommandTypeContainer.GetValue, CALCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
@@ -615,7 +617,7 @@ func (pm *_CALData) serializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteOptionalField[CALData](ctx, "additionalData", new(m.GetAdditionalData()), WriteComplex[CALData](writeBuffer), true); err != nil {
+	if err := WriteOptionalField[CALData](ctx, "additionalData", new(m.GetAdditionalData()), WriteComplex[CALData](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'additionalData' field")
 	}
 

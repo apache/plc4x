@@ -221,7 +221,7 @@ func CastAlarmMessagePushType(structType any) AlarmMessagePushType {
 	return nil
 }
 
-func (m *_AlarmMessagePushType) GetTypeName() string {
+func (m *_AlarmMessagePushType) GetPlx4xTypeName() string {
 	return "AlarmMessagePushType"
 }
 

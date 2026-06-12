@@ -189,7 +189,7 @@ func CastBVLCBroadcastDistributionTableEntry(structType any) BVLCBroadcastDistri
 	return nil
 }
 
-func (m *_BVLCBroadcastDistributionTableEntry) GetTypeName() string {
+func (m *_BVLCBroadcastDistributionTableEntry) GetPlx4xTypeName() string {
 	return "BVLCBroadcastDistributionTableEntry"
 }
 

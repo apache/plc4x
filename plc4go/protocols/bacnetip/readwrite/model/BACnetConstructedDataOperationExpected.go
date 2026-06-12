@@ -246,7 +246,7 @@ func CastBACnetConstructedDataOperationExpected(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataOperationExpected) GetTypeName() string {
+func (m *_BACnetConstructedDataOperationExpected) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOperationExpected"
 }
 

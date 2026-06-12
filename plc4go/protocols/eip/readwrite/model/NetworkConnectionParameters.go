@@ -221,7 +221,7 @@ func CastNetworkConnectionParameters(structType any) NetworkConnectionParameters
 	return nil
 }
 
-func (m *_NetworkConnectionParameters) GetTypeName() string {
+func (m *_NetworkConnectionParameters) GetPlx4xTypeName() string {
 	return "NetworkConnectionParameters"
 }
 

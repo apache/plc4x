@@ -22,8 +22,8 @@
 
   <name>Allen-Bradley ETH</name>
 
-  <protocolName>abeth</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>abeth</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>Connection Request</name>

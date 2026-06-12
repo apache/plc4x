@@ -180,7 +180,7 @@ func CastOpcuaVector(structType any) OpcuaVector {
 	return nil
 }
 
-func (m *_OpcuaVector) GetTypeName() string {
+func (m *_OpcuaVector) GetPlx4xTypeName() string {
 	return "OpcuaVector"
 }
 

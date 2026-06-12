@@ -18,19 +18,20 @@
  */
 package org.apache.plc4x.java.umas.manual;
 
+import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
 import org.apache.plc4x.java.spi.values.*;
-import org.apache.plc4x.test.manual.ManualTest;
+import org.apache.plc4x.java.utils.testutils.manual.BasicPlcTest;
 
 import java.time.*;
 
-public class ManualUmasDriverTest extends ManualTest {
+public class ManualUmasDriverTest extends BasicPlcTest {
 
     public ManualUmasDriverTest(String connectionString) {
-        super(connectionString, true, true, true, true, 100);
+        super(connectionString, new PlcNullAuthentication(), true, true, true, true, 100);
     }
 
     public static void main(String[] args) throws Exception {
-        String spsIp = "192.168.42.99";
+        String spsIp = "192.168.24.31";
         String connectionString = String.format("umas://%s", spsIp);
         ManualUmasDriverTest test = new ManualUmasDriverTest(connectionString);
 

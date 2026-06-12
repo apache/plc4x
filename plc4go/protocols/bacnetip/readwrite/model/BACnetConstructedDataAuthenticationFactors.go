@@ -258,7 +258,7 @@ func CastBACnetConstructedDataAuthenticationFactors(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactors) GetTypeName() string {
+func (m *_BACnetConstructedDataAuthenticationFactors) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAuthenticationFactors"
 }
 

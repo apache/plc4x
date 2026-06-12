@@ -276,7 +276,7 @@ func CastMediaTransportControlDataFastForward(structType any) MediaTransportCont
 	return nil
 }
 
-func (m *_MediaTransportControlDataFastForward) GetTypeName() string {
+func (m *_MediaTransportControlDataFastForward) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataFastForward"
 }
 

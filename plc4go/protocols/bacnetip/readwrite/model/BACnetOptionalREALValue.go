@@ -221,7 +221,7 @@ func CastBACnetOptionalREALValue(structType any) BACnetOptionalREALValue {
 	return nil
 }
 
-func (m *_BACnetOptionalREALValue) GetTypeName() string {
+func (m *_BACnetOptionalREALValue) GetPlx4xTypeName() string {
 	return "BACnetOptionalREALValue"
 }
 

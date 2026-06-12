@@ -259,7 +259,7 @@ func CastCipConnectedResponse(structType any) CipConnectedResponse {
 	return nil
 }
 
-func (m *_CipConnectedResponse) GetTypeName() string {
+func (m *_CipConnectedResponse) GetPlx4xTypeName() string {
 	return "CipConnectedResponse"
 }
 

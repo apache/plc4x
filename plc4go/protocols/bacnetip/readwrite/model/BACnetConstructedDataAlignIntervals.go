@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAlignIntervals(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataAlignIntervals) GetTypeName() string {
+func (m *_BACnetConstructedDataAlignIntervals) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAlignIntervals"
 }
 

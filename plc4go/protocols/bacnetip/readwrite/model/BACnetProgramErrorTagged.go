@@ -224,7 +224,7 @@ func CastBACnetProgramErrorTagged(structType any) BACnetProgramErrorTagged {
 	return nil
 }
 
-func (m *_BACnetProgramErrorTagged) GetTypeName() string {
+func (m *_BACnetProgramErrorTagged) GetPlx4xTypeName() string {
 	return "BACnetProgramErrorTagged"
 }
 

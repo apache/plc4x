@@ -405,7 +405,7 @@ func CastBACnetServiceAckReadRange(structType any) BACnetServiceAckReadRange {
 	return nil
 }
 
-func (m *_BACnetServiceAckReadRange) GetTypeName() string {
+func (m *_BACnetServiceAckReadRange) GetPlx4xTypeName() string {
 	return "BACnetServiceAckReadRange"
 }
 

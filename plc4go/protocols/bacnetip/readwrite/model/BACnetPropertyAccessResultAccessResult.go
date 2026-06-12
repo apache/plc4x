@@ -277,7 +277,7 @@ func CastBACnetPropertyAccessResultAccessResult(structType any) BACnetPropertyAc
 	return nil
 }
 
-func (m *_BACnetPropertyAccessResultAccessResult) GetTypeName() string {
+func (m *_BACnetPropertyAccessResultAccessResult) GetPlx4xTypeName() string {
 	return "BACnetPropertyAccessResultAccessResult"
 }
 

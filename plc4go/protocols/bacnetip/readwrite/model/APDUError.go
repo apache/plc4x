@@ -257,7 +257,7 @@ func CastAPDUError(structType any) APDUError {
 	return nil
 }
 
-func (m *_APDUError) GetTypeName() string {
+func (m *_APDUError) GetPlx4xTypeName() string {
 	return "APDUError"
 }
 

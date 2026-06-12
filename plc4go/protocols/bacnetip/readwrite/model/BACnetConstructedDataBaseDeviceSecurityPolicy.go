@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBaseDeviceSecurityPolicy(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetTypeName() string {
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBaseDeviceSecurityPolicy"
 }
 

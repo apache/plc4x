@@ -46,7 +46,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse interface {
 	// GetReserved01 returns Reserved01 (property field)
 	GetReserved01() uint8
 	// GetAlarmType returns AlarmType (property field)
-	GetAlarmType() AlarmType
+	GetAlarmType() AlarmStateType
 	// GetReserved02 returns Reserved02 (property field)
 	GetReserved02() uint8
 	// GetReserved03 returns Reserved03 (property field)
@@ -62,7 +62,7 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse struct {
 	S7PayloadUserDataItemContract
 	Result     uint8
 	Reserved01 uint8
-	AlarmType  AlarmType
+	AlarmType  AlarmStateType
 	Reserved02 uint8
 	Reserved03 uint8
 }
@@ -71,7 +71,7 @@ var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse = (*_S7Payloa
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse)(nil)
 
 // NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, result uint8, reserved01 uint8, alarmType AlarmType, reserved02 uint8, reserved03 uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse {
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, result uint8, reserved01 uint8, alarmType AlarmStateType, reserved02 uint8, reserved03 uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse {
 	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		Result:                        result,
@@ -93,13 +93,13 @@ func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(returnCode 
 type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(result uint8, reserved01 uint8, alarmType AlarmType, reserved02 uint8, reserved03 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+	WithMandatoryFields(result uint8, reserved01 uint8, alarmType AlarmStateType, reserved02 uint8, reserved03 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
 	// WithResult adds Result (property field)
 	WithResult(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
 	// WithReserved01 adds Reserved01 (property field)
 	WithReserved01(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
 	// WithAlarmType adds AlarmType (property field)
-	WithAlarmType(AlarmType) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+	WithAlarmType(AlarmStateType) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
 	// WithReserved02 adds Reserved02 (property field)
 	WithReserved02(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
 	// WithReserved03 adds Reserved03 (property field)
@@ -132,7 +132,7 @@ func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) s
 	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
 }
 
-func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithMandatoryFields(result uint8, reserved01 uint8, alarmType AlarmType, reserved02 uint8, reserved03 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithMandatoryFields(result uint8, reserved01 uint8, alarmType AlarmStateType, reserved02 uint8, reserved03 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
 	return b.WithResult(result).WithReserved01(reserved01).WithAlarmType(alarmType).WithReserved02(reserved02).WithReserved03(reserved03)
 }
 
@@ -146,7 +146,7 @@ func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) W
 	return b
 }
 
-func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithAlarmType(alarmType AlarmType) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithAlarmType(alarmType AlarmStateType) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
 	b.AlarmType = alarmType
 	return b
 }
@@ -247,7 +247,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetReser
 	return m.Reserved01
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetAlarmType() AlarmType {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetAlarmType() AlarmStateType {
 	return m.AlarmType
 }
 
@@ -275,7 +275,7 @@ func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(structType
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse"
 }
 
@@ -327,7 +327,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) parse(ct
 	}
 	m.Reserved01 = reserved01
 
-	alarmType, err := ReadEnumField[AlarmType](ctx, "alarmType", "AlarmType", ReadEnum(AlarmTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	alarmType, err := ReadEnumField[AlarmStateType](ctx, "alarmType", "AlarmStateType", ReadEnum(AlarmStateTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmType' field"))
 	}
@@ -378,7 +378,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serializ
 			return errors.Wrap(err, "Error serializing 'reserved01' field")
 		}
 
-		if err := WriteSimpleEnumField[AlarmType](ctx, "alarmType", "AlarmType", m.GetAlarmType(), WriteEnum[AlarmType, uint8](AlarmType.GetValue, AlarmType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[AlarmStateType](ctx, "alarmType", "AlarmStateType", m.GetAlarmType(), WriteEnum[AlarmStateType, uint8](AlarmStateType.GetValue, AlarmStateType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
 			return errors.Wrap(err, "Error serializing 'alarmType' field")
 		}
 

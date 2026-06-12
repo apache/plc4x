@@ -203,7 +203,7 @@ func CastMediaTransportControlDataSelectionName(structType any) MediaTransportCo
 	return nil
 }
 
-func (m *_MediaTransportControlDataSelectionName) GetTypeName() string {
+func (m *_MediaTransportControlDataSelectionName) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataSelectionName"
 }
 

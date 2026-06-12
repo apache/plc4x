@@ -341,7 +341,7 @@ func CastDataValue(structType any) DataValue {
 	return nil
 }
 
-func (m *_DataValue) GetTypeName() string {
+func (m *_DataValue) GetPlx4xTypeName() string {
 	return "DataValue"
 }
 

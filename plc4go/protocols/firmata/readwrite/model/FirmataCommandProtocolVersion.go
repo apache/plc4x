@@ -222,7 +222,7 @@ func CastFirmataCommandProtocolVersion(structType any) FirmataCommandProtocolVer
 	return nil
 }
 
-func (m *_FirmataCommandProtocolVersion) GetTypeName() string {
+func (m *_FirmataCommandProtocolVersion) GetPlx4xTypeName() string {
 	return "FirmataCommandProtocolVersion"
 }
 

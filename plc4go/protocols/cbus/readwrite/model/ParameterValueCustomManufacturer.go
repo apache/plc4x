@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -225,7 +227,7 @@ func CastParameterValueCustomManufacturer(structType any) ParameterValueCustomMa
 	return nil
 }
 
-func (m *_ParameterValueCustomManufacturer) GetTypeName() string {
+func (m *_ParameterValueCustomManufacturer) GetPlx4xTypeName() string {
 	return "ParameterValueCustomManufacturer"
 }
 
@@ -253,7 +255,7 @@ func (m *_ParameterValueCustomManufacturer) parse(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	value, err := ReadSimpleField[CustomManufacturer](ctx, "value", ReadComplex[CustomManufacturer](CustomManufacturerParseWithBufferProducer((uint8)(numBytes)), readBuffer))
+	value, err := ReadSimpleField[CustomManufacturer](ctx, "value", ReadComplex[CustomManufacturer](CustomManufacturerParseWithBufferProducer((uint8)(numBytes)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -267,7 +269,7 @@ func (m *_ParameterValueCustomManufacturer) parse(ctx context.Context, readBuffe
 }
 
 func (m *_ParameterValueCustomManufacturer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -284,7 +286,7 @@ func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueCustomManufacturer")
 		}
 
-		if err := WriteSimpleField[CustomManufacturer](ctx, "value", m.GetValue(), WriteComplex[CustomManufacturer](writeBuffer)); err != nil {
+		if err := WriteSimpleField[CustomManufacturer](ctx, "value", m.GetValue(), WriteComplex[CustomManufacturer](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 

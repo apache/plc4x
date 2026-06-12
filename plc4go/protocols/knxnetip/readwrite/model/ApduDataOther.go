@@ -225,7 +225,7 @@ func CastApduDataOther(structType any) ApduDataOther {
 	return nil
 }
 
-func (m *_ApduDataOther) GetTypeName() string {
+func (m *_ApduDataOther) GetPlx4xTypeName() string {
 	return "ApduDataOther"
 }
 

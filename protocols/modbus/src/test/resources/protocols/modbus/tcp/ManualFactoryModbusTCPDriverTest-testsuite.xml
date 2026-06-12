@@ -1,0 +1,1381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd" byteOrder="BIG_ENDIAN">  
+  <name>Modbus TCP</name>  
+  <protocol-name>modbus</protocol-name>  
+  <output-flavor>read-write</output-flavor>  
+  <driver-name>modbus-tcp</driver-name>  
+  <driver-parameters>
+    <parameter> 
+      <name>transport</name>  
+      <value>test</value> 
+    </parameter>  
+    <parameter> 
+      <name>unit-identifier</name>  
+      <value>1</value> 
+    </parameter>  
+    <parameter> 
+      <name>request-timeout</name>  
+      <value>5000</value> 
+    </parameter>  
+    <parameter> 
+      <name>default-payload-byte-order</name>  
+      <value>BIG_ENDIAN</value> 
+    </parameter> 
+  </driver-parameters>
+  <sequential>true</sequential>
+  <!-- ========================================== -->
+  <!-- Single-tag read/write pairs                -->  
+  <!-- ========================================== -->  
+  <!-- Test 1: Read BOOL -->  
+  <testcase> 
+    <name>Read holding-register:1:BOOL</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:1:BOOL</name>  
+              <address>4x00001:BOOL</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">000100000006010300000001</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">0001000000050103020001</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_1_BOOL>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                </value>
+              </PlcResponseItem>
+            </holding-register_1_BOOL>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 2: Write BOOL -->  
+  <testcase> 
+    <name>Write holding-register:1:BOOL</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:1:BOOL</name>  
+              <address>4x00001:BOOL</address>  
+              <value> 
+                <PlcBOOL>true</PlcBOOL> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">000200000006010600000001</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">000200000006010600000001</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_1_BOOL>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_1_BOOL> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 3: Read BYTE -->  
+  <testcase> 
+    <name>Read holding-register:2:BYTE</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:2:BYTE</name>  
+              <address>4x00002:BYTE</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">000300000006010300010001</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">000300000005010302002A</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_2_BYTE>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBYTE dataType="uint" bitLength="8">42</PlcBYTE>
+                </value>
+              </PlcResponseItem>
+            </holding-register_2_BYTE>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 4: Write BYTE -->  
+  <testcase> 
+    <name>Write holding-register:2:BYTE</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:2:BYTE</name>  
+              <address>4x00002:BYTE</address>  
+              <value> 
+                <PlcBYTE>42</PlcBYTE> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">00040000000601060001002A</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">00040000000601060001002A</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_2_BYTE>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_2_BYTE> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 5: Read WORD -->  
+  <testcase> 
+    <name>Read holding-register:3:WORD</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:3:WORD</name>  
+              <address>4x00003:WORD</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">000500000006010300020001</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">000500000005010302A5B8</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_3_WORD>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcWORD dataType="uint" bitLength="16">42424</PlcWORD>
+                </value>
+              </PlcResponseItem>
+            </holding-register_3_WORD>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 6: Write WORD -->  
+  <testcase> 
+    <name>Write holding-register:3:WORD</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:3:WORD</name>  
+              <address>4x00003:WORD</address>  
+              <value> 
+                <PlcWORD>42424</PlcWORD> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">00060000000601060002A5B8</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">00060000000601060002A5B8</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_3_WORD>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_3_WORD> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 7: Read DWORD -->  
+  <testcase> 
+    <name>Read holding-register:4:DWORD</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:4:DWORD</name>  
+              <address>4x00004:DWORD</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">000700000006010300030002</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">000700000007010304FCDE88B8</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_4_DWORD>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcDWORD dataType="uint" bitLength="32">4242442424</PlcDWORD>
+                </value>
+              </PlcResponseItem>
+            </holding-register_4_DWORD>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 8: Write DWORD -->  
+  <testcase> 
+    <name>Write holding-register:4:DWORD</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:4:DWORD</name>  
+              <address>4x00004:DWORD</address>  
+              <value> 
+                <PlcDWORD>4242442424</PlcDWORD> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">00080000000B01100003000204FCDE88B8</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">000800000006011000030002</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_4_DWORD>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_4_DWORD> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 9: Read LWORD -->  
+  <testcase> 
+    <name>Read holding-register:6:LWORD</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:6:LWORD</name>  
+              <address>4x00006:LWORD</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">000900000006010300050004</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">00090000000B0103083AE02EE84D0449B2</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_6_LWORD>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcLWORD dataType="uint" bitLength="64">4242442424242424242</PlcLWORD>
+                </value>
+              </PlcResponseItem>
+            </holding-register_6_LWORD>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 10: Write LWORD -->  
+  <testcase> 
+    <name>Write holding-register:6:LWORD</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:6:LWORD</name>  
+              <address>4x00006:LWORD</address>  
+              <value> 
+                <PlcLWORD>4242442424242424242</PlcLWORD> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">000A0000000F011000050004083AE02EE84D0449B2</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">000A00000006011000050004</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_6_LWORD>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_6_LWORD> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 11: Read SINT -->  
+  <testcase> 
+    <name>Read holding-register:10:SINT</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:10:SINT</name>  
+              <address>4x00010:SINT</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">000B00000006010300090001</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">000B0000000501030200D6</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_10_SINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcSINT dataType="int" bitLength="8">-42</PlcSINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_10_SINT>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 12: Write SINT -->  
+  <testcase> 
+    <name>Write holding-register:10:SINT</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:10:SINT</name>  
+              <address>4x00010:SINT</address>  
+              <value> 
+                <PlcSINT>-42</PlcSINT> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">000C000000060106000900D6</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">000C000000060106000900D6</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_10_SINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_10_SINT> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 13: Read USINT -->  
+  <testcase> 
+    <name>Read holding-register:11:USINT</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:11:USINT</name>  
+              <address>4x00011:USINT</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">000D000000060103000A0001</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">000D00000005010302002A</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_11_USINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUSINT dataType="uint" bitLength="8">42</PlcUSINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_11_USINT>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 14: Write USINT -->  
+  <testcase> 
+    <name>Write holding-register:11:USINT</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:11:USINT</name>  
+              <address>4x00011:USINT</address>  
+              <value> 
+                <PlcUSINT>42</PlcUSINT> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">000E000000060106000A002A</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">000E000000060106000A002A</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_11_USINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_11_USINT> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 15: Read INT -->  
+  <testcase> 
+    <name>Read holding-register:12:INT</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:12:INT</name>  
+              <address>4x00012:INT</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">000F000000060103000B0001</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">000F00000005010302F688</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_12_INT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcINT dataType="int" bitLength="16">-2424</PlcINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_12_INT>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 16: Write INT -->  
+  <testcase> 
+    <name>Write holding-register:12:INT</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:12:INT</name>  
+              <address>4x00012:INT</address>  
+              <value> 
+                <PlcINT>-2424</PlcINT> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">0010000000060106000BF688</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">0010000000060106000BF688</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_12_INT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_12_INT> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 17: Read UINT -->  
+  <testcase> 
+    <name>Read holding-register:13:UINT</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:13:UINT</name>  
+              <address>4x00013:UINT</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">0011000000060103000C0001</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">001100000005010302A5B8</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_13_UINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUINT dataType="uint" bitLength="16">42424</PlcUINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_13_UINT>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 18: Write UINT -->  
+  <testcase> 
+    <name>Write holding-register:13:UINT</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:13:UINT</name>  
+              <address>4x00013:UINT</address>  
+              <value> 
+                <PlcUINT>42424</PlcUINT> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">0012000000060106000CA5B8</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">0012000000060106000CA5B8</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_13_UINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_13_UINT> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 19: Read DINT -->  
+  <testcase> 
+    <name>Read holding-register:14:DINT</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:14:DINT</name>  
+              <address>4x00014:DINT</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">0013000000060103000D0002</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">001300000007010304F18C9F48</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_14_DINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcDINT dataType="int" bitLength="32">-242442424</PlcDINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_14_DINT>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 20: Write DINT -->  
+  <testcase> 
+    <name>Write holding-register:14:DINT</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:14:DINT</name>  
+              <address>4x00014:DINT</address>  
+              <value> 
+                <PlcDINT>-242442424</PlcDINT> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">00140000000B0110000D000204F18C9F48</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">0014000000060110000D0002</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_14_DINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_14_DINT> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 21: Read UDINT -->  
+  <testcase> 
+    <name>Read holding-register:16:UDINT</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:16:UDINT</name>  
+              <address>4x00016:UDINT</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">0015000000060103000F0002</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">001500000007010304FCDE88B8</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_16_UDINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUDINT dataType="uint" bitLength="32">4242442424</PlcUDINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_16_UDINT>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 22: Write UDINT -->  
+  <testcase> 
+    <name>Write holding-register:16:UDINT</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:16:UDINT</name>  
+              <address>4x00016:UDINT</address>  
+              <value> 
+                <PlcUDINT>4242442424</PlcUDINT> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">00160000000B0110000F000204FCDE88B8</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">0016000000060110000F0002</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_16_UDINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_16_UDINT> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 23: Read LINT -->  
+  <testcase> 
+    <name>Read holding-register:18:LINT</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:18:LINT</name>  
+              <address>4x00018:LINT</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">001700000006010300110004</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">00170000000B010308C51FD117B2FBB64E</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_18_LINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcLINT dataType="int" bitLength="64">-4242442424242424242</PlcLINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_18_LINT>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 24: Write LINT -->  
+  <testcase> 
+    <name>Write holding-register:18:LINT</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:18:LINT</name>  
+              <address>4x00018:LINT</address>  
+              <value> 
+                <PlcLINT>-4242442424242424242</PlcLINT> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">00180000000F01100011000408C51FD117B2FBB64E</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">001800000006011000110004</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_18_LINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_18_LINT> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 25: Read ULINT -->  
+  <testcase> 
+    <name>Read holding-register:22:ULINT</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:22:ULINT</name>  
+              <address>4x00022:ULINT</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">001900000006010300150004</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">00190000000B0103083AE02EE84D0449B2</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_22_ULINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcULINT dataType="uint" bitLength="64">4242442424242424242</PlcULINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_22_ULINT>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 26: Write ULINT -->  
+  <testcase> 
+    <name>Write holding-register:22:ULINT</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:22:ULINT</name>  
+              <address>4x00022:ULINT</address>  
+              <value> 
+                <PlcULINT>4242442424242424242</PlcULINT> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">001A0000000F011000150004083AE02EE84D0449B2</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">001A00000006011000150004</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_22_ULINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_22_ULINT> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 27: Read REAL -->  
+  <testcase> 
+    <name>Read holding-register:26:REAL</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:26:REAL</name>  
+              <address>4x00026:REAL</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">001B00000006010300190002</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">001B0000000701030440490FDC</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_26_REAL>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcREAL dataType="float" bitLength="32">3.141593</PlcREAL>
+                </value>
+              </PlcResponseItem>
+            </holding-register_26_REAL>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 28: Write REAL -->  
+  <testcase> 
+    <name>Write holding-register:26:REAL</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:26:REAL</name>  
+              <address>4x00026:REAL</address>  
+              <value> 
+                <PlcREAL>3.141593</PlcREAL> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">001C0000000B0110001900020440490FDC</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">001C00000006011000190002</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_26_REAL>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_26_REAL> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 29: Read LREAL -->  
+  <testcase> 
+    <name>Read holding-register:28:LREAL</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:28:LREAL</name>  
+              <address>4x00028:LREAL</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">001D000000060103001B0004</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">001D0000000B0103084005BF0A8B145FCF</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_28_LREAL>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcLREAL dataType="float" bitLength="64">2.71828182846</PlcLREAL>
+                </value>
+              </PlcResponseItem>
+            </holding-register_28_LREAL>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- Test 30: Write LREAL -->  
+  <testcase> 
+    <name>Write holding-register:28:LREAL</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:28:LREAL</name>  
+              <address>4x00028:LREAL</address>  
+              <value> 
+                <PlcLREAL>2.71828182846</PlcLREAL> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Write request bytes">001E0000000F0110001B0004084005BF0A8B145FCF</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Write response bytes">001E000000060110001B0004</incoming-plc-bytes>  
+      <api-response name="Write response"> 
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_28_LREAL>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_28_LREAL> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- ========================================== -->  
+  <!-- Multi-tag read (all 15 tags in one request)-->  
+  <!-- ========================================== -->  
+  <!-- Test 31: Multi-tag Read (15 tags) -->  
+  <testcase> 
+    <name>Read all datatypes (15 tags)</name>  
+    <steps> 
+      <api-request name="Read request"> 
+        <PlcReadRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:1:BOOL</name>  
+              <address>4x00001:BOOL</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:2:BYTE</name>  
+              <address>4x00002:BYTE</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:3:WORD</name>  
+              <address>4x00003:WORD</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:4:DWORD</name>  
+              <address>4x00004:DWORD</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:6:LWORD</name>  
+              <address>4x00006:LWORD</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:10:SINT</name>  
+              <address>4x00010:SINT</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:11:USINT</name>  
+              <address>4x00011:USINT</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:12:INT</name>  
+              <address>4x00012:INT</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:13:UINT</name>  
+              <address>4x00013:UINT</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:14:DINT</name>  
+              <address>4x00014:DINT</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:16:UDINT</name>  
+              <address>4x00016:UDINT</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:18:LINT</name>  
+              <address>4x00018:LINT</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:22:ULINT</name>  
+              <address>4x00022:ULINT</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:26:REAL</name>  
+              <address>4x00026:REAL</address> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:28:LREAL</name>  
+              <address>4x00028:LREAL</address> 
+            </tag> 
+          </tags> 
+        </PlcReadRequest> 
+      </api-request>  
+      <outgoing-plc-bytes name="Read request bytes">001F0000000601030000001F</outgoing-plc-bytes>  
+      <incoming-plc-bytes name="Read response bytes">001F0000004101033E0001002AA5B8FCDE88B83AE02EE84D0449B200D6002AF688A5B8F18C9F48FCDE88B8C51FD117B2FBB64E3AE02EE84D0449B240490FDC4005BF0A8B145FCF</incoming-plc-bytes>  
+      <api-response name="Read response"> 
+        <PlcReadResponse>
+          <values isList="true">
+            <holding-register_1_BOOL>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                </value>
+              </PlcResponseItem>
+            </holding-register_1_BOOL>
+            <holding-register_2_BYTE>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBYTE dataType="uint" bitLength="8">42</PlcBYTE>
+                </value>
+              </PlcResponseItem>
+            </holding-register_2_BYTE>
+            <holding-register_3_WORD>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcWORD dataType="uint" bitLength="16">42424</PlcWORD>
+                </value>
+              </PlcResponseItem>
+            </holding-register_3_WORD>
+            <holding-register_4_DWORD>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcDWORD dataType="uint" bitLength="32">4242442424</PlcDWORD>
+                </value>
+              </PlcResponseItem>
+            </holding-register_4_DWORD>
+            <holding-register_6_LWORD>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcLWORD dataType="uint" bitLength="64">4242442424242424242</PlcLWORD>
+                </value>
+              </PlcResponseItem>
+            </holding-register_6_LWORD>
+            <holding-register_10_SINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcSINT dataType="int" bitLength="8">-42</PlcSINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_10_SINT>
+            <holding-register_11_USINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUSINT dataType="uint" bitLength="8">42</PlcUSINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_11_USINT>
+            <holding-register_12_INT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcINT dataType="int" bitLength="16">-2424</PlcINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_12_INT>
+            <holding-register_13_UINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUINT dataType="uint" bitLength="16">42424</PlcUINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_13_UINT>
+            <holding-register_14_DINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcDINT dataType="int" bitLength="32">-242442424</PlcDINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_14_DINT>
+            <holding-register_16_UDINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUDINT dataType="uint" bitLength="32">4242442424</PlcUDINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_16_UDINT>
+            <holding-register_18_LINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcLINT dataType="int" bitLength="64">-4242442424242424242</PlcLINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_18_LINT>
+            <holding-register_22_ULINT>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcULINT dataType="uint" bitLength="64">4242442424242424242</PlcULINT>
+                </value>
+              </PlcResponseItem>
+            </holding-register_22_ULINT>
+            <holding-register_26_REAL>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcREAL dataType="float" bitLength="32">3.141593</PlcREAL>
+                </value>
+              </PlcResponseItem>
+            </holding-register_26_REAL>
+            <holding-register_28_LREAL>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcLREAL dataType="float" bitLength="64">2.71828182846</PlcLREAL>
+                </value>
+              </PlcResponseItem>
+            </holding-register_28_LREAL>
+          </values>
+        </PlcReadResponse> 
+      </api-response> 
+    </steps> 
+  </testcase>  
+  <!-- ========================================== -->  
+  <!-- Multi-tag write (all 15 tags in one request)-->  
+  <!-- ========================================== -->  
+  <!-- Test 32: Multi-tag Write (15 tags) -->  
+  <testcase> 
+    <name>Write all datatypes (15 tags)</name>  
+    <steps> 
+      <api-request name="Write request"> 
+        <PlcWriteRequest> 
+          <tags isList="true"> 
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:10:SINT</name>  
+              <address>4x00010:SINT</address>  
+              <value> 
+                <PlcSINT>-42</PlcSINT> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:11:USINT</name>  
+              <address>4x00011:USINT</address>  
+              <value> 
+                <PlcUSINT>42</PlcUSINT> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:12:INT</name>  
+              <address>4x00012:INT</address>  
+              <value> 
+                <PlcINT>-2424</PlcINT> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:13:UINT</name>  
+              <address>4x00013:UINT</address>  
+              <value> 
+                <PlcUINT>42424</PlcUINT> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:14:DINT</name>  
+              <address>4x00014:DINT</address>  
+              <value> 
+                <PlcDINT>-242442424</PlcDINT> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:16:UDINT</name>  
+              <address>4x00016:UDINT</address>  
+              <value> 
+                <PlcUDINT>4242442424</PlcUDINT> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:18:LINT</name>  
+              <address>4x00018:LINT</address>  
+              <value> 
+                <PlcLINT>-4242442424242424242</PlcLINT> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:1:BOOL</name>  
+              <address>4x00001:BOOL</address>  
+              <value> 
+                <PlcBOOL>true</PlcBOOL> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:22:ULINT</name>  
+              <address>4x00022:ULINT</address>  
+              <value> 
+                <PlcULINT>4242442424242424242</PlcULINT> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:26:REAL</name>  
+              <address>4x00026:REAL</address>  
+              <value> 
+                <PlcREAL>3.141593</PlcREAL> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:28:LREAL</name>  
+              <address>4x00028:LREAL</address>  
+              <value> 
+                <PlcLREAL>2.71828182846</PlcLREAL> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:2:BYTE</name>  
+              <address>4x00002:BYTE</address>  
+              <value> 
+                <PlcBYTE>42</PlcBYTE> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:3:WORD</name>  
+              <address>4x00003:WORD</address>  
+              <value> 
+                <PlcWORD>42424</PlcWORD> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:4:DWORD</name>  
+              <address>4x00004:DWORD</address>  
+              <value> 
+                <PlcDWORD>4242442424</PlcDWORD> 
+              </value> 
+            </tag>  
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>holding-register:6:LWORD</name>  
+              <address>4x00006:LWORD</address>  
+              <value> 
+                <PlcLWORD>4242442424242424242</PlcLWORD> 
+              </value> 
+            </tag> 
+          </tags> 
+        </PlcWriteRequest> 
+      </api-request>
+      <outgoing-plc-bytes name="Write SINT request bytes">0020000000060106000900D6</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write SINT response bytes">0020000000060106000900D6</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write USINT request bytes">0021000000060106000A002A</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write USINT response bytes">0021000000060106000A002A</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write INT request bytes">0022000000060106000BF688</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write INT response bytes">0022000000060106000BF688</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write UINT request bytes">0023000000060106000CA5B8</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write UINT response bytes">0023000000060106000CA5B8</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write DINT request bytes">00240000000B0110000D000204F18C9F48</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write DINT response bytes">0024000000060110000D0002</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write UDINT request bytes">00250000000B0110000F000204FCDE88B8</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write UDINT response bytes">0025000000060110000F0002</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write LINT request bytes">00260000000F01100011000408C51FD117B2FBB64E</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write LINT response bytes">002600000006011000110004</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write BOOL request bytes">002700000006010600000001</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write BOOL response bytes">002700000006010600000001</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write ULINT request bytes">00280000000F011000150004083AE02EE84D0449B2</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write ULINT response bytes">002800000006011000150004</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write REAL request bytes">00290000000B0110001900020440490FDC</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write REAL response bytes">002900000006011000190002</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write LREAL request bytes">002A0000000F0110001B0004084005BF0A8B145FCF</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write LREAL response bytes">002A000000060110001B0004</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write BYTE request bytes">002B0000000601060001002A</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write BYTE response bytes">002B0000000601060001002A</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write WORD request bytes">002C0000000601060002A5B8</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write WORD response bytes">002C0000000601060002A5B8</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write DWORD request bytes">002D0000000B01100003000204FCDE88B8</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write DWORD response bytes">002D00000006011000030002</incoming-plc-bytes>
+      <outgoing-plc-bytes name="Write LWORD request bytes">002E0000000F011000050004083AE02EE84D0449B2</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write LWORD response bytes">002E00000006011000050004</incoming-plc-bytes>
+      <api-response name="Write response">
+        <PlcWriteResponse> 
+          <responseCodes> 
+            <holding-register_10_SINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_10_SINT>  
+            <holding-register_11_USINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_11_USINT>  
+            <holding-register_12_INT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_12_INT>  
+            <holding-register_13_UINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_13_UINT>  
+            <holding-register_14_DINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_14_DINT>  
+            <holding-register_16_UDINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_16_UDINT>  
+            <holding-register_18_LINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_18_LINT>  
+            <holding-register_1_BOOL>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_1_BOOL>  
+            <holding-register_22_ULINT>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_22_ULINT>  
+            <holding-register_26_REAL>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_26_REAL>  
+            <holding-register_28_LREAL>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_28_LREAL>  
+            <holding-register_2_BYTE>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_2_BYTE>  
+            <holding-register_3_WORD>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_3_WORD>  
+            <holding-register_4_DWORD>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_4_DWORD>  
+            <holding-register_6_LWORD>
+              <ResponseCode>OK</ResponseCode>
+            </holding-register_6_LWORD> 
+          </responseCodes> 
+        </PlcWriteResponse> 
+      </api-response> 
+    </steps> 
+  </testcase> 
+</test:driver-testsuite>

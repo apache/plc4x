@@ -207,7 +207,7 @@ func CastKnxNetIpDeviceManagement(structType any) KnxNetIpDeviceManagement {
 	return nil
 }
 
-func (m *_KnxNetIpDeviceManagement) GetTypeName() string {
+func (m *_KnxNetIpDeviceManagement) GetPlx4xTypeName() string {
 	return "KnxNetIpDeviceManagement"
 }
 

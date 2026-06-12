@@ -243,7 +243,7 @@ func CastBACnetSpecialEvent(structType any) BACnetSpecialEvent {
 	return nil
 }
 
-func (m *_BACnetSpecialEvent) GetTypeName() string {
+func (m *_BACnetSpecialEvent) GetPlx4xTypeName() string {
 	return "BACnetSpecialEvent"
 }
 

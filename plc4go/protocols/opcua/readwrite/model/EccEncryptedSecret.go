@@ -135,7 +135,7 @@ func CastEccEncryptedSecret(structType any) EccEncryptedSecret {
 	return nil
 }
 
-func (m *_EccEncryptedSecret) GetTypeName() string {
+func (m *_EccEncryptedSecret) GetPlx4xTypeName() string {
 	return "EccEncryptedSecret"
 }
 

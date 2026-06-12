@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMultiStateOutputFeedbackValue(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateOutputFeedbackValue"
 }
 

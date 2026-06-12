@@ -289,7 +289,7 @@ func CastBACnetTimeStamp(structType any) BACnetTimeStamp {
 	return nil
 }
 
-func (m *_BACnetTimeStamp) GetTypeName() string {
+func (m *_BACnetTimeStamp) GetPlx4xTypeName() string {
 	return "BACnetTimeStamp"
 }
 

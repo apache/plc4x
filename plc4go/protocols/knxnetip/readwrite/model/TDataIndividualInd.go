@@ -180,7 +180,7 @@ func CastTDataIndividualInd(structType any) TDataIndividualInd {
 	return nil
 }
 
-func (m *_TDataIndividualInd) GetTypeName() string {
+func (m *_TDataIndividualInd) GetPlx4xTypeName() string {
 	return "TDataIndividualInd"
 }
 

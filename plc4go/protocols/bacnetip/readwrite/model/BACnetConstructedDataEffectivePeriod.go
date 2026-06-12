@@ -246,7 +246,7 @@ func CastBACnetConstructedDataEffectivePeriod(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataEffectivePeriod) GetTypeName() string {
+func (m *_BACnetConstructedDataEffectivePeriod) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEffectivePeriod"
 }
 

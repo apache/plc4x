@@ -371,7 +371,7 @@ func CastMeteringData(structType any) MeteringData {
 	return nil
 }
 
-func (m *_MeteringData) GetTypeName() string {
+func (m *_MeteringData) GetPlx4xTypeName() string {
 	return "MeteringData"
 }
 

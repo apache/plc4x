@@ -277,7 +277,7 @@ func CastBACnetSpecialEventPeriod(structType any) BACnetSpecialEventPeriod {
 	return nil
 }
 
-func (m *_BACnetSpecialEventPeriod) GetTypeName() string {
+func (m *_BACnetSpecialEventPeriod) GetPlx4xTypeName() string {
 	return "BACnetSpecialEventPeriod"
 }
 

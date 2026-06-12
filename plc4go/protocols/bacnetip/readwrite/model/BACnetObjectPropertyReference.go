@@ -237,7 +237,7 @@ func CastBACnetObjectPropertyReference(structType any) BACnetObjectPropertyRefer
 	return nil
 }
 
-func (m *_BACnetObjectPropertyReference) GetTypeName() string {
+func (m *_BACnetObjectPropertyReference) GetPlx4xTypeName() string {
 	return "BACnetObjectPropertyReference"
 }
 

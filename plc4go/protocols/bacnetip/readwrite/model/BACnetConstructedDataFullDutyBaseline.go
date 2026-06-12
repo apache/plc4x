@@ -246,7 +246,7 @@ func CastBACnetConstructedDataFullDutyBaseline(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataFullDutyBaseline) GetTypeName() string {
+func (m *_BACnetConstructedDataFullDutyBaseline) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFullDutyBaseline"
 }
 

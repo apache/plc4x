@@ -257,7 +257,7 @@ func CastListOfCovNotifications(structType any) ListOfCovNotifications {
 	return nil
 }
 
-func (m *_ListOfCovNotifications) GetTypeName() string {
+func (m *_ListOfCovNotifications) GetPlx4xTypeName() string {
 	return "ListOfCovNotifications"
 }
 

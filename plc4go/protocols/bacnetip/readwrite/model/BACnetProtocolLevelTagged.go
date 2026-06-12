@@ -193,7 +193,7 @@ func CastBACnetProtocolLevelTagged(structType any) BACnetProtocolLevelTagged {
 	return nil
 }
 
-func (m *_BACnetProtocolLevelTagged) GetTypeName() string {
+func (m *_BACnetProtocolLevelTagged) GetPlx4xTypeName() string {
 	return "BACnetProtocolLevelTagged"
 }
 

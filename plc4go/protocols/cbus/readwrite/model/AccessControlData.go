@@ -359,7 +359,7 @@ func CastAccessControlData(structType any) AccessControlData {
 	return nil
 }
 
-func (m *_AccessControlData) GetTypeName() string {
+func (m *_AccessControlData) GetPlx4xTypeName() string {
 	return "AccessControlData"
 }
 

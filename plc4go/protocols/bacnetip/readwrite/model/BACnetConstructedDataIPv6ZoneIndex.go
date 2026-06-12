@@ -246,7 +246,7 @@ func CastBACnetConstructedDataIPv6ZoneIndex(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndex) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6ZoneIndex) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6ZoneIndex"
 }
 

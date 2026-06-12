@@ -44,7 +44,7 @@ try {
     for (Artifact artifact : artifacts) {
         classpathElements.add(artifact.getFile().toURI().toURL())
     }
-    moduleClassloader = new URLClassLoader(classpathElements.toArray(new URL[0]), this.class.getClassLoader())
+    moduleClassloader = new URLClassLoader(classpathElements.toArray(new URL[0]) as URL[], this.class.getClassLoader())
 } catch (MalformedURLException e) {
     throw new Exception(
         "Error creating classloader for loading message format schema from module dependencies", e);
@@ -108,24 +108,26 @@ for (final def protocolCode in plcDriverManager.getProtocolCodes()) {
     if(driver.metadata.defaultTransportCode.isPresent()) {
         printStream.println "|Default Transport 4+|`" + driver.metadata.defaultTransportCode.get() + "`"
     }
+    // Filter out the "test" transport - that one is only intended for unit-tests.
+    def supportedTransportCodes = driver.metadata.supportedTransportCodes.findAll { it != "test" }
     printStream.println "|Supported Transports 4+|"
-    for (final def transportCode in driver.metadata.supportedTransportCodes) {
+    for (final def transportCode in supportedTransportCodes) {
         // TODO: Make it output stuff like the "default port" for UDP and TCP
         printStream.println " - `" + transportCode + "`"
     }
     printStream.println "5+|Config options:"
 
     // Output the configuration options of the driver itself.
-   driver.metadata.protocolConfigurationOptionMetadata.map {outputOptions(it.options, null, printStream)}
+    driver.metadata.protocolConfigurationOptionMetadata.ifPresent { outputOptions(it.options, null, printStream) }
 
     // Output the configuration options of the transports the driver supports.
-    if(!driver.metadata.supportedTransportCodes.empty) {
+    if(!supportedTransportCodes.empty) {
         printStream.println "5+|Transport config options:"
-        for (final def transportCode in driver.metadata.supportedTransportCodes) {
+        for (final def transportCode in supportedTransportCodes) {
             printStream.println "5+|\n+++\n" +
                 "<h4>$transportCode</h4>\n" +
                 "+++"
-            driver.metadata.getTransportConfigurationOptionMetadata(transportCode).map {
+            driver.metadata.getTransportConfigurationOptionMetadata(transportCode).ifPresent {
                 outputOptions(it.options, transportCode, printStream)
             }
         }

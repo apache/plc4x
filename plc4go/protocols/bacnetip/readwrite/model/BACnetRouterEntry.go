@@ -269,7 +269,7 @@ func CastBACnetRouterEntry(structType any) BACnetRouterEntry {
 	return nil
 }
 
-func (m *_BACnetRouterEntry) GetTypeName() string {
+func (m *_BACnetRouterEntry) GetPlx4xTypeName() string {
 	return "BACnetRouterEntry"
 }
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastPublishRequest(structType any) PublishRequest {
 	return nil
 }
 
-func (m *_PublishRequest) GetTypeName() string {
+func (m *_PublishRequest) GetPlx4xTypeName() string {
 	return "PublishRequest"
 }
 
@@ -279,19 +280,19 @@ func (m *_PublishRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfSubscriptionAcknowledgements, err := ReadImplicitField[int32](ctx, "noOfSubscriptionAcknowledgements", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSubscriptionAcknowledgements, err := ReadImplicitField[int32](ctx, "noOfSubscriptionAcknowledgements", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSubscriptionAcknowledgements' field"))
 	}
 	_ = noOfSubscriptionAcknowledgements
 
-	subscriptionAcknowledgements, err := ReadCountArrayField[SubscriptionAcknowledgement](ctx, "subscriptionAcknowledgements", ReadComplex[SubscriptionAcknowledgement](ExtensionObjectDefinitionParseWithBufferProducer[SubscriptionAcknowledgement]((int32)(int32(823))), readBuffer), uint64(noOfSubscriptionAcknowledgements))
+	subscriptionAcknowledgements, err := ReadCountArrayField[SubscriptionAcknowledgement](ctx, "subscriptionAcknowledgements", ReadComplex[SubscriptionAcknowledgement](ExtensionObjectDefinitionParseWithBufferProducer[SubscriptionAcknowledgement]((int32)(int32(823))), readBuffer), uint64(noOfSubscriptionAcknowledgements), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionAcknowledgements' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_PublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for PublishRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfSubscriptionAcknowledgements := int32(utils.InlineIf(bool((m.GetSubscriptionAcknowledgements()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSubscriptionAcknowledgements()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSubscriptionAcknowledgements", noOfSubscriptionAcknowledgements, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSubscriptionAcknowledgements", noOfSubscriptionAcknowledgements, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSubscriptionAcknowledgements' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "subscriptionAcknowledgements", m.GetSubscriptionAcknowledgements(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "subscriptionAcknowledgements", m.GetSubscriptionAcknowledgements(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'subscriptionAcknowledgements' field")
 		}
 

@@ -349,7 +349,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case STRING:
             case VSTRING:
                 String stringType = "String";
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new IllegalArgumentException("Encoding must be a quoted string value");
                 }
@@ -576,7 +576,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 }
             case STRING:
             case VSTRING:
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
@@ -651,7 +651,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     } else {
                         return "BigInteger.valueOf(_value.getTime().getLong(ChronoField.NANO_OF_DAY))";
                     }
-                case "nannosecondsOfSecond":
+                case "nanosecondsOfSecond":
                     if (simpleTypeReference.getSizeInBits() <= 63) {
                         return "_value.getTime().getLong(ChronoField.NANO_OF_SECOND)";
                     } else {
@@ -932,7 +932,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case "length":
                     return tracer + "\"" + ((SimpleTypeReference) field).getSizeInBits() + "\"";
                 case "encoding":
-                    String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
+                    String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF8"))).getValue();
                     return tracer + "\"" + encoding + "\"";
                 default:
                     return tracer + "";
@@ -1018,7 +1018,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                             sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
                             break;
                         case "encoding":
-                            String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
+                            String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF8"))).getValue();
                             sb.append("\"").append(encoding).append("\"");
                             break;
                     }
@@ -1100,7 +1100,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case "length":
                     return tracer + "\"" + ((SimpleTypeReference) field).getSizeInBits() + "\"";
                 case "encoding":
-                    String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
+                    String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF8"))).getValue();
                     return tracer + "\"" + encoding + "\"";
                 default:
                     return tracer + "";
@@ -1147,7 +1147,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                                 sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
                                 break;
                             case "encoding":
-                                String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
+                                String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF8"))).getValue();
                                 sb.append("\"").append(encoding).append("\"");
                                 break;
                         }
@@ -1211,7 +1211,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                             sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
                             break;
                         case "encoding":
-                            String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
+                            String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF8"))).getValue();
                             sb.append("\"").append(encoding).append("\"");
                             break;
                     }

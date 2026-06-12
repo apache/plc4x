@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCarLoadUnits(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataCarLoadUnits) GetTypeName() string {
+func (m *_BACnetConstructedDataCarLoadUnits) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCarLoadUnits"
 }
 

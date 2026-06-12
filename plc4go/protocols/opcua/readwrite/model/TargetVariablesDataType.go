@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -207,7 +208,7 @@ func CastTargetVariablesDataType(structType any) TargetVariablesDataType {
 	return nil
 }
 
-func (m *_TargetVariablesDataType) GetTypeName() string {
+func (m *_TargetVariablesDataType) GetPlx4xTypeName() string {
 	return "TargetVariablesDataType"
 }
 
@@ -243,13 +244,13 @@ func (m *_TargetVariablesDataType) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfTargetVariables, err := ReadImplicitField[int32](ctx, "noOfTargetVariables", ReadSignedInt(readBuffer, uint8(32)))
+	noOfTargetVariables, err := ReadImplicitField[int32](ctx, "noOfTargetVariables", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfTargetVariables' field"))
 	}
 	_ = noOfTargetVariables
 
-	targetVariables, err := ReadCountArrayField[FieldTargetDataType](ctx, "targetVariables", ReadComplex[FieldTargetDataType](ExtensionObjectDefinitionParseWithBufferProducer[FieldTargetDataType]((int32)(int32(14746))), readBuffer), uint64(noOfTargetVariables))
+	targetVariables, err := ReadCountArrayField[FieldTargetDataType](ctx, "targetVariables", ReadComplex[FieldTargetDataType](ExtensionObjectDefinitionParseWithBufferProducer[FieldTargetDataType]((int32)(int32(14746))), readBuffer), uint64(noOfTargetVariables), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetVariables' field"))
 	}
@@ -280,11 +281,11 @@ func (m *_TargetVariablesDataType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for TargetVariablesDataType")
 		}
 		noOfTargetVariables := int32(utils.InlineIf(bool((m.GetTargetVariables()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetTargetVariables()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfTargetVariables", noOfTargetVariables, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfTargetVariables", noOfTargetVariables, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfTargetVariables' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "targetVariables", m.GetTargetVariables(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "targetVariables", m.GetTargetVariables(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'targetVariables' field")
 		}
 

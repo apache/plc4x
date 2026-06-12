@@ -179,7 +179,7 @@ func CastBACnetAccessThreatLevel(structType any) BACnetAccessThreatLevel {
 	return nil
 }
 
-func (m *_BACnetAccessThreatLevel) GetTypeName() string {
+func (m *_BACnetAccessThreatLevel) GetPlx4xTypeName() string {
 	return "BACnetAccessThreatLevel"
 }
 

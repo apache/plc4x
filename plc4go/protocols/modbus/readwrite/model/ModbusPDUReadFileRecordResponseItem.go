@@ -175,7 +175,7 @@ func CastModbusPDUReadFileRecordResponseItem(structType any) ModbusPDUReadFileRe
 	return nil
 }
 
-func (m *_ModbusPDUReadFileRecordResponseItem) GetTypeName() string {
+func (m *_ModbusPDUReadFileRecordResponseItem) GetPlx4xTypeName() string {
 	return "ModbusPDUReadFileRecordResponseItem"
 }
 

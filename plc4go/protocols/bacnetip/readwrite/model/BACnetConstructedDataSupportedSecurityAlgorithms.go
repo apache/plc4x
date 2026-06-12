@@ -211,7 +211,7 @@ func CastBACnetConstructedDataSupportedSecurityAlgorithms(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetTypeName() string {
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSupportedSecurityAlgorithms"
 }
 

@@ -222,7 +222,7 @@ func CastVariantBoolean(structType any) VariantBoolean {
 	return nil
 }
 
-func (m *_VariantBoolean) GetTypeName() string {
+func (m *_VariantBoolean) GetPlx4xTypeName() string {
 	return "VariantBoolean"
 }
 

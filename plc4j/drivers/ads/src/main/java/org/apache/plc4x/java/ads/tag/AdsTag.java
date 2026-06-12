@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.ads.tag;
 
 import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.spi.buffers.api.Serializable;
 
 public interface AdsTag extends PlcTag, Serializable {
 

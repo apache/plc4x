@@ -221,7 +221,7 @@ func CastBACnetPriorityValueBitString(structType any) BACnetPriorityValueBitStri
 	return nil
 }
 
-func (m *_BACnetPriorityValueBitString) GetTypeName() string {
+func (m *_BACnetPriorityValueBitString) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueBitString"
 }
 

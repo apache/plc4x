@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -258,7 +259,7 @@ func CastOptionSet(structType any) OptionSet {
 	return nil
 }
 
-func (m *_OptionSet) GetTypeName() string {
+func (m *_OptionSet) GetPlx4xTypeName() string {
 	return "OptionSet"
 }
 
@@ -289,13 +290,13 @@ func (m *_OptionSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, par
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	value, err := ReadSimpleField[PascalByteString](ctx, "value", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	value, err := ReadSimpleField[PascalByteString](ctx, "value", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 	m.Value = value
 
-	validBits, err := ReadSimpleField[PascalByteString](ctx, "validBits", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	validBits, err := ReadSimpleField[PascalByteString](ctx, "validBits", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'validBits' field"))
 	}
@@ -326,11 +327,11 @@ func (m *_OptionSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for OptionSet")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "value", m.GetValue(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "value", m.GetValue(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "validBits", m.GetValidBits(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "validBits", m.GetValidBits(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'validBits' field")
 		}
 

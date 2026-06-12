@@ -19,12 +19,10 @@
 
 package org.apache.plc4x.java.opcua.protocol.chunk;
 
-import io.vavr.control.Try;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.plc4x.java.opcua.context.Conversation;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaProtocolLimits;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 
@@ -32,17 +30,6 @@ public class ChunkFactory {
 
     public static final int ASYMMETRIC_SECURITY_HEADER_SIZE = 59;
     public static final int SYMMETRIC_SECURITY_HEADER_SIZE = 4;
-
-    public Chunk create(boolean asymmetric, Conversation conversation) {
-        return create(asymmetric,
-            conversation.isSymmetricEncryptionEnabled(),
-            conversation.isSymmetricSigningEnabled(),
-            conversation.getSecurityPolicy(),
-            conversation.getLimits(),
-            conversation.getLocalCertificate(),
-            conversation.getRemoteCertificate()
-        );
-    }
 
     public Chunk create(boolean asymmetric, boolean encrypted, boolean signed, SecurityPolicy securityPolicy,
         OpcuaProtocolLimits limits, X509Certificate localCertificate, X509Certificate remoteCertificate) {
@@ -150,7 +137,11 @@ public class ChunkFactory {
     }
 
     private static byte[] certificateBytes(X509Certificate certificate) {
-        return Try.of(() -> certificate.getEncoded()).getOrElse(new byte[0]);
+        try {
+            return certificate.getEncoded();
+        } catch (Exception e) {
+            return new byte[0];
+        }
     }
 
 

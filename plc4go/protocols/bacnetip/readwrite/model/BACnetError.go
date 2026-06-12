@@ -287,7 +287,7 @@ func CastBACnetError(structType any) BACnetError {
 	return nil
 }
 
-func (m *_BACnetError) GetTypeName() string {
+func (m *_BACnetError) GetPlx4xTypeName() string {
 	return "BACnetError"
 }
 

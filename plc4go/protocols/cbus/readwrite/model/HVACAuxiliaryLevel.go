@@ -218,7 +218,7 @@ func CastHVACAuxiliaryLevel(structType any) HVACAuxiliaryLevel {
 	return nil
 }
 
-func (m *_HVACAuxiliaryLevel) GetTypeName() string {
+func (m *_HVACAuxiliaryLevel) GetPlx4xTypeName() string {
 	return "HVACAuxiliaryLevel"
 }
 

@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -336,7 +338,7 @@ func CastLevelInformation(structType any) LevelInformation {
 	return nil
 }
 
-func (m *_LevelInformation) GetTypeName() string {
+func (m *_LevelInformation) GetPlx4xTypeName() string {
 	return "LevelInformation"
 }
 
@@ -371,7 +373,7 @@ func (m *_LevelInformation) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func LevelInformationParse[T LevelInformation](ctx context.Context, theBytes []byte) (T, error) {
-	return LevelInformationParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
+	return LevelInformationParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func LevelInformationParseWithBufferProducer[T LevelInformation]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -408,55 +410,55 @@ func (m *_LevelInformation) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	raw, err := ReadPeekField[uint16](ctx, "raw", ReadUnsignedShort(readBuffer, uint8(16)), 0)
+	raw, err := ReadPeekField[uint16](ctx, "raw", ReadUnsignedShort(readBuffer, uint8(16)), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'raw' field"))
 	}
 	m.Raw = raw
 
-	nibble1, err := ReadVirtualField[uint8](ctx, "nibble1", (*uint8)(nil), (raw&0xF000)>>uint8(12))
+	nibble1, err := ReadVirtualField[uint8](ctx, "nibble1", (*uint8)(nil), (raw&0xF000)>>uint8(12), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble1' field"))
 	}
 	_ = nibble1
 
-	nibble2, err := ReadVirtualField[uint8](ctx, "nibble2", (*uint8)(nil), (raw&0x0F00)>>uint8(8))
+	nibble2, err := ReadVirtualField[uint8](ctx, "nibble2", (*uint8)(nil), (raw&0x0F00)>>uint8(8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble2' field"))
 	}
 	_ = nibble2
 
-	nibble3, err := ReadVirtualField[uint8](ctx, "nibble3", (*uint8)(nil), (raw&0x00F0)>>uint8(4))
+	nibble3, err := ReadVirtualField[uint8](ctx, "nibble3", (*uint8)(nil), (raw&0x00F0)>>uint8(4), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble3' field"))
 	}
 	_ = nibble3
 
-	nibble4, err := ReadVirtualField[uint8](ctx, "nibble4", (*uint8)(nil), (raw&0x000F)>>uint8(0))
+	nibble4, err := ReadVirtualField[uint8](ctx, "nibble4", (*uint8)(nil), (raw&0x000F)>>uint8(0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble4' field"))
 	}
 	_ = nibble4
 
-	isAbsent, err := ReadVirtualField[bool](ctx, "isAbsent", (*bool)(nil), bool(bool(bool(bool((nibble1) == (0x0))) && bool(bool((nibble2) == (0x0)))) && bool(bool((nibble3) == (0x0)))) && bool(bool((nibble4) == (0x0))))
+	isAbsent, err := ReadVirtualField[bool](ctx, "isAbsent", (*bool)(nil), bool(bool(bool(bool((nibble1) == (0x0))) && bool(bool((nibble2) == (0x0)))) && bool(bool((nibble3) == (0x0)))) && bool(bool((nibble4) == (0x0))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAbsent' field"))
 	}
 	_ = isAbsent
 
-	isCorruptedByNoise, err := ReadVirtualField[bool](ctx, "isCorruptedByNoise", (*bool)(nil), bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) < (0x5)))) || bool((bool((nibble1) == (0x8))))) || bool((bool((nibble1) == (0xC)))))) || bool((bool(bool((bool((nibble2) < (0x5)))) || bool((bool((nibble2) == (0x8))))) || bool((bool((nibble2) == (0xC))))))) || bool((bool(bool((bool((nibble3) < (0x5)))) || bool((bool((nibble3) == (0x8))))) || bool((bool((nibble3) == (0xC))))))) || bool((bool(bool((bool((nibble4) < (0x5)))) || bool((bool((nibble4) == (0x8))))) || bool((bool((nibble4) == (0xC)))))))))
+	isCorruptedByNoise, err := ReadVirtualField[bool](ctx, "isCorruptedByNoise", (*bool)(nil), bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) < (0x5)))) || bool((bool((nibble1) == (0x8))))) || bool((bool((nibble1) == (0xC)))))) || bool((bool(bool((bool((nibble2) < (0x5)))) || bool((bool((nibble2) == (0x8))))) || bool((bool((nibble2) == (0xC))))))) || bool((bool(bool((bool((nibble3) < (0x5)))) || bool((bool((nibble3) == (0x8))))) || bool((bool((nibble3) == (0xC))))))) || bool((bool(bool((bool((nibble4) < (0x5)))) || bool((bool((nibble4) == (0x8))))) || bool((bool((nibble4) == (0xC)))))))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCorruptedByNoise' field"))
 	}
 	_ = isCorruptedByNoise
 
-	isCorruptedByNoiseOrLevelsDiffer, err := ReadVirtualField[bool](ctx, "isCorruptedByNoiseOrLevelsDiffer", (*bool)(nil), bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) == (0x7)))) || bool((bool((nibble1) == (0xB))))) || bool((bool((nibble1) > (0xC)))))) || bool((bool(bool((bool((nibble2) == (0x7)))) || bool((bool((nibble2) == (0xB))))) || bool((bool((nibble2) > (0xC))))))) || bool((bool(bool((bool((nibble3) == (0x7)))) || bool((bool((nibble3) == (0xB))))) || bool((bool((nibble3) > (0xC))))))) || bool((bool(bool((bool((nibble4) == (0x7)))) || bool((bool((nibble4) == (0xB))))) || bool((bool((nibble4) > (0xC)))))))))
+	isCorruptedByNoiseOrLevelsDiffer, err := ReadVirtualField[bool](ctx, "isCorruptedByNoiseOrLevelsDiffer", (*bool)(nil), bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) == (0x7)))) || bool((bool((nibble1) == (0xB))))) || bool((bool((nibble1) > (0xC)))))) || bool((bool(bool((bool((nibble2) == (0x7)))) || bool((bool((nibble2) == (0xB))))) || bool((bool((nibble2) > (0xC))))))) || bool((bool(bool((bool((nibble3) == (0x7)))) || bool((bool((nibble3) == (0xB))))) || bool((bool((nibble3) > (0xC))))))) || bool((bool(bool((bool((nibble4) == (0x7)))) || bool((bool((nibble4) == (0xB))))) || bool((bool((nibble4) > (0xC)))))))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCorruptedByNoiseOrLevelsDiffer' field"))
 	}
 	_ = isCorruptedByNoiseOrLevelsDiffer
 
-	isCorrupted, err := ReadVirtualField[bool](ctx, "isCorrupted", (*bool)(nil), bool(isCorruptedByNoise) || bool(isCorruptedByNoiseOrLevelsDiffer))
+	isCorrupted, err := ReadVirtualField[bool](ctx, "isCorrupted", (*bool)(nil), bool(isCorruptedByNoise) || bool(isCorruptedByNoiseOrLevelsDiffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCorrupted' field"))
 	}

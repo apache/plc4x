@@ -21,7 +21,7 @@ package org.apache.plc4x.java.iec608705104;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriverManager;
-import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104Tag;
+import org.apache.plc4x.java.iec608705104.tag.Iec608705104Tag;
 
 import java.util.concurrent.CompletableFuture;
 

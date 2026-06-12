@@ -211,7 +211,7 @@ func CastBACnetConstructedDataAuthorizationExemptions(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptions) GetTypeName() string {
+func (m *_BACnetConstructedDataAuthorizationExemptions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAuthorizationExemptions"
 }
 

@@ -135,7 +135,7 @@ func CastEncodedTicket(structType any) EncodedTicket {
 	return nil
 }
 
-func (m *_EncodedTicket) GetTypeName() string {
+func (m *_EncodedTicket) GetPlx4xTypeName() string {
 	return "EncodedTicket"
 }
 

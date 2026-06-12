@@ -275,7 +275,7 @@ func CastBACnetSecurityKeySet(structType any) BACnetSecurityKeySet {
 	return nil
 }
 
-func (m *_BACnetSecurityKeySet) GetTypeName() string {
+func (m *_BACnetSecurityKeySet) GetPlx4xTypeName() string {
 	return "BACnetSecurityKeySet"
 }
 

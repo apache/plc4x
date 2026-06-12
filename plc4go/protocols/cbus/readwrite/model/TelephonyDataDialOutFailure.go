@@ -203,7 +203,7 @@ func CastTelephonyDataDialOutFailure(structType any) TelephonyDataDialOutFailure
 	return nil
 }
 
-func (m *_TelephonyDataDialOutFailure) GetTypeName() string {
+func (m *_TelephonyDataDialOutFailure) GetPlx4xTypeName() string {
 	return "TelephonyDataDialOutFailure"
 }
 

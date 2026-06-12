@@ -184,7 +184,7 @@ func CastBACnetConstructedDataBinaryLightingOutputAll(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataBinaryLightingOutputAll) GetTypeName() string {
+func (m *_BACnetConstructedDataBinaryLightingOutputAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBinaryLightingOutputAll"
 }
 

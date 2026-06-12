@@ -306,7 +306,7 @@ func CastOpenChannelMessageRequest(structType any) OpenChannelMessageRequest {
 	return nil
 }
 
-func (m *_OpenChannelMessageRequest) GetTypeName() string {
+func (m *_OpenChannelMessageRequest) GetPlx4xTypeName() string {
 	return "OpenChannelMessageRequest"
 }
 

@@ -18,14 +18,29 @@
  */
 package org.apache.plc4x.java.openprotocol.config;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
-public class OpenProtocolConfiguration implements PlcConnectionConfiguration {
+public class OpenProtocolConfiguration implements Configuration {
+
+    @ConfigurationParameter("request-timeout")
+    @Description("Maximum time (in milliseconds) to wait for a reply during the Open-Protocol session setup or any per-request exchange.")
+    @IntDefaultValue(10_000)
+    private int requestTimeout;
+
+    public int getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    public void setRequestTimeout(int requestTimeout) {
+        this.requestTimeout = requestTimeout;
+    }
 
     @Override
     public String toString() {
-        return "OpenProtocolConfiguration{" +
-            '}';
+        return "OpenProtocolConfiguration{}";
     }
 
 }

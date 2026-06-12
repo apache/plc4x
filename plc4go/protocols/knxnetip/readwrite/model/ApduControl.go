@@ -241,7 +241,7 @@ func CastApduControl(structType any) ApduControl {
 	return nil
 }
 
-func (m *_ApduControl) GetTypeName() string {
+func (m *_ApduControl) GetPlx4xTypeName() string {
 	return "ApduControl"
 }
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -237,7 +238,7 @@ func CastNotificationMessage(structType any) NotificationMessage {
 	return nil
 }
 
-func (m *_NotificationMessage) GetTypeName() string {
+func (m *_NotificationMessage) GetPlx4xTypeName() string {
 	return "NotificationMessage"
 }
 
@@ -279,25 +280,25 @@ func (m *_NotificationMessage) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
 	m.SequenceNumber = sequenceNumber
 
-	publishTime, err := ReadSimpleField(ctx, "publishTime", ReadSignedLong(readBuffer, uint8(64)))
+	publishTime, err := ReadSimpleField(ctx, "publishTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishTime' field"))
 	}
 	m.PublishTime = publishTime
 
-	noOfNotificationData, err := ReadImplicitField[int32](ctx, "noOfNotificationData", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNotificationData, err := ReadImplicitField[int32](ctx, "noOfNotificationData", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNotificationData' field"))
 	}
 	_ = noOfNotificationData
 
-	notificationData, err := ReadCountArrayField[ExtensionObject](ctx, "notificationData", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfNotificationData))
+	notificationData, err := ReadCountArrayField[ExtensionObject](ctx, "notificationData", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(noOfNotificationData), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationData' field"))
 	}
@@ -328,19 +329,19 @@ func (m *_NotificationMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for NotificationMessage")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "publishTime", m.GetPublishTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "publishTime", m.GetPublishTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishTime' field")
 		}
 		noOfNotificationData := int32(utils.InlineIf(bool((m.GetNotificationData()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNotificationData()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNotificationData", noOfNotificationData, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNotificationData", noOfNotificationData, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNotificationData' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "notificationData", m.GetNotificationData(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "notificationData", m.GetNotificationData(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'notificationData' field")
 		}
 

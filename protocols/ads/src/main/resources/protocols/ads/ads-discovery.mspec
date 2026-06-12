@@ -49,7 +49,7 @@
 // The responses to adding or deleting a route usually only contain one block,
 // containing the AdsDiscoveryBlockStatus
 
-[type AdsDiscovery byteOrder='LITTLE_ENDIAN'
+[type AdsDiscovery byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [const    uint 32           header                          0x71146603                 ]
     [simple   uint 32           requestId                                                  ]
     [simple   Operation         operation                                                  ]
@@ -136,7 +136,7 @@
 
 [type AmsString
     [implicit uint 16                    strLen    'STR_LEN(text) + 1']
-    [simple   vstring '8 * (strLen - 1)' text      encoding='"UTF-8"' ]
+    [simple   vstring '8 * (strLen - 1)' text                         ]
     [reserved uint 8                     '0x00'                       ]
 ]
 

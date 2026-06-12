@@ -277,7 +277,7 @@ func CastServiceId(structType any) ServiceId {
 	return nil
 }
 
-func (m *_ServiceId) GetTypeName() string {
+func (m *_ServiceId) GetPlx4xTypeName() string {
 	return "ServiceId"
 }
 

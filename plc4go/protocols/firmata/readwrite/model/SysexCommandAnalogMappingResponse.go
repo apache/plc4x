@@ -184,7 +184,7 @@ func CastSysexCommandAnalogMappingResponse(structType any) SysexCommandAnalogMap
 	return nil
 }
 
-func (m *_SysexCommandAnalogMappingResponse) GetTypeName() string {
+func (m *_SysexCommandAnalogMappingResponse) GetPlx4xTypeName() string {
 	return "SysexCommandAnalogMappingResponse"
 }
 

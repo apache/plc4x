@@ -449,7 +449,7 @@ func CastBACnetLogRecordLogDatum(structType any) BACnetLogRecordLogDatum {
 	return nil
 }
 
-func (m *_BACnetLogRecordLogDatum) GetTypeName() string {
+func (m *_BACnetLogRecordLogDatum) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatum"
 }
 

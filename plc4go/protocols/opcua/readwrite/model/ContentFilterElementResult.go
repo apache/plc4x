@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -255,7 +256,7 @@ func CastContentFilterElementResult(structType any) ContentFilterElementResult {
 	return nil
 }
 
-func (m *_ContentFilterElementResult) GetTypeName() string {
+func (m *_ContentFilterElementResult) GetPlx4xTypeName() string {
 	return "ContentFilterElementResult"
 }
 
@@ -305,31 +306,31 @@ func (m *_ContentFilterElementResult) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 	m.StatusCode = statusCode
 
-	noOfOperandStatusCodes, err := ReadImplicitField[int32](ctx, "noOfOperandStatusCodes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfOperandStatusCodes, err := ReadImplicitField[int32](ctx, "noOfOperandStatusCodes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOperandStatusCodes' field"))
 	}
 	_ = noOfOperandStatusCodes
 
-	operandStatusCodes, err := ReadCountArrayField[StatusCode](ctx, "operandStatusCodes", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfOperandStatusCodes))
+	operandStatusCodes, err := ReadCountArrayField[StatusCode](ctx, "operandStatusCodes", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfOperandStatusCodes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operandStatusCodes' field"))
 	}
 	m.OperandStatusCodes = operandStatusCodes
 
-	noOfOperandDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfOperandDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfOperandDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfOperandDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOperandDiagnosticInfos' field"))
 	}
 	_ = noOfOperandDiagnosticInfos
 
-	operandDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "operandDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfOperandDiagnosticInfos))
+	operandDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "operandDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfOperandDiagnosticInfos), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operandDiagnosticInfos' field"))
 	}
@@ -360,23 +361,23 @@ func (m *_ContentFilterElementResult) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for ContentFilterElementResult")
 		}
 
-		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 		noOfOperandStatusCodes := int32(utils.InlineIf(bool((m.GetOperandStatusCodes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetOperandStatusCodes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfOperandStatusCodes", noOfOperandStatusCodes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfOperandStatusCodes", noOfOperandStatusCodes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfOperandStatusCodes' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "operandStatusCodes", m.GetOperandStatusCodes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "operandStatusCodes", m.GetOperandStatusCodes(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'operandStatusCodes' field")
 		}
 		noOfOperandDiagnosticInfos := int32(utils.InlineIf(bool((m.GetOperandDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetOperandDiagnosticInfos()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfOperandDiagnosticInfos", noOfOperandDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfOperandDiagnosticInfos", noOfOperandDiagnosticInfos, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfOperandDiagnosticInfos' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "operandDiagnosticInfos", m.GetOperandDiagnosticInfos(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "operandDiagnosticInfos", m.GetOperandDiagnosticInfos(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'operandDiagnosticInfos' field")
 		}
 

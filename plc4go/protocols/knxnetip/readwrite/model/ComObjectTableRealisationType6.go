@@ -228,7 +228,7 @@ func CastComObjectTableRealisationType6(structType any) ComObjectTableRealisatio
 	return nil
 }
 
-func (m *_ComObjectTableRealisationType6) GetTypeName() string {
+func (m *_ComObjectTableRealisationType6) GetPlx4xTypeName() string {
 	return "ComObjectTableRealisationType6"
 }
 

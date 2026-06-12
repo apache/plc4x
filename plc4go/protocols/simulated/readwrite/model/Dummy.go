@@ -163,7 +163,7 @@ func CastDummy(structType any) Dummy {
 	return nil
 }
 
-func (m *_Dummy) GetTypeName() string {
+func (m *_Dummy) GetPlx4xTypeName() string {
 	return "Dummy"
 }
 
@@ -207,7 +207,7 @@ func (m *_Dummy) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dumm
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dummy, err := ReadSimpleField(ctx, "dummy", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	dummy, err := ReadSimpleField(ctx, "dummy", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dummy' field"))
 	}
@@ -237,7 +237,7 @@ func (m *_Dummy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return errors.Wrap(pushErr, "Error pushing for Dummy")
 	}
 
-	if err := WriteSimpleField[uint16](ctx, "dummy", m.GetDummy(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteSimpleField[uint16](ctx, "dummy", m.GetDummy(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'dummy' field")
 	}
 

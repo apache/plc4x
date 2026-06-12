@@ -309,7 +309,7 @@ func CastBACnetLightingCommand(structType any) BACnetLightingCommand {
 	return nil
 }
 
-func (m *_BACnetLightingCommand) GetTypeName() string {
+func (m *_BACnetLightingCommand) GetPlx4xTypeName() string {
 	return "BACnetLightingCommand"
 }
 

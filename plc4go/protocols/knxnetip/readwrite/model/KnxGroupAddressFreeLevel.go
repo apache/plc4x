@@ -207,7 +207,7 @@ func CastKnxGroupAddressFreeLevel(structType any) KnxGroupAddressFreeLevel {
 	return nil
 }
 
-func (m *_KnxGroupAddressFreeLevel) GetTypeName() string {
+func (m *_KnxGroupAddressFreeLevel) GetPlx4xTypeName() string {
 	return "KnxGroupAddressFreeLevel"
 }
 

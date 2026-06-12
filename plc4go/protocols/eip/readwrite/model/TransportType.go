@@ -189,7 +189,7 @@ func CastTransportType(structType any) TransportType {
 	return nil
 }
 
-func (m *_TransportType) GetTypeName() string {
+func (m *_TransportType) GetPlx4xTypeName() string {
 	return "TransportType"
 }
 

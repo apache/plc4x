@@ -8205,7 +8205,7 @@ func CastBACnetConstructedData(structType any) BACnetConstructedData {
 	return nil
 }
 
-func (m *_BACnetConstructedData) GetTypeName() string {
+func (m *_BACnetConstructedData) GetPlx4xTypeName() string {
 	return "BACnetConstructedData"
 }
 

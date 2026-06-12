@@ -298,7 +298,7 @@ func CastCEMIAdditionalInformationBusmonitorInfo(structType any) CEMIAdditionalI
 	return nil
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfo) GetTypeName() string {
+func (m *_CEMIAdditionalInformationBusmonitorInfo) GetPlx4xTypeName() string {
 	return "CEMIAdditionalInformationBusmonitorInfo"
 }
 

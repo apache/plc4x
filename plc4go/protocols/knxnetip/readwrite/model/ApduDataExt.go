@@ -686,7 +686,7 @@ func CastApduDataExt(structType any) ApduDataExt {
 	return nil
 }
 
-func (m *_ApduDataExt) GetTypeName() string {
+func (m *_ApduDataExt) GetPlx4xTypeName() string {
 	return "ApduDataExt"
 }
 

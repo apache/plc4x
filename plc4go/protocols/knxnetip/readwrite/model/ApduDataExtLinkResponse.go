@@ -180,7 +180,7 @@ func CastApduDataExtLinkResponse(structType any) ApduDataExtLinkResponse {
 	return nil
 }
 
-func (m *_ApduDataExtLinkResponse) GetTypeName() string {
+func (m *_ApduDataExtLinkResponse) GetPlx4xTypeName() string {
 	return "ApduDataExtLinkResponse"
 }
 

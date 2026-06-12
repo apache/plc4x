@@ -236,7 +236,7 @@ func CastBACnetLimitEnableTagged(structType any) BACnetLimitEnableTagged {
 	return nil
 }
 
-func (m *_BACnetLimitEnableTagged) GetTypeName() string {
+func (m *_BACnetLimitEnableTagged) GetPlx4xTypeName() string {
 	return "BACnetLimitEnableTagged"
 }
 

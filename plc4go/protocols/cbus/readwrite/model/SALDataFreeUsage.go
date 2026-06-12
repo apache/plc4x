@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
@@ -180,7 +181,7 @@ func CastSALDataFreeUsage(structType any) SALDataFreeUsage {
 	return nil
 }
 
-func (m *_SALDataFreeUsage) GetTypeName() string {
+func (m *_SALDataFreeUsage) GetPlx4xTypeName() string {
 	return "SALDataFreeUsage"
 }
 
@@ -218,7 +219,7 @@ func (m *_SALDataFreeUsage) parse(ctx context.Context, readBuffer utils.ReadBuff
 }
 
 func (m *_SALDataFreeUsage) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

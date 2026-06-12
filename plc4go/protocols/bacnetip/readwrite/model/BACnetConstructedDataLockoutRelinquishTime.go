@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLockoutRelinquishTime(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTime) GetTypeName() string {
+func (m *_BACnetConstructedDataLockoutRelinquishTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLockoutRelinquishTime"
 }
 

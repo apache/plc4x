@@ -188,7 +188,7 @@ func CastNullCommandResponse(structType any) NullCommandResponse {
 	return nil
 }
 
-func (m *_NullCommandResponse) GetTypeName() string {
+func (m *_NullCommandResponse) GetPlx4xTypeName() string {
 	return "NullCommandResponse"
 }
 

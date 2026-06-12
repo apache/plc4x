@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTransition(structType any) BACnetConstructedDataTr
 	return nil
 }
 
-func (m *_BACnetConstructedDataTransition) GetTypeName() string {
+func (m *_BACnetConstructedDataTransition) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTransition"
 }
 

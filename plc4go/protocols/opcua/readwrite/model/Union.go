@@ -180,7 +180,7 @@ func CastUnion(structType any) Union {
 	return nil
 }
 
-func (m *_Union) GetTypeName() string {
+func (m *_Union) GetPlx4xTypeName() string {
 	return "Union"
 }
 

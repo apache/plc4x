@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.java.modbus.tcp;
 
-import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
+import org.apache.plc4x.java.utils.testutils.driver.DriverTestsuiteRunner;
 
 public class ModbusTcpDriverIT extends DriverTestsuiteRunner {
 
     public ModbusTcpDriverIT() {
-        super("/protocols/modbus/tcp/DriverTestsuiteOptimized.xml");
+        super("/protocols/modbus/tcp/DriverTestsuiteOptimized.xml", "org.apache.plc4x.java.modbus.readwrite");
     }
 
 }

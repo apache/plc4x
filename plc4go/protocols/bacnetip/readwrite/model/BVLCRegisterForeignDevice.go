@@ -209,7 +209,7 @@ func CastBVLCRegisterForeignDevice(structType any) BVLCRegisterForeignDevice {
 	return nil
 }
 
-func (m *_BVLCRegisterForeignDevice) GetTypeName() string {
+func (m *_BVLCRegisterForeignDevice) GetPlx4xTypeName() string {
 	return "BVLCRegisterForeignDevice"
 }
 
@@ -237,7 +237,7 @@ func (m *_BVLCRegisterForeignDevice) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ttl, err := ReadSimpleField(ctx, "ttl", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	ttl, err := ReadSimpleField(ctx, "ttl", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ttl' field"))
 	}
@@ -268,7 +268,7 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BVLCRegisterForeignDevice")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "ttl", m.GetTtl(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "ttl", m.GetTtl(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'ttl' field")
 		}
 

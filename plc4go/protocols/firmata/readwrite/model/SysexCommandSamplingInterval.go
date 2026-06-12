@@ -184,7 +184,7 @@ func CastSysexCommandSamplingInterval(structType any) SysexCommandSamplingInterv
 	return nil
 }
 
-func (m *_SysexCommandSamplingInterval) GetTypeName() string {
+func (m *_SysexCommandSamplingInterval) GetPlx4xTypeName() string {
 	return "SysexCommandSamplingInterval"
 }
 

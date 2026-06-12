@@ -320,7 +320,7 @@ func CastBACnetEventParameterBufferReady(structType any) BACnetEventParameterBuf
 	return nil
 }
 
-func (m *_BACnetEventParameterBufferReady) GetTypeName() string {
+func (m *_BACnetEventParameterBufferReady) GetPlx4xTypeName() string {
 	return "BACnetEventParameterBufferReady"
 }
 

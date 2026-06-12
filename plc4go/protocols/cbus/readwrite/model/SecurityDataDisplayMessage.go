@@ -203,7 +203,7 @@ func CastSecurityDataDisplayMessage(structType any) SecurityDataDisplayMessage {
 	return nil
 }
 
-func (m *_SecurityDataDisplayMessage) GetTypeName() string {
+func (m *_SecurityDataDisplayMessage) GetPlx4xTypeName() string {
 	return "SecurityDataDisplayMessage"
 }
 

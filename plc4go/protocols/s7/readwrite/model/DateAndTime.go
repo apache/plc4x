@@ -260,7 +260,7 @@ func CastDateAndTime(structType any) DateAndTime {
 	return nil
 }
 
-func (m *_DateAndTime) GetTypeName() string {
+func (m *_DateAndTime) GetPlx4xTypeName() string {
 	return "DateAndTime"
 }
 

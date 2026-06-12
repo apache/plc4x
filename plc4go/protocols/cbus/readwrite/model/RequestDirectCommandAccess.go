@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -280,7 +282,7 @@ func CastRequestDirectCommandAccess(structType any) RequestDirectCommandAccess {
 	return nil
 }
 
-func (m *_RequestDirectCommandAccess) GetTypeName() string {
+func (m *_RequestDirectCommandAccess) GetPlx4xTypeName() string {
 	return "RequestDirectCommandAccess"
 }
 
@@ -318,26 +320,26 @@ func (m *_RequestDirectCommandAccess) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	at, err := ReadConstField[byte](ctx, "at", ReadByte(readBuffer, 8), RequestDirectCommandAccess_AT)
+	at, err := ReadConstField[byte](ctx, "at", ReadByte(readBuffer, 8), RequestDirectCommandAccess_AT, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'at' field"))
 	}
 	_ = at
 
-	calData, err := ReadManualField[CALData](ctx, "calData", readBuffer, EnsureType[CALData](ReadCALData(ctx, readBuffer)))
+	calData, err := ReadManualField[CALData](ctx, "calData", readBuffer, EnsureType[CALData](ReadCALData(ctx, readBuffer)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
 	m.CalData = calData
 
-	calDataDecoded, err := ReadVirtualField[CALData](ctx, "calDataDecoded", (*CALData)(nil), calData)
+	calDataDecoded, err := ReadVirtualField[CALData](ctx, "calDataDecoded", (*CALData)(nil), calData, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calDataDecoded' field"))
 	}
 	_ = calDataDecoded
 
 	var alpha Alpha
-	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
+	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alpha' field"))
 	}
@@ -354,7 +356,7 @@ func (m *_RequestDirectCommandAccess) parse(ctx context.Context, readBuffer util
 }
 
 func (m *_RequestDirectCommandAccess) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -371,11 +373,11 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for RequestDirectCommandAccess")
 		}
 
-		if err := WriteConstField(ctx, "at", RequestDirectCommandAccess_AT, WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteConstField(ctx, "at", RequestDirectCommandAccess_AT, WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'at' field")
 		}
 
-		if err := WriteManualField[CALData](ctx, "calData", func(ctx context.Context) error { return WriteCALData(ctx, writeBuffer, m.GetCalData()) }, writeBuffer); err != nil {
+		if err := WriteManualField[CALData](ctx, "calData", func(ctx context.Context) error { return WriteCALData(ctx, writeBuffer, m.GetCalData()) }, writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'calData' field")
 		}
 		// Virtual field
@@ -385,7 +387,7 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}
 
-		if err := WriteOptionalField[Alpha](ctx, "alpha", new(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+		if err := WriteOptionalField[Alpha](ctx, "alpha", new(m.GetAlpha()), WriteComplex[Alpha](writeBuffer), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'alpha' field")
 		}
 

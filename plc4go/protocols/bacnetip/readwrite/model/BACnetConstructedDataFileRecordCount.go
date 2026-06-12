@@ -246,7 +246,7 @@ func CastBACnetConstructedDataFileRecordCount(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataFileRecordCount) GetTypeName() string {
+func (m *_BACnetConstructedDataFileRecordCount) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFileRecordCount"
 }
 

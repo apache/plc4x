@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.protocol.abeth;
 
-import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
+import org.apache.plc4x.java.utils.testutils.parserserializer.ParserSerializerTestsuiteRunner;
 
 public class AbEthParserSerializerTest extends ParserSerializerTestsuiteRunner {
 

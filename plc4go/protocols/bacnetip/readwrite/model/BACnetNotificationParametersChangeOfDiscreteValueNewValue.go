@@ -448,7 +448,7 @@ func CastBACnetNotificationParametersChangeOfDiscreteValueNewValue(structType an
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValue"
 }
 

@@ -180,7 +180,7 @@ func CastDataSetWriterMessageDataType(structType any) DataSetWriterMessageDataTy
 	return nil
 }
 
-func (m *_DataSetWriterMessageDataType) GetTypeName() string {
+func (m *_DataSetWriterMessageDataType) GetPlx4xTypeName() string {
 	return "DataSetWriterMessageDataType"
 }
 

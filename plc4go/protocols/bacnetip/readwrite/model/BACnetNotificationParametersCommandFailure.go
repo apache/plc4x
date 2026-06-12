@@ -353,7 +353,7 @@ func CastBACnetNotificationParametersCommandFailure(structType any) BACnetNotifi
 	return nil
 }
 
-func (m *_BACnetNotificationParametersCommandFailure) GetTypeName() string {
+func (m *_BACnetNotificationParametersCommandFailure) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersCommandFailure"
 }
 

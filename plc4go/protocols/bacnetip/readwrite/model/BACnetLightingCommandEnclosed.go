@@ -243,7 +243,7 @@ func CastBACnetLightingCommandEnclosed(structType any) BACnetLightingCommandEncl
 	return nil
 }
 
-func (m *_BACnetLightingCommandEnclosed) GetTypeName() string {
+func (m *_BACnetLightingCommandEnclosed) GetPlx4xTypeName() string {
 	return "BACnetLightingCommandEnclosed"
 }
 

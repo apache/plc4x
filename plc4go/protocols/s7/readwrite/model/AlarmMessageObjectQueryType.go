@@ -404,7 +404,7 @@ func CastAlarmMessageObjectQueryType(structType any) AlarmMessageObjectQueryType
 	return nil
 }
 
-func (m *_AlarmMessageObjectQueryType) GetTypeName() string {
+func (m *_AlarmMessageObjectQueryType) GetPlx4xTypeName() string {
 	return "AlarmMessageObjectQueryType"
 }
 

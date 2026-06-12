@@ -222,7 +222,7 @@ func CastVariantUInt64(structType any) VariantUInt64 {
 	return nil
 }
 
-func (m *_VariantUInt64) GetTypeName() string {
+func (m *_VariantUInt64) GetPlx4xTypeName() string {
 	return "VariantUInt64"
 }
 

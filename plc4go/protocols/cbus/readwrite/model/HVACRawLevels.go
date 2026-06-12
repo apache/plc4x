@@ -179,7 +179,7 @@ func CastHVACRawLevels(structType any) HVACRawLevels {
 	return nil
 }
 
-func (m *_HVACRawLevels) GetTypeName() string {
+func (m *_HVACRawLevels) GetPlx4xTypeName() string {
 	return "HVACRawLevels"
 }
 

@@ -184,7 +184,7 @@ func CastBACnetConstructedDataEventEnrollmentAll(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventEnrollmentAll) GetTypeName() string {
+func (m *_BACnetConstructedDataEventEnrollmentAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventEnrollmentAll"
 }
 

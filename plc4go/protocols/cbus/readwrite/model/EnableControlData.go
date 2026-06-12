@@ -206,7 +206,7 @@ func CastEnableControlData(structType any) EnableControlData {
 	return nil
 }
 
-func (m *_EnableControlData) GetTypeName() string {
+func (m *_EnableControlData) GetPlx4xTypeName() string {
 	return "EnableControlData"
 }
 

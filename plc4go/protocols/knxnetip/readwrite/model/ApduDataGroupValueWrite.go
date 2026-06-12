@@ -222,7 +222,7 @@ func CastApduDataGroupValueWrite(structType any) ApduDataGroupValueWrite {
 	return nil
 }
 
-func (m *_ApduDataGroupValueWrite) GetTypeName() string {
+func (m *_ApduDataGroupValueWrite) GetPlx4xTypeName() string {
 	return "ApduDataGroupValueWrite"
 }
 

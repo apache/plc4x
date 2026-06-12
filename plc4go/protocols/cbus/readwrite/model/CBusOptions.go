@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -282,7 +284,7 @@ func CastCBusOptions(structType any) CBusOptions {
 	return nil
 }
 
-func (m *_CBusOptions) GetTypeName() string {
+func (m *_CBusOptions) GetPlx4xTypeName() string {
 	return "CBusOptions"
 }
 
@@ -324,7 +326,7 @@ func (m *_CBusOptions) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func CBusOptionsParse(ctx context.Context, theBytes []byte) (CBusOptions, error) {
-	return CBusOptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return CBusOptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func CBusOptionsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusOptions, error) {
@@ -350,55 +352,55 @@ func (m *_CBusOptions) parse(ctx context.Context, readBuffer utils.ReadBuffer) (
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	connect, err := ReadSimpleField(ctx, "connect", ReadBoolean(readBuffer))
+	connect, err := ReadSimpleField(ctx, "connect", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connect' field"))
 	}
 	m.Connect = connect
 
-	smart, err := ReadSimpleField(ctx, "smart", ReadBoolean(readBuffer))
+	smart, err := ReadSimpleField(ctx, "smart", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'smart' field"))
 	}
 	m.Smart = smart
 
-	idmon, err := ReadSimpleField(ctx, "idmon", ReadBoolean(readBuffer))
+	idmon, err := ReadSimpleField(ctx, "idmon", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'idmon' field"))
 	}
 	m.Idmon = idmon
 
-	exstat, err := ReadSimpleField(ctx, "exstat", ReadBoolean(readBuffer))
+	exstat, err := ReadSimpleField(ctx, "exstat", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exstat' field"))
 	}
 	m.Exstat = exstat
 
-	monitor, err := ReadSimpleField(ctx, "monitor", ReadBoolean(readBuffer))
+	monitor, err := ReadSimpleField(ctx, "monitor", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitor' field"))
 	}
 	m.Monitor = monitor
 
-	monall, err := ReadSimpleField(ctx, "monall", ReadBoolean(readBuffer))
+	monall, err := ReadSimpleField(ctx, "monall", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monall' field"))
 	}
 	m.Monall = monall
 
-	pun, err := ReadSimpleField(ctx, "pun", ReadBoolean(readBuffer))
+	pun, err := ReadSimpleField(ctx, "pun", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pun' field"))
 	}
 	m.Pun = pun
 
-	pcn, err := ReadSimpleField(ctx, "pcn", ReadBoolean(readBuffer))
+	pcn, err := ReadSimpleField(ctx, "pcn", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pcn' field"))
 	}
 	m.Pcn = pcn
 
-	srchk, err := ReadSimpleField(ctx, "srchk", ReadBoolean(readBuffer))
+	srchk, err := ReadSimpleField(ctx, "srchk", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'srchk' field"))
 	}
@@ -412,7 +414,7 @@ func (m *_CBusOptions) parse(ctx context.Context, readBuffer utils.ReadBuffer) (
 }
 
 func (m *_CBusOptions) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -428,39 +430,39 @@ func (m *_CBusOptions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for CBusOptions")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "connect", m.GetConnect(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "connect", m.GetConnect(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'connect' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "smart", m.GetSmart(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "smart", m.GetSmart(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'smart' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "idmon", m.GetIdmon(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "idmon", m.GetIdmon(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'idmon' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "exstat", m.GetExstat(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "exstat", m.GetExstat(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'exstat' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "monitor", m.GetMonitor(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "monitor", m.GetMonitor(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'monitor' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "monall", m.GetMonall(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "monall", m.GetMonall(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'monall' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "pun", m.GetPun(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "pun", m.GetPun(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'pun' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "pcn", m.GetPcn(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "pcn", m.GetPcn(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'pcn' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "srchk", m.GetSrchk(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "srchk", m.GetSrchk(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'srchk' field")
 	}
 

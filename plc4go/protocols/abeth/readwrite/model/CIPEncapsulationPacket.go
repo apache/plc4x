@@ -311,7 +311,7 @@ func CastCIPEncapsulationPacket(structType any) CIPEncapsulationPacket {
 	return nil
 }
 
-func (m *_CIPEncapsulationPacket) GetTypeName() string {
+func (m *_CIPEncapsulationPacket) GetPlx4xTypeName() string {
 	return "CIPEncapsulationPacket"
 }
 
@@ -389,42 +389,42 @@ func (m *_CIPEncapsulationPacket) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	commandType, err := ReadDiscriminatorField[uint16](ctx, "commandType", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	commandType, err := ReadDiscriminatorField[uint16](ctx, "commandType", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
 
-	packetLen, err := ReadImplicitField[uint16](ctx, "packetLen", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	packetLen, err := ReadImplicitField[uint16](ctx, "packetLen", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetLen' field"))
 	}
 	_ = packetLen
 
-	sessionHandle, err := ReadSimpleField(ctx, "sessionHandle", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.BigEndian))
+	sessionHandle, err := ReadSimpleField(ctx, "sessionHandle", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionHandle' field"))
 	}
 	m.SessionHandle = sessionHandle
 
-	status, err := ReadSimpleField(ctx, "status", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.BigEndian))
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 	m.Status = status
 
-	senderContext, err := ReadCountArrayField[uint8](ctx, "senderContext", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(8)), codegen.WithByteOrder(binary.BigEndian))
+	senderContext, err := ReadCountArrayField[uint8](ctx, "senderContext", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'senderContext' field"))
 	}
 	m.SenderContext = senderContext
 
-	options, err := ReadSimpleField(ctx, "options", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.BigEndian))
+	options, err := ReadSimpleField(ctx, "options", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'options' field"))
 	}
 	m.Options = options
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedInt(readBuffer, uint8(32)), uint32(0x00000000), codegen.WithByteOrder(binary.BigEndian))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedInt(readBuffer, uint8(32)), uint32(0x00000000), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
@@ -472,31 +472,31 @@ func (pm *_CIPEncapsulationPacket) serializeParent(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for CIPEncapsulationPacket")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "commandType", m.GetCommandType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "commandType", m.GetCommandType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'commandType' field")
 	}
 	packetLen := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(28)))
-	if err := WriteImplicitField(ctx, "packetLen", packetLen, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "packetLen", packetLen, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'packetLen' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "sessionHandle", m.GetSessionHandle(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "sessionHandle", m.GetSessionHandle(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'sessionHandle' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "status", m.GetStatus(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "status", m.GetStatus(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
-	if err := WriteSimpleTypeArrayField(ctx, "senderContext", m.GetSenderContext(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteSimpleTypeArrayField(ctx, "senderContext", m.GetSenderContext(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'senderContext' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "options", m.GetOptions(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "options", m.GetOptions(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'options' field")
 	}
 
-	if err := WriteReservedField[uint32](ctx, "reserved", uint32(0x00000000), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteReservedField[uint32](ctx, "reserved", uint32(0x00000000), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 

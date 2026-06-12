@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -288,7 +289,7 @@ func CastAggregateFilter(structType any) AggregateFilter {
 	return nil
 }
 
-func (m *_AggregateFilter) GetTypeName() string {
+func (m *_AggregateFilter) GetPlx4xTypeName() string {
 	return "AggregateFilter"
 }
 
@@ -325,25 +326,25 @@ func (m *_AggregateFilter) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	startTime, err := ReadSimpleField(ctx, "startTime", ReadSignedLong(readBuffer, uint8(64)))
+	startTime, err := ReadSimpleField(ctx, "startTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startTime' field"))
 	}
 	m.StartTime = startTime
 
-	aggregateType, err := ReadSimpleField[NodeId](ctx, "aggregateType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	aggregateType, err := ReadSimpleField[NodeId](ctx, "aggregateType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'aggregateType' field"))
 	}
 	m.AggregateType = aggregateType
 
-	processingInterval, err := ReadSimpleField(ctx, "processingInterval", ReadDouble(readBuffer, uint8(64)))
+	processingInterval, err := ReadSimpleField(ctx, "processingInterval", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'processingInterval' field"))
 	}
 	m.ProcessingInterval = processingInterval
 
-	aggregateConfiguration, err := ReadSimpleField[AggregateConfiguration](ctx, "aggregateConfiguration", ReadComplex[AggregateConfiguration](ExtensionObjectDefinitionParseWithBufferProducer[AggregateConfiguration]((int32)(int32(950))), readBuffer))
+	aggregateConfiguration, err := ReadSimpleField[AggregateConfiguration](ctx, "aggregateConfiguration", ReadComplex[AggregateConfiguration](ExtensionObjectDefinitionParseWithBufferProducer[AggregateConfiguration]((int32)(int32(950))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'aggregateConfiguration' field"))
 	}
@@ -374,19 +375,19 @@ func (m *_AggregateFilter) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for AggregateFilter")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "startTime", m.GetStartTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "startTime", m.GetStartTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'startTime' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "aggregateType", m.GetAggregateType(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "aggregateType", m.GetAggregateType(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'aggregateType' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "processingInterval", m.GetProcessingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "processingInterval", m.GetProcessingInterval(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'processingInterval' field")
 		}
 
-		if err := WriteSimpleField[AggregateConfiguration](ctx, "aggregateConfiguration", m.GetAggregateConfiguration(), WriteComplex[AggregateConfiguration](writeBuffer)); err != nil {
+		if err := WriteSimpleField[AggregateConfiguration](ctx, "aggregateConfiguration", m.GetAggregateConfiguration(), WriteComplex[AggregateConfiguration](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'aggregateConfiguration' field")
 		}
 

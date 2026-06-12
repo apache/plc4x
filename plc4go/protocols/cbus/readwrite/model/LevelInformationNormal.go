@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -243,7 +245,7 @@ func CastLevelInformationNormal(structType any) LevelInformationNormal {
 	return nil
 }
 
-func (m *_LevelInformationNormal) GetTypeName() string {
+func (m *_LevelInformationNormal) GetPlx4xTypeName() string {
 	return "LevelInformationNormal"
 }
 
@@ -278,25 +280,25 @@ func (m *_LevelInformationNormal) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	pair1, err := ReadEnumField[LevelInformationNibblePair](ctx, "pair1", "LevelInformationNibblePair", ReadEnum(LevelInformationNibblePairByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	pair1, err := ReadEnumField[LevelInformationNibblePair](ctx, "pair1", "LevelInformationNibblePair", ReadEnum(LevelInformationNibblePairByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pair1' field"))
 	}
 	m.Pair1 = pair1
 
-	pair2, err := ReadEnumField[LevelInformationNibblePair](ctx, "pair2", "LevelInformationNibblePair", ReadEnum(LevelInformationNibblePairByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	pair2, err := ReadEnumField[LevelInformationNibblePair](ctx, "pair2", "LevelInformationNibblePair", ReadEnum(LevelInformationNibblePairByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pair2' field"))
 	}
 	m.Pair2 = pair2
 
-	actualLevel, err := ReadVirtualField[uint8](ctx, "actualLevel", (*uint8)(nil), pair2.NibbleValue()<<uint8(4)|pair1.NibbleValue())
+	actualLevel, err := ReadVirtualField[uint8](ctx, "actualLevel", (*uint8)(nil), pair2.NibbleValue()<<uint8(4)|pair1.NibbleValue(), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLevel' field"))
 	}
 	_ = actualLevel
 
-	actualLevelInPercent, err := ReadVirtualField[float32](ctx, "actualLevelInPercent", (*float32)(nil), float32(float32(float32(100))*float32((float32(actualLevel)+float32(float32(2)))))/float32(float32(255)))
+	actualLevelInPercent, err := ReadVirtualField[float32](ctx, "actualLevelInPercent", (*float32)(nil), float32(float32(float32(100))*float32((float32(actualLevel)+float32(float32(2)))))/float32(float32(255)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLevelInPercent' field"))
 	}
@@ -310,7 +312,7 @@ func (m *_LevelInformationNormal) parse(ctx context.Context, readBuffer utils.Re
 }
 
 func (m *_LevelInformationNormal) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -327,11 +329,11 @@ func (m *_LevelInformationNormal) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for LevelInformationNormal")
 		}
 
-		if err := WriteSimpleEnumField[LevelInformationNibblePair](ctx, "pair1", "LevelInformationNibblePair", m.GetPair1(), WriteEnum[LevelInformationNibblePair, uint8](LevelInformationNibblePair.GetValue, LevelInformationNibblePair.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[LevelInformationNibblePair](ctx, "pair1", "LevelInformationNibblePair", m.GetPair1(), WriteEnum[LevelInformationNibblePair, uint8](LevelInformationNibblePair.GetValue, LevelInformationNibblePair.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'pair1' field")
 		}
 
-		if err := WriteSimpleEnumField[LevelInformationNibblePair](ctx, "pair2", "LevelInformationNibblePair", m.GetPair2(), WriteEnum[LevelInformationNibblePair, uint8](LevelInformationNibblePair.GetValue, LevelInformationNibblePair.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[LevelInformationNibblePair](ctx, "pair2", "LevelInformationNibblePair", m.GetPair2(), WriteEnum[LevelInformationNibblePair, uint8](LevelInformationNibblePair.GetValue, LevelInformationNibblePair.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'pair2' field")
 		}
 		// Virtual field

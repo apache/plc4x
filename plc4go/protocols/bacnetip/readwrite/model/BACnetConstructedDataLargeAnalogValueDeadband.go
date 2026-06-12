@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLargeAnalogValueDeadband(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueDeadband"
 }
 

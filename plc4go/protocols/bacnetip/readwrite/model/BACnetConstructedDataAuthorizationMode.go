@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAuthorizationMode(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) GetTypeName() string {
+func (m *_BACnetConstructedDataAuthorizationMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAuthorizationMode"
 }
 

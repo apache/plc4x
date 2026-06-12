@@ -176,7 +176,7 @@ func CastTelephonyDataRejectIncomingCall(structType any) TelephonyDataRejectInco
 	return nil
 }
 
-func (m *_TelephonyDataRejectIncomingCall) GetTypeName() string {
+func (m *_TelephonyDataRejectIncomingCall) GetPlx4xTypeName() string {
 	return "TelephonyDataRejectIncomingCall"
 }
 

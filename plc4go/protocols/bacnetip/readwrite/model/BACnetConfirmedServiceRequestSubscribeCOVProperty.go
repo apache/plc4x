@@ -372,7 +372,7 @@ func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestSubscribeCOVProperty"
 }
 

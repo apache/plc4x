@@ -447,7 +447,7 @@ func CastBACnetNotificationParametersAccessEvent(structType any) BACnetNotificat
 	return nil
 }
 
-func (m *_BACnetNotificationParametersAccessEvent) GetTypeName() string {
+func (m *_BACnetNotificationParametersAccessEvent) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersAccessEvent"
 }
 

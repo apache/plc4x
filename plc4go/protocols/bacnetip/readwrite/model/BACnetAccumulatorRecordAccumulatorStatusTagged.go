@@ -193,7 +193,7 @@ func CastBACnetAccumulatorRecordAccumulatorStatusTagged(structType any) BACnetAc
 	return nil
 }
 
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetTypeName() string {
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetPlx4xTypeName() string {
 	return "BACnetAccumulatorRecordAccumulatorStatusTagged"
 }
 

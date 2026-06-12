@@ -246,7 +246,7 @@ func CastBACnetConstructedDataThreatLevel(structType any) BACnetConstructedDataT
 	return nil
 }
 
-func (m *_BACnetConstructedDataThreatLevel) GetTypeName() string {
+func (m *_BACnetConstructedDataThreatLevel) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataThreatLevel"
 }
 

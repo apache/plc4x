@@ -203,7 +203,7 @@ func CastSecurityDataRequestZoneName(structType any) SecurityDataRequestZoneName
 	return nil
 }
 
-func (m *_SecurityDataRequestZoneName) GetTypeName() string {
+func (m *_SecurityDataRequestZoneName) GetPlx4xTypeName() string {
 	return "SecurityDataRequestZoneName"
 }
 

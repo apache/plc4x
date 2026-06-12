@@ -259,7 +259,7 @@ func CastCipReadResponse(structType any) CipReadResponse {
 	return nil
 }
 
-func (m *_CipReadResponse) GetTypeName() string {
+func (m *_CipReadResponse) GetPlx4xTypeName() string {
 	return "CipReadResponse"
 }
 

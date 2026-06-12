@@ -18,25 +18,43 @@
  */
 package org.apache.plc4x.java.simulated.connection;
 
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcPingRequest;
+import org.apache.plc4x.java.api.messages.PlcPingResponse;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.simulated.configuration.SimulatedConfiguration;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.apache.plc4x.java.simulated.tag.SimulatedTagHandler;
-import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
-import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
-import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcPingResponse;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionRequest;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionResponse;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionTag;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcUnsubscriptionResponse;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcWriteResponse;
+import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
+import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
 import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,18 +62,23 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
- * Connection to a test device.
- * This class is not thread-safe.
+ * Connection to a {@link SimulatedDevice}. Lives entirely in-process — there
+ * is no real transport — so this class skips {@code startReceiving} and most
+ * of the {@link ConnectionBase} polling machinery. The transport instance
+ * passed to the superclass is {@code null}, which is safe because the only
+ * code paths that touch it ({@code startReceiving} / {@code stopReceiving} /
+ * {@code isAsyncTransport}) are never invoked on this connection.
  */
-public class SimulatedConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {
+public class SimulatedConnection extends ConnectionBase<SimulatedConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulatedConnection.class);
 
@@ -63,24 +86,37 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     private boolean connected = false;
 
+    /** Consumers registered against subscription handles, keyed by handle. */
     private final Map<PlcSubscriptionHandle, PlcConsumerRegistration> registrations = new ConcurrentHashMap<>();
 
+    /** Lookup from registration id → consumer, used by the dispatch path. */
     private final Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
 
     public SimulatedConnection(SimulatedDevice device) {
-        super(true, true, true, true, false,
-            new DefaultPlcValueHandler(), new SimulatedTagHandler(), null, null);
-        this.device = device;
+        this(device, new SimulatedConfiguration(), AuditLog.builder().build());
+    }
+
+    public SimulatedConnection(SimulatedDevice device,
+                               SimulatedConfiguration configuration,
+                               AuditLog auditLog) {
+        super(configuration, (TransportInstance<?>) null, auditLog);
+        this.device = Objects.requireNonNull(device, "device");
     }
 
     @Override
-    public PlcTagHandler getPlcTagHandler() {
+    protected PlcTagHandler getTagHandler() {
         return new SimulatedTagHandler();
     }
 
     @Override
-    public void connect() {
+    protected PlcValueHandler getValueHandler() {
+        return new DefaultPlcValueHandler();
+    }
+
+    @Override
+    protected void onConnect() {
         connected = true;
+        fireConnectionStateChanged(ConnectionStateChangeType.CONNECTED, null);
     }
 
     @Override
@@ -91,46 +127,10 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     @Override
     public void close() {
         connected = false;
-    }
-
-    @Override
-    public CompletableFuture<? extends PlcPingResponse> ping() {
-        return CompletableFuture.completedFuture(
-            new DefaultPlcPingResponse(new DefaultPlcPingRequest(this), PlcResponseCode.OK));
-    }
-
-    @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        Map<String, PlcResponseItem<PlcValue>> tags = new HashMap<>();
-        for (String tagName : readRequest.getTagNames()) {
-            SimulatedTag tag = (SimulatedTag) readRequest.getTag(tagName);
-            Optional<PlcValue> valueOptional = device.get(tag);
-            PlcResponseItem<PlcValue> tagPair;
-            boolean present = valueOptional.isPresent();
-            tagPair = present
-                ? new DefaultPlcResponseItem<>(PlcResponseCode.OK, valueOptional.get())
-                : new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null);
-            tags.put(tagName, tagPair);
-        }
-        PlcReadResponse response = new DefaultPlcReadResponse(readRequest, tags);
-        return CompletableFuture.completedFuture(response);
-    }
-
-    @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        Map<String, PlcResponseCode> tags = new HashMap<>();
-        for (String tagName : writeRequest.getTagNames()) {
-            if(writeRequest.getTagResponseCode(tagName) == PlcResponseCode.OK) {
-                SimulatedTag tag = (SimulatedTag) writeRequest.getTag(tagName);
-                PlcValue value = writeRequest.getPlcValue(tagName);
-                device.set(tag, value);
-                tags.put(tagName, PlcResponseCode.OK);
-            } else {
-                tags.put(tagName, writeRequest.getTagResponseCode(tagName));
-            }
-        }
-        PlcWriteResponse response = new DefaultPlcWriteResponse(writeRequest, tags);
-        return CompletableFuture.completedFuture(response);
+        device.shutdown();
+        registrations.clear();
+        consumerIdMap.clear();
+        fireConnectionStateChanged(ConnectionStateChangeType.DISCONNECTED, null);
     }
 
     @Override
@@ -138,101 +138,140 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
         return String.format("simulated:%s", device);
     }
 
-    /**
-     * Blocking subscribe call
-     *
-     * @param subscriptionRequest subscription request containing at least one subscription request item.
-     * @return the {@code PlcSubscriptionResponse}
-     */
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Ping
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
-    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        LOGGER.info("subscribing {}", subscriptionRequest);
-        Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-        subscriptionRequest.getTagNames().forEach(name -> {
-            LOGGER.info("creating handle for tag name {}", name);
-            PlcSubscriptionHandle handle = new DefaultPlcSubscriptionHandle(this);
-            final PlcSubscriptionTag subscriptionTag = subscriptionRequest.getTag(name);
+    protected CompletableFuture<PlcPingResponse> onPing(PlcPingRequest pingRequest) {
+        return CompletableFuture.completedFuture(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Read / write
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected CompletableFuture<PlcReadResponse> onRead(PlcReadRequest readRequest) {
+        Map<String, PlcResponseItem<PlcValue>> tags = new HashMap<>();
+        for (String tagName : readRequest.getTagNames()) {
+            SimulatedTag tag = (SimulatedTag) readRequest.getTag(tagName);
+            Optional<PlcValue> value = device.get(tag);
+            tags.put(tagName, value
+                .map(v -> new DefaultPlcResponseItem<>(PlcResponseCode.OK, v))
+                .orElseGet(() -> new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null)));
+        }
+        return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, tags));
+    }
+
+    @Override
+    protected CompletableFuture<PlcWriteResponse> onWrite(PlcWriteRequest writeRequest) {
+        Map<String, PlcResponseCode> tags = new HashMap<>();
+        for (String tagName : writeRequest.getTagNames()) {
+            PlcResponseCode requestCode = writeRequest.getTagResponseCode(tagName);
+            if (requestCode == PlcResponseCode.OK) {
+                SimulatedTag tag = (SimulatedTag) writeRequest.getTag(tagName);
+                PlcValue value = writeRequest.getPlcValue(tagName);
+                device.set(tag, value);
+                tags.put(tagName, PlcResponseCode.OK);
+            } else {
+                tags.put(tagName, requestCode);
+            }
+        }
+        return CompletableFuture.completedFuture(new DefaultPlcWriteResponse(writeRequest, tags));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Subscribe / unsubscribe
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected CompletableFuture<PlcSubscriptionResponse> onSubscribe(PlcSubscriptionRequest subscriptionRequest) {
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new LinkedHashMap<>();
+        for (String name : subscriptionRequest.getTagNames()) {
+            SimulatedSubscriptionHandle handle = new SimulatedSubscriptionHandle(this, name);
+            DefaultPlcSubscriptionTag subscriptionTag =
+                (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(name);
             switch (subscriptionTag.getPlcSubscriptionType()) {
                 case CYCLIC:
-                    LOGGER.info("Adding cyclic subscription for tag name {}", name);
-                    device.addCyclicSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionTag, subscriptionTag.getDuration().orElseThrow(RuntimeException::new));
+                    device.addCyclicSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionTag,
+                        subscriptionTag.getDuration().orElseThrow(
+                            () -> new PlcRuntimeException("Cyclic subscription needs a polling duration")));
                     break;
                 case CHANGE_OF_STATE:
-                    LOGGER.info("Adding change of state subscription for tag name {}", name);
                     device.addChangeOfStateSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionTag);
                     break;
                 case EVENT:
-                    LOGGER.info("Adding event subscription for tag name {}", name);
                     device.addEventSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionTag);
                     break;
             }
             values.put(name, new DefaultPlcResponseItem<>(PlcResponseCode.OK, handle));
-        });
+        }
 
-        PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
-        return CompletableFuture.completedFuture(response);
+        // Honor setConsumer(...) / per-tag consumers on the request: SPI stores
+        // them but nothing on the framework side calls register(...) for us.
+        if (subscriptionRequest instanceof DefaultPlcSubscriptionRequest req) {
+            Consumer<PlcSubscriptionEvent> requestConsumer = req.getConsumer();
+            for (Map.Entry<String, PlcResponseItem<PlcSubscriptionHandle>> entry : values.entrySet()) {
+                PlcSubscriptionHandle handle = entry.getValue().getValue();
+                Consumer<PlcSubscriptionEvent> perTag = req.getTagConsumer(entry.getKey());
+                if (perTag != null) {
+                    handle.register(perTag);
+                }
+                if (requestConsumer != null) {
+                    handle.register(requestConsumer);
+                }
+            }
+        }
+
+        return CompletableFuture.completedFuture(new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
     }
 
     private Consumer<PlcValue> dispatchSubscriptionEvent(String name, PlcSubscriptionHandle handle) {
         return plcValue -> {
-            LOGGER.info("handling plc value {}", plcValue);
-            PlcConsumerRegistration plcConsumerRegistration = registrations.get(handle);
-            if (plcConsumerRegistration == null) {
-                LOGGER.warn("no registration for handle {}", handle);
+            PlcConsumerRegistration registration = registrations.get(handle);
+            if (registration == null) {
                 return;
             }
-            int consumerId = plcConsumerRegistration.getConsumerId();
-            Consumer<PlcSubscriptionEvent> consumer = consumerIdMap.get(consumerId);
+            Consumer<PlcSubscriptionEvent> consumer = consumerIdMap.get(registration.getConsumerId());
             if (consumer == null) {
-                LOGGER.warn("no consumer for id {}", consumerId);
                 return;
             }
-            consumer.accept(
-                new DefaultPlcSubscriptionEvent(
-                    Instant.now(),
-                    Collections.singletonMap(name, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue))
-                )
-            );
+            consumer.accept(new DefaultPlcSubscriptionEvent(
+                Instant.now(),
+                Collections.singletonMap(name,
+                    new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue))));
         };
     }
 
     @Override
-    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
-        LOGGER.info("unsubscribing {}", unsubscriptionRequest);
+    protected CompletableFuture<PlcUnsubscriptionResponse> onUnsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
         device.removeHandles(unsubscriptionRequest.getSubscriptionHandles());
-
-        PlcUnsubscriptionResponse response = new DefaultPlcUnsubscriptionResponse(unsubscriptionRequest);
-        return CompletableFuture.completedFuture(response);
+        return CompletableFuture.completedFuture(new DefaultPlcUnsubscriptionResponse(unsubscriptionRequest));
     }
 
     @Override
-    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        LOGGER.info("Registering consumer {} with handles {}", consumer, handles);
-        PlcConsumerRegistration plcConsumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
-        handles.stream()
-            .map(PlcSubscriptionHandle.class::cast)
-            .forEach(handle -> registrations.put(handle, plcConsumerRegistration));
-        consumerIdMap.put(plcConsumerRegistration.getConsumerId(), consumer);
-        return plcConsumerRegistration;
+    protected PlcConsumerRegistration onRegisterConsumer(Consumer<PlcSubscriptionEvent> consumer,
+                                                        Collection<PlcSubscriptionHandle> handles) {
+        PlcConsumerRegistration registration = new DefaultPlcConsumerRegistration(this, consumer,
+            handles.toArray(new PlcSubscriptionHandle[0]));
+        handles.forEach(handle -> registrations.put(handle, registration));
+        consumerIdMap.put(registration.getConsumerId(), consumer);
+        return registration;
     }
 
     @Override
-    public void unregister(PlcConsumerRegistration registration) {
-        LOGGER.info("Unregistering {}", registration);
-        Iterator<Map.Entry<PlcSubscriptionHandle, PlcConsumerRegistration>> entryIterator = registrations.entrySet().iterator();
-        while (entryIterator.hasNext()) {
-            Map.Entry<PlcSubscriptionHandle, PlcConsumerRegistration> entry = entryIterator.next();
+    protected void onUnregisterConsumer(PlcConsumerRegistration registration) {
+        var iterator = registrations.entrySet().iterator();
+        while (iterator.hasNext()) {
+            var entry = iterator.next();
             if (!entry.getValue().equals(registration)) {
-                LOGGER.debug("not the value we looking for {}. We are looking for {}", entry.getValue(), registration);
                 continue;
             }
-            PlcConsumerRegistration consumerRegistration = entry.getValue();
-            int consumerId = consumerRegistration.getConsumerId();
-            LOGGER.info("Removing consumer {}", consumerId);
-            consumerIdMap.remove(consumerId);
-            LOGGER.info("Removing handles {}", consumerRegistration.getSubscriptionHandles());
-            device.removeHandles(consumerRegistration.getSubscriptionHandles());
-            entryIterator.remove();
+            consumerIdMap.remove(entry.getValue().getConsumerId());
+            device.removeHandles(entry.getValue().getSubscriptionHandles());
+            iterator.remove();
         }
     }
+
 }

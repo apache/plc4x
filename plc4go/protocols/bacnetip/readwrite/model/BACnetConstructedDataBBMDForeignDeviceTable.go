@@ -211,7 +211,7 @@ func CastBACnetConstructedDataBBMDForeignDeviceTable(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataBBMDForeignDeviceTable) GetTypeName() string {
+func (m *_BACnetConstructedDataBBMDForeignDeviceTable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBBMDForeignDeviceTable"
 }
 

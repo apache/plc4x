@@ -246,7 +246,7 @@ func CastBACnetConstructedDataReliability(structType any) BACnetConstructedDataR
 	return nil
 }
 
-func (m *_BACnetConstructedDataReliability) GetTypeName() string {
+func (m *_BACnetConstructedDataReliability) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReliability"
 }
 

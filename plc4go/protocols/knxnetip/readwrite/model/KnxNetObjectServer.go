@@ -208,7 +208,7 @@ func CastKnxNetObjectServer(structType any) KnxNetObjectServer {
 	return nil
 }
 
-func (m *_KnxNetObjectServer) GetTypeName() string {
+func (m *_KnxNetObjectServer) GetPlx4xTypeName() string {
 	return "KnxNetObjectServer"
 }
 

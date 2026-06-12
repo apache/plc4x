@@ -246,7 +246,7 @@ func CastBACnetConstructedDataInProgress(structType any) BACnetConstructedDataIn
 	return nil
 }
 
-func (m *_BACnetConstructedDataInProgress) GetTypeName() string {
+func (m *_BACnetConstructedDataInProgress) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataInProgress"
 }
 

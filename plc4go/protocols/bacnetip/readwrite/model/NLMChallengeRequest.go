@@ -237,7 +237,7 @@ func CastNLMChallengeRequest(structType any) NLMChallengeRequest {
 	return nil
 }
 
-func (m *_NLMChallengeRequest) GetTypeName() string {
+func (m *_NLMChallengeRequest) GetPlx4xTypeName() string {
 	return "NLMChallengeRequest"
 }
 

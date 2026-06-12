@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesLightningTransition(structType any) BACnetPropertyS
 	return nil
 }
 
-func (m *_BACnetPropertyStatesLightningTransition) GetTypeName() string {
+func (m *_BACnetPropertyStatesLightningTransition) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesLightningTransition"
 }
 

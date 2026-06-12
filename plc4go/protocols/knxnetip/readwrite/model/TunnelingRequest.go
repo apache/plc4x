@@ -260,7 +260,7 @@ func CastTunnelingRequest(structType any) TunnelingRequest {
 	return nil
 }
 
-func (m *_TunnelingRequest) GetTypeName() string {
+func (m *_TunnelingRequest) GetPlx4xTypeName() string {
 	return "TunnelingRequest"
 }
 
@@ -291,13 +291,13 @@ func (m *_TunnelingRequest) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	tunnelingRequestDataBlock, err := ReadSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", ReadComplex[TunnelingRequestDataBlock](TunnelingRequestDataBlockParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	tunnelingRequestDataBlock, err := ReadSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", ReadComplex[TunnelingRequestDataBlock](TunnelingRequestDataBlockParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tunnelingRequestDataBlock' field"))
 	}
 	m.TunnelingRequestDataBlock = tunnelingRequestDataBlock
 
-	cemi, err := ReadSimpleField[CEMI](ctx, "cemi", ReadComplex[CEMI](CEMIParseWithBufferProducer[CEMI]((uint16)(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes(ctx)))))), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	cemi, err := ReadSimpleField[CEMI](ctx, "cemi", ReadComplex[CEMI](CEMIParseWithBufferProducer[CEMI]((uint16)(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes(ctx)))))), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cemi' field"))
 	}
@@ -328,11 +328,11 @@ func (m *_TunnelingRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for TunnelingRequest")
 		}
 
-		if err := WriteSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", m.GetTunnelingRequestDataBlock(), WriteComplex[TunnelingRequestDataBlock](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", m.GetTunnelingRequestDataBlock(), WriteComplex[TunnelingRequestDataBlock](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'tunnelingRequestDataBlock' field")
 		}
 
-		if err := WriteSimpleField[CEMI](ctx, "cemi", m.GetCemi(), WriteComplex[CEMI](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[CEMI](ctx, "cemi", m.GetCemi(), WriteComplex[CEMI](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'cemi' field")
 		}
 

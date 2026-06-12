@@ -258,7 +258,7 @@ func CastBACnetConstructedDataAlarmValues(structType any) BACnetConstructedDataA
 	return nil
 }
 
-func (m *_BACnetConstructedDataAlarmValues) GetTypeName() string {
+func (m *_BACnetConstructedDataAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAlarmValues"
 }
 

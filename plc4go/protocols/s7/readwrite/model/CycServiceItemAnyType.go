@@ -264,7 +264,7 @@ func CastCycServiceItemAnyType(structType any) CycServiceItemAnyType {
 	return nil
 }
 
-func (m *_CycServiceItemAnyType) GetTypeName() string {
+func (m *_CycServiceItemAnyType) GetPlx4xTypeName() string {
 	return "CycServiceItemAnyType"
 }
 

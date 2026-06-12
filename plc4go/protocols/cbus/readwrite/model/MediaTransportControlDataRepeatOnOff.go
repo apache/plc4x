@@ -236,7 +236,7 @@ func CastMediaTransportControlDataRepeatOnOff(structType any) MediaTransportCont
 	return nil
 }
 
-func (m *_MediaTransportControlDataRepeatOnOff) GetTypeName() string {
+func (m *_MediaTransportControlDataRepeatOnOff) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataRepeatOnOff"
 }
 

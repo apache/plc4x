@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPulseRate(structType any) BACnetConstructedDataPul
 	return nil
 }
 
-func (m *_BACnetConstructedDataPulseRate) GetTypeName() string {
+func (m *_BACnetConstructedDataPulseRate) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPulseRate"
 }
 

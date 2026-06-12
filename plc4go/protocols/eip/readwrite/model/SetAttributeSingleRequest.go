@@ -188,7 +188,7 @@ func CastSetAttributeSingleRequest(structType any) SetAttributeSingleRequest {
 	return nil
 }
 
-func (m *_SetAttributeSingleRequest) GetTypeName() string {
+func (m *_SetAttributeSingleRequest) GetPlx4xTypeName() string {
 	return "SetAttributeSingleRequest"
 }
 

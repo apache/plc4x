@@ -301,7 +301,7 @@ func CastAPDU(structType any) APDU {
 	return nil
 }
 
-func (m *_APDU) GetTypeName() string {
+func (m *_APDU) GetPlx4xTypeName() string {
 	return "APDU"
 }
 

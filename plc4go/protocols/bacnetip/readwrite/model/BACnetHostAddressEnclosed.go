@@ -243,7 +243,7 @@ func CastBACnetHostAddressEnclosed(structType any) BACnetHostAddressEnclosed {
 	return nil
 }
 
-func (m *_BACnetHostAddressEnclosed) GetTypeName() string {
+func (m *_BACnetHostAddressEnclosed) GetPlx4xTypeName() string {
 	return "BACnetHostAddressEnclosed"
 }
 

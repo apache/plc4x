@@ -207,7 +207,7 @@ func CastCOTPParameterDisconnectAdditionalInformation(structType any) COTPParame
 	return nil
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformation) GetTypeName() string {
+func (m *_COTPParameterDisconnectAdditionalInformation) GetPlx4xTypeName() string {
 	return "COTPParameterDisconnectAdditionalInformation"
 }
 

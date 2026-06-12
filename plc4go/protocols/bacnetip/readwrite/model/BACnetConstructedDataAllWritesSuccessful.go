@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAllWritesSuccessful(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) GetTypeName() string {
+func (m *_BACnetConstructedDataAllWritesSuccessful) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAllWritesSuccessful"
 }
 

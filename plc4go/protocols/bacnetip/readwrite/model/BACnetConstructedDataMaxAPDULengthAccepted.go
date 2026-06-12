@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMaxAPDULengthAccepted(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetTypeName() string {
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaxAPDULengthAccepted"
 }
 

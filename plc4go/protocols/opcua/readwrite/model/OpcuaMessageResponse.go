@@ -262,7 +262,7 @@ func CastOpcuaMessageResponse(structType any) OpcuaMessageResponse {
 	return nil
 }
 
-func (m *_OpcuaMessageResponse) GetTypeName() string {
+func (m *_OpcuaMessageResponse) GetPlx4xTypeName() string {
 	return "OpcuaMessageResponse"
 }
 

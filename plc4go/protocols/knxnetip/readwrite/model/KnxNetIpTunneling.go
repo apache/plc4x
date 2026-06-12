@@ -207,7 +207,7 @@ func CastKnxNetIpTunneling(structType any) KnxNetIpTunneling {
 	return nil
 }
 
-func (m *_KnxNetIpTunneling) GetTypeName() string {
+func (m *_KnxNetIpTunneling) GetPlx4xTypeName() string {
 	return "KnxNetIpTunneling"
 }
 

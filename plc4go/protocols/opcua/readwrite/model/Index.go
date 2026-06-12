@@ -135,7 +135,7 @@ func CastIndex(structType any) Index {
 	return nil
 }
 
-func (m *_Index) GetTypeName() string {
+func (m *_Index) GetPlx4xTypeName() string {
 	return "Index"
 }
 

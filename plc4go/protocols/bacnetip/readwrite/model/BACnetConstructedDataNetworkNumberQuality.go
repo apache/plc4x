@@ -246,7 +246,7 @@ func CastBACnetConstructedDataNetworkNumberQuality(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataNetworkNumberQuality) GetTypeName() string {
+func (m *_BACnetConstructedDataNetworkNumberQuality) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNetworkNumberQuality"
 }
 

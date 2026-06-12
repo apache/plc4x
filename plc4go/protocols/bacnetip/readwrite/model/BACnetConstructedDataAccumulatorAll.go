@@ -184,7 +184,7 @@ func CastBACnetConstructedDataAccumulatorAll(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAccumulatorAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccumulatorAll"
 }
 

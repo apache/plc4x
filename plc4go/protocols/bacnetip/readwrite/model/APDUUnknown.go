@@ -222,7 +222,7 @@ func CastAPDUUnknown(structType any) APDUUnknown {
 	return nil
 }
 
-func (m *_APDUUnknown) GetTypeName() string {
+func (m *_APDUUnknown) GetPlx4xTypeName() string {
 	return "APDUUnknown"
 }
 

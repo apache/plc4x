@@ -189,7 +189,7 @@ func CastSubItem(structType any) SubItem {
 	return nil
 }
 
-func (m *_SubItem) GetTypeName() string {
+func (m *_SubItem) GetPlx4xTypeName() string {
 	return "SubItem"
 }
 

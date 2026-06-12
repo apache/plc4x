@@ -203,7 +203,7 @@ func CastAirConditioningDataRefresh(structType any) AirConditioningDataRefresh {
 	return nil
 }
 
-func (m *_AirConditioningDataRefresh) GetTypeName() string {
+func (m *_AirConditioningDataRefresh) GetPlx4xTypeName() string {
 	return "AirConditioningDataRefresh"
 }
 

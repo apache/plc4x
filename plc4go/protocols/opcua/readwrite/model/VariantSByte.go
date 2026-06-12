@@ -222,7 +222,7 @@ func CastVariantSByte(structType any) VariantSByte {
 	return nil
 }
 
-func (m *_VariantSByte) GetTypeName() string {
+func (m *_VariantSByte) GetPlx4xTypeName() string {
 	return "VariantSByte"
 }
 

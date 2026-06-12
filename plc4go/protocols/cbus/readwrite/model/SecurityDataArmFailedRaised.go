@@ -176,7 +176,7 @@ func CastSecurityDataArmFailedRaised(structType any) SecurityDataArmFailedRaised
 	return nil
 }
 
-func (m *_SecurityDataArmFailedRaised) GetTypeName() string {
+func (m *_SecurityDataArmFailedRaised) GetPlx4xTypeName() string {
 	return "SecurityDataArmFailedRaised"
 }
 

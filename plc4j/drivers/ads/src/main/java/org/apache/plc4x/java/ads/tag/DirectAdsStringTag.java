@@ -19,9 +19,9 @@
 package org.apache.plc4x.java.ads.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
@@ -111,18 +111,20 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+    public void serialize(WriteBuffer writeBuffer) throws BufferException {
+        writeBuffer.pushContext(WithOption.WithName(getClass().getSimpleName()));
 
-        writeBuffer.writeUnsignedLong("indexGroup", 32, getIndexGroup());
-        writeBuffer.writeUnsignedLong("indexOffset", 32, getIndexOffset());
-        writeBuffer.writeUnsignedLong("numberOfElements", 32, getNumberOfElements());
-        writeBuffer.writeString("dataType",
+        writeBuffer.writeUnsignedLong(32, getIndexGroup(), WithOption.WithName("indexGroup"));
+        writeBuffer.writeUnsignedLong(32, getIndexOffset(), WithOption.WithName("indexOffset"));
+        writeBuffer.writeUnsignedLong(32, getNumberOfElements(), WithOption.WithName("numberOfElements"));
+        writeBuffer.writeString(
             getPlcDataType().getBytes(StandardCharsets.UTF_8).length * 8,
-            getPlcDataType(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
-        writeBuffer.writeUnsignedLong("stringLength", 32, getStringLength());
+            getPlcDataType(),
+            WithOption.WithName("dataType"),
+            WithOption.WithEncoding("UTF8"));
+        writeBuffer.writeUnsignedLong(32, getStringLength(), WithOption.WithName("stringLength"));
 
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext(WithOption.WithName(getClass().getSimpleName()));
     }
 
 }

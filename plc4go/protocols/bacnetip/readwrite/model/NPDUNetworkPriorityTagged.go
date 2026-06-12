@@ -193,7 +193,7 @@ func CastNPDUNetworkPriorityTagged(structType any) NPDUNetworkPriorityTagged {
 	return nil
 }
 
-func (m *_NPDUNetworkPriorityTagged) GetTypeName() string {
+func (m *_NPDUNetworkPriorityTagged) GetPlx4xTypeName() string {
 	return "NPDUNetworkPriorityTagged"
 }
 

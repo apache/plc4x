@@ -76,7 +76,7 @@ var _ AdsReadDeviceInfoResponse = (*_AdsReadDeviceInfoResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsReadDeviceInfoResponse)(nil)
 
 // NewAdsReadDeviceInfoResponse factory function for _AdsReadDeviceInfoResponse
-func NewAdsReadDeviceInfoResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *_AdsReadDeviceInfoResponse {
+func NewAdsReadDeviceInfoResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *_AdsReadDeviceInfoResponse {
 	_result := &_AdsReadDeviceInfoResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
@@ -276,7 +276,7 @@ func CastAdsReadDeviceInfoResponse(structType any) AdsReadDeviceInfoResponse {
 	return nil
 }
 
-func (m *_AdsReadDeviceInfoResponse) GetTypeName() string {
+func (m *_AdsReadDeviceInfoResponse) GetPlx4xTypeName() string {
 	return "AdsReadDeviceInfoResponse"
 }
 

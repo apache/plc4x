@@ -248,7 +248,7 @@ func CastBACnetConstructedDataIntervalOffset(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataIntervalOffset) GetTypeName() string {
+func (m *_BACnetConstructedDataIntervalOffset) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIntervalOffset"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLimitEnable(structType any) BACnetConstructedDataL
 	return nil
 }
 
-func (m *_BACnetConstructedDataLimitEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataLimitEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLimitEnable"
 }
 

@@ -243,7 +243,7 @@ func CastBACnetDateRangeEnclosed(structType any) BACnetDateRangeEnclosed {
 	return nil
 }
 
-func (m *_BACnetDateRangeEnclosed) GetTypeName() string {
+func (m *_BACnetDateRangeEnclosed) GetPlx4xTypeName() string {
 	return "BACnetDateRangeEnclosed"
 }
 

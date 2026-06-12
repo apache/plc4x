@@ -135,7 +135,7 @@ func CastIntegerId(structType any) IntegerId {
 	return nil
 }
 
-func (m *_IntegerId) GetTypeName() string {
+func (m *_IntegerId) GetPlx4xTypeName() string {
 	return "IntegerId"
 }
 

@@ -194,7 +194,7 @@ func CastTamperStatus(structType any) TamperStatus {
 	return nil
 }
 
-func (m *_TamperStatus) GetTypeName() string {
+func (m *_TamperStatus) GetPlx4xTypeName() string {
 	return "TamperStatus"
 }
 

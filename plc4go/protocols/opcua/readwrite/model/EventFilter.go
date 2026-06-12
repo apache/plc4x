@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastEventFilter(structType any) EventFilter {
 	return nil
 }
 
-func (m *_EventFilter) GetTypeName() string {
+func (m *_EventFilter) GetPlx4xTypeName() string {
 	return "EventFilter"
 }
 
@@ -279,19 +280,19 @@ func (m *_EventFilter) parse(ctx context.Context, readBuffer utils.ReadBuffer, p
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfSelectClauses, err := ReadImplicitField[int32](ctx, "noOfSelectClauses", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSelectClauses, err := ReadImplicitField[int32](ctx, "noOfSelectClauses", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSelectClauses' field"))
 	}
 	_ = noOfSelectClauses
 
-	selectClauses, err := ReadCountArrayField[SimpleAttributeOperand](ctx, "selectClauses", ReadComplex[SimpleAttributeOperand](ExtensionObjectDefinitionParseWithBufferProducer[SimpleAttributeOperand]((int32)(int32(603))), readBuffer), uint64(noOfSelectClauses))
+	selectClauses, err := ReadCountArrayField[SimpleAttributeOperand](ctx, "selectClauses", ReadComplex[SimpleAttributeOperand](ExtensionObjectDefinitionParseWithBufferProducer[SimpleAttributeOperand]((int32)(int32(603))), readBuffer), uint64(noOfSelectClauses), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'selectClauses' field"))
 	}
 	m.SelectClauses = selectClauses
 
-	whereClause, err := ReadSimpleField[ContentFilter](ctx, "whereClause", ReadComplex[ContentFilter](ExtensionObjectDefinitionParseWithBufferProducer[ContentFilter]((int32)(int32(588))), readBuffer))
+	whereClause, err := ReadSimpleField[ContentFilter](ctx, "whereClause", ReadComplex[ContentFilter](ExtensionObjectDefinitionParseWithBufferProducer[ContentFilter]((int32)(int32(588))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'whereClause' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_EventFilter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for EventFilter")
 		}
 		noOfSelectClauses := int32(utils.InlineIf(bool((m.GetSelectClauses()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSelectClauses()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSelectClauses", noOfSelectClauses, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSelectClauses", noOfSelectClauses, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSelectClauses' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "selectClauses", m.GetSelectClauses(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "selectClauses", m.GetSelectClauses(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'selectClauses' field")
 		}
 
-		if err := WriteSimpleField[ContentFilter](ctx, "whereClause", m.GetWhereClause(), WriteComplex[ContentFilter](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ContentFilter](ctx, "whereClause", m.GetWhereClause(), WriteComplex[ContentFilter](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'whereClause' field")
 		}
 

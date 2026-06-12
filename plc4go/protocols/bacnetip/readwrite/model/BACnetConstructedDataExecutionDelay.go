@@ -258,7 +258,7 @@ func CastBACnetConstructedDataExecutionDelay(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataExecutionDelay) GetTypeName() string {
+func (m *_BACnetConstructedDataExecutionDelay) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExecutionDelay"
 }
 

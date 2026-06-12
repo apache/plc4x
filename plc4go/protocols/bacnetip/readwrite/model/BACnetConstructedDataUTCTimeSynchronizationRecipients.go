@@ -211,7 +211,7 @@ func CastBACnetConstructedDataUTCTimeSynchronizationRecipients(structType any) B
 	return nil
 }
 
-func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetTypeName() string {
+func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUTCTimeSynchronizationRecipients"
 }
 

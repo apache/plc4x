@@ -176,7 +176,7 @@ func CastSecurityDataFireAlarmCleared(structType any) SecurityDataFireAlarmClear
 	return nil
 }
 
-func (m *_SecurityDataFireAlarmCleared) GetTypeName() string {
+func (m *_SecurityDataFireAlarmCleared) GetPlx4xTypeName() string {
 	return "SecurityDataFireAlarmCleared"
 }
 

@@ -221,7 +221,7 @@ func CastBACnetChannelValueDate(structType any) BACnetChannelValueDate {
 	return nil
 }
 
-func (m *_BACnetChannelValueDate) GetTypeName() string {
+func (m *_BACnetChannelValueDate) GetPlx4xTypeName() string {
 	return "BACnetChannelValueDate"
 }
 

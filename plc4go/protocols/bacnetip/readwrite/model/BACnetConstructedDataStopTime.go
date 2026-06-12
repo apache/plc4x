@@ -246,7 +246,7 @@ func CastBACnetConstructedDataStopTime(structType any) BACnetConstructedDataStop
 	return nil
 }
 
-func (m *_BACnetConstructedDataStopTime) GetTypeName() string {
+func (m *_BACnetConstructedDataStopTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataStopTime"
 }
 

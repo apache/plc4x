@@ -597,7 +597,7 @@ func CastBACnetConfirmedServiceRequestConfirmedEventNotification(structType any)
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedEventNotification"
 }
 

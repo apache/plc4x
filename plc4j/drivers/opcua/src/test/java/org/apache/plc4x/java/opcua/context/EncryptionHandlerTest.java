@@ -118,7 +118,7 @@ class EncryptionHandlerTest {
                 messageBytes[i] = (byte) i;
             }
 
-            SecurityHeader securityHeader = new SecurityHeader(0, 1);
+            SecurityHeader securityHeader = new SecurityHeader(0L, 1L);
             SequenceHeader sequenceHeader = new SequenceHeader(1, 1);
             BinaryPayload payload = new BinaryPayload(sequenceHeader, messageBytes);
 
@@ -171,7 +171,7 @@ class EncryptionHandlerTest {
                 messageBytes[i] = (byte) i;
             }
 
-            SecurityHeader securityHeader = new SecurityHeader(0, 1);
+            SecurityHeader securityHeader = new SecurityHeader(0L, 1L);
             SequenceHeader sequenceHeader = new SequenceHeader(1, 1);
             BinaryPayload payload = new BinaryPayload(sequenceHeader, messageBytes);
 
@@ -224,7 +224,7 @@ class EncryptionHandlerTest {
                 messageBytes[i] = (byte) i;
             }
 
-            SecurityHeader securityHeader = new SecurityHeader(0, 1);
+            SecurityHeader securityHeader = new SecurityHeader(0L, 1L);
             SequenceHeader sequenceHeader = new SequenceHeader(1, 1);
             BinaryPayload payload = new BinaryPayload(sequenceHeader, messageBytes);
 
@@ -270,7 +270,7 @@ class EncryptionHandlerTest {
                 messageBytes[i] = (byte) i;
             }
 
-            SecurityHeader securityHeader = new SecurityHeader(0, 1);
+            SecurityHeader securityHeader = new SecurityHeader(0L, 1L);
             SequenceHeader sequenceHeader = new SequenceHeader(1, 1);
             BinaryPayload payload = new BinaryPayload(sequenceHeader, messageBytes);
 
@@ -303,7 +303,7 @@ class EncryptionHandlerTest {
 
     private static Conversation createSecureChannel(X509Certificate localCertificate, X509Certificate remoteCertificate, SecurityPolicy securityPolicy,
         MessageSecurity messageSecurity, boolean encrypted, boolean signed) {
-        OpcuaProtocolLimits limits = new OpcuaProtocolLimits(8196, 8196, 8196 * 10, 10);
+        OpcuaProtocolLimits limits = new OpcuaProtocolLimits(8196L, 8196L, 8196L * 10, 10L);
         Conversation conversation = Mockito.mock(Conversation.class);
         when(conversation.getLimits()).thenReturn(limits);
         when(conversation.getLocalCertificate()).thenReturn(localCertificate);

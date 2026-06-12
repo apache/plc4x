@@ -184,7 +184,7 @@ func CastBACnetConstructedDataNetworkPortAll(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataNetworkPortAll) GetTypeName() string {
+func (m *_BACnetConstructedDataNetworkPortAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNetworkPortAll"
 }
 

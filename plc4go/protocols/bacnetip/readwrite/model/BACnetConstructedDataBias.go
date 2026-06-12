@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBias(structType any) BACnetConstructedDataBias {
 	return nil
 }
 
-func (m *_BACnetConstructedDataBias) GetTypeName() string {
+func (m *_BACnetConstructedDataBias) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBias"
 }
 

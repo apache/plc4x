@@ -246,7 +246,7 @@ func CastBACnetConstructedDataStopWhenFull(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataStopWhenFull) GetTypeName() string {
+func (m *_BACnetConstructedDataStopWhenFull) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataStopWhenFull"
 }
 

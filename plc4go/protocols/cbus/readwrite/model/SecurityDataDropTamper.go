@@ -176,7 +176,7 @@ func CastSecurityDataDropTamper(structType any) SecurityDataDropTamper {
 	return nil
 }
 
-func (m *_SecurityDataDropTamper) GetTypeName() string {
+func (m *_SecurityDataDropTamper) GetPlx4xTypeName() string {
 	return "SecurityDataDropTamper"
 }
 

@@ -176,7 +176,7 @@ func CastTelephonyDataLineOnHook(structType any) TelephonyDataLineOnHook {
 	return nil
 }
 
-func (m *_TelephonyDataLineOnHook) GetTypeName() string {
+func (m *_TelephonyDataLineOnHook) GetPlx4xTypeName() string {
 	return "TelephonyDataLineOnHook"
 }
 

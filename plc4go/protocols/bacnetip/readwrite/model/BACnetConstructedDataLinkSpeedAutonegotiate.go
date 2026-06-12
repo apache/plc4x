@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLinkSpeedAutonegotiate(structType any) BACnetConst
 	return nil
 }
 
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetTypeName() string {
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLinkSpeedAutonegotiate"
 }
 

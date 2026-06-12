@@ -180,7 +180,7 @@ func CastReceiveQosDataType(structType any) ReceiveQosDataType {
 	return nil
 }
 
-func (m *_ReceiveQosDataType) GetTypeName() string {
+func (m *_ReceiveQosDataType) GetPlx4xTypeName() string {
 	return "ReceiveQosDataType"
 }
 

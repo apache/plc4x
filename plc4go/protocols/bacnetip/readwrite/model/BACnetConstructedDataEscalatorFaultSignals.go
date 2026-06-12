@@ -211,7 +211,7 @@ func CastBACnetConstructedDataEscalatorFaultSignals(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataEscalatorFaultSignals) GetTypeName() string {
+func (m *_BACnetConstructedDataEscalatorFaultSignals) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEscalatorFaultSignals"
 }
 

@@ -189,7 +189,7 @@ func CastNLMUpdateKeyUpdateKeyEntry(structType any) NLMUpdateKeyUpdateKeyEntry {
 	return nil
 }
 
-func (m *_NLMUpdateKeyUpdateKeyEntry) GetTypeName() string {
+func (m *_NLMUpdateKeyUpdateKeyEntry) GetPlx4xTypeName() string {
 	return "NLMUpdateKeyUpdateKeyEntry"
 }
 

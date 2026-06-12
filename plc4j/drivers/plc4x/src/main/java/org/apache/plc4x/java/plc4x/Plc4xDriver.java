@@ -18,23 +18,20 @@
  */
 package org.apache.plc4x.java.plc4x;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
 import org.apache.plc4x.java.plc4x.config.Plc4xTcpTransportConfiguration;
-import org.apache.plc4x.java.plc4x.protocol.Plc4xProtocolLogic;
-import org.apache.plc4x.java.plc4x.readwrite.Plc4xMessage;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
 
-public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
+public class Plc4xDriver extends DriverBase {
 
     @Override
     public String getProtocolCode() {
@@ -47,37 +44,26 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
     }
 
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+    protected Class<? extends Configuration> getConfigurationClass() {
         return Plc4xConfiguration.class;
     }
 
     @Override
-    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(Plc4xTcpTransportConfiguration.class);
+    protected Class<? extends TransportConfiguration> getTransportConfigurationClass(Transport<?> transport) {
+        if ("tcp".equals(transport.getTransportCode())) {
+            return Plc4xTcpTransportConfiguration.class;
         }
-        return Optional.empty();
+        return super.getTransportConfigurationClass(transport);
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
-        // TODO: This should be TLS (which we currently don't have yet).
+    public Optional<String> getDefaultTransportCode() {
         return Optional.of("tcp");
     }
 
     @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    /**
-     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
-    @Override
-    protected boolean awaitDisconnectComplete() {
-        return false;
+    public List<String> getSupportedTransportCodes() {
+        return List.of("tcp", "test");
     }
 
     @Override
@@ -91,22 +77,10 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
     }
 
     @Override
-    protected ProtocolStackConfigurer<Plc4xMessage> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(Plc4xMessage.class, Plc4xMessage::staticParse)
-            .withProtocol(Plc4xProtocolLogic.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .build();
-    }
-
-    /** Estimate the Length of a Packet */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 3) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 1);
-            }
-            return -1;
-        }
+    protected ConnectionBase<?> getConnection(Configuration configuration,
+                                              TransportInstance<?> transportInstance,
+                                              AuditLog auditLog) {
+        return new Plc4xConnection((Plc4xConfiguration) configuration, transportInstance, auditLog);
     }
 
 }

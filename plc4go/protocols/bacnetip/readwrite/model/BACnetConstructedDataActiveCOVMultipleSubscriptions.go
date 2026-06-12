@@ -211,7 +211,7 @@ func CastBACnetConstructedDataActiveCOVMultipleSubscriptions(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetTypeName() string {
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataActiveCOVMultipleSubscriptions"
 }
 

@@ -312,7 +312,7 @@ func CastBACnetConfirmedServiceRequestSubscribeCOV(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestSubscribeCOV"
 }
 

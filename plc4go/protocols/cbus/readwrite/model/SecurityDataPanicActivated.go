@@ -176,7 +176,7 @@ func CastSecurityDataPanicActivated(structType any) SecurityDataPanicActivated {
 	return nil
 }
 
-func (m *_SecurityDataPanicActivated) GetTypeName() string {
+func (m *_SecurityDataPanicActivated) GetPlx4xTypeName() string {
 	return "SecurityDataPanicActivated"
 }
 

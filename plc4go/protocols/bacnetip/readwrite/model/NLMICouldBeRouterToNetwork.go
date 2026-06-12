@@ -222,7 +222,7 @@ func CastNLMICouldBeRouterToNetwork(structType any) NLMICouldBeRouterToNetwork {
 	return nil
 }
 
-func (m *_NLMICouldBeRouterToNetwork) GetTypeName() string {
+func (m *_NLMICouldBeRouterToNetwork) GetPlx4xTypeName() string {
 	return "NLMICouldBeRouterToNetwork"
 }
 

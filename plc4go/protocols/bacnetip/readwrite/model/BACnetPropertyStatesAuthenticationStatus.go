@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesAuthenticationStatus(structType any) BACnetProperty
 	return nil
 }
 
-func (m *_BACnetPropertyStatesAuthenticationStatus) GetTypeName() string {
+func (m *_BACnetPropertyStatesAuthenticationStatus) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesAuthenticationStatus"
 }
 

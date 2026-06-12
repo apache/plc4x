@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -1449,7 +1450,7 @@ func CastSessionDiagnosticsDataType(structType any) SessionDiagnosticsDataType {
 	return nil
 }
 
-func (m *_SessionDiagnosticsDataType) GetTypeName() string {
+func (m *_SessionDiagnosticsDataType) GetPlx4xTypeName() string {
 	return "SessionDiagnosticsDataType"
 }
 
@@ -1611,265 +1612,265 @@ func (m *_SessionDiagnosticsDataType) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionId' field"))
 	}
 	m.SessionId = sessionId
 
-	sessionName, err := ReadSimpleField[PascalString](ctx, "sessionName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	sessionName, err := ReadSimpleField[PascalString](ctx, "sessionName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionName' field"))
 	}
 	m.SessionName = sessionName
 
-	clientDescription, err := ReadSimpleField[ApplicationDescription](ctx, "clientDescription", ReadComplex[ApplicationDescription](ExtensionObjectDefinitionParseWithBufferProducer[ApplicationDescription]((int32)(int32(310))), readBuffer))
+	clientDescription, err := ReadSimpleField[ApplicationDescription](ctx, "clientDescription", ReadComplex[ApplicationDescription](ExtensionObjectDefinitionParseWithBufferProducer[ApplicationDescription]((int32)(int32(310))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientDescription' field"))
 	}
 	m.ClientDescription = clientDescription
 
-	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUri' field"))
 	}
 	m.ServerUri = serverUri
 
-	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
 	m.EndpointUrl = endpointUrl
 
-	noOfLocaleIds, err := ReadImplicitField[int32](ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLocaleIds, err := ReadImplicitField[int32](ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
 	_ = noOfLocaleIds
 
-	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
+	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeIds' field"))
 	}
 	m.LocaleIds = localeIds
 
-	actualSessionTimeout, err := ReadSimpleField(ctx, "actualSessionTimeout", ReadDouble(readBuffer, uint8(64)))
+	actualSessionTimeout, err := ReadSimpleField(ctx, "actualSessionTimeout", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualSessionTimeout' field"))
 	}
 	m.ActualSessionTimeout = actualSessionTimeout
 
-	maxResponseMessageSize, err := ReadSimpleField(ctx, "maxResponseMessageSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	maxResponseMessageSize, err := ReadSimpleField(ctx, "maxResponseMessageSize", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxResponseMessageSize' field"))
 	}
 	m.MaxResponseMessageSize = maxResponseMessageSize
 
-	clientConnectionTime, err := ReadSimpleField(ctx, "clientConnectionTime", ReadSignedLong(readBuffer, uint8(64)))
+	clientConnectionTime, err := ReadSimpleField(ctx, "clientConnectionTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientConnectionTime' field"))
 	}
 	m.ClientConnectionTime = clientConnectionTime
 
-	clientLastContactTime, err := ReadSimpleField(ctx, "clientLastContactTime", ReadSignedLong(readBuffer, uint8(64)))
+	clientLastContactTime, err := ReadSimpleField(ctx, "clientLastContactTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientLastContactTime' field"))
 	}
 	m.ClientLastContactTime = clientLastContactTime
 
-	currentSubscriptionsCount, err := ReadSimpleField(ctx, "currentSubscriptionsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	currentSubscriptionsCount, err := ReadSimpleField(ctx, "currentSubscriptionsCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentSubscriptionsCount' field"))
 	}
 	m.CurrentSubscriptionsCount = currentSubscriptionsCount
 
-	currentMonitoredItemsCount, err := ReadSimpleField(ctx, "currentMonitoredItemsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	currentMonitoredItemsCount, err := ReadSimpleField(ctx, "currentMonitoredItemsCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentMonitoredItemsCount' field"))
 	}
 	m.CurrentMonitoredItemsCount = currentMonitoredItemsCount
 
-	currentPublishRequestsInQueue, err := ReadSimpleField(ctx, "currentPublishRequestsInQueue", ReadUnsignedInt(readBuffer, uint8(32)))
+	currentPublishRequestsInQueue, err := ReadSimpleField(ctx, "currentPublishRequestsInQueue", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentPublishRequestsInQueue' field"))
 	}
 	m.CurrentPublishRequestsInQueue = currentPublishRequestsInQueue
 
-	totalRequestCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "totalRequestCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	totalRequestCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "totalRequestCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalRequestCount' field"))
 	}
 	m.TotalRequestCount = totalRequestCount
 
-	unauthorizedRequestCount, err := ReadSimpleField(ctx, "unauthorizedRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	unauthorizedRequestCount, err := ReadSimpleField(ctx, "unauthorizedRequestCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unauthorizedRequestCount' field"))
 	}
 	m.UnauthorizedRequestCount = unauthorizedRequestCount
 
-	readCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "readCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	readCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "readCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readCount' field"))
 	}
 	m.ReadCount = readCount
 
-	historyReadCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "historyReadCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	historyReadCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "historyReadCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyReadCount' field"))
 	}
 	m.HistoryReadCount = historyReadCount
 
-	writeCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "writeCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	writeCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "writeCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeCount' field"))
 	}
 	m.WriteCount = writeCount
 
-	historyUpdateCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "historyUpdateCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	historyUpdateCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "historyUpdateCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyUpdateCount' field"))
 	}
 	m.HistoryUpdateCount = historyUpdateCount
 
-	callCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "callCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	callCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "callCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'callCount' field"))
 	}
 	m.CallCount = callCount
 
-	createMonitoredItemsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "createMonitoredItemsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	createMonitoredItemsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "createMonitoredItemsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createMonitoredItemsCount' field"))
 	}
 	m.CreateMonitoredItemsCount = createMonitoredItemsCount
 
-	modifyMonitoredItemsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "modifyMonitoredItemsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	modifyMonitoredItemsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "modifyMonitoredItemsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modifyMonitoredItemsCount' field"))
 	}
 	m.ModifyMonitoredItemsCount = modifyMonitoredItemsCount
 
-	setMonitoringModeCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "setMonitoringModeCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	setMonitoringModeCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "setMonitoringModeCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setMonitoringModeCount' field"))
 	}
 	m.SetMonitoringModeCount = setMonitoringModeCount
 
-	setTriggeringCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "setTriggeringCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	setTriggeringCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "setTriggeringCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setTriggeringCount' field"))
 	}
 	m.SetTriggeringCount = setTriggeringCount
 
-	deleteMonitoredItemsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteMonitoredItemsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	deleteMonitoredItemsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteMonitoredItemsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteMonitoredItemsCount' field"))
 	}
 	m.DeleteMonitoredItemsCount = deleteMonitoredItemsCount
 
-	createSubscriptionCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "createSubscriptionCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	createSubscriptionCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "createSubscriptionCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createSubscriptionCount' field"))
 	}
 	m.CreateSubscriptionCount = createSubscriptionCount
 
-	modifySubscriptionCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "modifySubscriptionCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	modifySubscriptionCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "modifySubscriptionCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modifySubscriptionCount' field"))
 	}
 	m.ModifySubscriptionCount = modifySubscriptionCount
 
-	setPublishingModeCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "setPublishingModeCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	setPublishingModeCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "setPublishingModeCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setPublishingModeCount' field"))
 	}
 	m.SetPublishingModeCount = setPublishingModeCount
 
-	publishCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "publishCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	publishCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "publishCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishCount' field"))
 	}
 	m.PublishCount = publishCount
 
-	republishCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "republishCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	republishCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "republishCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'republishCount' field"))
 	}
 	m.RepublishCount = republishCount
 
-	transferSubscriptionsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "transferSubscriptionsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	transferSubscriptionsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "transferSubscriptionsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transferSubscriptionsCount' field"))
 	}
 	m.TransferSubscriptionsCount = transferSubscriptionsCount
 
-	deleteSubscriptionsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteSubscriptionsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	deleteSubscriptionsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteSubscriptionsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteSubscriptionsCount' field"))
 	}
 	m.DeleteSubscriptionsCount = deleteSubscriptionsCount
 
-	addNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "addNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	addNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "addNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addNodesCount' field"))
 	}
 	m.AddNodesCount = addNodesCount
 
-	addReferencesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "addReferencesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	addReferencesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "addReferencesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addReferencesCount' field"))
 	}
 	m.AddReferencesCount = addReferencesCount
 
-	deleteNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	deleteNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteNodesCount' field"))
 	}
 	m.DeleteNodesCount = deleteNodesCount
 
-	deleteReferencesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteReferencesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	deleteReferencesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "deleteReferencesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteReferencesCount' field"))
 	}
 	m.DeleteReferencesCount = deleteReferencesCount
 
-	browseCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "browseCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	browseCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "browseCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browseCount' field"))
 	}
 	m.BrowseCount = browseCount
 
-	browseNextCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "browseNextCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	browseNextCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "browseNextCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browseNextCount' field"))
 	}
 	m.BrowseNextCount = browseNextCount
 
-	translateBrowsePathsToNodeIdsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "translateBrowsePathsToNodeIdsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	translateBrowsePathsToNodeIdsCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "translateBrowsePathsToNodeIdsCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'translateBrowsePathsToNodeIdsCount' field"))
 	}
 	m.TranslateBrowsePathsToNodeIdsCount = translateBrowsePathsToNodeIdsCount
 
-	queryFirstCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "queryFirstCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	queryFirstCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "queryFirstCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryFirstCount' field"))
 	}
 	m.QueryFirstCount = queryFirstCount
 
-	queryNextCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "queryNextCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	queryNextCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "queryNextCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryNextCount' field"))
 	}
 	m.QueryNextCount = queryNextCount
 
-	registerNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "registerNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	registerNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "registerNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'registerNodesCount' field"))
 	}
 	m.RegisterNodesCount = registerNodesCount
 
-	unregisterNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "unregisterNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer))
+	unregisterNodesCount, err := ReadSimpleField[ServiceCounterDataType](ctx, "unregisterNodesCount", ReadComplex[ServiceCounterDataType](ExtensionObjectDefinitionParseWithBufferProducer[ServiceCounterDataType]((int32)(int32(873))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unregisterNodesCount' field"))
 	}
@@ -1900,179 +1901,179 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for SessionDiagnosticsDataType")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sessionId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "sessionName", m.GetSessionName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "sessionName", m.GetSessionName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sessionName' field")
 		}
 
-		if err := WriteSimpleField[ApplicationDescription](ctx, "clientDescription", m.GetClientDescription(), WriteComplex[ApplicationDescription](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ApplicationDescription](ctx, "clientDescription", m.GetClientDescription(), WriteComplex[ApplicationDescription](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientDescription' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverUri' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 		noOfLocaleIds := int32(utils.InlineIf(bool((m.GetLocaleIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLocaleIds()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfLocaleIds", noOfLocaleIds, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfLocaleIds", noOfLocaleIds, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "actualSessionTimeout", m.GetActualSessionTimeout(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "actualSessionTimeout", m.GetActualSessionTimeout(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'actualSessionTimeout' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "maxResponseMessageSize", m.GetMaxResponseMessageSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "maxResponseMessageSize", m.GetMaxResponseMessageSize(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxResponseMessageSize' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "clientConnectionTime", m.GetClientConnectionTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "clientConnectionTime", m.GetClientConnectionTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientConnectionTime' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "clientLastContactTime", m.GetClientLastContactTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "clientLastContactTime", m.GetClientLastContactTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientLastContactTime' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "currentSubscriptionsCount", m.GetCurrentSubscriptionsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "currentSubscriptionsCount", m.GetCurrentSubscriptionsCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentSubscriptionsCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "currentMonitoredItemsCount", m.GetCurrentMonitoredItemsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "currentMonitoredItemsCount", m.GetCurrentMonitoredItemsCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentMonitoredItemsCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "currentPublishRequestsInQueue", m.GetCurrentPublishRequestsInQueue(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "currentPublishRequestsInQueue", m.GetCurrentPublishRequestsInQueue(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentPublishRequestsInQueue' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "totalRequestCount", m.GetTotalRequestCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "totalRequestCount", m.GetTotalRequestCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'totalRequestCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "unauthorizedRequestCount", m.GetUnauthorizedRequestCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "unauthorizedRequestCount", m.GetUnauthorizedRequestCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'unauthorizedRequestCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "readCount", m.GetReadCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "readCount", m.GetReadCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'readCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "historyReadCount", m.GetHistoryReadCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "historyReadCount", m.GetHistoryReadCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'historyReadCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "writeCount", m.GetWriteCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "writeCount", m.GetWriteCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'writeCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "historyUpdateCount", m.GetHistoryUpdateCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "historyUpdateCount", m.GetHistoryUpdateCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'historyUpdateCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "callCount", m.GetCallCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "callCount", m.GetCallCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'callCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "createMonitoredItemsCount", m.GetCreateMonitoredItemsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "createMonitoredItemsCount", m.GetCreateMonitoredItemsCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'createMonitoredItemsCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "modifyMonitoredItemsCount", m.GetModifyMonitoredItemsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "modifyMonitoredItemsCount", m.GetModifyMonitoredItemsCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'modifyMonitoredItemsCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "setMonitoringModeCount", m.GetSetMonitoringModeCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "setMonitoringModeCount", m.GetSetMonitoringModeCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'setMonitoringModeCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "setTriggeringCount", m.GetSetTriggeringCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "setTriggeringCount", m.GetSetTriggeringCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'setTriggeringCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteMonitoredItemsCount", m.GetDeleteMonitoredItemsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteMonitoredItemsCount", m.GetDeleteMonitoredItemsCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'deleteMonitoredItemsCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "createSubscriptionCount", m.GetCreateSubscriptionCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "createSubscriptionCount", m.GetCreateSubscriptionCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'createSubscriptionCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "modifySubscriptionCount", m.GetModifySubscriptionCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "modifySubscriptionCount", m.GetModifySubscriptionCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'modifySubscriptionCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "setPublishingModeCount", m.GetSetPublishingModeCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "setPublishingModeCount", m.GetSetPublishingModeCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'setPublishingModeCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "publishCount", m.GetPublishCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "publishCount", m.GetPublishCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "republishCount", m.GetRepublishCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "republishCount", m.GetRepublishCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'republishCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "transferSubscriptionsCount", m.GetTransferSubscriptionsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "transferSubscriptionsCount", m.GetTransferSubscriptionsCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'transferSubscriptionsCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteSubscriptionsCount", m.GetDeleteSubscriptionsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteSubscriptionsCount", m.GetDeleteSubscriptionsCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'deleteSubscriptionsCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "addNodesCount", m.GetAddNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "addNodesCount", m.GetAddNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'addNodesCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "addReferencesCount", m.GetAddReferencesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "addReferencesCount", m.GetAddReferencesCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'addReferencesCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteNodesCount", m.GetDeleteNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteNodesCount", m.GetDeleteNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'deleteNodesCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteReferencesCount", m.GetDeleteReferencesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "deleteReferencesCount", m.GetDeleteReferencesCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'deleteReferencesCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "browseCount", m.GetBrowseCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "browseCount", m.GetBrowseCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'browseCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "browseNextCount", m.GetBrowseNextCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "browseNextCount", m.GetBrowseNextCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'browseNextCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "translateBrowsePathsToNodeIdsCount", m.GetTranslateBrowsePathsToNodeIdsCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "translateBrowsePathsToNodeIdsCount", m.GetTranslateBrowsePathsToNodeIdsCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'translateBrowsePathsToNodeIdsCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "queryFirstCount", m.GetQueryFirstCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "queryFirstCount", m.GetQueryFirstCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'queryFirstCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "queryNextCount", m.GetQueryNextCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "queryNextCount", m.GetQueryNextCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'queryNextCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "registerNodesCount", m.GetRegisterNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "registerNodesCount", m.GetRegisterNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'registerNodesCount' field")
 		}
 
-		if err := WriteSimpleField[ServiceCounterDataType](ctx, "unregisterNodesCount", m.GetUnregisterNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ServiceCounterDataType](ctx, "unregisterNodesCount", m.GetUnregisterNodesCount(), WriteComplex[ServiceCounterDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'unregisterNodesCount' field")
 		}
 

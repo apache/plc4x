@@ -291,7 +291,7 @@ func CastBACnetUnconfirmedServiceRequestIHave(structType any) BACnetUnconfirmedS
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHave) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestIHave) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIHave"
 }
 

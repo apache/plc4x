@@ -211,7 +211,7 @@ func CastSysexCommandPinStateQuery(structType any) SysexCommandPinStateQuery {
 	return nil
 }
 
-func (m *_SysexCommandPinStateQuery) GetTypeName() string {
+func (m *_SysexCommandPinStateQuery) GetPlx4xTypeName() string {
 	return "SysexCommandPinStateQuery"
 }
 

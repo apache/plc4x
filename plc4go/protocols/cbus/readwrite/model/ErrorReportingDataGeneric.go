@@ -360,7 +360,7 @@ func CastErrorReportingDataGeneric(structType any) ErrorReportingDataGeneric {
 	return nil
 }
 
-func (m *_ErrorReportingDataGeneric) GetTypeName() string {
+func (m *_ErrorReportingDataGeneric) GetPlx4xTypeName() string {
 	return "ErrorReportingDataGeneric"
 }
 

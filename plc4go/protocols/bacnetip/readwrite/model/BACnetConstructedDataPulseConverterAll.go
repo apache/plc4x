@@ -184,7 +184,7 @@ func CastBACnetConstructedDataPulseConverterAll(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataPulseConverterAll) GetTypeName() string {
+func (m *_BACnetConstructedDataPulseConverterAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPulseConverterAll"
 }
 

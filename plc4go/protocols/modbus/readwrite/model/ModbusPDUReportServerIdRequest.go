@@ -188,7 +188,7 @@ func CastModbusPDUReportServerIdRequest(structType any) ModbusPDUReportServerIdR
 	return nil
 }
 
-func (m *_ModbusPDUReportServerIdRequest) GetTypeName() string {
+func (m *_ModbusPDUReportServerIdRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReportServerIdRequest"
 }
 

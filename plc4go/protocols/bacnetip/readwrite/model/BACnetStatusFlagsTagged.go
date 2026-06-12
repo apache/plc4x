@@ -252,7 +252,7 @@ func CastBACnetStatusFlagsTagged(structType any) BACnetStatusFlagsTagged {
 	return nil
 }
 
-func (m *_BACnetStatusFlagsTagged) GetTypeName() string {
+func (m *_BACnetStatusFlagsTagged) GetPlx4xTypeName() string {
 	return "BACnetStatusFlagsTagged"
 }
 

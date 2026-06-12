@@ -180,7 +180,7 @@ func CastPascalString(structType any) PascalString {
 	return nil
 }
 
-func (m *_PascalString) GetTypeName() string {
+func (m *_PascalString) GetPlx4xTypeName() string {
 	return "PascalString"
 }
 

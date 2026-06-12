@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDaysRemaining(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) GetTypeName() string {
+func (m *_BACnetConstructedDataDaysRemaining) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDaysRemaining"
 }
 

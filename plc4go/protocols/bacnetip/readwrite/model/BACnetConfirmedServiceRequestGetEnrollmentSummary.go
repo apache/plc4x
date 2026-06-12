@@ -360,7 +360,7 @@ func CastBACnetConfirmedServiceRequestGetEnrollmentSummary(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestGetEnrollmentSummary"
 }
 

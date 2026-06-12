@@ -238,7 +238,7 @@ func CastBACnetApplicationTagEnumerated(structType any) BACnetApplicationTagEnum
 	return nil
 }
 
-func (m *_BACnetApplicationTagEnumerated) GetTypeName() string {
+func (m *_BACnetApplicationTagEnumerated) GetPlx4xTypeName() string {
 	return "BACnetApplicationTagEnumerated"
 }
 

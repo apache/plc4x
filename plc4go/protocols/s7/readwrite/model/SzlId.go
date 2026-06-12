@@ -189,7 +189,7 @@ func CastSzlId(structType any) SzlId {
 	return nil
 }
 
-func (m *_SzlId) GetTypeName() string {
+func (m *_SzlId) GetPlx4xTypeName() string {
 	return "SzlId"
 }
 

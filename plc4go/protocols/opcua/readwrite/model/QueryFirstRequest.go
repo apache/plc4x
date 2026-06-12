@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -336,7 +337,7 @@ func CastQueryFirstRequest(structType any) QueryFirstRequest {
 	return nil
 }
 
-func (m *_QueryFirstRequest) GetTypeName() string {
+func (m *_QueryFirstRequest) GetPlx4xTypeName() string {
 	return "QueryFirstRequest"
 }
 
@@ -387,43 +388,43 @@ func (m *_QueryFirstRequest) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	view, err := ReadSimpleField[ViewDescription](ctx, "view", ReadComplex[ViewDescription](ExtensionObjectDefinitionParseWithBufferProducer[ViewDescription]((int32)(int32(513))), readBuffer))
+	view, err := ReadSimpleField[ViewDescription](ctx, "view", ReadComplex[ViewDescription](ExtensionObjectDefinitionParseWithBufferProducer[ViewDescription]((int32)(int32(513))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'view' field"))
 	}
 	m.View = view
 
-	noOfNodeTypes, err := ReadImplicitField[int32](ctx, "noOfNodeTypes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodeTypes, err := ReadImplicitField[int32](ctx, "noOfNodeTypes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodeTypes' field"))
 	}
 	_ = noOfNodeTypes
 
-	nodeTypes, err := ReadCountArrayField[NodeTypeDescription](ctx, "nodeTypes", ReadComplex[NodeTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[NodeTypeDescription]((int32)(int32(575))), readBuffer), uint64(noOfNodeTypes))
+	nodeTypes, err := ReadCountArrayField[NodeTypeDescription](ctx, "nodeTypes", ReadComplex[NodeTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[NodeTypeDescription]((int32)(int32(575))), readBuffer), uint64(noOfNodeTypes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeTypes' field"))
 	}
 	m.NodeTypes = nodeTypes
 
-	filter, err := ReadSimpleField[ContentFilter](ctx, "filter", ReadComplex[ContentFilter](ExtensionObjectDefinitionParseWithBufferProducer[ContentFilter]((int32)(int32(588))), readBuffer))
+	filter, err := ReadSimpleField[ContentFilter](ctx, "filter", ReadComplex[ContentFilter](ExtensionObjectDefinitionParseWithBufferProducer[ContentFilter]((int32)(int32(588))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filter' field"))
 	}
 	m.Filter = filter
 
-	maxDataSetsToReturn, err := ReadSimpleField(ctx, "maxDataSetsToReturn", ReadUnsignedInt(readBuffer, uint8(32)))
+	maxDataSetsToReturn, err := ReadSimpleField(ctx, "maxDataSetsToReturn", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxDataSetsToReturn' field"))
 	}
 	m.MaxDataSetsToReturn = maxDataSetsToReturn
 
-	maxReferencesToReturn, err := ReadSimpleField(ctx, "maxReferencesToReturn", ReadUnsignedInt(readBuffer, uint8(32)))
+	maxReferencesToReturn, err := ReadSimpleField(ctx, "maxReferencesToReturn", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxReferencesToReturn' field"))
 	}
@@ -454,31 +455,31 @@ func (m *_QueryFirstRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for QueryFirstRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteSimpleField[ViewDescription](ctx, "view", m.GetView(), WriteComplex[ViewDescription](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ViewDescription](ctx, "view", m.GetView(), WriteComplex[ViewDescription](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'view' field")
 		}
 		noOfNodeTypes := int32(utils.InlineIf(bool((m.GetNodeTypes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodeTypes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNodeTypes", noOfNodeTypes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNodeTypes", noOfNodeTypes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodeTypes' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "nodeTypes", m.GetNodeTypes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "nodeTypes", m.GetNodeTypes(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodeTypes' field")
 		}
 
-		if err := WriteSimpleField[ContentFilter](ctx, "filter", m.GetFilter(), WriteComplex[ContentFilter](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ContentFilter](ctx, "filter", m.GetFilter(), WriteComplex[ContentFilter](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'filter' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "maxDataSetsToReturn", m.GetMaxDataSetsToReturn(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "maxDataSetsToReturn", m.GetMaxDataSetsToReturn(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxDataSetsToReturn' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "maxReferencesToReturn", m.GetMaxReferencesToReturn(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "maxReferencesToReturn", m.GetMaxReferencesToReturn(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxReferencesToReturn' field")
 		}
 

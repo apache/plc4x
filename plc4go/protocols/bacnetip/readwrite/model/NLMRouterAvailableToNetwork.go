@@ -207,7 +207,7 @@ func CastNLMRouterAvailableToNetwork(structType any) NLMRouterAvailableToNetwork
 	return nil
 }
 
-func (m *_NLMRouterAvailableToNetwork) GetTypeName() string {
+func (m *_NLMRouterAvailableToNetwork) GetPlx4xTypeName() string {
 	return "NLMRouterAvailableToNetwork"
 }
 

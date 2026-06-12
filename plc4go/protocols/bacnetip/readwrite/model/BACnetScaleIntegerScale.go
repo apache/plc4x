@@ -221,7 +221,7 @@ func CastBACnetScaleIntegerScale(structType any) BACnetScaleIntegerScale {
 	return nil
 }
 
-func (m *_BACnetScaleIntegerScale) GetTypeName() string {
+func (m *_BACnetScaleIntegerScale) GetPlx4xTypeName() string {
 	return "BACnetScaleIntegerScale"
 }
 

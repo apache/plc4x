@@ -221,7 +221,7 @@ func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(st
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"
 }
 

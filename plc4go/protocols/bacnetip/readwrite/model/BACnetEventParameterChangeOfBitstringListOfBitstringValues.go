@@ -225,7 +225,7 @@ func CastBACnetEventParameterChangeOfBitstringListOfBitstringValues(structType a
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfBitstringListOfBitstringValues"
 }
 

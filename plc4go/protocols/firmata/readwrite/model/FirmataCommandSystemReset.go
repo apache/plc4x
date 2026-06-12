@@ -180,7 +180,7 @@ func CastFirmataCommandSystemReset(structType any) FirmataCommandSystemReset {
 	return nil
 }
 
-func (m *_FirmataCommandSystemReset) GetTypeName() string {
+func (m *_FirmataCommandSystemReset) GetPlx4xTypeName() string {
 	return "FirmataCommandSystemReset"
 }
 

@@ -322,8 +322,8 @@ public class ${type.name} {
                 <#case "DATE_AND_LTIME">
                     <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
                         return PlcDATE_AND_LTIME.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);
-                    <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nannosecondsOfSecond")>
-                        return PlcDATE_AND_LTIME.ofSegments(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, nannosecondsOfSecond);
+                    <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanosecondsOfSecond")>
+                        return PlcDATE_AND_LTIME.ofSegments(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, nanosecondsOfSecond);
                     </#if>
                     <#break>
                 <#case "LDATE_AND_TIME">

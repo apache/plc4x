@@ -243,7 +243,7 @@ func CastBACnetTimeStampEnclosed(structType any) BACnetTimeStampEnclosed {
 	return nil
 }
 
-func (m *_BACnetTimeStampEnclosed) GetTypeName() string {
+func (m *_BACnetTimeStampEnclosed) GetPlx4xTypeName() string {
 	return "BACnetTimeStampEnclosed"
 }
 

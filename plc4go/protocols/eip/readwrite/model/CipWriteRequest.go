@@ -260,7 +260,7 @@ func CastCipWriteRequest(structType any) CipWriteRequest {
 	return nil
 }
 
-func (m *_CipWriteRequest) GetTypeName() string {
+func (m *_CipWriteRequest) GetPlx4xTypeName() string {
 	return "CipWriteRequest"
 }
 

@@ -237,7 +237,7 @@ func CastBACnetLandingCallStatus(structType any) BACnetLandingCallStatus {
 	return nil
 }
 
-func (m *_BACnetLandingCallStatus) GetTypeName() string {
+func (m *_BACnetLandingCallStatus) GetPlx4xTypeName() string {
 	return "BACnetLandingCallStatus"
 }
 

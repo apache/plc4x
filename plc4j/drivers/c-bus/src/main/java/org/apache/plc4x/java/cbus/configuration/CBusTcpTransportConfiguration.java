@@ -20,9 +20,9 @@
 package org.apache.plc4x.java.cbus.configuration;
 
 import org.apache.plc4x.java.cbus.readwrite.Constants;
-import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
+import org.apache.plc4x.java.transport.tcp.config.TcpTransportConfiguration;
 
-public class CBusTcpTransportConfiguration extends DefaultTcpTransportConfiguration {
+public class CBusTcpTransportConfiguration extends TcpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {

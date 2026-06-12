@@ -22,8 +22,8 @@
 
   <name>MQTT5</name>
 
-  <protocolName>mqtt</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>mqtt</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>MQTT Connection Request</name>

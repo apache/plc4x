@@ -16,23 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.profinet.device;
 
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.drivers.functions.PlcSubscriber;
 
-public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
+import java.util.Collections;
+import java.util.function.Consumer;
 
+/**
+ * Per-tag subscription handle. The new SPI dropped {@code DefaultPlcSubscriptionHandle}
+ * so we implement {@link PlcSubscriptionHandle} directly.
+ */
+public class ProfinetSubscriptionHandle implements PlcSubscriptionHandle {
+
+    private final PlcSubscriber subscriber;
     private final PlcSubscriptionTag tag;
     private final String address;
     private PlcValue lastValue;
 
-    public ProfinetSubscriptionHandle(PlcSubscriber plcSubscriber, String address, PlcSubscriptionTag tag) {
-        super(plcSubscriber);
+    public ProfinetSubscriptionHandle(PlcSubscriber subscriber, String address, PlcSubscriptionTag tag) {
+        this.subscriber = subscriber;
         this.address = address;
         this.tag = tag;
     }
@@ -56,4 +65,10 @@ public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     public void setLastValue(PlcValue lastValue) {
         this.lastValue = lastValue;
     }
+
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
+        return subscriber.registerConsumer(consumer, Collections.singletonList(this));
+    }
+
 }

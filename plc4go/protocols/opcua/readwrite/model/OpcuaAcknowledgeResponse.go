@@ -244,7 +244,7 @@ func CastOpcuaAcknowledgeResponse(structType any) OpcuaAcknowledgeResponse {
 	return nil
 }
 
-func (m *_OpcuaAcknowledgeResponse) GetTypeName() string {
+func (m *_OpcuaAcknowledgeResponse) GetPlx4xTypeName() string {
 	return "OpcuaAcknowledgeResponse"
 }
 

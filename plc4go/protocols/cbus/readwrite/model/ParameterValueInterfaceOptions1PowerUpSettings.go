@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -225,7 +227,7 @@ func CastParameterValueInterfaceOptions1PowerUpSettings(structType any) Paramete
 	return nil
 }
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetTypeName() string {
+func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetPlx4xTypeName() string {
 	return "ParameterValueInterfaceOptions1PowerUpSettings"
 }
 
@@ -258,7 +260,7 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) parse(ctx context.Cont
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "InterfaceOptions1PowerUpSettings has exactly one byte"})
 	}
 
-	value, err := ReadSimpleField[InterfaceOptions1PowerUpSettings](ctx, "value", ReadComplex[InterfaceOptions1PowerUpSettings](InterfaceOptions1PowerUpSettingsParseWithBuffer, readBuffer))
+	value, err := ReadSimpleField[InterfaceOptions1PowerUpSettings](ctx, "value", ReadComplex[InterfaceOptions1PowerUpSettings](InterfaceOptions1PowerUpSettingsParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -272,7 +274,7 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) parse(ctx context.Cont
 }
 
 func (m *_ParameterValueInterfaceOptions1PowerUpSettings) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -289,7 +291,7 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueInterfaceOptions1PowerUpSettings")
 		}
 
-		if err := WriteSimpleField[InterfaceOptions1PowerUpSettings](ctx, "value", m.GetValue(), WriteComplex[InterfaceOptions1PowerUpSettings](writeBuffer)); err != nil {
+		if err := WriteSimpleField[InterfaceOptions1PowerUpSettings](ctx, "value", m.GetValue(), WriteComplex[InterfaceOptions1PowerUpSettings](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 

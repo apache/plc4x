@@ -228,7 +228,7 @@ func CastModbusADU(structType any) ModbusADU {
 	return nil
 }
 
-func (m *_ModbusADU) GetTypeName() string {
+func (m *_ModbusADU) GetPlx4xTypeName() string {
 	return "ModbusADU"
 }
 

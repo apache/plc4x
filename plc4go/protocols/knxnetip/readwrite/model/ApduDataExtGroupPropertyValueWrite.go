@@ -180,7 +180,7 @@ func CastApduDataExtGroupPropertyValueWrite(structType any) ApduDataExtGroupProp
 	return nil
 }
 
-func (m *_ApduDataExtGroupPropertyValueWrite) GetTypeName() string {
+func (m *_ApduDataExtGroupPropertyValueWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtGroupPropertyValueWrite"
 }
 

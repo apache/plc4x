@@ -50,10 +50,10 @@ type AdsTableSizes interface {
 	GetDataTypeCount() uint32
 	// GetDataTypeLength returns DataTypeLength (property field)
 	GetDataTypeLength() uint32
-	// GetExtraCount returns ExtraCount (property field)
-	GetExtraCount() uint32
-	// GetExtraLength returns ExtraLength (property field)
-	GetExtraLength() uint32
+	// GetAliasCount returns AliasCount (property field)
+	GetAliasCount() uint32
+	// GetAliasLength returns AliasLength (property field)
+	GetAliasLength() uint32
 	// IsAdsTableSizes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsTableSizes()
 	// CreateBuilder creates a AdsTableSizesBuilder
@@ -66,15 +66,15 @@ type _AdsTableSizes struct {
 	SymbolLength   uint32
 	DataTypeCount  uint32
 	DataTypeLength uint32
-	ExtraCount     uint32
-	ExtraLength    uint32
+	AliasCount     uint32
+	AliasLength    uint32
 }
 
 var _ AdsTableSizes = (*_AdsTableSizes)(nil)
 
 // NewAdsTableSizes factory function for _AdsTableSizes
-func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) *_AdsTableSizes {
-	return &_AdsTableSizes{SymbolCount: symbolCount, SymbolLength: symbolLength, DataTypeCount: dataTypeCount, DataTypeLength: dataTypeLength, ExtraCount: extraCount, ExtraLength: extraLength}
+func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, aliasCount uint32, aliasLength uint32) *_AdsTableSizes {
+	return &_AdsTableSizes{SymbolCount: symbolCount, SymbolLength: symbolLength, DataTypeCount: dataTypeCount, DataTypeLength: dataTypeLength, AliasCount: aliasCount, AliasLength: aliasLength}
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uin
 type AdsTableSizesBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) AdsTableSizesBuilder
+	WithMandatoryFields(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, aliasCount uint32, aliasLength uint32) AdsTableSizesBuilder
 	// WithSymbolCount adds SymbolCount (property field)
 	WithSymbolCount(uint32) AdsTableSizesBuilder
 	// WithSymbolLength adds SymbolLength (property field)
@@ -95,10 +95,10 @@ type AdsTableSizesBuilder interface {
 	WithDataTypeCount(uint32) AdsTableSizesBuilder
 	// WithDataTypeLength adds DataTypeLength (property field)
 	WithDataTypeLength(uint32) AdsTableSizesBuilder
-	// WithExtraCount adds ExtraCount (property field)
-	WithExtraCount(uint32) AdsTableSizesBuilder
-	// WithExtraLength adds ExtraLength (property field)
-	WithExtraLength(uint32) AdsTableSizesBuilder
+	// WithAliasCount adds AliasCount (property field)
+	WithAliasCount(uint32) AdsTableSizesBuilder
+	// WithAliasLength adds AliasLength (property field)
+	WithAliasLength(uint32) AdsTableSizesBuilder
 	// Build builds the AdsTableSizes or returns an error if something is wrong
 	Build() (AdsTableSizes, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,8 +118,8 @@ type _AdsTableSizesBuilder struct {
 
 var _ (AdsTableSizesBuilder) = (*_AdsTableSizesBuilder)(nil)
 
-func (b *_AdsTableSizesBuilder) WithMandatoryFields(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) AdsTableSizesBuilder {
-	return b.WithSymbolCount(symbolCount).WithSymbolLength(symbolLength).WithDataTypeCount(dataTypeCount).WithDataTypeLength(dataTypeLength).WithExtraCount(extraCount).WithExtraLength(extraLength)
+func (b *_AdsTableSizesBuilder) WithMandatoryFields(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, aliasCount uint32, aliasLength uint32) AdsTableSizesBuilder {
+	return b.WithSymbolCount(symbolCount).WithSymbolLength(symbolLength).WithDataTypeCount(dataTypeCount).WithDataTypeLength(dataTypeLength).WithAliasCount(aliasCount).WithAliasLength(aliasLength)
 }
 
 func (b *_AdsTableSizesBuilder) WithSymbolCount(symbolCount uint32) AdsTableSizesBuilder {
@@ -142,13 +142,13 @@ func (b *_AdsTableSizesBuilder) WithDataTypeLength(dataTypeLength uint32) AdsTab
 	return b
 }
 
-func (b *_AdsTableSizesBuilder) WithExtraCount(extraCount uint32) AdsTableSizesBuilder {
-	b.ExtraCount = extraCount
+func (b *_AdsTableSizesBuilder) WithAliasCount(aliasCount uint32) AdsTableSizesBuilder {
+	b.AliasCount = aliasCount
 	return b
 }
 
-func (b *_AdsTableSizesBuilder) WithExtraLength(extraLength uint32) AdsTableSizesBuilder {
-	b.ExtraLength = extraLength
+func (b *_AdsTableSizesBuilder) WithAliasLength(aliasLength uint32) AdsTableSizesBuilder {
+	b.AliasLength = aliasLength
 	return b
 }
 
@@ -209,12 +209,12 @@ func (m *_AdsTableSizes) GetDataTypeLength() uint32 {
 	return m.DataTypeLength
 }
 
-func (m *_AdsTableSizes) GetExtraCount() uint32 {
-	return m.ExtraCount
+func (m *_AdsTableSizes) GetAliasCount() uint32 {
+	return m.AliasCount
 }
 
-func (m *_AdsTableSizes) GetExtraLength() uint32 {
-	return m.ExtraLength
+func (m *_AdsTableSizes) GetAliasLength() uint32 {
+	return m.AliasLength
 }
 
 ///////////////////////
@@ -233,7 +233,7 @@ func CastAdsTableSizes(structType any) AdsTableSizes {
 	return nil
 }
 
-func (m *_AdsTableSizes) GetTypeName() string {
+func (m *_AdsTableSizes) GetPlx4xTypeName() string {
 	return "AdsTableSizes"
 }
 
@@ -252,10 +252,10 @@ func (m *_AdsTableSizes) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (dataTypeLength)
 	lengthInBits += 32
 
-	// Simple field (extraCount)
+	// Simple field (aliasCount)
 	lengthInBits += 32
 
-	// Simple field (extraLength)
+	// Simple field (aliasLength)
 	lengthInBits += 32
 
 	return lengthInBits
@@ -316,17 +316,17 @@ func (m *_AdsTableSizes) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 	m.DataTypeLength = dataTypeLength
 
-	extraCount, err := ReadSimpleField(ctx, "extraCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	aliasCount, err := ReadSimpleField(ctx, "aliasCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extraCount' field"))
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'aliasCount' field"))
 	}
-	m.ExtraCount = extraCount
+	m.AliasCount = aliasCount
 
-	extraLength, err := ReadSimpleField(ctx, "extraLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	aliasLength, err := ReadSimpleField(ctx, "aliasLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extraLength' field"))
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'aliasLength' field"))
 	}
-	m.ExtraLength = extraLength
+	m.AliasLength = aliasLength
 
 	if closeErr := readBuffer.CloseContext("AdsTableSizes"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsTableSizes")
@@ -368,12 +368,12 @@ func (m *_AdsTableSizes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(err, "Error serializing 'dataTypeLength' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "extraCount", m.GetExtraCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'extraCount' field")
+	if err := WriteSimpleField[uint32](ctx, "aliasCount", m.GetAliasCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'aliasCount' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "extraLength", m.GetExtraLength(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'extraLength' field")
+	if err := WriteSimpleField[uint32](ctx, "aliasLength", m.GetAliasLength(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'aliasLength' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsTableSizes"); popErr != nil {
@@ -397,8 +397,8 @@ func (m *_AdsTableSizes) deepCopy() *_AdsTableSizes {
 		m.SymbolLength,
 		m.DataTypeCount,
 		m.DataTypeLength,
-		m.ExtraCount,
-		m.ExtraLength,
+		m.AliasCount,
+		m.AliasLength,
 	}
 	return _AdsTableSizesCopy
 }

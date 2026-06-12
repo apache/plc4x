@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesLifeSafetyOperations(structType any) BACnetProperty
 	return nil
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyOperations) GetTypeName() string {
+func (m *_BACnetPropertyStatesLifeSafetyOperations) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesLifeSafetyOperations"
 }
 

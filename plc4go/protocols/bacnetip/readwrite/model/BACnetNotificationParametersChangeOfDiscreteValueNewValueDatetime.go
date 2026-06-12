@@ -221,7 +221,7 @@ func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime(struc
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"
 }
 

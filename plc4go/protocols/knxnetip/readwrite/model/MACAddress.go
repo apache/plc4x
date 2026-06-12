@@ -161,7 +161,7 @@ func CastMACAddress(structType any) MACAddress {
 	return nil
 }
 
-func (m *_MACAddress) GetTypeName() string {
+func (m *_MACAddress) GetPlx4xTypeName() string {
 	return "MACAddress"
 }
 

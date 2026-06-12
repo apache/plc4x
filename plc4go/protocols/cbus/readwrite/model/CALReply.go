@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -273,7 +275,7 @@ func CastCALReply(structType any) CALReply {
 	return nil
 }
 
-func (m *_CALReply) GetTypeName() string {
+func (m *_CALReply) GetPlx4xTypeName() string {
 	return "CALReply"
 }
 
@@ -295,7 +297,7 @@ func (m *_CALReply) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func CALReplyParse[T CALReply](ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
-	return CALReplyParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return CALReplyParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext)
 }
 
 func CALReplyParseWithBufferProducer[T CALReply](cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -332,7 +334,7 @@ func (m *_CALReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBus
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	calType, err := ReadPeekField[byte](ctx, "calType", ReadByte(readBuffer, 8), 0)
+	calType, err := ReadPeekField[byte](ctx, "calType", ReadByte(readBuffer, 8), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calType' field"))
 	}
@@ -353,7 +355,7 @@ func (m *_CALReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBus
 		return nil, errors.Errorf("Unmapped type for parameters [calType=%v]", calType)
 	}
 
-	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(requestContext)), readBuffer))
+	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(requestContext)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
@@ -383,7 +385,7 @@ func (pm *_CALReply) serializeParent(ctx context.Context, writeBuffer utils.Writ
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteSimpleField[CALData](ctx, "calData", m.GetCalData(), WriteComplex[CALData](writeBuffer)); err != nil {
+	if err := WriteSimpleField[CALData](ctx, "calData", m.GetCalData(), WriteComplex[CALData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'calData' field")
 	}
 

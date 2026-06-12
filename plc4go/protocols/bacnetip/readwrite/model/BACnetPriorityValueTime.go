@@ -221,7 +221,7 @@ func CastBACnetPriorityValueTime(structType any) BACnetPriorityValueTime {
 	return nil
 }
 
-func (m *_BACnetPriorityValueTime) GetTypeName() string {
+func (m *_BACnetPriorityValueTime) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueTime"
 }
 

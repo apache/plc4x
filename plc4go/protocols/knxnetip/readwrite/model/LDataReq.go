@@ -256,7 +256,7 @@ func CastLDataReq(structType any) LDataReq {
 	return nil
 }
 
-func (m *_LDataReq) GetTypeName() string {
+func (m *_LDataReq) GetPlx4xTypeName() string {
 	return "LDataReq"
 }
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -303,7 +304,7 @@ func CastApplicationIdentityDataType(structType any) ApplicationIdentityDataType
 	return nil
 }
 
-func (m *_ApplicationIdentityDataType) GetTypeName() string {
+func (m *_ApplicationIdentityDataType) GetPlx4xTypeName() string {
 	return "ApplicationIdentityDataType"
 }
 
@@ -367,49 +368,49 @@ func (m *_ApplicationIdentityDataType) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 	m.Name = name
 
-	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfRecordProperties, err := ReadImplicitField[int32](ctx, "noOfRecordProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRecordProperties' field"))
 	}
 	_ = noOfRecordProperties
 
-	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties))
+	recordProperties, err := ReadCountArrayField[KeyValuePair](ctx, "recordProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfRecordProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordProperties' field"))
 	}
 	m.RecordProperties = recordProperties
 
-	applicationUri, err := ReadSimpleField[PascalString](ctx, "applicationUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	applicationUri, err := ReadSimpleField[PascalString](ctx, "applicationUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationUri' field"))
 	}
 	m.ApplicationUri = applicationUri
 
-	noOfApplicationNames, err := ReadImplicitField[int32](ctx, "noOfApplicationNames", ReadSignedInt(readBuffer, uint8(32)))
+	noOfApplicationNames, err := ReadImplicitField[int32](ctx, "noOfApplicationNames", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfApplicationNames' field"))
 	}
 	_ = noOfApplicationNames
 
-	applicationNames, err := ReadCountArrayField[LocalizedText](ctx, "applicationNames", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), uint64(noOfApplicationNames))
+	applicationNames, err := ReadCountArrayField[LocalizedText](ctx, "applicationNames", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), uint64(noOfApplicationNames), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationNames' field"))
 	}
 	m.ApplicationNames = applicationNames
 
-	noOfAdditionalServers, err := ReadImplicitField[int32](ctx, "noOfAdditionalServers", ReadSignedInt(readBuffer, uint8(32)))
+	noOfAdditionalServers, err := ReadImplicitField[int32](ctx, "noOfAdditionalServers", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAdditionalServers' field"))
 	}
 	_ = noOfAdditionalServers
 
-	additionalServers, err := ReadCountArrayField[ApplicationDescription](ctx, "additionalServers", ReadComplex[ApplicationDescription](ExtensionObjectDefinitionParseWithBufferProducer[ApplicationDescription]((int32)(int32(310))), readBuffer), uint64(noOfAdditionalServers))
+	additionalServers, err := ReadCountArrayField[ApplicationDescription](ctx, "additionalServers", ReadComplex[ApplicationDescription](ExtensionObjectDefinitionParseWithBufferProducer[ApplicationDescription]((int32)(int32(310))), readBuffer), uint64(noOfAdditionalServers), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalServers' field"))
 	}
@@ -440,35 +441,35 @@ func (m *_ApplicationIdentityDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for ApplicationIdentityDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 		noOfRecordProperties := int32(utils.InlineIf(bool((m.GetRecordProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetRecordProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfRecordProperties", noOfRecordProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfRecordProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "recordProperties", m.GetRecordProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'recordProperties' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "applicationUri", m.GetApplicationUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "applicationUri", m.GetApplicationUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'applicationUri' field")
 		}
 		noOfApplicationNames := int32(utils.InlineIf(bool((m.GetApplicationNames()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetApplicationNames()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfApplicationNames", noOfApplicationNames, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfApplicationNames", noOfApplicationNames, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfApplicationNames' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "applicationNames", m.GetApplicationNames(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "applicationNames", m.GetApplicationNames(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'applicationNames' field")
 		}
 		noOfAdditionalServers := int32(utils.InlineIf(bool((m.GetAdditionalServers()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetAdditionalServers()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfAdditionalServers", noOfAdditionalServers, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfAdditionalServers", noOfAdditionalServers, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfAdditionalServers' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "additionalServers", m.GetAdditionalServers(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "additionalServers", m.GetAdditionalServers(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'additionalServers' field")
 		}
 

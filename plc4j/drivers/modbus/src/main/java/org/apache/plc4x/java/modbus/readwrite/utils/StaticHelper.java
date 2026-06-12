@@ -19,28 +19,33 @@
 package org.apache.plc4x.java.modbus.readwrite.utils;
 
 import org.apache.plc4x.java.modbus.readwrite.ModbusPDU;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 
 public class StaticHelper {
 
     // 8 Bit checksum, (byte) transported as 2 characters
     public static short asciiLrcCheck(short address, ModbusPDU pdu) {
-        final WriteBufferByteBased writeBufferByteBased = new WriteBufferByteBased(pdu.getLengthInBytes() + 1);
+        final WriteBufferByteBased writeBufferByteBased = new WriteBufferByteBased(new byte[pdu.getLengthInBytes() + 1],
+            WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
+            WithOption.WithSignedIntegerEncoding("twos-complement"),
+            WithOption.WithFloatEncoding("IEEE754"),
+            WithOption.WithStringEncoding("UTF8"));
         try {
             writeBufferByteBased.writeUnsignedShort(8, address);
             pdu.serialize(writeBufferByteBased);
-        } catch (SerializationException e) {
+        } catch (BufferException e) {
             throw new RuntimeException(e);
         }
         final byte[] bytes = writeBufferByteBased.getBytes();
 
         // A procedure for generating an LRC is:
-        // 1. Add all bytes in the message, (byte) excluding the starting ‘colon’ and ending
-        //    CRLF. Add them into an 8–bit tag, (byte) so that carries will be discarded.
-        // 2. Subtract the final tag value from FF hex (all 1’s), (byte) to produce the
-        //    ones–complement.
-        // 3. Add 1 to produce the twos–complement
+        // 1. Add all bytes in the message, (byte) excluding the starting 'colon' and ending
+        //    CRLF. Add them into an 8-bit tag, (byte) so that carries will be discarded.
+        // 2. Subtract the final tag value from FF hex (all 1's), (byte) to produce the
+        //    ones-complement.
+        // 3. Add 1 to produce the twos-complement
         // 4. Convert the 8 bit checksum into it's 16 bit (2 char) hex representation.
         //    (Handled in the transport layer)
         short lrc = 0;
@@ -53,11 +58,15 @@ public class StaticHelper {
 
     // Using the algorithm from PI_MBUS_300.pdf page 121
     public static int rtuCrcCheck(short address, ModbusPDU pdu) {
-        final WriteBufferByteBased writeBufferByteBased = new WriteBufferByteBased(pdu.getLengthInBytes() + 1);
+        final WriteBufferByteBased writeBufferByteBased = new WriteBufferByteBased(new byte[pdu.getLengthInBytes() + 1],
+            WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
+            WithOption.WithSignedIntegerEncoding("twos-complement"),
+            WithOption.WithFloatEncoding("IEEE754"),
+            WithOption.WithStringEncoding("UTF8"));
         try {
             writeBufferByteBased.writeUnsignedShort(8, address);
             pdu.serialize(writeBufferByteBased);
-        } catch (SerializationException e) {
+        } catch (BufferException e) {
             throw new RuntimeException(e);
         }
         final byte[] bytes = writeBufferByteBased.getBytes();

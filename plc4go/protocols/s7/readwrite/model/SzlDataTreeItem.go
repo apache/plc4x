@@ -217,7 +217,7 @@ func CastSzlDataTreeItem(structType any) SzlDataTreeItem {
 	return nil
 }
 
-func (m *_SzlDataTreeItem) GetTypeName() string {
+func (m *_SzlDataTreeItem) GetPlx4xTypeName() string {
 	return "SzlDataTreeItem"
 }
 

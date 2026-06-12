@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -207,7 +208,7 @@ func CastEndpointUrlListDataType(structType any) EndpointUrlListDataType {
 	return nil
 }
 
-func (m *_EndpointUrlListDataType) GetTypeName() string {
+func (m *_EndpointUrlListDataType) GetPlx4xTypeName() string {
 	return "EndpointUrlListDataType"
 }
 
@@ -243,13 +244,13 @@ func (m *_EndpointUrlListDataType) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfEndpointUrlList, err := ReadImplicitField[int32](ctx, "noOfEndpointUrlList", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEndpointUrlList, err := ReadImplicitField[int32](ctx, "noOfEndpointUrlList", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEndpointUrlList' field"))
 	}
 	_ = noOfEndpointUrlList
 
-	endpointUrlList, err := ReadCountArrayField[PascalString](ctx, "endpointUrlList", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfEndpointUrlList))
+	endpointUrlList, err := ReadCountArrayField[PascalString](ctx, "endpointUrlList", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfEndpointUrlList), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrlList' field"))
 	}
@@ -280,11 +281,11 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for EndpointUrlListDataType")
 		}
 		noOfEndpointUrlList := int32(utils.InlineIf(bool((m.GetEndpointUrlList()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEndpointUrlList()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfEndpointUrlList", noOfEndpointUrlList, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfEndpointUrlList", noOfEndpointUrlList, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEndpointUrlList' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "endpointUrlList", m.GetEndpointUrlList(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "endpointUrlList", m.GetEndpointUrlList(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'endpointUrlList' field")
 		}
 

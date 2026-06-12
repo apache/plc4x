@@ -320,7 +320,7 @@ func CastBACnetFaultParameterFaultOutOfRange(structType any) BACnetFaultParamete
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRange) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultOutOfRange) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultOutOfRange"
 }
 

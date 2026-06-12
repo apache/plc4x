@@ -180,7 +180,7 @@ func CastDataTypeDefinition(structType any) DataTypeDefinition {
 	return nil
 }
 
-func (m *_DataTypeDefinition) GetTypeName() string {
+func (m *_DataTypeDefinition) GetPlx4xTypeName() string {
 	return "DataTypeDefinition"
 }
 

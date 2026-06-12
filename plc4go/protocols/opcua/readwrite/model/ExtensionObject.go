@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -294,7 +295,7 @@ func CastExtensionObject(structType any) ExtensionObject {
 	return nil
 }
 
-func (m *_ExtensionObject) GetTypeName() string {
+func (m *_ExtensionObject) GetPlx4xTypeName() string {
 	return "ExtensionObject"
 }
 
@@ -355,13 +356,13 @@ func (m *_ExtensionObject) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	typeId, err := ReadSimpleField[ExpandedNodeId](ctx, "typeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	typeId, err := ReadSimpleField[ExpandedNodeId](ctx, "typeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeId' field"))
 	}
 	m.TypeId = typeId
 
-	extensionId, err := ReadVirtualField[int32](ctx, "extensionId", (*int32)(nil), utils.InlineIf(bool((typeId) == (nil)), func() any { return int32(int32(0)) }, func() any { return int32(ExtensionId(ctx, typeId)) }).(int32))
+	extensionId, err := ReadVirtualField[int32](ctx, "extensionId", (*int32)(nil), utils.InlineIf(bool((typeId) == (nil)), func() any { return int32(int32(0)) }, func() any { return int32(ExtensionId(ctx, typeId)) }).(int32), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extensionId' field"))
 	}
@@ -401,7 +402,7 @@ func (pm *_ExtensionObject) serializeParent(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for ExtensionObject")
 	}
 
-	if err := WriteSimpleField[ExpandedNodeId](ctx, "typeId", m.GetTypeId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+	if err := WriteSimpleField[ExpandedNodeId](ctx, "typeId", m.GetTypeId(), WriteComplex[ExpandedNodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'typeId' field")
 	}
 	// Virtual field

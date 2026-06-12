@@ -258,7 +258,7 @@ func CastBACnetServiceAckAtomicReadFile(structType any) BACnetServiceAckAtomicRe
 	return nil
 }
 
-func (m *_BACnetServiceAckAtomicReadFile) GetTypeName() string {
+func (m *_BACnetServiceAckAtomicReadFile) GetPlx4xTypeName() string {
 	return "BACnetServiceAckAtomicReadFile"
 }
 

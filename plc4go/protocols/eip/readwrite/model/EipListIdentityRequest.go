@@ -188,7 +188,7 @@ func CastEipListIdentityRequest(structType any) EipListIdentityRequest {
 	return nil
 }
 
-func (m *_EipListIdentityRequest) GetTypeName() string {
+func (m *_EipListIdentityRequest) GetPlx4xTypeName() string {
 	return "EipListIdentityRequest"
 }
 

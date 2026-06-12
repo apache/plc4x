@@ -224,7 +224,7 @@ func CastBACnetRestartReasonTagged(structType any) BACnetRestartReasonTagged {
 	return nil
 }
 
-func (m *_BACnetRestartReasonTagged) GetTypeName() string {
+func (m *_BACnetRestartReasonTagged) GetPlx4xTypeName() string {
 	return "BACnetRestartReasonTagged"
 }
 

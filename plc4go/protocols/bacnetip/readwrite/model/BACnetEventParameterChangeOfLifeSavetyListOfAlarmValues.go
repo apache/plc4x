@@ -225,7 +225,7 @@ func CastBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(structType any)
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues"
 }
 

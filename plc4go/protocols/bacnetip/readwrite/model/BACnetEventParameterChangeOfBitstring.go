@@ -353,7 +353,7 @@ func CastBACnetEventParameterChangeOfBitstring(structType any) BACnetEventParame
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfBitstring) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfBitstring) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfBitstring"
 }
 

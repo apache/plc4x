@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPositiveIntegerValueResolution(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetTypeName() string {
+func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPositiveIntegerValueResolution"
 }
 

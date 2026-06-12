@@ -180,7 +180,7 @@ func CastConnectionTransportDataType(structType any) ConnectionTransportDataType
 	return nil
 }
 
-func (m *_ConnectionTransportDataType) GetTypeName() string {
+func (m *_ConnectionTransportDataType) GetPlx4xTypeName() string {
 	return "ConnectionTransportDataType"
 }
 

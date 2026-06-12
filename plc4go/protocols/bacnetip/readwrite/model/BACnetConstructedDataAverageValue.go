@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAverageValue(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataAverageValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAverageValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAverageValue"
 }
 

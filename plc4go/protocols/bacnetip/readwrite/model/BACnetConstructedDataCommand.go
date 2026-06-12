@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCommand(structType any) BACnetConstructedDataComma
 	return nil
 }
 
-func (m *_BACnetConstructedDataCommand) GetTypeName() string {
+func (m *_BACnetConstructedDataCommand) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCommand"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataNumberOfAPDURetries(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetries) GetTypeName() string {
+func (m *_BACnetConstructedDataNumberOfAPDURetries) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNumberOfAPDURetries"
 }
 

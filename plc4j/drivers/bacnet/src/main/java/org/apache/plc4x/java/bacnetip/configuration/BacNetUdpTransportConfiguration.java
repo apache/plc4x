@@ -16,13 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.bacnetip.configuration;
 
 import org.apache.plc4x.java.bacnetip.readwrite.Constants;
-import org.apache.plc4x.java.transport.udp.DefaultUdpTransportConfiguration;
+import org.apache.plc4x.java.transport.udp.config.UdpTransportConfiguration;
 
-public class BacNetUdpTransportConfiguration extends DefaultUdpTransportConfiguration {
+public class BacNetUdpTransportConfiguration extends UdpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {

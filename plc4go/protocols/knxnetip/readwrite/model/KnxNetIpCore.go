@@ -207,7 +207,7 @@ func CastKnxNetIpCore(structType any) KnxNetIpCore {
 	return nil
 }
 
-func (m *_KnxNetIpCore) GetTypeName() string {
+func (m *_KnxNetIpCore) GetPlx4xTypeName() string {
 	return "KnxNetIpCore"
 }
 

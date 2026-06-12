@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -205,7 +207,7 @@ func CastCBusHeader(structType any) CBusHeader {
 	return nil
 }
 
-func (m *_CBusHeader) GetTypeName() string {
+func (m *_CBusHeader) GetPlx4xTypeName() string {
 	return "CBusHeader"
 }
 
@@ -232,7 +234,7 @@ func (m *_CBusHeader) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func CBusHeaderParse(ctx context.Context, theBytes []byte) (CBusHeader, error) {
-	return CBusHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return CBusHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func CBusHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusHeader, error) {
@@ -258,25 +260,25 @@ func (m *_CBusHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	priorityClass, err := ReadEnumField[PriorityClass](ctx, "priorityClass", "PriorityClass", ReadEnum(PriorityClassByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	priorityClass, err := ReadEnumField[PriorityClass](ctx, "priorityClass", "PriorityClass", ReadEnum(PriorityClassByValue, ReadUnsignedByte(readBuffer, uint8(2))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityClass' field"))
 	}
 	m.PriorityClass = priorityClass
 
-	dp, err := ReadSimpleField(ctx, "dp", ReadBoolean(readBuffer))
+	dp, err := ReadSimpleField(ctx, "dp", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dp' field"))
 	}
 	m.Dp = dp
 
-	rc, err := ReadSimpleField(ctx, "rc", ReadUnsignedByte(readBuffer, uint8(2)))
+	rc, err := ReadSimpleField(ctx, "rc", ReadUnsignedByte(readBuffer, uint8(2)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rc' field"))
 	}
 	m.Rc = rc
 
-	destinationAddressType, err := ReadEnumField[DestinationAddressType](ctx, "destinationAddressType", "DestinationAddressType", ReadEnum(DestinationAddressTypeByValue, ReadUnsignedByte(readBuffer, uint8(3))))
+	destinationAddressType, err := ReadEnumField[DestinationAddressType](ctx, "destinationAddressType", "DestinationAddressType", ReadEnum(DestinationAddressTypeByValue, ReadUnsignedByte(readBuffer, uint8(3))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddressType' field"))
 	}
@@ -290,7 +292,7 @@ func (m *_CBusHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 }
 
 func (m *_CBusHeader) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -306,19 +308,19 @@ func (m *_CBusHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for CBusHeader")
 	}
 
-	if err := WriteSimpleEnumField[PriorityClass](ctx, "priorityClass", "PriorityClass", m.GetPriorityClass(), WriteEnum[PriorityClass, uint8](PriorityClass.GetValue, PriorityClass.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+	if err := WriteSimpleEnumField[PriorityClass](ctx, "priorityClass", "PriorityClass", m.GetPriorityClass(), WriteEnum[PriorityClass, uint8](PriorityClass.GetValue, PriorityClass.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'priorityClass' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "dp", m.GetDp(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "dp", m.GetDp(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'dp' field")
 	}
 
-	if err := WriteSimpleField[uint8](ctx, "rc", m.GetRc(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+	if err := WriteSimpleField[uint8](ctx, "rc", m.GetRc(), WriteUnsignedByte(writeBuffer, 2), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'rc' field")
 	}
 
-	if err := WriteSimpleEnumField[DestinationAddressType](ctx, "destinationAddressType", "DestinationAddressType", m.GetDestinationAddressType(), WriteEnum[DestinationAddressType, uint8](DestinationAddressType.GetValue, DestinationAddressType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 3))); err != nil {
+	if err := WriteSimpleEnumField[DestinationAddressType](ctx, "destinationAddressType", "DestinationAddressType", m.GetDestinationAddressType(), WriteEnum[DestinationAddressType, uint8](DestinationAddressType.GetValue, DestinationAddressType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 3)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'destinationAddressType' field")
 	}
 

@@ -184,7 +184,7 @@ func CastBACnetConstructedDataAccessZoneAll(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessZoneAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessZoneAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessZoneAll"
 }
 

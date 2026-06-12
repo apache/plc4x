@@ -240,7 +240,7 @@ func CastComObjectTableRealisationType2(structType any) ComObjectTableRealisatio
 	return nil
 }
 
-func (m *_ComObjectTableRealisationType2) GetTypeName() string {
+func (m *_ComObjectTableRealisationType2) GetPlx4xTypeName() string {
 	return "ComObjectTableRealisationType2"
 }
 

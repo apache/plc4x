@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -224,7 +225,7 @@ func CastTimeZoneDataType(structType any) TimeZoneDataType {
 	return nil
 }
 
-func (m *_TimeZoneDataType) GetTypeName() string {
+func (m *_TimeZoneDataType) GetPlx4xTypeName() string {
 	return "TimeZoneDataType"
 }
 
@@ -258,19 +259,19 @@ func (m *_TimeZoneDataType) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	offset, err := ReadSimpleField(ctx, "offset", ReadSignedShort(readBuffer, uint8(16)))
+	offset, err := ReadSimpleField(ctx, "offset", ReadSignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offset' field"))
 	}
 	m.Offset = offset
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	daylightSavingInOffset, err := ReadSimpleField(ctx, "daylightSavingInOffset", ReadBoolean(readBuffer))
+	daylightSavingInOffset, err := ReadSimpleField(ctx, "daylightSavingInOffset", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daylightSavingInOffset' field"))
 	}
@@ -301,15 +302,15 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for TimeZoneDataType")
 		}
 
-		if err := WriteSimpleField[int16](ctx, "offset", m.GetOffset(), WriteSignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[int16](ctx, "offset", m.GetOffset(), WriteSignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'offset' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "daylightSavingInOffset", m.GetDaylightSavingInOffset(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "daylightSavingInOffset", m.GetDaylightSavingInOffset(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'daylightSavingInOffset' field")
 		}
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDaylightSavingsStatus(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatus) GetTypeName() string {
+func (m *_BACnetConstructedDataDaylightSavingsStatus) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDaylightSavingsStatus"
 }
 

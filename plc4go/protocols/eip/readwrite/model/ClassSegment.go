@@ -203,7 +203,7 @@ func CastClassSegment(structType any) ClassSegment {
 	return nil
 }
 
-func (m *_ClassSegment) GetTypeName() string {
+func (m *_ClassSegment) GetPlx4xTypeName() string {
 	return "ClassSegment"
 }
 

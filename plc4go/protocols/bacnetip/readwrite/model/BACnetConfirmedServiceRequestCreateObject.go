@@ -252,7 +252,7 @@ func CastBACnetConfirmedServiceRequestCreateObject(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObject) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestCreateObject) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestCreateObject"
 }
 

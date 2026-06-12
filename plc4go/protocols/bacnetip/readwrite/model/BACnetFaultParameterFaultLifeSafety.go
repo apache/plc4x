@@ -320,7 +320,7 @@ func CastBACnetFaultParameterFaultLifeSafety(structType any) BACnetFaultParamete
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultLifeSafety) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultLifeSafety) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultLifeSafety"
 }
 

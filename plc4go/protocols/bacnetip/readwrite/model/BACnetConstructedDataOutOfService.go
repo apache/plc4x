@@ -246,7 +246,7 @@ func CastBACnetConstructedDataOutOfService(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataOutOfService) GetTypeName() string {
+func (m *_BACnetConstructedDataOutOfService) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOutOfService"
 }
 

@@ -135,7 +135,7 @@ func CastHandle(structType any) Handle {
 	return nil
 }
 
-func (m *_Handle) GetTypeName() string {
+func (m *_Handle) GetPlx4xTypeName() string {
 	return "Handle"
 }
 

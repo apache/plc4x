@@ -244,7 +244,7 @@ func CastAmsSerialAcknowledgeFrame(structType any) AmsSerialAcknowledgeFrame {
 	return nil
 }
 
-func (m *_AmsSerialAcknowledgeFrame) GetTypeName() string {
+func (m *_AmsSerialAcknowledgeFrame) GetPlx4xTypeName() string {
 	return "AmsSerialAcknowledgeFrame"
 }
 

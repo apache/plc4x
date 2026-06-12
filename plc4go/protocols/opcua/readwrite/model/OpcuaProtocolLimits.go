@@ -203,7 +203,7 @@ func CastOpcuaProtocolLimits(structType any) OpcuaProtocolLimits {
 	return nil
 }
 
-func (m *_OpcuaProtocolLimits) GetTypeName() string {
+func (m *_OpcuaProtocolLimits) GetPlx4xTypeName() string {
 	return "OpcuaProtocolLimits"
 }
 

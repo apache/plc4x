@@ -211,7 +211,7 @@ func CastBACnetAssignedAccessRights(structType any) BACnetAssignedAccessRights {
 	return nil
 }
 
-func (m *_BACnetAssignedAccessRights) GetTypeName() string {
+func (m *_BACnetAssignedAccessRights) GetPlx4xTypeName() string {
 	return "BACnetAssignedAccessRights"
 }
 

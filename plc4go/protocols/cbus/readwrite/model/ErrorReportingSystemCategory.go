@@ -207,7 +207,7 @@ func CastErrorReportingSystemCategory(structType any) ErrorReportingSystemCatego
 	return nil
 }
 
-func (m *_ErrorReportingSystemCategory) GetTypeName() string {
+func (m *_ErrorReportingSystemCategory) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategory"
 }
 

@@ -222,7 +222,7 @@ func CastVariantVariant(structType any) VariantVariant {
 	return nil
 }
 
-func (m *_VariantVariant) GetTypeName() string {
+func (m *_VariantVariant) GetPlx4xTypeName() string {
 	return "VariantVariant"
 }
 

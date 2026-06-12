@@ -227,7 +227,7 @@ func CastComObjectTable(structType any) ComObjectTable {
 	return nil
 }
 
-func (m *_ComObjectTable) GetTypeName() string {
+func (m *_ComObjectTable) GetPlx4xTypeName() string {
 	return "ComObjectTable"
 }
 

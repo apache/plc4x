@@ -375,7 +375,7 @@ func CastSysexCommand(structType any) SysexCommand {
 	return nil
 }
 
-func (m *_SysexCommand) GetTypeName() string {
+func (m *_SysexCommand) GetPlx4xTypeName() string {
 	return "SysexCommand"
 }
 

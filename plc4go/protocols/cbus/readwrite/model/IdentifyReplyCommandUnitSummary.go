@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -259,7 +261,7 @@ func CastIdentifyReplyCommandUnitSummary(structType any) IdentifyReplyCommandUni
 	return nil
 }
 
-func (m *_IdentifyReplyCommandUnitSummary) GetTypeName() string {
+func (m *_IdentifyReplyCommandUnitSummary) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandUnitSummary"
 }
 
@@ -298,7 +300,7 @@ func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBytes(ctx context.Context)
 }
 
 func IdentifyReplyCommandUnitSummaryParse(ctx context.Context, theBytes []byte) (IdentifyReplyCommandUnitSummary, error) {
-	return IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func IdentifyReplyCommandUnitSummaryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
@@ -324,49 +326,49 @@ func (m *_IdentifyReplyCommandUnitSummary) parse(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	assertingNetworkBurden, err := ReadSimpleField(ctx, "assertingNetworkBurden", ReadBoolean(readBuffer))
+	assertingNetworkBurden, err := ReadSimpleField(ctx, "assertingNetworkBurden", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assertingNetworkBurden' field"))
 	}
 	m.AssertingNetworkBurden = assertingNetworkBurden
 
-	restrikeTimingActive, err := ReadSimpleField(ctx, "restrikeTimingActive", ReadBoolean(readBuffer))
+	restrikeTimingActive, err := ReadSimpleField(ctx, "restrikeTimingActive", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'restrikeTimingActive' field"))
 	}
 	m.RestrikeTimingActive = restrikeTimingActive
 
-	remoteOFFInputAsserted, err := ReadSimpleField(ctx, "remoteOFFInputAsserted", ReadBoolean(readBuffer))
+	remoteOFFInputAsserted, err := ReadSimpleField(ctx, "remoteOFFInputAsserted", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remoteOFFInputAsserted' field"))
 	}
 	m.RemoteOFFInputAsserted = remoteOFFInputAsserted
 
-	remoteONInputAsserted, err := ReadSimpleField(ctx, "remoteONInputAsserted", ReadBoolean(readBuffer))
+	remoteONInputAsserted, err := ReadSimpleField(ctx, "remoteONInputAsserted", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remoteONInputAsserted' field"))
 	}
 	m.RemoteONInputAsserted = remoteONInputAsserted
 
-	localToggleEnabled, err := ReadSimpleField(ctx, "localToggleEnabled", ReadBoolean(readBuffer))
+	localToggleEnabled, err := ReadSimpleField(ctx, "localToggleEnabled", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localToggleEnabled' field"))
 	}
 	m.LocalToggleEnabled = localToggleEnabled
 
-	localToggleActiveState, err := ReadSimpleField(ctx, "localToggleActiveState", ReadBoolean(readBuffer))
+	localToggleActiveState, err := ReadSimpleField(ctx, "localToggleActiveState", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localToggleActiveState' field"))
 	}
 	m.LocalToggleActiveState = localToggleActiveState
 
-	clockGenerationEnabled, err := ReadSimpleField(ctx, "clockGenerationEnabled", ReadBoolean(readBuffer))
+	clockGenerationEnabled, err := ReadSimpleField(ctx, "clockGenerationEnabled", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clockGenerationEnabled' field"))
 	}
 	m.ClockGenerationEnabled = clockGenerationEnabled
 
-	unitGeneratingClock, err := ReadSimpleField(ctx, "unitGeneratingClock", ReadBoolean(readBuffer))
+	unitGeneratingClock, err := ReadSimpleField(ctx, "unitGeneratingClock", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitGeneratingClock' field"))
 	}
@@ -380,7 +382,7 @@ func (m *_IdentifyReplyCommandUnitSummary) parse(ctx context.Context, readBuffer
 }
 
 func (m *_IdentifyReplyCommandUnitSummary) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -396,35 +398,35 @@ func (m *_IdentifyReplyCommandUnitSummary) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandUnitSummary")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "assertingNetworkBurden", m.GetAssertingNetworkBurden(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "assertingNetworkBurden", m.GetAssertingNetworkBurden(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'assertingNetworkBurden' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "restrikeTimingActive", m.GetRestrikeTimingActive(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "restrikeTimingActive", m.GetRestrikeTimingActive(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'restrikeTimingActive' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "remoteOFFInputAsserted", m.GetRemoteOFFInputAsserted(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "remoteOFFInputAsserted", m.GetRemoteOFFInputAsserted(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'remoteOFFInputAsserted' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "remoteONInputAsserted", m.GetRemoteONInputAsserted(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "remoteONInputAsserted", m.GetRemoteONInputAsserted(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'remoteONInputAsserted' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "localToggleEnabled", m.GetLocalToggleEnabled(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "localToggleEnabled", m.GetLocalToggleEnabled(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'localToggleEnabled' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "localToggleActiveState", m.GetLocalToggleActiveState(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "localToggleActiveState", m.GetLocalToggleActiveState(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'localToggleActiveState' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "clockGenerationEnabled", m.GetClockGenerationEnabled(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "clockGenerationEnabled", m.GetClockGenerationEnabled(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'clockGenerationEnabled' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "unitGeneratingClock", m.GetUnitGeneratingClock(), WriteBoolean(writeBuffer)); err != nil {
+	if err := WriteSimpleField[bool](ctx, "unitGeneratingClock", m.GetUnitGeneratingClock(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'unitGeneratingClock' field")
 	}
 

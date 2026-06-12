@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLightingOutputRelinquishDefault(structType any) BA
 	return nil
 }
 
-func (m *_BACnetConstructedDataLightingOutputRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLightingOutputRelinquishDefault"
 }
 

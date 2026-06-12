@@ -173,7 +173,7 @@ func CastBACnetSetpointReference(structType any) BACnetSetpointReference {
 	return nil
 }
 
-func (m *_BACnetSetpointReference) GetTypeName() string {
+func (m *_BACnetSetpointReference) GetPlx4xTypeName() string {
 	return "BACnetSetpointReference"
 }
 

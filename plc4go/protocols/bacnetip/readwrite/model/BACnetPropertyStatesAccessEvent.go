@@ -222,7 +222,7 @@ func CastBACnetPropertyStatesAccessEvent(structType any) BACnetPropertyStatesAcc
 	return nil
 }
 
-func (m *_BACnetPropertyStatesAccessEvent) GetTypeName() string {
+func (m *_BACnetPropertyStatesAccessEvent) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesAccessEvent"
 }
 

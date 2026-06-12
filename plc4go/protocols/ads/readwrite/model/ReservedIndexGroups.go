@@ -38,6 +38,8 @@ type IReservedIndexGroups interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	Tc2() bool
+	Tc3() bool
 }
 
 const (
@@ -54,19 +56,58 @@ const (
 	ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD                         ReservedIndexGroups = 0x0000F00A
 	ReservedIndexGroups_ADSIGRP_SYM_UPLOAD                           ReservedIndexGroups = 0x0000F00B
 	ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO                       ReservedIndexGroups = 0x0000F00C
+	ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD2                        ReservedIndexGroups = 0x0000F00D
 	ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD               ReservedIndexGroups = 0x0000F00E
 	ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES           ReservedIndexGroups = 0x0000F00F
 	ReservedIndexGroups_ADSIGRP_SYMNOTE                              ReservedIndexGroups = 0x0000F010
 	ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX                      ReservedIndexGroups = 0x0000F011
+	ReservedIndexGroups_ADSIGRP_SYM_ADDRBYHND                        ReservedIndexGroups = 0x0000F012
+	ReservedIndexGroups_ADSIGRP_SYM_POINTER_SUPPORT                  ReservedIndexGroups = 0x0000F013
+	ReservedIndexGroups_ADSIGRP_SYM_POINTER_ACCESS                   ReservedIndexGroups = 0x0000F014
+	ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_SUPPORT                ReservedIndexGroups = 0x0000F015
+	ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_ACCESS                 ReservedIndexGroups = 0x0000F016
+	ReservedIndexGroups_ADSIGRP_SYM_VALBYHND_WITHMASK                ReservedIndexGroups = 0x0000F018
+	ReservedIndexGroups_ADSIGRP_SYM_NOACCESS_TO_SUBSYM               ReservedIndexGroups = 0x0000F019
+	ReservedIndexGroups_ADSIGRP_SYM_POINTER_BITACCESS                ReservedIndexGroups = 0x0000F01A
+	ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_BITACCESS              ReservedIndexGroups = 0x0000F01B
+	ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD3                        ReservedIndexGroups = 0x0000F01C
+	ReservedIndexGroups_ADSIGRP_SYM_FORWARD_ACCESS                   ReservedIndexGroups = 0x0000F01D
+	ReservedIndexGroups_ADSIGRP_SYM_FORWARD_BYHND                    ReservedIndexGroups = 0x0000F01E
+	ReservedIndexGroups_ADSIGRP_SYM_XAF_OBJECTID                     ReservedIndexGroups = 0x0000F01F
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB                         ReservedIndexGroups = 0x0000F020
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX                         ReservedIndexGroups = 0x0000F021
+	ReservedIndexGroups_ADSIGRP_SYM_INFOBYHNDEX                      ReservedIndexGroups = 0x0000F024
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE                       ReservedIndexGroups = 0x0000F025
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX0                        ReservedIndexGroups = 0x0000F028
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX1                        ReservedIndexGroups = 0x0000F029
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX2                        ReservedIndexGroups = 0x0000F02A
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX3                        ReservedIndexGroups = 0x0000F02B
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX4                        ReservedIndexGroups = 0x0000F02C
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX5                        ReservedIndexGroups = 0x0000F02D
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX6                        ReservedIndexGroups = 0x0000F02E
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX7                        ReservedIndexGroups = 0x0000F02F
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB                         ReservedIndexGroups = 0x0000F030
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX                         ReservedIndexGroups = 0x0000F031
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE                      ReservedIndexGroups = 0x0000F035
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX0                        ReservedIndexGroups = 0x0000F038
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX1                        ReservedIndexGroups = 0x0000F039
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX2                        ReservedIndexGroups = 0x0000F03A
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX3                        ReservedIndexGroups = 0x0000F03B
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX4                        ReservedIndexGroups = 0x0000F03C
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX5                        ReservedIndexGroups = 0x0000F03D
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX6                        ReservedIndexGroups = 0x0000F03E
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX7                        ReservedIndexGroups = 0x0000F03F
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI                       ReservedIndexGroups = 0x0000F040
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO                       ReservedIndexGroups = 0x0000F050
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB                        ReservedIndexGroups = 0x0000F060
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_WATCHDOG                     ReservedIndexGroups = 0x0000F064
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_CREATE                       ReservedIndexGroups = 0x0000F068
+	ReservedIndexGroups_ADSIGRP_JSON                                 ReservedIndexGroups = 0x0000F070
+	ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_GET                  ReservedIndexGroups = 0x0000F071
+	ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_SET                  ReservedIndexGroups = 0x0000F072
+	ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_DEL                  ReservedIndexGroups = 0x0000F073
+	ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_LEN                  ReservedIndexGroups = 0x0000F074
+	ReservedIndexGroups_ADSIGRP_ADSWATCH_GETOID                      ReservedIndexGroups = 0x0000F078
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ                        ReservedIndexGroups = 0x0000F080
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE                       ReservedIndexGroups = 0x0000F081
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE                  ReservedIndexGroups = 0x0000F082
@@ -74,8 +115,40 @@ const (
 	ReservedIndexGroups_ADSIGRP_SUMUP_READEX2                        ReservedIndexGroups = 0x0000F084
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS    ReservedIndexGroups = 0x0000F085
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS ReservedIndexGroups = 0x0000F086
+	ReservedIndexGroups_ADSIGRP_EXTERNALTIME                         ReservedIndexGroups = 0x0000F088
+	ReservedIndexGroups_ADSIGRP_CHECK_NOTIFICATION                   ReservedIndexGroups = 0x0000F090
+	ReservedIndexGroups_ADSIGRP_DIAG_NOTIFICATION                    ReservedIndexGroups = 0x0000F091
+	ReservedIndexGroups_ADSIGRP_LOGGING_CONFIG                       ReservedIndexGroups = 0x0000F098
+	ReservedIndexGroups_ADSIGRP_SYM_CONTEXTCYCLE                     ReservedIndexGroups = 0x0000F0A0
+	ReservedIndexGroups_ADSIGRP_DEVICE_CONTEXT_DATA                  ReservedIndexGroups = 0x0000F0B0
 	ReservedIndexGroups_ADSIGRP_DEVICE_DATA                          ReservedIndexGroups = 0x0000F100
-	ReservedIndexGroups_ADS_OVER_ETHERCAT                            ReservedIndexGroups = 0x0000F302
+	ReservedIndexGroups_ADSIGRP_TASK_DATA                            ReservedIndexGroups = 0x0000F200
+	ReservedIndexGroups_ADSIGRP_CANOPEN_BEGIN                        ReservedIndexGroups = 0x0000F300
+	ReservedIndexGroups_ADSIGRP_CANOPEN_SDO                          ReservedIndexGroups = 0x0000F302
+	ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_LASTERROR                ReservedIndexGroups = 0x0000F303
+	ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_READ               ReservedIndexGroups = 0x0000F304
+	ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_WRITE              ReservedIndexGroups = 0x0000F305
+	ReservedIndexGroups_ADSIGRP_CANOPEN_TXPDO_ACCESS                 ReservedIndexGroups = 0x0000F3F8
+	ReservedIndexGroups_ADSIGRP_CANOPEN_RXPDO_ACCESS                 ReservedIndexGroups = 0x0000F3F9
+	ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_ENI_CONTENT              ReservedIndexGroups = 0x0000F3FB
+	ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_LIST                ReservedIndexGroups = 0x0000F3FC
+	ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_OBJ                 ReservedIndexGroups = 0x0000F3FD
+	ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_ENTRY               ReservedIndexGroups = 0x0000F3FE
+	ReservedIndexGroups_ADSIGRP_CANOPEN_END                          ReservedIndexGroups = 0x0000F3FF
+	ReservedIndexGroups_ADSIGRP_ECAT_EMCY_SERVER                     ReservedIndexGroups = 0x8001F302
+	ReservedIndexGroups_ADSIOFFS_ECAT_EMCY_SERVER_CONNECT            ReservedIndexGroups = 0xF8200101
+	ReservedIndexGroups_ADSIGRP_ECAT_FOE_BEGIN                       ReservedIndexGroups = 0x0000F400
+	ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENREAD                   ReservedIndexGroups = 0x0000F401
+	ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENWRITE                  ReservedIndexGroups = 0x0000F402
+	ReservedIndexGroups_ADSIGRP_ECAT_FOE_FCLOSE                      ReservedIndexGroups = 0x0000F403
+	ReservedIndexGroups_ADSIGRP_ECAT_FOE_FREAD                       ReservedIndexGroups = 0x0000F404
+	ReservedIndexGroups_ADSIGRP_ECAT_FOE_FWRITE                      ReservedIndexGroups = 0x0000F405
+	ReservedIndexGroups_ADSIGRP_ECAT_FOE_PROGRESSINFO                ReservedIndexGroups = 0x0000F406
+	ReservedIndexGroups_ADSIGRP_ECAT_FOE_LASTERROR                   ReservedIndexGroups = 0x0000F407
+	ReservedIndexGroups_ADSIGRP_ECAT_FOE_END                         ReservedIndexGroups = 0x0000F41F
+	ReservedIndexGroups_ADSIGRP_ECAT_SOE                             ReservedIndexGroups = 0x0000F420
+	ReservedIndexGroups_ADSIGRP_ECAT_SOE_LASTERROR                   ReservedIndexGroups = 0x0000F421
+	ReservedIndexGroups_ADSIGRP_ECAT_VOE                             ReservedIndexGroups = 0x0000F430
 	ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE                    ReservedIndexGroups = 0x00000000
 	ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE                    ReservedIndexGroups = 0x00000002
 )
@@ -98,19 +171,58 @@ func init() {
 		ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD,
 		ReservedIndexGroups_ADSIGRP_SYM_UPLOAD,
 		ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO,
+		ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD2,
 		ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD,
 		ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES,
 		ReservedIndexGroups_ADSIGRP_SYMNOTE,
 		ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX,
+		ReservedIndexGroups_ADSIGRP_SYM_ADDRBYHND,
+		ReservedIndexGroups_ADSIGRP_SYM_POINTER_SUPPORT,
+		ReservedIndexGroups_ADSIGRP_SYM_POINTER_ACCESS,
+		ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_SUPPORT,
+		ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_ACCESS,
+		ReservedIndexGroups_ADSIGRP_SYM_VALBYHND_WITHMASK,
+		ReservedIndexGroups_ADSIGRP_SYM_NOACCESS_TO_SUBSYM,
+		ReservedIndexGroups_ADSIGRP_SYM_POINTER_BITACCESS,
+		ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_BITACCESS,
+		ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD3,
+		ReservedIndexGroups_ADSIGRP_SYM_FORWARD_ACCESS,
+		ReservedIndexGroups_ADSIGRP_SYM_FORWARD_BYHND,
+		ReservedIndexGroups_ADSIGRP_SYM_XAF_OBJECTID,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX,
+		ReservedIndexGroups_ADSIGRP_SYM_INFOBYHNDEX,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX0,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX1,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX2,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX3,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX4,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX5,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX6,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX7,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX0,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX1,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX2,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX3,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX4,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX5,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX6,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX7,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_WATCHDOG,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_CREATE,
+		ReservedIndexGroups_ADSIGRP_JSON,
+		ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_GET,
+		ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_SET,
+		ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_DEL,
+		ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_LEN,
+		ReservedIndexGroups_ADSIGRP_ADSWATCH_GETOID,
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_READ,
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE,
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE,
@@ -118,13 +230,944 @@ func init() {
 		ReservedIndexGroups_ADSIGRP_SUMUP_READEX2,
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS,
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS,
+		ReservedIndexGroups_ADSIGRP_EXTERNALTIME,
+		ReservedIndexGroups_ADSIGRP_CHECK_NOTIFICATION,
+		ReservedIndexGroups_ADSIGRP_DIAG_NOTIFICATION,
+		ReservedIndexGroups_ADSIGRP_LOGGING_CONFIG,
+		ReservedIndexGroups_ADSIGRP_SYM_CONTEXTCYCLE,
+		ReservedIndexGroups_ADSIGRP_DEVICE_CONTEXT_DATA,
 		ReservedIndexGroups_ADSIGRP_DEVICE_DATA,
-		ReservedIndexGroups_ADS_OVER_ETHERCAT,
+		ReservedIndexGroups_ADSIGRP_TASK_DATA,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_BEGIN,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_SDO,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_LASTERROR,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_READ,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_WRITE,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_TXPDO_ACCESS,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_RXPDO_ACCESS,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_ENI_CONTENT,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_LIST,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_OBJ,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_ENTRY,
+		ReservedIndexGroups_ADSIGRP_CANOPEN_END,
+		ReservedIndexGroups_ADSIGRP_ECAT_EMCY_SERVER,
+		ReservedIndexGroups_ADSIOFFS_ECAT_EMCY_SERVER_CONNECT,
+		ReservedIndexGroups_ADSIGRP_ECAT_FOE_BEGIN,
+		ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENREAD,
+		ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENWRITE,
+		ReservedIndexGroups_ADSIGRP_ECAT_FOE_FCLOSE,
+		ReservedIndexGroups_ADSIGRP_ECAT_FOE_FREAD,
+		ReservedIndexGroups_ADSIGRP_ECAT_FOE_FWRITE,
+		ReservedIndexGroups_ADSIGRP_ECAT_FOE_PROGRESSINFO,
+		ReservedIndexGroups_ADSIGRP_ECAT_FOE_LASTERROR,
+		ReservedIndexGroups_ADSIGRP_ECAT_FOE_END,
+		ReservedIndexGroups_ADSIGRP_ECAT_SOE,
+		ReservedIndexGroups_ADSIGRP_ECAT_SOE_LASTERROR,
+		ReservedIndexGroups_ADSIGRP_ECAT_VOE,
 		ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE,
 		ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE,
 	}
 }
 
+func (e ReservedIndexGroups) Tc2() bool {
+	switch e {
+	case 0x00000000:
+		{ /* '0x00000000' */
+			return true
+		}
+	case 0x00000002:
+		{ /* '0x00000002' */
+			return true
+		}
+	case 0x0000F000:
+		{ /* '0x0000F000' */
+			return true
+		}
+	case 0x0000F001:
+		{ /* '0x0000F001' */
+			return true
+		}
+	case 0x0000F002:
+		{ /* '0x0000F002' */
+			return true
+		}
+	case 0x0000F003:
+		{ /* '0x0000F003' */
+			return true
+		}
+	case 0x0000F004:
+		{ /* '0x0000F004' */
+			return true
+		}
+	case 0x0000F005:
+		{ /* '0x0000F005' */
+			return true
+		}
+	case 0x0000F006:
+		{ /* '0x0000F006' */
+			return true
+		}
+	case 0x0000F007:
+		{ /* '0x0000F007' */
+			return true
+		}
+	case 0x0000F008:
+		{ /* '0x0000F008' */
+			return true
+		}
+	case 0x0000F009:
+		{ /* '0x0000F009' */
+			return true
+		}
+	case 0x0000F00A:
+		{ /* '0x0000F00A' */
+			return true
+		}
+	case 0x0000F00B:
+		{ /* '0x0000F00B' */
+			return true
+		}
+	case 0x0000F00C:
+		{ /* '0x0000F00C' */
+			return true
+		}
+	case 0x0000F00D:
+		{ /* '0x0000F00D' */
+			return true
+		}
+	case 0x0000F00E:
+		{ /* '0x0000F00E' */
+			return false
+		}
+	case 0x0000F00F:
+		{ /* '0x0000F00F' */
+			return false
+		}
+	case 0x0000F010:
+		{ /* '0x0000F010' */
+			return true
+		}
+	case 0x0000F011:
+		{ /* '0x0000F011' */
+			return false
+		}
+	case 0x0000F012:
+		{ /* '0x0000F012' */
+			return false
+		}
+	case 0x0000F013:
+		{ /* '0x0000F013' */
+			return false
+		}
+	case 0x0000F014:
+		{ /* '0x0000F014' */
+			return false
+		}
+	case 0x0000F015:
+		{ /* '0x0000F015' */
+			return false
+		}
+	case 0x0000F016:
+		{ /* '0x0000F016' */
+			return false
+		}
+	case 0x0000F018:
+		{ /* '0x0000F018' */
+			return false
+		}
+	case 0x0000F019:
+		{ /* '0x0000F019' */
+			return false
+		}
+	case 0x0000F01A:
+		{ /* '0x0000F01A' */
+			return false
+		}
+	case 0x0000F01B:
+		{ /* '0x0000F01B' */
+			return false
+		}
+	case 0x0000F01C:
+		{ /* '0x0000F01C' */
+			return false
+		}
+	case 0x0000F01D:
+		{ /* '0x0000F01D' */
+			return false
+		}
+	case 0x0000F01E:
+		{ /* '0x0000F01E' */
+			return false
+		}
+	case 0x0000F01F:
+		{ /* '0x0000F01F' */
+			return false
+		}
+	case 0x0000F020:
+		{ /* '0x0000F020' */
+			return true
+		}
+	case 0x0000F021:
+		{ /* '0x0000F021' */
+			return true
+		}
+	case 0x0000F024:
+		{ /* '0x0000F024' */
+			return true
+		}
+	case 0x0000F025:
+		{ /* '0x0000F025' */
+			return true
+		}
+	case 0x0000F028:
+		{ /* '0x0000F028' */
+			return true
+		}
+	case 0x0000F029:
+		{ /* '0x0000F029' */
+			return true
+		}
+	case 0x0000F02A:
+		{ /* '0x0000F02A' */
+			return true
+		}
+	case 0x0000F02B:
+		{ /* '0x0000F02B' */
+			return true
+		}
+	case 0x0000F02C:
+		{ /* '0x0000F02C' */
+			return true
+		}
+	case 0x0000F02D:
+		{ /* '0x0000F02D' */
+			return true
+		}
+	case 0x0000F02E:
+		{ /* '0x0000F02E' */
+			return true
+		}
+	case 0x0000F02F:
+		{ /* '0x0000F02F' */
+			return true
+		}
+	case 0x0000F030:
+		{ /* '0x0000F030' */
+			return true
+		}
+	case 0x0000F031:
+		{ /* '0x0000F031' */
+			return true
+		}
+	case 0x0000F035:
+		{ /* '0x0000F035' */
+			return true
+		}
+	case 0x0000F038:
+		{ /* '0x0000F038' */
+			return true
+		}
+	case 0x0000F039:
+		{ /* '0x0000F039' */
+			return true
+		}
+	case 0x0000F03A:
+		{ /* '0x0000F03A' */
+			return true
+		}
+	case 0x0000F03B:
+		{ /* '0x0000F03B' */
+			return true
+		}
+	case 0x0000F03C:
+		{ /* '0x0000F03C' */
+			return true
+		}
+	case 0x0000F03D:
+		{ /* '0x0000F03D' */
+			return true
+		}
+	case 0x0000F03E:
+		{ /* '0x0000F03E' */
+			return true
+		}
+	case 0x0000F03F:
+		{ /* '0x0000F03F' */
+			return true
+		}
+	case 0x0000F040:
+		{ /* '0x0000F040' */
+			return true
+		}
+	case 0x0000F050:
+		{ /* '0x0000F050' */
+			return true
+		}
+	case 0x0000F060:
+		{ /* '0x0000F060' */
+			return true
+		}
+	case 0x0000F064:
+		{ /* '0x0000F064' */
+			return true
+		}
+	case 0x0000F068:
+		{ /* '0x0000F068' */
+			return true
+		}
+	case 0x0000F070:
+		{ /* '0x0000F070' */
+			return true
+		}
+	case 0x0000F071:
+		{ /* '0x0000F071' */
+			return true
+		}
+	case 0x0000F072:
+		{ /* '0x0000F072' */
+			return true
+		}
+	case 0x0000F073:
+		{ /* '0x0000F073' */
+			return true
+		}
+	case 0x0000F074:
+		{ /* '0x0000F074' */
+			return true
+		}
+	case 0x0000F078:
+		{ /* '0x0000F078' */
+			return true
+		}
+	case 0x0000F080:
+		{ /* '0x0000F080' */
+			return false
+		}
+	case 0x0000F081:
+		{ /* '0x0000F081' */
+			return false
+		}
+	case 0x0000F082:
+		{ /* '0x0000F082' */
+			return false
+		}
+	case 0x0000F083:
+		{ /* '0x0000F083' */
+			return false
+		}
+	case 0x0000F084:
+		{ /* '0x0000F084' */
+			return false
+		}
+	case 0x0000F085:
+		{ /* '0x0000F085' */
+			return false
+		}
+	case 0x0000F086:
+		{ /* '0x0000F086' */
+			return false
+		}
+	case 0x0000F088:
+		{ /* '0x0000F088' */
+			return false
+		}
+	case 0x0000F090:
+		{ /* '0x0000F090' */
+			return false
+		}
+	case 0x0000F091:
+		{ /* '0x0000F091' */
+			return false
+		}
+	case 0x0000F098:
+		{ /* '0x0000F098' */
+			return false
+		}
+	case 0x0000F0A0:
+		{ /* '0x0000F0A0' */
+			return false
+		}
+	case 0x0000F0B0:
+		{ /* '0x0000F0B0' */
+			return false
+		}
+	case 0x0000F100:
+		{ /* '0x0000F100' */
+			return true
+		}
+	case 0x0000F200:
+		{ /* '0x0000F200' */
+			return true
+		}
+	case 0x0000F300:
+		{ /* '0x0000F300' */
+			return true
+		}
+	case 0x0000F302:
+		{ /* '0x0000F302' */
+			return true
+		}
+	case 0x0000F303:
+		{ /* '0x0000F303' */
+			return true
+		}
+	case 0x0000F304:
+		{ /* '0x0000F304' */
+			return true
+		}
+	case 0x0000F305:
+		{ /* '0x0000F305' */
+			return true
+		}
+	case 0x0000F3F8:
+		{ /* '0x0000F3F8' */
+			return true
+		}
+	case 0x0000F3F9:
+		{ /* '0x0000F3F9' */
+			return true
+		}
+	case 0x0000F3FB:
+		{ /* '0x0000F3FB' */
+			return true
+		}
+	case 0x0000F3FC:
+		{ /* '0x0000F3FC' */
+			return true
+		}
+	case 0x0000F3FD:
+		{ /* '0x0000F3FD' */
+			return true
+		}
+	case 0x0000F3FE:
+		{ /* '0x0000F3FE' */
+			return true
+		}
+	case 0x0000F3FF:
+		{ /* '0x0000F3FF' */
+			return true
+		}
+	case 0x0000F400:
+		{ /* '0x0000F400' */
+			return true
+		}
+	case 0x0000F401:
+		{ /* '0x0000F401' */
+			return true
+		}
+	case 0x0000F402:
+		{ /* '0x0000F402' */
+			return true
+		}
+	case 0x0000F403:
+		{ /* '0x0000F403' */
+			return true
+		}
+	case 0x0000F404:
+		{ /* '0x0000F404' */
+			return true
+		}
+	case 0x0000F405:
+		{ /* '0x0000F405' */
+			return true
+		}
+	case 0x0000F406:
+		{ /* '0x0000F406' */
+			return true
+		}
+	case 0x0000F407:
+		{ /* '0x0000F407' */
+			return true
+		}
+	case 0x0000F41F:
+		{ /* '0x0000F41F' */
+			return true
+		}
+	case 0x0000F420:
+		{ /* '0x0000F420' */
+			return true
+		}
+	case 0x0000F421:
+		{ /* '0x0000F421' */
+			return true
+		}
+	case 0x0000F430:
+		{ /* '0x0000F430' */
+			return true
+		}
+	case 0x8001F302:
+		{ /* '0x8001F302' */
+			return true
+		}
+	case 0xF8200101:
+		{ /* '0xF8200101' */
+			return true
+		}
+	default:
+		{
+			return false
+		}
+	}
+}
+
+func ReservedIndexGroupsFirstEnumForFieldTc2(value bool) (enum ReservedIndexGroups, ok bool) {
+	for _, sizeValue := range ReservedIndexGroupsValues {
+		if sizeValue.Tc2() == value {
+			return sizeValue, true
+		}
+	}
+	return 0, false
+}
+
+func (e ReservedIndexGroups) Tc3() bool {
+	switch e {
+	case 0x00000000:
+		{ /* '0x00000000' */
+			return true
+		}
+	case 0x00000002:
+		{ /* '0x00000002' */
+			return true
+		}
+	case 0x0000F000:
+		{ /* '0x0000F000' */
+			return true
+		}
+	case 0x0000F001:
+		{ /* '0x0000F001' */
+			return true
+		}
+	case 0x0000F002:
+		{ /* '0x0000F002' */
+			return true
+		}
+	case 0x0000F003:
+		{ /* '0x0000F003' */
+			return true
+		}
+	case 0x0000F004:
+		{ /* '0x0000F004' */
+			return true
+		}
+	case 0x0000F005:
+		{ /* '0x0000F005' */
+			return true
+		}
+	case 0x0000F006:
+		{ /* '0x0000F006' */
+			return true
+		}
+	case 0x0000F007:
+		{ /* '0x0000F007' */
+			return true
+		}
+	case 0x0000F008:
+		{ /* '0x0000F008' */
+			return true
+		}
+	case 0x0000F009:
+		{ /* '0x0000F009' */
+			return true
+		}
+	case 0x0000F00A:
+		{ /* '0x0000F00A' */
+			return true
+		}
+	case 0x0000F00B:
+		{ /* '0x0000F00B' */
+			return true
+		}
+	case 0x0000F00C:
+		{ /* '0x0000F00C' */
+			return true
+		}
+	case 0x0000F00D:
+		{ /* '0x0000F00D' */
+			return true
+		}
+	case 0x0000F00E:
+		{ /* '0x0000F00E' */
+			return true
+		}
+	case 0x0000F00F:
+		{ /* '0x0000F00F' */
+			return true
+		}
+	case 0x0000F010:
+		{ /* '0x0000F010' */
+			return true
+		}
+	case 0x0000F011:
+		{ /* '0x0000F011' */
+			return true
+		}
+	case 0x0000F012:
+		{ /* '0x0000F012' */
+			return true
+		}
+	case 0x0000F013:
+		{ /* '0x0000F013' */
+			return true
+		}
+	case 0x0000F014:
+		{ /* '0x0000F014' */
+			return true
+		}
+	case 0x0000F015:
+		{ /* '0x0000F015' */
+			return true
+		}
+	case 0x0000F016:
+		{ /* '0x0000F016' */
+			return true
+		}
+	case 0x0000F018:
+		{ /* '0x0000F018' */
+			return true
+		}
+	case 0x0000F019:
+		{ /* '0x0000F019' */
+			return true
+		}
+	case 0x0000F01A:
+		{ /* '0x0000F01A' */
+			return true
+		}
+	case 0x0000F01B:
+		{ /* '0x0000F01B' */
+			return true
+		}
+	case 0x0000F01C:
+		{ /* '0x0000F01C' */
+			return true
+		}
+	case 0x0000F01D:
+		{ /* '0x0000F01D' */
+			return true
+		}
+	case 0x0000F01E:
+		{ /* '0x0000F01E' */
+			return true
+		}
+	case 0x0000F01F:
+		{ /* '0x0000F01F' */
+			return true
+		}
+	case 0x0000F020:
+		{ /* '0x0000F020' */
+			return true
+		}
+	case 0x0000F021:
+		{ /* '0x0000F021' */
+			return true
+		}
+	case 0x0000F024:
+		{ /* '0x0000F024' */
+			return true
+		}
+	case 0x0000F025:
+		{ /* '0x0000F025' */
+			return true
+		}
+	case 0x0000F028:
+		{ /* '0x0000F028' */
+			return true
+		}
+	case 0x0000F029:
+		{ /* '0x0000F029' */
+			return true
+		}
+	case 0x0000F02A:
+		{ /* '0x0000F02A' */
+			return true
+		}
+	case 0x0000F02B:
+		{ /* '0x0000F02B' */
+			return true
+		}
+	case 0x0000F02C:
+		{ /* '0x0000F02C' */
+			return true
+		}
+	case 0x0000F02D:
+		{ /* '0x0000F02D' */
+			return true
+		}
+	case 0x0000F02E:
+		{ /* '0x0000F02E' */
+			return true
+		}
+	case 0x0000F02F:
+		{ /* '0x0000F02F' */
+			return true
+		}
+	case 0x0000F030:
+		{ /* '0x0000F030' */
+			return true
+		}
+	case 0x0000F031:
+		{ /* '0x0000F031' */
+			return true
+		}
+	case 0x0000F035:
+		{ /* '0x0000F035' */
+			return true
+		}
+	case 0x0000F038:
+		{ /* '0x0000F038' */
+			return true
+		}
+	case 0x0000F039:
+		{ /* '0x0000F039' */
+			return true
+		}
+	case 0x0000F03A:
+		{ /* '0x0000F03A' */
+			return true
+		}
+	case 0x0000F03B:
+		{ /* '0x0000F03B' */
+			return true
+		}
+	case 0x0000F03C:
+		{ /* '0x0000F03C' */
+			return true
+		}
+	case 0x0000F03D:
+		{ /* '0x0000F03D' */
+			return true
+		}
+	case 0x0000F03E:
+		{ /* '0x0000F03E' */
+			return true
+		}
+	case 0x0000F03F:
+		{ /* '0x0000F03F' */
+			return true
+		}
+	case 0x0000F040:
+		{ /* '0x0000F040' */
+			return true
+		}
+	case 0x0000F050:
+		{ /* '0x0000F050' */
+			return true
+		}
+	case 0x0000F060:
+		{ /* '0x0000F060' */
+			return true
+		}
+	case 0x0000F064:
+		{ /* '0x0000F064' */
+			return true
+		}
+	case 0x0000F068:
+		{ /* '0x0000F068' */
+			return true
+		}
+	case 0x0000F070:
+		{ /* '0x0000F070' */
+			return true
+		}
+	case 0x0000F071:
+		{ /* '0x0000F071' */
+			return true
+		}
+	case 0x0000F072:
+		{ /* '0x0000F072' */
+			return true
+		}
+	case 0x0000F073:
+		{ /* '0x0000F073' */
+			return true
+		}
+	case 0x0000F074:
+		{ /* '0x0000F074' */
+			return true
+		}
+	case 0x0000F078:
+		{ /* '0x0000F078' */
+			return true
+		}
+	case 0x0000F080:
+		{ /* '0x0000F080' */
+			return true
+		}
+	case 0x0000F081:
+		{ /* '0x0000F081' */
+			return true
+		}
+	case 0x0000F082:
+		{ /* '0x0000F082' */
+			return true
+		}
+	case 0x0000F083:
+		{ /* '0x0000F083' */
+			return true
+		}
+	case 0x0000F084:
+		{ /* '0x0000F084' */
+			return true
+		}
+	case 0x0000F085:
+		{ /* '0x0000F085' */
+			return true
+		}
+	case 0x0000F086:
+		{ /* '0x0000F086' */
+			return true
+		}
+	case 0x0000F088:
+		{ /* '0x0000F088' */
+			return true
+		}
+	case 0x0000F090:
+		{ /* '0x0000F090' */
+			return true
+		}
+	case 0x0000F091:
+		{ /* '0x0000F091' */
+			return true
+		}
+	case 0x0000F098:
+		{ /* '0x0000F098' */
+			return true
+		}
+	case 0x0000F0A0:
+		{ /* '0x0000F0A0' */
+			return true
+		}
+	case 0x0000F0B0:
+		{ /* '0x0000F0B0' */
+			return true
+		}
+	case 0x0000F100:
+		{ /* '0x0000F100' */
+			return true
+		}
+	case 0x0000F200:
+		{ /* '0x0000F200' */
+			return true
+		}
+	case 0x0000F300:
+		{ /* '0x0000F300' */
+			return true
+		}
+	case 0x0000F302:
+		{ /* '0x0000F302' */
+			return true
+		}
+	case 0x0000F303:
+		{ /* '0x0000F303' */
+			return true
+		}
+	case 0x0000F304:
+		{ /* '0x0000F304' */
+			return true
+		}
+	case 0x0000F305:
+		{ /* '0x0000F305' */
+			return true
+		}
+	case 0x0000F3F8:
+		{ /* '0x0000F3F8' */
+			return true
+		}
+	case 0x0000F3F9:
+		{ /* '0x0000F3F9' */
+			return true
+		}
+	case 0x0000F3FB:
+		{ /* '0x0000F3FB' */
+			return true
+		}
+	case 0x0000F3FC:
+		{ /* '0x0000F3FC' */
+			return true
+		}
+	case 0x0000F3FD:
+		{ /* '0x0000F3FD' */
+			return true
+		}
+	case 0x0000F3FE:
+		{ /* '0x0000F3FE' */
+			return true
+		}
+	case 0x0000F3FF:
+		{ /* '0x0000F3FF' */
+			return true
+		}
+	case 0x0000F400:
+		{ /* '0x0000F400' */
+			return true
+		}
+	case 0x0000F401:
+		{ /* '0x0000F401' */
+			return true
+		}
+	case 0x0000F402:
+		{ /* '0x0000F402' */
+			return true
+		}
+	case 0x0000F403:
+		{ /* '0x0000F403' */
+			return true
+		}
+	case 0x0000F404:
+		{ /* '0x0000F404' */
+			return true
+		}
+	case 0x0000F405:
+		{ /* '0x0000F405' */
+			return true
+		}
+	case 0x0000F406:
+		{ /* '0x0000F406' */
+			return true
+		}
+	case 0x0000F407:
+		{ /* '0x0000F407' */
+			return true
+		}
+	case 0x0000F41F:
+		{ /* '0x0000F41F' */
+			return true
+		}
+	case 0x0000F420:
+		{ /* '0x0000F420' */
+			return true
+		}
+	case 0x0000F421:
+		{ /* '0x0000F421' */
+			return true
+		}
+	case 0x0000F430:
+		{ /* '0x0000F430' */
+			return true
+		}
+	case 0x8001F302:
+		{ /* '0x8001F302' */
+			return true
+		}
+	case 0xF8200101:
+		{ /* '0xF8200101' */
+			return true
+		}
+	default:
+		{
+			return false
+		}
+	}
+}
+
+func ReservedIndexGroupsFirstEnumForFieldTc3(value bool) (enum ReservedIndexGroups, ok bool) {
+	for _, sizeValue := range ReservedIndexGroupsValues {
+		if sizeValue.Tc3() == value {
+			return sizeValue, true
+		}
+	}
+	return 0, false
+}
 func ReservedIndexGroupsByValue(value uint32) (enum ReservedIndexGroups, ok bool) {
 	switch value {
 	case 0x00000000:
@@ -157,6 +1200,8 @@ func ReservedIndexGroupsByValue(value uint32) (enum ReservedIndexGroups, ok bool
 		return ReservedIndexGroups_ADSIGRP_SYM_UPLOAD, true
 	case 0x0000F00C:
 		return ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO, true
+	case 0x0000F00D:
+		return ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD2, true
 	case 0x0000F00E:
 		return ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD, true
 	case 0x0000F00F:
@@ -165,24 +1210,100 @@ func ReservedIndexGroupsByValue(value uint32) (enum ReservedIndexGroups, ok bool
 		return ReservedIndexGroups_ADSIGRP_SYMNOTE, true
 	case 0x0000F011:
 		return ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX, true
+	case 0x0000F012:
+		return ReservedIndexGroups_ADSIGRP_SYM_ADDRBYHND, true
+	case 0x0000F013:
+		return ReservedIndexGroups_ADSIGRP_SYM_POINTER_SUPPORT, true
+	case 0x0000F014:
+		return ReservedIndexGroups_ADSIGRP_SYM_POINTER_ACCESS, true
+	case 0x0000F015:
+		return ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_SUPPORT, true
+	case 0x0000F016:
+		return ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_ACCESS, true
+	case 0x0000F018:
+		return ReservedIndexGroups_ADSIGRP_SYM_VALBYHND_WITHMASK, true
+	case 0x0000F019:
+		return ReservedIndexGroups_ADSIGRP_SYM_NOACCESS_TO_SUBSYM, true
+	case 0x0000F01A:
+		return ReservedIndexGroups_ADSIGRP_SYM_POINTER_BITACCESS, true
+	case 0x0000F01B:
+		return ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_BITACCESS, true
+	case 0x0000F01C:
+		return ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD3, true
+	case 0x0000F01D:
+		return ReservedIndexGroups_ADSIGRP_SYM_FORWARD_ACCESS, true
+	case 0x0000F01E:
+		return ReservedIndexGroups_ADSIGRP_SYM_FORWARD_BYHND, true
+	case 0x0000F01F:
+		return ReservedIndexGroups_ADSIGRP_SYM_XAF_OBJECTID, true
 	case 0x0000F020:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB, true
 	case 0x0000F021:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX, true
+	case 0x0000F024:
+		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYHNDEX, true
 	case 0x0000F025:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE, true
+	case 0x0000F028:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX0, true
+	case 0x0000F029:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX1, true
+	case 0x0000F02A:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX2, true
+	case 0x0000F02B:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX3, true
+	case 0x0000F02C:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX4, true
+	case 0x0000F02D:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX5, true
+	case 0x0000F02E:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX6, true
+	case 0x0000F02F:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX7, true
 	case 0x0000F030:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB, true
 	case 0x0000F031:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX, true
 	case 0x0000F035:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE, true
+	case 0x0000F038:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX0, true
+	case 0x0000F039:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX1, true
+	case 0x0000F03A:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX2, true
+	case 0x0000F03B:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX3, true
+	case 0x0000F03C:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX4, true
+	case 0x0000F03D:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX5, true
+	case 0x0000F03E:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX6, true
+	case 0x0000F03F:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX7, true
 	case 0x0000F040:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI, true
 	case 0x0000F050:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO, true
 	case 0x0000F060:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB, true
+	case 0x0000F064:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_WATCHDOG, true
+	case 0x0000F068:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CREATE, true
+	case 0x0000F070:
+		return ReservedIndexGroups_ADSIGRP_JSON, true
+	case 0x0000F071:
+		return ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_GET, true
+	case 0x0000F072:
+		return ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_SET, true
+	case 0x0000F073:
+		return ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_DEL, true
+	case 0x0000F074:
+		return ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_LEN, true
+	case 0x0000F078:
+		return ReservedIndexGroups_ADSIGRP_ADSWATCH_GETOID, true
 	case 0x0000F080:
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ, true
 	case 0x0000F081:
@@ -197,10 +1318,74 @@ func ReservedIndexGroupsByValue(value uint32) (enum ReservedIndexGroups, ok bool
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS, true
 	case 0x0000F086:
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS, true
+	case 0x0000F088:
+		return ReservedIndexGroups_ADSIGRP_EXTERNALTIME, true
+	case 0x0000F090:
+		return ReservedIndexGroups_ADSIGRP_CHECK_NOTIFICATION, true
+	case 0x0000F091:
+		return ReservedIndexGroups_ADSIGRP_DIAG_NOTIFICATION, true
+	case 0x0000F098:
+		return ReservedIndexGroups_ADSIGRP_LOGGING_CONFIG, true
+	case 0x0000F0A0:
+		return ReservedIndexGroups_ADSIGRP_SYM_CONTEXTCYCLE, true
+	case 0x0000F0B0:
+		return ReservedIndexGroups_ADSIGRP_DEVICE_CONTEXT_DATA, true
 	case 0x0000F100:
 		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
+	case 0x0000F200:
+		return ReservedIndexGroups_ADSIGRP_TASK_DATA, true
+	case 0x0000F300:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_BEGIN, true
 	case 0x0000F302:
-		return ReservedIndexGroups_ADS_OVER_ETHERCAT, true
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO, true
+	case 0x0000F303:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_LASTERROR, true
+	case 0x0000F304:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_READ, true
+	case 0x0000F305:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_WRITE, true
+	case 0x0000F3F8:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_TXPDO_ACCESS, true
+	case 0x0000F3F9:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_RXPDO_ACCESS, true
+	case 0x0000F3FB:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_ENI_CONTENT, true
+	case 0x0000F3FC:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_LIST, true
+	case 0x0000F3FD:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_OBJ, true
+	case 0x0000F3FE:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_ENTRY, true
+	case 0x0000F3FF:
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_END, true
+	case 0x0000F400:
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_BEGIN, true
+	case 0x0000F401:
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENREAD, true
+	case 0x0000F402:
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENWRITE, true
+	case 0x0000F403:
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FCLOSE, true
+	case 0x0000F404:
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FREAD, true
+	case 0x0000F405:
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FWRITE, true
+	case 0x0000F406:
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_PROGRESSINFO, true
+	case 0x0000F407:
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_LASTERROR, true
+	case 0x0000F41F:
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_END, true
+	case 0x0000F420:
+		return ReservedIndexGroups_ADSIGRP_ECAT_SOE, true
+	case 0x0000F421:
+		return ReservedIndexGroups_ADSIGRP_ECAT_SOE_LASTERROR, true
+	case 0x0000F430:
+		return ReservedIndexGroups_ADSIGRP_ECAT_VOE, true
+	case 0x8001F302:
+		return ReservedIndexGroups_ADSIGRP_ECAT_EMCY_SERVER, true
+	case 0xF8200101:
+		return ReservedIndexGroups_ADSIOFFS_ECAT_EMCY_SERVER_CONNECT, true
 	}
 	return 0, false
 }
@@ -237,6 +1422,8 @@ func ReservedIndexGroupsByName(value string) (enum ReservedIndexGroups, ok bool)
 		return ReservedIndexGroups_ADSIGRP_SYM_UPLOAD, true
 	case "ADSIGRP_SYM_UPLOADINFO":
 		return ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO, true
+	case "ADSIGRP_SYM_DOWNLOAD2":
+		return ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD2, true
 	case "ADSIGRP_DATA_TYPE_TABLE_UPLOAD":
 		return ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD, true
 	case "ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES":
@@ -245,24 +1432,100 @@ func ReservedIndexGroupsByName(value string) (enum ReservedIndexGroups, ok bool)
 		return ReservedIndexGroups_ADSIGRP_SYMNOTE, true
 	case "ADSIGRP_DT_INFOBYNAMEEX":
 		return ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX, true
+	case "ADSIGRP_SYM_ADDRBYHND":
+		return ReservedIndexGroups_ADSIGRP_SYM_ADDRBYHND, true
+	case "ADSIGRP_SYM_POINTER_SUPPORT":
+		return ReservedIndexGroups_ADSIGRP_SYM_POINTER_SUPPORT, true
+	case "ADSIGRP_SYM_POINTER_ACCESS":
+		return ReservedIndexGroups_ADSIGRP_SYM_POINTER_ACCESS, true
+	case "ADSIGRP_SYM_REFERENCE_SUPPORT":
+		return ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_SUPPORT, true
+	case "ADSIGRP_SYM_REFERENCE_ACCESS":
+		return ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_ACCESS, true
+	case "ADSIGRP_SYM_VALBYHND_WITHMASK":
+		return ReservedIndexGroups_ADSIGRP_SYM_VALBYHND_WITHMASK, true
+	case "ADSIGRP_SYM_NOACCESS_TO_SUBSYM":
+		return ReservedIndexGroups_ADSIGRP_SYM_NOACCESS_TO_SUBSYM, true
+	case "ADSIGRP_SYM_POINTER_BITACCESS":
+		return ReservedIndexGroups_ADSIGRP_SYM_POINTER_BITACCESS, true
+	case "ADSIGRP_SYM_REFERENCE_BITACCESS":
+		return ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_BITACCESS, true
+	case "ADSIGRP_SYM_DOWNLOAD3":
+		return ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD3, true
+	case "ADSIGRP_SYM_FORWARD_ACCESS":
+		return ReservedIndexGroups_ADSIGRP_SYM_FORWARD_ACCESS, true
+	case "ADSIGRP_SYM_FORWARD_BYHND":
+		return ReservedIndexGroups_ADSIGRP_SYM_FORWARD_BYHND, true
+	case "ADSIGRP_SYM_XAF_OBJECTID":
+		return ReservedIndexGroups_ADSIGRP_SYM_XAF_OBJECTID, true
 	case "ADSIGRP_IOIMAGE_RWIB":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB, true
 	case "ADSIGRP_IOIMAGE_RWIX":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX, true
+	case "ADSIGRP_SYM_INFOBYHNDEX":
+		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYHNDEX, true
 	case "ADSIGRP_IOIMAGE_RISIZE":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE, true
+	case "ADSIGRP_IOIMAGE_RWIX0":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX0, true
+	case "ADSIGRP_IOIMAGE_RWIX1":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX1, true
+	case "ADSIGRP_IOIMAGE_RWIX2":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX2, true
+	case "ADSIGRP_IOIMAGE_RWIX3":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX3, true
+	case "ADSIGRP_IOIMAGE_RWIX4":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX4, true
+	case "ADSIGRP_IOIMAGE_RWIX5":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX5, true
+	case "ADSIGRP_IOIMAGE_RWIX6":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX6, true
+	case "ADSIGRP_IOIMAGE_RWIX7":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX7, true
 	case "ADSIGRP_IOIMAGE_RWOB":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB, true
 	case "ADSIGRP_IOIMAGE_RWOX":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX, true
 	case "ADSIGRP_IOIMAGE_RWOSIZE":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE, true
+	case "ADSIGRP_IOIMAGE_RWOX0":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX0, true
+	case "ADSIGRP_IOIMAGE_RWOX1":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX1, true
+	case "ADSIGRP_IOIMAGE_RWOX2":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX2, true
+	case "ADSIGRP_IOIMAGE_RWOX3":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX3, true
+	case "ADSIGRP_IOIMAGE_RWOX4":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX4, true
+	case "ADSIGRP_IOIMAGE_RWOX5":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX5, true
+	case "ADSIGRP_IOIMAGE_RWOX6":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX6, true
+	case "ADSIGRP_IOIMAGE_RWOX7":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX7, true
 	case "ADSIGRP_IOIMAGE_CLEARI":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI, true
 	case "ADSIGRP_IOIMAGE_CLEARO":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO, true
 	case "ADSIGRP_IOIMAGE_RWIOB":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB, true
+	case "ADSIGRP_IOIMAGE_WATCHDOG":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_WATCHDOG, true
+	case "ADSIGRP_IOIMAGE_CREATE":
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CREATE, true
+	case "ADSIGRP_JSON":
+		return ReservedIndexGroups_ADSIGRP_JSON, true
+	case "ADSIGRP_JSON_DOM_ACCESS_GET":
+		return ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_GET, true
+	case "ADSIGRP_JSON_DOM_ACCESS_SET":
+		return ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_SET, true
+	case "ADSIGRP_JSON_DOM_ACCESS_DEL":
+		return ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_DEL, true
+	case "ADSIGRP_JSON_DOM_ACCESS_LEN":
+		return ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_LEN, true
+	case "ADSIGRP_ADSWATCH_GETOID":
+		return ReservedIndexGroups_ADSIGRP_ADSWATCH_GETOID, true
 	case "ADSIGRP_MULTIPLE_READ":
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ, true
 	case "ADSIGRP_MULTIPLE_WRITE":
@@ -277,10 +1540,74 @@ func ReservedIndexGroupsByName(value string) (enum ReservedIndexGroups, ok bool)
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS, true
 	case "ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS":
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS, true
+	case "ADSIGRP_EXTERNALTIME":
+		return ReservedIndexGroups_ADSIGRP_EXTERNALTIME, true
+	case "ADSIGRP_CHECK_NOTIFICATION":
+		return ReservedIndexGroups_ADSIGRP_CHECK_NOTIFICATION, true
+	case "ADSIGRP_DIAG_NOTIFICATION":
+		return ReservedIndexGroups_ADSIGRP_DIAG_NOTIFICATION, true
+	case "ADSIGRP_LOGGING_CONFIG":
+		return ReservedIndexGroups_ADSIGRP_LOGGING_CONFIG, true
+	case "ADSIGRP_SYM_CONTEXTCYCLE":
+		return ReservedIndexGroups_ADSIGRP_SYM_CONTEXTCYCLE, true
+	case "ADSIGRP_DEVICE_CONTEXT_DATA":
+		return ReservedIndexGroups_ADSIGRP_DEVICE_CONTEXT_DATA, true
 	case "ADSIGRP_DEVICE_DATA":
 		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
-	case "ADS_OVER_ETHERCAT":
-		return ReservedIndexGroups_ADS_OVER_ETHERCAT, true
+	case "ADSIGRP_TASK_DATA":
+		return ReservedIndexGroups_ADSIGRP_TASK_DATA, true
+	case "ADSIGRP_CANOPEN_BEGIN":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_BEGIN, true
+	case "ADSIGRP_CANOPEN_SDO":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO, true
+	case "ADSIGRP_CANOPEN_SDO_LASTERROR":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_LASTERROR, true
+	case "ADSIGRP_CANOPEN_SDO_SUMUP_READ":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_READ, true
+	case "ADSIGRP_CANOPEN_SDO_SUMUP_WRITE":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_WRITE, true
+	case "ADSIGRP_CANOPEN_TXPDO_ACCESS":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_TXPDO_ACCESS, true
+	case "ADSIGRP_CANOPEN_RXPDO_ACCESS":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_RXPDO_ACCESS, true
+	case "ADSIGRP_CANOPEN_SDO_ENI_CONTENT":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_ENI_CONTENT, true
+	case "ADSIGRP_CANOPEN_SDO_INFO_LIST":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_LIST, true
+	case "ADSIGRP_CANOPEN_SDO_INFO_OBJ":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_OBJ, true
+	case "ADSIGRP_CANOPEN_SDO_INFO_ENTRY":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_ENTRY, true
+	case "ADSIGRP_CANOPEN_END":
+		return ReservedIndexGroups_ADSIGRP_CANOPEN_END, true
+	case "ADSIGRP_ECAT_FOE_BEGIN":
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_BEGIN, true
+	case "ADSIGRP_ECAT_FOE_FOPENREAD":
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENREAD, true
+	case "ADSIGRP_ECAT_FOE_FOPENWRITE":
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENWRITE, true
+	case "ADSIGRP_ECAT_FOE_FCLOSE":
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FCLOSE, true
+	case "ADSIGRP_ECAT_FOE_FREAD":
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FREAD, true
+	case "ADSIGRP_ECAT_FOE_FWRITE":
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_FWRITE, true
+	case "ADSIGRP_ECAT_FOE_PROGRESSINFO":
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_PROGRESSINFO, true
+	case "ADSIGRP_ECAT_FOE_LASTERROR":
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_LASTERROR, true
+	case "ADSIGRP_ECAT_FOE_END":
+		return ReservedIndexGroups_ADSIGRP_ECAT_FOE_END, true
+	case "ADSIGRP_ECAT_SOE":
+		return ReservedIndexGroups_ADSIGRP_ECAT_SOE, true
+	case "ADSIGRP_ECAT_SOE_LASTERROR":
+		return ReservedIndexGroups_ADSIGRP_ECAT_SOE_LASTERROR, true
+	case "ADSIGRP_ECAT_VOE":
+		return ReservedIndexGroups_ADSIGRP_ECAT_VOE, true
+	case "ADSIGRP_ECAT_EMCY_SERVER":
+		return ReservedIndexGroups_ADSIGRP_ECAT_EMCY_SERVER, true
+	case "ADSIOFFS_ECAT_EMCY_SERVER_CONNECT":
+		return ReservedIndexGroups_ADSIOFFS_ECAT_EMCY_SERVER_CONNECT, true
 	}
 	return 0, false
 }
@@ -349,6 +1676,13 @@ func (e ReservedIndexGroups) GetValue() uint32 {
 	return uint32(e)
 }
 
+func (e ReservedIndexGroups) GetTc2() bool {
+	return e.Tc2()
+}
+func (e ReservedIndexGroups) GetTc3() bool {
+	return e.Tc3()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ReservedIndexGroups) PLC4XEnumName() string {
 	switch e {
@@ -382,6 +1716,8 @@ func (e ReservedIndexGroups) PLC4XEnumName() string {
 		return "ADSIGRP_SYM_UPLOAD"
 	case ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO:
 		return "ADSIGRP_SYM_UPLOADINFO"
+	case ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD2:
+		return "ADSIGRP_SYM_DOWNLOAD2"
 	case ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD:
 		return "ADSIGRP_DATA_TYPE_TABLE_UPLOAD"
 	case ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES:
@@ -390,24 +1726,100 @@ func (e ReservedIndexGroups) PLC4XEnumName() string {
 		return "ADSIGRP_SYMNOTE"
 	case ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX:
 		return "ADSIGRP_DT_INFOBYNAMEEX"
+	case ReservedIndexGroups_ADSIGRP_SYM_ADDRBYHND:
+		return "ADSIGRP_SYM_ADDRBYHND"
+	case ReservedIndexGroups_ADSIGRP_SYM_POINTER_SUPPORT:
+		return "ADSIGRP_SYM_POINTER_SUPPORT"
+	case ReservedIndexGroups_ADSIGRP_SYM_POINTER_ACCESS:
+		return "ADSIGRP_SYM_POINTER_ACCESS"
+	case ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_SUPPORT:
+		return "ADSIGRP_SYM_REFERENCE_SUPPORT"
+	case ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_ACCESS:
+		return "ADSIGRP_SYM_REFERENCE_ACCESS"
+	case ReservedIndexGroups_ADSIGRP_SYM_VALBYHND_WITHMASK:
+		return "ADSIGRP_SYM_VALBYHND_WITHMASK"
+	case ReservedIndexGroups_ADSIGRP_SYM_NOACCESS_TO_SUBSYM:
+		return "ADSIGRP_SYM_NOACCESS_TO_SUBSYM"
+	case ReservedIndexGroups_ADSIGRP_SYM_POINTER_BITACCESS:
+		return "ADSIGRP_SYM_POINTER_BITACCESS"
+	case ReservedIndexGroups_ADSIGRP_SYM_REFERENCE_BITACCESS:
+		return "ADSIGRP_SYM_REFERENCE_BITACCESS"
+	case ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD3:
+		return "ADSIGRP_SYM_DOWNLOAD3"
+	case ReservedIndexGroups_ADSIGRP_SYM_FORWARD_ACCESS:
+		return "ADSIGRP_SYM_FORWARD_ACCESS"
+	case ReservedIndexGroups_ADSIGRP_SYM_FORWARD_BYHND:
+		return "ADSIGRP_SYM_FORWARD_BYHND"
+	case ReservedIndexGroups_ADSIGRP_SYM_XAF_OBJECTID:
+		return "ADSIGRP_SYM_XAF_OBJECTID"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB:
 		return "ADSIGRP_IOIMAGE_RWIB"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX:
 		return "ADSIGRP_IOIMAGE_RWIX"
+	case ReservedIndexGroups_ADSIGRP_SYM_INFOBYHNDEX:
+		return "ADSIGRP_SYM_INFOBYHNDEX"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE:
 		return "ADSIGRP_IOIMAGE_RISIZE"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX0:
+		return "ADSIGRP_IOIMAGE_RWIX0"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX1:
+		return "ADSIGRP_IOIMAGE_RWIX1"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX2:
+		return "ADSIGRP_IOIMAGE_RWIX2"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX3:
+		return "ADSIGRP_IOIMAGE_RWIX3"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX4:
+		return "ADSIGRP_IOIMAGE_RWIX4"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX5:
+		return "ADSIGRP_IOIMAGE_RWIX5"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX6:
+		return "ADSIGRP_IOIMAGE_RWIX6"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX7:
+		return "ADSIGRP_IOIMAGE_RWIX7"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB:
 		return "ADSIGRP_IOIMAGE_RWOB"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX:
 		return "ADSIGRP_IOIMAGE_RWOX"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE:
 		return "ADSIGRP_IOIMAGE_RWOSIZE"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX0:
+		return "ADSIGRP_IOIMAGE_RWOX0"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX1:
+		return "ADSIGRP_IOIMAGE_RWOX1"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX2:
+		return "ADSIGRP_IOIMAGE_RWOX2"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX3:
+		return "ADSIGRP_IOIMAGE_RWOX3"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX4:
+		return "ADSIGRP_IOIMAGE_RWOX4"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX5:
+		return "ADSIGRP_IOIMAGE_RWOX5"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX6:
+		return "ADSIGRP_IOIMAGE_RWOX6"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX7:
+		return "ADSIGRP_IOIMAGE_RWOX7"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI:
 		return "ADSIGRP_IOIMAGE_CLEARI"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO:
 		return "ADSIGRP_IOIMAGE_CLEARO"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB:
 		return "ADSIGRP_IOIMAGE_RWIOB"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_WATCHDOG:
+		return "ADSIGRP_IOIMAGE_WATCHDOG"
+	case ReservedIndexGroups_ADSIGRP_IOIMAGE_CREATE:
+		return "ADSIGRP_IOIMAGE_CREATE"
+	case ReservedIndexGroups_ADSIGRP_JSON:
+		return "ADSIGRP_JSON"
+	case ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_GET:
+		return "ADSIGRP_JSON_DOM_ACCESS_GET"
+	case ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_SET:
+		return "ADSIGRP_JSON_DOM_ACCESS_SET"
+	case ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_DEL:
+		return "ADSIGRP_JSON_DOM_ACCESS_DEL"
+	case ReservedIndexGroups_ADSIGRP_JSON_DOM_ACCESS_LEN:
+		return "ADSIGRP_JSON_DOM_ACCESS_LEN"
+	case ReservedIndexGroups_ADSIGRP_ADSWATCH_GETOID:
+		return "ADSIGRP_ADSWATCH_GETOID"
 	case ReservedIndexGroups_ADSIGRP_MULTIPLE_READ:
 		return "ADSIGRP_MULTIPLE_READ"
 	case ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE:
@@ -422,10 +1834,74 @@ func (e ReservedIndexGroups) PLC4XEnumName() string {
 		return "ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS"
 	case ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS:
 		return "ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS"
+	case ReservedIndexGroups_ADSIGRP_EXTERNALTIME:
+		return "ADSIGRP_EXTERNALTIME"
+	case ReservedIndexGroups_ADSIGRP_CHECK_NOTIFICATION:
+		return "ADSIGRP_CHECK_NOTIFICATION"
+	case ReservedIndexGroups_ADSIGRP_DIAG_NOTIFICATION:
+		return "ADSIGRP_DIAG_NOTIFICATION"
+	case ReservedIndexGroups_ADSIGRP_LOGGING_CONFIG:
+		return "ADSIGRP_LOGGING_CONFIG"
+	case ReservedIndexGroups_ADSIGRP_SYM_CONTEXTCYCLE:
+		return "ADSIGRP_SYM_CONTEXTCYCLE"
+	case ReservedIndexGroups_ADSIGRP_DEVICE_CONTEXT_DATA:
+		return "ADSIGRP_DEVICE_CONTEXT_DATA"
 	case ReservedIndexGroups_ADSIGRP_DEVICE_DATA:
 		return "ADSIGRP_DEVICE_DATA"
-	case ReservedIndexGroups_ADS_OVER_ETHERCAT:
-		return "ADS_OVER_ETHERCAT"
+	case ReservedIndexGroups_ADSIGRP_TASK_DATA:
+		return "ADSIGRP_TASK_DATA"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_BEGIN:
+		return "ADSIGRP_CANOPEN_BEGIN"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_SDO:
+		return "ADSIGRP_CANOPEN_SDO"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_LASTERROR:
+		return "ADSIGRP_CANOPEN_SDO_LASTERROR"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_READ:
+		return "ADSIGRP_CANOPEN_SDO_SUMUP_READ"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_SUMUP_WRITE:
+		return "ADSIGRP_CANOPEN_SDO_SUMUP_WRITE"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_TXPDO_ACCESS:
+		return "ADSIGRP_CANOPEN_TXPDO_ACCESS"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_RXPDO_ACCESS:
+		return "ADSIGRP_CANOPEN_RXPDO_ACCESS"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_ENI_CONTENT:
+		return "ADSIGRP_CANOPEN_SDO_ENI_CONTENT"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_LIST:
+		return "ADSIGRP_CANOPEN_SDO_INFO_LIST"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_OBJ:
+		return "ADSIGRP_CANOPEN_SDO_INFO_OBJ"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_SDO_INFO_ENTRY:
+		return "ADSIGRP_CANOPEN_SDO_INFO_ENTRY"
+	case ReservedIndexGroups_ADSIGRP_CANOPEN_END:
+		return "ADSIGRP_CANOPEN_END"
+	case ReservedIndexGroups_ADSIGRP_ECAT_FOE_BEGIN:
+		return "ADSIGRP_ECAT_FOE_BEGIN"
+	case ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENREAD:
+		return "ADSIGRP_ECAT_FOE_FOPENREAD"
+	case ReservedIndexGroups_ADSIGRP_ECAT_FOE_FOPENWRITE:
+		return "ADSIGRP_ECAT_FOE_FOPENWRITE"
+	case ReservedIndexGroups_ADSIGRP_ECAT_FOE_FCLOSE:
+		return "ADSIGRP_ECAT_FOE_FCLOSE"
+	case ReservedIndexGroups_ADSIGRP_ECAT_FOE_FREAD:
+		return "ADSIGRP_ECAT_FOE_FREAD"
+	case ReservedIndexGroups_ADSIGRP_ECAT_FOE_FWRITE:
+		return "ADSIGRP_ECAT_FOE_FWRITE"
+	case ReservedIndexGroups_ADSIGRP_ECAT_FOE_PROGRESSINFO:
+		return "ADSIGRP_ECAT_FOE_PROGRESSINFO"
+	case ReservedIndexGroups_ADSIGRP_ECAT_FOE_LASTERROR:
+		return "ADSIGRP_ECAT_FOE_LASTERROR"
+	case ReservedIndexGroups_ADSIGRP_ECAT_FOE_END:
+		return "ADSIGRP_ECAT_FOE_END"
+	case ReservedIndexGroups_ADSIGRP_ECAT_SOE:
+		return "ADSIGRP_ECAT_SOE"
+	case ReservedIndexGroups_ADSIGRP_ECAT_SOE_LASTERROR:
+		return "ADSIGRP_ECAT_SOE_LASTERROR"
+	case ReservedIndexGroups_ADSIGRP_ECAT_VOE:
+		return "ADSIGRP_ECAT_VOE"
+	case ReservedIndexGroups_ADSIGRP_ECAT_EMCY_SERVER:
+		return "ADSIGRP_ECAT_EMCY_SERVER"
+	case ReservedIndexGroups_ADSIOFFS_ECAT_EMCY_SERVER_CONNECT:
+		return "ADSIOFFS_ECAT_EMCY_SERVER_CONNECT"
 	}
 	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }

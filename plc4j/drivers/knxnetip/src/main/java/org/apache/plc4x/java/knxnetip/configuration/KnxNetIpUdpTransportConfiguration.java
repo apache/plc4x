@@ -16,13 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.knxnetip.configuration;
 
 import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
-import org.apache.plc4x.java.transport.udp.DefaultUdpTransportConfiguration;
+import org.apache.plc4x.java.transport.udp.config.UdpTransportConfiguration;
 
-public class KnxNetIpUdpTransportConfiguration extends DefaultUdpTransportConfiguration {
+public class KnxNetIpUdpTransportConfiguration extends UdpTransportConfiguration {
 
     @Override
     public int getDefaultPort() {

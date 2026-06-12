@@ -203,7 +203,7 @@ func CastSecurityDataEvent(structType any) SecurityDataEvent {
 	return nil
 }
 
-func (m *_SecurityDataEvent) GetTypeName() string {
+func (m *_SecurityDataEvent) GetPlx4xTypeName() string {
 	return "SecurityDataEvent"
 }
 

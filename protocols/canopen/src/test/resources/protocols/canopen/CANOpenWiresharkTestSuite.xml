@@ -22,8 +22,8 @@
 
   <name>Tests of CANopen frames from Wireshark sample PCAP files.</name>
 
-  <protocolName>canopen</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>canopen</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>SDO initiate request: 4008100000000000</name>
@@ -41,14 +41,14 @@
           <request>
             <SDORequest>
               <SDOInitiateUploadRequest>
-                <reserved dataType="uint" bitLength="5">0</reserved>
+                <reserved0 dataType="uint" bitLength="5">0</reserved>
                 <address>
                   <IndexAddress>
                     <index dataType="uint" bitLength="16">4104</index>
                     <subindex dataType="uint" bitLength="8">0</subindex>
                   </IndexAddress>
                 </address>
-                <reserved dataType="int" bitLength="32">0</reserved>
+                <reserved0 dataType="int" bitLength="32">0</reserved>
               </SDOInitiateUploadRequest>
             </SDORequest>
           </request>
@@ -73,7 +73,7 @@
           <response>
             <SDOResponse>
               <SDOInitiateUploadResponse>
-                <reserved dataType="uint" bitLength="1">0</reserved>
+                <reserved0 dataType="uint" bitLength="1">0</reserved>
                 <size dataType="uint" bitLength="2">0</size>
                 <expedited dataType="bit" bitLength="1">false</expedited>
                 <indicated dataType="bit" bitLength="1">true</indicated>
@@ -115,8 +115,8 @@
             <SDORequest>
               <SDOSegmentUploadRequest>
                 <toggle dataType="bit" bitLength="1">false</toggle>
-                <reserved dataType="uint" bitLength="4">0</reserved>
-                <reserved dataType="int" bitLength="56">0</reserved>
+                <reserved0 dataType="uint" bitLength="4">0</reserved>
+                <reserved1 dataType="int" bitLength="56">0</reserved1>
               </SDOSegmentUploadRequest>
             </SDORequest>
           </request>
@@ -143,7 +143,7 @@
               <SDOAbortRequest>
                 <abort>
                   <SDOAbort>
-                    <reserved dataType="uint" bitLength="5">0</reserved>
+                    <reserved0 dataType="uint" bitLength="5">0</reserved>
                     <address>
                       <IndexAddress>
                         <index dataType="uint" bitLength="16">0</index>
@@ -208,8 +208,8 @@
             <SDORequest>
               <SDOSegmentUploadRequest>
                 <toggle dataType="bit" bitLength="1">true</toggle>
-                <reserved dataType="uint" bitLength="4">0</reserved>
-                <reserved dataType="int" bitLength="56">0</reserved>
+                <reserved0 dataType="uint" bitLength="4">0</reserved>
+                <reserved1 dataType="int" bitLength="56">0</reserved1>
               </SDOSegmentUploadRequest>
             </SDORequest>
           </request>
@@ -234,14 +234,14 @@
           <request>
             <SDORequest>
               <SDOInitiateUploadRequest>
-                <reserved dataType="uint" bitLength="5">0</reserved>
+                <reserved0 dataType="uint" bitLength="5">0</reserved>
                 <address>
                   <IndexAddress>
                     <index dataType="uint" bitLength="16">4104</index>
                     <subindex dataType="uint" bitLength="8">42</subindex>
                   </IndexAddress>
                 </address>
-                <reserved dataType="int" bitLength="32">0</reserved>
+                <reserved0 dataType="int" bitLength="32">0</reserved>
               </SDOInitiateUploadRequest>
             </SDORequest>
           </request>
@@ -263,7 +263,7 @@
           <request>
             <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="START">1</NMTStateRequest>
           </request>
-          <reserved dataType="uint" bitLength="1">0</reserved>
+          <reserved0 dataType="uint" bitLength="1">0</reserved>
           <node dataType="uint" bitLength="7">66</node>
         </CANOpenNetworkPayload>
       </CANOpenPayload>
@@ -283,7 +283,7 @@
           <request>
             <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="START">1</NMTStateRequest>
           </request>
-          <reserved dataType="uint" bitLength="1">0</reserved>
+          <reserved0 dataType="uint" bitLength="1">0</reserved>
           <node dataType="uint" bitLength="7">0</node>
         </CANOpenNetworkPayload>
       </CANOpenPayload>
@@ -303,7 +303,7 @@
           <request>
             <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="STOP">2</NMTStateRequest>
           </request>
-          <reserved dataType="uint" bitLength="1">0</reserved>
+          <reserved0 dataType="uint" bitLength="1">0</reserved>
           <node dataType="uint" bitLength="7">99</node>
         </CANOpenNetworkPayload>
       </CANOpenPayload>
@@ -326,7 +326,7 @@
           <request>
             <SDORequest>
               <SDOInitiateDownloadRequest>
-                <reserved dataType="uint" bitLength="1">0</reserved>
+                <reserved0 dataType="uint" bitLength="1">0</reserved>
                 <size dataType="uint" bitLength="2">0</size>
                 <expedited dataType="bit" bitLength="1">true</expedited>
                 <indicated dataType="bit" bitLength="1">true</indicated>
@@ -371,7 +371,7 @@
               <SDOAbortResponse>
                 <abort>
                   <SDOAbort>
-                    <reserved dataType="uint" bitLength="5">0</reserved>
+                    <reserved0 dataType="uint" bitLength="5">0</reserved>
                     <address>
                       <IndexAddress>
                         <index dataType="uint" bitLength="16">25088</index>

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -273,7 +274,7 @@ func CastQueryNextResponse(structType any) QueryNextResponse {
 	return nil
 }
 
-func (m *_QueryNextResponse) GetTypeName() string {
+func (m *_QueryNextResponse) GetPlx4xTypeName() string {
 	return "QueryNextResponse"
 }
 
@@ -315,25 +316,25 @@ func (m *_QueryNextResponse) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfQueryDataSets, err := ReadImplicitField[int32](ctx, "noOfQueryDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfQueryDataSets, err := ReadImplicitField[int32](ctx, "noOfQueryDataSets", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfQueryDataSets' field"))
 	}
 	_ = noOfQueryDataSets
 
-	queryDataSets, err := ReadCountArrayField[QueryDataSet](ctx, "queryDataSets", ReadComplex[QueryDataSet](ExtensionObjectDefinitionParseWithBufferProducer[QueryDataSet]((int32)(int32(579))), readBuffer), uint64(noOfQueryDataSets))
+	queryDataSets, err := ReadCountArrayField[QueryDataSet](ctx, "queryDataSets", ReadComplex[QueryDataSet](ExtensionObjectDefinitionParseWithBufferProducer[QueryDataSet]((int32)(int32(579))), readBuffer), uint64(noOfQueryDataSets), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryDataSets' field"))
 	}
 	m.QueryDataSets = queryDataSets
 
-	revisedContinuationPoint, err := ReadSimpleField[PascalByteString](ctx, "revisedContinuationPoint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	revisedContinuationPoint, err := ReadSimpleField[PascalByteString](ctx, "revisedContinuationPoint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedContinuationPoint' field"))
 	}
@@ -364,19 +365,19 @@ func (m *_QueryNextResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for QueryNextResponse")
 		}
 
-		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 		noOfQueryDataSets := int32(utils.InlineIf(bool((m.GetQueryDataSets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetQueryDataSets()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfQueryDataSets", noOfQueryDataSets, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfQueryDataSets", noOfQueryDataSets, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfQueryDataSets' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "queryDataSets", m.GetQueryDataSets(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "queryDataSets", m.GetQueryDataSets(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'queryDataSets' field")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "revisedContinuationPoint", m.GetRevisedContinuationPoint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "revisedContinuationPoint", m.GetRevisedContinuationPoint(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'revisedContinuationPoint' field")
 		}
 

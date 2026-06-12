@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -498,7 +500,7 @@ func CastIdentifyReplyCommandExtendedDiagnosticSummary(structType any) IdentifyR
 	return nil
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetTypeName() string {
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandExtendedDiagnosticSummary"
 }
 
@@ -591,139 +593,139 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) parse(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lowApplication, err := ReadEnumField[ApplicationIdContainer](ctx, "lowApplication", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	lowApplication, err := ReadEnumField[ApplicationIdContainer](ctx, "lowApplication", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowApplication' field"))
 	}
 	m.LowApplication = lowApplication
 
-	highApplication, err := ReadEnumField[ApplicationIdContainer](ctx, "highApplication", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	highApplication, err := ReadEnumField[ApplicationIdContainer](ctx, "highApplication", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highApplication' field"))
 	}
 	m.HighApplication = highApplication
 
-	area, err := ReadSimpleField(ctx, "area", ReadByte(readBuffer, 8))
+	area, err := ReadSimpleField(ctx, "area", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'area' field"))
 	}
 	m.Area = area
 
-	crc, err := ReadSimpleField(ctx, "crc", ReadUnsignedShort(readBuffer, uint8(16)))
+	crc, err := ReadSimpleField(ctx, "crc", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'crc' field"))
 	}
 	m.Crc = crc
 
-	serialNumber, err := ReadSimpleField(ctx, "serialNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	serialNumber, err := ReadSimpleField(ctx, "serialNumber", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serialNumber' field"))
 	}
 	m.SerialNumber = serialNumber
 
-	networkVoltage, err := ReadSimpleField(ctx, "networkVoltage", ReadByte(readBuffer, 8))
+	networkVoltage, err := ReadSimpleField(ctx, "networkVoltage", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltage' field"))
 	}
 	m.NetworkVoltage = networkVoltage
 
-	networkVoltageInVolts, err := ReadVirtualField[float32](ctx, "networkVoltageInVolts", (*float32)(nil), float32(networkVoltage)/float32(float32(6.375)))
+	networkVoltageInVolts, err := ReadVirtualField[float32](ctx, "networkVoltageInVolts", (*float32)(nil), float32(networkVoltage)/float32(float32(6.375)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltageInVolts' field"))
 	}
 	_ = networkVoltageInVolts
 
-	unitInLearnMode, err := ReadSimpleField(ctx, "unitInLearnMode", ReadBoolean(readBuffer))
+	unitInLearnMode, err := ReadSimpleField(ctx, "unitInLearnMode", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitInLearnMode' field"))
 	}
 	m.UnitInLearnMode = unitInLearnMode
 
-	networkVoltageLow, err := ReadSimpleField(ctx, "networkVoltageLow", ReadBoolean(readBuffer))
+	networkVoltageLow, err := ReadSimpleField(ctx, "networkVoltageLow", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltageLow' field"))
 	}
 	m.NetworkVoltageLow = networkVoltageLow
 
-	networkVoltageMarginal, err := ReadSimpleField(ctx, "networkVoltageMarginal", ReadBoolean(readBuffer))
+	networkVoltageMarginal, err := ReadSimpleField(ctx, "networkVoltageMarginal", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltageMarginal' field"))
 	}
 	m.NetworkVoltageMarginal = networkVoltageMarginal
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField1 = reservedField1
 
-	reservedField2, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
+	reservedField2, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField2 = reservedField2
 
-	enableChecksumAlarm, err := ReadSimpleField(ctx, "enableChecksumAlarm", ReadBoolean(readBuffer))
+	enableChecksumAlarm, err := ReadSimpleField(ctx, "enableChecksumAlarm", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enableChecksumAlarm' field"))
 	}
 	m.EnableChecksumAlarm = enableChecksumAlarm
 
-	outputUnit, err := ReadSimpleField(ctx, "outputUnit", ReadBoolean(readBuffer))
+	outputUnit, err := ReadSimpleField(ctx, "outputUnit", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'outputUnit' field"))
 	}
 	m.OutputUnit = outputUnit
 
-	installationMMIError, err := ReadSimpleField(ctx, "installationMMIError", ReadBoolean(readBuffer))
+	installationMMIError, err := ReadSimpleField(ctx, "installationMMIError", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'installationMMIError' field"))
 	}
 	m.InstallationMMIError = installationMMIError
 
-	EEWriteError, err := ReadSimpleField(ctx, "EEWriteError", ReadBoolean(readBuffer))
+	EEWriteError, err := ReadSimpleField(ctx, "EEWriteError", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'EEWriteError' field"))
 	}
 	m.EEWriteError = EEWriteError
 
-	EEChecksumError, err := ReadSimpleField(ctx, "EEChecksumError", ReadBoolean(readBuffer))
+	EEChecksumError, err := ReadSimpleField(ctx, "EEChecksumError", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'EEChecksumError' field"))
 	}
 	m.EEChecksumError = EEChecksumError
 
-	EEDataError, err := ReadSimpleField(ctx, "EEDataError", ReadBoolean(readBuffer))
+	EEDataError, err := ReadSimpleField(ctx, "EEDataError", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'EEDataError' field"))
 	}
 	m.EEDataError = EEDataError
 
-	microReset, err := ReadSimpleField(ctx, "microReset", ReadBoolean(readBuffer))
+	microReset, err := ReadSimpleField(ctx, "microReset", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'microReset' field"))
 	}
 	m.MicroReset = microReset
 
-	commsTxError, err := ReadSimpleField(ctx, "commsTxError", ReadBoolean(readBuffer))
+	commsTxError, err := ReadSimpleField(ctx, "commsTxError", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commsTxError' field"))
 	}
 	m.CommsTxError = commsTxError
 
-	internalStackOverflow, err := ReadSimpleField(ctx, "internalStackOverflow", ReadBoolean(readBuffer))
+	internalStackOverflow, err := ReadSimpleField(ctx, "internalStackOverflow", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'internalStackOverflow' field"))
 	}
 	m.InternalStackOverflow = internalStackOverflow
 
-	microPowerReset, err := ReadSimpleField(ctx, "microPowerReset", ReadBoolean(readBuffer))
+	microPowerReset, err := ReadSimpleField(ctx, "microPowerReset", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'microPowerReset' field"))
 	}
@@ -737,7 +739,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) parse(ctx context.Conte
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -754,27 +756,27 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandExtendedDiagnosticSummary")
 		}
 
-		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "lowApplication", "ApplicationIdContainer", m.GetLowApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "lowApplication", "ApplicationIdContainer", m.GetLowApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'lowApplication' field")
 		}
 
-		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "highApplication", "ApplicationIdContainer", m.GetHighApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "highApplication", "ApplicationIdContainer", m.GetHighApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'highApplication' field")
 		}
 
-		if err := WriteSimpleField[byte](ctx, "area", m.GetArea(), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[byte](ctx, "area", m.GetArea(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'area' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "crc", m.GetCrc(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "crc", m.GetCrc(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'crc' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "serialNumber", m.GetSerialNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "serialNumber", m.GetSerialNumber(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'serialNumber' field")
 		}
 
-		if err := WriteSimpleField[byte](ctx, "networkVoltage", m.GetNetworkVoltage(), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[byte](ctx, "networkVoltage", m.GetNetworkVoltage(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkVoltage' field")
 		}
 		// Virtual field
@@ -784,67 +786,67 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 			return errors.Wrap(_networkVoltageInVoltsErr, "Error serializing 'networkVoltageInVolts' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "unitInLearnMode", m.GetUnitInLearnMode(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "unitInLearnMode", m.GetUnitInLearnMode(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unitInLearnMode' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "networkVoltageLow", m.GetNetworkVoltageLow(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "networkVoltageLow", m.GetNetworkVoltageLow(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkVoltageLow' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "networkVoltageMarginal", m.GetNetworkVoltageMarginal(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "networkVoltageMarginal", m.GetNetworkVoltageMarginal(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkVoltageMarginal' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 3")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "enableChecksumAlarm", m.GetEnableChecksumAlarm(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "enableChecksumAlarm", m.GetEnableChecksumAlarm(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'enableChecksumAlarm' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "outputUnit", m.GetOutputUnit(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "outputUnit", m.GetOutputUnit(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'outputUnit' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "installationMMIError", m.GetInstallationMMIError(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "installationMMIError", m.GetInstallationMMIError(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'installationMMIError' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "EEWriteError", m.GetEEWriteError(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "EEWriteError", m.GetEEWriteError(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'EEWriteError' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "EEChecksumError", m.GetEEChecksumError(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "EEChecksumError", m.GetEEChecksumError(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'EEChecksumError' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "EEDataError", m.GetEEDataError(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "EEDataError", m.GetEEDataError(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'EEDataError' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "microReset", m.GetMicroReset(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "microReset", m.GetMicroReset(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'microReset' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "commsTxError", m.GetCommsTxError(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "commsTxError", m.GetCommsTxError(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'commsTxError' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "internalStackOverflow", m.GetInternalStackOverflow(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "internalStackOverflow", m.GetInternalStackOverflow(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'internalStackOverflow' field")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "microPowerReset", m.GetMicroPowerReset(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "microPowerReset", m.GetMicroPowerReset(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'microPowerReset' field")
 		}
 

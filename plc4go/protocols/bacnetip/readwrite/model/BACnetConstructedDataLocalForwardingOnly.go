@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLocalForwardingOnly(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataLocalForwardingOnly) GetTypeName() string {
+func (m *_BACnetConstructedDataLocalForwardingOnly) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLocalForwardingOnly"
 }
 

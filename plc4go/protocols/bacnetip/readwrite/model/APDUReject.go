@@ -242,7 +242,7 @@ func CastAPDUReject(structType any) APDUReject {
 	return nil
 }
 
-func (m *_APDUReject) GetTypeName() string {
+func (m *_APDUReject) GetPlx4xTypeName() string {
 	return "APDUReject"
 }
 

@@ -252,7 +252,7 @@ func CastVTCloseError(structType any) VTCloseError {
 	return nil
 }
 
-func (m *_VTCloseError) GetTypeName() string {
+func (m *_VTCloseError) GetPlx4xTypeName() string {
 	return "VTCloseError"
 }
 

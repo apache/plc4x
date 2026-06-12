@@ -181,7 +181,7 @@ func CastDF1SymbolMessageFrameNAK(structType any) DF1SymbolMessageFrameNAK {
 	return nil
 }
 
-func (m *_DF1SymbolMessageFrameNAK) GetTypeName() string {
+func (m *_DF1SymbolMessageFrameNAK) GetPlx4xTypeName() string {
 	return "DF1SymbolMessageFrameNAK"
 }
 

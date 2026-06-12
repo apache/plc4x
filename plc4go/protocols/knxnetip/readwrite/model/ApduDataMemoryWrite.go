@@ -180,7 +180,7 @@ func CastApduDataMemoryWrite(structType any) ApduDataMemoryWrite {
 	return nil
 }
 
-func (m *_ApduDataMemoryWrite) GetTypeName() string {
+func (m *_ApduDataMemoryWrite) GetPlx4xTypeName() string {
 	return "ApduDataMemoryWrite"
 }
 

@@ -211,7 +211,7 @@ func CastBACnetAuthenticationPolicyListEntry(structType any) BACnetAuthenticatio
 	return nil
 }
 
-func (m *_BACnetAuthenticationPolicyListEntry) GetTypeName() string {
+func (m *_BACnetAuthenticationPolicyListEntry) GetPlx4xTypeName() string {
 	return "BACnetAuthenticationPolicyListEntry"
 }
 

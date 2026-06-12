@@ -241,7 +241,7 @@ func CastAdsMultiRequestItemRead(structType any) AdsMultiRequestItemRead {
 	return nil
 }
 
-func (m *_AdsMultiRequestItemRead) GetTypeName() string {
+func (m *_AdsMultiRequestItemRead) GetPlx4xTypeName() string {
 	return "AdsMultiRequestItemRead"
 }
 

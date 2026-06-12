@@ -253,7 +253,7 @@ func CastNLMSecurityResponse(structType any) NLMSecurityResponse {
 	return nil
 }
 
-func (m *_NLMSecurityResponse) GetTypeName() string {
+func (m *_NLMSecurityResponse) GetPlx4xTypeName() string {
 	return "NLMSecurityResponse"
 }
 

@@ -275,7 +275,7 @@ func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(structT
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter"
 }
 

@@ -301,7 +301,7 @@ func CastBACnetCOVSubscription(structType any) BACnetCOVSubscription {
 	return nil
 }
 
-func (m *_BACnetCOVSubscription) GetTypeName() string {
+func (m *_BACnetCOVSubscription) GetPlx4xTypeName() string {
 	return "BACnetCOVSubscription"
 }
 

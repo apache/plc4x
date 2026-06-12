@@ -161,7 +161,7 @@ func CastIPAddress(structType any) IPAddress {
 	return nil
 }
 
-func (m *_IPAddress) GetTypeName() string {
+func (m *_IPAddress) GetPlx4xTypeName() string {
 	return "IPAddress"
 }
 

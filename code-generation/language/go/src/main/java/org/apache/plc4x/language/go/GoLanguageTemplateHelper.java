@@ -427,7 +427,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
                 return "/*TODO: migrate me*/" + "readBuffer.ReadBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
             case STRING: {
-                String encoding = "UTF-8";
+                String encoding = "UTF8";
                 if (field != null) {
                     final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
                     encoding = encodingTerm.asLiteral()
@@ -439,7 +439,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "/*TODO: migrate me*/" + "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), utils.WithEncoding(\"" + encoding + "\"))";
             }
             case VSTRING: {
-                String encoding = "UTF-8";
+                String encoding = "UTF8";
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                 if (field != null) {
                     final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
@@ -711,9 +711,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "/*TODO: migrate me*/" + "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                String encoding = "UTF-8";
+                String encoding = "UTF8";
                 if (field != null) {
-                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
                     encoding = encodingTerm.asLiteral()
                         .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
                         .asStringLiteral()
@@ -724,9 +724,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                String encoding = "UTF-8";
+                String encoding = "UTF8";
                 if (field != null) {
-                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
                     encoding = encodingTerm.asLiteral()
                         .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
                         .asStringLiteral()
@@ -1323,7 +1323,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                             sb.append("\"").append(((SimpleTypeReference) typeReference).getSizeInBits()).append("\"");
                             break;
                         case "encoding":
-                            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF8"));
                             if (!(encodingTerm instanceof StringLiteral)) {
                                 throw new FreemarkerException("Encoding must be a quoted string value");
                             }
@@ -1862,13 +1862,20 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         Optional<Term> byteOrder = thisType.getAttribute("byteOrder");
         if (byteOrder.isPresent()) {
             emitRequiredImport("encoding/binary");
+            emitDataIoRequiredImport("encoding/binary");
+            String byteOrderTranslated = switch (byteOrder.orElseThrow().stringRepresentation()) {
+                case "\"BIG_ENDIAN\"" -> "binary.BigEndian";
+                case "\"LITTLE_ENDIAN\"" -> "binary.LittleEndian";
+                default ->
+                    throw new RuntimeException("unmapped bytes order " + byteOrder.orElseThrow().stringRepresentation());
+            };
             if (read) {
                 return (separatorPrefix ? ", " : "") + "utils.WithByteOrderForReadBufferByteBased(" +
-                    toParseExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments) +
+                    byteOrderTranslated +
                     ")";
             } else {
                 return (separatorPrefix ? ", " : "") + "utils.WithByteOrderForByteBasedBuffer(" +
-                    toSerializationExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments) +
+                    byteOrderTranslated +
                     ")";
             }
         }
@@ -1877,26 +1884,26 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public String getFieldOptions(TypedField field, List<Argument> parserArguments) {
         StringBuilder sb = new StringBuilder();
-        field.getEncoding().ifPresent(term -> {
+        field.getAttribute("stringEncoding").ifPresentOrElse(term -> {
             emitCodegenRequiredImports();
             final String encoding = toParseExpression(field, field.getType(), term, parserArguments);
             sb.append(", codegen.WithEncoding(").append(encoding).append(")");
+        }, () -> {
+            field.getEncoding().ifPresent(term -> {
+                emitCodegenRequiredImports();
+                final String encoding = toParseExpression(field, field.getType(), term, parserArguments);
+                sb.append(", codegen.WithEncoding(").append(encoding).append(")");
+            });
         });
 
         field.getByteOrder().ifPresent(term -> {
             emitCodegenRequiredImports();
             emitRequiredImport("encoding/binary");
-            String byteOrder = "binary.BigEndian";
-            switch (term.stringRepresentation()) {
-                case "BIG_ENDIAN":
-                    byteOrder = "binary.BigEndian";
-                    break;
-                case "LITTLE_ENDIAN":
-                    byteOrder = "binary.LittleEndian";
-                    break;
-                default:
-                    throw new RuntimeException("unmapped bytes order " + term.stringRepresentation());
-            }
+            String byteOrder = switch (term.stringRepresentation()) {
+                case "\"BIG_ENDIAN\"" -> "binary.BigEndian";
+                case "\"LITTLE_ENDIAN\"" -> "binary.LittleEndian";
+                default -> throw new RuntimeException("unmapped bytes order " + term.stringRepresentation());
+            };
             sb.append(", codegen.WithByteOrder(").append(byteOrder).append(")");
         });
 

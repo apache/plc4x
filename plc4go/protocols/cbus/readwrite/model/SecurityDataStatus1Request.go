@@ -176,7 +176,7 @@ func CastSecurityDataStatus1Request(structType any) SecurityDataStatus1Request {
 	return nil
 }
 
-func (m *_SecurityDataStatus1Request) GetTypeName() string {
+func (m *_SecurityDataStatus1Request) GetPlx4xTypeName() string {
 	return "SecurityDataStatus1Request"
 }
 

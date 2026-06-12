@@ -180,7 +180,7 @@ func CastMPropWriteCon(structType any) MPropWriteCon {
 	return nil
 }
 
-func (m *_MPropWriteCon) GetTypeName() string {
+func (m *_MPropWriteCon) GetPlx4xTypeName() string {
 	return "MPropWriteCon"
 }
 

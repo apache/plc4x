@@ -228,7 +228,7 @@ func CastMediaTransportControlDataNextPreviousSelection(structType any) MediaTra
 	return nil
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelection) GetTypeName() string {
+func (m *_MediaTransportControlDataNextPreviousSelection) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataNextPreviousSelection"
 }
 

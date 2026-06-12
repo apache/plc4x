@@ -217,7 +217,7 @@ func CastCommandSpecificDataItem(structType any) CommandSpecificDataItem {
 	return nil
 }
 
-func (m *_CommandSpecificDataItem) GetTypeName() string {
+func (m *_CommandSpecificDataItem) GetPlx4xTypeName() string {
 	return "CommandSpecificDataItem"
 }
 

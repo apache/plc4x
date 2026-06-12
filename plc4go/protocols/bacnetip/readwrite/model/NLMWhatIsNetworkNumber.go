@@ -180,7 +180,7 @@ func CastNLMWhatIsNetworkNumber(structType any) NLMWhatIsNetworkNumber {
 	return nil
 }
 
-func (m *_NLMWhatIsNetworkNumber) GetTypeName() string {
+func (m *_NLMWhatIsNetworkNumber) GetPlx4xTypeName() string {
 	return "NLMWhatIsNetworkNumber"
 }
 

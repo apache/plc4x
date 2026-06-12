@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBBMDAcceptFDRegistrations(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetTypeName() string {
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBBMDAcceptFDRegistrations"
 }
 

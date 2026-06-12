@@ -222,7 +222,7 @@ func CastVariantLocalizedText(structType any) VariantLocalizedText {
 	return nil
 }
 
-func (m *_VariantLocalizedText) GetTypeName() string {
+func (m *_VariantLocalizedText) GetPlx4xTypeName() string {
 	return "VariantLocalizedText"
 }
 

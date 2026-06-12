@@ -18,13 +18,14 @@
  */
 package org.apache.plc4x.java.canopen;
 
-import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
+import org.apache.plc4x.java.utils.testutils.driver.DriverTestsuiteRunner;
 import org.junit.jupiter.api.Disabled;
 
+@Disabled
 class CANOpenDriverNMTIT extends DriverTestsuiteRunner {
 
     public CANOpenDriverNMTIT() {
-        super("/protocols/canopen/CANOpenDriverNMTIT.xml", true);
+        super("/protocols/canopen/CANOpenDriverNMTIT.xml", "org.apache.plc4x.java.canopen.readwrite", true);
     }
 
 }

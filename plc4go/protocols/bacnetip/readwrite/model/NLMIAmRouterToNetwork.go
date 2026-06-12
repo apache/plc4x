@@ -207,7 +207,7 @@ func CastNLMIAmRouterToNetwork(structType any) NLMIAmRouterToNetwork {
 	return nil
 }
 
-func (m *_NLMIAmRouterToNetwork) GetTypeName() string {
+func (m *_NLMIAmRouterToNetwork) GetPlx4xTypeName() string {
 	return "NLMIAmRouterToNetwork"
 }
 

@@ -211,7 +211,7 @@ func CastBACnetConstructedDataBBMDBroadcastDistributionTable(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetTypeName() string {
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBBMDBroadcastDistributionTable"
 }
 

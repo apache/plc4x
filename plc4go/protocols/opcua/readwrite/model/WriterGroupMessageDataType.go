@@ -180,7 +180,7 @@ func CastWriterGroupMessageDataType(structType any) WriterGroupMessageDataType {
 	return nil
 }
 
-func (m *_WriterGroupMessageDataType) GetTypeName() string {
+func (m *_WriterGroupMessageDataType) GetPlx4xTypeName() string {
 	return "WriterGroupMessageDataType"
 }
 

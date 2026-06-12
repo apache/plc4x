@@ -207,7 +207,7 @@ func CastErrorReportingSystemCategoryTypeClimateControllers(structType any) Erro
 	return nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetTypeName() string {
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategoryTypeClimateControllers"
 }
 

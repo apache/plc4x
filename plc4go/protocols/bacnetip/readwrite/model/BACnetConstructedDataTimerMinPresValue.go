@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTimerMinPresValue(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimerMinPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataTimerMinPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimerMinPresValue"
 }
 

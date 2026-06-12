@@ -207,7 +207,7 @@ func CastBACnetServiceAckReadPropertyConditional(structType any) BACnetServiceAc
 	return nil
 }
 
-func (m *_BACnetServiceAckReadPropertyConditional) GetTypeName() string {
+func (m *_BACnetServiceAckReadPropertyConditional) GetPlx4xTypeName() string {
 	return "BACnetServiceAckReadPropertyConditional"
 }
 

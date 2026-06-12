@@ -209,7 +209,7 @@ func CastConnectedAddressItem(structType any) ConnectedAddressItem {
 	return nil
 }
 
-func (m *_ConnectedAddressItem) GetTypeName() string {
+func (m *_ConnectedAddressItem) GetPlx4xTypeName() string {
 	return "ConnectedAddressItem"
 }
 

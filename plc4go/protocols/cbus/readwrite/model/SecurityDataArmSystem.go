@@ -260,7 +260,7 @@ func CastSecurityDataArmSystem(structType any) SecurityDataArmSystem {
 	return nil
 }
 
-func (m *_SecurityDataArmSystem) GetTypeName() string {
+func (m *_SecurityDataArmSystem) GetPlx4xTypeName() string {
 	return "SecurityDataArmSystem"
 }
 

@@ -193,7 +193,7 @@ func CastBACnetLiftGroupModeTagged(structType any) BACnetLiftGroupModeTagged {
 	return nil
 }
 
-func (m *_BACnetLiftGroupModeTagged) GetTypeName() string {
+func (m *_BACnetLiftGroupModeTagged) GetPlx4xTypeName() string {
 	return "BACnetLiftGroupModeTagged"
 }
 

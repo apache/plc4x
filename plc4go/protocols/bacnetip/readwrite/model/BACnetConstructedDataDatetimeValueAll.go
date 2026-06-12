@@ -184,7 +184,7 @@ func CastBACnetConstructedDataDatetimeValueAll(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataDatetimeValueAll) GetTypeName() string {
+func (m *_BACnetConstructedDataDatetimeValueAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDatetimeValueAll"
 }
 

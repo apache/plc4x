@@ -180,7 +180,7 @@ func CastSubscribedDataSetDataType(structType any) SubscribedDataSetDataType {
 	return nil
 }
 
-func (m *_SubscribedDataSetDataType) GetTypeName() string {
+func (m *_SubscribedDataSetDataType) GetPlx4xTypeName() string {
 	return "SubscribedDataSetDataType"
 }
 

@@ -340,7 +340,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         // If the field has a byte order, add it as an option.
         final Optional<Term> byteOrderOptional = field.getByteOrder();
         if (byteOrderOptional.isPresent()) {
-            final String byteOrder = toParseExpression(field, field.getType(), byteOrderOptional.get(), parserArguments);
+            String byteOrder = toParseExpression(field, field.getType(), byteOrderOptional.get(), parserArguments);
+            if(byteOrder.startsWith("\"") && byteOrder.endsWith("\"")) {
+                byteOrder = byteOrder.substring(1, byteOrder.length() - 1);
+            }
             // We need to import the ByteOrder class, so add an import statement.
             emitRequiredImport("from plc4py.utils.GenericTypes import ByteOrder");
             sb.append(", byte_order=ByteOrder.").append(byteOrder);
@@ -1329,11 +1332,11 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 // If the variable is named "cur_pos", return an expression
                 // that computes the position from the position aware and the start position
                 return "(position_aware.get_pos() - startPos)";
-            } else if ("BIG_ENDIAN".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
+            } else if ("\"BIG_ENDIAN\"".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
                 // If the variable is named "BIG_ENDIAN" and the type reference is a byte order type reference,
                 // return the constant "ByteOrder.BIG_ENDIAN"
                 return "ByteOrder.BIG_ENDIAN";
-            } else if ("LITTLE_ENDIAN".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
+            } else if ("\"LITTLE_ENDIAN\"".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
                 // If the variable is named "LITTLE_ENDIAN" and the type reference is a byte order type reference,
                 // return the constant "ByteOrder.LITTLE_ENDIAN"
                 return "ByteOrder.LITTLE_ENDIAN";

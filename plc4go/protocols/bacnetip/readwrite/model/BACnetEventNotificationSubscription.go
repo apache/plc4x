@@ -269,7 +269,7 @@ func CastBACnetEventNotificationSubscription(structType any) BACnetEventNotifica
 	return nil
 }
 
-func (m *_BACnetEventNotificationSubscription) GetTypeName() string {
+func (m *_BACnetEventNotificationSubscription) GetPlx4xTypeName() string {
 	return "BACnetEventNotificationSubscription"
 }
 

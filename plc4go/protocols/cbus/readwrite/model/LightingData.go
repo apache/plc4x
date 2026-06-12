@@ -295,7 +295,7 @@ func CastLightingData(structType any) LightingData {
 	return nil
 }
 
-func (m *_LightingData) GetTypeName() string {
+func (m *_LightingData) GetPlx4xTypeName() string {
 	return "LightingData"
 }
 

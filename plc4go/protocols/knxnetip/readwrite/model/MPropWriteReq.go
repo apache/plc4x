@@ -180,7 +180,7 @@ func CastMPropWriteReq(structType any) MPropWriteReq {
 	return nil
 }
 
-func (m *_MPropWriteReq) GetTypeName() string {
+func (m *_MPropWriteReq) GetPlx4xTypeName() string {
 	return "MPropWriteReq"
 }
 

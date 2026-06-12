@@ -161,7 +161,7 @@ func CastRelativeTimestamp(structType any) RelativeTimestamp {
 	return nil
 }
 
-func (m *_RelativeTimestamp) GetTypeName() string {
+func (m *_RelativeTimestamp) GetPlx4xTypeName() string {
 	return "RelativeTimestamp"
 }
 

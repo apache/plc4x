@@ -203,7 +203,7 @@ func CastTelephonyDataDivert(structType any) TelephonyDataDivert {
 	return nil
 }
 
-func (m *_TelephonyDataDivert) GetTypeName() string {
+func (m *_TelephonyDataDivert) GetPlx4xTypeName() string {
 	return "TelephonyDataDivert"
 }
 

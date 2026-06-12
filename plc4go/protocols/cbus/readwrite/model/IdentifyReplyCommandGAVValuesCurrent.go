@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -207,7 +209,7 @@ func CastIdentifyReplyCommandGAVValuesCurrent(structType any) IdentifyReplyComma
 	return nil
 }
 
-func (m *_IdentifyReplyCommandGAVValuesCurrent) GetTypeName() string {
+func (m *_IdentifyReplyCommandGAVValuesCurrent) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandGAVValuesCurrent"
 }
 
@@ -237,7 +239,7 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) parse(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	values, err := readBuffer.ReadByteArray("values", int(numBytes))
+	values, err := readBuffer.ReadByteArray("values", int(numBytes), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'values' field"))
 	}
@@ -251,7 +253,7 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) parse(ctx context.Context, readB
 }
 
 func (m *_IdentifyReplyCommandGAVValuesCurrent) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -268,7 +270,7 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandGAVValuesCurrent")
 		}
 
-		if err := WriteByteArrayField(ctx, "values", m.GetValues(), WriteByteArray(writeBuffer, 8)); err != nil {
+		if err := WriteByteArrayField(ctx, "values", m.GetValues(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'values' field")
 		}
 

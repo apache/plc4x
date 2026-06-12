@@ -136,9 +136,9 @@ func serializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.Pl
 func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
 	var multiplier int32
 	switch encoding {
-	case "UTF-8":
+	case "UTF8":
 		multiplier = 8
-	case "UTF-16":
+	case "UTF16":
 		multiplier = 16
 	}
 	return io.ReadString("", uint32(stringLength*multiplier), utils.WithEncoding(encoding))
@@ -147,9 +147,9 @@ func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32,
 func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
 	var multiplier int32
 	switch encoding {
-	case "UTF-8":
+	case "UTF8":
 		multiplier = 8
-	case "UTF-16":
+	case "UTF16":
 		multiplier = 16
 	}
 	return io.WriteString("", uint32(stringLength*multiplier), value.GetString(), utils.WithEncoding(encoding))

@@ -18,18 +18,20 @@
  */
 package org.apache.plc4x.java.canopen.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.Description;
+import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 
-public class CANOpenConfiguration implements PlcConnectionConfiguration {
+public class CANOpenConfiguration implements Configuration {
 
     @ConfigurationParameter("node-id")
     @Description("CAN node identifier. Depending on used CAN version it might be 11 or 29 bit unsigned int.")
     private int nodeId;
 
     @ConfigurationParameter
+    @BooleanDefaultValue(false)
     @Description("Forces PLC4X to send CANopen heartbeat (NMT) messages to the bus.")
     private boolean heartbeat;
 

@@ -258,7 +258,7 @@ func CastBACnetConstructedDataCommandTimeArray(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataCommandTimeArray) GetTypeName() string {
+func (m *_BACnetConstructedDataCommandTimeArray) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCommandTimeArray"
 }
 

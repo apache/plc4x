@@ -180,7 +180,7 @@ func CastMFuncPropStateReadReq(structType any) MFuncPropStateReadReq {
 	return nil
 }
 
-func (m *_MFuncPropStateReadReq) GetTypeName() string {
+func (m *_MFuncPropStateReadReq) GetPlx4xTypeName() string {
 	return "MFuncPropStateReadReq"
 }
 

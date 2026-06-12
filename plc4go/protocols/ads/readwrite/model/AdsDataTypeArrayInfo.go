@@ -194,7 +194,7 @@ func CastAdsDataTypeArrayInfo(structType any) AdsDataTypeArrayInfo {
 	return nil
 }
 
-func (m *_AdsDataTypeArrayInfo) GetTypeName() string {
+func (m *_AdsDataTypeArrayInfo) GetPlx4xTypeName() string {
 	return "AdsDataTypeArrayInfo"
 }
 

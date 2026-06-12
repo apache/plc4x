@@ -225,7 +225,7 @@ func CastBACnetContextTagDate(structType any) BACnetContextTagDate {
 	return nil
 }
 
-func (m *_BACnetContextTagDate) GetTypeName() string {
+func (m *_BACnetContextTagDate) GetPlx4xTypeName() string {
 	return "BACnetContextTagDate"
 }
 

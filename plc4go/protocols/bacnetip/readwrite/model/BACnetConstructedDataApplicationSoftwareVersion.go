@@ -246,7 +246,7 @@ func CastBACnetConstructedDataApplicationSoftwareVersion(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetTypeName() string {
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataApplicationSoftwareVersion"
 }
 

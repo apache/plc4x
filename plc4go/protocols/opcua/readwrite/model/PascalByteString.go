@@ -175,7 +175,7 @@ func CastPascalByteString(structType any) PascalByteString {
 	return nil
 }
 
-func (m *_PascalByteString) GetTypeName() string {
+func (m *_PascalByteString) GetPlx4xTypeName() string {
 	return "PascalByteString"
 }
 

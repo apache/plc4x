@@ -253,7 +253,7 @@ func CastCOTPParameter(structType any) COTPParameter {
 	return nil
 }
 
-func (m *_COTPParameter) GetTypeName() string {
+func (m *_COTPParameter) GetPlx4xTypeName() string {
 	return "COTPParameter"
 }
 

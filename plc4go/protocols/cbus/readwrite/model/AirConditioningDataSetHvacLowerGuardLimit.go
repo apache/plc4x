@@ -302,7 +302,7 @@ func CastAirConditioningDataSetHvacLowerGuardLimit(structType any) AirConditioni
 	return nil
 }
 
-func (m *_AirConditioningDataSetHvacLowerGuardLimit) GetTypeName() string {
+func (m *_AirConditioningDataSetHvacLowerGuardLimit) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetHvacLowerGuardLimit"
 }
 

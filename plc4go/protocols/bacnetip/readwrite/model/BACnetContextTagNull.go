@@ -180,7 +180,7 @@ func CastBACnetContextTagNull(structType any) BACnetContextTagNull {
 	return nil
 }
 
-func (m *_BACnetContextTagNull) GetTypeName() string {
+func (m *_BACnetContextTagNull) GetPlx4xTypeName() string {
 	return "BACnetContextTagNull"
 }
 

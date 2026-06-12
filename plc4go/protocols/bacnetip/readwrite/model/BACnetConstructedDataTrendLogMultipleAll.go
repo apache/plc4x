@@ -184,7 +184,7 @@ func CastBACnetConstructedDataTrendLogMultipleAll(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleAll) GetTypeName() string {
+func (m *_BACnetConstructedDataTrendLogMultipleAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrendLogMultipleAll"
 }
 

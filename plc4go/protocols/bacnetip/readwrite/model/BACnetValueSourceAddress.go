@@ -221,7 +221,7 @@ func CastBACnetValueSourceAddress(structType any) BACnetValueSourceAddress {
 	return nil
 }
 
-func (m *_BACnetValueSourceAddress) GetTypeName() string {
+func (m *_BACnetValueSourceAddress) GetPlx4xTypeName() string {
 	return "BACnetValueSourceAddress"
 }
 

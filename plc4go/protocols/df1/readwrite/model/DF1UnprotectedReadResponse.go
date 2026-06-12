@@ -206,7 +206,7 @@ func CastDF1UnprotectedReadResponse(structType any) DF1UnprotectedReadResponse {
 	return nil
 }
 
-func (m *_DF1UnprotectedReadResponse) GetTypeName() string {
+func (m *_DF1UnprotectedReadResponse) GetPlx4xTypeName() string {
 	return "DF1UnprotectedReadResponse"
 }
 

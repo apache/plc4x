@@ -211,7 +211,7 @@ func CastBACnetConstructedDataActiveVTSessions(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataActiveVTSessions) GetTypeName() string {
+func (m *_BACnetConstructedDataActiveVTSessions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataActiveVTSessions"
 }
 

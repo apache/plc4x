@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMultiStateOutputInterfaceValue(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateOutputInterfaceValue"
 }
 

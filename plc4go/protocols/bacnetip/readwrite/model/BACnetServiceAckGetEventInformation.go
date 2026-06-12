@@ -258,7 +258,7 @@ func CastBACnetServiceAckGetEventInformation(structType any) BACnetServiceAckGet
 	return nil
 }
 
-func (m *_BACnetServiceAckGetEventInformation) GetTypeName() string {
+func (m *_BACnetServiceAckGetEventInformation) GetPlx4xTypeName() string {
 	return "BACnetServiceAckGetEventInformation"
 }
 

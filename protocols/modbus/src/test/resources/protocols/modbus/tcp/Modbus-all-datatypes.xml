@@ -22,8 +22,8 @@
 
   <name>Modbus All Types</name>
 
-  <protocolName>modbus</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>modbus</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <driver-name>modbus-tcp</driver-name>
 
@@ -302,7 +302,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -495,7 +495,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -688,7 +688,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -883,7 +883,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -1076,7 +1076,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -1269,7 +1269,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -1462,7 +1462,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -1655,7 +1655,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -1850,7 +1850,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -2045,7 +2045,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -2240,7 +2240,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
@@ -2435,12 +2435,12 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcREAL dataType="float" bitLength="32">3.1415929794311523</PlcREAL>
+                  <PlcREAL dataType="float" bitLength="32">3.141593</PlcREAL>
                 </value>
               </PlcResponseItem>
             </hurz>
@@ -2530,7 +2530,7 @@
                         </ModbusTagHoldingRegister>
                       </tag>
                       <value>
-                        <PlcREAL dataType="float" bitLength="32">3.1415929794311523</PlcREAL>
+                        <PlcREAL dataType="float" bitLength="32">3.141593</PlcREAL>
                       </value>
                     </PlcTagValueItem>
                   </hurz>
@@ -2630,7 +2630,7 @@
               </PlcTagRequest>
             </PlcReadRequest>
           </request>
-          <values isList="true">
+           <values isList="true">
             <hurz>
               <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>

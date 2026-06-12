@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesNodeType(structType any) BACnetPropertyStatesNodeTy
 	return nil
 }
 
-func (m *_BACnetPropertyStatesNodeType) GetTypeName() string {
+func (m *_BACnetPropertyStatesNodeType) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesNodeType"
 }
 

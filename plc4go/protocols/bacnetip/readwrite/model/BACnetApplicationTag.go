@@ -418,7 +418,7 @@ func CastBACnetApplicationTag(structType any) BACnetApplicationTag {
 	return nil
 }
 
-func (m *_BACnetApplicationTag) GetTypeName() string {
+func (m *_BACnetApplicationTag) GetPlx4xTypeName() string {
 	return "BACnetApplicationTag"
 }
 

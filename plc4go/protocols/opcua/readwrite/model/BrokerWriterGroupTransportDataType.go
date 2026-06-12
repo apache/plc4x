@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -306,7 +307,7 @@ func CastBrokerWriterGroupTransportDataType(structType any) BrokerWriterGroupTra
 	return nil
 }
 
-func (m *_BrokerWriterGroupTransportDataType) GetTypeName() string {
+func (m *_BrokerWriterGroupTransportDataType) GetPlx4xTypeName() string {
 	return "BrokerWriterGroupTransportDataType"
 }
 
@@ -343,25 +344,25 @@ func (m *_BrokerWriterGroupTransportDataType) parse(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	queueName, err := ReadSimpleField[PascalString](ctx, "queueName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	queueName, err := ReadSimpleField[PascalString](ctx, "queueName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queueName' field"))
 	}
 	m.QueueName = queueName
 
-	resourceUri, err := ReadSimpleField[PascalString](ctx, "resourceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	resourceUri, err := ReadSimpleField[PascalString](ctx, "resourceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resourceUri' field"))
 	}
 	m.ResourceUri = resourceUri
 
-	authenticationProfileUri, err := ReadSimpleField[PascalString](ctx, "authenticationProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	authenticationProfileUri, err := ReadSimpleField[PascalString](ctx, "authenticationProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationProfileUri' field"))
 	}
 	m.AuthenticationProfileUri = authenticationProfileUri
 
-	requestedDeliveryGuarantee, err := ReadEnumField[BrokerTransportQualityOfService](ctx, "requestedDeliveryGuarantee", "BrokerTransportQualityOfService", ReadEnum(BrokerTransportQualityOfServiceByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	requestedDeliveryGuarantee, err := ReadEnumField[BrokerTransportQualityOfService](ctx, "requestedDeliveryGuarantee", "BrokerTransportQualityOfService", ReadEnum(BrokerTransportQualityOfServiceByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedDeliveryGuarantee' field"))
 	}
@@ -392,19 +393,19 @@ func (m *_BrokerWriterGroupTransportDataType) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BrokerWriterGroupTransportDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "queueName", m.GetQueueName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "queueName", m.GetQueueName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'queueName' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "resourceUri", m.GetResourceUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "resourceUri", m.GetResourceUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'resourceUri' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "authenticationProfileUri", m.GetAuthenticationProfileUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "authenticationProfileUri", m.GetAuthenticationProfileUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'authenticationProfileUri' field")
 		}
 
-		if err := WriteSimpleEnumField[BrokerTransportQualityOfService](ctx, "requestedDeliveryGuarantee", "BrokerTransportQualityOfService", m.GetRequestedDeliveryGuarantee(), WriteEnum[BrokerTransportQualityOfService, uint32](BrokerTransportQualityOfService.GetValue, BrokerTransportQualityOfService.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[BrokerTransportQualityOfService](ctx, "requestedDeliveryGuarantee", "BrokerTransportQualityOfService", m.GetRequestedDeliveryGuarantee(), WriteEnum[BrokerTransportQualityOfService, uint32](BrokerTransportQualityOfService.GetValue, BrokerTransportQualityOfService.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestedDeliveryGuarantee' field")
 		}
 

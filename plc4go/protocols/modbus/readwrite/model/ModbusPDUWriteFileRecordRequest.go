@@ -215,7 +215,7 @@ func CastModbusPDUWriteFileRecordRequest(structType any) ModbusPDUWriteFileRecor
 	return nil
 }
 
-func (m *_ModbusPDUWriteFileRecordRequest) GetTypeName() string {
+func (m *_ModbusPDUWriteFileRecordRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteFileRecordRequest"
 }
 

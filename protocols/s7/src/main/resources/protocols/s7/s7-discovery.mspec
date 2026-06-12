@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type Ethernet_Frame byteOrder='BIG_ENDIAN'
+[type Ethernet_Frame byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     // When sending to the mac address prefix of 01:0e:cf are multicast packets
     [simple MacAddress            destination]
     [simple MacAddress            source     ]
@@ -76,7 +76,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // Page 90
-[discriminatedType PnDcp_Pdu byteOrder='BIG_ENDIAN'
+[discriminatedType PnDcp_Pdu byteOrder='"BIG_ENDIAN"'
     [simple        uint 16           frameIdValue                      ]
     [typeSwitch frameIdValue
         ['0xFEFE' PnDcp_Pdu_IdentifyReq
@@ -121,7 +121,7 @@
     ]
 ]
 
-[discriminatedType PnDcp_Block byteOrder='BIG_ENDIAN'
+[discriminatedType PnDcp_Block byteOrder='"BIG_ENDIAN"'
     [discriminator PnDcp_BlockOptions option                   ]
     [discriminator uint 8       suboption                      ]
     [implicit      uint 16      blockLength 'lengthInBytes - 4']
@@ -279,7 +279,7 @@
    ]
 ]
 
-[type PnDcp_SupportedDeviceOption byteOrder='BIG_ENDIAN'
+[type PnDcp_SupportedDeviceOption byteOrder='"BIG_ENDIAN"'
     [simple   PnDcp_BlockOptions option]
     [simple   uint 8       suboption   ]
 ]

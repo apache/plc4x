@@ -246,7 +246,7 @@ func CastBACnetConstructedDataMemberStatusFlags(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataMemberStatusFlags) GetTypeName() string {
+func (m *_BACnetConstructedDataMemberStatusFlags) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMemberStatusFlags"
 }
 

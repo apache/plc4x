@@ -207,7 +207,7 @@ func CastNLMRouterBusyToNetwork(structType any) NLMRouterBusyToNetwork {
 	return nil
 }
 
-func (m *_NLMRouterBusyToNetwork) GetTypeName() string {
+func (m *_NLMRouterBusyToNetwork) GetPlx4xTypeName() string {
 	return "NLMRouterBusyToNetwork"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAccessEventAuthenticationFactor(structType any) BA
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessEventAuthenticationFactor"
 }
 

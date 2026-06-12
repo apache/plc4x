@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPowerMode(structType any) BACnetConstructedDataPow
 	return nil
 }
 
-func (m *_BACnetConstructedDataPowerMode) GetTypeName() string {
+func (m *_BACnetConstructedDataPowerMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPowerMode"
 }
 

@@ -178,7 +178,7 @@ func CastBACnetTagPayloadEnumerated(structType any) BACnetTagPayloadEnumerated {
 	return nil
 }
 
-func (m *_BACnetTagPayloadEnumerated) GetTypeName() string {
+func (m *_BACnetTagPayloadEnumerated) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadEnumerated"
 }
 

@@ -180,7 +180,7 @@ func CastConnectionRequestInformationDeviceManagement(structType any) Connection
 	return nil
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) GetTypeName() string {
+func (m *_ConnectionRequestInformationDeviceManagement) GetPlx4xTypeName() string {
 	return "ConnectionRequestInformationDeviceManagement"
 }
 

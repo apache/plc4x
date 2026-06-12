@@ -381,7 +381,7 @@ func CastDiagnosticInfo(structType any) DiagnosticInfo {
 	return nil
 }
 
-func (m *_DiagnosticInfo) GetTypeName() string {
+func (m *_DiagnosticInfo) GetPlx4xTypeName() string {
 	return "DiagnosticInfo"
 }
 

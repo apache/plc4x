@@ -243,7 +243,7 @@ func CastErrorEnclosed(structType any) ErrorEnclosed {
 	return nil
 }
 
-func (m *_ErrorEnclosed) GetTypeName() string {
+func (m *_ErrorEnclosed) GetPlx4xTypeName() string {
 	return "ErrorEnclosed"
 }
 

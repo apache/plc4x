@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -222,7 +223,7 @@ func CastJsonDataSetReaderMessageDataType(structType any) JsonDataSetReaderMessa
 	return nil
 }
 
-func (m *_JsonDataSetReaderMessageDataType) GetTypeName() string {
+func (m *_JsonDataSetReaderMessageDataType) GetPlx4xTypeName() string {
 	return "JsonDataSetReaderMessageDataType"
 }
 
@@ -253,13 +254,13 @@ func (m *_JsonDataSetReaderMessageDataType) parse(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	networkMessageContentMask, err := ReadEnumField[JsonNetworkMessageContentMask](ctx, "networkMessageContentMask", "JsonNetworkMessageContentMask", ReadEnum(JsonNetworkMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	networkMessageContentMask, err := ReadEnumField[JsonNetworkMessageContentMask](ctx, "networkMessageContentMask", "JsonNetworkMessageContentMask", ReadEnum(JsonNetworkMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkMessageContentMask' field"))
 	}
 	m.NetworkMessageContentMask = networkMessageContentMask
 
-	dataSetMessageContentMask, err := ReadEnumField[JsonDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "JsonDataSetMessageContentMask", ReadEnum(JsonDataSetMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	dataSetMessageContentMask, err := ReadEnumField[JsonDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "JsonDataSetMessageContentMask", ReadEnum(JsonDataSetMessageContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetMessageContentMask' field"))
 	}
@@ -290,11 +291,11 @@ func (m *_JsonDataSetReaderMessageDataType) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for JsonDataSetReaderMessageDataType")
 		}
 
-		if err := WriteSimpleEnumField[JsonNetworkMessageContentMask](ctx, "networkMessageContentMask", "JsonNetworkMessageContentMask", m.GetNetworkMessageContentMask(), WriteEnum[JsonNetworkMessageContentMask, uint32](JsonNetworkMessageContentMask.GetValue, JsonNetworkMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[JsonNetworkMessageContentMask](ctx, "networkMessageContentMask", "JsonNetworkMessageContentMask", m.GetNetworkMessageContentMask(), WriteEnum[JsonNetworkMessageContentMask, uint32](JsonNetworkMessageContentMask.GetValue, JsonNetworkMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'networkMessageContentMask' field")
 		}
 
-		if err := WriteSimpleEnumField[JsonDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "JsonDataSetMessageContentMask", m.GetDataSetMessageContentMask(), WriteEnum[JsonDataSetMessageContentMask, uint32](JsonDataSetMessageContentMask.GetValue, JsonDataSetMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[JsonDataSetMessageContentMask](ctx, "dataSetMessageContentMask", "JsonDataSetMessageContentMask", m.GetDataSetMessageContentMask(), WriteEnum[JsonDataSetMessageContentMask, uint32](JsonDataSetMessageContentMask.GetValue, JsonDataSetMessageContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetMessageContentMask' field")
 		}
 

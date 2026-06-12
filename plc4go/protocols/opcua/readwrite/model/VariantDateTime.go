@@ -222,7 +222,7 @@ func CastVariantDateTime(structType any) VariantDateTime {
 	return nil
 }
 
-func (m *_VariantDateTime) GetTypeName() string {
+func (m *_VariantDateTime) GetPlx4xTypeName() string {
 	return "VariantDateTime"
 }
 

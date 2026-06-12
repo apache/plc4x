@@ -474,7 +474,7 @@ func CastCEMI(structType any) CEMI {
 	return nil
 }
 
-func (m *_CEMI) GetTypeName() string {
+func (m *_CEMI) GetPlx4xTypeName() string {
 	return "CEMI"
 }
 

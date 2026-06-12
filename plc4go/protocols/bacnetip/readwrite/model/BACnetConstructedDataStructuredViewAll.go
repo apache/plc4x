@@ -184,7 +184,7 @@ func CastBACnetConstructedDataStructuredViewAll(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataStructuredViewAll) GetTypeName() string {
+func (m *_BACnetConstructedDataStructuredViewAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataStructuredViewAll"
 }
 

@@ -481,7 +481,7 @@ func CastBACnetEventParameter(structType any) BACnetEventParameter {
 	return nil
 }
 
-func (m *_BACnetEventParameter) GetTypeName() string {
+func (m *_BACnetEventParameter) GetPlx4xTypeName() string {
 	return "BACnetEventParameter"
 }
 

@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>plc4j-driver-umas</artifactId>
-      
+
   <name>PLC4J: Driver: UMAS</name>
   <description>Implementation of a PLC4x driver able to speak using the UMAS protocol (Schneider Electric Modicon PLCs via Modbus/TCP Function Code 90).</description>
 
@@ -45,9 +45,7 @@
             <id>generate-feature-xml</id>
             <phase>compile</phase>
             <goals>
-              <!-- Generate the feature.xml -->
               <goal>features-generate-descriptor</goal>
-              <!-- Check the feature.xml -->
               <goal>verify</goal>
             </goals>
             <configuration>
@@ -59,12 +57,43 @@
             <id>build-kar</id>
             <phase>package</phase>
             <goals>
-              <!--
-                Build a kar archive (Jar containing the feature.xml
-                as well as the module content and it's dependencies.
-              -->
               <goal>kar</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- I/O-heavy driver-shell classes; require integration tests rather than unit tests. -->
+                <exclude>org/apache/plc4x/java/umas/UmasConnection.class</exclude>
+                <exclude>org/apache/plc4x/java/umas/UmasMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/umas/UmasDriver.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check-coverage</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>org/apache/plc4x/java/umas/UmasConnection.class</exclude>
+                <exclude>org/apache/plc4x/java/umas/UmasMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/umas/UmasDriver.class</exclude>
+              </excludes>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -76,12 +105,12 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.umas.readwrite.UmasDriver
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.umas.UmasDriver
             </Export-Service>
             <Import-Package>
               *
             </Import-Package>
-            <SPI-consumer>*</SPI-consumer>            
+            <SPI-consumer>*</SPI-consumer>
           </instructions>
         </configuration>
       </plugin>
@@ -96,23 +125,53 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-tcp</artifactId>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
-
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-fields</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-utils</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-api</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-tcp</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -134,7 +193,6 @@
     <dependency>
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
-      <version>1.5.3</version>
       <scope>test</scope>
     </dependency>
 
@@ -179,9 +237,8 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-java</artifactId>
+          <artifactId>plc4x-code-generation-language-java-jp</artifactId>
           <version>0.14.0-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
 
@@ -189,7 +246,6 @@
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-umas</artifactId>
           <version>0.14.0-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
       </dependencies>

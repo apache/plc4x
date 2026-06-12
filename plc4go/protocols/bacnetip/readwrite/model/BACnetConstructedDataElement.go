@@ -322,7 +322,7 @@ func CastBACnetConstructedDataElement(structType any) BACnetConstructedDataEleme
 	return nil
 }
 
-func (m *_BACnetConstructedDataElement) GetTypeName() string {
+func (m *_BACnetConstructedDataElement) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataElement"
 }
 

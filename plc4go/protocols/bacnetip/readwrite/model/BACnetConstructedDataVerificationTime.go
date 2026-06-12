@@ -246,7 +246,7 @@ func CastBACnetConstructedDataVerificationTime(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataVerificationTime) GetTypeName() string {
+func (m *_BACnetConstructedDataVerificationTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataVerificationTime"
 }
 

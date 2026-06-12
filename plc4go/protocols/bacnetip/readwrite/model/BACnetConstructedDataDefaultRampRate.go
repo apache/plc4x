@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDefaultRampRate(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataDefaultRampRate) GetTypeName() string {
+func (m *_BACnetConstructedDataDefaultRampRate) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDefaultRampRate"
 }
 

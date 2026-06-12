@@ -19,9 +19,9 @@
 package org.apache.plc4x.java.knxnetip.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 
 public class KnxNetIpTagHandler implements PlcTagHandler {
 
@@ -35,7 +35,10 @@ public class KnxNetIpTagHandler implements PlcTagHandler {
 
     @Override
     public PlcQuery parseQuery(String query) {
-        throw new UnsupportedOperationException("This driver doesn't support browsing");
+        // KNX browse uses simple address patterns ("*", "1/*", "1/2/*", "1/2/3");
+        // the connection's onBrowse compiles and matches them directly, so we
+        // just wrap the raw string here.
+        return new KnxNetIpQuery(query);
     }
 
 }

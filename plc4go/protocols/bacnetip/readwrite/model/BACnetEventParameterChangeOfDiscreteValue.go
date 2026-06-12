@@ -287,7 +287,7 @@ func CastBACnetEventParameterChangeOfDiscreteValue(structType any) BACnetEventPa
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfDiscreteValue) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfDiscreteValue) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfDiscreteValue"
 }
 

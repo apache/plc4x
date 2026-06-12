@@ -270,7 +270,7 @@ func CastLBusmonInd(structType any) LBusmonInd {
 	return nil
 }
 
-func (m *_LBusmonInd) GetTypeName() string {
+func (m *_LBusmonInd) GetPlx4xTypeName() string {
 	return "LBusmonInd"
 }
 

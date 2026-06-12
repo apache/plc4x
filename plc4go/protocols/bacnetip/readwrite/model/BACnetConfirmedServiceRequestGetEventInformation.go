@@ -219,7 +219,7 @@ func CastBACnetConfirmedServiceRequestGetEventInformation(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestGetEventInformation"
 }
 

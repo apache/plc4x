@@ -154,7 +154,7 @@ func CastOpcuaConstants(structType any) OpcuaConstants {
 	return nil
 }
 
-func (m *_OpcuaConstants) GetTypeName() string {
+func (m *_OpcuaConstants) GetPlx4xTypeName() string {
 	return "OpcuaConstants"
 }
 

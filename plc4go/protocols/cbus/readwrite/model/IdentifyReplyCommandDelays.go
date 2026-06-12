@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -222,7 +224,7 @@ func CastIdentifyReplyCommandDelays(structType any) IdentifyReplyCommandDelays {
 	return nil
 }
 
-func (m *_IdentifyReplyCommandDelays) GetTypeName() string {
+func (m *_IdentifyReplyCommandDelays) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandDelays"
 }
 
@@ -255,13 +257,13 @@ func (m *_IdentifyReplyCommandDelays) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	terminalLevels, err := readBuffer.ReadByteArray("terminalLevels", int(int32(numBytes)-int32(int32(1))))
+	terminalLevels, err := readBuffer.ReadByteArray("terminalLevels", int(int32(numBytes)-int32(int32(1))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'terminalLevels' field"))
 	}
 	m.TerminalLevels = terminalLevels
 
-	reStrikeDelay, err := ReadSimpleField(ctx, "reStrikeDelay", ReadByte(readBuffer, 8))
+	reStrikeDelay, err := ReadSimpleField(ctx, "reStrikeDelay", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reStrikeDelay' field"))
 	}
@@ -275,7 +277,7 @@ func (m *_IdentifyReplyCommandDelays) parse(ctx context.Context, readBuffer util
 }
 
 func (m *_IdentifyReplyCommandDelays) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -292,11 +294,11 @@ func (m *_IdentifyReplyCommandDelays) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandDelays")
 		}
 
-		if err := WriteByteArrayField(ctx, "terminalLevels", m.GetTerminalLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
+		if err := WriteByteArrayField(ctx, "terminalLevels", m.GetTerminalLevels(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'terminalLevels' field")
 		}
 
-		if err := WriteSimpleField[byte](ctx, "reStrikeDelay", m.GetReStrikeDelay(), WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[byte](ctx, "reStrikeDelay", m.GetReStrikeDelay(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reStrikeDelay' field")
 		}
 

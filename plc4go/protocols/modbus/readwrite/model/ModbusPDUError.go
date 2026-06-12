@@ -215,7 +215,7 @@ func CastModbusPDUError(structType any) ModbusPDUError {
 	return nil
 }
 
-func (m *_ModbusPDUError) GetTypeName() string {
+func (m *_ModbusPDUError) GetPlx4xTypeName() string {
 	return "ModbusPDUError"
 }
 

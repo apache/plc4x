@@ -827,7 +827,7 @@ func CastSecurityData(structType any) SecurityData {
 	return nil
 }
 
-func (m *_SecurityData) GetTypeName() string {
+func (m *_SecurityData) GetPlx4xTypeName() string {
 	return "SecurityData"
 }
 

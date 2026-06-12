@@ -37,7 +37,7 @@
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-transport-raw-socket</artifactId>
+  <artifactId>plc4j-transports-raw-socket</artifactId>
   <version>{current-last-released-version}</version>
 </dependency>
 ----

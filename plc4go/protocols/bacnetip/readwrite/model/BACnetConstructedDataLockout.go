@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLockout(structType any) BACnetConstructedDataLocko
 	return nil
 }
 
-func (m *_BACnetConstructedDataLockout) GetTypeName() string {
+func (m *_BACnetConstructedDataLockout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLockout"
 }
 

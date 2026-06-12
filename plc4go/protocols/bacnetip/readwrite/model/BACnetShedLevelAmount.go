@@ -221,7 +221,7 @@ func CastBACnetShedLevelAmount(structType any) BACnetShedLevelAmount {
 	return nil
 }
 
-func (m *_BACnetShedLevelAmount) GetTypeName() string {
+func (m *_BACnetShedLevelAmount) GetPlx4xTypeName() string {
 	return "BACnetShedLevelAmount"
 }
 

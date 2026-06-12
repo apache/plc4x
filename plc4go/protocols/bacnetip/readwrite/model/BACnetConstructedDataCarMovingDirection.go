@@ -246,7 +246,7 @@ func CastBACnetConstructedDataCarMovingDirection(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataCarMovingDirection) GetTypeName() string {
+func (m *_BACnetConstructedDataCarMovingDirection) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCarMovingDirection"
 }
 

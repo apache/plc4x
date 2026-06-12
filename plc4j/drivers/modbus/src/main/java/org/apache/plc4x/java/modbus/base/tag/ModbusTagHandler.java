@@ -21,7 +21,7 @@ package org.apache.plc4x.java.modbus.base.tag;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 
 public class ModbusTagHandler implements PlcTagHandler {
 

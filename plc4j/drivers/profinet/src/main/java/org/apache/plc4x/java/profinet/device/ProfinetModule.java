@@ -24,9 +24,9 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.readwrite.PnIoCm_IoCs;
 import org.apache.plc4x.java.profinet.readwrite.PnIoCm_IoDataObject;
 import org.apache.plc4x.java.profinet.readwrite.PnIoCm_Submodule;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 
 import java.util.List;
 import java.util.Map;
@@ -51,5 +51,5 @@ public interface ProfinetModule {
     int getOutputIoPsSize();
     void populateOutputCR(int ioPsOffset, int ioCsOffset);
 
-    Map<String, PlcResponseItem<PlcValue>> parseTags(Map<String, PlcResponseItem<PlcValue>> tags, String addressSpace, ReadBuffer buffer) throws ParseException;
+    Map<String, PlcResponseItem<PlcValue>> parseTags(Map<String, PlcResponseItem<PlcValue>> tags, String addressSpace, ReadBuffer buffer) throws BufferException;
 }

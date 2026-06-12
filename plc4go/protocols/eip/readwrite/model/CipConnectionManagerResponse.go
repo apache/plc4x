@@ -312,7 +312,7 @@ func CastCipConnectionManagerResponse(structType any) CipConnectionManagerRespon
 	return nil
 }
 
-func (m *_CipConnectionManagerResponse) GetTypeName() string {
+func (m *_CipConnectionManagerResponse) GetPlx4xTypeName() string {
 	return "CipConnectionManagerResponse"
 }
 

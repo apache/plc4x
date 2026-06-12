@@ -224,7 +224,7 @@ func CastBACnetAccessCredentialDisableTagged(structType any) BACnetAccessCredent
 	return nil
 }
 
-func (m *_BACnetAccessCredentialDisableTagged) GetTypeName() string {
+func (m *_BACnetAccessCredentialDisableTagged) GetPlx4xTypeName() string {
 	return "BACnetAccessCredentialDisableTagged"
 }
 

@@ -179,7 +179,7 @@ func CastBACnetOpeningTag(structType any) BACnetOpeningTag {
 	return nil
 }
 
-func (m *_BACnetOpeningTag) GetTypeName() string {
+func (m *_BACnetOpeningTag) GetPlx4xTypeName() string {
 	return "BACnetOpeningTag"
 }
 

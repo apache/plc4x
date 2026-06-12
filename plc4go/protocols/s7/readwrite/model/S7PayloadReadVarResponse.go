@@ -211,7 +211,7 @@ func CastS7PayloadReadVarResponse(structType any) S7PayloadReadVarResponse {
 	return nil
 }
 
-func (m *_S7PayloadReadVarResponse) GetTypeName() string {
+func (m *_S7PayloadReadVarResponse) GetPlx4xTypeName() string {
 	return "S7PayloadReadVarResponse"
 }
 

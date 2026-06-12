@@ -301,7 +301,7 @@ func CastAdsDiscoveryBlock(structType any) AdsDiscoveryBlock {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlock) GetTypeName() string {
+func (m *_AdsDiscoveryBlock) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlock"
 }
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -215,7 +216,7 @@ func CastEipListIdentityResponse(structType any) EipListIdentityResponse {
 	return nil
 }
 
-func (m *_EipListIdentityResponse) GetTypeName() string {
+func (m *_EipListIdentityResponse) GetPlx4xTypeName() string {
 	return "EipListIdentityResponse"
 }
 
@@ -251,13 +252,13 @@ func (m *_EipListIdentityResponse) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemCount, err := ReadImplicitField[uint16](ctx, "itemCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	itemCount, err := ReadImplicitField[uint16](ctx, "itemCount", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemCount' field"))
 	}
 	_ = itemCount
 
-	items, err := ReadCountArrayField[CommandSpecificDataItem](ctx, "items", ReadComplex[CommandSpecificDataItem](CommandSpecificDataItemParseWithBuffer, readBuffer), uint64(itemCount))
+	items, err := ReadCountArrayField[CommandSpecificDataItem](ctx, "items", ReadComplex[CommandSpecificDataItem](CommandSpecificDataItemParseWithBuffer, readBuffer), uint64(itemCount), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
@@ -288,11 +289,11 @@ func (m *_EipListIdentityResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for EipListIdentityResponse")
 		}
 		itemCount := uint16(uint16(len(m.GetItems())))
-		if err := WriteImplicitField(ctx, "itemCount", itemCount, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteImplicitField(ctx, "itemCount", itemCount, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'itemCount' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'items' field")
 		}
 

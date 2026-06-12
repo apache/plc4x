@@ -180,7 +180,7 @@ func CastApduDataExtGroupPropertyValueInfoReport(structType any) ApduDataExtGrou
 	return nil
 }
 
-func (m *_ApduDataExtGroupPropertyValueInfoReport) GetTypeName() string {
+func (m *_ApduDataExtGroupPropertyValueInfoReport) GetPlx4xTypeName() string {
 	return "ApduDataExtGroupPropertyValueInfoReport"
 }
 

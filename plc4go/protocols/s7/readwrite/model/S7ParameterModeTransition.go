@@ -273,7 +273,7 @@ func CastS7ParameterModeTransition(structType any) S7ParameterModeTransition {
 	return nil
 }
 
-func (m *_S7ParameterModeTransition) GetTypeName() string {
+func (m *_S7ParameterModeTransition) GetPlx4xTypeName() string {
 	return "S7ParameterModeTransition"
 }
 

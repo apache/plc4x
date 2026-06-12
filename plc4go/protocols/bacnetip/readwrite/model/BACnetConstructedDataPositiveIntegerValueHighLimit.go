@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPositiveIntegerValueHighLimit(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPositiveIntegerValueHighLimit"
 }
 

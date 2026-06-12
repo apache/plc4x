@@ -258,7 +258,7 @@ func CastCreateObjectError(structType any) CreateObjectError {
 	return nil
 }
 
-func (m *_CreateObjectError) GetTypeName() string {
+func (m *_CreateObjectError) GetPlx4xTypeName() string {
 	return "CreateObjectError"
 }
 

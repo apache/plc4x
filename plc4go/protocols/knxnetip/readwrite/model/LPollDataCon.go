@@ -180,7 +180,7 @@ func CastLPollDataCon(structType any) LPollDataCon {
 	return nil
 }
 
-func (m *_LPollDataCon) GetTypeName() string {
+func (m *_LPollDataCon) GetPlx4xTypeName() string {
 	return "LPollDataCon"
 }
 

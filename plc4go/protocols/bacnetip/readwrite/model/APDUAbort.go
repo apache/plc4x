@@ -257,7 +257,7 @@ func CastAPDUAbort(structType any) APDUAbort {
 	return nil
 }
 
-func (m *_APDUAbort) GetTypeName() string {
+func (m *_APDUAbort) GetPlx4xTypeName() string {
 	return "APDUAbort"
 }
 

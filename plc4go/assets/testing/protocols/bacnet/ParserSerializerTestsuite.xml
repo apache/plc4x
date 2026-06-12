@@ -20,8 +20,8 @@
 <test:testsuite xmlns:test='https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd' byteOrder='BIG_ENDIAN'>
   <name>BACnet/IP</name>
 
-  <protocolName>bacnetip</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>bacnetip</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>1	Simple-ACK      acknowledgeAlarm[  2] </name>
@@ -4527,7 +4527,7 @@
                               <value dataType="uint" bitLength="8" stringRepresentation="PRIORITY_ARRAY">87</value>
                             </BACnetPropertyIdentifierTagged>
                           </propertyIdentifier>
-                          <values>
+                          <values isList="true">
                             <BACnetConstructedData>
                               <openingTag>
                                 <BACnetOpeningTag>

@@ -228,7 +228,7 @@ func CastTelephonyDataIsolateSecondaryOutlet(structType any) TelephonyDataIsolat
 	return nil
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutlet) GetTypeName() string {
+func (m *_TelephonyDataIsolateSecondaryOutlet) GetPlx4xTypeName() string {
 	return "TelephonyDataIsolateSecondaryOutlet"
 }
 

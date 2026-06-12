@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -221,7 +223,7 @@ func CastMonitoredSALReply(structType any) MonitoredSALReply {
 	return nil
 }
 
-func (m *_MonitoredSALReply) GetTypeName() string {
+func (m *_MonitoredSALReply) GetPlx4xTypeName() string {
 	return "MonitoredSALReply"
 }
 
@@ -249,7 +251,7 @@ func (m *_MonitoredSALReply) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	monitoredSAL, err := ReadSimpleField[MonitoredSAL](ctx, "monitoredSAL", ReadComplex[MonitoredSAL](MonitoredSALParseWithBufferProducer[MonitoredSAL]((CBusOptions)(cBusOptions)), readBuffer))
+	monitoredSAL, err := ReadSimpleField[MonitoredSAL](ctx, "monitoredSAL", ReadComplex[MonitoredSAL](MonitoredSALParseWithBufferProducer[MonitoredSAL]((CBusOptions)(cBusOptions)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredSAL' field"))
 	}
@@ -263,7 +265,7 @@ func (m *_MonitoredSALReply) parse(ctx context.Context, readBuffer utils.ReadBuf
 }
 
 func (m *_MonitoredSALReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -280,7 +282,7 @@ func (m *_MonitoredSALReply) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for MonitoredSALReply")
 		}
 
-		if err := WriteSimpleField[MonitoredSAL](ctx, "monitoredSAL", m.GetMonitoredSAL(), WriteComplex[MonitoredSAL](writeBuffer)); err != nil {
+		if err := WriteSimpleField[MonitoredSAL](ctx, "monitoredSAL", m.GetMonitoredSAL(), WriteComplex[MonitoredSAL](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'monitoredSAL' field")
 		}
 

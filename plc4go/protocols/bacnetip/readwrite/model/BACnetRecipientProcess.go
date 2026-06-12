@@ -205,7 +205,7 @@ func CastBACnetRecipientProcess(structType any) BACnetRecipientProcess {
 	return nil
 }
 
-func (m *_BACnetRecipientProcess) GetTypeName() string {
+func (m *_BACnetRecipientProcess) GetPlx4xTypeName() string {
 	return "BACnetRecipientProcess"
 }
 

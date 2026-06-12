@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAccumulatorMinPresValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccumulatorMinPresValue"
 }
 

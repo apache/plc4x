@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -225,7 +226,7 @@ func CastStandaloneSubscribedDataSetRefDataType(structType any) StandaloneSubscr
 	return nil
 }
 
-func (m *_StandaloneSubscribedDataSetRefDataType) GetTypeName() string {
+func (m *_StandaloneSubscribedDataSetRefDataType) GetPlx4xTypeName() string {
 	return "StandaloneSubscribedDataSetRefDataType"
 }
 
@@ -253,7 +254,7 @@ func (m *_StandaloneSubscribedDataSetRefDataType) parse(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dataSetName, err := ReadSimpleField[PascalString](ctx, "dataSetName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	dataSetName, err := ReadSimpleField[PascalString](ctx, "dataSetName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetName' field"))
 	}
@@ -284,7 +285,7 @@ func (m *_StandaloneSubscribedDataSetRefDataType) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for StandaloneSubscribedDataSetRefDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "dataSetName", m.GetDataSetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "dataSetName", m.GetDataSetName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetName' field")
 		}
 

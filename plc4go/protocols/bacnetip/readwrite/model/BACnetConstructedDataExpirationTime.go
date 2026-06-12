@@ -246,7 +246,7 @@ func CastBACnetConstructedDataExpirationTime(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataExpirationTime) GetTypeName() string {
+func (m *_BACnetConstructedDataExpirationTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExpirationTime"
 }
 

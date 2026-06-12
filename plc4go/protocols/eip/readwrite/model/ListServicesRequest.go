@@ -188,7 +188,7 @@ func CastListServicesRequest(structType any) ListServicesRequest {
 	return nil
 }
 
-func (m *_ListServicesRequest) GetTypeName() string {
+func (m *_ListServicesRequest) GetPlx4xTypeName() string {
 	return "ListServicesRequest"
 }
 

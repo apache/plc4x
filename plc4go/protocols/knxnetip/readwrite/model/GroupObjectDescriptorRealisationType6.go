@@ -136,7 +136,7 @@ func CastGroupObjectDescriptorRealisationType6(structType any) GroupObjectDescri
 	return nil
 }
 
-func (m *_GroupObjectDescriptorRealisationType6) GetTypeName() string {
+func (m *_GroupObjectDescriptorRealisationType6) GetPlx4xTypeName() string {
 	return "GroupObjectDescriptorRealisationType6"
 }
 

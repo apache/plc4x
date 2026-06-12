@@ -184,7 +184,7 @@ func CastNullAddressItem(structType any) NullAddressItem {
 	return nil
 }
 
-func (m *_NullAddressItem) GetTypeName() string {
+func (m *_NullAddressItem) GetPlx4xTypeName() string {
 	return "NullAddressItem"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDefaultStepIncrement(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrement) GetTypeName() string {
+func (m *_BACnetConstructedDataDefaultStepIncrement) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDefaultStepIncrement"
 }
 

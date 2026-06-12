@@ -225,7 +225,7 @@ func CastApduDataContainer(structType any) ApduDataContainer {
 	return nil
 }
 
-func (m *_ApduDataContainer) GetTypeName() string {
+func (m *_ApduDataContainer) GetPlx4xTypeName() string {
 	return "ApduDataContainer"
 }
 

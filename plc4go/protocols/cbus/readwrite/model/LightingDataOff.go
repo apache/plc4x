@@ -203,7 +203,7 @@ func CastLightingDataOff(structType any) LightingDataOff {
 	return nil
 }
 
-func (m *_LightingDataOff) GetTypeName() string {
+func (m *_LightingDataOff) GetPlx4xTypeName() string {
 	return "LightingDataOff"
 }
 

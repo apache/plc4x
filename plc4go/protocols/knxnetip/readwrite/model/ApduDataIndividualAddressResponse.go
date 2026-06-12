@@ -180,7 +180,7 @@ func CastApduDataIndividualAddressResponse(structType any) ApduDataIndividualAdd
 	return nil
 }
 
-func (m *_ApduDataIndividualAddressResponse) GetTypeName() string {
+func (m *_ApduDataIndividualAddressResponse) GetPlx4xTypeName() string {
 	return "ApduDataIndividualAddressResponse"
 }
 

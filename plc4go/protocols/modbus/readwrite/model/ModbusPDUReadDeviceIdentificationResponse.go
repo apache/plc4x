@@ -306,7 +306,7 @@ func CastModbusPDUReadDeviceIdentificationResponse(structType any) ModbusPDURead
 	return nil
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponse) GetTypeName() string {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUReadDeviceIdentificationResponse"
 }
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType MQTT_ControlPacket    byteOrder='BIG_ENDIAN'
+[discriminatedType MQTT_ControlPacket    byteOrder='"BIG_ENDIAN"'
     [discriminator MQTT_ControlPacketType packetType                                        ]
     [abstract uint 8 remainingLength                                                        ]
     [typeSwitch packetType

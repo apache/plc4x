@@ -230,7 +230,7 @@ func CastModbusPDUWriteSingleRegisterRequest(structType any) ModbusPDUWriteSingl
 	return nil
 }
 
-func (m *_ModbusPDUWriteSingleRegisterRequest) GetTypeName() string {
+func (m *_ModbusPDUWriteSingleRegisterRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteSingleRegisterRequest"
 }
 

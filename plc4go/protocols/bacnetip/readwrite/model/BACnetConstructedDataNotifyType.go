@@ -246,7 +246,7 @@ func CastBACnetConstructedDataNotifyType(structType any) BACnetConstructedDataNo
 	return nil
 }
 
-func (m *_BACnetConstructedDataNotifyType) GetTypeName() string {
+func (m *_BACnetConstructedDataNotifyType) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNotifyType"
 }
 

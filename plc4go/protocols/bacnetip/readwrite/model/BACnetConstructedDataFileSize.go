@@ -246,7 +246,7 @@ func CastBACnetConstructedDataFileSize(structType any) BACnetConstructedDataFile
 	return nil
 }
 
-func (m *_BACnetConstructedDataFileSize) GetTypeName() string {
+func (m *_BACnetConstructedDataFileSize) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFileSize"
 }
 

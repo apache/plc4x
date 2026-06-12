@@ -300,7 +300,7 @@ func CastSecurityDataEmulatedKeypad(structType any) SecurityDataEmulatedKeypad {
 	return nil
 }
 
-func (m *_SecurityDataEmulatedKeypad) GetTypeName() string {
+func (m *_SecurityDataEmulatedKeypad) GetPlx4xTypeName() string {
 	return "SecurityDataEmulatedKeypad"
 }
 

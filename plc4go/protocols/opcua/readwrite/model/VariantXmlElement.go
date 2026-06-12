@@ -222,7 +222,7 @@ func CastVariantXmlElement(structType any) VariantXmlElement {
 	return nil
 }
 
-func (m *_VariantXmlElement) GetTypeName() string {
+func (m *_VariantXmlElement) GetPlx4xTypeName() string {
 	return "VariantXmlElement"
 }
 

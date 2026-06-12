@@ -179,7 +179,7 @@ func CastHVACHumidity(structType any) HVACHumidity {
 	return nil
 }
 
-func (m *_HVACHumidity) GetTypeName() string {
+func (m *_HVACHumidity) GetPlx4xTypeName() string {
 	return "HVACHumidity"
 }
 

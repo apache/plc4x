@@ -183,7 +183,7 @@ func CastTriggerControlLabelOptions(structType any) TriggerControlLabelOptions {
 	return nil
 }
 
-func (m *_TriggerControlLabelOptions) GetTypeName() string {
+func (m *_TriggerControlLabelOptions) GetPlx4xTypeName() string {
 	return "TriggerControlLabelOptions"
 }
 

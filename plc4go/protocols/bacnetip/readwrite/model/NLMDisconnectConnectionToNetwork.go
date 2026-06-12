@@ -207,7 +207,7 @@ func CastNLMDisconnectConnectionToNetwork(structType any) NLMDisconnectConnectio
 	return nil
 }
 
-func (m *_NLMDisconnectConnectionToNetwork) GetTypeName() string {
+func (m *_NLMDisconnectConnectionToNetwork) GetPlx4xTypeName() string {
 	return "NLMDisconnectConnectionToNetwork"
 }
 

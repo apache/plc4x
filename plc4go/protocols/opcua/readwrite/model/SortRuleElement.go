@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastSortRuleElement(structType any) SortRuleElement {
 	return nil
 }
 
-func (m *_SortRuleElement) GetTypeName() string {
+func (m *_SortRuleElement) GetPlx4xTypeName() string {
 	return "SortRuleElement"
 }
 
@@ -271,13 +272,13 @@ func (m *_SortRuleElement) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	sortOrder, err := ReadEnumField[SortOrderType](ctx, "sortOrder", "SortOrderType", ReadEnum(SortOrderTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	sortOrder, err := ReadEnumField[SortOrderType](ctx, "sortOrder", "SortOrderType", ReadEnum(SortOrderTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sortOrder' field"))
 	}
 	m.SortOrder = sortOrder
 
-	eventField, err := ReadSimpleField[SimpleAttributeOperand](ctx, "eventField", ReadComplex[SimpleAttributeOperand](ExtensionObjectDefinitionParseWithBufferProducer[SimpleAttributeOperand]((int32)(int32(603))), readBuffer))
+	eventField, err := ReadSimpleField[SimpleAttributeOperand](ctx, "eventField", ReadComplex[SimpleAttributeOperand](ExtensionObjectDefinitionParseWithBufferProducer[SimpleAttributeOperand]((int32)(int32(603))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventField' field"))
 	}
@@ -308,11 +309,11 @@ func (m *_SortRuleElement) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for SortRuleElement")
 		}
 
-		if err := WriteSimpleEnumField[SortOrderType](ctx, "sortOrder", "SortOrderType", m.GetSortOrder(), WriteEnum[SortOrderType, uint32](SortOrderType.GetValue, SortOrderType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[SortOrderType](ctx, "sortOrder", "SortOrderType", m.GetSortOrder(), WriteEnum[SortOrderType, uint32](SortOrderType.GetValue, SortOrderType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sortOrder' field")
 		}
 
-		if err := WriteSimpleField[SimpleAttributeOperand](ctx, "eventField", m.GetEventField(), WriteComplex[SimpleAttributeOperand](writeBuffer)); err != nil {
+		if err := WriteSimpleField[SimpleAttributeOperand](ctx, "eventField", m.GetEventField(), WriteComplex[SimpleAttributeOperand](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventField' field")
 		}
 

@@ -243,7 +243,7 @@ func CastBACnetPropertyStatesEnclosed(structType any) BACnetPropertyStatesEnclos
 	return nil
 }
 
-func (m *_BACnetPropertyStatesEnclosed) GetTypeName() string {
+func (m *_BACnetPropertyStatesEnclosed) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesEnclosed"
 }
 

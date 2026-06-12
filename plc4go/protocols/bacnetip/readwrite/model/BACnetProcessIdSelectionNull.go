@@ -221,7 +221,7 @@ func CastBACnetProcessIdSelectionNull(structType any) BACnetProcessIdSelectionNu
 	return nil
 }
 
-func (m *_BACnetProcessIdSelectionNull) GetTypeName() string {
+func (m *_BACnetProcessIdSelectionNull) GetPlx4xTypeName() string {
 	return "BACnetProcessIdSelectionNull"
 }
 

@@ -180,7 +180,7 @@ func CastApduDataRestart(structType any) ApduDataRestart {
 	return nil
 }
 
-func (m *_ApduDataRestart) GetTypeName() string {
+func (m *_ApduDataRestart) GetPlx4xTypeName() string {
 	return "ApduDataRestart"
 }
 

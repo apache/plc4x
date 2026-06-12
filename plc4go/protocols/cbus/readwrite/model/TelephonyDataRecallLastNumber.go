@@ -243,7 +243,7 @@ func CastTelephonyDataRecallLastNumber(structType any) TelephonyDataRecallLastNu
 	return nil
 }
 
-func (m *_TelephonyDataRecallLastNumber) GetTypeName() string {
+func (m *_TelephonyDataRecallLastNumber) GetPlx4xTypeName() string {
 	return "TelephonyDataRecallLastNumber"
 }
 

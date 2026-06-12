@@ -193,7 +193,7 @@ func CastBACnetAuthenticationStatusTagged(structType any) BACnetAuthenticationSt
 	return nil
 }
 
-func (m *_BACnetAuthenticationStatusTagged) GetTypeName() string {
+func (m *_BACnetAuthenticationStatusTagged) GetPlx4xTypeName() string {
 	return "BACnetAuthenticationStatusTagged"
 }
 

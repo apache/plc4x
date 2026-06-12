@@ -207,7 +207,7 @@ func CastBinaryPayload(structType any) BinaryPayload {
 	return nil
 }
 
-func (m *_BinaryPayload) GetTypeName() string {
+func (m *_BinaryPayload) GetPlx4xTypeName() string {
 	return "BinaryPayload"
 }
 

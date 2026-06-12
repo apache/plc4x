@@ -238,7 +238,7 @@ func CastBACnetApplicationTagCharacterString(structType any) BACnetApplicationTa
 	return nil
 }
 
-func (m *_BACnetApplicationTagCharacterString) GetTypeName() string {
+func (m *_BACnetApplicationTagCharacterString) GetPlx4xTypeName() string {
 	return "BACnetApplicationTagCharacterString"
 }
 

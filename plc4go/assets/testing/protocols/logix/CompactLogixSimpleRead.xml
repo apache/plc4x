@@ -20,8 +20,8 @@
 <test:testsuite xmlns:test='https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd' byteOrder='LITTLE_ENDIAN'>
   <name>EipPacket</name>
 
-  <protocolName>eip</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>eip</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <testcase>
     <name>1	List Services (Req)</name>

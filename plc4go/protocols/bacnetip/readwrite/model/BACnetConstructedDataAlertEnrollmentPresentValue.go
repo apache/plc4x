@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAlertEnrollmentPresentValue(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAlertEnrollmentPresentValue"
 }
 

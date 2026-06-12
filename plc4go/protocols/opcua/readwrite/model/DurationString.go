@@ -135,7 +135,7 @@ func CastDurationString(structType any) DurationString {
 	return nil
 }
 
-func (m *_DurationString) GetTypeName() string {
+func (m *_DurationString) GetPlx4xTypeName() string {
 	return "DurationString"
 }
 

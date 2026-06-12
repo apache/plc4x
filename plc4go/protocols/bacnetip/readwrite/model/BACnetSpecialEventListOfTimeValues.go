@@ -225,7 +225,7 @@ func CastBACnetSpecialEventListOfTimeValues(structType any) BACnetSpecialEventLi
 	return nil
 }
 
-func (m *_BACnetSpecialEventListOfTimeValues) GetTypeName() string {
+func (m *_BACnetSpecialEventListOfTimeValues) GetPlx4xTypeName() string {
 	return "BACnetSpecialEventListOfTimeValues"
 }
 

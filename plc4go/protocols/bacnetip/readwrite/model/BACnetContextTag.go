@@ -430,7 +430,7 @@ func CastBACnetContextTag(structType any) BACnetContextTag {
 	return nil
 }
 
-func (m *_BACnetContextTag) GetTypeName() string {
+func (m *_BACnetContextTag) GetPlx4xTypeName() string {
 	return "BACnetContextTag"
 }
 

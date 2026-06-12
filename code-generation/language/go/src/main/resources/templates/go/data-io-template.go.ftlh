@@ -128,10 +128,11 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 							<#if !field.isCountArrayField() && !field.isLengthArrayField()>
 			return nil, errors.Wrap(_${arrayField.name}Err, "Array fields of type byte only support 'count' and 'length' loop-types.")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 							</#if>
-			${arrayField.name}, _${arrayField.name}Err := readBuffer.ReadByteArray("${arrayField.name}", int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}))<#if arrayField.loopExpression.contains("CEIL")><@emitImport import="math" /></#if>
+			${arrayField.name}Raw, _${arrayField.name}Err := readBuffer.ReadByteArray("${arrayField.name}", int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}))<#if arrayField.loopExpression.contains("CEIL")><@emitImport import="math" /></#if>
 			if _${arrayField.name}Err != nil {
 				return nil, errors.Wrap(_${arrayField.name}Err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
+			${arrayField.name} := []api.PlcValue{values.NewPlcRawByteArray(${arrayField.name}Raw)}
                         <#else>
 			var ${arrayField.name} []api.PlcValue
 			for i := 0; i < int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}); i++ {
@@ -181,7 +182,11 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			|| ((case.name == "LDATE") && (simpleField.name == "nanosecondsSinceEpoch"))
 			|| ((case.name == "TIME_OF_DAY") && (simpleField.name == "millisecondsSinceMidnight"))
 			|| ((case.name == "LTIME_OF_DAY") && (simpleField.name == "nanosecondsSinceMidnight"))
-			|| ((case.name == "DATE_AND_TIME") && (simpleField.name == "secondsSinceEpoch"))
+			|| ((case.name == "DATE_AND_TIME") && (
+				(simpleField.name == "secondsSinceEpoch")
+				|| (simpleField.name == "nanosecondsOfSecond")
+				)
+			)
 			|| ((case.name == "DATE_AND_LTIME") && (
 				(simpleField.name == "year")
 			  	|| (simpleField.name == "month")
@@ -190,7 +195,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				|| (simpleField.name == "minutes")
 				|| (simpleField.name == "seconds")
 				|| (simpleField.name == "nanoseconds")
-				|| (simpleField.name == "nannosecondsOfSecond")
+				|| (simpleField.name == "nanosecondsOfSecond")
 				|| (simpleField.name == "nanosecondsSinceEpoch")
 				|| (simpleField.name == "dayOfWeek")
 				)

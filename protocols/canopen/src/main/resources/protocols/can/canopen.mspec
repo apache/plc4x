@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[enum uint 4 CANOpenService(uint 8 min, uint 8 max, bit pdo)
+[enum uint 4 CANOpenService(uint 8 min, uint 8 max, bit pdo) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     ['0b0000' NMT             ['0',          '0'    ,      'false']]
     ['0b0001' SYNC            ['0x80',       '0x80' ,      'false']]
     ['0b0001' EMCY            ['0x81',       '0xFF' ,      'false']]
@@ -35,7 +35,7 @@
     ['0b1110' HEARTBEAT       ['0x700',      '0x77F',      'false']]
 ]
 
-[enum uint 8 NMTStateRequest
+[enum uint 8 NMTStateRequest byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     ['0x01' START]
     ['0x02' STOP]
     ['0x80' PRE_OPERATIONAL]
@@ -43,14 +43,14 @@
     ['0x82' RESET_COMMUNICATION]
 ]
 
-[enum uint 8 NMTState
+[enum uint 8 NMTState byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     ['0x00' BOOTED_UP]
     ['0x04' STOPPED]
     ['0x05' OPERATIONAL]
     ['0x7f' PRE_OPERATIONAL]
 ]
 
-[discriminatedType CANOpenPayload(CANOpenService service)
+[discriminatedType CANOpenPayload(CANOpenService service) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch service
         ['NMT' CANOpenNetworkPayload
             [simple NMTStateRequest request]
@@ -98,7 +98,7 @@
     ]
 ]
 
-[type SDORequest(SDORequestCommand command)
+[type SDORequest(SDORequestCommand command) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch command
         ['SEGMENT_DOWNLOAD' SDOSegmentDownloadRequest
             [simple bit toggle]
@@ -134,12 +134,12 @@
     ]
 ]
 
-[type SDOBlockData
+[type SDOBlockData byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple uint 5 flags]
     [array byte data count '7']
 ]
 
-[type SDOResponse(SDOResponseCommand command)
+[type SDOResponse(SDOResponseCommand command) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch command
         ['SEGMENT_UPLOAD' SDOSegmentUploadResponse
             [simple bit toggle]
@@ -175,7 +175,7 @@
     ]
 ]
 
-[type SDOInitiateUploadResponsePayload(bit expedited, bit indicated, uint 2 size)
+[type SDOInitiateUploadResponsePayload(bit expedited, bit indicated, uint 2 size) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch expedited, indicated
         ['true', 'true' SDOInitiateExpeditedUploadResponse
             [array byte data count '4 - size']
@@ -190,13 +190,13 @@
     ]
 ]
 
-[type SDOAbort
+[type SDOAbort byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [reserved uint 5 '0x00']
     [simple IndexAddress address]
     [simple uint 32 code]
 ]
 
-[type SDOSegment
+[type SDOSegment byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [reserved uint 1 '0x00']
     [implicit uint 2 size 'expedited && indicated ? 4 - COUNT(data) : 0']
     [simple bit expedited]
@@ -206,12 +206,12 @@
     [padding uint 8 alignment '0x00' '4 - (COUNT(data))']
 ]
 
-[type IndexAddress
+[type IndexAddress byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple uint 16 index]
     [simple uint 8 subindex]
 ]
 
-[enum uint 3 SDORequestCommand
+[enum uint 3 SDORequestCommand byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     ['0x00' SEGMENT_DOWNLOAD  ]
     ['0x01' INITIATE_DOWNLOAD ]
     ['0x02' INITIATE_UPLOAD   ]
@@ -220,7 +220,7 @@
     ['0x05' BLOCK             ]
 ]
 
-[enum uint 3 SDOResponseCommand
+[enum uint 3 SDOResponseCommand byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     ['0x00' SEGMENT_UPLOAD    ]
     ['0x01' SEGMENT_DOWNLOAD  ]
     ['0x02' INITIATE_UPLOAD   ]
@@ -229,18 +229,18 @@
     ['0x06' BLOCK             ]
 ]
 
-[type CANOpenPDO /*(uint 2 index, bit receive)*/
+[type CANOpenPDO /*(uint 2 index, bit receive)*/ byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [array byte data count '8']
 ]
 
-[type CANOpenTime
+[type CANOpenTime byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     // CiA 301 - section 7.1.6.5 and 7.1.6.6
     [simple  uint 32 millis]
     [virtual uint 28 cleanMillis 'millis & 0x0FFFFFFF']
     [simple  uint 16 days]
 ]
 
-[enum CANOpenDataType (uint 8 numBits, vstring plcValueName)
+[enum CANOpenDataType (uint 8 numBits, vstring plcValueName) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [BOOLEAN     [ '1', '"BIT"'           ] ]
     [UNSIGNED8   [ '8', '"USINT"'         ] ]
     [UNSIGNED16  ['16', '"UINT"'          ] ]
@@ -270,7 +270,7 @@
     [TIME_DIFFERENCE  ['48', '"TIME"'       ] ]
 ]
 
-[dataIo DataItem(CANOpenDataType dataType, int 32 size)
+[dataIo DataItem(CANOpenDataType dataType, int 32 size) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch dataType
         ['BOOLEAN' BOOL
             [simple bit value]
@@ -347,14 +347,14 @@
 ]
 
 // utility type quickly write data for mapped/manufacturer PDOs
-[type CANOpenMPDO
+[type CANOpenMPDO byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple uint 8 node]
     [simple IndexAddress address]
     [array byte data count '4']
 ]
 
 // A compact, byte aligned structure for test and embedding purposes
-[type CANOpenFrame byteOrder='LITTLE_ENDIAN'
+[type CANOpenFrame byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [simple uint 8 nodeId]
     [simple CANOpenService service]
     [const uint 4 alignment 0x00]

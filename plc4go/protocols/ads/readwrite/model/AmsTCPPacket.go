@@ -184,7 +184,7 @@ func CastAmsTCPPacket(structType any) AmsTCPPacket {
 	return nil
 }
 
-func (m *_AmsTCPPacket) GetTypeName() string {
+func (m *_AmsTCPPacket) GetPlx4xTypeName() string {
 	return "AmsTCPPacket"
 }
 
@@ -234,19 +234,19 @@ func (m *_AmsTCPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000), codegen.WithByteOrder(binary.LittleEndian))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
 	_ = length
 
-	userdata, err := ReadSimpleField[AmsPacket](ctx, "userdata", ReadComplex[AmsPacket](AmsPacketParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	userdata, err := ReadSimpleField[AmsPacket](ctx, "userdata", ReadComplex[AmsPacket](AmsPacketParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userdata' field"))
 	}
@@ -276,15 +276,15 @@ func (m *_AmsTCPPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for AmsTCPPacket")
 	}
 
-	if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0000), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0000), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 	length := uint32(m.GetUserdata().GetLengthInBytes(ctx))
-	if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'length' field")
 	}
 
-	if err := WriteSimpleField[AmsPacket](ctx, "userdata", m.GetUserdata(), WriteComplex[AmsPacket](writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[AmsPacket](ctx, "userdata", m.GetUserdata(), WriteComplex[AmsPacket](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'userdata' field")
 	}
 

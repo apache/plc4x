@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -222,7 +224,7 @@ func CastParameterChangeReply(structType any) ParameterChangeReply {
 	return nil
 }
 
-func (m *_ParameterChangeReply) GetTypeName() string {
+func (m *_ParameterChangeReply) GetPlx4xTypeName() string {
 	return "ParameterChangeReply"
 }
 
@@ -250,7 +252,7 @@ func (m *_ParameterChangeReply) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	parameterChange, err := ReadSimpleField[ParameterChange](ctx, "parameterChange", ReadComplex[ParameterChange](ParameterChangeParseWithBuffer, readBuffer))
+	parameterChange, err := ReadSimpleField[ParameterChange](ctx, "parameterChange", ReadComplex[ParameterChange](ParameterChangeParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterChange' field"))
 	}
@@ -264,7 +266,7 @@ func (m *_ParameterChangeReply) parse(ctx context.Context, readBuffer utils.Read
 }
 
 func (m *_ParameterChangeReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -281,7 +283,7 @@ func (m *_ParameterChangeReply) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ParameterChangeReply")
 		}
 
-		if err := WriteSimpleField[ParameterChange](ctx, "parameterChange", m.GetParameterChange(), WriteComplex[ParameterChange](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ParameterChange](ctx, "parameterChange", m.GetParameterChange(), WriteComplex[ParameterChange](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'parameterChange' field")
 		}
 

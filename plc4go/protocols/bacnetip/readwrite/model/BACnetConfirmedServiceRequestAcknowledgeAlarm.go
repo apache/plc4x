@@ -390,7 +390,7 @@ func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAcknowledgeAlarm"
 }
 

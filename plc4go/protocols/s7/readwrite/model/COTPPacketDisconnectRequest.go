@@ -237,7 +237,7 @@ func CastCOTPPacketDisconnectRequest(structType any) COTPPacketDisconnectRequest
 	return nil
 }
 
-func (m *_COTPPacketDisconnectRequest) GetTypeName() string {
+func (m *_COTPPacketDisconnectRequest) GetPlx4xTypeName() string {
 	return "COTPPacketDisconnectRequest"
 }
 

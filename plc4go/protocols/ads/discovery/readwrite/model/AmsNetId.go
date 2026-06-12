@@ -231,7 +231,7 @@ func CastAmsNetId(structType any) AmsNetId {
 	return nil
 }
 
-func (m *_AmsNetId) GetTypeName() string {
+func (m *_AmsNetId) GetPlx4xTypeName() string {
 	return "AmsNetId"
 }
 

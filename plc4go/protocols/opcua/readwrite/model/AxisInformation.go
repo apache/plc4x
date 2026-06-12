@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -321,7 +322,7 @@ func CastAxisInformation(structType any) AxisInformation {
 	return nil
 }
 
-func (m *_AxisInformation) GetTypeName() string {
+func (m *_AxisInformation) GetPlx4xTypeName() string {
 	return "AxisInformation"
 }
 
@@ -366,37 +367,37 @@ func (m *_AxisInformation) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	engineeringUnits, err := ReadSimpleField[EUInformation](ctx, "engineeringUnits", ReadComplex[EUInformation](ExtensionObjectDefinitionParseWithBufferProducer[EUInformation]((int32)(int32(889))), readBuffer))
+	engineeringUnits, err := ReadSimpleField[EUInformation](ctx, "engineeringUnits", ReadComplex[EUInformation](ExtensionObjectDefinitionParseWithBufferProducer[EUInformation]((int32)(int32(889))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'engineeringUnits' field"))
 	}
 	m.EngineeringUnits = engineeringUnits
 
-	eURange, err := ReadSimpleField[Range](ctx, "eURange", ReadComplex[Range](ExtensionObjectDefinitionParseWithBufferProducer[Range]((int32)(int32(886))), readBuffer))
+	eURange, err := ReadSimpleField[Range](ctx, "eURange", ReadComplex[Range](ExtensionObjectDefinitionParseWithBufferProducer[Range]((int32)(int32(886))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eURange' field"))
 	}
 	m.EURange = eURange
 
-	title, err := ReadSimpleField[LocalizedText](ctx, "title", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	title, err := ReadSimpleField[LocalizedText](ctx, "title", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'title' field"))
 	}
 	m.Title = title
 
-	axisScaleType, err := ReadEnumField[AxisScaleEnumeration](ctx, "axisScaleType", "AxisScaleEnumeration", ReadEnum(AxisScaleEnumerationByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	axisScaleType, err := ReadEnumField[AxisScaleEnumeration](ctx, "axisScaleType", "AxisScaleEnumeration", ReadEnum(AxisScaleEnumerationByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'axisScaleType' field"))
 	}
 	m.AxisScaleType = axisScaleType
 
-	noOfAxisSteps, err := ReadImplicitField[int32](ctx, "noOfAxisSteps", ReadSignedInt(readBuffer, uint8(32)))
+	noOfAxisSteps, err := ReadImplicitField[int32](ctx, "noOfAxisSteps", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAxisSteps' field"))
 	}
 	_ = noOfAxisSteps
 
-	axisSteps, err := ReadCountArrayField[float64](ctx, "axisSteps", ReadDouble(readBuffer, uint8(64)), uint64(noOfAxisSteps))
+	axisSteps, err := ReadCountArrayField[float64](ctx, "axisSteps", ReadDouble(readBuffer, uint8(64)), uint64(noOfAxisSteps), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'axisSteps' field"))
 	}
@@ -427,27 +428,27 @@ func (m *_AxisInformation) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for AxisInformation")
 		}
 
-		if err := WriteSimpleField[EUInformation](ctx, "engineeringUnits", m.GetEngineeringUnits(), WriteComplex[EUInformation](writeBuffer)); err != nil {
+		if err := WriteSimpleField[EUInformation](ctx, "engineeringUnits", m.GetEngineeringUnits(), WriteComplex[EUInformation](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'engineeringUnits' field")
 		}
 
-		if err := WriteSimpleField[Range](ctx, "eURange", m.GetEURange(), WriteComplex[Range](writeBuffer)); err != nil {
+		if err := WriteSimpleField[Range](ctx, "eURange", m.GetEURange(), WriteComplex[Range](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'eURange' field")
 		}
 
-		if err := WriteSimpleField[LocalizedText](ctx, "title", m.GetTitle(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+		if err := WriteSimpleField[LocalizedText](ctx, "title", m.GetTitle(), WriteComplex[LocalizedText](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'title' field")
 		}
 
-		if err := WriteSimpleEnumField[AxisScaleEnumeration](ctx, "axisScaleType", "AxisScaleEnumeration", m.GetAxisScaleType(), WriteEnum[AxisScaleEnumeration, uint32](AxisScaleEnumeration.GetValue, AxisScaleEnumeration.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[AxisScaleEnumeration](ctx, "axisScaleType", "AxisScaleEnumeration", m.GetAxisScaleType(), WriteEnum[AxisScaleEnumeration, uint32](AxisScaleEnumeration.GetValue, AxisScaleEnumeration.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'axisScaleType' field")
 		}
 		noOfAxisSteps := int32(utils.InlineIf(bool((m.GetAxisSteps()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetAxisSteps()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfAxisSteps", noOfAxisSteps, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfAxisSteps", noOfAxisSteps, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfAxisSteps' field")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "axisSteps", m.GetAxisSteps(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "axisSteps", m.GetAxisSteps(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'axisSteps' field")
 		}
 

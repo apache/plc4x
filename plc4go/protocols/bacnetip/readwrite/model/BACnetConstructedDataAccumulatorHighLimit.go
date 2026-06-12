@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAccumulatorHighLimit(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataAccumulatorHighLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccumulatorHighLimit"
 }
 

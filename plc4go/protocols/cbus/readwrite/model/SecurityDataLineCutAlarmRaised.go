@@ -176,7 +176,7 @@ func CastSecurityDataLineCutAlarmRaised(structType any) SecurityDataLineCutAlarm
 	return nil
 }
 
-func (m *_SecurityDataLineCutAlarmRaised) GetTypeName() string {
+func (m *_SecurityDataLineCutAlarmRaised) GetPlx4xTypeName() string {
 	return "SecurityDataLineCutAlarmRaised"
 }
 

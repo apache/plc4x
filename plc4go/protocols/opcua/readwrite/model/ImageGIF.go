@@ -135,7 +135,7 @@ func CastImageGIF(structType any) ImageGIF {
 	return nil
 }
 
-func (m *_ImageGIF) GetTypeName() string {
+func (m *_ImageGIF) GetPlx4xTypeName() string {
 	return "ImageGIF"
 }
 

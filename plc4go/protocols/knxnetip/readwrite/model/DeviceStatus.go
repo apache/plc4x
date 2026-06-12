@@ -163,7 +163,7 @@ func CastDeviceStatus(structType any) DeviceStatus {
 	return nil
 }
 
-func (m *_DeviceStatus) GetTypeName() string {
+func (m *_DeviceStatus) GetPlx4xTypeName() string {
 	return "DeviceStatus"
 }
 

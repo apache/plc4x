@@ -203,7 +203,7 @@ func CastAssociatedQueryValueType(structType any) AssociatedQueryValueType {
 	return nil
 }
 
-func (m *_AssociatedQueryValueType) GetTypeName() string {
+func (m *_AssociatedQueryValueType) GetPlx4xTypeName() string {
 	return "AssociatedQueryValueType"
 }
 

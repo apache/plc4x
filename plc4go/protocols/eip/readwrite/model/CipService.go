@@ -497,7 +497,7 @@ func CastCipService(structType any) CipService {
 	return nil
 }
 
-func (m *_CipService) GetTypeName() string {
+func (m *_CipService) GetPlx4xTypeName() string {
 	return "CipService"
 }
 

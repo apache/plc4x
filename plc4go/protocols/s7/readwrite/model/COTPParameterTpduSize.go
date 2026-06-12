@@ -207,7 +207,7 @@ func CastCOTPParameterTpduSize(structType any) COTPParameterTpduSize {
 	return nil
 }
 
-func (m *_COTPParameterTpduSize) GetTypeName() string {
+func (m *_COTPParameterTpduSize) GetPlx4xTypeName() string {
 	return "COTPParameterTpduSize"
 }
 

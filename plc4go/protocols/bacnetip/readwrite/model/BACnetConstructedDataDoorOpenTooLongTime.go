@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDoorOpenTooLongTime(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoorOpenTooLongTime) GetTypeName() string {
+func (m *_BACnetConstructedDataDoorOpenTooLongTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoorOpenTooLongTime"
 }
 

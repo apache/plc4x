@@ -2473,7 +2473,7 @@
               </hurz>
             </tags>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <hurz result="OK">
               <PlcBOOL>true</PlcBOOL>
             </hurz>

@@ -26,10 +26,11 @@ import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.device.*;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -39,7 +40,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfinetDeviceContext implements DriverContext, HasConfiguration<ProfinetConfiguration> {
+public class ProfinetDeviceContext {
+
+    /**
+     * Callback the {@code ProfinetConnection} provides during setup — invoked
+     * once the underlying device has finished its multi-step handshake. Replaces
+     * the old SPI's {@code ConversationContext.fireConnected()} hook.
+     */
+    public interface OnConnectedCallback extends Runnable {}
+
 
     public static final int DEFAULT_UDP_PORT = 34964;
     public static final int DEFAULT_ARGS_MAXIMUM = 16696;
@@ -77,7 +86,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private DatagramSocket socket;
     private ProfinetChannel channel;
     private MacAddress macAddress;
-    private ConversationContext<Ethernet_Frame> context;
+    private OnConnectedCallback context;
     private ProfinetDeviceState state = ProfinetDeviceState.IDLE;
     private boolean lldpReceived = false;
     private boolean dcpReceived = false;
@@ -117,13 +126,13 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     protected static DceRpc_ActivityUuid generateActivityUuid() {
         UUID number = UUID.randomUUID();
         try {
-            WriteBufferByteBased wb = new WriteBufferByteBased(128);
-            wb.writeLong(64, number.getMostSignificantBits());
-            wb.writeLong(64, number.getLeastSignificantBits());
+            WriteBufferByteBased wb = new WriteBufferByteBased(new byte[16]);
+            wb.writeSignedLong(64, number.getMostSignificantBits());
+            wb.writeSignedLong(64, number.getLeastSignificantBits());
 
-            ReadBuffer rb = new ReadBufferByteBased(wb.getBytes());
-            return new DceRpc_ActivityUuid(rb.readLong(32), rb.readInt(16), rb.readInt(16), rb.readByteArray(8));
-        } catch (SerializationException | ParseException e) {
+            ReadBufferByteBased rb = new ReadBufferByteBased(wb.getBytes());
+            return new DceRpc_ActivityUuid(rb.readUnsignedLong(32), rb.readUnsignedInt(16), rb.readUnsignedInt(16), rb.readBits(64));
+        } catch (BufferException e) {
             // Ignore ... this should actually never happen.
         }
         return null;
@@ -152,7 +161,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return sessionKey;
     }
 
-    @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
         this.configuration = configuration;
     }
@@ -189,11 +197,11 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         this.macAddress = macAddress;
     }
 
-    public ConversationContext<Ethernet_Frame> getContext() {
+    public OnConnectedCallback getContext() {
         return context;
     }
 
-    public void setContext(ConversationContext<Ethernet_Frame> context) {
+    public void setContext(OnConnectedCallback context) {
         this.context = context;
     }
 
@@ -349,7 +357,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                     new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
                         Collections.singletonList(
                             new PnIoCm_ExpectedSubmoduleBlockReqApi(module.getSlotNumber(),
-                                module.getIdentNumber(),
+                                (long) module.getIdentNumber(),
                                 0x00000000,
                                 getExpectedSubModuleApiBlocks(module)
                             )

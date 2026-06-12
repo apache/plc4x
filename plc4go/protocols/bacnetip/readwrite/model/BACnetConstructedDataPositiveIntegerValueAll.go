@@ -184,7 +184,7 @@ func CastBACnetConstructedDataPositiveIntegerValueAll(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueAll) GetTypeName() string {
+func (m *_BACnetConstructedDataPositiveIntegerValueAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPositiveIntegerValueAll"
 }
 

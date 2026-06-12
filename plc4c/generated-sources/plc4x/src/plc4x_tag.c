@@ -47,7 +47,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_parse(plc4x_spi_context ctx, 
 
   // Simple Field (name)
   char* name = "";
-  _res = plc4c_spi_read_string(readBuffer, (nameLen) * (8), "UTF-8", (char**) &name);
+  _res = plc4c_spi_read_string(readBuffer, (nameLen) * (8), "UTF8", (char**) &name);
   if(_res != OK) {
     return _res;
   }
@@ -62,7 +62,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_parse(plc4x_spi_context ctx, 
 
   // Simple Field (tagQuery)
   char* tagQuery = "";
-  _res = plc4c_spi_read_string(readBuffer, (tagQueryLen) * (8), "UTF-8", (char**) &tagQuery);
+  _res = plc4c_spi_read_string(readBuffer, (tagQueryLen) * (8), "UTF8", (char**) &tagQuery);
   if(_res != OK) {
     return _res;
   }
@@ -81,7 +81,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_serialize(plc4x_spi_context c
   }
 
   // Simple Field (name)
-  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->name)) * (8), "UTF-8", (const uint8_t*) _message->name);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->name)) * (8), "UTF8", (const uint8_t*) _message->name);
   if(_res != OK) {
     return _res;
   }
@@ -93,7 +93,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_tag_serialize(plc4x_spi_context c
   }
 
   // Simple Field (tagQuery)
-  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->tag_query)) * (8), "UTF-8", (const uint8_t*) _message->tag_query);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->tag_query)) * (8), "UTF8", (const uint8_t*) _message->tag_query);
   if(_res != OK) {
     return _res;
   }

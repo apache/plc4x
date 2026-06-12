@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
-import io.vavr.control.Try;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import org.bouncycastle.asn1.x509.GeneralName;
@@ -60,9 +59,16 @@ public class CertificateKeyPair {
     }
 
     public Optional<String> getApplicationUri() {
-        Try<Collection<List<?>>> lists = Try.of(certificate::getSubjectAlternativeNames);
-        return lists.toJavaStream()
-            .flatMap(Collection::stream)
+        Collection<List<?>> lists;
+        try {
+            lists = certificate.getSubjectAlternativeNames();
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+        if (lists == null) {
+            return Optional.empty();
+        }
+        return lists.stream()
             .filter(l -> l.size() == 2)
             .filter(name -> name.get(0).equals(GeneralName.uniformResourceIdentifier))
             .map(t -> (String) t.get(1))

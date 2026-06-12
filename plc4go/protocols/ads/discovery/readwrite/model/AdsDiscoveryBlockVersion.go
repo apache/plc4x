@@ -207,7 +207,7 @@ func CastAdsDiscoveryBlockVersion(structType any) AdsDiscoveryBlockVersion {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockVersion) GetTypeName() string {
+func (m *_AdsDiscoveryBlockVersion) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockVersion"
 }
 

@@ -205,11 +205,6 @@
         <artifactId>freemarker</artifactId>
         <version>${freemarker.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.osgi</groupId>
-        <artifactId>osgi.core</artifactId>
-        <version>8.0.0</version>
-      </dependency>
 
       <dependency>
         <groupId>io.netty</groupId>
@@ -444,6 +439,16 @@
         <artifactId>bcprov-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcutil-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bctls-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.eclipse.milo</groupId>
@@ -481,6 +486,18 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
         <version>${mockito.version}</version>
+      </dependency>
+
+      <!-- OSGi Dependencies -->
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>osgi.core</artifactId>
+        <version>8.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.service.component.annotations</artifactId>
+        <version>1.5.1</version>
       </dependency>
 
       <!-- TODO: Eliminate the usage of AssertJ (OPM and OPC-UA Driver) -->
@@ -1033,12 +1050,9 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.15.0</version>
           <configuration>
-            <!--
-              Use the eclipse compiler instead of the normal jdk one, as we were seeing
-              problems on the CI server when compiling the BACnet java driver.
-            -->
-            <compilerId>eclipse</compilerId>
             <release>${java.version}</release>
+            <!-- Make sure the parameter names are available via reflection -->
+            <parameters>true</parameters>
           </configuration>
           <dependencies>
             <dependency>

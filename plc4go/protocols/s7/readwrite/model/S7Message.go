@@ -335,7 +335,7 @@ func CastS7Message(structType any) S7Message {
 	return nil
 }
 
-func (m *_S7Message) GetTypeName() string {
+func (m *_S7Message) GetPlx4xTypeName() string {
 	return "S7Message"
 }
 

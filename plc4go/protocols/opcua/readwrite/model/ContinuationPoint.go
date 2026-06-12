@@ -135,7 +135,7 @@ func CastContinuationPoint(structType any) ContinuationPoint {
 	return nil
 }
 
-func (m *_ContinuationPoint) GetTypeName() string {
+func (m *_ContinuationPoint) GetPlx4xTypeName() string {
 	return "ContinuationPoint"
 }
 

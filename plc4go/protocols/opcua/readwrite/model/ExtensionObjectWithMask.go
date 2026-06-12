@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -300,7 +301,7 @@ func CastExtensionObjectWithMask(structType any) ExtensionObjectWithMask {
 	return nil
 }
 
-func (m *_ExtensionObjectWithMask) GetTypeName() string {
+func (m *_ExtensionObjectWithMask) GetPlx4xTypeName() string {
 	return "ExtensionObjectWithMask"
 }
 
@@ -331,7 +332,7 @@ func (m *_ExtensionObjectWithMask) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	encodingMask, err := ReadSimpleField[ExtensionObjectEncodingMask](ctx, "encodingMask", ReadComplex[ExtensionObjectEncodingMask](ExtensionObjectEncodingMaskParseWithBuffer, readBuffer))
+	encodingMask, err := ReadSimpleField[ExtensionObjectEncodingMask](ctx, "encodingMask", ReadComplex[ExtensionObjectEncodingMask](ExtensionObjectEncodingMaskParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encodingMask' field"))
 	}
@@ -373,7 +374,7 @@ func (pm *_ExtensionObjectWithMask) serializeParent(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for ExtensionObjectWithMask")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectEncodingMask](ctx, "encodingMask", m.GetEncodingMask(), WriteComplex[ExtensionObjectEncodingMask](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ExtensionObjectEncodingMask](ctx, "encodingMask", m.GetEncodingMask(), WriteComplex[ExtensionObjectEncodingMask](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'encodingMask' field")
 		}
 

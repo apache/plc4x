@@ -184,7 +184,7 @@ func CastBACnetConstructedDataRequired(structType any) BACnetConstructedDataRequ
 	return nil
 }
 
-func (m *_BACnetConstructedDataRequired) GetTypeName() string {
+func (m *_BACnetConstructedDataRequired) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRequired"
 }
 

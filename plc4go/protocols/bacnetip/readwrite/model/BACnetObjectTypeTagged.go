@@ -224,7 +224,7 @@ func CastBACnetObjectTypeTagged(structType any) BACnetObjectTypeTagged {
 	return nil
 }
 
-func (m *_BACnetObjectTypeTagged) GetTypeName() string {
+func (m *_BACnetObjectTypeTagged) GetPlx4xTypeName() string {
 	return "BACnetObjectTypeTagged"
 }
 

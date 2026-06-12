@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAnalogValueMaxPresValue(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogValueMaxPresValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogValueMaxPresValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogValueMaxPresValue"
 }
 

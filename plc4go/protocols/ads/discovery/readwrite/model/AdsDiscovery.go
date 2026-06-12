@@ -253,7 +253,7 @@ func CastAdsDiscovery(structType any) AdsDiscovery {
 	return nil
 }
 
-func (m *_AdsDiscovery) GetTypeName() string {
+func (m *_AdsDiscovery) GetPlx4xTypeName() string {
 	return "AdsDiscovery"
 }
 
@@ -320,43 +320,43 @@ func (m *_AdsDiscovery) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	header, err := ReadConstField[uint32](ctx, "header", ReadUnsignedInt(readBuffer, uint8(32)), AdsDiscovery_HEADER, codegen.WithByteOrder(binary.LittleEndian))
+	header, err := ReadConstField[uint32](ctx, "header", ReadUnsignedInt(readBuffer, uint8(32)), AdsDiscovery_HEADER, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
 	_ = header
 
-	requestId, err := ReadSimpleField(ctx, "requestId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	requestId, err := ReadSimpleField(ctx, "requestId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestId' field"))
 	}
 	m.RequestId = requestId
 
-	operation, err := ReadEnumField[Operation](ctx, "operation", "Operation", ReadEnum(OperationByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithByteOrder(binary.LittleEndian))
+	operation, err := ReadEnumField[Operation](ctx, "operation", "Operation", ReadEnum(OperationByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operation' field"))
 	}
 	m.Operation = operation
 
-	amsNetId, err := ReadSimpleField[AmsNetId](ctx, "amsNetId", ReadComplex[AmsNetId](AmsNetIdParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	amsNetId, err := ReadSimpleField[AmsNetId](ctx, "amsNetId", ReadComplex[AmsNetId](AmsNetIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'amsNetId' field"))
 	}
 	m.AmsNetId = amsNetId
 
-	portNumber, err := ReadEnumField[AdsPortNumbers](ctx, "portNumber", "AdsPortNumbers", ReadEnum(AdsPortNumbersByValue, ReadUnsignedShort(readBuffer, uint8(16))), codegen.WithByteOrder(binary.LittleEndian))
+	portNumber, err := ReadEnumField[AdsPortNumbers](ctx, "portNumber", "AdsPortNumbers", ReadEnum(AdsPortNumbersByValue, ReadUnsignedShort(readBuffer, uint8(16))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portNumber' field"))
 	}
 	m.PortNumber = portNumber
 
-	numBlocks, err := ReadImplicitField[uint32](ctx, "numBlocks", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	numBlocks, err := ReadImplicitField[uint32](ctx, "numBlocks", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numBlocks' field"))
 	}
 	_ = numBlocks
 
-	blocks, err := ReadCountArrayField[AdsDiscoveryBlock](ctx, "blocks", ReadComplex[AdsDiscoveryBlock](AdsDiscoveryBlockParseWithBuffer, readBuffer), uint64(numBlocks), codegen.WithByteOrder(binary.LittleEndian))
+	blocks, err := ReadCountArrayField[AdsDiscoveryBlock](ctx, "blocks", ReadComplex[AdsDiscoveryBlock](AdsDiscoveryBlockParseWithBuffer, readBuffer), uint64(numBlocks), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blocks' field"))
 	}
@@ -386,31 +386,31 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for AdsDiscovery")
 	}
 
-	if err := WriteConstField(ctx, "header", AdsDiscovery_HEADER, WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteConstField(ctx, "header", AdsDiscovery_HEADER, WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	if err := WriteSimpleField[uint32](ctx, "requestId", m.GetRequestId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[uint32](ctx, "requestId", m.GetRequestId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'requestId' field")
 	}
 
-	if err := WriteSimpleEnumField[Operation](ctx, "operation", "Operation", m.GetOperation(), WriteEnum[Operation, uint32](Operation.GetValue, Operation.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleEnumField[Operation](ctx, "operation", "Operation", m.GetOperation(), WriteEnum[Operation, uint32](Operation.GetValue, Operation.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'operation' field")
 	}
 
-	if err := WriteSimpleField[AmsNetId](ctx, "amsNetId", m.GetAmsNetId(), WriteComplex[AmsNetId](writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleField[AmsNetId](ctx, "amsNetId", m.GetAmsNetId(), WriteComplex[AmsNetId](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'amsNetId' field")
 	}
 
-	if err := WriteSimpleEnumField[AdsPortNumbers](ctx, "portNumber", "AdsPortNumbers", m.GetPortNumber(), WriteEnum[AdsPortNumbers, uint16](AdsPortNumbers.GetValue, AdsPortNumbers.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16)), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteSimpleEnumField[AdsPortNumbers](ctx, "portNumber", "AdsPortNumbers", m.GetPortNumber(), WriteEnum[AdsPortNumbers, uint16](AdsPortNumbers.GetValue, AdsPortNumbers.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'portNumber' field")
 	}
 	numBlocks := uint32(uint32(len(m.GetBlocks())))
-	if err := WriteImplicitField(ctx, "numBlocks", numBlocks, WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "numBlocks", numBlocks, WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'numBlocks' field")
 	}
 
-	if err := WriteComplexTypeArrayField(ctx, "blocks", m.GetBlocks(), writeBuffer, codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+	if err := WriteComplexTypeArrayField(ctx, "blocks", m.GetBlocks(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'blocks' field")
 	}
 

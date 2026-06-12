@@ -207,7 +207,7 @@ func CastNLMWhoIsRouterToNetwork(structType any) NLMWhoIsRouterToNetwork {
 	return nil
 }
 
-func (m *_NLMWhoIsRouterToNetwork) GetTypeName() string {
+func (m *_NLMWhoIsRouterToNetwork) GetPlx4xTypeName() string {
 	return "NLMWhoIsRouterToNetwork"
 }
 

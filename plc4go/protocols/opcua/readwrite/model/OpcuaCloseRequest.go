@@ -262,7 +262,7 @@ func CastOpcuaCloseRequest(structType any) OpcuaCloseRequest {
 	return nil
 }
 
-func (m *_OpcuaCloseRequest) GetTypeName() string {
+func (m *_OpcuaCloseRequest) GetPlx4xTypeName() string {
 	return "OpcuaCloseRequest"
 }
 

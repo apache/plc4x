@@ -259,7 +259,7 @@ func CastNLMUpdateKeyUpdateControlFlags(structType any) NLMUpdateKeyUpdateContro
 	return nil
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlags) GetTypeName() string {
+func (m *_NLMUpdateKeyUpdateControlFlags) GetPlx4xTypeName() string {
 	return "NLMUpdateKeyUpdateControlFlags"
 }
 

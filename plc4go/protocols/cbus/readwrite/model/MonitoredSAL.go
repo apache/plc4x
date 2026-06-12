@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -241,7 +243,7 @@ func CastMonitoredSAL(structType any) MonitoredSAL {
 	return nil
 }
 
-func (m *_MonitoredSAL) GetTypeName() string {
+func (m *_MonitoredSAL) GetPlx4xTypeName() string {
 	return "MonitoredSAL"
 }
 
@@ -260,7 +262,7 @@ func (m *_MonitoredSAL) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func MonitoredSALParse[T MonitoredSAL](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
-	return MonitoredSALParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return MonitoredSALParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions)
 }
 
 func MonitoredSALParseWithBufferProducer[T MonitoredSAL](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -297,7 +299,7 @@ func (m *_MonitoredSAL) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	salType, err := ReadPeekField[byte](ctx, "salType", ReadByte(readBuffer, 8), 0)
+	salType, err := ReadPeekField[byte](ctx, "salType", ReadByte(readBuffer, 8), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salType' field"))
 	}

@@ -238,7 +238,7 @@ func CastBACnetApplicationTagUnsignedInteger(structType any) BACnetApplicationTa
 	return nil
 }
 
-func (m *_BACnetApplicationTagUnsignedInteger) GetTypeName() string {
+func (m *_BACnetApplicationTagUnsignedInteger) GetPlx4xTypeName() string {
 	return "BACnetApplicationTagUnsignedInteger"
 }
 

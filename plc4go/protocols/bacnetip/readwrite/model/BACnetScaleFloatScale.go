@@ -221,7 +221,7 @@ func CastBACnetScaleFloatScale(structType any) BACnetScaleFloatScale {
 	return nil
 }
 
-func (m *_BACnetScaleFloatScale) GetTypeName() string {
+func (m *_BACnetScaleFloatScale) GetPlx4xTypeName() string {
 	return "BACnetScaleFloatScale"
 }
 

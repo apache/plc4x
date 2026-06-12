@@ -246,7 +246,7 @@ func CastBACnetConstructedDataProtocolServicesSupported(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataProtocolServicesSupported) GetTypeName() string {
+func (m *_BACnetConstructedDataProtocolServicesSupported) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProtocolServicesSupported"
 }
 

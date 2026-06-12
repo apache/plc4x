@@ -203,7 +203,7 @@ func CastMeteringDataOtherWaterConsumption(structType any) MeteringDataOtherWate
 	return nil
 }
 
-func (m *_MeteringDataOtherWaterConsumption) GetTypeName() string {
+func (m *_MeteringDataOtherWaterConsumption) GetPlx4xTypeName() string {
 	return "MeteringDataOtherWaterConsumption"
 }
 

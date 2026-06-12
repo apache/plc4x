@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -241,7 +243,7 @@ func CastParameterValueSerialNumber(structType any) ParameterValueSerialNumber {
 	return nil
 }
 
-func (m *_ParameterValueSerialNumber) GetTypeName() string {
+func (m *_ParameterValueSerialNumber) GetPlx4xTypeName() string {
 	return "ParameterValueSerialNumber"
 }
 
@@ -279,13 +281,13 @@ func (m *_ParameterValueSerialNumber) parse(ctx context.Context, readBuffer util
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "SerialNumber has exactly four bytes"})
 	}
 
-	value, err := ReadSimpleField[SerialNumber](ctx, "value", ReadComplex[SerialNumber](SerialNumberParseWithBuffer, readBuffer))
+	value, err := ReadSimpleField[SerialNumber](ctx, "value", ReadComplex[SerialNumber](SerialNumberParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 	m.Value = value
 
-	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(4))))
+	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(4))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
@@ -299,7 +301,7 @@ func (m *_ParameterValueSerialNumber) parse(ctx context.Context, readBuffer util
 }
 
 func (m *_ParameterValueSerialNumber) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -316,11 +318,11 @@ func (m *_ParameterValueSerialNumber) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueSerialNumber")
 		}
 
-		if err := WriteSimpleField[SerialNumber](ctx, "value", m.GetValue(), WriteComplex[SerialNumber](writeBuffer)); err != nil {
+		if err := WriteSimpleField[SerialNumber](ctx, "value", m.GetValue(), WriteComplex[SerialNumber](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
-		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

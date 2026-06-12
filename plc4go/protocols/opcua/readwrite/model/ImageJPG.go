@@ -135,7 +135,7 @@ func CastImageJPG(structType any) ImageJPG {
 	return nil
 }
 
-func (m *_ImageJPG) GetTypeName() string {
+func (m *_ImageJPG) GetPlx4xTypeName() string {
 	return "ImageJPG"
 }
 

@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -161,7 +163,7 @@ func CastChecksum(structType any) Checksum {
 	return nil
 }
 
-func (m *_Checksum) GetTypeName() string {
+func (m *_Checksum) GetPlx4xTypeName() string {
 	return "Checksum"
 }
 
@@ -179,7 +181,7 @@ func (m *_Checksum) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func ChecksumParse(ctx context.Context, theBytes []byte) (Checksum, error) {
-	return ChecksumParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+	return ChecksumParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func ChecksumParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Checksum, error) {
@@ -205,7 +207,7 @@ func (m *_Checksum) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__c
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	value, err := ReadSimpleField(ctx, "value", ReadByte(readBuffer, 8))
+	value, err := ReadSimpleField(ctx, "value", ReadByte(readBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -219,7 +221,7 @@ func (m *_Checksum) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__c
 }
 
 func (m *_Checksum) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -235,7 +237,7 @@ func (m *_Checksum) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for Checksum")
 	}
 
-	if err := WriteSimpleField[byte](ctx, "value", m.GetValue(), WriteByte(writeBuffer, 8)); err != nil {
+	if err := WriteSimpleField[byte](ctx, "value", m.GetValue(), WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 

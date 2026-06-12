@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -344,7 +345,7 @@ func CastPubSubConfiguration2DataType(structType any) PubSubConfiguration2DataTy
 	return nil
 }
 
-func (m *_PubSubConfiguration2DataType) GetTypeName() string {
+func (m *_PubSubConfiguration2DataType) GetPlx4xTypeName() string {
 	return "PubSubConfiguration2DataType"
 }
 
@@ -466,115 +467,115 @@ func (m *_PubSubConfiguration2DataType) parse(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfPublishedDataSets, err := ReadImplicitField[int32](ctx, "noOfPublishedDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfPublishedDataSets, err := ReadImplicitField[int32](ctx, "noOfPublishedDataSets", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPublishedDataSets' field"))
 	}
 	_ = noOfPublishedDataSets
 
-	publishedDataSets, err := ReadCountArrayField[PublishedDataSetDataType](ctx, "publishedDataSets", ReadComplex[PublishedDataSetDataType](ExtensionObjectDefinitionParseWithBufferProducer[PublishedDataSetDataType]((int32)(int32(15580))), readBuffer), uint64(noOfPublishedDataSets))
+	publishedDataSets, err := ReadCountArrayField[PublishedDataSetDataType](ctx, "publishedDataSets", ReadComplex[PublishedDataSetDataType](ExtensionObjectDefinitionParseWithBufferProducer[PublishedDataSetDataType]((int32)(int32(15580))), readBuffer), uint64(noOfPublishedDataSets), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishedDataSets' field"))
 	}
 	m.PublishedDataSets = publishedDataSets
 
-	noOfConnections, err := ReadImplicitField[int32](ctx, "noOfConnections", ReadSignedInt(readBuffer, uint8(32)))
+	noOfConnections, err := ReadImplicitField[int32](ctx, "noOfConnections", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConnections' field"))
 	}
 	_ = noOfConnections
 
-	connections, err := ReadCountArrayField[PubSubConnectionDataType](ctx, "connections", ReadComplex[PubSubConnectionDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubConnectionDataType]((int32)(int32(15619))), readBuffer), uint64(noOfConnections))
+	connections, err := ReadCountArrayField[PubSubConnectionDataType](ctx, "connections", ReadComplex[PubSubConnectionDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubConnectionDataType]((int32)(int32(15619))), readBuffer), uint64(noOfConnections), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connections' field"))
 	}
 	m.Connections = connections
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	enabled, err := ReadSimpleField(ctx, "enabled", ReadBoolean(readBuffer))
+	enabled, err := ReadSimpleField(ctx, "enabled", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enabled' field"))
 	}
 	m.Enabled = enabled
 
-	noOfSubscribedDataSets, err := ReadImplicitField[int32](ctx, "noOfSubscribedDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSubscribedDataSets, err := ReadImplicitField[int32](ctx, "noOfSubscribedDataSets", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSubscribedDataSets' field"))
 	}
 	_ = noOfSubscribedDataSets
 
-	subscribedDataSets, err := ReadCountArrayField[StandaloneSubscribedDataSetDataType](ctx, "subscribedDataSets", ReadComplex[StandaloneSubscribedDataSetDataType](ExtensionObjectDefinitionParseWithBufferProducer[StandaloneSubscribedDataSetDataType]((int32)(int32(23602))), readBuffer), uint64(noOfSubscribedDataSets))
+	subscribedDataSets, err := ReadCountArrayField[StandaloneSubscribedDataSetDataType](ctx, "subscribedDataSets", ReadComplex[StandaloneSubscribedDataSetDataType](ExtensionObjectDefinitionParseWithBufferProducer[StandaloneSubscribedDataSetDataType]((int32)(int32(23602))), readBuffer), uint64(noOfSubscribedDataSets), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscribedDataSets' field"))
 	}
 	m.SubscribedDataSets = subscribedDataSets
 
-	noOfDataSetClasses, err := ReadImplicitField[int32](ctx, "noOfDataSetClasses", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDataSetClasses, err := ReadImplicitField[int32](ctx, "noOfDataSetClasses", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataSetClasses' field"))
 	}
 	_ = noOfDataSetClasses
 
-	dataSetClasses, err := ReadCountArrayField[DataSetMetaDataType](ctx, "dataSetClasses", ReadComplex[DataSetMetaDataType](ExtensionObjectDefinitionParseWithBufferProducer[DataSetMetaDataType]((int32)(int32(14525))), readBuffer), uint64(noOfDataSetClasses))
+	dataSetClasses, err := ReadCountArrayField[DataSetMetaDataType](ctx, "dataSetClasses", ReadComplex[DataSetMetaDataType](ExtensionObjectDefinitionParseWithBufferProducer[DataSetMetaDataType]((int32)(int32(14525))), readBuffer), uint64(noOfDataSetClasses), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetClasses' field"))
 	}
 	m.DataSetClasses = dataSetClasses
 
-	noOfDefaultSecurityKeyServices, err := ReadImplicitField[int32](ctx, "noOfDefaultSecurityKeyServices", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDefaultSecurityKeyServices, err := ReadImplicitField[int32](ctx, "noOfDefaultSecurityKeyServices", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDefaultSecurityKeyServices' field"))
 	}
 	_ = noOfDefaultSecurityKeyServices
 
-	defaultSecurityKeyServices, err := ReadCountArrayField[EndpointDescription](ctx, "defaultSecurityKeyServices", ReadComplex[EndpointDescription](ExtensionObjectDefinitionParseWithBufferProducer[EndpointDescription]((int32)(int32(314))), readBuffer), uint64(noOfDefaultSecurityKeyServices))
+	defaultSecurityKeyServices, err := ReadCountArrayField[EndpointDescription](ctx, "defaultSecurityKeyServices", ReadComplex[EndpointDescription](ExtensionObjectDefinitionParseWithBufferProducer[EndpointDescription]((int32)(int32(314))), readBuffer), uint64(noOfDefaultSecurityKeyServices), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultSecurityKeyServices' field"))
 	}
 	m.DefaultSecurityKeyServices = defaultSecurityKeyServices
 
-	noOfSecurityGroups, err := ReadImplicitField[int32](ctx, "noOfSecurityGroups", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSecurityGroups, err := ReadImplicitField[int32](ctx, "noOfSecurityGroups", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecurityGroups' field"))
 	}
 	_ = noOfSecurityGroups
 
-	securityGroups, err := ReadCountArrayField[SecurityGroupDataType](ctx, "securityGroups", ReadComplex[SecurityGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[SecurityGroupDataType]((int32)(int32(23603))), readBuffer), uint64(noOfSecurityGroups))
+	securityGroups, err := ReadCountArrayField[SecurityGroupDataType](ctx, "securityGroups", ReadComplex[SecurityGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[SecurityGroupDataType]((int32)(int32(23603))), readBuffer), uint64(noOfSecurityGroups), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityGroups' field"))
 	}
 	m.SecurityGroups = securityGroups
 
-	noOfPubSubKeyPushTargets, err := ReadImplicitField[int32](ctx, "noOfPubSubKeyPushTargets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfPubSubKeyPushTargets, err := ReadImplicitField[int32](ctx, "noOfPubSubKeyPushTargets", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPubSubKeyPushTargets' field"))
 	}
 	_ = noOfPubSubKeyPushTargets
 
-	pubSubKeyPushTargets, err := ReadCountArrayField[PubSubKeyPushTargetDataType](ctx, "pubSubKeyPushTargets", ReadComplex[PubSubKeyPushTargetDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubKeyPushTargetDataType]((int32)(int32(25272))), readBuffer), uint64(noOfPubSubKeyPushTargets))
+	pubSubKeyPushTargets, err := ReadCountArrayField[PubSubKeyPushTargetDataType](ctx, "pubSubKeyPushTargets", ReadComplex[PubSubKeyPushTargetDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubKeyPushTargetDataType]((int32)(int32(25272))), readBuffer), uint64(noOfPubSubKeyPushTargets), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pubSubKeyPushTargets' field"))
 	}
 	m.PubSubKeyPushTargets = pubSubKeyPushTargets
 
-	configurationVersion, err := ReadSimpleField(ctx, "configurationVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	configurationVersion, err := ReadSimpleField(ctx, "configurationVersion", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configurationVersion' field"))
 	}
 	m.ConfigurationVersion = configurationVersion
 
-	noOfConfigurationProperties, err := ReadImplicitField[int32](ctx, "noOfConfigurationProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfConfigurationProperties, err := ReadImplicitField[int32](ctx, "noOfConfigurationProperties", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConfigurationProperties' field"))
 	}
 	_ = noOfConfigurationProperties
 
-	configurationProperties, err := ReadCountArrayField[KeyValuePair](ctx, "configurationProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfConfigurationProperties))
+	configurationProperties, err := ReadCountArrayField[KeyValuePair](ctx, "configurationProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfConfigurationProperties), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configurationProperties' field"))
 	}
@@ -605,79 +606,79 @@ func (m *_PubSubConfiguration2DataType) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for PubSubConfiguration2DataType")
 		}
 		noOfPublishedDataSets := int32(utils.InlineIf(bool((m.GetPublishedDataSets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetPublishedDataSets()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfPublishedDataSets", noOfPublishedDataSets, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfPublishedDataSets", noOfPublishedDataSets, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfPublishedDataSets' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "publishedDataSets", m.GetPublishedDataSets(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "publishedDataSets", m.GetPublishedDataSets(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishedDataSets' field")
 		}
 		noOfConnections := int32(utils.InlineIf(bool((m.GetConnections()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetConnections()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfConnections", noOfConnections, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfConnections", noOfConnections, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfConnections' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "connections", m.GetConnections(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "connections", m.GetConnections(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'connections' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "enabled", m.GetEnabled(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "enabled", m.GetEnabled(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'enabled' field")
 		}
 		noOfSubscribedDataSets := int32(utils.InlineIf(bool((m.GetSubscribedDataSets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSubscribedDataSets()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSubscribedDataSets", noOfSubscribedDataSets, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSubscribedDataSets", noOfSubscribedDataSets, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSubscribedDataSets' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "subscribedDataSets", m.GetSubscribedDataSets(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "subscribedDataSets", m.GetSubscribedDataSets(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'subscribedDataSets' field")
 		}
 		noOfDataSetClasses := int32(utils.InlineIf(bool((m.GetDataSetClasses()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDataSetClasses()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfDataSetClasses", noOfDataSetClasses, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfDataSetClasses", noOfDataSetClasses, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDataSetClasses' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "dataSetClasses", m.GetDataSetClasses(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "dataSetClasses", m.GetDataSetClasses(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetClasses' field")
 		}
 		noOfDefaultSecurityKeyServices := int32(utils.InlineIf(bool((m.GetDefaultSecurityKeyServices()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDefaultSecurityKeyServices()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfDefaultSecurityKeyServices", noOfDefaultSecurityKeyServices, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfDefaultSecurityKeyServices", noOfDefaultSecurityKeyServices, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDefaultSecurityKeyServices' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "defaultSecurityKeyServices", m.GetDefaultSecurityKeyServices(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "defaultSecurityKeyServices", m.GetDefaultSecurityKeyServices(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'defaultSecurityKeyServices' field")
 		}
 		noOfSecurityGroups := int32(utils.InlineIf(bool((m.GetSecurityGroups()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSecurityGroups()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSecurityGroups", noOfSecurityGroups, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSecurityGroups", noOfSecurityGroups, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSecurityGroups' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "securityGroups", m.GetSecurityGroups(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "securityGroups", m.GetSecurityGroups(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityGroups' field")
 		}
 		noOfPubSubKeyPushTargets := int32(utils.InlineIf(bool((m.GetPubSubKeyPushTargets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetPubSubKeyPushTargets()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfPubSubKeyPushTargets", noOfPubSubKeyPushTargets, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfPubSubKeyPushTargets", noOfPubSubKeyPushTargets, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfPubSubKeyPushTargets' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "pubSubKeyPushTargets", m.GetPubSubKeyPushTargets(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "pubSubKeyPushTargets", m.GetPubSubKeyPushTargets(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'pubSubKeyPushTargets' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "configurationVersion", m.GetConfigurationVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "configurationVersion", m.GetConfigurationVersion(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'configurationVersion' field")
 		}
 		noOfConfigurationProperties := int32(utils.InlineIf(bool((m.GetConfigurationProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetConfigurationProperties()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfConfigurationProperties", noOfConfigurationProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfConfigurationProperties", noOfConfigurationProperties, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfConfigurationProperties' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "configurationProperties", m.GetConfigurationProperties(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "configurationProperties", m.GetConfigurationProperties(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'configurationProperties' field")
 		}
 

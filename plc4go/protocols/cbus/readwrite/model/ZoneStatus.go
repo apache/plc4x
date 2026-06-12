@@ -161,7 +161,7 @@ func CastZoneStatus(structType any) ZoneStatus {
 	return nil
 }
 
-func (m *_ZoneStatus) GetTypeName() string {
+func (m *_ZoneStatus) GetPlx4xTypeName() string {
 	return "ZoneStatus"
 }
 

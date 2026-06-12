@@ -184,7 +184,7 @@ func CastSysexCommandCapabilityQuery(structType any) SysexCommandCapabilityQuery
 	return nil
 }
 
-func (m *_SysexCommandCapabilityQuery) GetTypeName() string {
+func (m *_SysexCommandCapabilityQuery) GetPlx4xTypeName() string {
 	return "SysexCommandCapabilityQuery"
 }
 

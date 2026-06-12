@@ -313,7 +313,7 @@ func CastLDataFrame(structType any) LDataFrame {
 	return nil
 }
 
-func (m *_LDataFrame) GetTypeName() string {
+func (m *_LDataFrame) GetPlx4xTypeName() string {
 	return "LDataFrame"
 }
 

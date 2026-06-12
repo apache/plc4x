@@ -246,7 +246,7 @@ func CastBACnetConstructedDataEgressActive(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataEgressActive) GetTypeName() string {
+func (m *_BACnetConstructedDataEgressActive) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEgressActive"
 }
 

@@ -258,7 +258,7 @@ func CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType any) B
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestUTCTimeSynchronization"
 }
 

@@ -193,7 +193,7 @@ func CastBACnetActionTagged(structType any) BACnetActionTagged {
 	return nil
 }
 
-func (m *_BACnetActionTagged) GetTypeName() string {
+func (m *_BACnetActionTagged) GetPlx4xTypeName() string {
 	return "BACnetActionTagged"
 }
 

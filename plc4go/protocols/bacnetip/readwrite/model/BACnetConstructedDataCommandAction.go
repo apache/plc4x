@@ -258,7 +258,7 @@ func CastBACnetConstructedDataCommandAction(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataCommandAction) GetTypeName() string {
+func (m *_BACnetConstructedDataCommandAction) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCommandAction"
 }
 

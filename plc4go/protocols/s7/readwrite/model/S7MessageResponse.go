@@ -222,7 +222,7 @@ func CastS7MessageResponse(structType any) S7MessageResponse {
 	return nil
 }
 
-func (m *_S7MessageResponse) GetTypeName() string {
+func (m *_S7MessageResponse) GetPlx4xTypeName() string {
 	return "S7MessageResponse"
 }
 

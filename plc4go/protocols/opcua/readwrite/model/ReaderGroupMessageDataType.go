@@ -180,7 +180,7 @@ func CastReaderGroupMessageDataType(structType any) ReaderGroupMessageDataType {
 	return nil
 }
 
-func (m *_ReaderGroupMessageDataType) GetTypeName() string {
+func (m *_ReaderGroupMessageDataType) GetPlx4xTypeName() string {
 	return "ReaderGroupMessageDataType"
 }
 

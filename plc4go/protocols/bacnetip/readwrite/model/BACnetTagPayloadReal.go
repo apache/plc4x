@@ -161,7 +161,7 @@ func CastBACnetTagPayloadReal(structType any) BACnetTagPayloadReal {
 	return nil
 }
 
-func (m *_BACnetTagPayloadReal) GetTypeName() string {
+func (m *_BACnetTagPayloadReal) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadReal"
 }
 

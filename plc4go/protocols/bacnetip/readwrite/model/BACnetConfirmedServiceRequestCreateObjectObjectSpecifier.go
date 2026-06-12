@@ -308,7 +308,7 @@ func CastBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(structType any
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestCreateObjectObjectSpecifier"
 }
 

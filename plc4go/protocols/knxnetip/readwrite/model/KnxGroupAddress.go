@@ -227,7 +227,7 @@ func CastKnxGroupAddress(structType any) KnxGroupAddress {
 	return nil
 }
 
-func (m *_KnxGroupAddress) GetTypeName() string {
+func (m *_KnxGroupAddress) GetPlx4xTypeName() string {
 	return "KnxGroupAddress"
 }
 

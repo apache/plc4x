@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -225,7 +227,7 @@ func CastSALDataEnableControl(structType any) SALDataEnableControl {
 	return nil
 }
 
-func (m *_SALDataEnableControl) GetTypeName() string {
+func (m *_SALDataEnableControl) GetPlx4xTypeName() string {
 	return "SALDataEnableControl"
 }
 
@@ -253,7 +255,7 @@ func (m *_SALDataEnableControl) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	enableControlData, err := ReadSimpleField[EnableControlData](ctx, "enableControlData", ReadComplex[EnableControlData](EnableControlDataParseWithBuffer, readBuffer))
+	enableControlData, err := ReadSimpleField[EnableControlData](ctx, "enableControlData", ReadComplex[EnableControlData](EnableControlDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enableControlData' field"))
 	}
@@ -267,7 +269,7 @@ func (m *_SALDataEnableControl) parse(ctx context.Context, readBuffer utils.Read
 }
 
 func (m *_SALDataEnableControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -284,7 +286,7 @@ func (m *_SALDataEnableControl) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SALDataEnableControl")
 		}
 
-		if err := WriteSimpleField[EnableControlData](ctx, "enableControlData", m.GetEnableControlData(), WriteComplex[EnableControlData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[EnableControlData](ctx, "enableControlData", m.GetEnableControlData(), WriteComplex[EnableControlData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'enableControlData' field")
 		}
 

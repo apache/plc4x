@@ -177,7 +177,7 @@ func CastXmlElement(structType any) XmlElement {
 	return nil
 }
 
-func (m *_XmlElement) GetTypeName() string {
+func (m *_XmlElement) GetPlx4xTypeName() string {
 	return "XmlElement"
 }
 

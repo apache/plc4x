@@ -222,7 +222,7 @@ func CastFirmataCommandSetPinMode(structType any) FirmataCommandSetPinMode {
 	return nil
 }
 
-func (m *_FirmataCommandSetPinMode) GetTypeName() string {
+func (m *_FirmataCommandSetPinMode) GetPlx4xTypeName() string {
 	return "FirmataCommandSetPinMode"
 }
 

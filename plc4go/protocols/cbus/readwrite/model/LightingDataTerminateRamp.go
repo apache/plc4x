@@ -203,7 +203,7 @@ func CastLightingDataTerminateRamp(structType any) LightingDataTerminateRamp {
 	return nil
 }
 
-func (m *_LightingDataTerminateRamp) GetTypeName() string {
+func (m *_LightingDataTerminateRamp) GetPlx4xTypeName() string {
 	return "LightingDataTerminateRamp"
 }
 

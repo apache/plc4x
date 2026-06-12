@@ -224,7 +224,7 @@ func CastBACnetPropertyIdentifierTagged(structType any) BACnetPropertyIdentifier
 	return nil
 }
 
-func (m *_BACnetPropertyIdentifierTagged) GetTypeName() string {
+func (m *_BACnetPropertyIdentifierTagged) GetPlx4xTypeName() string {
 	return "BACnetPropertyIdentifierTagged"
 }
 

@@ -35,6 +35,9 @@
 |Default Transport 4+|`tcp`
 |Supported Transports 4+|
  - `tcp`
+ - `tls`
+ - `tls-psk`
+ - `udp`
 5+|Config options:
 |`request-timeout` |INT |5000| |Default timeout for all types of requests.
 |`default-unit-identifier` |INT |1| |Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
@@ -56,7 +59,63 @@ Allowed values are:  +
 +++
 <h4>tcp</h4>
 +++
-|`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
-|`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
-|`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.
+|`tcp.connect-timeout` |INT |5000| |
+|`tcp.read-timeout` |INT |0| |
+|`tcp.write-timeout` |INT |0| |
+|`tcp.tcp-no-delay` |BOOLEAN |true| |
+|`tcp.keep-alive` |BOOLEAN |false| |
+|`tcp.send-buffer-size` |INT |81920| |
+|`tcp.receive-buffer-size` |INT |81920| |
+|`tcp.local-address` |STRING | | |
+|`tcp.local-port` |INT |0| |
+5+|
++++
+<h4>tls</h4>
++++
+|`tls.verify-ssl` |BOOLEAN |true| |
+|`tls.ignore-common-name` |BOOLEAN |false| |Tells the target to not validate the common name
+|`tls.tls-version` |STRING | | |TLS protocol version (e.g., 'TLSv1.2', 'TLSv1.3'). If not set, uses TLS 1.3 with fallback to TLS 1.2.
+|`tls.keystore` |STRING | | |Path to keystore (PKCS12/JKS) containing the client certificate and private key for mutual TLS.
+|`tls.keystore-password` |STRING | | |Password for the client keystore.
+|`tls.keystore-type` |STRING | | |Keystore type (e.g., 'PKCS12', 'JKS'). Defaults to PKCS12.
+|`tls.log-session-keys` |BOOLEAN |false| |Log TLS session keys to the audit log in SSLKEYLOGFILE format for Wireshark decryption.
+|`tls.connect-timeout` |INT |5000| |
+|`tls.read-timeout` |INT |0| |
+|`tls.write-timeout` |INT |0| |
+|`tls.tcp-no-delay` |BOOLEAN |true| |
+|`tls.keep-alive` |BOOLEAN |false| |
+|`tls.send-buffer-size` |INT |81920| |
+|`tls.receive-buffer-size` |INT |81920| |
+|`tls.local-address` |STRING | | |
+|`tls.local-port` |INT |0| |
+5+|
++++
+<h4>tls-psk</h4>
++++
+|`tls-psk.psk-identity` |STRING | | |PSK identity string for TLS-PSK authentication. Must be used together with psk-key.
+|`tls-psk.psk-key` |STRING | | |PSK key as hexadecimal string for TLS-PSK authentication. Must be used together with psk-identity.
+|`tls-psk.log-session-keys` |BOOLEAN |false| |Log TLS session keys to the audit log in SSLKEYLOGFILE format for Wireshark decryption.
+|`tls-psk.connect-timeout` |INT |5000| |
+|`tls-psk.read-timeout` |INT |0| |
+|`tls-psk.write-timeout` |INT |0| |
+|`tls-psk.tcp-no-delay` |BOOLEAN |true| |
+|`tls-psk.keep-alive` |BOOLEAN |false| |
+|`tls-psk.send-buffer-size` |INT |81920| |
+|`tls-psk.receive-buffer-size` |INT |81920| |
+|`tls-psk.local-address` |STRING | | |
+|`tls-psk.local-port` |INT |0| |
+5+|
++++
+<h4>udp</h4>
++++
+|`udp.local-address` |STRING | | |Local address to bind to. If not set, binds to all interfaces.
+|`udp.local-port` |INT |0| |Local port to bind to. 0 uses ephemeral port.
+|`udp.read-timeout` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
+|`udp.max-packet-size` |INT |65507| |Maximum UDP packet size in bytes.
+|`udp.send-buffer-size` |INT |0| |Send buffer size in bytes. 0 uses system default.
+|`udp.receive-buffer-size` |INT |0| |Receive buffer size in bytes. 0 uses system default.
+|`udp.broadcast` |BOOLEAN |false| |Enable SO_BROADCAST for sending broadcast packets.
+|`udp.reuse-address` |BOOLEAN |false| |Enable SO_REUSEADDR to allow multiple bindings to the same address/port.
+|`udp.share-socket` |BOOLEAN |false| |Share the underlying UDP socket across multiple transport instances. When true, instances with the same localAddress:localPort will share a socket. This is useful for protocols where multiple logical connections share one UDP port.
+|`udp.multicast-ttl` |INT |1| |Time-to-live for multicast packets (1-255).
 |===

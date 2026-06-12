@@ -20,7 +20,7 @@ package org.apache.plc4x.java.modbus.base.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
-import org.apache.plc4x.java.spi.tag.TagConfigParser;
+import org.apache.plc4x.java.spi.drivers.tags.TagConfigParser;
 
 import java.util.Map;
 import java.util.regex.Matcher;

@@ -39,16 +39,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.tag.TagConfigParser;
-import org.apache.plc4x.java.spi.utils.Serializable;
+public class OpcuaTag implements PlcSubscriptionTag {
 
-public class OpcuaTag implements PlcSubscriptionTag, Serializable {
-
+    // Inline tag-config pattern that the old SPI's {@code TagConfigParser} used
+    // to append; kept here so the address-string syntax stays compatible.
+    private static final String TAG_CONFIG_PATTERN = "(\\|(?<config>(?:(?:[a-zA-Z\\-_]+=[a-zA-Z0-9\\-_]+)(?:,(?:[a-zA-Z\\-_]+=[a-zA-Z0-9\\-_]+))*)))?";
     private static final String OPC_UTA_TAG_ADDRESS = "^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=(?<identifier>[^;]+)?(;a=(?<attributeId>[^;]+))?(;(?<datatype>[a-zA-Z_]+))?";
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile(OPC_UTA_TAG_ADDRESS + TagConfigParser.TAG_CONFIG_PATTERN + "$");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile(OPC_UTA_TAG_ADDRESS + TAG_CONFIG_PATTERN + "$");
 
     private final OpcuaIdentifierType identifierType;
 
@@ -102,7 +99,22 @@ public class OpcuaTag implements PlcSubscriptionTag, Serializable {
                 attributeId = AttributeId.valueOf(attributeElement);
             }
         }
-        return new OpcuaTag(namespace, identifier, identifierType, attributeId, dataType, TagConfigParser.parse(address));
+        return new OpcuaTag(namespace, identifier, identifierType, attributeId, dataType, parseConfig(matcher.group("config")));
+    }
+
+    /** Parses the tag's config tail ({@code |k=v,k=v}) into a map. */
+    private static Map<String, String> parseConfig(String config) {
+        if (config == null || config.isEmpty()) {
+            return java.util.Collections.emptyMap();
+        }
+        Map<String, String> result = new java.util.HashMap<>();
+        for (String entry : config.split(",")) {
+            int eq = entry.indexOf('=');
+            if (eq > 0) {
+                result.put(entry.substring(0, eq), entry.substring(eq + 1));
+            }
+        }
+        return result;
     }
 
     @Override
@@ -200,30 +212,6 @@ public class OpcuaTag implements PlcSubscriptionTag, Serializable {
     @Override
     public Optional<Duration> getDuration() {
         return Optional.empty();
-    }
-
-    @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
-        String nodeId = String.format("ns=%d;%s=%s", namespace, identifierType.getValue(), identifier);
-        writeBuffer.writeString("nodeId", nodeId.length() * 8, nodeId);
-        writeBuffer.writeString("attributeId", attributeId.name().length() * 8, attributeId.name());
-        if (dataType != null) {
-            String dataType = getDataType().name();
-            writeBuffer.writeString("dataType", dataType.length() * 8, dataType);
-        }
-
-        if (!config.isEmpty()) {
-            writeBuffer.pushContext("config");
-            for (Entry<String, String> entry : config.entrySet()) {
-                writeBuffer.pushContext("entry");
-                writeBuffer.writeString("key", entry.getKey().length() * 8, entry.getKey());
-                writeBuffer.writeString("value", entry.getValue().length() * 8, entry.getValue());
-                writeBuffer.popContext("entry");
-            }
-            writeBuffer.popContext("config");
-        }
-        writeBuffer.popContext(getClass().getSimpleName());
     }
 
 }

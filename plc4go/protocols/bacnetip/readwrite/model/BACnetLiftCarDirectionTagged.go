@@ -224,7 +224,7 @@ func CastBACnetLiftCarDirectionTagged(structType any) BACnetLiftCarDirectionTagg
 	return nil
 }
 
-func (m *_BACnetLiftCarDirectionTagged) GetTypeName() string {
+func (m *_BACnetLiftCarDirectionTagged) GetPlx4xTypeName() string {
 	return "BACnetLiftCarDirectionTagged"
 }
 

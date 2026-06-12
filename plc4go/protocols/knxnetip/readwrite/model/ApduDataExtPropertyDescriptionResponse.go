@@ -315,7 +315,7 @@ func CastApduDataExtPropertyDescriptionResponse(structType any) ApduDataExtPrope
 	return nil
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponse) GetTypeName() string {
+func (m *_ApduDataExtPropertyDescriptionResponse) GetPlx4xTypeName() string {
 	return "ApduDataExtPropertyDescriptionResponse"
 }
 

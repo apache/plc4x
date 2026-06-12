@@ -210,7 +210,7 @@ func CastSecurityArmCode(structType any) SecurityArmCode {
 	return nil
 }
 
-func (m *_SecurityArmCode) GetTypeName() string {
+func (m *_SecurityArmCode) GetPlx4xTypeName() string {
 	return "SecurityArmCode"
 }
 

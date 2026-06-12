@@ -246,7 +246,7 @@ func CastBACnetConstructedDataBitMask(structType any) BACnetConstructedDataBitMa
 	return nil
 }
 
-func (m *_BACnetConstructedDataBitMask) GetTypeName() string {
+func (m *_BACnetConstructedDataBitMask) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBitMask"
 }
 

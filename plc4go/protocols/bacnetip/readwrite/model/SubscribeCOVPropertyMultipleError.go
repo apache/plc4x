@@ -258,7 +258,7 @@ func CastSubscribeCOVPropertyMultipleError(structType any) SubscribeCOVPropertyM
 	return nil
 }
 
-func (m *_SubscribeCOVPropertyMultipleError) GetTypeName() string {
+func (m *_SubscribeCOVPropertyMultipleError) GetPlx4xTypeName() string {
 	return "SubscribeCOVPropertyMultipleError"
 }
 

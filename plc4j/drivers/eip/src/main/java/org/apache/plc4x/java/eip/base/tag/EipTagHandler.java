@@ -22,7 +22,7 @@ package org.apache.plc4x.java.eip.base.tag;
 
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 
 public class EipTagHandler implements PlcTagHandler {
 

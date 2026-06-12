@@ -246,7 +246,7 @@ func CastBACnetConstructedDataExtendedTimeEnable(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataExtendedTimeEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExtendedTimeEnable"
 }
 

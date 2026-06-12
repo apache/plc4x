@@ -30,22 +30,20 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.metadata.Metadata;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
-import org.apache.plc4x.java.spi.metadata.DefaultMetadata;
+import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.opcua.OpcuaConnection;
 import org.apache.plc4x.java.opcua.context.Conversation;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.opcua.readwrite.*;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
-import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
-import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
-import org.apache.plc4x.java.spi.transaction.RequestTransactionManager.RequestTransaction;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionTag;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.slf4j.Logger;
@@ -58,7 +56,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
-public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
+public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
 
     private final static ScheduledExecutorService EXECUTOR = newSingleThreadScheduledExecutor(runnable -> new Thread(runnable, "plc4x-opcua-subscription-scheduler"));
 
@@ -68,21 +66,18 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     private final List<String> tagNames;
     private final Conversation conversation;
     private final PlcSubscriptionRequest subscriptionRequest;
-    private final OpcuaProtocolLogic plcSubscriber;
+    private final OpcuaConnection plcSubscriber;
     private final Long subscriptionId;
     private final long cycleTime;
     private final long revisedCycleTime;
 
     private final AtomicLong clientHandles = new AtomicLong(1L);
-    private final RequestTransactionManager tm;
 
     private final List<SubscriptionAcknowledgement> outstandingAcknowledgements = new CopyOnWriteArrayList<>();
     private ScheduledFuture<?> publishTask;
 
-    public OpcuaSubscriptionHandle(OpcuaProtocolLogic plcSubscriber, RequestTransactionManager tm,
+    public OpcuaSubscriptionHandle(OpcuaConnection plcSubscriber,
         Conversation conversation, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime) {
-        super(plcSubscriber);
-        this.tm = tm;
         this.consumers = new HashSet<>();
         this.tagConsumers = new HashMap<>();
         this.subscriptionRequest = subscriptionRequest;
@@ -100,16 +95,16 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
 
             OpcuaTag opcTag = (OpcuaTag) tagDefaultPlcSubscription.getTag();
-            NodeId idNode = OpcuaProtocolLogic.generateNodeId(opcTag);
+            NodeId idNode = OpcuaConnection.generateNodeId(opcTag);
 
             ReadValueId readValueId = new ReadValueId(
                 idNode,
                 opcTag.getAttributeId().getValue(),
-                OpcuaProtocolLogic.NULL_STRING,
-                new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
+                OpcuaConnection.NULL_STRING,
+                new QualifiedName(0, OpcuaConnection.NULL_STRING));
 
             MonitoringMode monitoringMode = MonitoringMode.monitoringModeReporting;
-            ExtensionObject eventFilter = OpcuaProtocolLogic.NULL_EXTENSION_OBJECT;
+            ExtensionObject eventFilter = OpcuaConnection.NULL_EXTENSION_OBJECT;
             if (tagDefaultPlcSubscription.getPlcSubscriptionType() == PlcSubscriptionType.EVENT) {
                 NodeId nodeId = new NodeId(new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObjectType.BaseEventType.getValue()));
                 List<SimpleAttributeOperand> filterOperand = new ArrayList<>();
@@ -118,7 +113,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     filterOperand.add(new SimpleAttributeOperand(nodeId,
                         List.of(new QualifiedName(0, new PascalString(entry.getKey()))),
                         AttributeId.Value.getValue(),
-                        OpcuaProtocolLogic.NULL_STRING
+                        OpcuaConnection.NULL_STRING
                     ));
                 }
 
@@ -135,8 +130,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                 readValueId = new ReadValueId(
                     idNode,
                     AttributeId.EventNotifier.getValue(),
-                    OpcuaProtocolLogic.NULL_STRING,
-                    new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
+                    OpcuaConnection.NULL_STRING,
+                    new QualifiedName(0, OpcuaConnection.NULL_STRING));
             }
 
             long clientHandle = clientHandles.getAndIncrement();
@@ -205,12 +200,9 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             outstandingAcknowledgements.removeAll(acks);
 
             PublishRequest publishRequest = new PublishRequest(requestHeader, acks);
-            // we work in external thread - we need to coordinate access to conversation pipeline
-            RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> {
-                logger.trace("Sent publish request with {} acks", ackLength);
-                //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
-                conversation.submit(publishRequest, PublishResponse.class).thenAccept(responseMessage -> {
+            logger.trace("Sent publish request with {} acks", ackLength);
+            //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
+            conversation.submit(publishRequest, PublishResponse.class).thenAccept(responseMessage -> {
                     outstandingRequests.remove(responseMessage.getResponseHeader().getRequestHandle());
 
                     for (long availableSequenceNumber : responseMessage.getAvailableSequenceNumbers()) {
@@ -238,17 +230,14 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             }
                         }
                     }
-                }).whenComplete((result, error) -> {
-                    if (error != null) {
-                        logger.warn("Publish request of subscription {} resulted in error reported by server", subscriptionId, error);
-                        transaction.failRequest(error);
-                    } else {
-                        logger.trace("Completed publish request for subscription {}", subscriptionId);
-                        transaction.endRequest();
-                    }
-                });
-                outstandingRequests.add(requestHeader.getRequestHandle());
+            }).whenComplete((result, error) -> {
+                if (error != null) {
+                    logger.warn("Publish request of subscription {} resulted in error reported by server", subscriptionId, error);
+                } else {
+                    logger.trace("Completed publish request for subscription {}", subscriptionId);
+                }
             });
+            outstandingRequests.add(requestHeader.getRequestHandle());
         }
     }
 
@@ -261,22 +250,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         List<Long> subscriptions = Collections.singletonList(subscriptionId);
         DeleteSubscriptionsRequest deleteSubscriptionRequest = new DeleteSubscriptionsRequest(requestHeader, subscriptions);
 
-        // subscription suspend can be invoked from multiple places, hence we manage transaction side of it
-        RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> {
-            //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
-            conversation.submit(deleteSubscriptionRequest, DeleteSubscriptionsResponse.class)
-                .thenAccept(responseMessage -> publishTask.cancel(true))
-                .whenComplete((result, error) -> {
-                    if (error != null) {
-                        logger.error("Deletion of subscription resulted in error", error);
-                        transaction.failRequest(error);
-                    } else {
-                        transaction.endRequest();
-                    }
-                    plcSubscriber.removeSubscription(subscriptionId);
-                });
-        });
+        //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
+        conversation.submit(deleteSubscriptionRequest, DeleteSubscriptionsResponse.class)
+            .thenAccept(responseMessage -> publishTask.cancel(true))
+            .whenComplete((result, error) -> {
+                if (error != null) {
+                    logger.error("Deletion of subscription resulted in error", error);
+                }
+                plcSubscriber.removeSubscription(subscriptionId);
+            });
     }
 
     /**
@@ -286,9 +268,6 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      */
     private void onMonitoredValue(List<MonitoredItemNotification> values) {
         long receiveTs = System.currentTimeMillis();
-        Metadata responseMetadata = new DefaultMetadata.Builder()
-            .put(PlcMetadataKeys.RECEIVE_TIMESTAMP, receiveTs)
-            .build();
 
         List<DataValue> dataValues = new ArrayList<>(values.size());
         Map<String, PlcTag> tagMap = new LinkedHashMap<>();
@@ -299,24 +278,20 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             dataValues.add(value.getValue());
             Consumer<PlcSubscriptionEvent> tagConsumer = tagConsumers.get(tagName);
             if (tagConsumer != null) {
-                Entry<Map<String, Metadata>, Map<String, PlcResponseItem<PlcValue>>> mappedResponse = plcSubscriber.readResponse(Map.of(tagName, tag), List.of(value.getValue()), responseMetadata);
-                PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(receiveTs), mappedResponse.getValue(), mappedResponse.getKey());
+                Map<String, PlcResponseItem<PlcValue>> mappedResponse = plcSubscriber.readResponse(Map.of(tagName, tag), List.of(value.getValue()));
+                PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(receiveTs), mappedResponse);
                 tagConsumer.accept(event);
             }
         }
 
-        Entry<Map<String, Metadata>, Map<String, PlcResponseItem<PlcValue>>> mappedResponse = plcSubscriber.readResponse(tagMap, dataValues, responseMetadata);
-        PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(receiveTs), mappedResponse.getValue(), mappedResponse.getKey());
+        Map<String, PlcResponseItem<PlcValue>> mappedResponse = plcSubscriber.readResponse(tagMap, dataValues);
+        PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(receiveTs), mappedResponse);
         consumers.forEach(plcSubscriptionEventConsumer -> plcSubscriptionEventConsumer.accept(event));
     }
 
     private void onEventNotification(List<EventFieldList> events) {
         long receiveTs = System.currentTimeMillis();
-        Metadata responseMetadata = new DefaultMetadata.Builder()
-            .put(PlcMetadataKeys.RECEIVE_TIMESTAMP, receiveTs)
-            .build();
 
-        Map<String, Metadata> metadata = new HashMap<>();
         Map<String, PlcResponseItem<PlcValue>> tagValues = new LinkedHashMap<>();
         for (EventFieldList event : events) {
             String tagName = tagNames.get((int) event.getClientHandle() - 1);
@@ -324,11 +299,10 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
             Iterator<String> fieldNames = tag.getConfig().keySet().iterator();
             Map<String, PlcValue> mapping = new LinkedHashMap<>();
-            metadata.put(tagName, responseMetadata);
             for (Variant variant : event.getEventFields()) {
                 if (fieldNames.hasNext()) {
                     String fieldName = fieldNames.next();
-                    PlcValue plcValue = OpcuaProtocolLogic.variantToPlcValue(tag, variant);
+                    PlcValue plcValue = OpcuaConnection.variantToPlcValue(tag, variant);
                     mapping.put(fieldName, plcValue);
                     tagValues.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcStruct(mapping)));
                 } else {
@@ -338,7 +312,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             }
         }
 
-        PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(receiveTs), tagValues, metadata);
+        PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(receiveTs), tagValues);
         consumers.forEach(plcSubscriptionEventConsumer -> plcSubscriptionEventConsumer.accept(event));
     }
 

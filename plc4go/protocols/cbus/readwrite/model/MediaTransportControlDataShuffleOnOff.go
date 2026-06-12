@@ -228,7 +228,7 @@ func CastMediaTransportControlDataShuffleOnOff(structType any) MediaTransportCon
 	return nil
 }
 
-func (m *_MediaTransportControlDataShuffleOnOff) GetTypeName() string {
+func (m *_MediaTransportControlDataShuffleOnOff) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataShuffleOnOff"
 }
 

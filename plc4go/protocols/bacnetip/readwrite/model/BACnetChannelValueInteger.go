@@ -221,7 +221,7 @@ func CastBACnetChannelValueInteger(structType any) BACnetChannelValueInteger {
 	return nil
 }
 
-func (m *_BACnetChannelValueInteger) GetTypeName() string {
+func (m *_BACnetChannelValueInteger) GetPlx4xTypeName() string {
 	return "BACnetChannelValueInteger"
 }
 

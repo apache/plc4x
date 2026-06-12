@@ -21,7 +21,11 @@ package org.apache.plc4x.java.profinet.device;
 
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.EtherType;
@@ -49,12 +53,12 @@ public class ProfinetChannel {
     public void send(Ethernet_Frame ethFrame) {
         for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
             PcapHandle handle = entry.getValue();
-            WriteBufferByteBased buffer = new WriteBufferByteBased(ethFrame.getLengthInBytes());
+            WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[ethFrame.getLengthInBytes()]);
             try {
                 ethFrame.serialize(buffer);
                 Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, ethFrame.getLengthInBytes());
                 handle.sendPacket(packet);
-            } catch (PcapNativeException | NotOpenException | SerializationException | IllegalRawDataException e) {
+            } catch (PcapNativeException | NotOpenException |  BufferException | IllegalRawDataException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -184,7 +188,7 @@ public class ProfinetChannel {
                                     }
                                 }
                             }
-                        } catch (ParseException e) {
+                        } catch ( BufferException e) {
                             logger.error("Got error decoding packet", e);
                         }
                     }

@@ -225,7 +225,7 @@ func CastBACnetServiceAckVTOpen(structType any) BACnetServiceAckVTOpen {
 	return nil
 }
 
-func (m *_BACnetServiceAckVTOpen) GetTypeName() string {
+func (m *_BACnetServiceAckVTOpen) GetPlx4xTypeName() string {
 	return "BACnetServiceAckVTOpen"
 }
 

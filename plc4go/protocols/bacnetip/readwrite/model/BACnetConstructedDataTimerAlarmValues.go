@@ -211,7 +211,7 @@ func CastBACnetConstructedDataTimerAlarmValues(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimerAlarmValues) GetTypeName() string {
+func (m *_BACnetConstructedDataTimerAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimerAlarmValues"
 }
 

@@ -177,7 +177,7 @@ func CastDeviceConfigurationRequestDataBlock(structType any) DeviceConfiguration
 	return nil
 }
 
-func (m *_DeviceConfigurationRequestDataBlock) GetTypeName() string {
+func (m *_DeviceConfigurationRequestDataBlock) GetPlx4xTypeName() string {
 	return "DeviceConfigurationRequestDataBlock"
 }
 

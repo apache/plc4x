@@ -60,7 +60,7 @@ class SimulatedConnectionTest implements WithAssertions {
     @Nested
     class Lifecyle {
         @Test
-        void connect() {
+        void connect() throws Exception {
             assertThat(SUT.isConnected()).isFalse();
             SUT.connect();
             assertThat(SUT.isConnected()).isTrue();
@@ -137,13 +137,13 @@ class SimulatedConnectionTest implements WithAssertions {
         @Test
         void register() {
             @SuppressWarnings("unchecked")
-            PlcConsumerRegistration register = SUT.register(mock(Consumer.class), Collections.emptyList());
+            PlcConsumerRegistration register = SUT.registerConsumer(mock(Consumer.class), Collections.emptyList());
             assertThat(register).isNotNull();
         }
 
         @Test
         void unregister() {
-            SUT.unregister(mock(PlcConsumerRegistration.class));
+            SUT.unregisterConsumer(mock(PlcConsumerRegistration.class));
         }
     }
 
@@ -233,17 +233,17 @@ class SimulatedConnectionTest implements WithAssertions {
 
         @Test
         void isReadSupported() {
-            assertThat(SUT.isReadSupported()).isTrue();
+            assertThat(SUT.getMetadata().isReadSupported()).isTrue();
         }
 
         @Test
         void isWriteSupported() {
-            assertThat(SUT.isWriteSupported()).isTrue();
+            assertThat(SUT.getMetadata().isWriteSupported()).isTrue();
         }
 
         @Test
         void isSubscribeSupported() {
-            assertThat(SUT.isSubscribeSupported()).isTrue();
+            assertThat(SUT.getMetadata().isSubscribeSupported()).isTrue();
         }
 
         @Test

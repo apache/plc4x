@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAnalogValueFaultHighLimit(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogValueFaultHighLimit"
 }
 

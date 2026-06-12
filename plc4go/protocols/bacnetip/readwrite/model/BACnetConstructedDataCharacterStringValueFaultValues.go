@@ -258,7 +258,7 @@ func CastBACnetConstructedDataCharacterStringValueFaultValues(structType any) BA
 	return nil
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueFaultValues) GetTypeName() string {
+func (m *_BACnetConstructedDataCharacterStringValueFaultValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCharacterStringValueFaultValues"
 }
 

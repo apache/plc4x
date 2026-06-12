@@ -135,7 +135,7 @@ func CastUtcTime(structType any) UtcTime {
 	return nil
 }
 
-func (m *_UtcTime) GetTypeName() string {
+func (m *_UtcTime) GetPlx4xTypeName() string {
 	return "UtcTime"
 }
 

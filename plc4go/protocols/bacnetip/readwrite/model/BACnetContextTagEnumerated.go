@@ -242,7 +242,7 @@ func CastBACnetContextTagEnumerated(structType any) BACnetContextTagEnumerated {
 	return nil
 }
 
-func (m *_BACnetContextTagEnumerated) GetTypeName() string {
+func (m *_BACnetContextTagEnumerated) GetPlx4xTypeName() string {
 	return "BACnetContextTagEnumerated"
 }
 

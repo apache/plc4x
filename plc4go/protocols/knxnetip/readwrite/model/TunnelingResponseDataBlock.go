@@ -189,7 +189,7 @@ func CastTunnelingResponseDataBlock(structType any) TunnelingResponseDataBlock {
 	return nil
 }
 
-func (m *_TunnelingResponseDataBlock) GetTypeName() string {
+func (m *_TunnelingResponseDataBlock) GetPlx4xTypeName() string {
 	return "TunnelingResponseDataBlock"
 }
 

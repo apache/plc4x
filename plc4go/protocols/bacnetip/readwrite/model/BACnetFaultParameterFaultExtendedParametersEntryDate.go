@@ -221,7 +221,7 @@ func CastBACnetFaultParameterFaultExtendedParametersEntryDate(structType any) BA
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultExtendedParametersEntryDate"
 }
 

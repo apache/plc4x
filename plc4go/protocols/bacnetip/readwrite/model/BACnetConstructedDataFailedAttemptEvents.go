@@ -211,7 +211,7 @@ func CastBACnetConstructedDataFailedAttemptEvents(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataFailedAttemptEvents) GetTypeName() string {
+func (m *_BACnetConstructedDataFailedAttemptEvents) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFailedAttemptEvents"
 }
 

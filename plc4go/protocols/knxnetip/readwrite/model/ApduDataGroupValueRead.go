@@ -184,7 +184,7 @@ func CastApduDataGroupValueRead(structType any) ApduDataGroupValueRead {
 	return nil
 }
 
-func (m *_ApduDataGroupValueRead) GetTypeName() string {
+func (m *_ApduDataGroupValueRead) GetPlx4xTypeName() string {
 	return "ApduDataGroupValueRead"
 }
 

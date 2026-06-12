@@ -193,7 +193,7 @@ func CastBACnetSegmentationTagged(structType any) BACnetSegmentationTagged {
 	return nil
 }
 
-func (m *_BACnetSegmentationTagged) GetTypeName() string {
+func (m *_BACnetSegmentationTagged) GetPlx4xTypeName() string {
 	return "BACnetSegmentationTagged"
 }
 

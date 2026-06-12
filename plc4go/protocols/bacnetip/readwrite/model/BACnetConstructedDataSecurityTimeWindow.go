@@ -246,7 +246,7 @@ func CastBACnetConstructedDataSecurityTimeWindow(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) GetTypeName() string {
+func (m *_BACnetConstructedDataSecurityTimeWindow) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSecurityTimeWindow"
 }
 

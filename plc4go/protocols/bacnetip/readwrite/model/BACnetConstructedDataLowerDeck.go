@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLowerDeck(structType any) BACnetConstructedDataLow
 	return nil
 }
 
-func (m *_BACnetConstructedDataLowerDeck) GetTypeName() string {
+func (m *_BACnetConstructedDataLowerDeck) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLowerDeck"
 }
 

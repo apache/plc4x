@@ -228,7 +228,7 @@ func CastFirmataMessageDigitalIO(structType any) FirmataMessageDigitalIO {
 	return nil
 }
 
-func (m *_FirmataMessageDigitalIO) GetTypeName() string {
+func (m *_FirmataMessageDigitalIO) GetPlx4xTypeName() string {
 	return "FirmataMessageDigitalIO"
 }
 
@@ -261,13 +261,13 @@ func (m *_FirmataMessageDigitalIO) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	pinBlock, err := ReadSimpleField(ctx, "pinBlock", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithByteOrder(binary.BigEndian))
+	pinBlock, err := ReadSimpleField(ctx, "pinBlock", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithEncoding("UTF16LE"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pinBlock' field"))
 	}
 	m.PinBlock = pinBlock
 
-	data, err := ReadCountArrayField[int8](ctx, "data", ReadSignedByte(readBuffer, uint8(8)), uint64(int32(2)), codegen.WithByteOrder(binary.BigEndian))
+	data, err := ReadCountArrayField[int8](ctx, "data", ReadSignedByte(readBuffer, uint8(8)), uint64(int32(2)), codegen.WithEncoding("UTF16LE"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
@@ -298,11 +298,11 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for FirmataMessageDigitalIO")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "pinBlock", m.GetPinBlock(), WriteUnsignedByte(writeBuffer, 4), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "pinBlock", m.GetPinBlock(), WriteUnsignedByte(writeBuffer, 4), codegen.WithEncoding("UTF16LE"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'pinBlock' field")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteSignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteSignedByte(writeBuffer, 8), codegen.WithEncoding("UTF16LE"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

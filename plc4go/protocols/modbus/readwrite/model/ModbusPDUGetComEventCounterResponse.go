@@ -230,7 +230,7 @@ func CastModbusPDUGetComEventCounterResponse(structType any) ModbusPDUGetComEven
 	return nil
 }
 
-func (m *_ModbusPDUGetComEventCounterResponse) GetTypeName() string {
+func (m *_ModbusPDUGetComEventCounterResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUGetComEventCounterResponse"
 }
 

@@ -193,7 +193,7 @@ func CastBACnetTimerTransitionTagged(structType any) BACnetTimerTransitionTagged
 	return nil
 }
 
-func (m *_BACnetTimerTransitionTagged) GetTypeName() string {
+func (m *_BACnetTimerTransitionTagged) GetPlx4xTypeName() string {
 	return "BACnetTimerTransitionTagged"
 }
 

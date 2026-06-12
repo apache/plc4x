@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDoNotHide(structType any) BACnetConstructedDataDoN
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoNotHide) GetTypeName() string {
+func (m *_BACnetConstructedDataDoNotHide) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoNotHide"
 }
 

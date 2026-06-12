@@ -135,7 +135,7 @@ func CastSemanticVersionString(structType any) SemanticVersionString {
 	return nil
 }
 
-func (m *_SemanticVersionString) GetTypeName() string {
+func (m *_SemanticVersionString) GetPlx4xTypeName() string {
 	return "SemanticVersionString"
 }
 

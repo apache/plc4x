@@ -246,7 +246,7 @@ func CastBACnetConstructedDataManipulatedVariableReference(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataManipulatedVariableReference) GetTypeName() string {
+func (m *_BACnetConstructedDataManipulatedVariableReference) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataManipulatedVariableReference"
 }
 

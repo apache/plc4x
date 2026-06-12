@@ -179,7 +179,7 @@ func CastBACnetLiftCarCallList(structType any) BACnetLiftCarCallList {
 	return nil
 }
 
-func (m *_BACnetLiftCarCallList) GetTypeName() string {
+func (m *_BACnetLiftCarCallList) GetPlx4xTypeName() string {
 	return "BACnetLiftCarCallList"
 }
 

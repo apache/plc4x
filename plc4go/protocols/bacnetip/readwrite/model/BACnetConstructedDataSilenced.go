@@ -246,7 +246,7 @@ func CastBACnetConstructedDataSilenced(structType any) BACnetConstructedDataSile
 	return nil
 }
 
-func (m *_BACnetConstructedDataSilenced) GetTypeName() string {
+func (m *_BACnetConstructedDataSilenced) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSilenced"
 }
 

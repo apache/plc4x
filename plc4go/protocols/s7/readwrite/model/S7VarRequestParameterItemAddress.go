@@ -225,7 +225,7 @@ func CastS7VarRequestParameterItemAddress(structType any) S7VarRequestParameterI
 	return nil
 }
 
-func (m *_S7VarRequestParameterItemAddress) GetTypeName() string {
+func (m *_S7VarRequestParameterItemAddress) GetPlx4xTypeName() string {
 	return "S7VarRequestParameterItemAddress"
 }
 

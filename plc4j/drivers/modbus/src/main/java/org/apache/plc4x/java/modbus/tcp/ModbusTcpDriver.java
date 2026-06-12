@@ -18,31 +18,27 @@
  */
 package org.apache.plc4x.java.modbus.tcp;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.modbus.base.optimizer.ModbusOptimizer;
-import org.apache.plc4x.java.modbus.tcp.context.ModbusTcpContext;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
-import org.apache.plc4x.java.modbus.readwrite.DriverType;
-import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
-import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
+import org.apache.plc4x.java.modbus.readwrite.Constants;
+import org.apache.plc4x.java.modbus.tcp.config.*;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.modbus.tcp.discovery.ModbusPlcDiscoverer;
-import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
-import org.apache.plc4x.java.modbus.tcp.protocol.ModbusTcpProtocolLogic;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryRequest;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.bouncycastle.tls.UDPTransport;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
+import java.util.Set;
 
-public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
+public class ModbusTcpDriver extends DriverBase {
 
     @Override
     public String getProtocolCode() {
@@ -55,50 +51,49 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     }
 
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+    protected Class<? extends Configuration> getConfigurationClass() {
         return ModbusTcpConfiguration.class;
     }
 
     @Override
-    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(ModbusTcpTransportConfiguration.class);
+    protected Class<? extends TransportConfiguration> getTransportConfigurationClass(Transport<?> transport) {
+        if ("tcp".equals(transport.getTransportCode())) {
+            return ModbusTcpTcpTransportConfiguration.class;
+        } else if ("tls".equals(transport.getTransportCode())) {
+            return ModbusTcpTlsTransportConfiguration.class;
+        } else if ("tls-psk".equals(transport.getTransportCode())) {
+            return ModbusTcpPskTlsTransportConfiguration.class;
+        } else if (transport instanceof UDPTransport) {
+            return ModbusTcpUdpTransportConfiguration.class;
         }
-        return Optional.empty();
+        return super.getTransportConfigurationClass(transport);
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
+    public Optional<String> getDefaultTransportCode() {
         return Optional.of("tcp");
     }
 
     @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
+    public List<String> getSupportedTransportCodes() {
+        return List.of("tcp", "tls", "tls-psk", "udp", "test");
+    }
+
+    @Override
+    public Set<Integer> defaultPorts(String transportCode) {
+        if ("tcp".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.MODBUSTCPDEFAULTPORT);
+        } else if ("tls".equalsIgnoreCase(transportCode) || "tls-psk".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.MODBUSTCPTLSDEFAULTPORT);
+        } else if ("udp".equalsIgnoreCase(transportCode)) {
+            return Set.of(Constants.MODBUSUDPDEFAULTPORT);
+        }
+        return Collections.emptySet();
     }
 
     @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
         return new DefaultPlcDiscoveryRequest.Builder(new ModbusPlcDiscoverer());
-    }
-
-    /**
-     * Modbus doesn't have a login procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
-    @Override
-    protected boolean awaitSetupComplete() {
-        return false;
-    }
-
-    /**
-     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
-    @Override
-    protected boolean awaitDisconnectComplete() {
-        return false;
     }
 
     @Override
@@ -122,32 +117,12 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     }
 
     @Override
-    protected BaseOptimizer getOptimizer() {
-        return new /*SingleTagOptimizer();/*/ModbusOptimizer();
+    protected ConnectionBase<ModbusTcpConfiguration> getConnection(Configuration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
+        return new ModbusTcpConnection((ModbusTcpConfiguration) configuration, transportInstance, auditLog);
     }
 
     @Override
-    protected ProtocolStackConfigurer<ModbusTcpADU> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(ModbusTcpADU.class, (io) -> (ModbusTcpADU) ModbusTcpADU.staticParse(io, DriverType.MODBUS_TCP, true))
-            .withProtocol(ModbusTcpProtocolLogic.class)
-            .withDriverContext(ModbusTcpContext.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .build();
-    }
-
-    /** Estimate the Length of a Packet */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 6) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4) + 6;
-            }
-            return -1;
-        }
-    }
-
-    @Override
-    public ModbusTag prepareTag(String tagAddress){
+    public ModbusTag prepareTag(String tagAddress) {
         return ModbusTag.of(tagAddress);
     }
 

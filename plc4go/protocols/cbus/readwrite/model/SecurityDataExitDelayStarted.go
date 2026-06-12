@@ -176,7 +176,7 @@ func CastSecurityDataExitDelayStarted(structType any) SecurityDataExitDelayStart
 	return nil
 }
 
-func (m *_SecurityDataExitDelayStarted) GetTypeName() string {
+func (m *_SecurityDataExitDelayStarted) GetPlx4xTypeName() string {
 	return "SecurityDataExitDelayStarted"
 }
 

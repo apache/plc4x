@@ -246,7 +246,7 @@ func CastBACnetConstructedDataPositiveIntegerValueRelinquishDefault(structType a
 	return nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPositiveIntegerValueRelinquishDefault"
 }
 

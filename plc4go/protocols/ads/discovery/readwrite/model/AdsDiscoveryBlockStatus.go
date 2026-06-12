@@ -223,7 +223,7 @@ func CastAdsDiscoveryBlockStatus(structType any) AdsDiscoveryBlockStatus {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockStatus) GetTypeName() string {
+func (m *_AdsDiscoveryBlockStatus) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockStatus"
 }
 

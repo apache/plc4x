@@ -225,7 +225,7 @@ func CastExtensiblePayload(structType any) ExtensiblePayload {
 	return nil
 }
 
-func (m *_ExtensiblePayload) GetTypeName() string {
+func (m *_ExtensiblePayload) GetPlx4xTypeName() string {
 	return "ExtensiblePayload"
 }
 

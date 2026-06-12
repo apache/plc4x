@@ -215,7 +215,7 @@ func CastModbusPDUReadExceptionStatusResponse(structType any) ModbusPDUReadExcep
 	return nil
 }
 
-func (m *_ModbusPDUReadExceptionStatusResponse) GetTypeName() string {
+func (m *_ModbusPDUReadExceptionStatusResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUReadExceptionStatusResponse"
 }
 

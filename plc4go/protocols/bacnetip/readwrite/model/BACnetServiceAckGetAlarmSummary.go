@@ -291,7 +291,7 @@ func CastBACnetServiceAckGetAlarmSummary(structType any) BACnetServiceAckGetAlar
 	return nil
 }
 
-func (m *_BACnetServiceAckGetAlarmSummary) GetTypeName() string {
+func (m *_BACnetServiceAckGetAlarmSummary) GetPlx4xTypeName() string {
 	return "BACnetServiceAckGetAlarmSummary"
 }
 

@@ -250,7 +250,7 @@ func CastBACnetContextTagObjectIdentifier(structType any) BACnetContextTagObject
 	return nil
 }
 
-func (m *_BACnetContextTagObjectIdentifier) GetTypeName() string {
+func (m *_BACnetContextTagObjectIdentifier) GetPlx4xTypeName() string {
 	return "BACnetContextTagObjectIdentifier"
 }
 

@@ -225,7 +225,7 @@ func CastBACnetVendorIdTagged(structType any) BACnetVendorIdTagged {
 	return nil
 }
 
-func (m *_BACnetVendorIdTagged) GetTypeName() string {
+func (m *_BACnetVendorIdTagged) GetPlx4xTypeName() string {
 	return "BACnetVendorIdTagged"
 }
 

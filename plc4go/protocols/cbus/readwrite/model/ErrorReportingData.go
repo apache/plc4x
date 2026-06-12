@@ -247,7 +247,7 @@ func CastErrorReportingData(structType any) ErrorReportingData {
 	return nil
 }
 
-func (m *_ErrorReportingData) GetTypeName() string {
+func (m *_ErrorReportingData) GetPlx4xTypeName() string {
 	return "ErrorReportingData"
 }
 

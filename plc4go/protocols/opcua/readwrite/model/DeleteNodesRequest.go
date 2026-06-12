@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -240,7 +241,7 @@ func CastDeleteNodesRequest(structType any) DeleteNodesRequest {
 	return nil
 }
 
-func (m *_DeleteNodesRequest) GetTypeName() string {
+func (m *_DeleteNodesRequest) GetPlx4xTypeName() string {
 	return "DeleteNodesRequest"
 }
 
@@ -279,19 +280,19 @@ func (m *_DeleteNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfNodesToDelete, err := ReadImplicitField[int32](ctx, "noOfNodesToDelete", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToDelete, err := ReadImplicitField[int32](ctx, "noOfNodesToDelete", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToDelete' field"))
 	}
 	_ = noOfNodesToDelete
 
-	nodesToDelete, err := ReadCountArrayField[DeleteNodesItem](ctx, "nodesToDelete", ReadComplex[DeleteNodesItem](ExtensionObjectDefinitionParseWithBufferProducer[DeleteNodesItem]((int32)(int32(384))), readBuffer), uint64(noOfNodesToDelete))
+	nodesToDelete, err := ReadCountArrayField[DeleteNodesItem](ctx, "nodesToDelete", ReadComplex[DeleteNodesItem](ExtensionObjectDefinitionParseWithBufferProducer[DeleteNodesItem]((int32)(int32(384))), readBuffer), uint64(noOfNodesToDelete), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToDelete' field"))
 	}
@@ -322,15 +323,15 @@ func (m *_DeleteNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for DeleteNodesRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfNodesToDelete := int32(utils.InlineIf(bool((m.GetNodesToDelete()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToDelete()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNodesToDelete", noOfNodesToDelete, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNodesToDelete", noOfNodesToDelete, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToDelete' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "nodesToDelete", m.GetNodesToDelete(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "nodesToDelete", m.GetNodesToDelete(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodesToDelete' field")
 		}
 

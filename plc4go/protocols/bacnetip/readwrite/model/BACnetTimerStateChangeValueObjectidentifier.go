@@ -221,7 +221,7 @@ func CastBACnetTimerStateChangeValueObjectidentifier(structType any) BACnetTimer
 	return nil
 }
 
-func (m *_BACnetTimerStateChangeValueObjectidentifier) GetTypeName() string {
+func (m *_BACnetTimerStateChangeValueObjectidentifier) GetPlx4xTypeName() string {
 	return "BACnetTimerStateChangeValueObjectidentifier"
 }
 

@@ -205,7 +205,7 @@ func CastBACnetBDTEntry(structType any) BACnetBDTEntry {
 	return nil
 }
 
-func (m *_BACnetBDTEntry) GetTypeName() string {
+func (m *_BACnetBDTEntry) GetPlx4xTypeName() string {
 	return "BACnetBDTEntry"
 }
 

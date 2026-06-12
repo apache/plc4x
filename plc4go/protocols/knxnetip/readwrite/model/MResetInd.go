@@ -180,7 +180,7 @@ func CastMResetInd(structType any) MResetInd {
 	return nil
 }
 
-func (m *_MResetInd) GetTypeName() string {
+func (m *_MResetInd) GetPlx4xTypeName() string {
 	return "MResetInd"
 }
 

@@ -23,15 +23,14 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
 import org.apache.plc4x.java.ctrlx.readwrite.connection.CtrlXConnection;
 import org.apache.plc4x.java.ctrlx.readwrite.discovery.CtrlXPlcDiscoverer;
-import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
+import org.apache.plc4x.java.spi.config.ConfigurationFactory;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryRequest;
 
 import java.util.regex.Matcher;
 
@@ -54,9 +53,8 @@ public class CtrlXDriver implements PlcDriver {
 
     @Override
     public PlcConnection getConnection(String connectionString, PlcAuthentication authentication) throws PlcConnectionException {
-        ConfigurationFactory configurationFactory = new ConfigurationFactory();
         // Split up the connection string into its individual segments.
-        Matcher matcher = GeneratedDriverBase.URI_PATTERN.matcher(connectionString);
+        Matcher matcher = DriverBase.URI_PATTERN.matcher(connectionString);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
                 "Connection string doesn't match the format '{protocol-code}:({transport-code})?//{transport-config}(?{parameter-string)?'");
@@ -75,8 +73,8 @@ public class CtrlXDriver implements PlcDriver {
         }
 
         // Create the configuration object.
-        PlcConnectionConfiguration configuration = configurationFactory
-            .createConfiguration(CtrlXConfiguration.class, protocolCode, transportCode, transportConfig, paramString);
+        CtrlXConfiguration configuration = new ConfigurationFactory()
+            .createConfiguration(CtrlXConfiguration.class, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }

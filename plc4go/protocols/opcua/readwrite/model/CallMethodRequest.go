@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -273,7 +274,7 @@ func CastCallMethodRequest(structType any) CallMethodRequest {
 	return nil
 }
 
-func (m *_CallMethodRequest) GetTypeName() string {
+func (m *_CallMethodRequest) GetPlx4xTypeName() string {
 	return "CallMethodRequest"
 }
 
@@ -315,25 +316,25 @@ func (m *_CallMethodRequest) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	objectId, err := ReadSimpleField[NodeId](ctx, "objectId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	objectId, err := ReadSimpleField[NodeId](ctx, "objectId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectId' field"))
 	}
 	m.ObjectId = objectId
 
-	methodId, err := ReadSimpleField[NodeId](ctx, "methodId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	methodId, err := ReadSimpleField[NodeId](ctx, "methodId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'methodId' field"))
 	}
 	m.MethodId = methodId
 
-	noOfInputArguments, err := ReadImplicitField[int32](ctx, "noOfInputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	noOfInputArguments, err := ReadImplicitField[int32](ctx, "noOfInputArguments", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfInputArguments' field"))
 	}
 	_ = noOfInputArguments
 
-	inputArguments, err := ReadCountArrayField[Variant](ctx, "inputArguments", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfInputArguments))
+	inputArguments, err := ReadCountArrayField[Variant](ctx, "inputArguments", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfInputArguments), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inputArguments' field"))
 	}
@@ -364,19 +365,19 @@ func (m *_CallMethodRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for CallMethodRequest")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "objectId", m.GetObjectId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "objectId", m.GetObjectId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'objectId' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "methodId", m.GetMethodId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "methodId", m.GetMethodId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'methodId' field")
 		}
 		noOfInputArguments := int32(utils.InlineIf(bool((m.GetInputArguments()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetInputArguments()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfInputArguments", noOfInputArguments, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfInputArguments", noOfInputArguments, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfInputArguments' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "inputArguments", m.GetInputArguments(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "inputArguments", m.GetInputArguments(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'inputArguments' field")
 		}
 

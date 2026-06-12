@@ -176,7 +176,7 @@ func CastChannelInformation(structType any) ChannelInformation {
 	return nil
 }
 
-func (m *_ChannelInformation) GetTypeName() string {
+func (m *_ChannelInformation) GetPlx4xTypeName() string {
 	return "ChannelInformation"
 }
 

@@ -221,7 +221,7 @@ func CastBACnetPropertyStatesReliability(structType any) BACnetPropertyStatesRel
 	return nil
 }
 
-func (m *_BACnetPropertyStatesReliability) GetTypeName() string {
+func (m *_BACnetPropertyStatesReliability) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesReliability"
 }
 

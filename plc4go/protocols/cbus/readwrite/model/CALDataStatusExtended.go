@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -291,7 +293,7 @@ func CastCALDataStatusExtended(structType any) CALDataStatusExtended {
 	return nil
 }
 
-func (m *_CALDataStatusExtended) GetTypeName() string {
+func (m *_CALDataStatusExtended) GetPlx4xTypeName() string {
 	return "CALDataStatusExtended"
 }
 
@@ -345,25 +347,25 @@ func (m *_CALDataStatusExtended) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	coding, err := ReadEnumField[StatusCoding](ctx, "coding", "StatusCoding", ReadEnum(StatusCodingByValue, ReadByte(readBuffer, 8)))
+	coding, err := ReadEnumField[StatusCoding](ctx, "coding", "StatusCoding", ReadEnum(StatusCodingByValue, ReadByte(readBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'coding' field"))
 	}
 	m.Coding = coding
 
-	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 	m.Application = application
 
-	blockStart, err := ReadSimpleField(ctx, "blockStart", ReadUnsignedByte(readBuffer, uint8(8)))
+	blockStart, err := ReadSimpleField(ctx, "blockStart", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blockStart' field"))
 	}
 	m.BlockStart = blockStart
 
-	numberOfStatusBytes, err := ReadVirtualField[uint8](ctx, "numberOfStatusBytes", (*uint8)(nil), utils.InlineIf((bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() any { return uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) }, func() any { return uint8((uint8(0))) }).(uint8))
+	numberOfStatusBytes, err := ReadVirtualField[uint8](ctx, "numberOfStatusBytes", (*uint8)(nil), utils.InlineIf((bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() any { return uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) }, func() any { return uint8((uint8(0))) }).(uint8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfStatusBytes' field"))
 	}
@@ -371,19 +373,19 @@ func (m *_CALDataStatusExtended) parse(ctx context.Context, readBuffer utils.Rea
 
 	numberOfLevelInformation, err := ReadVirtualField[uint8](ctx, "numberOfLevelInformation", (*uint8)(nil), utils.InlineIf((bool(bool((coding) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() any {
 		return uint8((uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) / uint8(uint8(2))))
-	}, func() any { return uint8((uint8(0))) }).(uint8))
+	}, func() any { return uint8((uint8(0))) }).(uint8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfLevelInformation' field"))
 	}
 	_ = numberOfLevelInformation
 
-	statusBytes, err := ReadCountArrayField[StatusByte](ctx, "statusBytes", ReadComplex[StatusByte](StatusByteParseWithBuffer, readBuffer), uint64(numberOfStatusBytes))
+	statusBytes, err := ReadCountArrayField[StatusByte](ctx, "statusBytes", ReadComplex[StatusByte](StatusByteParseWithBuffer, readBuffer), uint64(numberOfStatusBytes), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusBytes' field"))
 	}
 	m.StatusBytes = statusBytes
 
-	levelInformation, err := ReadCountArrayField[LevelInformation](ctx, "levelInformation", ReadComplex[LevelInformation](LevelInformationParseWithBuffer, readBuffer), uint64(numberOfLevelInformation))
+	levelInformation, err := ReadCountArrayField[LevelInformation](ctx, "levelInformation", ReadComplex[LevelInformation](LevelInformationParseWithBuffer, readBuffer), uint64(numberOfLevelInformation), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'levelInformation' field"))
 	}
@@ -397,7 +399,7 @@ func (m *_CALDataStatusExtended) parse(ctx context.Context, readBuffer utils.Rea
 }
 
 func (m *_CALDataStatusExtended) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -414,15 +416,15 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for CALDataStatusExtended")
 		}
 
-		if err := WriteSimpleEnumField[StatusCoding](ctx, "coding", "StatusCoding", m.GetCoding(), WriteEnum[StatusCoding, byte](StatusCoding.GetValue, StatusCoding.PLC4XEnumName, WriteByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[StatusCoding](ctx, "coding", "StatusCoding", m.GetCoding(), WriteEnum[StatusCoding, byte](StatusCoding.GetValue, StatusCoding.PLC4XEnumName, WriteByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'coding' field")
 		}
 
-		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "blockStart", m.GetBlockStart(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "blockStart", m.GetBlockStart(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'blockStart' field")
 		}
 		// Virtual field
@@ -438,11 +440,11 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_numberOfLevelInformationErr, "Error serializing 'numberOfLevelInformation' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "statusBytes", m.GetStatusBytes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "statusBytes", m.GetStatusBytes(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusBytes' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "levelInformation", m.GetLevelInformation(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "levelInformation", m.GetLevelInformation(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'levelInformation' field")
 		}
 

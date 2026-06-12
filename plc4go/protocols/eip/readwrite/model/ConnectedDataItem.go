@@ -240,7 +240,7 @@ func CastConnectedDataItem(structType any) ConnectedDataItem {
 	return nil
 }
 
-func (m *_ConnectedDataItem) GetTypeName() string {
+func (m *_ConnectedDataItem) GetPlx4xTypeName() string {
 	return "ConnectedDataItem"
 }
 

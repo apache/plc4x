@@ -224,7 +224,7 @@ func CastBACnetLifeSafetyStateTagged(structType any) BACnetLifeSafetyStateTagged
 	return nil
 }
 
-func (m *_BACnetLifeSafetyStateTagged) GetTypeName() string {
+func (m *_BACnetLifeSafetyStateTagged) GetPlx4xTypeName() string {
 	return "BACnetLifeSafetyStateTagged"
 }
 

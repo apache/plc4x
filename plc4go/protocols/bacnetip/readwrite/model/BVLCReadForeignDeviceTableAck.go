@@ -209,7 +209,7 @@ func CastBVLCReadForeignDeviceTableAck(structType any) BVLCReadForeignDeviceTabl
 	return nil
 }
 
-func (m *_BVLCReadForeignDeviceTableAck) GetTypeName() string {
+func (m *_BVLCReadForeignDeviceTableAck) GetPlx4xTypeName() string {
 	return "BVLCReadForeignDeviceTableAck"
 }
 
@@ -241,7 +241,7 @@ func (m *_BVLCReadForeignDeviceTableAck) parse(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	table, err := ReadLengthArrayField[BVLCForeignDeviceTableEntry](ctx, "table", ReadComplex[BVLCForeignDeviceTableEntry](BVLCForeignDeviceTableEntryParseWithBuffer, readBuffer), int(bvlcPayloadLength), codegen.WithByteOrder(binary.BigEndian))
+	table, err := ReadLengthArrayField[BVLCForeignDeviceTableEntry](ctx, "table", ReadComplex[BVLCForeignDeviceTableEntry](BVLCForeignDeviceTableEntryParseWithBuffer, readBuffer), int(bvlcPayloadLength), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'table' field"))
 	}
@@ -272,7 +272,7 @@ func (m *_BVLCReadForeignDeviceTableAck) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BVLCReadForeignDeviceTableAck")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'table' field")
 		}
 

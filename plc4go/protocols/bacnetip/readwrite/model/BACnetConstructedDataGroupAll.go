@@ -184,7 +184,7 @@ func CastBACnetConstructedDataGroupAll(structType any) BACnetConstructedDataGrou
 	return nil
 }
 
-func (m *_BACnetConstructedDataGroupAll) GetTypeName() string {
+func (m *_BACnetConstructedDataGroupAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataGroupAll"
 }
 

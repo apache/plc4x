@@ -246,7 +246,7 @@ func CastBACnetConstructedDataAccessZoneAdjustValue(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessZoneAdjustValue"
 }
 

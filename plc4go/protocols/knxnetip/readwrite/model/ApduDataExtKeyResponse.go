@@ -180,7 +180,7 @@ func CastApduDataExtKeyResponse(structType any) ApduDataExtKeyResponse {
 	return nil
 }
 
-func (m *_ApduDataExtKeyResponse) GetTypeName() string {
+func (m *_ApduDataExtKeyResponse) GetPlx4xTypeName() string {
 	return "ApduDataExtKeyResponse"
 }
 

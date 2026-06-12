@@ -230,7 +230,7 @@ func CastModbusPDUWriteMultipleCoilsResponse(structType any) ModbusPDUWriteMulti
 	return nil
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsResponse) GetTypeName() string {
+func (m *_ModbusPDUWriteMultipleCoilsResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteMultipleCoilsResponse"
 }
 

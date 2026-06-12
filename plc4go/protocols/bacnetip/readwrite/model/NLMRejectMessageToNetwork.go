@@ -222,7 +222,7 @@ func CastNLMRejectMessageToNetwork(structType any) NLMRejectMessageToNetwork {
 	return nil
 }
 
-func (m *_NLMRejectMessageToNetwork) GetTypeName() string {
+func (m *_NLMRejectMessageToNetwork) GetPlx4xTypeName() string {
 	return "NLMRejectMessageToNetwork"
 }
 

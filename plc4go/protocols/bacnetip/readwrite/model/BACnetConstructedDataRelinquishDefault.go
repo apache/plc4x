@@ -246,7 +246,7 @@ func CastBACnetConstructedDataRelinquishDefault(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRelinquishDefault"
 }
 

@@ -180,7 +180,7 @@ func CastDiscoveryConfiguration(structType any) DiscoveryConfiguration {
 	return nil
 }
 
-func (m *_DiscoveryConfiguration) GetTypeName() string {
+func (m *_DiscoveryConfiguration) GetPlx4xTypeName() string {
 	return "DiscoveryConfiguration"
 }
 

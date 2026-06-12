@@ -193,7 +193,7 @@ func CastBACnetAccessRuleLocationSpecifierTagged(structType any) BACnetAccessRul
 	return nil
 }
 
-func (m *_BACnetAccessRuleLocationSpecifierTagged) GetTypeName() string {
+func (m *_BACnetAccessRuleLocationSpecifierTagged) GetPlx4xTypeName() string {
 	return "BACnetAccessRuleLocationSpecifierTagged"
 }
 

@@ -289,7 +289,7 @@ func CastBACnetCalendarEntry(structType any) BACnetCalendarEntry {
 	return nil
 }
 
-func (m *_BACnetCalendarEntry) GetTypeName() string {
+func (m *_BACnetCalendarEntry) GetPlx4xTypeName() string {
 	return "BACnetCalendarEntry"
 }
 

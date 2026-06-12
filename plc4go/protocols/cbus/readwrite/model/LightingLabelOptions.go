@@ -182,7 +182,7 @@ func CastLightingLabelOptions(structType any) LightingLabelOptions {
 	return nil
 }
 
-func (m *_LightingLabelOptions) GetTypeName() string {
+func (m *_LightingLabelOptions) GetPlx4xTypeName() string {
 	return "LightingLabelOptions"
 }
 

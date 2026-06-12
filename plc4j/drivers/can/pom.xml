@@ -70,6 +70,44 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- I/O-heavy driver-shell classes. -->
+                <exclude>org/apache/plc4x/java/can/generic/GenericCANConnection*.class</exclude>
+                <exclude>org/apache/plc4x/java/can/generic/GenericCANMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/can/generic/GenericCANDriver.class</exclude>
+                <!-- Subscription handle exercised only through a live connection. -->
+                <exclude>org/apache/plc4x/java/can/generic/protocol/GenericCANSubscriptionHandle.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check-coverage</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>org/apache/plc4x/java/can/generic/GenericCANConnection*.class</exclude>
+                <exclude>org/apache/plc4x/java/can/generic/GenericCANMessageCodec.class</exclude>
+                <exclude>org/apache/plc4x/java/can/generic/GenericCANDriver.class</exclude>
+                <exclude>org/apache/plc4x/java/can/generic/protocol/GenericCANSubscriptionHandle.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -106,38 +144,65 @@
       <artifactId>plc4j-api</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-fields</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-api</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-can</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+      <!-- SPI-discovered transport -->
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-can</artifactId>
-      <version>0.14.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-test</artifactId>
+      <artifactId>plc4j-transports-test</artifactId>
       <version>0.14.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-virtualcan</artifactId>
+      <artifactId>plc4j-transports-can-virtualcan</artifactId>
       <version>0.14.0-SNAPSHOT</version>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
     </dependency>
 
     <!-- Logging -->
@@ -200,7 +265,7 @@
 
         <dependency>
           <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-java</artifactId>
+          <artifactId>plc4x-code-generation-language-java-jp</artifactId>
           <version>0.14.0-SNAPSHOT</version>
           <scope>provided</scope>
         </dependency>

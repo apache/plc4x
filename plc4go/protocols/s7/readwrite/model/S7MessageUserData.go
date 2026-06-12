@@ -180,7 +180,7 @@ func CastS7MessageUserData(structType any) S7MessageUserData {
 	return nil
 }
 
-func (m *_S7MessageUserData) GetTypeName() string {
+func (m *_S7MessageUserData) GetPlx4xTypeName() string {
 	return "S7MessageUserData"
 }
 

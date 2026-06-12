@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTimerResolution(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimerResolution) GetTypeName() string {
+func (m *_BACnetConstructedDataTimerResolution) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimerResolution"
 }
 

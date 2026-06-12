@@ -177,7 +177,7 @@ func CastTunnelingRequestDataBlock(structType any) TunnelingRequestDataBlock {
 	return nil
 }
 
-func (m *_TunnelingRequestDataBlock) GetTypeName() string {
+func (m *_TunnelingRequestDataBlock) GetPlx4xTypeName() string {
 	return "TunnelingRequestDataBlock"
 }
 

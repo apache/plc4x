@@ -221,7 +221,7 @@ func CastBACnetValueSourceObject(structType any) BACnetValueSourceObject {
 	return nil
 }
 
-func (m *_BACnetValueSourceObject) GetTypeName() string {
+func (m *_BACnetValueSourceObject) GetPlx4xTypeName() string {
 	return "BACnetValueSourceObject"
 }
 

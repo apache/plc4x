@@ -221,7 +221,7 @@ func CastBACnetTimeStampTime(structType any) BACnetTimeStampTime {
 	return nil
 }
 
-func (m *_BACnetTimeStampTime) GetTypeName() string {
+func (m *_BACnetTimeStampTime) GetPlx4xTypeName() string {
 	return "BACnetTimeStampTime"
 }
 

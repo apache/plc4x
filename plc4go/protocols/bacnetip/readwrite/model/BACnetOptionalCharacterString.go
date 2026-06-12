@@ -277,7 +277,7 @@ func CastBACnetOptionalCharacterString(structType any) BACnetOptionalCharacterSt
 	return nil
 }
 
-func (m *_BACnetOptionalCharacterString) GetTypeName() string {
+func (m *_BACnetOptionalCharacterString) GetPlx4xTypeName() string {
 	return "BACnetOptionalCharacterString"
 }
 

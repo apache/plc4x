@@ -180,7 +180,7 @@ func CastMResetReq(structType any) MResetReq {
 	return nil
 }
 
-func (m *_MResetReq) GetTypeName() string {
+func (m *_MResetReq) GetPlx4xTypeName() string {
 	return "MResetReq"
 }
 

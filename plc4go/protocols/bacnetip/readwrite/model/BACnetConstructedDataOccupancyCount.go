@@ -246,7 +246,7 @@ func CastBACnetConstructedDataOccupancyCount(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataOccupancyCount) GetTypeName() string {
+func (m *_BACnetConstructedDataOccupancyCount) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOccupancyCount"
 }
 

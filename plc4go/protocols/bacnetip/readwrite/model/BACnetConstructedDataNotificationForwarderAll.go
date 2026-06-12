@@ -184,7 +184,7 @@ func CastBACnetConstructedDataNotificationForwarderAll(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataNotificationForwarderAll) GetTypeName() string {
+func (m *_BACnetConstructedDataNotificationForwarderAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNotificationForwarderAll"
 }
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -207,7 +208,7 @@ func CastPublishedDataItemsDataType(structType any) PublishedDataItemsDataType {
 	return nil
 }
 
-func (m *_PublishedDataItemsDataType) GetTypeName() string {
+func (m *_PublishedDataItemsDataType) GetPlx4xTypeName() string {
 	return "PublishedDataItemsDataType"
 }
 
@@ -243,13 +244,13 @@ func (m *_PublishedDataItemsDataType) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfPublishedData, err := ReadImplicitField[int32](ctx, "noOfPublishedData", ReadSignedInt(readBuffer, uint8(32)))
+	noOfPublishedData, err := ReadImplicitField[int32](ctx, "noOfPublishedData", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPublishedData' field"))
 	}
 	_ = noOfPublishedData
 
-	publishedData, err := ReadCountArrayField[PublishedVariableDataType](ctx, "publishedData", ReadComplex[PublishedVariableDataType](ExtensionObjectDefinitionParseWithBufferProducer[PublishedVariableDataType]((int32)(int32(14275))), readBuffer), uint64(noOfPublishedData))
+	publishedData, err := ReadCountArrayField[PublishedVariableDataType](ctx, "publishedData", ReadComplex[PublishedVariableDataType](ExtensionObjectDefinitionParseWithBufferProducer[PublishedVariableDataType]((int32)(int32(14275))), readBuffer), uint64(noOfPublishedData), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishedData' field"))
 	}
@@ -280,11 +281,11 @@ func (m *_PublishedDataItemsDataType) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for PublishedDataItemsDataType")
 		}
 		noOfPublishedData := int32(utils.InlineIf(bool((m.GetPublishedData()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetPublishedData()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfPublishedData", noOfPublishedData, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfPublishedData", noOfPublishedData, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfPublishedData' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "publishedData", m.GetPublishedData(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "publishedData", m.GetPublishedData(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishedData' field")
 		}
 

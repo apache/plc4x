@@ -60,6 +60,17 @@ import java.util.regex.Pattern;
 
 public class EtsParser {
 
+    private static boolean isEts6Schema(String schemaVersion) {
+        if (schemaVersion == null) {
+            return false;
+        }
+        try {
+            return Integer.parseInt(schemaVersion) >= 21;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     public EtsModel parse(File knxprojFile, String password) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -93,8 +104,12 @@ public class EtsParser {
                         }
                     }
                 }
-                // 21 = ETS6, 22 = ETS6.1
-                EtsFileHandler fileHandler = ("21".equals(etsSchemaVersion) || "22".equals(etsSchemaVersion)) ? new Ets6FileHandler() : new Ets5FileHandler();
+                // Schema 21 (ETS6) onwards — 22, 23, ... — all use the same
+                // PBKDF2-SHA256 derivation with a fixed salt. Anything older
+                // uses the raw password.
+                EtsFileHandler fileHandler = isEts6Schema(etsSchemaVersion)
+                    ? new Ets6FileHandler()
+                    : new Ets5FileHandler();
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // File containing the information on the type of encoding used for group addresses.

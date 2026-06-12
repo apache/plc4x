@@ -193,7 +193,7 @@ func CastBACnetWriteStatusTagged(structType any) BACnetWriteStatusTagged {
 	return nil
 }
 
-func (m *_BACnetWriteStatusTagged) GetTypeName() string {
+func (m *_BACnetWriteStatusTagged) GetPlx4xTypeName() string {
 	return "BACnetWriteStatusTagged"
 }
 

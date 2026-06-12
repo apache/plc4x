@@ -184,7 +184,7 @@ func CastBACnetConstructedDataLoadControlAll(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataLoadControlAll) GetTypeName() string {
+func (m *_BACnetConstructedDataLoadControlAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLoadControlAll"
 }
 

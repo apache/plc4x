@@ -180,7 +180,7 @@ func CastApduDataExtReadRoutingTableRequest(structType any) ApduDataExtReadRouti
 	return nil
 }
 
-func (m *_ApduDataExtReadRoutingTableRequest) GetTypeName() string {
+func (m *_ApduDataExtReadRoutingTableRequest) GetPlx4xTypeName() string {
 	return "ApduDataExtReadRoutingTableRequest"
 }
 

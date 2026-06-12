@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -450,7 +451,7 @@ func CastJsonActionMetaDataMessage(structType any) JsonActionMetaDataMessage {
 	return nil
 }
 
-func (m *_JsonActionMetaDataMessage) GetTypeName() string {
+func (m *_JsonActionMetaDataMessage) GetPlx4xTypeName() string {
 	return "JsonActionMetaDataMessage"
 }
 
@@ -521,73 +522,73 @@ func (m *_JsonActionMetaDataMessage) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	messageId, err := ReadSimpleField[PascalString](ctx, "messageId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	messageId, err := ReadSimpleField[PascalString](ctx, "messageId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageId' field"))
 	}
 	m.MessageId = messageId
 
-	messageType, err := ReadSimpleField[PascalString](ctx, "messageType", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	messageType, err := ReadSimpleField[PascalString](ctx, "messageType", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 	m.MessageType = messageType
 
-	publisherId, err := ReadSimpleField[PascalString](ctx, "publisherId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	publisherId, err := ReadSimpleField[PascalString](ctx, "publisherId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publisherId' field"))
 	}
 	m.PublisherId = publisherId
 
-	dataSetWriterId, err := ReadSimpleField(ctx, "dataSetWriterId", ReadUnsignedShort(readBuffer, uint8(16)))
+	dataSetWriterId, err := ReadSimpleField(ctx, "dataSetWriterId", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetWriterId' field"))
 	}
 	m.DataSetWriterId = dataSetWriterId
 
-	dataSetWriterName, err := ReadSimpleField[PascalString](ctx, "dataSetWriterName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	dataSetWriterName, err := ReadSimpleField[PascalString](ctx, "dataSetWriterName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetWriterName' field"))
 	}
 	m.DataSetWriterName = dataSetWriterName
 
-	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)))
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 	m.Timestamp = timestamp
 
-	noOfActionTargets, err := ReadImplicitField[int32](ctx, "noOfActionTargets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfActionTargets, err := ReadImplicitField[int32](ctx, "noOfActionTargets", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfActionTargets' field"))
 	}
 	_ = noOfActionTargets
 
-	actionTargets, err := ReadCountArrayField[ActionTargetDataType](ctx, "actionTargets", ReadComplex[ActionTargetDataType](ExtensionObjectDefinitionParseWithBufferProducer[ActionTargetDataType]((int32)(int32(18595))), readBuffer), uint64(noOfActionTargets))
+	actionTargets, err := ReadCountArrayField[ActionTargetDataType](ctx, "actionTargets", ReadComplex[ActionTargetDataType](ExtensionObjectDefinitionParseWithBufferProducer[ActionTargetDataType]((int32)(int32(18595))), readBuffer), uint64(noOfActionTargets), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionTargets' field"))
 	}
 	m.ActionTargets = actionTargets
 
-	request, err := ReadSimpleField[DataSetMetaDataType](ctx, "request", ReadComplex[DataSetMetaDataType](ExtensionObjectDefinitionParseWithBufferProducer[DataSetMetaDataType]((int32)(int32(14525))), readBuffer))
+	request, err := ReadSimpleField[DataSetMetaDataType](ctx, "request", ReadComplex[DataSetMetaDataType](ExtensionObjectDefinitionParseWithBufferProducer[DataSetMetaDataType]((int32)(int32(14525))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'request' field"))
 	}
 	m.Request = request
 
-	response, err := ReadSimpleField[DataSetMetaDataType](ctx, "response", ReadComplex[DataSetMetaDataType](ExtensionObjectDefinitionParseWithBufferProducer[DataSetMetaDataType]((int32)(int32(14525))), readBuffer))
+	response, err := ReadSimpleField[DataSetMetaDataType](ctx, "response", ReadComplex[DataSetMetaDataType](ExtensionObjectDefinitionParseWithBufferProducer[DataSetMetaDataType]((int32)(int32(14525))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'response' field"))
 	}
 	m.Response = response
 
-	noOfActionMethods, err := ReadImplicitField[int32](ctx, "noOfActionMethods", ReadSignedInt(readBuffer, uint8(32)))
+	noOfActionMethods, err := ReadImplicitField[int32](ctx, "noOfActionMethods", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfActionMethods' field"))
 	}
 	_ = noOfActionMethods
 
-	actionMethods, err := ReadCountArrayField[ActionMethodDataType](ctx, "actionMethods", ReadComplex[ActionMethodDataType](ExtensionObjectDefinitionParseWithBufferProducer[ActionMethodDataType]((int32)(int32(18599))), readBuffer), uint64(noOfActionMethods))
+	actionMethods, err := ReadCountArrayField[ActionMethodDataType](ctx, "actionMethods", ReadComplex[ActionMethodDataType](ExtensionObjectDefinitionParseWithBufferProducer[ActionMethodDataType]((int32)(int32(18599))), readBuffer), uint64(noOfActionMethods), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionMethods' field"))
 	}
@@ -618,51 +619,51 @@ func (m *_JsonActionMetaDataMessage) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for JsonActionMetaDataMessage")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "messageId", m.GetMessageId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "messageId", m.GetMessageId(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "messageType", m.GetMessageType(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "messageType", m.GetMessageType(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageType' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "publisherId", m.GetPublisherId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "publisherId", m.GetPublisherId(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publisherId' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "dataSetWriterId", m.GetDataSetWriterId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "dataSetWriterId", m.GetDataSetWriterId(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetWriterId' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "dataSetWriterName", m.GetDataSetWriterName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "dataSetWriterName", m.GetDataSetWriterName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetWriterName' field")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 		noOfActionTargets := int32(utils.InlineIf(bool((m.GetActionTargets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetActionTargets()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfActionTargets", noOfActionTargets, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfActionTargets", noOfActionTargets, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfActionTargets' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "actionTargets", m.GetActionTargets(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "actionTargets", m.GetActionTargets(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'actionTargets' field")
 		}
 
-		if err := WriteSimpleField[DataSetMetaDataType](ctx, "request", m.GetRequest(), WriteComplex[DataSetMetaDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[DataSetMetaDataType](ctx, "request", m.GetRequest(), WriteComplex[DataSetMetaDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'request' field")
 		}
 
-		if err := WriteSimpleField[DataSetMetaDataType](ctx, "response", m.GetResponse(), WriteComplex[DataSetMetaDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[DataSetMetaDataType](ctx, "response", m.GetResponse(), WriteComplex[DataSetMetaDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'response' field")
 		}
 		noOfActionMethods := int32(utils.InlineIf(bool((m.GetActionMethods()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetActionMethods()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfActionMethods", noOfActionMethods, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfActionMethods", noOfActionMethods, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfActionMethods' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "actionMethods", m.GetActionMethods(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "actionMethods", m.GetActionMethods(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'actionMethods' field")
 		}
 

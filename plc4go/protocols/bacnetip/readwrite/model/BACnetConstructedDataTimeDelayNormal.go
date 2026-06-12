@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTimeDelayNormal(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormal) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeDelayNormal) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeDelayNormal"
 }
 

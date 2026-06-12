@@ -246,7 +246,7 @@ func CastBACnetConstructedDataDefaultFadeTime(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTime) GetTypeName() string {
+func (m *_BACnetConstructedDataDefaultFadeTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDefaultFadeTime"
 }
 

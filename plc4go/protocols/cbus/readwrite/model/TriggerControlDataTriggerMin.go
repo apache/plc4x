@@ -176,7 +176,7 @@ func CastTriggerControlDataTriggerMin(structType any) TriggerControlDataTriggerM
 	return nil
 }
 
-func (m *_TriggerControlDataTriggerMin) GetTypeName() string {
+func (m *_TriggerControlDataTriggerMin) GetPlx4xTypeName() string {
 	return "TriggerControlDataTriggerMin"
 }
 

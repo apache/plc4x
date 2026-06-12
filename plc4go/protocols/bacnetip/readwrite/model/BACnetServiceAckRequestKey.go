@@ -207,7 +207,7 @@ func CastBACnetServiceAckRequestKey(structType any) BACnetServiceAckRequestKey {
 	return nil
 }
 
-func (m *_BACnetServiceAckRequestKey) GetTypeName() string {
+func (m *_BACnetServiceAckRequestKey) GetPlx4xTypeName() string {
 	return "BACnetServiceAckRequestKey"
 }
 

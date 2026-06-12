@@ -193,7 +193,7 @@ func CastBACnetNodeTypeTagged(structType any) BACnetNodeTypeTagged {
 	return nil
 }
 
-func (m *_BACnetNodeTypeTagged) GetTypeName() string {
+func (m *_BACnetNodeTypeTagged) GetPlx4xTypeName() string {
 	return "BACnetNodeTypeTagged"
 }
 

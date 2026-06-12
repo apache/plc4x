@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -273,7 +274,7 @@ func CastMonitoredItemCreateRequest(structType any) MonitoredItemCreateRequest {
 	return nil
 }
 
-func (m *_MonitoredItemCreateRequest) GetTypeName() string {
+func (m *_MonitoredItemCreateRequest) GetPlx4xTypeName() string {
 	return "MonitoredItemCreateRequest"
 }
 
@@ -307,19 +308,19 @@ func (m *_MonitoredItemCreateRequest) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemToMonitor, err := ReadSimpleField[ReadValueId](ctx, "itemToMonitor", ReadComplex[ReadValueId](ExtensionObjectDefinitionParseWithBufferProducer[ReadValueId]((int32)(int32(628))), readBuffer))
+	itemToMonitor, err := ReadSimpleField[ReadValueId](ctx, "itemToMonitor", ReadComplex[ReadValueId](ExtensionObjectDefinitionParseWithBufferProducer[ReadValueId]((int32)(int32(628))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemToMonitor' field"))
 	}
 	m.ItemToMonitor = itemToMonitor
 
-	monitoringMode, err := ReadEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", ReadEnum(MonitoringModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	monitoringMode, err := ReadEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", ReadEnum(MonitoringModeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoringMode' field"))
 	}
 	m.MonitoringMode = monitoringMode
 
-	requestedParameters, err := ReadSimpleField[MonitoringParameters](ctx, "requestedParameters", ReadComplex[MonitoringParameters](ExtensionObjectDefinitionParseWithBufferProducer[MonitoringParameters]((int32)(int32(742))), readBuffer))
+	requestedParameters, err := ReadSimpleField[MonitoringParameters](ctx, "requestedParameters", ReadComplex[MonitoringParameters](ExtensionObjectDefinitionParseWithBufferProducer[MonitoringParameters]((int32)(int32(742))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedParameters' field"))
 	}
@@ -350,15 +351,15 @@ func (m *_MonitoredItemCreateRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for MonitoredItemCreateRequest")
 		}
 
-		if err := WriteSimpleField[ReadValueId](ctx, "itemToMonitor", m.GetItemToMonitor(), WriteComplex[ReadValueId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ReadValueId](ctx, "itemToMonitor", m.GetItemToMonitor(), WriteComplex[ReadValueId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'itemToMonitor' field")
 		}
 
-		if err := WriteSimpleEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", m.GetMonitoringMode(), WriteEnum[MonitoringMode, uint32](MonitoringMode.GetValue, MonitoringMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", m.GetMonitoringMode(), WriteEnum[MonitoringMode, uint32](MonitoringMode.GetValue, MonitoringMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'monitoringMode' field")
 		}
 
-		if err := WriteSimpleField[MonitoringParameters](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[MonitoringParameters](writeBuffer)); err != nil {
+		if err := WriteSimpleField[MonitoringParameters](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[MonitoringParameters](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestedParameters' field")
 		}
 

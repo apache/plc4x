@@ -193,7 +193,7 @@ func CastBACnetIPModeTagged(structType any) BACnetIPModeTagged {
 	return nil
 }
 
-func (m *_BACnetIPModeTagged) GetTypeName() string {
+func (m *_BACnetIPModeTagged) GetPlx4xTypeName() string {
 	return "BACnetIPModeTagged"
 }
 

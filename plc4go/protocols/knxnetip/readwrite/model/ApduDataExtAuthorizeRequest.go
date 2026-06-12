@@ -222,7 +222,7 @@ func CastApduDataExtAuthorizeRequest(structType any) ApduDataExtAuthorizeRequest
 	return nil
 }
 
-func (m *_ApduDataExtAuthorizeRequest) GetTypeName() string {
+func (m *_ApduDataExtAuthorizeRequest) GetPlx4xTypeName() string {
 	return "ApduDataExtAuthorizeRequest"
 }
 

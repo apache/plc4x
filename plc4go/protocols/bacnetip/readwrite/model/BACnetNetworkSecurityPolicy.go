@@ -211,7 +211,7 @@ func CastBACnetNetworkSecurityPolicy(structType any) BACnetNetworkSecurityPolicy
 	return nil
 }
 
-func (m *_BACnetNetworkSecurityPolicy) GetTypeName() string {
+func (m *_BACnetNetworkSecurityPolicy) GetPlx4xTypeName() string {
 	return "BACnetNetworkSecurityPolicy"
 }
 

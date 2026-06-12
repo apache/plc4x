@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLastStateChange(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastStateChange) GetTypeName() string {
+func (m *_BACnetConstructedDataLastStateChange) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastStateChange"
 }
 

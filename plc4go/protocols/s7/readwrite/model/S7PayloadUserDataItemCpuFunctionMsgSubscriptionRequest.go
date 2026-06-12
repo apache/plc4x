@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -263,7 +264,7 @@ func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(structType any) 
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest"
 }
 
@@ -296,7 +297,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetLengthInByt
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, err error) {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, err error) {
 	m.S7PayloadUserDataItemContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -319,21 +320,21 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) parse(ctx cont
 	}
 	m.reservedField0 = reservedField0
 
-	magicKey, err := ReadSimpleField(ctx, "magicKey", ReadString(readBuffer, uint32(64)))
+	magicKey, err := ReadSimpleField(ctx, "magicKey", ReadString(readBuffer, uint32(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'magicKey' field"))
 	}
 	m.MagicKey = magicKey
 
 	var alarmtype *AlarmStateType
-	alarmtype, err = ReadOptionalField[AlarmStateType](ctx, "alarmtype", ReadEnum(AlarmStateTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((subscription) >= (128)))
+	alarmtype, err = ReadOptionalField[AlarmStateType](ctx, "alarmtype", ReadEnum(AlarmStateTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((dataLength) >= (12)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmtype' field"))
 	}
 	m.Alarmtype = alarmtype
 
 	var reserve *uint8
-	reserve, err = ReadOptionalField[uint8](ctx, "reserve", ReadUnsignedByte(readBuffer, uint8(8)), bool((subscription) >= (128)))
+	reserve, err = ReadOptionalField[uint8](ctx, "reserve", ReadUnsignedByte(readBuffer, uint8(8)), bool((dataLength) >= (12)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reserve' field"))
 	}
@@ -372,11 +373,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[string](ctx, "magicKey", m.GetMagicKey(), WriteString(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[string](ctx, "magicKey", m.GetMagicKey(), WriteString(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'magicKey' field")
 		}
 
-		if err := WriteOptionalEnumField[AlarmStateType](ctx, "alarmtype", "AlarmStateType", m.GetAlarmtype(), WriteEnum[AlarmStateType, uint8](AlarmStateType.GetValue, AlarmStateType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetSubscription()) >= (128))); err != nil {
+		if err := WriteOptionalEnumField[AlarmStateType](ctx, "alarmtype", "AlarmStateType", m.GetAlarmtype(), WriteEnum[AlarmStateType, uint8](AlarmStateType.GetValue, AlarmStateType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetDataLength()) >= (12))); err != nil {
 			return errors.Wrap(err, "Error serializing 'alarmtype' field")
 		}
 

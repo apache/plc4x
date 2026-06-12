@@ -180,7 +180,7 @@ func CastApduDataExtFileStreamInfoReport(structType any) ApduDataExtFileStreamIn
 	return nil
 }
 
-func (m *_ApduDataExtFileStreamInfoReport) GetTypeName() string {
+func (m *_ApduDataExtFileStreamInfoReport) GetPlx4xTypeName() string {
 	return "ApduDataExtFileStreamInfoReport"
 }
 

@@ -232,7 +232,7 @@ func CastNodeIdTwoByte(structType any) NodeIdTwoByte {
 	return nil
 }
 
-func (m *_NodeIdTwoByte) GetTypeName() string {
+func (m *_NodeIdTwoByte) GetPlx4xTypeName() string {
 	return "NodeIdTwoByte"
 }
 

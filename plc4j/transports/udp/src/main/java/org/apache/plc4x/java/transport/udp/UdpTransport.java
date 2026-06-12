@@ -18,23 +18,28 @@
  */
 package org.apache.plc4x.java.transport.udp;
 
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.transports.api.Transport;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
+import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
+import org.apache.plc4x.java.transport.udp.config.UdpTransportConfiguration;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UdpTransport implements Transport, HasConfiguration<UdpTransportConfiguration> {
+public class UdpTransport implements Transport<UdpTransportConfiguration> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UdpTransport.class);
 
     private static final Pattern TRANSPORT_UDP_PATTERN = Pattern.compile(
-        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?");
+        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?.*");
 
-    private UdpTransportConfiguration configuration;
+    private final SharedUdpSocketManager sharedUdpSocketManager = new SharedUdpSocketManager();
 
     @Override
     public String getTransportCode() {
@@ -43,19 +48,25 @@ public class UdpTransport implements Transport, HasConfiguration<UdpTransportCon
 
     @Override
     public String getTransportName() {
-        return "UDP Datagram Transport";
+        return "UDP";
     }
 
     @Override
-    public void setConfiguration(UdpTransportConfiguration configuration) {
-        this.configuration = configuration;
+    public Class<UdpTransportConfiguration> getTransportConfigType() {
+        return UdpTransportConfiguration.class;
     }
 
     @Override
-    public ChannelFactory createChannelFactory(String transportConfig) {
-        final Matcher matcher = TRANSPORT_UDP_PATTERN.matcher(transportConfig);
-        if(!matcher.matches()) {
-            throw new PlcRuntimeException("Invalid url for UDP transport");
+    public TransportInstance<UdpTransportConfiguration> createTransportInstance(
+        String transportUrl, TransportConfiguration configuration, AuditLog auditLog) throws TransportException {
+        if (!(configuration instanceof UdpTransportConfiguration udpTransportConfiguration)) {
+            throw new IllegalArgumentException(String.format("Expected configuration of type %s but got %s",
+                UdpTransportConfiguration.class.getSimpleName(), configuration.getClass().getSimpleName()));
+        }
+
+        final Matcher matcher = TRANSPORT_UDP_PATTERN.matcher(transportUrl);
+        if (!matcher.matches()) {
+            throw new PlcRuntimeException("Invalid url for UDP transport: " + transportUrl);
         }
         String ip = matcher.group("ip");
         String hostname = matcher.group("hostname");
@@ -63,32 +74,18 @@ public class UdpTransport implements Transport, HasConfiguration<UdpTransportCon
 
         // If the port wasn't specified, try to get a default port from the configuration.
         int port;
-        int localPort = UdpTransportConfiguration.NO_DEFAULT_PORT;
-        if(portString != null) {
+        if (portString != null) {
             port = Integer.parseInt(portString);
-        } else if ((configuration != null) &&  (configuration.getDefaultPort() != UdpTransportConfiguration.NO_DEFAULT_PORT)) {
-            port = configuration.getDefaultPort();
+        } else if (udpTransportConfiguration.getDefaultPort() != UdpTransportConfiguration.NO_DEFAULT_PORT) {
+            port = udpTransportConfiguration.getDefaultPort();
         } else {
             throw new PlcRuntimeException("No port defined");
         }
-        if (configuration != null) {
-            localPort = configuration.getLocalPort();
-        }
 
-        // Create the fully qualified remote socket address which we should connect to.
-        SocketAddress remoteAddress = new InetSocketAddress((ip == null) ? hostname : ip, port);
-        if(localPort != UdpTransportConfiguration.NO_DEFAULT_PORT) {
-            SocketAddress localAddress = new InetSocketAddress(localPort);
-            return new UdpChannelFactory(localAddress, remoteAddress);
-        }
+        InetSocketAddress remoteAddress = new InetSocketAddress((ip != null) ? ip : hostname, port);
 
-        // Initialize the channel factory with the default socket address we want to connect to.
-        return new UdpChannelFactory(remoteAddress);
-    }
-
-    @Override
-    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
-        return DefaultUdpTransportConfiguration.class;
+        LOGGER.debug("Creating UDP transport instance for {}:{}", (ip != null) ? ip : hostname, port);
+        return new UdpTransportInstance(remoteAddress, udpTransportConfiguration, sharedUdpSocketManager, auditLog);
     }
 
 }

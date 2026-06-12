@@ -246,7 +246,7 @@ func CastBACnetConstructedDataUpdateKeySetTimeout(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUpdateKeySetTimeout"
 }
 

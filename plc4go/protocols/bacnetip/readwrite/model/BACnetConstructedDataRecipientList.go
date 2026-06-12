@@ -211,7 +211,7 @@ func CastBACnetConstructedDataRecipientList(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataRecipientList) GetTypeName() string {
+func (m *_BACnetConstructedDataRecipientList) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRecipientList"
 }
 

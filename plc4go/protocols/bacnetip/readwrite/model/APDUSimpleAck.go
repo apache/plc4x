@@ -224,7 +224,7 @@ func CastAPDUSimpleAck(structType any) APDUSimpleAck {
 	return nil
 }
 
-func (m *_APDUSimpleAck) GetTypeName() string {
+func (m *_APDUSimpleAck) GetPlx4xTypeName() string {
 	return "APDUSimpleAck"
 }
 

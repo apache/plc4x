@@ -163,7 +163,7 @@ func CastStatusCode(structType any) StatusCode {
 	return nil
 }
 
-func (m *_StatusCode) GetTypeName() string {
+func (m *_StatusCode) GetPlx4xTypeName() string {
 	return "StatusCode"
 }
 

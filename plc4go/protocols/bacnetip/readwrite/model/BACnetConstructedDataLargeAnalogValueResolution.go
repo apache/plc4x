@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLargeAnalogValueResolution(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueResolution"
 }
 

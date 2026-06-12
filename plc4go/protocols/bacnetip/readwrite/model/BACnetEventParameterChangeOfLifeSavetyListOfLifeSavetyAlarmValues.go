@@ -225,7 +225,7 @@ func CastBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues(struc
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues"
 }
 

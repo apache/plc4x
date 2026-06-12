@@ -211,7 +211,7 @@ func CastS7PayloadWriteVarRequest(structType any) S7PayloadWriteVarRequest {
 	return nil
 }
 
-func (m *_S7PayloadWriteVarRequest) GetTypeName() string {
+func (m *_S7PayloadWriteVarRequest) GetPlx4xTypeName() string {
 	return "S7PayloadWriteVarRequest"
 }
 

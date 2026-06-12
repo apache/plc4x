@@ -254,7 +254,7 @@ func CastBACnetConfirmedServiceRequestReadRangeRangeByTime(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReadRangeRangeByTime"
 }
 

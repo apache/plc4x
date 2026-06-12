@@ -76,7 +76,7 @@ var _ AdsReadWriteRequest = (*_AdsReadWriteRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadWriteRequest)(nil)
 
 // NewAdsReadWriteRequest factory function for _AdsReadWriteRequest
-func NewAdsReadWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) *_AdsReadWriteRequest {
+func NewAdsReadWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) *_AdsReadWriteRequest {
 	_result := &_AdsReadWriteRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		IndexGroup:        indexGroup,
@@ -276,7 +276,7 @@ func CastAdsReadWriteRequest(structType any) AdsReadWriteRequest {
 	return nil
 }
 
-func (m *_AdsReadWriteRequest) GetTypeName() string {
+func (m *_AdsReadWriteRequest) GetPlx4xTypeName() string {
 	return "AdsReadWriteRequest"
 }
 

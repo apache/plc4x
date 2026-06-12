@@ -189,7 +189,7 @@ func CastS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest(structType any) S7
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest"
 }
 

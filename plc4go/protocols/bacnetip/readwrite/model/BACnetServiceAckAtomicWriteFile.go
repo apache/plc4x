@@ -225,7 +225,7 @@ func CastBACnetServiceAckAtomicWriteFile(structType any) BACnetServiceAckAtomicW
 	return nil
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) GetTypeName() string {
+func (m *_BACnetServiceAckAtomicWriteFile) GetPlx4xTypeName() string {
 	return "BACnetServiceAckAtomicWriteFile"
 }
 

@@ -246,7 +246,7 @@ func CastBACnetConstructedDataOccupancyLowerLimitEnforced(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) GetTypeName() string {
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOccupancyLowerLimitEnforced"
 }
 

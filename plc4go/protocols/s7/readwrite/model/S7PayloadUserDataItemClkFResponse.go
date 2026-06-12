@@ -263,7 +263,7 @@ func CastS7PayloadUserDataItemClkFResponse(structType any) S7PayloadUserDataItem
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemClkFResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemClkFResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemClkFResponse"
 }
 

@@ -180,7 +180,7 @@ func CastWriterGroupTransportDataType(structType any) WriterGroupTransportDataTy
 	return nil
 }
 
-func (m *_WriterGroupTransportDataType) GetTypeName() string {
+func (m *_WriterGroupTransportDataType) GetPlx4xTypeName() string {
 	return "WriterGroupTransportDataType"
 }
 

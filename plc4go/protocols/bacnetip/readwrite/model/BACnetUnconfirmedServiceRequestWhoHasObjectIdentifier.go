@@ -221,7 +221,7 @@ func CastBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(structType any) B
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier"
 }
 

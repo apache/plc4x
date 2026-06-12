@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.ctrlx.readwrite.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.config.Configuration;
 
-public class CtrlXConfiguration implements PlcConnectionConfiguration {
+public class CtrlXConfiguration implements Configuration {
 }

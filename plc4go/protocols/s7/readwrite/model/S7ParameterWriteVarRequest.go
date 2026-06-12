@@ -211,7 +211,7 @@ func CastS7ParameterWriteVarRequest(structType any) S7ParameterWriteVarRequest {
 	return nil
 }
 
-func (m *_S7ParameterWriteVarRequest) GetTypeName() string {
+func (m *_S7ParameterWriteVarRequest) GetPlx4xTypeName() string {
 	return "S7ParameterWriteVarRequest"
 }
 

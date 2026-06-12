@@ -180,7 +180,7 @@ func CastDataSetReaderTransportDataType(structType any) DataSetReaderTransportDa
 	return nil
 }
 
-func (m *_DataSetReaderTransportDataType) GetTypeName() string {
+func (m *_DataSetReaderTransportDataType) GetPlx4xTypeName() string {
 	return "DataSetReaderTransportDataType"
 }
 

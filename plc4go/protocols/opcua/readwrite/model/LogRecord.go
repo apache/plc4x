@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -402,7 +403,7 @@ func CastLogRecord(structType any) LogRecord {
 	return nil
 }
 
-func (m *_LogRecord) GetTypeName() string {
+func (m *_LogRecord) GetPlx4xTypeName() string {
 	return "LogRecord"
 }
 
@@ -459,55 +460,55 @@ func (m *_LogRecord) parse(ctx context.Context, readBuffer utils.ReadBuffer, par
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	eventTime, err := ReadSimpleField(ctx, "eventTime", ReadSignedLong(readBuffer, uint8(64)))
+	eventTime, err := ReadSimpleField(ctx, "eventTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventTime' field"))
 	}
 	m.EventTime = eventTime
 
-	severity, err := ReadSimpleField(ctx, "severity", ReadUnsignedShort(readBuffer, uint8(16)))
+	severity, err := ReadSimpleField(ctx, "severity", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'severity' field"))
 	}
 	m.Severity = severity
 
-	eventType, err := ReadSimpleField[NodeId](ctx, "eventType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	eventType, err := ReadSimpleField[NodeId](ctx, "eventType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventType' field"))
 	}
 	m.EventType = eventType
 
-	sourceNode, err := ReadSimpleField[NodeId](ctx, "sourceNode", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	sourceNode, err := ReadSimpleField[NodeId](ctx, "sourceNode", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceNode' field"))
 	}
 	m.SourceNode = sourceNode
 
-	sourceName, err := ReadSimpleField[PascalString](ctx, "sourceName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	sourceName, err := ReadSimpleField[PascalString](ctx, "sourceName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceName' field"))
 	}
 	m.SourceName = sourceName
 
-	message, err := ReadSimpleField[LocalizedText](ctx, "message", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	message, err := ReadSimpleField[LocalizedText](ctx, "message", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
 	m.Message = message
 
-	traceContext, err := ReadSimpleField[TraceContextDataType](ctx, "traceContext", ReadComplex[TraceContextDataType](ExtensionObjectDefinitionParseWithBufferProducer[TraceContextDataType]((int32)(int32(19749))), readBuffer))
+	traceContext, err := ReadSimpleField[TraceContextDataType](ctx, "traceContext", ReadComplex[TraceContextDataType](ExtensionObjectDefinitionParseWithBufferProducer[TraceContextDataType]((int32)(int32(19749))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'traceContext' field"))
 	}
 	m.TraceContext = traceContext
 
-	noOfAdditionalData, err := ReadImplicitField[int32](ctx, "noOfAdditionalData", ReadSignedInt(readBuffer, uint8(32)))
+	noOfAdditionalData, err := ReadImplicitField[int32](ctx, "noOfAdditionalData", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAdditionalData' field"))
 	}
 	_ = noOfAdditionalData
 
-	additionalData, err := ReadCountArrayField[NameValuePair](ctx, "additionalData", ReadComplex[NameValuePair](ExtensionObjectDefinitionParseWithBufferProducer[NameValuePair]((int32)(int32(19750))), readBuffer), uint64(noOfAdditionalData))
+	additionalData, err := ReadCountArrayField[NameValuePair](ctx, "additionalData", ReadComplex[NameValuePair](ExtensionObjectDefinitionParseWithBufferProducer[NameValuePair]((int32)(int32(19750))), readBuffer), uint64(noOfAdditionalData), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalData' field"))
 	}
@@ -538,39 +539,39 @@ func (m *_LogRecord) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for LogRecord")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "eventTime", m.GetEventTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "eventTime", m.GetEventTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventTime' field")
 		}
 
-		if err := WriteSimpleField[uint16](ctx, "severity", m.GetSeverity(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		if err := WriteSimpleField[uint16](ctx, "severity", m.GetSeverity(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'severity' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "eventType", m.GetEventType(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "eventType", m.GetEventType(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventType' field")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "sourceNode", m.GetSourceNode(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "sourceNode", m.GetSourceNode(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sourceNode' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "sourceName", m.GetSourceName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "sourceName", m.GetSourceName(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sourceName' field")
 		}
 
-		if err := WriteSimpleField[LocalizedText](ctx, "message", m.GetMessage(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+		if err := WriteSimpleField[LocalizedText](ctx, "message", m.GetMessage(), WriteComplex[LocalizedText](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
-		if err := WriteSimpleField[TraceContextDataType](ctx, "traceContext", m.GetTraceContext(), WriteComplex[TraceContextDataType](writeBuffer)); err != nil {
+		if err := WriteSimpleField[TraceContextDataType](ctx, "traceContext", m.GetTraceContext(), WriteComplex[TraceContextDataType](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'traceContext' field")
 		}
 		noOfAdditionalData := int32(utils.InlineIf(bool((m.GetAdditionalData()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetAdditionalData()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfAdditionalData", noOfAdditionalData, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfAdditionalData", noOfAdditionalData, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfAdditionalData' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "additionalData", m.GetAdditionalData(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "additionalData", m.GetAdditionalData(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'additionalData' field")
 		}
 

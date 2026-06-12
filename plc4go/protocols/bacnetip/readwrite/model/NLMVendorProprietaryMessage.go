@@ -222,7 +222,7 @@ func CastNLMVendorProprietaryMessage(structType any) NLMVendorProprietaryMessage
 	return nil
 }
 
-func (m *_NLMVendorProprietaryMessage) GetTypeName() string {
+func (m *_NLMVendorProprietaryMessage) GetPlx4xTypeName() string {
 	return "NLMVendorProprietaryMessage"
 }
 

@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
-import io.vavr.control.Try;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
@@ -50,12 +49,12 @@ public class EncryptionHandler {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    private final Conversation conversation;
+    private final SecureChannelState conversation;
 
     private final SymmetricEncryptionHandler symmetricEncryptionHandler;
     private final AsymmetricEncryptionHandler asymmetricEncryptionHandler;
 
-    public EncryptionHandler(Conversation conversation, PrivateKey senderPrivateKey) {
+    public EncryptionHandler(SecureChannelState conversation, PrivateKey senderPrivateKey) {
         this.conversation = conversation;
         this.symmetricEncryptionHandler = new SymmetricEncryptionHandler(conversation, conversation.getSecurityPolicy());
         this.asymmetricEncryptionHandler = new AsymmetricEncryptionHandler(conversation, conversation.getSecurityPolicy(), senderPrivateKey);
@@ -101,7 +100,12 @@ public class EncryptionHandler {
     public SignatureData createClientSignature() throws GeneralSecurityException {
         SecurityPolicy securityPolicy = conversation.getSecurityPolicy();
         byte[] lastServerNonce = conversation.getRemoteNonce();
-        byte[] cert = Try.of(() -> conversation.getRemoteCertificate().getEncoded()).getOrElse(new byte[0]);
+        byte[] cert;
+        try {
+            cert = conversation.getRemoteCertificate().getEncoded();
+        } catch (Exception e) {
+            cert = new byte[0];
+        }
         byte[] bytes = ByteBuffer.allocate(cert.length + lastServerNonce.length).put(cert).put(lastServerNonce).array();
         byte[] signed = asymmetricEncryptionHandler.sign(bytes);
         return new SignatureData(new PascalString(securityPolicy.getAsymmetricSignatureAlgorithm().getUri()), new PascalByteString(signed.length, signed));

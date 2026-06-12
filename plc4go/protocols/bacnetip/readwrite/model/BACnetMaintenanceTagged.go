@@ -224,7 +224,7 @@ func CastBACnetMaintenanceTagged(structType any) BACnetMaintenanceTagged {
 	return nil
 }
 
-func (m *_BACnetMaintenanceTagged) GetTypeName() string {
+func (m *_BACnetMaintenanceTagged) GetPlx4xTypeName() string {
 	return "BACnetMaintenanceTagged"
 }
 

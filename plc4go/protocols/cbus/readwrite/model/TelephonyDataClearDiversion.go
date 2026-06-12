@@ -176,7 +176,7 @@ func CastTelephonyDataClearDiversion(structType any) TelephonyDataClearDiversion
 	return nil
 }
 
-func (m *_TelephonyDataClearDiversion) GetTypeName() string {
+func (m *_TelephonyDataClearDiversion) GetPlx4xTypeName() string {
 	return "TelephonyDataClearDiversion"
 }
 

@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -252,7 +253,7 @@ func CastDataTypeSchemaHeader(structType any) DataTypeSchemaHeader {
 	return nil
 }
 
-func (m *_DataTypeSchemaHeader) GetTypeName() string {
+func (m *_DataTypeSchemaHeader) GetPlx4xTypeName() string {
 	return "DataTypeSchemaHeader"
 }
 
@@ -321,49 +322,49 @@ func (m *_DataTypeSchemaHeader) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfNamespaces, err := ReadImplicitField[int32](ctx, "noOfNamespaces", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNamespaces, err := ReadImplicitField[int32](ctx, "noOfNamespaces", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNamespaces' field"))
 	}
 	_ = noOfNamespaces
 
-	namespaces, err := ReadCountArrayField[PascalString](ctx, "namespaces", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaces))
+	namespaces, err := ReadCountArrayField[PascalString](ctx, "namespaces", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaces), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaces' field"))
 	}
 	m.Namespaces = namespaces
 
-	noOfStructureDataTypes, err := ReadImplicitField[int32](ctx, "noOfStructureDataTypes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfStructureDataTypes, err := ReadImplicitField[int32](ctx, "noOfStructureDataTypes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfStructureDataTypes' field"))
 	}
 	_ = noOfStructureDataTypes
 
-	structureDataTypes, err := ReadCountArrayField[StructureDescription](ctx, "structureDataTypes", ReadComplex[StructureDescription](ExtensionObjectDefinitionParseWithBufferProducer[StructureDescription]((int32)(int32(15489))), readBuffer), uint64(noOfStructureDataTypes))
+	structureDataTypes, err := ReadCountArrayField[StructureDescription](ctx, "structureDataTypes", ReadComplex[StructureDescription](ExtensionObjectDefinitionParseWithBufferProducer[StructureDescription]((int32)(int32(15489))), readBuffer), uint64(noOfStructureDataTypes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureDataTypes' field"))
 	}
 	m.StructureDataTypes = structureDataTypes
 
-	noOfEnumDataTypes, err := ReadImplicitField[int32](ctx, "noOfEnumDataTypes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEnumDataTypes, err := ReadImplicitField[int32](ctx, "noOfEnumDataTypes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEnumDataTypes' field"))
 	}
 	_ = noOfEnumDataTypes
 
-	enumDataTypes, err := ReadCountArrayField[EnumDescription](ctx, "enumDataTypes", ReadComplex[EnumDescription](ExtensionObjectDefinitionParseWithBufferProducer[EnumDescription]((int32)(int32(15490))), readBuffer), uint64(noOfEnumDataTypes))
+	enumDataTypes, err := ReadCountArrayField[EnumDescription](ctx, "enumDataTypes", ReadComplex[EnumDescription](ExtensionObjectDefinitionParseWithBufferProducer[EnumDescription]((int32)(int32(15490))), readBuffer), uint64(noOfEnumDataTypes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumDataTypes' field"))
 	}
 	m.EnumDataTypes = enumDataTypes
 
-	noOfSimpleDataTypes, err := ReadImplicitField[int32](ctx, "noOfSimpleDataTypes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfSimpleDataTypes, err := ReadImplicitField[int32](ctx, "noOfSimpleDataTypes", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSimpleDataTypes' field"))
 	}
 	_ = noOfSimpleDataTypes
 
-	simpleDataTypes, err := ReadCountArrayField[SimpleTypeDescription](ctx, "simpleDataTypes", ReadComplex[SimpleTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[SimpleTypeDescription]((int32)(int32(15007))), readBuffer), uint64(noOfSimpleDataTypes))
+	simpleDataTypes, err := ReadCountArrayField[SimpleTypeDescription](ctx, "simpleDataTypes", ReadComplex[SimpleTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[SimpleTypeDescription]((int32)(int32(15007))), readBuffer), uint64(noOfSimpleDataTypes), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'simpleDataTypes' field"))
 	}
@@ -394,35 +395,35 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for DataTypeSchemaHeader")
 		}
 		noOfNamespaces := int32(utils.InlineIf(bool((m.GetNamespaces()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNamespaces()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNamespaces", noOfNamespaces, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNamespaces", noOfNamespaces, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNamespaces' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "namespaces", m.GetNamespaces(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "namespaces", m.GetNamespaces(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'namespaces' field")
 		}
 		noOfStructureDataTypes := int32(utils.InlineIf(bool((m.GetStructureDataTypes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetStructureDataTypes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfStructureDataTypes", noOfStructureDataTypes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfStructureDataTypes", noOfStructureDataTypes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfStructureDataTypes' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "structureDataTypes", m.GetStructureDataTypes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "structureDataTypes", m.GetStructureDataTypes(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'structureDataTypes' field")
 		}
 		noOfEnumDataTypes := int32(utils.InlineIf(bool((m.GetEnumDataTypes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEnumDataTypes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfEnumDataTypes", noOfEnumDataTypes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfEnumDataTypes", noOfEnumDataTypes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEnumDataTypes' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "enumDataTypes", m.GetEnumDataTypes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "enumDataTypes", m.GetEnumDataTypes(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'enumDataTypes' field")
 		}
 		noOfSimpleDataTypes := int32(utils.InlineIf(bool((m.GetSimpleDataTypes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetSimpleDataTypes()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfSimpleDataTypes", noOfSimpleDataTypes, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfSimpleDataTypes", noOfSimpleDataTypes, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfSimpleDataTypes' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "simpleDataTypes", m.GetSimpleDataTypes(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "simpleDataTypes", m.GetSimpleDataTypes(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'simpleDataTypes' field")
 		}
 

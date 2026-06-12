@@ -354,7 +354,7 @@ func CastBACnetWeekNDayTagged(structType any) BACnetWeekNDayTagged {
 	return nil
 }
 
-func (m *_BACnetWeekNDayTagged) GetTypeName() string {
+func (m *_BACnetWeekNDayTagged) GetPlx4xTypeName() string {
 	return "BACnetWeekNDayTagged"
 }
 

@@ -135,7 +135,7 @@ func CastLocaleId(structType any) LocaleId {
 	return nil
 }
 
-func (m *_LocaleId) GetTypeName() string {
+func (m *_LocaleId) GetPlx4xTypeName() string {
 	return "LocaleId"
 }
 

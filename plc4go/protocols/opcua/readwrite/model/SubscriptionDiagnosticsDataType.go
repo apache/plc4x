@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -677,7 +678,7 @@ func CastSubscriptionDiagnosticsDataType(structType any) SubscriptionDiagnostics
 	return nil
 }
 
-func (m *_SubscriptionDiagnosticsDataType) GetTypeName() string {
+func (m *_SubscriptionDiagnosticsDataType) GetPlx4xTypeName() string {
 	return "SubscriptionDiagnosticsDataType"
 }
 
@@ -798,193 +799,193 @@ func (m *_SubscriptionDiagnosticsDataType) parse(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionId' field"))
 	}
 	m.SessionId = sessionId
 
-	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
 	m.SubscriptionId = subscriptionId
 
-	priority, err := ReadSimpleField(ctx, "priority", ReadUnsignedByte(readBuffer, uint8(8)))
+	priority, err := ReadSimpleField(ctx, "priority", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}
 	m.Priority = priority
 
-	publishingInterval, err := ReadSimpleField(ctx, "publishingInterval", ReadDouble(readBuffer, uint8(64)))
+	publishingInterval, err := ReadSimpleField(ctx, "publishingInterval", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishingInterval' field"))
 	}
 	m.PublishingInterval = publishingInterval
 
-	maxKeepAliveCount, err := ReadSimpleField(ctx, "maxKeepAliveCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	maxKeepAliveCount, err := ReadSimpleField(ctx, "maxKeepAliveCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxKeepAliveCount' field"))
 	}
 	m.MaxKeepAliveCount = maxKeepAliveCount
 
-	maxLifetimeCount, err := ReadSimpleField(ctx, "maxLifetimeCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	maxLifetimeCount, err := ReadSimpleField(ctx, "maxLifetimeCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxLifetimeCount' field"))
 	}
 	m.MaxLifetimeCount = maxLifetimeCount
 
-	maxNotificationsPerPublish, err := ReadSimpleField(ctx, "maxNotificationsPerPublish", ReadUnsignedInt(readBuffer, uint8(32)))
+	maxNotificationsPerPublish, err := ReadSimpleField(ctx, "maxNotificationsPerPublish", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxNotificationsPerPublish' field"))
 	}
 	m.MaxNotificationsPerPublish = maxNotificationsPerPublish
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 	m.reservedField0 = reservedField0
 
-	publishingEnabled, err := ReadSimpleField(ctx, "publishingEnabled", ReadBoolean(readBuffer))
+	publishingEnabled, err := ReadSimpleField(ctx, "publishingEnabled", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishingEnabled' field"))
 	}
 	m.PublishingEnabled = publishingEnabled
 
-	modifyCount, err := ReadSimpleField(ctx, "modifyCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	modifyCount, err := ReadSimpleField(ctx, "modifyCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modifyCount' field"))
 	}
 	m.ModifyCount = modifyCount
 
-	enableCount, err := ReadSimpleField(ctx, "enableCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	enableCount, err := ReadSimpleField(ctx, "enableCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enableCount' field"))
 	}
 	m.EnableCount = enableCount
 
-	disableCount, err := ReadSimpleField(ctx, "disableCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	disableCount, err := ReadSimpleField(ctx, "disableCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'disableCount' field"))
 	}
 	m.DisableCount = disableCount
 
-	republishRequestCount, err := ReadSimpleField(ctx, "republishRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	republishRequestCount, err := ReadSimpleField(ctx, "republishRequestCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'republishRequestCount' field"))
 	}
 	m.RepublishRequestCount = republishRequestCount
 
-	republishMessageRequestCount, err := ReadSimpleField(ctx, "republishMessageRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	republishMessageRequestCount, err := ReadSimpleField(ctx, "republishMessageRequestCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'republishMessageRequestCount' field"))
 	}
 	m.RepublishMessageRequestCount = republishMessageRequestCount
 
-	republishMessageCount, err := ReadSimpleField(ctx, "republishMessageCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	republishMessageCount, err := ReadSimpleField(ctx, "republishMessageCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'republishMessageCount' field"))
 	}
 	m.RepublishMessageCount = republishMessageCount
 
-	transferRequestCount, err := ReadSimpleField(ctx, "transferRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	transferRequestCount, err := ReadSimpleField(ctx, "transferRequestCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transferRequestCount' field"))
 	}
 	m.TransferRequestCount = transferRequestCount
 
-	transferredToAltClientCount, err := ReadSimpleField(ctx, "transferredToAltClientCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	transferredToAltClientCount, err := ReadSimpleField(ctx, "transferredToAltClientCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transferredToAltClientCount' field"))
 	}
 	m.TransferredToAltClientCount = transferredToAltClientCount
 
-	transferredToSameClientCount, err := ReadSimpleField(ctx, "transferredToSameClientCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	transferredToSameClientCount, err := ReadSimpleField(ctx, "transferredToSameClientCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transferredToSameClientCount' field"))
 	}
 	m.TransferredToSameClientCount = transferredToSameClientCount
 
-	publishRequestCount, err := ReadSimpleField(ctx, "publishRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	publishRequestCount, err := ReadSimpleField(ctx, "publishRequestCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishRequestCount' field"))
 	}
 	m.PublishRequestCount = publishRequestCount
 
-	dataChangeNotificationsCount, err := ReadSimpleField(ctx, "dataChangeNotificationsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	dataChangeNotificationsCount, err := ReadSimpleField(ctx, "dataChangeNotificationsCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataChangeNotificationsCount' field"))
 	}
 	m.DataChangeNotificationsCount = dataChangeNotificationsCount
 
-	eventNotificationsCount, err := ReadSimpleField(ctx, "eventNotificationsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	eventNotificationsCount, err := ReadSimpleField(ctx, "eventNotificationsCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventNotificationsCount' field"))
 	}
 	m.EventNotificationsCount = eventNotificationsCount
 
-	notificationsCount, err := ReadSimpleField(ctx, "notificationsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	notificationsCount, err := ReadSimpleField(ctx, "notificationsCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationsCount' field"))
 	}
 	m.NotificationsCount = notificationsCount
 
-	latePublishRequestCount, err := ReadSimpleField(ctx, "latePublishRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	latePublishRequestCount, err := ReadSimpleField(ctx, "latePublishRequestCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'latePublishRequestCount' field"))
 	}
 	m.LatePublishRequestCount = latePublishRequestCount
 
-	currentKeepAliveCount, err := ReadSimpleField(ctx, "currentKeepAliveCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	currentKeepAliveCount, err := ReadSimpleField(ctx, "currentKeepAliveCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentKeepAliveCount' field"))
 	}
 	m.CurrentKeepAliveCount = currentKeepAliveCount
 
-	currentLifetimeCount, err := ReadSimpleField(ctx, "currentLifetimeCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	currentLifetimeCount, err := ReadSimpleField(ctx, "currentLifetimeCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentLifetimeCount' field"))
 	}
 	m.CurrentLifetimeCount = currentLifetimeCount
 
-	unacknowledgedMessageCount, err := ReadSimpleField(ctx, "unacknowledgedMessageCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	unacknowledgedMessageCount, err := ReadSimpleField(ctx, "unacknowledgedMessageCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unacknowledgedMessageCount' field"))
 	}
 	m.UnacknowledgedMessageCount = unacknowledgedMessageCount
 
-	discardedMessageCount, err := ReadSimpleField(ctx, "discardedMessageCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	discardedMessageCount, err := ReadSimpleField(ctx, "discardedMessageCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discardedMessageCount' field"))
 	}
 	m.DiscardedMessageCount = discardedMessageCount
 
-	monitoredItemCount, err := ReadSimpleField(ctx, "monitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	monitoredItemCount, err := ReadSimpleField(ctx, "monitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemCount' field"))
 	}
 	m.MonitoredItemCount = monitoredItemCount
 
-	disabledMonitoredItemCount, err := ReadSimpleField(ctx, "disabledMonitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	disabledMonitoredItemCount, err := ReadSimpleField(ctx, "disabledMonitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'disabledMonitoredItemCount' field"))
 	}
 	m.DisabledMonitoredItemCount = disabledMonitoredItemCount
 
-	monitoringQueueOverflowCount, err := ReadSimpleField(ctx, "monitoringQueueOverflowCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	monitoringQueueOverflowCount, err := ReadSimpleField(ctx, "monitoringQueueOverflowCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoringQueueOverflowCount' field"))
 	}
 	m.MonitoringQueueOverflowCount = monitoringQueueOverflowCount
 
-	nextSequenceNumber, err := ReadSimpleField(ctx, "nextSequenceNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	nextSequenceNumber, err := ReadSimpleField(ctx, "nextSequenceNumber", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nextSequenceNumber' field"))
 	}
 	m.NextSequenceNumber = nextSequenceNumber
 
-	eventQueueOverflowCount, err := ReadSimpleField(ctx, "eventQueueOverflowCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	eventQueueOverflowCount, err := ReadSimpleField(ctx, "eventQueueOverflowCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventQueueOverflowCount' field"))
 	}
@@ -1015,131 +1016,131 @@ func (m *_SubscriptionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for SubscriptionDiagnosticsDataType")
 		}
 
-		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'sessionId' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		if err := WriteSimpleField[uint8](ctx, "priority", m.GetPriority(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleField[uint8](ctx, "priority", m.GetPriority(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'priority' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "publishingInterval", m.GetPublishingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "publishingInterval", m.GetPublishingInterval(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishingInterval' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "maxKeepAliveCount", m.GetMaxKeepAliveCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "maxKeepAliveCount", m.GetMaxKeepAliveCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxKeepAliveCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "maxLifetimeCount", m.GetMaxLifetimeCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "maxLifetimeCount", m.GetMaxLifetimeCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxLifetimeCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "maxNotificationsPerPublish", m.GetMaxNotificationsPerPublish(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "maxNotificationsPerPublish", m.GetMaxNotificationsPerPublish(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxNotificationsPerPublish' field")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		if err := WriteSimpleField[bool](ctx, "publishingEnabled", m.GetPublishingEnabled(), WriteBoolean(writeBuffer)); err != nil {
+		if err := WriteSimpleField[bool](ctx, "publishingEnabled", m.GetPublishingEnabled(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishingEnabled' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "modifyCount", m.GetModifyCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "modifyCount", m.GetModifyCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'modifyCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "enableCount", m.GetEnableCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "enableCount", m.GetEnableCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'enableCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "disableCount", m.GetDisableCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "disableCount", m.GetDisableCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'disableCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "republishRequestCount", m.GetRepublishRequestCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "republishRequestCount", m.GetRepublishRequestCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'republishRequestCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "republishMessageRequestCount", m.GetRepublishMessageRequestCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "republishMessageRequestCount", m.GetRepublishMessageRequestCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'republishMessageRequestCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "republishMessageCount", m.GetRepublishMessageCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "republishMessageCount", m.GetRepublishMessageCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'republishMessageCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "transferRequestCount", m.GetTransferRequestCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "transferRequestCount", m.GetTransferRequestCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'transferRequestCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "transferredToAltClientCount", m.GetTransferredToAltClientCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "transferredToAltClientCount", m.GetTransferredToAltClientCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'transferredToAltClientCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "transferredToSameClientCount", m.GetTransferredToSameClientCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "transferredToSameClientCount", m.GetTransferredToSameClientCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'transferredToSameClientCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "publishRequestCount", m.GetPublishRequestCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "publishRequestCount", m.GetPublishRequestCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishRequestCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "dataChangeNotificationsCount", m.GetDataChangeNotificationsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "dataChangeNotificationsCount", m.GetDataChangeNotificationsCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataChangeNotificationsCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "eventNotificationsCount", m.GetEventNotificationsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "eventNotificationsCount", m.GetEventNotificationsCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventNotificationsCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "notificationsCount", m.GetNotificationsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "notificationsCount", m.GetNotificationsCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'notificationsCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "latePublishRequestCount", m.GetLatePublishRequestCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "latePublishRequestCount", m.GetLatePublishRequestCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'latePublishRequestCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "currentKeepAliveCount", m.GetCurrentKeepAliveCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "currentKeepAliveCount", m.GetCurrentKeepAliveCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentKeepAliveCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "currentLifetimeCount", m.GetCurrentLifetimeCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "currentLifetimeCount", m.GetCurrentLifetimeCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentLifetimeCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "unacknowledgedMessageCount", m.GetUnacknowledgedMessageCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "unacknowledgedMessageCount", m.GetUnacknowledgedMessageCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'unacknowledgedMessageCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "discardedMessageCount", m.GetDiscardedMessageCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "discardedMessageCount", m.GetDiscardedMessageCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'discardedMessageCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "monitoredItemCount", m.GetMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "monitoredItemCount", m.GetMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'monitoredItemCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "disabledMonitoredItemCount", m.GetDisabledMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "disabledMonitoredItemCount", m.GetDisabledMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'disabledMonitoredItemCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "monitoringQueueOverflowCount", m.GetMonitoringQueueOverflowCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "monitoringQueueOverflowCount", m.GetMonitoringQueueOverflowCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'monitoringQueueOverflowCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "nextSequenceNumber", m.GetNextSequenceNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "nextSequenceNumber", m.GetNextSequenceNumber(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nextSequenceNumber' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "eventQueueOverflowCount", m.GetEventQueueOverflowCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "eventQueueOverflowCount", m.GetEventQueueOverflowCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'eventQueueOverflowCount' field")
 		}
 

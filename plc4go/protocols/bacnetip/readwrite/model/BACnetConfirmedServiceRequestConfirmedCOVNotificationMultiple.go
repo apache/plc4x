@@ -351,7 +351,7 @@ func CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(structTyp
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"
 }
 

@@ -203,7 +203,7 @@ func CastAirConditioningDataSetZoneGroupOff(structType any) AirConditioningDataS
 	return nil
 }
 
-func (m *_AirConditioningDataSetZoneGroupOff) GetTypeName() string {
+func (m *_AirConditioningDataSetZoneGroupOff) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetZoneGroupOff"
 }
 

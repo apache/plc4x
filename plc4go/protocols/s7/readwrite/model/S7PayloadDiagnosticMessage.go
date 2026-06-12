@@ -324,7 +324,7 @@ func CastS7PayloadDiagnosticMessage(structType any) S7PayloadDiagnosticMessage {
 	return nil
 }
 
-func (m *_S7PayloadDiagnosticMessage) GetTypeName() string {
+func (m *_S7PayloadDiagnosticMessage) GetPlx4xTypeName() string {
 	return "S7PayloadDiagnosticMessage"
 }
 

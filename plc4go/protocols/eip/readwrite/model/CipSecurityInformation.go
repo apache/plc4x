@@ -207,7 +207,7 @@ func CastCipSecurityInformation(structType any) CipSecurityInformation {
 	return nil
 }
 
-func (m *_CipSecurityInformation) GetTypeName() string {
+func (m *_CipSecurityInformation) GetPlx4xTypeName() string {
 	return "CipSecurityInformation"
 }
 

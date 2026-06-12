@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -255,7 +256,7 @@ func CastAggregateFilterResult(structType any) AggregateFilterResult {
 	return nil
 }
 
-func (m *_AggregateFilterResult) GetTypeName() string {
+func (m *_AggregateFilterResult) GetPlx4xTypeName() string {
 	return "AggregateFilterResult"
 }
 
@@ -289,19 +290,19 @@ func (m *_AggregateFilterResult) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	revisedStartTime, err := ReadSimpleField(ctx, "revisedStartTime", ReadSignedLong(readBuffer, uint8(64)))
+	revisedStartTime, err := ReadSimpleField(ctx, "revisedStartTime", ReadSignedLong(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedStartTime' field"))
 	}
 	m.RevisedStartTime = revisedStartTime
 
-	revisedProcessingInterval, err := ReadSimpleField(ctx, "revisedProcessingInterval", ReadDouble(readBuffer, uint8(64)))
+	revisedProcessingInterval, err := ReadSimpleField(ctx, "revisedProcessingInterval", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedProcessingInterval' field"))
 	}
 	m.RevisedProcessingInterval = revisedProcessingInterval
 
-	revisedAggregateConfiguration, err := ReadSimpleField[AggregateConfiguration](ctx, "revisedAggregateConfiguration", ReadComplex[AggregateConfiguration](ExtensionObjectDefinitionParseWithBufferProducer[AggregateConfiguration]((int32)(int32(950))), readBuffer))
+	revisedAggregateConfiguration, err := ReadSimpleField[AggregateConfiguration](ctx, "revisedAggregateConfiguration", ReadComplex[AggregateConfiguration](ExtensionObjectDefinitionParseWithBufferProducer[AggregateConfiguration]((int32)(int32(950))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedAggregateConfiguration' field"))
 	}
@@ -332,15 +333,15 @@ func (m *_AggregateFilterResult) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for AggregateFilterResult")
 		}
 
-		if err := WriteSimpleField[int64](ctx, "revisedStartTime", m.GetRevisedStartTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[int64](ctx, "revisedStartTime", m.GetRevisedStartTime(), WriteSignedLong(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'revisedStartTime' field")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "revisedProcessingInterval", m.GetRevisedProcessingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "revisedProcessingInterval", m.GetRevisedProcessingInterval(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'revisedProcessingInterval' field")
 		}
 
-		if err := WriteSimpleField[AggregateConfiguration](ctx, "revisedAggregateConfiguration", m.GetRevisedAggregateConfiguration(), WriteComplex[AggregateConfiguration](writeBuffer)); err != nil {
+		if err := WriteSimpleField[AggregateConfiguration](ctx, "revisedAggregateConfiguration", m.GetRevisedAggregateConfiguration(), WriteComplex[AggregateConfiguration](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'revisedAggregateConfiguration' field")
 		}
 

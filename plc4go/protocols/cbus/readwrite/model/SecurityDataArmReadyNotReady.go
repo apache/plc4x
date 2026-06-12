@@ -203,7 +203,7 @@ func CastSecurityDataArmReadyNotReady(structType any) SecurityDataArmReadyNotRea
 	return nil
 }
 
-func (m *_SecurityDataArmReadyNotReady) GetTypeName() string {
+func (m *_SecurityDataArmReadyNotReady) GetPlx4xTypeName() string {
 	return "SecurityDataArmReadyNotReady"
 }
 

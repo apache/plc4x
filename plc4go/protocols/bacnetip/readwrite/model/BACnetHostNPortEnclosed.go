@@ -243,7 +243,7 @@ func CastBACnetHostNPortEnclosed(structType any) BACnetHostNPortEnclosed {
 	return nil
 }
 
-func (m *_BACnetHostNPortEnclosed) GetTypeName() string {
+func (m *_BACnetHostNPortEnclosed) GetPlx4xTypeName() string {
 	return "BACnetHostNPortEnclosed"
 }
 

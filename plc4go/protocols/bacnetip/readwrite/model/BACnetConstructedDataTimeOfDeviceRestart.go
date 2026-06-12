@@ -246,7 +246,7 @@ func CastBACnetConstructedDataTimeOfDeviceRestart(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeOfDeviceRestart"
 }
 

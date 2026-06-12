@@ -26,7 +26,6 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -164,7 +163,7 @@ func CastAmsString(structType any) AmsString {
 	return nil
 }
 
-func (m *_AmsString) GetTypeName() string {
+func (m *_AmsString) GetPlx4xTypeName() string {
 	return "AmsString"
 }
 
@@ -220,7 +219,7 @@ func (m *_AmsString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	}
 	_ = strLen
 
-	text, err := ReadSimpleField(ctx, "text", ReadString(readBuffer, uint32(int32(int32(8))*int32((int32(strLen)-int32(int32(1)))))), codegen.WithEncoding("UTF-8"))
+	text, err := ReadSimpleField(ctx, "text", ReadString(readBuffer, uint32(int32(int32(8))*int32((int32(strLen)-int32(int32(1)))))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'text' field"))
 	}
@@ -260,7 +259,7 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(err, "Error serializing 'strLen' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "text", m.GetText(), WriteString(writeBuffer, int32(int32(int32(8))*int32((int32(uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-int32(int32(1)))))), codegen.WithEncoding("UTF-8")); err != nil {
+	if err := WriteSimpleField[string](ctx, "text", m.GetText(), WriteString(writeBuffer, int32(int32(int32(8))*int32((int32(uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-int32(int32(1))))))); err != nil {
 		return errors.Wrap(err, "Error serializing 'text' field")
 	}
 

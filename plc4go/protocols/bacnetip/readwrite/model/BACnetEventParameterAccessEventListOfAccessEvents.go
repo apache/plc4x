@@ -225,7 +225,7 @@ func CastBACnetEventParameterAccessEventListOfAccessEvents(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetEventParameterAccessEventListOfAccessEvents) GetTypeName() string {
+func (m *_BACnetEventParameterAccessEventListOfAccessEvents) GetPlx4xTypeName() string {
 	return "BACnetEventParameterAccessEventListOfAccessEvents"
 }
 

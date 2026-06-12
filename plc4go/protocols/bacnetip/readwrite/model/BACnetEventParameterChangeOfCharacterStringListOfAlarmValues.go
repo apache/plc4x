@@ -225,7 +225,7 @@ func CastBACnetEventParameterChangeOfCharacterStringListOfAlarmValues(structType
 	return nil
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetTypeName() string {
+func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfCharacterStringListOfAlarmValues"
 }
 

@@ -184,7 +184,7 @@ func CastSysexCommandSysexRealtime(structType any) SysexCommandSysexRealtime {
 	return nil
 }
 
-func (m *_SysexCommandSysexRealtime) GetTypeName() string {
+func (m *_SysexCommandSysexRealtime) GetPlx4xTypeName() string {
 	return "SysexCommandSysexRealtime"
 }
 

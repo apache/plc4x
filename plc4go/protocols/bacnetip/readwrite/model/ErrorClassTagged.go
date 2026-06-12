@@ -224,7 +224,7 @@ func CastErrorClassTagged(structType any) ErrorClassTagged {
 	return nil
 }
 
-func (m *_ErrorClassTagged) GetTypeName() string {
+func (m *_ErrorClassTagged) GetPlx4xTypeName() string {
 	return "ErrorClassTagged"
 }
 

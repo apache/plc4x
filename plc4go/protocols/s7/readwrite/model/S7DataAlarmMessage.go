@@ -240,7 +240,7 @@ func CastS7DataAlarmMessage(structType any) S7DataAlarmMessage {
 	return nil
 }
 
-func (m *_S7DataAlarmMessage) GetTypeName() string {
+func (m *_S7DataAlarmMessage) GetPlx4xTypeName() string {
 	return "S7DataAlarmMessage"
 }
 

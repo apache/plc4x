@@ -353,7 +353,7 @@ func CastBACnetNotificationParametersChangeOfCharacterString(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfCharacterString) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfCharacterString) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfCharacterString"
 }
 

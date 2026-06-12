@@ -176,7 +176,7 @@ func CastSecurityDataTamperOn(structType any) SecurityDataTamperOn {
 	return nil
 }
 
-func (m *_SecurityDataTamperOn) GetTypeName() string {
+func (m *_SecurityDataTamperOn) GetPlx4xTypeName() string {
 	return "SecurityDataTamperOn"
 }
 

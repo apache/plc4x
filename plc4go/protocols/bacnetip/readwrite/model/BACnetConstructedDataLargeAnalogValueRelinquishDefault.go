@@ -246,7 +246,7 @@ func CastBACnetConstructedDataLargeAnalogValueRelinquishDefault(structType any) 
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueRelinquishDefault"
 }
 

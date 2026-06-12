@@ -295,7 +295,7 @@ func CastBACnetAccessRule(structType any) BACnetAccessRule {
 	return nil
 }
 
-func (m *_BACnetAccessRule) GetTypeName() string {
+func (m *_BACnetAccessRule) GetPlx4xTypeName() string {
 	return "BACnetAccessRule"
 }
 

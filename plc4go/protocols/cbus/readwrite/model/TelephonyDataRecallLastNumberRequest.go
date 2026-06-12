@@ -228,7 +228,7 @@ func CastTelephonyDataRecallLastNumberRequest(structType any) TelephonyDataRecal
 	return nil
 }
 
-func (m *_TelephonyDataRecallLastNumberRequest) GetTypeName() string {
+func (m *_TelephonyDataRecallLastNumberRequest) GetPlx4xTypeName() string {
 	return "TelephonyDataRecallLastNumberRequest"
 }
 

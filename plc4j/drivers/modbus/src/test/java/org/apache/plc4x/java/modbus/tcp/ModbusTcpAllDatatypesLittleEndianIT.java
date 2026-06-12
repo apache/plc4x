@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.java.modbus.tcp;
 
-import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
+import org.apache.plc4x.java.utils.testutils.driver.DriverTestsuiteRunner;
 
 public class ModbusTcpAllDatatypesLittleEndianIT extends DriverTestsuiteRunner {
 
     public ModbusTcpAllDatatypesLittleEndianIT() {
-        super("/protocols/modbus/tcp/Modbus-all-datatypes-little-endian.xml");
+        super("/protocols/modbus/tcp/Modbus-all-datatypes-little-endian.xml", "org.apache.plc4x.java.modbus.readwrite");
     }
 
 }

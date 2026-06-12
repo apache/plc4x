@@ -135,7 +135,7 @@ func CastStructure(structType any) Structure {
 	return nil
 }
 
-func (m *_Structure) GetTypeName() string {
+func (m *_Structure) GetPlx4xTypeName() string {
 	return "Structure"
 }
 

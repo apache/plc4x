@@ -243,7 +243,7 @@ func CastBACnetRecipientEnclosed(structType any) BACnetRecipientEnclosed {
 	return nil
 }
 
-func (m *_BACnetRecipientEnclosed) GetTypeName() string {
+func (m *_BACnetRecipientEnclosed) GetPlx4xTypeName() string {
 	return "BACnetRecipientEnclosed"
 }
 
