@@ -23,15 +23,18 @@ import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
 import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
 import org.apache.plc4x.java.transport.rawsocket.config.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.apache.plc4x.java.utils.testutils.RequirePcap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.pcap4j.core.PcapNetworkInterface;
+import org.pcap4j.core.Pcaps;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // Timeout prevents pcap operations from hanging the entire test suite
 @Timeout(value = 30, unit = TimeUnit.SECONDS)
@@ -41,7 +44,6 @@ class RawSocketTransportTest {
 
     @BeforeEach
     void setUp() {
-        PcapTestSupport.configureNativeLibraryPath();
         transport = new RawSocketTransport();
     }
 
@@ -61,9 +63,11 @@ class RawSocketTransportTest {
     }
 
     @Test
+    @RequirePcap
     void testCreateTransportInstance_dedicated() throws Exception {
         // Skip if no network interfaces or no pcap permissions
-        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
+        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
+        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -89,8 +93,10 @@ class RawSocketTransportTest {
     }
 
     @Test
+    @RequirePcap
     void testCreateTransportInstance_shared() throws Exception {
-        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
+        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
+        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -114,9 +120,11 @@ class RawSocketTransportTest {
     }
 
     @Test
+    @RequirePcap
     //@Disabled("All of a sudden this test hangs ... investigate")
     void testCreateTransportInstance_multipleShared() throws Exception {
-        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
+        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
+        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -156,8 +164,10 @@ class RawSocketTransportTest {
     }
 
     @Test
+    @RequirePcap
     void testCreateTransportInstance_withVLAN() throws Exception {
-        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
+        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
+        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -183,8 +193,10 @@ class RawSocketTransportTest {
     }
 
     @Test
+    @RequirePcap
     void testCreateTransportInstance_withCustomBPF() throws Exception {
-        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
+        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
+        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -209,8 +221,10 @@ class RawSocketTransportTest {
     }
 
     @Test
+    @RequirePcap
     void testCreateTransportInstance_promiscuousMode() throws Exception {
-        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
+        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
+        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -235,10 +249,8 @@ class RawSocketTransportTest {
     }
 
     @Test
+    @RequirePcap
     void testCreateTransportInstance_invalidInterface() {
-        // Constructing the instance reaches pcap's native layer, so skip when it's unavailable.
-        PcapTestSupport.findAllDevsOrSkip();
-
         RawSocketTransportConfiguration config = new RawSocketTransportConfiguration();
         config.interfaceName = "INVALID_INTERFACE_THAT_DOES_NOT_EXIST";
         config.remoteAddress = "00:00:00:00:00:01";

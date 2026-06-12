@@ -21,12 +21,14 @@ package org.apache.plc4x.java.transport.rawsocket;
 import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
 import org.apache.plc4x.java.transport.rawsocket.config.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.apache.plc4x.java.utils.testutils.RequirePcap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNetworkInterface;
+import org.pcap4j.core.Pcaps;
 import org.pcap4j.util.MacAddress;
 
 import java.util.List;
@@ -36,9 +38,11 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for RawSocketTransportInstance.
- * Note: These tests require pcap permissions (root/admin) to run.
- * They use assumptions to skip when permissions are not enough.
+ * Note: These tests require the pcap native library (skipped via {@link RequirePcap} when
+ * absent, e.g. on Windows CI without Npcap) plus pcap permissions (root/admin); assumptions
+ * skip individual tests when permissions are not enough.
  */
+@RequirePcap
 class RawSocketTransportInstanceTest {
 
     private PcapHandle handle;
@@ -51,8 +55,9 @@ class RawSocketTransportInstanceTest {
     @BeforeEach
     void setUp() {
         try {
-            // Find available network interface (skips the test if pcap native libs are unavailable)
-            List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
+            // Find available network interface
+            List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
+            assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
 
             // Find an Ethernet-capable interface (not loopback, not tunnel)
             PcapNetworkInterface selectedNif = null;

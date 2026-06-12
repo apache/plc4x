@@ -18,27 +18,34 @@
  */
 package org.apache.plc4x.java.transport.rawsocket;
 
+import org.apache.plc4x.java.utils.testutils.RequirePcap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapNetworkInterface;
+import org.pcap4j.core.Pcaps;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for SharedRawSocketManager.
- * Note: These tests require pcap permissions to run.
+ * Note: These tests require the pcap native library (skipped via {@link RequirePcap} when
+ * absent, e.g. on Windows CI without Npcap) plus pcap permissions to run.
  */
+@RequirePcap
 class SharedRawSocketManagerTest {
 
     private SharedRawSocketManager manager;
     private PcapNetworkInterface testInterface;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         manager = new SharedRawSocketManager();
-        testInterface = PcapTestSupport.findAllDevsOrSkip().get(0);
+        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
+        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
+        testInterface = devs.get(0);
     }
 
     @Test

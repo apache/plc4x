@@ -22,6 +22,7 @@ import org.apache.plc4x.java.spi.transports.api.TransportInstance;
 import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
 import org.apache.plc4x.java.transport.pcapreplay.config.PcapReplayTransportConfiguration;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.apache.plc4x.java.utils.testutils.RequirePcap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,23 +50,6 @@ class PcapReplayTransportTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        try {
-            // For some reason it doesn't work if we pass this in from the outside.
-            //if (os == "mac") {
-            // On my Intel Mac I found the libs in: "/usr/local/Cellar/libpcap/1.10.1/lib"
-            // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
-            if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
-            } else if (new File("/usr/local/Cellar/libpcap/1.10.5/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.5/lib");
-            } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
-            }
-            //}
-        } catch (Error e) {
-            e.printStackTrace();
-        }
-
         transport = new PcapReplayTransport();
 
         // Create a minimal test PCAP file
@@ -145,6 +129,7 @@ class PcapReplayTransportTest {
     }
 
     @Test
+    @RequirePcap
     void testCreateTransportInstance_withValidPcap() throws Exception {
         PcapReplayTransportConfiguration config = new PcapReplayTransportConfiguration();
         config.pcapFile = "/test.pcap";
@@ -166,6 +151,7 @@ class PcapReplayTransportTest {
     }
 
     @Test
+    @RequirePcap
     void testCreateTransportInstance_withLoop() throws Exception {
         PcapReplayTransportConfiguration config = new PcapReplayTransportConfiguration();
         config.pcapFile = "/test.pcap";
@@ -187,6 +173,7 @@ class PcapReplayTransportTest {
     }
 
     @Test
+    @RequirePcap
     void testCreateTransportInstance_onlyIncoming() throws Exception {
         PcapReplayTransportConfiguration config = new PcapReplayTransportConfiguration();
         config.pcapFile = "/test.pcap";

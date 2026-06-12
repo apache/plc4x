@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.transport.pcapreplay;
 
+import org.apache.plc4x.java.utils.testutils.RequirePcap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,14 +27,17 @@ import org.pcap4j.packet.factory.PacketFactories;
 import org.pcap4j.packet.namednumber.DataLinkType;
 import org.pcap4j.util.MacAddress;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for PcapFilePlayer.
+ * <p>
+ * Every test here drives real pcap playback, so the whole class is skipped when the pcap
+ * native library can't be loaded (e.g. on Windows CI without Npcap installed).
  */
+@RequirePcap
 class PcapFilePlayerTest {
 
     private PcapFilePlayer player;
@@ -50,23 +54,6 @@ class PcapFilePlayerTest {
 
     @BeforeEach
     void setUp() {
-        try {
-            // For some reason it doesn't work if we pass this in from the outside.
-            //if (os == "mac") {
-            // On my Intel Mac I found the libs in: "/usr/local/Cellar/libpcap/1.10.1/lib"
-            // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
-            if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
-            } else if (new File("/usr/local/Cellar/libpcap/1.10.5/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.5/lib");
-            } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
-            }
-            //}
-        } catch (Error e) {
-            e.printStackTrace();
-        }
-
         localMac = MacAddress.getByName("00:11:22:33:44:55");
         remoteMac = MacAddress.getByName("AA:BB:CC:DD:EE:FF");
     }

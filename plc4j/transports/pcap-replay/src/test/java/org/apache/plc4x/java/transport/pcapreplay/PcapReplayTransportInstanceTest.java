@@ -21,12 +21,12 @@ package org.apache.plc4x.java.transport.pcapreplay;
 import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
 import org.apache.plc4x.java.transport.pcapreplay.config.PcapReplayTransportConfiguration;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
+import org.apache.plc4x.java.utils.testutils.RequirePcap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pcap4j.util.MacAddress;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,23 +45,6 @@ class PcapReplayTransportInstanceTest {
 
     @BeforeEach
     void setUp() throws TransportException {
-        try {
-            // For some reason it doesn't work if we pass this in from the outside.
-            //if (os == "mac") {
-            // On my Intel Mac I found the libs in: "/usr/local/Cellar/libpcap/1.10.1/lib"
-            // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
-            if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
-            } else if (new File("/usr/local/Cellar/libpcap/1.10.5/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.5/lib");
-            } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
-            }
-            //}
-        } catch (Error e) {
-            e.printStackTrace();
-        }
-
         // Create a mock player
         mockPlayer = mock(PcapFilePlayer.class);
         when(mockPlayer.isPlaying()).thenReturn(true);
@@ -423,6 +406,7 @@ class PcapReplayTransportInstanceTest {
     }
 
     @Test
+    @RequirePcap
     void testRead_withActualPcapPlayback() throws Exception {
         // Create a real player instance that uses test.pcap
         config.mockPlayer = null; // Use real player
@@ -448,6 +432,7 @@ class PcapReplayTransportInstanceTest {
     }
 
     @Test
+    @RequirePcap
     void testPeekReadableBytes_withActualData() throws Exception {
         config.mockPlayer = null;
         config.pcapFile = "/test.pcap";
@@ -469,6 +454,7 @@ class PcapReplayTransportInstanceTest {
     }
 
     @Test
+    @RequirePcap
     void testGetNumBytesAvailable_withRealPlayer() throws Exception {
         config.mockPlayer = null;
         config.pcapFile = "/test.pcap";
@@ -485,6 +471,7 @@ class PcapReplayTransportInstanceTest {
     }
 
     @Test
+    @RequirePcap
     void testStartStopReplay_withRealPlayer() throws Exception {
         config.mockPlayer = null;
         config.pcapFile = "/test.pcap";
@@ -507,6 +494,7 @@ class PcapReplayTransportInstanceTest {
     }
 
     @Test
+    @RequirePcap
     void testGetPacketsReplayed_withRealPlayer() throws Exception {
         config.mockPlayer = null;
         config.pcapFile = "/test.pcap";
@@ -546,6 +534,7 @@ class PcapReplayTransportInstanceTest {
     }
 
     @Test
+    @RequirePcap
     void testMultipleReadsInSequence() throws Exception {
         config.mockPlayer = null;
         config.pcapFile = "/test.pcap";
@@ -569,6 +558,7 @@ class PcapReplayTransportInstanceTest {
     }
 
     @Test
+    @RequirePcap
     void testRead_afterStoppingReplay() throws Exception {
         config.mockPlayer = null;
         config.pcapFile = "/test.pcap";
