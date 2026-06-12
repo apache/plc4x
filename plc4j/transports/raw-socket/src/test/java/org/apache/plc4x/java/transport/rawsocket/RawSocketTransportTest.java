@@ -236,6 +236,9 @@ class RawSocketTransportTest {
 
     @Test
     void testCreateTransportInstance_invalidInterface() {
+        // Constructing the instance reaches pcap's native layer, so skip when it's unavailable.
+        PcapTestSupport.findAllDevsOrSkip();
+
         RawSocketTransportConfiguration config = new RawSocketTransportConfiguration();
         config.interfaceName = "INVALID_INTERFACE_THAT_DOES_NOT_EXIST";
         config.remoteAddress = "00:00:00:00:00:01";
