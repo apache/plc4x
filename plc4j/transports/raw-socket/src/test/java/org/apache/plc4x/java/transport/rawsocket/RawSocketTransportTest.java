@@ -27,14 +27,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.pcap4j.core.PcapNetworkInterface;
-import org.pcap4j.core.Pcaps;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // Timeout prevents pcap operations from hanging the entire test suite
 @Timeout(value = 30, unit = TimeUnit.SECONDS)
@@ -44,23 +41,7 @@ class RawSocketTransportTest {
 
     @BeforeEach
     void setUp() {
-        try {
-            // For some reason it doesn't work if we pass this in from the outside.
-            //if (os == "mac") {
-            // On my Intel Mac I found the libs in: "/usr/local/Cellar/libpcap/1.10.1/lib"
-            // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
-            if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
-            } else if (new File("/usr/local/Cellar/libpcap/1.10.5/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.5/lib");
-            } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
-            }
-            //}
-        } catch (Error e) {
-            throw new RuntimeException("Could not set JNA library path", e);
-        }
-
+        PcapTestSupport.configureNativeLibraryPath();
         transport = new RawSocketTransport();
     }
 
@@ -82,8 +63,7 @@ class RawSocketTransportTest {
     @Test
     void testCreateTransportInstance_dedicated() throws Exception {
         // Skip if no network interfaces or no pcap permissions
-        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
-        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
+        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -110,8 +90,7 @@ class RawSocketTransportTest {
 
     @Test
     void testCreateTransportInstance_shared() throws Exception {
-        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
-        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
+        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -137,8 +116,7 @@ class RawSocketTransportTest {
     @Test
     //@Disabled("All of a sudden this test hangs ... investigate")
     void testCreateTransportInstance_multipleShared() throws Exception {
-        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
-        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
+        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -179,8 +157,7 @@ class RawSocketTransportTest {
 
     @Test
     void testCreateTransportInstance_withVLAN() throws Exception {
-        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
-        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
+        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -207,8 +184,7 @@ class RawSocketTransportTest {
 
     @Test
     void testCreateTransportInstance_withCustomBPF() throws Exception {
-        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
-        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
+        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
 
         PcapNetworkInterface nif = devs.get(0);
 
@@ -234,8 +210,7 @@ class RawSocketTransportTest {
 
     @Test
     void testCreateTransportInstance_promiscuousMode() throws Exception {
-        List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
-        assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
+        List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
 
         PcapNetworkInterface nif = devs.get(0);
 

@@ -27,10 +27,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNetworkInterface;
-import org.pcap4j.core.Pcaps;
 import org.pcap4j.util.MacAddress;
 
-import java.io.File;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,26 +51,8 @@ class RawSocketTransportInstanceTest {
     @BeforeEach
     void setUp() {
         try {
-            // For some reason it doesn't work if we pass this in from the outside.
-            //if (os == "mac") {
-                // On my Intel Mac I found the libs in: "/usr/local/Cellar/libpcap/1.10.1/lib"
-                // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
-                if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
-                    System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
-                } else if (new File("/usr/local/Cellar/libpcap/1.10.5/lib").exists()) {
-                    System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.5/lib");
-                } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
-                    System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
-                }
-            //}
-        } catch (Error e) {
-            e.printStackTrace();
-        }
-
-        try {
-            // Find available network interface
-            List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
-            assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
+            // Find available network interface (skips the test if pcap native libs are unavailable)
+            List<PcapNetworkInterface> devs = PcapTestSupport.findAllDevsOrSkip();
 
             // Find an Ethernet-capable interface (not loopback, not tunnel)
             PcapNetworkInterface selectedNif = null;

@@ -21,13 +21,10 @@ package org.apache.plc4x.java.transport.rawsocket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapNetworkInterface;
-import org.pcap4j.core.Pcaps;
 
-import java.io.File;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for SharedRawSocketManager.
@@ -40,32 +37,8 @@ class SharedRawSocketManagerTest {
 
     @BeforeEach
     void setUp() {
-        try {
-            // For some reason it doesn't work if we pass this in from the outside.
-            //if (os == "mac") {
-            // On my Intel Mac I found the libs in: "/usr/local/Cellar/libpcap/1.10.1/lib"
-            // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
-            if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
-            } else if (new File("/usr/local/Cellar/libpcap/1.10.5/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.5/lib");
-            } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
-            }
-            //}
-        } catch (Error e) {
-            e.printStackTrace();
-        }
-
         manager = new SharedRawSocketManager();
-
-        try {
-            List<PcapNetworkInterface> devs = Pcaps.findAllDevs();
-            assumeTrue(devs != null && !devs.isEmpty(), "No network interfaces found");
-            testInterface = devs.get(0);
-        } catch (Exception e) {
-            assumeTrue(false, "Could not find network interfaces: " + e.getMessage());
-        }
+        testInterface = PcapTestSupport.findAllDevsOrSkip().get(0);
     }
 
     @Test
