@@ -47,7 +47,8 @@ public class SlmpMessageCodec extends MessageCodecBase<SlmpMessage> {
 
     @Override
     protected int calculateTotalMessageSize(byte[] header, int availableBytes) {
-        // responseDataLength: little-endian uint16 at byte offset 7..8
+        // availableBytes is unused: the total size is fully determined by the length field.
+        // responseDataLength: little-endian uint16 at byte offset 7..8.
         int length = (header[7] & 0xFF) | ((header[8] & 0xFF) << 8);
         return SLMP_3E_HEADER_SIZE + length;
     }

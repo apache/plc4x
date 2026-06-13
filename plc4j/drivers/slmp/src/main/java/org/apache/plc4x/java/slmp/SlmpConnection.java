@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -139,6 +140,16 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
         }
     }
 
+    /**
+     * Sends one 3E request and returns a future for its response. Because the 3E frame carries
+     * no transaction/correlation id and {@link #getMaxConcurrentRequests()} is 1 (so
+     * {@code executeThrottled} serializes I/O), a single {@code pendingResponse} slot suffices.
+     * <p>
+     * Caveat: if a request times out, a late response for it may arrive on the receiver thread
+     * after the next request has installed its own slot, and would then be mis-attributed to that
+     * next request. 3E cannot prevent this (no correlation key), so a timed-out read should be
+     * treated as unreliable by the caller.
+     */
     private CompletableFuture<SlmpResponseFrame3E> sendRequest(SlmpRequestFrame3E request) {
         CompletableFuture<SlmpResponseFrame3E> responseFuture = new CompletableFuture<>();
         pendingResponse = responseFuture;
@@ -180,7 +191,15 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
                 try {
                     items.put(e.getKey(), e.getValue().join());
                 } catch (Exception ex) {
-                    items.put(e.getKey(), new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                    // Partial-failure isolation (v0): a transport/timeout error on one tag fails
+                    // only that tag's entry rather than the whole request. A timeout is surfaced as
+                    // REMOTE_ERROR (the device did not answer in time); any other failure is an
+                    // INTERNAL_ERROR. See sendRequest() for the timeout/correlation caveat.
+                    Throwable cause = (ex instanceof CompletionException && ex.getCause() != null)
+                        ? ex.getCause() : ex;
+                    PlcResponseCode code = (cause instanceof TimeoutException)
+                        ? PlcResponseCode.REMOTE_ERROR : PlcResponseCode.INTERNAL_ERROR;
+                    items.put(e.getKey(), new DefaultPlcResponseItem<>(code, null));
                 }
             }
             return (PlcReadResponse) new DefaultPlcReadResponse(request, items);

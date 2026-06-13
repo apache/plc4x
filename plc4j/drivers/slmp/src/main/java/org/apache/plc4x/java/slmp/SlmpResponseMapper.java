@@ -36,7 +36,7 @@ final class SlmpResponseMapper {
 
     static PlcResponseItem<PlcValue> mapTag(SlmpTag tag, int endCode, byte[] responseData) {
         if (endCode != 0x0000) {
-            LOGGER.warn("SLMP device returned endCode 0x{} for {}", Integer.toHexString(endCode), tag);
+            LOGGER.warn("SLMP device returned endCode {} for {}", String.format("0x%04X", endCode), tag);
             return new DefaultPlcResponseItem<>(PlcResponseCode.REMOTE_ERROR, null);
         }
         PlcValue value = tag.getDataType().decode(responseData, tag.getQuantity());
