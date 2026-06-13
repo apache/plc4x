@@ -75,6 +75,23 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
+          <!--
+            Append the integration-test (DriverTestsuite) coverage into the same
+            exec file as the unit tests, so the coverage check sees the connection,
+            driver and codec classes that are exercised end-to-end by the IT rather
+            than by unit tests.
+          -->
+          <execution>
+            <id>pre-integration-test</id>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+            <configuration>
+              <propertyName>failsafeArgLine</propertyName>
+              <destFile>${project.build.directory}/jacoco.exec</destFile>
+              <append>true</append>
+            </configuration>
+          </execution>
           <execution>
             <id>check-coverage</id>
             <phase>verify</phase>
@@ -179,10 +196,6 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transports-tcp</artifactId>
       <version>0.14.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <!-- Test scope -->
