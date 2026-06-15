@@ -801,6 +801,11 @@
             <!-- Exclude core dumps-->
             <inputExclude>**/hs_err_pid*</inputExclude>
             <inputExclude>**/replay_pid*</inputExclude>
+
+            <!-- Agents exclude -->
+            <inputExclude>AGENTS.md</inputExclude>
+            <inputExclude>SECURITY.MD</inputExclude>
+            <inputExclude>THREAT-MODEL.md</inputExclude>
           </inputExcludes>
         </configuration>
       </plugin>

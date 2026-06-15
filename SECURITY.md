@@ -12,7 +12,7 @@ pull requests for security reports.
 Apache PLC4X's security threat model — what is in and out of scope, the
 security properties the project provides and disclaims, the adversary model,
 the environmental assumptions, and how findings are triaged — is documented in
-[draft-THREAT-MODEL.md](./draft-THREAT-MODEL.md).
+[THREAT-MODEL.md](THREAT-MODEL.md).
 
 PLC4X speaks industrial protocols (Modbus, S7, OPC-UA, ADS, EtherNet/IP, …),
 most of which are unauthenticated and unencrypted by design. The threat model
