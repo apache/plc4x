@@ -804,7 +804,7 @@
 
             <!-- Agents exclude -->
             <inputExclude>AGENTS.md</inputExclude>
-            <inputExclude>SECURITY.MD</inputExclude>
+            <inputExclude>SECURITY.md</inputExclude>
             <inputExclude>THREAT-MODEL.md</inputExclude>
           </inputExcludes>
         </configuration>
