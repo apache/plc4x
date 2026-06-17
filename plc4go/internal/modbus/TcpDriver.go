@@ -22,14 +22,12 @@ package modbus
 import (
 	"context"
 	"net/url"
-	"runtime/debug"
 	"strconv"
 	"sync"
 
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -96,23 +94,6 @@ func (d *TcpDriver) GetConnection(ctx context.Context, transportUrl url.URL, tra
 	}
 
 	// Create a new codec for taking care of encoding/decoding of messages
-	// TODO: the code below looks strange: where is defaultChanel being used?
-	defaultChanel := make(chan any)
-	d.wg.Go(func() {
-		defer func() {
-			if err := recover(); err != nil {
-				connectionLog.Error().
-					Str("stack", string(debug.Stack())).
-					Interface("err", err).
-					Msg("panic-ed")
-			}
-		}()
-		for {
-			msg := <-defaultChanel
-			adu := msg.(model.ModbusTcpADU)
-			connectionLog.Debug().Interface("adu", adu).Msg("got message in the default handler")
-		}
-	})
 	codec := NewMessageCodec(
 		transportInstance,
 		append(d._options, options.WithCustomLogger(connectionLog))...,
