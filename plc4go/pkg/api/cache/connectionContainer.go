@@ -196,6 +196,23 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 			Str("connectionString", c.connectionString).
 			Stringer("newState", newState).
 			Msg("Client returned a connection, reconnecting.")
+		// Close the stale connection before reconnecting. c.connect() overwrites
+		// c.connection with a freshly-established one, so without this the previous
+		// connection's message-codec workers (ReceiveWork/ExpireWork) keep running,
+		// leaking a pair of goroutines on every invalidate->reconnect cycle. Against
+		// an endpoint that accepts TCP but is unresponsive at the protocol layer this
+		// recurs every poll and grows without bound.
+		c.lock.Lock()
+		stale := c.connection
+		c.connection = nil
+		c.lock.Unlock()
+		if stale != nil {
+			if err := stale.Close(); err != nil {
+				c.log.Debug().Err(err).
+					Str("connectionString", c.connectionString).
+					Msg("Error closing stale connection before reconnect")
+			}
+		}
 		c.connect(ctx)
 	default:
 		c.log.Debug().Str("connectionString", c.connectionString).Msg("Client returned valid connection.")

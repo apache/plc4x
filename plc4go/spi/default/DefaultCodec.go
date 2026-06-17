@@ -374,6 +374,9 @@ mainLoop:
 			select {
 			case <-m.notifyExpireWorker:
 				workerLog.Trace().Msg("waking up because of notification")
+			case <-m.ctx.Done():
+				workerLog.Trace().Msg("context done, exiting expire work")
+				return
 			case <-timer.C:
 				workerLog.Trace().Msg("waking up for next expire")
 			}
