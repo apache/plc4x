@@ -68,8 +68,8 @@ public class AbEthMessageCodec extends MessageCodecBase<CIPEncapsulationPacket> 
 
     @Override
     protected int calculateTotalMessageSize(byte[] header, int availableBytes) throws MessageCodecException {
-        // Little-endian unsigned 16-bit at offset 2
-        int payloadLength = (header[LENGTH_OFFSET] & 0xFF) | ((header[LENGTH_OFFSET + 1] & 0xFF) << 8);
+        // Big-endian unsigned 16-bit at offset 2
+        int payloadLength = ((header[LENGTH_OFFSET] & 0xFF) << 8) | (header[LENGTH_OFFSET + 1] & 0xFF);
         return payloadLength + HEADER_OVERHEAD;
     }
 
