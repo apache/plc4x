@@ -44,7 +44,7 @@ public class ManualWallS7300DriverTest extends BasicPlcTest {
 
     public static void main(String[] args) throws Exception {
         boolean testArrays = false;
-        ManualWallS7300DriverTest test = new ManualWallS7300DriverTest("s7://192.168.24.62?remote-rack=0&remote-slot=1");//?log.audit-log-file=ManualWallS7300DriverTest-audit.log
+        ManualWallS7300DriverTest test = new ManualWallS7300DriverTest("s7://192.168.24.60?remote-rack=0&remote-slot=1");//?log.audit-log-file=ManualWallS7300DriverTest-audit.log
         test.addTestCase(/*"g_b1",*/            "%DB42:0.0:BOOL",           new PlcBOOL(true));
         test.addTestCase(/*"g_b8",*/            "%DB42:1.0:BYTE",	        new PlcBYTE(0xAB));
         test.addTestCase(/*"g_b16",*/           "%DB42:2.0:WORD",	        new PlcWORD(0xBEEF));

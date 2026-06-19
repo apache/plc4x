@@ -804,6 +804,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             case OK -> PlcResponseCode.OK;
             case NOT_FOUND, INVALID_ADDRESS -> PlcResponseCode.INVALID_ADDRESS;
             case DATA_TYPE_NOT_SUPPORTED -> PlcResponseCode.INVALID_DATATYPE;
+            case ACCESS_DENIED -> PlcResponseCode.ACCESS_DENIED;
             default -> PlcResponseCode.INTERNAL_ERROR;
         };
     }
