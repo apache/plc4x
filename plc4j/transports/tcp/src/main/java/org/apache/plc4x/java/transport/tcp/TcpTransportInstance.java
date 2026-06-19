@@ -33,16 +33,22 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
+import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 /**
- * Java 21+ optimized version using virtual threads - TCP transport implementation using NIO SocketChannel with async support.
- * Implements AsyncTransportInstance for event-driven I/O without polling.
+ * Java 21+ TCP transport using one virtual thread per connection doing blocking
+ * {@link SocketChannel} reads/writes. On Java 21 a virtual thread blocked in a blocking-mode
+ * channel read/write parks and releases its carrier (the JDK registers the fd with the NIO
+ * poller), so there is no NIO {@link java.nio.channels.Selector}, no readiness-event loop, and
+ * no busy-wait. The public surface and the {@link AsyncTransportInstance} callback contract are
+ * unchanged: the read loop fills the {@link RingBuffer} (under {@code readLock}) and invokes the
+ * registered data listener exactly as the previous selector loop did.
  */
 public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConfiguration> implements AsyncTransportInstance<TcpTransportConfiguration> {
 
@@ -52,22 +58,21 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
 
     private final SocketChannel socketChannel;
     private final RingBuffer ringBuffer;
-    private final ByteBuffer readBuffer;  // Pre-allocated direct buffer for zero-copy I/O
+    private final ByteBuffer readBuffer;  // Reused per-connection direct buffer for channel reads (confined to the read thread)
     private final Lock readLock = new ReentrantLock();
     private final Lock writeLock = new ReentrantLock();
-    private volatile boolean open = true;
+    private final AtomicBoolean open = new AtomicBoolean(true);
 
     // Async support
-    private final Selector selector;
     private volatile Runnable dataListener;
     private volatile Consumer<Throwable> disconnectListener;
-    private final Thread selectorThread;
+    private final Thread readThread;
 
     public TcpTransportInstance(InetSocketAddress remoteAddress, TcpTransportConfiguration configuration, AuditLog auditLog) throws TransportException {
         super(configuration, auditLog);
         LOGGER.debug("TcpTransportInstance");
         this.ringBuffer = new RingBuffer(configuration.receiveBufferSize);
-        this.readBuffer = ByteBuffer.allocateDirect(DEFAULT_BUFFER_SIZE);  // Direct buffer for zero-copy
+        this.readBuffer = ByteBuffer.allocateDirect(DEFAULT_BUFFER_SIZE);  // Reused direct buffer for channel reads
 
         try {
             // Open socket channel
@@ -90,24 +95,22 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
             if (configuration.receiveBufferSize > 0) {
                 socketChannel.socket().setReceiveBufferSize(configuration.receiveBufferSize);
             }
-            if (configuration.readTimeout > 0) {
-                socketChannel.socket().setSoTimeout(configuration.readTimeout);
-            }
+            // Note: configuration.readTimeout is intentionally NOT mapped to Socket.setSoTimeout here.
+            // SO_TIMEOUT has no effect on blocking SocketChannel reads, so the previous call was a
+            // silent no-op. Read timeouts are enforced at the protocol/driver layer (e.g. the S7 driver
+            // bounds responses via CompletableFuture timeouts), not by the transport.
 
             // Connect with timeout
             socketChannel.socket().connect(remoteAddress, configuration.connectTimeout);
 
-            // Configure non-blocking mode for NIO selector
-            socketChannel.configureBlocking(false);
+            // Blocking mode: on Java 21 a virtual thread blocked in read()/write() parks and
+            // releases its carrier, so no selector is needed.
+            socketChannel.configureBlocking(true);
 
-            // Create a selector for async I/O
-            this.selector = Selector.open();
-            socketChannel.register(selector, SelectionKey.OP_READ);
-
-            // Start selector thread using virtual thread (Java 21+)
-            this.selectorThread = Thread.ofVirtual()
-                .name("TCP-Selector-" + remoteAddress.getHostName() + ":" + remoteAddress.getPort())
-                .start(this::runSelectorLoop);
+            // Start the per-connection read loop on a virtual thread (Java 21+)
+            this.readThread = Thread.ofVirtual()
+                .name("TCP-Read-" + remoteAddress.getHostName() + ":" + remoteAddress.getPort())
+                .start(this::runReadLoop);
 
             LOGGER.info("Connected to {}:{} with async support", remoteAddress.getHostName(), remoteAddress.getPort());
 
@@ -135,7 +138,7 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
 
     @Override
     public boolean isOpen() {
-        return open && socketChannel.isConnected();
+        return open.get() && socketChannel.isConnected();
     }
 
     @Override
@@ -197,10 +200,6 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
             // Read and consume bytes
             byte[] bytes = ringBuffer.read(numBytes);
 
-            // Re-enable read operations if they were disabled due to full buffer
-            // Now that we've freed up space, the selector can read more data
-            reEnableReadIfNeeded();
-
             // Log the bytes to the audit log
             if (getAuditLog().isEnabled()) {
                 getAuditLog().write(AuditLogEventType.INCOMING_BYTES, StaticHelper.ENCODE_HEX(bytes));
@@ -227,44 +226,30 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
 
             ByteBuffer writeBuffer = ByteBuffer.wrap(bytes);
 
+            // Blocking write parks the virtual thread until the kernel send buffer accepts the
+            // bytes — natural backpressure, no OP_WRITE registration or sleep loop needed.
             while (writeBuffer.hasRemaining()) {
                 int written = socketChannel.write(writeBuffer);
                 if (written == -1) {
-                    open = false;
+                    open.set(false);
                     throw new TransportException("Connection closed while writing");
-                }
-
-                // If no bytes were written and buffer is full, register for write operations
-                // and wait until the channel becomes writable (prevents CPU spinning)
-                if (written == 0 && writeBuffer.hasRemaining()) {
-                    try {
-                        // Temporarily register interest in write operations
-                        SelectionKey key = socketChannel.keyFor(selector);
-                        if (key != null && key.isValid()) {
-                            key.interestOps(key.interestOps() | SelectionKey.OP_WRITE);
-                            selector.wakeup();
-
-                            // Wait a short time for the socket to become writable
-                            // This prevents tight CPU spinning when the socket buffer is full
-                            Thread.sleep(1);
-
-                            // Remove write interest to avoid unnecessary wake-ups
-                            key.interestOps(SelectionKey.OP_READ);
-                        }
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        throw new TransportException("Write interrupted", e);
-                    }
                 }
             }
 
-            LOGGER.trace("Wrote {} bytes to {}", bytes.length, socketChannel.getRemoteAddress());
+            LOGGER.trace("Wrote {} bytes", bytes.length);
 
             // Log the bytes to the audit log
             if (getAuditLog().isEnabled()) {
                 getAuditLog().write(AuditLogEventType.OUTGOING_BYTES, "Write: " + StaticHelper.ENCODE_HEX(bytes));
             }
-        } catch (TransportException | IOException e) {
+        } catch (AsynchronousCloseException e) {
+            // A concurrent close() closed the channel while we were parked in write(): normal shutdown.
+            if (!open.get()) {
+                return;
+            }
+            getAuditLog().write(AuditLogEventType.ERROR, "Error in write: " + e.getMessage());
+            throw new TransportException("Failed to write data", e);
+        } catch (IOException e) {
             getAuditLog().write(AuditLogEventType.ERROR, "Error in write: " + e.getMessage());
             throw new TransportException("Failed to write data", e);
         } finally {
@@ -274,44 +259,28 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
 
     @Override
     public void close() throws TransportException {
-        if (!open) {
+        // CAS so concurrent/repeated close() calls run the shutdown exactly once.
+        if (!open.compareAndSet(true, false)) {
             return;
         }
 
-        writeLock.lock();
+        // Intentionally takes NO locks: closing the channel is what unblocks a parked read()/write().
+        // Acquiring writeLock first would deadlock against a writer parked in a blocking write().
         try {
-            readLock.lock();
-            try {
-                open = false;
-
-                // Wake up selector
-                selector.wakeup();
-
-                // Close socket channel
-                socketChannel.close();
-
-                // Close selector
-                selector.close();
-
-                // Wait for the selector thread to finish
-                if (selectorThread != null) {
-                    try {
-                        selectorThread.join(1000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-
-                LOGGER.debug("TCP connection closed");
-                getAuditLog().write(AuditLogEventType.CLOSE, "Closed");
-            } catch (IOException e) {
-                getAuditLog().write(AuditLogEventType.ERROR, "Error in close: " + e.getMessage());
-                throw new TransportException("Failed to close connection", e);
-            } finally {
-                readLock.unlock();
-            }
+            socketChannel.close();
+        } catch (IOException e) {
+            getAuditLog().write(AuditLogEventType.ERROR, "Error in close: " + e.getMessage());
+            throw new TransportException("Failed to close connection", e);
         } finally {
-            writeLock.unlock();
+            if (readThread != null) {
+                try {
+                    readThread.join(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            LOGGER.debug("TCP connection closed");
+            getAuditLog().write(AuditLogEventType.CLOSE, "Closed");
         }
     }
 
@@ -321,30 +290,6 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
     private void ensureOpen() throws TransportException {
         if (!isOpen()) {
             throw new TransportException("Transport is closed");
-        }
-    }
-
-    /**
-     * Re-enables read operations on the selector if they were previously disabled
-     * due to a full ring buffer. This should be called after reading from the ring
-     * buffer to allow new data to be received.
-     */
-    private void reEnableReadIfNeeded() {
-        try {
-            SelectionKey key = socketChannel.keyFor(selector);
-            if (key != null && key.isValid()) {
-                // Check if read interest is currently disabled
-                if ((key.interestOps() & SelectionKey.OP_READ) == 0) {
-                    // Re-enable read operations
-                    key.interestOps(key.interestOps() | SelectionKey.OP_READ);
-                    // Wake up the selector to process the new interest ops
-                    selector.wakeup();
-                    LOGGER.debug("Re-enabled read operations after buffer space freed");
-                }
-            }
-        } catch (Exception e) {
-            // Log but don't throw - this is a best-effort operation
-            LOGGER.warn("Failed to re-enable read operations", e);
         }
     }
 
@@ -391,104 +336,76 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
     }
 
     /**
-     * Selector loop that runs in a virtual thread and notifies listeners when data arrives.
-     * This is the core of the async implementation - no polling needed in the driver!
+     * Runs the listener on the read thread, guarding against a misbehaving listener so a thrown
+     * exception cannot silently kill the read loop (mirrors {@link #notifyDisconnect}'s posture).
      */
-    private void runSelectorLoop() {
-        LOGGER.debug("Selector loop started");
+    private void safeRun(Runnable listener) {
+        if (listener == null) {
+            return;
+        }
+        try {
+            listener.run();
+        } catch (Throwable t) {
+            LOGGER.error("Data listener failed", t);
+        }
+    }
 
-        while (open && !Thread.currentThread().isInterrupted()) {
-            try {
-                // Block until events are available (no CPU waste!)
-                int readyChannels = selector.select();
-
-                if (readyChannels == 0) {
+    /**
+     * Per-connection read loop on a virtual thread: blocking read into the ring buffer, then
+     * notify the data listener. No selector, no polling.
+     */
+    private void runReadLoop() {
+        LOGGER.debug("Read loop started");
+        try {
+            while (open.get()) {
+                int free = ringBuffer.remainingForWriting();
+                if (free == 0) {
+                    // Backpressure: the ring buffer is full and the consumer has not drained yet.
+                    // Park briefly and re-check; never disconnect (only the codec knows frame
+                    // boundaries, and cross-thread consumers like COTP can legitimately lag).
+                    LockSupport.parkNanos(200_000L);
                     continue;
                 }
 
-                var selectedKeys = selector.selectedKeys();
-                var iterator = selectedKeys.iterator();
+                // Bound the read to free ring-buffer space so the buffer can never overflow.
+                readBuffer.clear();
+                readBuffer.limit(Math.min(readBuffer.capacity(), free));
 
-                while (iterator.hasNext()) {
-                    SelectionKey key = iterator.next();
-                    iterator.remove();
-
-                    if (!key.isValid()) {
-                        continue;
-                    }
-
-                    if (key.isReadable()) {
-                        // Data available - read it into the ring buffer
-                        boolean notifyListener = false;
-                        boolean connectionClosed = false;
-                        readLock.lock();
-                        try {
-                            // Check available space in ring buffer before reading
-                            int availableSpace = ringBuffer.remainingForWriting();
-                            if (availableSpace == 0) {
-                                LOGGER.warn("Ring buffer is full, temporarily disabling read operations");
-                                key.interestOps(key.interestOps() & ~SelectionKey.OP_READ);
-                                continue;
-                            }
-
-                            // Limit read buffer to available space in ring-buffer to prevent data loss
-                            readBuffer.clear();
-                            readBuffer.limit(Math.min(readBuffer.capacity(), availableSpace));
-
-                            int bytesRead = socketChannel.read(readBuffer);
-
-                            if (bytesRead > 0) {
-                                readBuffer.flip();
-
-                                // Write directly from ByteBuffer to ring buffer (avoiding intermediate byte array allocation)
-                                int bytesWritten = ringBuffer.write(readBuffer);
-                                if (bytesWritten < bytesRead) {
-                                    String message = String.format("Ring buffer write incomplete. Expected to write " +
-                                            "%d bytes but only wrote %d bytes. This should not happen.",
-                                        bytesRead, bytesWritten);
-                                    LOGGER.error(message);
-                                    getAuditLog().write(AuditLogEventType.ERROR, message);
-                                }
-
-                                notifyListener = true;
-                            } else if (bytesRead == -1) {
-                                // Connection closed gracefully by remote
-                                LOGGER.info("Connection closed by remote");
-                                open = false;
-                                connectionClosed = true;
-                            }
-                        } finally {
-                            readLock.unlock();
-                        }
-
-                        // Notify listener OUTSIDE the readLock — the data is already
-                        // in the ring buffer, so holding the lock during response
-                        // processing would unnecessarily block the I/O path and cause
-                        // reentrant lock overhead in processIncomingData().
-                        if (notifyListener) {
-                            Runnable listener = dataListener;
-                            if (listener != null) {
-                                listener.run();
-                            }
-                        } else if (connectionClosed) {
-                            notifyDisconnect(null);
-                            break;
-                        }
-                    }
+                int bytesRead = socketChannel.read(readBuffer);  // parks vthread; releases carrier (JDK21)
+                if (bytesRead == -1) {
+                    // Connection closed gracefully by remote
+                    LOGGER.info("Connection closed by remote");
+                    open.set(false);
+                    notifyDisconnect(null);
+                    break;
+                }
+                if (bytesRead == 0) {
+                    // A blocking read effectively never returns 0; harmless guard.
+                    continue;
                 }
 
-            } catch (IOException e) {
-                getAuditLog().write(AuditLogEventType.ERROR, "Error in runSelectorLoop: " + e.getMessage());
-                if (open) {
-                    LOGGER.error("Error in selector loop", e);
-                    open = false;
-                    notifyDisconnect(e);
+                readBuffer.flip();
+                readLock.lock();
+                try {
+                    ringBuffer.write(readBuffer);
+                } finally {
+                    readLock.unlock();
                 }
-                break;
+
+                // Notify OUTSIDE readLock — the data is already in the ring buffer.
+                safeRun(dataListener);
+            }
+        } catch (IOException e) {
+            // If open==false, an intentional close() closed the channel (AsynchronousCloseException) —
+            // a normal shutdown, not a disconnect. Only a failure while still open is a real disconnect.
+            if (open.get()) {
+                getAuditLog().write(AuditLogEventType.ERROR, "Error in runReadLoop: " + e.getMessage());
+                LOGGER.error("Error in read loop", e);
+                open.set(false);
+                notifyDisconnect(e);
             }
         }
-
-        LOGGER.debug("Selector loop stopped");
+        LOGGER.debug("Read loop stopped");
     }
 
 }
