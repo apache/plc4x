@@ -3261,7 +3261,11 @@ public enum BACnetVendorId {
 
   ELECTR_SOL((int) 1628, (int) 1628, "ElectrSol"),
 
-  CORPORACIN_EMPRESARIAL_ALTRA((int) 1629, (int) 1629, "Corporación Empresarial Altra’"),
+  CORPORACIN_EMPRESARIAL_ALTRA((int) 1629, (int) 1629, "Corporación Empresarial Altra"),
+
+  IC_VALVES_NANJING_CO_LTD((int) 1630, (int) 1630, "IC Valves (Nanjing) Co., Ltd."),
+
+  OCCUSPACE_INC((int) 1631, (int) 1631, "Occuspace Inc."),
 
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, "Unknown");
 

@@ -1627,7 +1627,7 @@ public enum KnxManufacturer {
 
   M_HUARUI((int) 800, (int) 861, "HUARUI"),
 
-  M_TECHNOVATION_ALLIANCE_ENTERPRISE_B_V((int) 801, (int) 862, "Technovation Alliance Enterprise B.V"),
+  M_CAMCOM_CABLES_NETHERLANDS((int) 801, (int) 862, "CAMCOM Cables NETHERLANDS"),
 
   M_BI_TECH_ELECTRONICS((int) 802, (int) 863, "BI-TECH Electronics"),
 
@@ -1635,9 +1635,15 @@ public enum KnxManufacturer {
 
   M_KAYBE_NETWORKING_LLP((int) 804, (int) 865, "KAYBE NETWORKING LLP"),
 
-  M_ABB___RESERVED((int) 805, (int) 43954, "ABB - reserved"),
+  M_GUANGZHOU_EASYCTRL_INTELLIGENT_TECHNOLOGY_CO__LTD_((int) 805, (int) 866, "Guangzhou Easyctrl Intelligent Technology Co.,Ltd."),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 806, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_HORIZENTIS((int) 806, (int) 867, "Horizentis"),
+
+  M_HOM_CONTROLS((int) 807, (int) 868, "Hom Controls"),
+
+  M_ABB___RESERVED((int) 808, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 809, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 

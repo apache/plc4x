@@ -1639,7 +1639,9 @@
   ['1626' EME_AUTOMATION ['1626', '"EME Automation"']]
   ['1627' CONTROL_COM_TECHNOLOGIESLLC ['1627', '"ControlCom Technologies, LLC"']]
   ['1628' ELECTR_SOL ['1628', '"ElectrSol"']]
-  ['1629' CORPORACIN_EMPRESARIAL_ALTRA ['1629', '"Corporación Empresarial Altra’"']]
+  ['1629' CORPORACIN_EMPRESARIAL_ALTRA ['1629', '"Corporación Empresarial Altra"']]
+  ['1630' IC_VALVES_NANJING_CO_LTD ['1630', '"IC Valves (Nanjing) Co., Ltd."']]
+  ['1631' OCCUSPACE_INC ['1631', '"Occuspace Inc."']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

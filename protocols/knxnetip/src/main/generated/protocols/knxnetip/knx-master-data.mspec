@@ -1553,12 +1553,15 @@
     ['798' M_ARCOLA_AI_LIMITED ['859', '"Arcola AI Limited"']]
     ['799' M_ZHEJIANG_DOOYA_INTELLIGENT_TECHNOLOGY_CO___LTD_ ['860', '"Zhejiang Dooya Intelligent Technology Co., Ltd."']]
     ['800' M_HUARUI ['861', '"HUARUI"']]
-    ['801' M_TECHNOVATION_ALLIANCE_ENTERPRISE_B_V ['862', '"Technovation Alliance Enterprise B.V"']]
+    ['801' M_CAMCOM_CABLES_NETHERLANDS ['862', '"CAMCOM Cables NETHERLANDS"']]
     ['802' M_BI_TECH_ELECTRONICS ['863', '"BI-TECH Electronics"']]
     ['803' M_BELFAST_CABLES_UK_SOLUTIONS_LTD ['864', '"BELFAST CABLES UK SOLUTIONS LTD"']]
     ['804' M_KAYBE_NETWORKING_LLP ['865', '"KAYBE NETWORKING LLP"']]
-    ['805' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['806' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['805' M_GUANGZHOU_EASYCTRL_INTELLIGENT_TECHNOLOGY_CO__LTD_ ['866', '"Guangzhou Easyctrl Intelligent Technology Co.,Ltd."']]
+    ['806' M_HORIZENTIS ['867', '"Horizentis"']]
+    ['807' M_HOM_CONTROLS ['868', '"Hom Controls"']]
+    ['808' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['809' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
