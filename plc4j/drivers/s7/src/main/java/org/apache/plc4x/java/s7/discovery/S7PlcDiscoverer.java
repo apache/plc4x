@@ -248,7 +248,7 @@ public class S7PlcDiscoverer implements PlcDiscoverer {
 
         String displayName = deviceTypeName + " - " + deviceName;
         PlcDiscoveryItem item = new DefaultPlcDiscoveryItem(
-            "s7", "tcp", ip.address, options, displayName, attributes);
+            "s7", "cotp", ip.address, options, displayName, attributes);
         values.add(item);
         if (handler != null) {
             handler.handle(item);

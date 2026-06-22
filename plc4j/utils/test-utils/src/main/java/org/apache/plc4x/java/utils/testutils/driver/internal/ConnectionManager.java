@@ -90,6 +90,14 @@ public class ConnectionManager {
                 .collect(Collectors.joining("&"));
             connectionUrl += (parameterString.isEmpty() ? "" : "?" + parameterString);
 
+            // The driver test-suite intentionally drives every driver over the synthetic "test"
+            // transport (to replay recorded bytes), which is not in any driver's declared
+            // supported-transport set. Opt out of the SPI supported-transport check
+            // for that case so the replay connects exactly as before that check existed.
+            if ("test".equals(transport)) {
+                connectionUrl += (connectionUrl.contains("?") ? "&" : "?") + "allow-unsupported-transport=true";
+            }
+
             LOGGER.debug("Creating connection with URL: {}", connectionUrl);
 
             // Load driver using ServiceLoader

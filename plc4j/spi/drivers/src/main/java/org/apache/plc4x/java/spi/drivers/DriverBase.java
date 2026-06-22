@@ -40,6 +40,7 @@ import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.LongDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.ShortDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
+import org.apache.plc4x.java.spi.drivers.config.ConnectionControlConfiguration;
 import org.apache.plc4x.java.spi.drivers.functions.PlcDiscoverer;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.drivers.messages.metadata.DefaultOption;
@@ -169,6 +170,29 @@ public abstract class DriverBase implements PlcDriver {
             throw new PlcConnectionException(
                 "This driver is not suited to handle this connection string");
         }
+        ConfigurationFactory configurationFactory = new ConfigurationFactory();
+
+        // Enforce that the selected transport is one this driver actually supports.
+        // Drivers declare their supported transports via getSupportedTransportCodes(); the metadata
+        // getter falls back to the single default transport when no explicit list is declared, so a
+        // driver that only declares a default still yields a non-empty supported set here. Pairing a
+        // driver with a transport it does not support - e.g. a 'tcp' transport with the S7 driver,
+        // which speaks COTP - used to be silently accepted and then misbehave; we now fail fast with a
+        // clear, actionable message. The 'allow-unsupported-transport' connection option intentionally
+        // bypasses ONLY this driver-specific check; it does NOT bypass the 'is the transport registered
+        // at all' lookup further below.
+        ConnectionControlConfiguration connectionControlConfiguration =
+            configurationFactory.createConfiguration(ConnectionControlConfiguration.class, paramString);
+        if (!connectionControlConfiguration.isAllowUnsupportedTransport()) {
+            List<String> supportedTransportCodes = getMetadata().getSupportedTransportCodes();
+            if (!supportedTransportCodes.contains(transportCode)) {
+                throw new PlcConnectionException(
+                    "Transport '" + transportCode + "' is not supported by driver '" + getProtocolCode()
+                        + "'. Supported transports: " + supportedTransportCodes
+                        + ". Set 'allow-unsupported-transport=true' in the connection string to use it anyway.");
+            }
+        }
+
 
         // Get the requested transport type.
         Transport<?> transport = transportManager.getTransport(transportCode).orElseThrow(
@@ -176,7 +200,6 @@ public abstract class DriverBase implements PlcDriver {
 
         // Initialize the configuration for the transport.
         Class<? extends TransportConfiguration> transportConfigType = getTransportConfigurationClass(transport);
-        ConfigurationFactory configurationFactory = new ConfigurationFactory();
         TransportConfiguration transportConfiguration = configurationFactory.createPrefixedConfiguration(
             transportConfigType, transportCode, paramString);
 
