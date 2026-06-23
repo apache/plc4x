@@ -27,6 +27,15 @@
     [simple        uint 16          requestId                   ]
     [discriminator Plc4xRequestType requestType                 ]
     [typeSwitch requestType
+        ['AUTH_REQUEST' Plc4xAuthRequest
+            [implicit uint 8                      usernameLen 'STR_LEN(username)']
+            [simple   vstring 'usernameLen * 8'   username                       ]
+            [implicit uint 8                      passwordLen 'STR_LEN(password)']
+            [simple   vstring 'passwordLen * 8'   password                       ]
+        ]
+        ['AUTH_RESPONSE' Plc4xAuthResponse
+            [simple   Plc4xResponseCode           responseCode                   ]
+        ]
         ['CONNECT_REQUEST' Plc4xConnectRequest
             [implicit uint 8                            connectionStringLen 'STR_LEN(connectionString)']
             [simple   vstring 'connectionStringLen * 8' connectionString                               ]
@@ -229,6 +238,8 @@
     ['0x0A' SUBSCRIPTION_RESPONSE  ]
     ['0x0B' UNSUBSCRIPTION_REQUEST ]
     ['0x0C' UNSUBSCRIPTION_RESPONSE]
+    ['0x0D' AUTH_REQUEST           ]
+    ['0x0E' AUTH_RESPONSE          ]
 ]
 
 [enum uint 8 Plc4xResponseCode

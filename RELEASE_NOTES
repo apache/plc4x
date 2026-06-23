@@ -12,12 +12,24 @@ New Features
   notifications.
 - Added a new PlcCertificateAuthentication to the API module.
 - Initial version of a new Java UMAS driver.
+- The 'plc4x' proxy driver now supports TLS as a transport and
+  requires mandatory username/password authentication
+  (configured via the new "username" and "password" connection
+  parameters).
 
 Incompatible changes
 --------------------
 
 - Dropped support for Java 11, new baseline Java version is
   Java 21.
+- The 'plc4x' proxy driver now defaults to the TLS transport
+  instead of plaintext TCP. Existing plaintext connections must
+  switch to an explicit transport prefix (e.g. "plc4x:tcp://...").
+  When using TLS against a server with a self-signed certificate,
+  set "tls.verify-ssl=false" (or pin the certificate).
+- The 'plc4x' proxy driver now requires username/password
+  authentication on connect; connecting without credentials, or
+  with invalid ones, is rejected with an ACCESS_DENIED handshake.
 - The PLC4J-API module however is intentionally held at
   Java 17 to allow alternate driver implementations to support
   Java 17.
@@ -33,6 +45,10 @@ Incompatible changes
 
 Bug Fixes
 ---------
+
+- Fixed serialization in the 'plc4x' proxy driver's message
+  codec, which did not configure the buffer integer/string
+  encodings under SPI3 and failed to serialize any message.
 
 ==============================================================
 Apache PLC4X 0.13.1

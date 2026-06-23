@@ -45,7 +45,11 @@ public enum Plc4xRequestType {
 
   UNSUBSCRIPTION_REQUEST((short) 0x0B),
 
-  UNSUBSCRIPTION_RESPONSE((short) 0x0C);
+  UNSUBSCRIPTION_RESPONSE((short) 0x0C),
+
+  AUTH_REQUEST((short) 0x0D),
+
+  AUTH_RESPONSE((short) 0x0E);
 
   private static final Map<Short, Plc4xRequestType> map;
 

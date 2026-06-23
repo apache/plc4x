@@ -81,7 +81,11 @@ public abstract class Plc4xMessage implements Message {
 
     // Switch Field
     Plc4xMessageBuilder builder = null;
-    if (EvaluationHelper.equals(requestType, (Plc4xRequestType) (Plc4xRequestType.CONNECT_REQUEST))) {
+    if (EvaluationHelper.equals(requestType, (Plc4xRequestType) (Plc4xRequestType.AUTH_REQUEST))) {
+      builder = Plc4xAuthRequest.staticParsePlc4xMessageBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(requestType, (Plc4xRequestType) (Plc4xRequestType.AUTH_RESPONSE))) {
+      builder = Plc4xAuthResponse.staticParsePlc4xMessageBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(requestType, (Plc4xRequestType) (Plc4xRequestType.CONNECT_REQUEST))) {
       builder = Plc4xConnectRequest.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, (Plc4xRequestType) (Plc4xRequestType.CONNECT_RESPONSE))) {
       builder = Plc4xConnectResponse.staticParsePlc4xMessageBuilder(readBuffer);

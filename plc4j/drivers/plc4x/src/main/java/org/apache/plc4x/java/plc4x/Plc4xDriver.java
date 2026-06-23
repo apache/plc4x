@@ -20,6 +20,7 @@ package org.apache.plc4x.java.plc4x;
 
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
 import org.apache.plc4x.java.plc4x.config.Plc4xTcpTransportConfiguration;
+import org.apache.plc4x.java.plc4x.config.Plc4xTlsTransportConfiguration;
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.spi.drivers.ConnectionBase;
 import org.apache.plc4x.java.spi.drivers.DriverBase;
@@ -53,17 +54,23 @@ public class Plc4xDriver extends DriverBase {
         if ("tcp".equals(transport.getTransportCode())) {
             return Plc4xTcpTransportConfiguration.class;
         }
+        if ("tls".equals(transport.getTransportCode())) {
+            return Plc4xTlsTransportConfiguration.class;
+        }
         return super.getTransportConfigurationClass(transport);
     }
 
     @Override
     public Optional<String> getDefaultTransportCode() {
-        return Optional.of("tcp");
+        // TLS is the default transport - the proxy carries credentials, so the channel should
+        // be encrypted by default. Plaintext TCP remains available as an explicit opt-in
+        // (e.g. "plc4x:tcp://...") for trusted networks or testing.
+        return Optional.of("tls");
     }
 
     @Override
     public List<String> getSupportedTransportCodes() {
-        return List.of("tcp", "test");
+        return List.of("tls", "tcp", "test");
     }
 
     @Override

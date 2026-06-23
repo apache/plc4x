@@ -27,6 +27,8 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
+import org.apache.plc4x.java.plc4x.readwrite.Plc4xAuthRequest;
+import org.apache.plc4x.java.plc4x.readwrite.Plc4xAuthResponse;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xConnectRequest;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xConnectResponse;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xMessage;
@@ -121,6 +123,10 @@ public class Plc4xConnection extends ConnectionBase<Plc4xConfiguration> {
             }
         });
 
+        // Authenticate first. The proxy mandates username/password auth; no operation is
+        // permitted until this exchange succeeds. We never log the credentials.
+        authenticate();
+
         // Open the underlying proxied connection.
         int requestId = txIdGenerator.getAndIncrement();
         CompletableFuture<Plc4xMessage> future = registerPending(requestId);
@@ -144,6 +150,45 @@ public class Plc4xConnection extends ConnectionBase<Plc4xConfiguration> {
             throw e;
         } catch (Exception e) {
             throw new PlcConnectionException("Error establishing proxy connection", e);
+        }
+    }
+
+    /**
+     * Performs the mandatory username/password handshake with the proxy. Throws if the
+     * server rejects the credentials or the exchange does not complete in time. Credentials
+     * are taken from the connection configuration and are never logged.
+     */
+    private void authenticate() throws PlcConnectionException {
+        int requestId = txIdGenerator.getAndIncrement();
+        CompletableFuture<Plc4xMessage> future = registerPending(requestId);
+        String username = configuration.getUsername();
+        String password = configuration.getPassword();
+        if (username == null || password == null) {
+            pendingResponses.remove(requestId);
+            throw new PlcConnectionException(
+                "Username and password are required to connect to a PLC4X proxy server");
+        }
+        try {
+            messageCodec.send(new Plc4xAuthRequest(requestId, username, password));
+        } catch (MessageCodecException e) {
+            pendingResponses.remove(requestId);
+            throw new PlcConnectionException("Failed to send proxy authentication request", e);
+        }
+        try {
+            Plc4xMessage response = future
+                .orTimeout(configuration.getRequestTimeout(), TimeUnit.MILLISECONDS)
+                .get();
+            if (!(response instanceof Plc4xAuthResponse authResponse)) {
+                throw new PlcConnectionException("Unexpected response to proxy authentication: " + response);
+            }
+            if (authResponse.getResponseCode() != Plc4xResponseCode.OK) {
+                throw new PlcConnectionException(
+                    "Authentication against PLC4X proxy server failed: " + authResponse.getResponseCode());
+            }
+        } catch (PlcConnectionException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new PlcConnectionException("Error during proxy authentication", e);
         }
     }
 

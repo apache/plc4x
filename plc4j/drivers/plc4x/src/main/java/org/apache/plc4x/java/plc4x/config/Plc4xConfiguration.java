@@ -34,12 +34,36 @@ public class Plc4xConfiguration implements Configuration {
     @Description("Default timeout for all types of requests.")
     private int requestTimeout;
 
+    @ConfigurationParameter("username")
+    @Description("Username for authenticating against the PLC4X proxy server. Authentication is mandatory.")
+    private String username;
+
+    @ConfigurationParameter("password")
+    @Description("Password for authenticating against the PLC4X proxy server. Authentication is mandatory.")
+    private String password;
+
     public String getRemoteConnectionString() {
         return remoteConnectionString;
     }
 
     public void setRemoteConnectionString(String remoteConnectionString) {
         this.remoteConnectionString = remoteConnectionString;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public int getRequestTimeout() {
