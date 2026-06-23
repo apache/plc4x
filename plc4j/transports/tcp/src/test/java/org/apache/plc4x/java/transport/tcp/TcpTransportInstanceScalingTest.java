@@ -28,6 +28,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -88,11 +89,16 @@ class TcpTransportInstanceScalingTest {
             // Let every connection's read virtual thread settle into its blocking wait.
             Thread.sleep(3000);
 
-            long carriers = Thread.getAllStackTraces().keySet().stream()
+            // One snapshot so carriers and total are derived from the same instant.
+            Set<Thread> threads = Thread.getAllStackTraces().keySet();
+            // Count only virtual-thread scheduler carriers, not ForkJoinPool.commonPool
+            // workers (parallel streams etc.), which would inflate the carrier count.
+            long carriers = threads.stream()
                 .filter(t -> !t.isVirtual())
                 .filter(t -> t.getName().contains("ForkJoinPool"))
+                .filter(t -> !t.getName().contains("commonPool"))
                 .count();
-            long total = Thread.getAllStackTraces().size();
+            long total = threads.size();
             System.out.println("CARRIER_COUNT=" + carriers
                 + " TOTAL_THREADS=" + total
                 + " CONNECTIONS=" + CONNECTIONS

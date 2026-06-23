@@ -107,23 +107,25 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
             // releases its carrier, so no selector is needed.
             socketChannel.configureBlocking(true);
 
-            // Start the per-connection read loop on a virtual thread (Java 21+)
-            this.readThread = Thread.ofVirtual()
-                .name("TCP-Read-" + remoteAddress.getHostName() + ":" + remoteAddress.getPort())
-                .start(this::runReadLoop);
-
             LOGGER.info("Connected to {}:{} with async support", remoteAddress.getHostName(), remoteAddress.getPort());
 
             auditLog.write(AuditLogEventType.CONNECT, String.format(
                 "Connected to: %s:%d with local address: %s:%d",
                 remoteAddress.getHostName(), remoteAddress.getPort(),
                 getLocalAddress().getHostName(), getLocalAddress().getPort()));
+
+            // Start the per-connection read loop on a virtual thread (Java 21+) LAST, so an
+            // unchecked throw from the logging/audit above cannot leak an already-running thread
+            // (the catch only handles IOException and does not stop the read loop).
+            this.readThread = Thread.ofVirtual()
+                .name("TCP-Read-" + remoteAddress.getHostName() + ":" + remoteAddress.getPort())
+                .start(this::runReadLoop);
         } catch (IOException e) {
             String errorMsg = String.format("Failed to connect to %s:%d - %s",
                 remoteAddress.getHostName(), remoteAddress.getPort(), e.getMessage());
             LOGGER.error(errorMsg, e);
+            // errorMsg already embeds e.getMessage(); a single audit event avoids a duplicate.
             auditLog.write(AuditLogEventType.ERROR, "Error in constructor: " + errorMsg);
-            auditLog.write(AuditLogEventType.ERROR, "Error in constructor: " + e.getMessage());
             throw new TransportException(errorMsg, e);
         }
     }
@@ -228,12 +230,10 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
 
             // Blocking write parks the virtual thread until the kernel send buffer accepts the
             // bytes — natural backpressure, no OP_WRITE registration or sleep loop needed.
+            // (write() never returns -1; a broken/closed connection surfaces as
+            // IOException/AsynchronousCloseException, both handled below.)
             while (writeBuffer.hasRemaining()) {
-                int written = socketChannel.write(writeBuffer);
-                if (written == -1) {
-                    open.set(false);
-                    throw new TransportException("Connection closed while writing");
-                }
+                socketChannel.write(writeBuffer);
             }
 
             LOGGER.trace("Wrote {} bytes", bytes.length);
@@ -277,7 +277,10 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
             throw new TransportException("Failed to close connection", e);
         } finally {
             // Always join the read loop, regardless of whether the channel closed cleanly.
-            if (readThread != null) {
+            // Skip the self-join when close() runs on the read thread itself (e.g. a
+            // disconnect/data listener calls close()) — joining yourself only stalls for the
+            // timeout and the loop already exits once open is false.
+            if (readThread != null && Thread.currentThread() != readThread) {
                 try {
                     readThread.join(1000);
                 } catch (InterruptedException e) {
