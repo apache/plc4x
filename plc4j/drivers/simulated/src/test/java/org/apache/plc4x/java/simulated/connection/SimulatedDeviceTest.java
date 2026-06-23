@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.plc4x.java.spi.values.PlcLINT;
+import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,43 @@ public class SimulatedDeviceTest {
         Optional<PlcValue> value = device.get(tag);
 
         assertTrue(value.isPresent());
+    }
+
+    @Test
+    public void randomString() {
+        SimulatedDevice device = new SimulatedDevice("foobar");
+        SimulatedTag tag = SimulatedTag.of("RANDOM/foo:STRING");
+
+        // Random STRING values must be generated directly rather than parsed from random bytes
+        // (which would fail and yield an empty/NOT_FOUND result).
+        Optional<PlcValue> value = device.get(tag);
+
+        assertTrue(value.isPresent());
+        assertNotNull(value.get().getString());
+        assertFalse(value.get().getString().isEmpty());
+    }
+
+    @Test
+    public void randomWString() {
+        SimulatedDevice device = new SimulatedDevice("foobar");
+        SimulatedTag tag = SimulatedTag.of("RANDOM/foo:WSTRING");
+
+        Optional<PlcValue> value = device.get(tag);
+
+        assertTrue(value.isPresent());
+        assertFalse(value.get().getString().isEmpty());
+    }
+
+    @Test
+    public void randomStringArray() {
+        SimulatedDevice device = new SimulatedDevice("foobar");
+        SimulatedTag tag = SimulatedTag.of("RANDOM/foo:STRING[3]");
+
+        Optional<PlcValue> value = device.get(tag);
+
+        assertTrue(value.isPresent());
+        assertInstanceOf(PlcList.class, value.get());
+        assertEquals(3, ((PlcList) value.get()).getLength());
     }
 
     @Test
