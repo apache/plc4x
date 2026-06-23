@@ -1,0 +1,186 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:icons: font
+
+= PLC4X Server
+
+The `PLC4X Server` is a small relay server that speaks the *PLC4X proxy protocol*.
+
+A client using the `plc4x` driver connects to this server, and the server opens the _real_ connection to a PLC on its behalf and forwards reads and writes.
+
+This is useful when the PLCs are only reachable from the machine running the server (e.g. behind a firewall or on an isolated OT network), while the clients live elsewhere.
+
+----
+ +------------+   plc4x proxy protocol    +--------------+   native protocol   +-------+
+ |  client    | ------------------------> | PLC4X Server | ------------------> |  PLC  |
+ | (plc4x drv)|        TLS + auth         |              |   (s7, modbus, …)   |       |
+ +------------+                           +--------------+                     +-------+
+----
+
+The server bundles *all* PLC4X drivers, so the relayed connection string can target any supported protocol (`s7`, `modbus`, `ads`, `opcua`, `simulated`, …).
+
+== Security model
+
+* *Authentication is mandatory.* Every client connection must complete a username/password handshake before any operation is accepted. There is no unauthenticated mode.
+* *TLS is the default transport.* Credentials and payloads are encrypted in transit. Plaintext TCP is available only as an explicit opt-in for trusted networks/testing.
+
+== Building
+
+From the module directory:
+
+[source,bash]
+----
+mvn package
+----
+
+This produces a runnable fat-jar at `target/plc4j-plc4x-server-<version>.jar`.
+
+== Running the server
+
+[source,bash]
+----
+java -jar target/plc4j-plc4x-server-<version>.jar [port]
+----
+
+The listen port may be given as the first argument, or via the `plc4x.server.port` system property / `PLC4X_SERVER_PORT` environment variable. If omitted it defaults to *59837*.
+
+=== First start with no configuration
+
+If you start the server without configuring credentials, it generates a default identity and prints it *once* to the console:
+
+----
+============================================================
+ No PLC4X server credentials configured - generated defaults:
+   username: toddy
+   password: 3Qm0v2yq... (randomly generated)
+ Provide plc4x.server.username/password to set your own.
+============================================================
+----
+
+Because no keystore is configured either, it also generates an ephemeral self-signed TLS certificate and logs its fingerprint so a client can trust/pin it:
+
+----
+No keystore configured - generated an ephemeral self-signed certificate.
+Server certificate SHA-256 fingerprint: B1:A5:51:F8:...:35:CE
+----
+
+NOTE: Configured credentials are *never* logged — only generated ones are printed.
+
+== Configuration
+
+All settings are read from system properties (`-D…`) or environment variables.
+
+[cols="2,3,3,2", options="header"]
+|===
+| Setting | System property | Environment variable | Default
+
+| Listen port    | `plc4x.server.port`              | `PLC4X_SERVER_PORT`      | `59837`
+| Username       | `plc4x.server.username`          | `PLC4X_SERVER_USERNAME`  | `toddy`
+| Password       | `plc4x.server.password`          | `PLC4X_SERVER_PASSWORD`  | _(generated)_
+| Plaintext mode | `plc4x.server.plaintext`         | `PLC4X_SERVER_PLAINTEXT` | `false` (TLS on)
+| TLS keystore   | `plc4x.server.keystore`          | —                        | _(self-signed)_
+| Keystore pass. | `plc4x.server.keystore-password` | —                        | —
+|===
+
+=== Example: explicit credentials + your own TLS certificate
+
+[source,bash]
+----
+java \
+  -Dplc4x.server.port=59837 \
+  -Dplc4x.server.username=operator \
+  -Dplc4x.server.password='s3cr3t!' \
+  -Dplc4x.server.keystore=/etc/plc4x/server.p12 \
+  -Dplc4x.server.keystore-password='keystorepass' \
+  -jar target/plc4j-plc4x-server-<version>.jar
+----
+
+The keystore must be a PKCS12 (or JKS) file containing the server's private key and certificate.
+
+=== Example: plaintext (trusted network / local testing only)
+
+[source,bash]
+----
+java -Dplc4x.server.plaintext=true \
+     -Dplc4x.server.username=operator \
+     -Dplc4x.server.password='s3cr3t!' \
+     -jar target/plc4j-plc4x-server-<version>.jar
+----
+
+== Connecting a client
+
+A client uses the `plc4x` driver. The connection string points at the server, and the *`remote-connection-string`* parameter (URL-encoded) tells the server which PLC to open.
+
+=== Connection string format
+
+----
+plc4x:<transport>://<server-host>:<server-port>?remote-connection-string=<url-encoded-plc-url>&username=<user>&password=<pass>[&tls.verify-ssl=false]
+----
+
+* `<transport>` is `tls` (default) or `tcp` (plaintext). `plc4x://…` without a prefix uses the default, TLS.
+* `remote-connection-string` is the *URL-encoded* connection string the server should open to the actual PLC.
+* `username` / `password` are mandatory.
+* `tls.verify-ssl=false` disables certificate validation — needed when the server uses an auto-generated self-signed certificate. With a properly trusted (CA-signed) certificate, leave it at its default (`true`).
+
+=== Example (Java)
+
+Target PLC URL `s7://10.10.1.5` → URL-encoded as `s7%3A%2F%2F10.10.1.5`.
+
+[source,java]
+----
+String url = "plc4x:tls://server.example.com:59837"
+    + "?remote-connection-string=s7%3A%2F%2F10.10.1.5"
+    + "&username=operator"
+    + "&password=s3cr3t!"
+    + "&tls.verify-ssl=false"; // self-signed server cert
+
+try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(url)) {
+    PlcReadRequest request = connection.readRequestBuilder()
+        .addTagAddress("value", "%DB1.DBW0:INT")
+        .build();
+    PlcReadResponse response = request.execute().get();
+    System.out.println(response.getInteger("value"));
+}
+----
+
+=== Plaintext client
+
+[source,java]
+----
+String url = "plc4x:tcp://server.example.com:59837"
+    + "?remote-connection-string=s7%3A%2F%2F10.10.1.5"
+    + "&username=operator&password=s3cr3t!";
+----
+
+== Troubleshooting
+
+[cols="2,3", options="header"]
+|===
+| Symptom | Cause / fix
+
+| `Server certificate not trusted … PKIX path building failed`
+| TLS cert not trusted by the client. Add `tls.verify-ssl=false`, or trust/pin the server cert.
+
+| Connect fails with `ACCESS_DENIED` / authentication error
+| Missing or wrong `username` / `password`.
+
+| Connect hangs or fails immediately on a `tcp` client vs `tls` server
+| Transport mismatch — client and server must agree on TLS vs plaintext.
+
+| `INVALID_ADDRESS` on connect
+| The server could not open the `remote-connection-string` (bad URL, PLC unreachable).
+|===
