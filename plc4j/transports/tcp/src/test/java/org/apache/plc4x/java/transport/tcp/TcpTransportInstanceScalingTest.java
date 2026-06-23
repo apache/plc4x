@@ -115,7 +115,7 @@ class TcpTransportInstanceScalingTest {
         }
     }
 
-    // tiny holder so the daemon accept loop can observe a stop flag without a field on the test
+    // tiny holder carrying a volatile stop flag the daemon accept loop polls to shut down
     private static final class Flag { volatile boolean running; }
     private final Flag volatileFlag = new Flag();
 }

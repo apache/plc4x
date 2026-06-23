@@ -268,10 +268,15 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
         // Acquiring writeLock first would deadlock against a writer parked in a blocking write().
         try {
             socketChannel.close();
+            // Only log/audit a successful close here; on failure the catch reports ERROR
+            // and rethrows, so emitting CLOSE in finally would falsely signal a clean close.
+            LOGGER.debug("TCP connection closed");
+            getAuditLog().write(AuditLogEventType.CLOSE, "Closed");
         } catch (IOException e) {
             getAuditLog().write(AuditLogEventType.ERROR, "Error in close: " + e.getMessage());
             throw new TransportException("Failed to close connection", e);
         } finally {
+            // Always join the read loop, regardless of whether the channel closed cleanly.
             if (readThread != null) {
                 try {
                     readThread.join(1000);
@@ -279,8 +284,6 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
                     Thread.currentThread().interrupt();
                 }
             }
-            LOGGER.debug("TCP connection closed");
-            getAuditLog().write(AuditLogEventType.CLOSE, "Closed");
         }
     }
 
