@@ -69,6 +69,35 @@ func TestTagHandler_ParseWithArrayIndex(t *testing.T) {
 	assert.Equal(t, uint(3), *props[0].ArrayIndex)
 }
 
+func TestTagHandler_ParseWithWritePriority(t *testing.T) {
+	h := NewTagHandler()
+	tag, err := h.ParseTag("ANALOG_OUTPUT,1/PRESENT_VALUE{8}")
+	require.NoError(t, err)
+	props := tag.(BacNetPlcTag).GetProperties()
+	require.Len(t, props, 1)
+	require.Nil(t, props[0].ArrayIndex)
+	require.NotNil(t, props[0].WritePriority)
+	assert.Equal(t, uint8(8), *props[0].WritePriority)
+}
+
+func TestTagHandler_ParseWithArrayIndexAndWritePriority(t *testing.T) {
+	h := NewTagHandler()
+	tag, err := h.ParseTag("ANALOG_OUTPUT,5/PRESENT_VALUE[2]{16}")
+	require.NoError(t, err)
+	props := tag.(BacNetPlcTag).GetProperties()
+	require.Len(t, props, 1)
+	require.NotNil(t, props[0].ArrayIndex)
+	assert.Equal(t, uint(2), *props[0].ArrayIndex)
+	require.NotNil(t, props[0].WritePriority)
+	assert.Equal(t, uint8(16), *props[0].WritePriority)
+}
+
+func TestTagHandler_ParseWritePriorityOutOfRange(t *testing.T) {
+	h := NewTagHandler()
+	_, err := h.ParseTag("ANALOG_OUTPUT,1/PRESENT_VALUE{17}")
+	require.Error(t, err)
+}
+
 func TestTagHandler_ParseMultipleProperties(t *testing.T) {
 	h := NewTagHandler()
 	tag, err := h.ParseTag("ANALOG_INPUT,1/PRESENT_VALUE&OBJECT_NAME&UNITS")

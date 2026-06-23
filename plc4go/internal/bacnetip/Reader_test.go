@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"context"
 	"testing"
 
 	"github.com/rs/zerolog"
@@ -252,7 +253,7 @@ func TestToPlc4xReadResponse_Reject(t *testing.T) {
 	assert.Equal(t, apiModel.PlcResponseCode_INVALID_DATA, resp.GetResponseCode("r"))
 }
 
-func TestToPlc4xReadResponse_Segmented_ReturnsUnsupported(t *testing.T) {
+func TestToPlc4xReadResponse_Segmented_DefensiveFallback(t *testing.T) {
 	reader := newTestReader(t)
 	request := readRequestForTags("big")
 	serviceAck := readWriteModel.NewBACnetServiceAckReadProperty(
@@ -262,12 +263,62 @@ func TestToPlc4xReadResponse_Segmented_ReturnsUnsupported(t *testing.T) {
 		nil,
 		constructedDataFromTag(readWriteModel.CreateBACnetApplicationTagNull()),
 	)
-	// segmentedMessage=true triggers the Phase-2 short-circuit until Phase 5 lands.
+	// In the live read flow a segmented APDU is intercepted and reassembled
+	// before ToPlc4xReadResponse. Reaching decodeComplexAck with a segmented
+	// APDU is unexpected, so it falls back to UNSUPPORTED rather than panicking.
 	apdu := readWriteModel.NewAPDUComplexAck(true, true, 1, nil, nil, serviceAck, nil, nil)
 	resp, err := reader.ToPlc4xReadResponse(apdu, request)
 	require.NoError(t, err)
 	assert.Equal(t, apiModel.PlcResponseCode_UNSUPPORTED, resp.GetResponseCode("big"))
 }
+
+// TestReassembledSegments_RoundTrip verifies the core segmentation path: a real
+// service ack serialized and split across two APDUComplexAck segments is
+// reassembled, reparsed, and decoded back into the original value.
+func TestReassembledSegments_RoundTrip(t *testing.T) {
+	reader := newTestReader(t)
+	request := readRequestForTags("big")
+
+	serviceAck := readWriteModel.NewBACnetServiceAckReadProperty(
+		0,
+		readWriteModel.CreateBACnetContextTagObjectIdentifier(0, uint16(readWriteModel.BACnetObjectType_ANALOG_INPUT), 1),
+		readWriteModel.CreateBACnetPropertyIdentifierTagged(1, uint32(readWriteModel.BACnetPropertyIdentifier_PRESENT_VALUE)),
+		nil,
+		constructedDataFromTag(readWriteModel.CreateBACnetApplicationTagReal(23.5)),
+	)
+	fullBytes, err := serviceAck.Serialize()
+	require.NoError(t, err)
+	require.Greater(t, len(fullBytes), 2)
+
+	// Split the serialized service ack across two segments. Segment 0 carries
+	// the service-choice byte (as the wire format does); concatenation restores
+	// the original bytes.
+	split := len(fullBytes) / 2
+	seg0 := readWriteModel.NewAPDUComplexAck(true, true, 7, ptrU8(0), ptrU8(1), nil, nil, fullBytes[:split])
+	seg1 := readWriteModel.NewAPDUComplexAck(true, false, 7, ptrU8(1), ptrU8(1), nil, nil, fullBytes[split:])
+
+	r := NewInboundReassembler(7, 1)
+	ack0, err := r.AcceptSegment(seg0)
+	require.NoError(t, err)
+	require.NotNil(t, ack0)
+	require.False(t, r.Complete())
+	_, err = r.AcceptSegment(seg1)
+	require.NoError(t, err)
+	require.True(t, r.Complete())
+	require.Equal(t, fullBytes, r.Bytes())
+
+	parsed, err := readWriteModel.BACnetServiceAckParse[readWriteModel.BACnetServiceAck](context.Background(), r.Bytes(), uint32(len(r.Bytes())))
+	require.NoError(t, err)
+
+	resp, err := reader.decodeServiceAck(parsed, request)
+	require.NoError(t, err)
+	assert.Equal(t, apiModel.PlcResponseCode_OK, resp.GetResponseCode("big"))
+	val := resp.GetValue("big")
+	require.NotNil(t, val)
+	assert.InDelta(t, 23.5, val.GetFloat32(), 0.001)
+}
+
+func ptrU8(v uint8) *uint8 { return &v }
 
 // ── ValueDecoder unit tests ───────────────────────────────────────────────
 

@@ -135,6 +135,10 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		// Start a new request-transaction (Is ended in the response-handler)
 		transaction := m.tm.StartTransaction("read")
 		transaction.Submit("readOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
+			// readCtx is the caller's context; it outlives the transaction so a
+			// multi-segment reassembly (driven after we end the transaction) can
+			// keep awaiting segments without being cancelled by transaction teardown.
+			readCtx := ctx
 			ctx, cancel := context.WithCancel(ctx)
 			context.AfterFunc(transactionContext, cancel)
 			// Send the  over the wire
@@ -166,7 +170,18 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				m.log.Trace().Msg("convert response to ")
 				apdu := message.(readWriteModel.BVLC).(interface{ GetNpdu() readWriteModel.NPDU }).GetNpdu().GetApdu()
 
-				// TODO: implement segment handling
+				// Segmented response: the device split the service ack across
+				// multiple APDUs. We can't drive the segment-ack/await loop here
+				// because this callback runs while the codec holds its expectation
+				// lock — instead hand off to a goroutine that uses the caller's
+				// context, and free this transaction slot immediately.
+				if complexAck, ok := apdu.(readWriteModel.APDUComplexAck); ok && complexAck.GetSegmentedMessage() {
+					m.log.Trace().Uint8("invokeId", complexAck.GetOriginalInvokeId()).Msg("segmented read response — starting reassembly")
+					m.wg.Go(func() {
+						m.reassembleSegmentedRead(readCtx, readRequest, complexAck, result)
+					})
+					return transaction.EndRequest()
+				}
 
 				// Convert the bacnet response into a PLC4X response
 				m.log.Trace().Msg("convert response to PLC4X response")
@@ -242,22 +257,27 @@ func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiMo
 	}
 }
 
-// decodeComplexAck handles the happy-path APDUComplexAck for ReadProperty and
-// ReadPropertyMultiple. Segmented responses are flagged but not yet reassembled
-// — that happens in Phase 5.
+// decodeComplexAck handles a non-segmented APDUComplexAck for ReadProperty and
+// ReadPropertyMultiple. Segmented responses are reassembled separately (see
+// reassembleSegmentedRead) and then handed to decodeServiceAck directly.
 func (m *Reader) decodeComplexAck(apdu readWriteModel.APDUComplexAck, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
+	if apdu.GetSegmentedMessage() {
+		// Should not happen: segmented responses are intercepted before this
+		// point. Surface UNSUPPORTED rather than panicking on a nil ServiceAck.
+		m.log.Warn().Uint8("invokeId", apdu.GetOriginalInvokeId()).Msg("segmented APDU reached decodeComplexAck unexpectedly")
+		return broadcastResponseCode(readRequest, apiModel.PlcResponseCode_UNSUPPORTED, map[string]apiModel.PlcResponseCode{}, map[string]values.PlcValue{}), nil
+	}
+	return m.decodeServiceAck(apdu.GetServiceAck(), readRequest)
+}
+
+// decodeServiceAck converts a decoded BACnetServiceAck (whether it arrived in a
+// single APDU or was reassembled from segments) into a PLC4X read response.
+func (m *Reader) decodeServiceAck(serviceAckMsg readWriteModel.BACnetServiceAck, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
 	tagNames := readRequest.GetTagNames()
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	plcValues := map[string]values.PlcValue{}
 
-	if apdu.GetSegmentedMessage() {
-		// Segmentation reassembly is implemented in Phase 5. Until then surface a
-		// well-formed response with UNSUPPORTED so callers handle it gracefully.
-		m.log.Warn().Uint8("invokeId", apdu.GetOriginalInvokeId()).Msg("segmented APDU response — reassembly not yet implemented")
-		return broadcastResponseCode(readRequest, apiModel.PlcResponseCode_UNSUPPORTED, responseCodes, plcValues), nil
-	}
-
-	switch serviceAck := apdu.GetServiceAck().(type) {
+	switch serviceAck := serviceAckMsg.(type) {
 	case readWriteModel.BACnetServiceAckReadProperty:
 		if len(tagNames) == 0 {
 			return nil, errors.New("ReadProperty response without a corresponding requested tag")

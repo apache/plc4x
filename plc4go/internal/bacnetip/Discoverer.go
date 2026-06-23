@@ -136,8 +136,20 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 			if err != nil {
 				return nil, err
 			}
-			if _, err := communicationChannelInstance.broadcastConnection.WriteTo(theBytes, communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
-				d.log.Debug().Err(err).Msg("Error sending broadcast")
+			// Directed (unicast) WhoIs when a remote address is supplied,
+			// otherwise broadcast on the interface.
+			sendConn := communicationChannelInstance.broadcastConnection
+			target := communicationChannelInstance.broadcastConnection.LocalAddr()
+			if specificOptions.remoteAddress != "" {
+				if udpAddr, rerr := resolveBacnetUDPAddr(specificOptions.remoteAddress, specificOptions.bacNetPort); rerr == nil {
+					sendConn = communicationChannelInstance.unicastConnection
+					target = udpAddr
+				} else {
+					d.log.Warn().Err(rerr).Str("remoteAddress", specificOptions.remoteAddress).Msg("invalid remote-address; falling back to broadcast")
+				}
+			}
+			if _, err := sendConn.WriteTo(theBytes, target); err != nil {
+				d.log.Debug().Err(err).Msg("Error sending WhoIs")
 			}
 		}
 		if whoHasOptions := specificOptions.whoHasOptions; whoHasOptions != nil {
@@ -472,8 +484,13 @@ func extractInterfaces(discoveryOptions []options.WithDiscoveryOption) ([]net.In
 }
 
 type protocolSpecificOptions struct {
-	bacNetPort   int
-	whoIsOptions *struct {
+	bacNetPort int
+	// remoteAddress, when set, sends the WhoIs as a directed unicast to this
+	// host (instead of the interface broadcast), enabling targeted discovery of
+	// a specific device or subnet. Host only or host:port; port defaults to
+	// bacNetPort.
+	remoteAddress string
+	whoIsOptions  *struct {
 		limits *struct {
 			low  uint
 			high uint
@@ -497,6 +514,33 @@ type protocolSpecificOptions struct {
 func bacNetPort(port int) option {
 	return func(specificOptions *protocolSpecificOptions) error {
 		specificOptions.bacNetPort = port
+		return nil
+	}
+}
+
+// resolveBacnetUDPAddr parses a "host" or "host:port" string into a UDP address,
+// defaulting the port to defaultPort when none is supplied.
+func resolveBacnetUDPAddr(addr string, defaultPort int) (*net.UDPAddr, error) {
+	host, portStr, err := net.SplitHostPort(addr)
+	if err != nil {
+		// No port present — treat the whole string as the host.
+		host = addr
+		portStr = strconv.Itoa(defaultPort)
+	}
+	ip := net.ParseIP(host)
+	if ip == nil {
+		return nil, errors.Errorf("invalid remote-address host %q", host)
+	}
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		return nil, errors.Wrapf(err, "invalid remote-address port %q", portStr)
+	}
+	return &net.UDPAddr{IP: ip, Port: port}, nil
+}
+
+func remoteAddress(addr string) option {
+	return func(specificOptions *protocolSpecificOptions) error {
+		specificOptions.remoteAddress = addr
 		return nil
 	}
 }
@@ -637,6 +681,14 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 		collectedOptions = append(collectedOptions, bacNetPort(parsedInt))
 	} else {
 		collectedOptions = append(collectedOptions, bacNetPort(47808))
+	}
+
+	if _, ok := filteredOptionMap["remote-address"]; ok {
+		addr, err := OneString(filteredOptionMap, "remote-address")
+		if err != nil {
+			return nil, err
+		}
+		collectedOptions = append(collectedOptions, remoteAddress(addr))
 	}
 
 	if whoIsLow, whoIsHigh, ok, err := func() (whoIsLowLimit uint, whoIsHighLimit uint, ok bool, err error) {

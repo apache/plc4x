@@ -95,6 +95,9 @@ type property struct {
 	PropertyIdentifierProprietary *uint32
 	// ArrayIndex Optional index of property
 	ArrayIndex *uint
+	// WritePriority is the optional BACnet write priority (1..16) for commandable
+	// properties. Only meaningful on write requests; ignored on reads.
+	WritePriority *uint8
 }
 
 func (p property) getId() uint32 {
@@ -114,6 +117,9 @@ func (p property) String() string {
 	}
 	if p.ArrayIndex != nil {
 		result += fmt.Sprintf(":[%d]", p.ArrayIndex)
+	}
+	if p.WritePriority != nil {
+		result += fmt.Sprintf(":{%d}", *p.WritePriority)
 	}
 	return result
 }

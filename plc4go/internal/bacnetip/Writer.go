@@ -177,7 +177,11 @@ func (m *Writer) buildServiceRequest(writeRequest apiModel.PlcWriteRequest) (rea
 			if prop.ArrayIndex != nil {
 				arrayIndex = readWriteModel.CreateBACnetContextTagUnsignedInteger(1, *prop.ArrayIndex)
 			}
-			defs = append(defs, readWriteModel.NewBACnetPropertyWriteDefinition(propId, arrayIndex, cd, nil))
+			var priority readWriteModel.BACnetContextTagUnsignedInteger
+			if prop.WritePriority != nil {
+				priority = readWriteModel.CreateBACnetContextTagUnsignedInteger(3, uint(*prop.WritePriority))
+			}
+			defs = append(defs, readWriteModel.NewBACnetPropertyWriteDefinition(propId, arrayIndex, cd, priority))
 		}
 		specs = append(specs, readWriteModel.NewBACnetWriteAccessSpecification(
 			objectIdTag,
@@ -204,8 +208,12 @@ func (m *Writer) buildSingleWriteProperty(tag BacNetPlcTag, plcValue apiValues.P
 	if prop.ArrayIndex != nil {
 		arrayIndex = readWriteModel.CreateBACnetContextTagUnsignedInteger(2, *prop.ArrayIndex)
 	}
+	var priority readWriteModel.BACnetContextTagUnsignedInteger
+	if prop.WritePriority != nil {
+		priority = readWriteModel.CreateBACnetContextTagUnsignedInteger(4, uint(*prop.WritePriority))
+	}
 	cd := constructedDataFromAppTag(appTag, 3)
-	return readWriteModel.NewBACnetConfirmedServiceRequestWriteProperty(0, objectIdTag, propId, arrayIndex, cd, nil), nil
+	return readWriteModel.NewBACnetConfirmedServiceRequestWriteProperty(0, objectIdTag, propId, arrayIndex, cd, priority), nil
 }
 
 // constructedDataFromAppTag wraps a single ApplicationTag into a generic
