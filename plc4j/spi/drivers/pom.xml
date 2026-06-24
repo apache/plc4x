@@ -83,15 +83,29 @@
         <executions>
           <!--
             This is the SPI3 driver-base core (ConnectionBase, DriverBase, MessageCodecBase, …).
-            It is still largely covered by integration tests in the individual driver modules
-            rather than unit tests here, so it does not yet meet the project-wide coverage rule.
-            Keep measuring/reporting coverage, but do not fail the build until the SPI3 core has
-            its own unit tests. TODO: remove this override once coverage reaches the 0.80 minimum.
+            The connection-lifecycle / receive-loop orchestration (ConnectionBase) and the exhaustive
+            PlcValue converters on the response classes are exercised by the per-driver integration
+            tests rather than by unit tests here, so the module does not reach the project-wide 0.80
+            instruction minimum. We still enforce a realistic floor (catching coverage regressions)
+            and drop the "every class covered" rule. TODO: raise the minimum towards 0.80 as more
+            SPI-core unit tests are added.
           -->
           <execution>
             <id>check-coverage</id>
             <configuration>
-              <haltOnFailure>false</haltOnFailure>
+              <haltOnFailure>true</haltOnFailure>
+              <rules combine.self="override">
+                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit implementation="org.jacoco.report.check.Limit">
+                      <counter>INSTRUCTION</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.25</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
             </configuration>
           </execution>
         </executions>
