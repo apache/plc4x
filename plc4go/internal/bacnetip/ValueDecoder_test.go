@@ -136,3 +136,77 @@ func TestTaggedEnumToPlcValue_RejectsUnsupportedKind(t *testing.T) {
 type complexReturnStub struct{}
 
 func (complexReturnStub) GetValue() []byte { return []byte{1, 2, 3} }
+
+// bitStringPayloadStub satisfies the `GetPayload() BACnetTagPayloadBitString`
+// shape taggedBitStringToPlcValue looks for, standing in for the generated
+// *Tagged bit-string wrappers (ServicesSupported, StatusFlags, ...).
+type bitStringPayloadStub struct {
+	p readWriteModel.BACnetTagPayloadBitString
+}
+
+func (s bitStringPayloadStub) GetPayload() readWriteModel.BACnetTagPayloadBitString { return s.p }
+
+func TestTaggedBitStringToPlcValue_PacksBitsMsbFirst(t *testing.T) {
+	// PROTOCOL_SERVICES_SUPPORTED arrives as a tagged bit string. Bit 5
+	// (subscribe-cov) and bit 15 (write-property) set must pack MSB-first to
+	// bytes [0x04, 0x01], so the agent's positional bit→service decode detects
+	// the right capabilities. A miss here is what made writes report "device is
+	// not writeable".
+	bits := make([]bool, 16)
+	bits[5] = true  // subscribe-cov
+	bits[15] = true // write-property
+	payload := readWriteModel.CreateBACnetApplicationTagBitString(bits).GetPayload()
+
+	got, ok := taggedBitStringToPlcValue(bitStringPayloadStub{payload})
+	require.True(t, ok, "a tagged bit-string payload should be recognized")
+	require.NotNil(t, got)
+	assert.Equal(t, []byte{0x04, 0x01}, got.GetRaw())
+}
+
+func TestTaggedBitStringToPlcValue_RejectsNonBitString(t *testing.T) {
+	got, ok := taggedBitStringToPlcValue(noGetValueStub{})
+	assert.False(t, ok)
+	assert.Nil(t, got)
+}
+
+func TestConstructedDataToPlcValue_ObjectList_WholeArray(t *testing.T) {
+	// A read of OBJECT_LIST (no array index) returns the full element list.
+	// It must decode to a PlcList of "<type>,<instance>" strings (not a
+	// stringified blob), so device discovery can enumerate the objects.
+	objs := []readWriteModel.BACnetApplicationTagObjectIdentifier{
+		readWriteModel.CreateBACnetApplicationTagObjectIdentifier(uint16(readWriteModel.BACnetObjectType_DEVICE), 3001),
+		readWriteModel.CreateBACnetApplicationTagObjectIdentifier(uint16(readWriteModel.BACnetObjectType_ANALOG_OUTPUT), 1),
+		readWriteModel.CreateBACnetApplicationTagObjectIdentifier(uint16(readWriteModel.BACnetObjectType_ANALOG_INPUT), 1),
+	}
+	data := readWriteModel.NewBACnetConstructedDataObjectList(
+		readWriteModel.CreateBACnetOpeningTag(1),
+		readWriteModel.NewBACnetTagHeader(9, 0, 1, nil, nil, nil, nil),
+		readWriteModel.CreateBACnetClosingTag(1),
+		nil, objs)
+
+	got := constructedDataToPlcValue(data)
+	require.NotNil(t, got)
+	require.True(t, got.IsList(), "OBJECT_LIST should decode to a PlcList, got %T", got)
+	list := got.GetList()
+	require.Len(t, list, 3)
+	assert.Equal(t, "DEVICE,3001", list[0].GetString())
+	assert.Equal(t, "ANALOG_OUTPUT,1", list[1].GetString())
+	assert.Equal(t, "ANALOG_INPUT,1", list[2].GetString())
+}
+
+func TestConstructedDataToPlcValue_ObjectList_Count(t *testing.T) {
+	// A read of OBJECT_LIST[0] returns only the element count as an unsigned
+	// integer. It must decode to a numeric PlcValue (not a string), so callers
+	// can read the array length for an indexed fallback.
+	count := readWriteModel.CreateBACnetApplicationTagUnsignedInteger(5)
+	data := readWriteModel.NewBACnetConstructedDataObjectList(
+		readWriteModel.CreateBACnetOpeningTag(1),
+		readWriteModel.NewBACnetTagHeader(9, 0, 1, nil, nil, nil, nil),
+		readWriteModel.CreateBACnetClosingTag(1),
+		count, nil)
+
+	got := constructedDataToPlcValue(data)
+	require.NotNil(t, got)
+	assert.True(t, got.IsUint32(), "OBJECT_LIST[0] count should be numeric, got %T", got)
+	assert.Equal(t, uint32(5), got.GetUint32())
+}

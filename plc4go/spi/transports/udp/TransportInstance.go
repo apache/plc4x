@@ -160,6 +160,13 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
+	// Use a fresh, short read deadline for this poll. Read/PeekReadableBytes set
+	// a sticky SetReadDeadline from the request context; once that deadline has
+	// passed, a deadline-less Peek here would keep failing with i/o timeout and
+	// the codec would never observe further inbound datagrams.
+	if m.udpConn != nil {
+		_ = m.udpConn.SetReadDeadline(time.Now().Add(10 * time.Millisecond))
+	}
 	_, _ = m.reader.Peek(1)
 	return uint32(m.reader.Buffered()), nil
 }

@@ -22,6 +22,7 @@ package bacnetip
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	"time"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -119,9 +120,22 @@ func constructedDataToPlcValue(data model.BACnetConstructedData) apiValues.PlcVa
 	if u, ok := data.(model.BACnetConstructedDataUnspecified); ok {
 		return elementsToPlcValue(u.GetData())
 	}
+	// Array-valued properties (OBJECT_LIST, PRIORITY_ARRAY, STATE_TEXT, ...) have
+	// no single GetActualValue; decode them to a PlcList (or, for an array-index-0
+	// read, the element count) before falling through to the scalar path.
+	if pv, ok := arrayConstructedDataToPlcValue(data); ok {
+		return pv
+	}
 	if v, ok := callGetActualValue(data); ok {
 		if tag, ok := v.(model.BACnetApplicationTag); ok {
 			return appTagToPlcValue(tag)
+		}
+		// Tagged bit strings (PROTOCOL_SERVICES_SUPPORTED, STATUS_FLAGS,
+		// LIMIT_ENABLE, OBJECT_TYPES_SUPPORTED, ...) carry a bit-string payload
+		// rather than a single scalar; surface the packed bytes (MSB-first), the
+		// same representation used for a BitString application tag.
+		if pv, ok := taggedBitStringToPlcValue(v); ok {
+			return pv
 		}
 		if pv, ok := taggedEnumToPlcValue(v); ok {
 			return pv
@@ -131,6 +145,78 @@ func constructedDataToPlcValue(data model.BACnetConstructedData) apiValues.PlcVa
 		return spiValues.NewPlcSTRING(fmt.Sprintf("%v", v))
 	}
 	return spiValues.NewPlcSTRING(fmt.Sprintf("%T:%v", data, data))
+}
+
+// arrayConstructedDataToPlcValue handles array-valued constructed data such as
+// OBJECT_LIST. BACnet array properties expose a NumberOfDataElements accessor
+// (set only when the client read array index 0, where the device returns just
+// the element count) plus a per-property element slice. A whole-array read
+// yields a PlcList of the decoded elements; an array-index-0 read yields the
+// count as an unsigned PlcValue. Returns ok=false for non-array constructed
+// data (no NumberOfDataElements accessor), so the caller falls through to the
+// scalar GetActualValue path.
+func arrayConstructedDataToPlcValue(data model.BACnetConstructedData) (apiValues.PlcValue, bool) {
+	rv := reflect.ValueOf(data)
+	if !rv.IsValid() {
+		return nil, false
+	}
+	countMethod := rv.MethodByName("GetNumberOfDataElements")
+	if !countMethod.IsValid() || countMethod.Type().NumIn() != 0 || countMethod.Type().NumOut() != 1 {
+		return nil, false // not an array-valued constructed data
+	}
+	// Array-index-0 read: only the element count is present.
+	if out := countMethod.Call(nil)[0]; out.IsValid() && !out.IsNil() {
+		if tag, ok := out.Interface().(model.BACnetApplicationTag); ok {
+			return appTagToPlcValue(tag), true
+		}
+	}
+	// Whole-array read: find the element slice accessor and decode each entry.
+	for i := 0; i < rv.NumMethod(); i++ {
+		name := rv.Type().Method(i).Name
+		if !strings.HasPrefix(name, "Get") || name == "GetNumberOfDataElements" {
+			continue
+		}
+		method := rv.Method(i)
+		mt := method.Type()
+		if mt.NumIn() != 0 || mt.NumOut() != 1 || mt.Out(0).Kind() != reflect.Slice {
+			continue
+		}
+		out := method.Call(nil)[0]
+		elems := make([]apiValues.PlcValue, 0, out.Len())
+		for j := 0; j < out.Len(); j++ {
+			switch el := out.Index(j).Interface().(type) {
+			case model.BACnetApplicationTag:
+				elems = append(elems, appTagToPlcValue(el))
+			case model.BACnetConstructedData:
+				elems = append(elems, constructedDataToPlcValue(el))
+			default:
+				elems = append(elems, spiValues.NewPlcSTRING(fmt.Sprintf("%v", el)))
+			}
+		}
+		return spiValues.NewPlcList(elems), true
+	}
+	return nil, false
+}
+
+// taggedBitStringToPlcValue handles BACnet *Tagged bit-string wrappers
+// (BACnetServicesSupportedTagged, BACnetStatusFlagsTagged, BACnetLimitEnableTagged,
+// BACnetObjectTypesSupportedTagged, ...) returned by GetActualValue on typed
+// ConstructedData subtypes. These expose a GetPayload() returning a
+// BACnetTagPayloadBitString whose GetData() is the unpacked bit slice. We pack
+// it MSB-first into bytes and surface it as a PlcRawByteArray — identical to how
+// a BitString application tag is decoded — so callers can walk the bits.
+func taggedBitStringToPlcValue(v any) (apiValues.PlcValue, bool) {
+	bs, ok := v.(interface {
+		GetPayload() model.BACnetTagPayloadBitString
+	})
+	if !ok {
+		return nil, false
+	}
+	payload := bs.GetPayload()
+	if payload == nil {
+		return nil, false
+	}
+	return spiValues.NewPlcRawByteArray(bitsToBytes(payload.GetData())), true
 }
 
 // taggedEnumToPlcValue handles BACnet's *Tagged enum wrappers (BACnetBinaryPV,

@@ -25,6 +25,7 @@ import (
 	"runtime/debug"
 	"slices"
 	"sync"
+	"time"
 
 	"github.com/rs/zerolog"
 
@@ -128,10 +129,14 @@ func (c *Connection) Connect(ctx context.Context) error {
 
 func (c *Connection) passToDefaultIncomingMessageChannel() {
 	incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
+	// Block (with a short timeout so the Connect loop can re-check IsConnected
+	// for shutdown) rather than busy-spinning with a default case. The previous
+	// non-blocking select pegged a CPU core and starved the codec's receive
+	// worker, so request responses were never read from the socket.
 	select {
 	case message := <-incomingMessageChannel:
 		c.routeIncomingMessage(message)
-	default:
+	case <-time.After(100 * time.Millisecond):
 		c.log.Trace().Msg("no incoming message")
 	}
 }
