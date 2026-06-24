@@ -727,7 +727,7 @@ public enum KnxManufacturer {
 
   M_ELAUSYS((int) 350, (int) 401, "ELAUSYS"),
 
-  M_ITK_ENGINEERING_AG((int) 351, (int) 402, "ITK Engineering AG"),
+  M_ITK_ENGINEERING_GMBH((int) 351, (int) 402, "ITK Engineering GmbH"),
 
   M_INTEGRA_METERING_AG((int) 352, (int) 403, "INTEGRA METERING AG"),
 
@@ -1641,9 +1641,13 @@ public enum KnxManufacturer {
 
   M_HOM_CONTROLS((int) 807, (int) 868, "Hom Controls"),
 
-  M_ABB___RESERVED((int) 808, (int) 43954, "ABB - reserved"),
+  M_SHENZHEN_GOLDEN_SECURITY_TECHNOLOGY_CO__LTD((int) 808, (int) 869, "Shenzhen Golden Security Technology Co.,Ltd"),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 809, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_KEMCOM_GMBH((int) 809, (int) 870, "KemCom GmbH"),
+
+  M_ABB___RESERVED((int) 810, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 811, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 

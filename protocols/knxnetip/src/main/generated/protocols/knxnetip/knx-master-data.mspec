@@ -1103,7 +1103,7 @@
     ['348' M_PEAKNX_A_DOGAWIST_COMPANY ['399', '"PEAKnx a DOGAWIST company"']]
     ['349' M_ACEMATIC ['400', '"ACEMATIC"']]
     ['350' M_ELAUSYS ['401', '"ELAUSYS"']]
-    ['351' M_ITK_ENGINEERING_AG ['402', '"ITK Engineering AG"']]
+    ['351' M_ITK_ENGINEERING_GMBH ['402', '"ITK Engineering GmbH"']]
     ['352' M_INTEGRA_METERING_AG ['403', '"INTEGRA METERING AG"']]
     ['353' M_FMS_HOSPITALITY_PTE_LTD ['404', '"FMS Hospitality Pte Ltd"']]
     ['354' M_NUVO ['405', '"Nuvo"']]
@@ -1560,8 +1560,10 @@
     ['805' M_GUANGZHOU_EASYCTRL_INTELLIGENT_TECHNOLOGY_CO__LTD_ ['866', '"Guangzhou Easyctrl Intelligent Technology Co.,Ltd."']]
     ['806' M_HORIZENTIS ['867', '"Horizentis"']]
     ['807' M_HOM_CONTROLS ['868', '"Hom Controls"']]
-    ['808' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['809' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['808' M_SHENZHEN_GOLDEN_SECURITY_TECHNOLOGY_CO__LTD ['869', '"Shenzhen Golden Security Technology Co.,Ltd"']]
+    ['809' M_KEMCOM_GMBH ['870', '"KemCom GmbH"']]
+    ['810' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['811' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
