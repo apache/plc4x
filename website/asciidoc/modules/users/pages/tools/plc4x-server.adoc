@@ -24,11 +24,21 @@ A client using the `plc4x` driver connects to this server, and the server opens 
 
 This is useful when the PLCs are only reachable from the machine running the server (e.g. behind a firewall or on an isolated OT network), while the clients live elsewhere.
 
+[graphviz,plc4x-server-architecture,svg]
 ----
- +------------+   plc4x proxy protocol    +--------------+   native protocol   +-------+
- |  client    | ------------------------> | PLC4X Server | ------------------> |  PLC  |
- | (plc4x drv)|        TLS + auth         |              |   (s7, modbus, …)   |       |
- +------------+                           +--------------+                     +-------+
+digraph plc4x_server {
+    rankdir=LR;
+    bgcolor="transparent";
+    node [shape=box, style=rounded, fontname="Helvetica", fontsize=11, margin="0.22,0.13"];
+    edge [fontname="Helvetica", fontsize=9];
+
+    client [label="Client\n(plc4x driver)"];
+    server [label="PLC4X Server"];
+    plc    [label="PLC"];
+
+    client -> server [label="plc4x proxy protocol\nTLS + auth"];
+    server -> plc    [label="native protocol\n(s7, modbus, ...)"];
+}
 ----
 
 The server bundles *all* PLC4X drivers, so the relayed connection string can target any supported protocol (`s7`, `modbus`, `ads`, `opcua`, `simulated`, …).
