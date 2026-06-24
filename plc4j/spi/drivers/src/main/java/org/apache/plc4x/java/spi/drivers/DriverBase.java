@@ -79,6 +79,14 @@ public abstract class DriverBase implements PlcDriver {
     public static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9\\-]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
+    /**
+     * Matches the value of connection-string query parameters that carry secrets so they can be
+     * masked before logging. Covers any parameter whose name contains "password", "passwd", "secret"
+     * or "token" (optionally with a transport prefix like "tls.").
+     */
+    private static final Pattern SECRET_PARAM_PATTERN = Pattern.compile(
+        "(?i)([?&][^=&]*(?:password|passwd|secret|token)[^=&]*=)[^&]*");
+
     private static final Logger log = LoggerFactory.getLogger(DriverBase.class);
 
     private final TransportManager transportManager;
@@ -153,7 +161,7 @@ public abstract class DriverBase implements PlcDriver {
             throw new PlcConnectionException(
                 "Connection string doesn't match the format '{protocol-code}(:{transport-code})?://{transport-config}(?{parameter-string)?'");
         }
-        log.info("Using connection string: {}", connectionString);
+        log.info("Using connection string: {}", redactSecrets(connectionString));
 
         final String protocolCode = matcher.group("protocolCode");
         String transportCodeMatch = matcher.group("transportCode");
@@ -234,6 +242,17 @@ public abstract class DriverBase implements PlcDriver {
         connection.setConnectionInfo(getProtocolCode(), getProtocolName(),
             transport.getTransportCode(), transport.getTransportName());
         return connection;
+    }
+
+    /**
+     * Masks the values of secret-bearing query parameters (passwords, tokens, …) in a connection
+     * string so credentials never reach the logs.
+     */
+    static String redactSecrets(String connectionString) {
+        if (connectionString == null) {
+            return null;
+        }
+        return SECRET_PARAM_PATTERN.matcher(connectionString).replaceAll("$1***");
     }
 
     public AuditLog getAuditLog() {
