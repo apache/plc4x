@@ -77,7 +77,9 @@
             <SlmpRequestData>
               <SlmpReadRequest>
                 <headDeviceNumber dataType="uint" bitLength="24">350</headDeviceNumber>
-                <deviceCode>D</deviceCode>
+                <deviceCode>
+                  <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="D">168</SlmpDeviceCode>
+                </deviceCode>
                 <numberOfPoints dataType="uint" bitLength="16">2</numberOfPoints>
               </SlmpReadRequest>
             </SlmpRequestData>
@@ -133,33 +135,47 @@
                 <wordAccessDevices isList="true">
                   <SlmpDeviceSpec>
                     <deviceNumber dataType="uint" bitLength="24">0</deviceNumber>
-                    <deviceCode>D</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="D">168</SlmpDeviceCode>
+                    </deviceCode>
                   </SlmpDeviceSpec>
                   <SlmpDeviceSpec>
                     <deviceNumber dataType="uint" bitLength="24">0</deviceNumber>
-                    <deviceCode>TN</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="TN">194</SlmpDeviceCode>
+                    </deviceCode>
                   </SlmpDeviceSpec>
                   <SlmpDeviceSpec>
                     <deviceNumber dataType="uint" bitLength="24">100</deviceNumber>
-                    <deviceCode>M</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="M">144</SlmpDeviceCode>
+                    </deviceCode>
                   </SlmpDeviceSpec>
                   <SlmpDeviceSpec>
                     <deviceNumber dataType="uint" bitLength="24">32</deviceNumber>
-                    <deviceCode>X</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="X">156</SlmpDeviceCode>
+                    </deviceCode>
                   </SlmpDeviceSpec>
                 </wordAccessDevices>
                 <doubleWordAccessDevices isList="true">
                   <SlmpDeviceSpec>
                     <deviceNumber dataType="uint" bitLength="24">1500</deviceNumber>
-                    <deviceCode>D</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="D">168</SlmpDeviceCode>
+                    </deviceCode>
                   </SlmpDeviceSpec>
                   <SlmpDeviceSpec>
                     <deviceNumber dataType="uint" bitLength="24">352</deviceNumber>
-                    <deviceCode>Y</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="Y">157</SlmpDeviceCode>
+                    </deviceCode>
                   </SlmpDeviceSpec>
                   <SlmpDeviceSpec>
                     <deviceNumber dataType="uint" bitLength="24">1111</deviceNumber>
-                    <deviceCode>M</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="M">144</SlmpDeviceCode>
+                    </deviceCode>
                   </SlmpDeviceSpec>
                 </doubleWordAccessDevices>
               </SlmpRandomReadRequest>
@@ -216,29 +232,39 @@
                 <wordDeviceBlocks isList="true">
                   <SlmpDeviceBlock>
                     <headDeviceNumber dataType="uint" bitLength="24">0</headDeviceNumber>
-                    <deviceCode>D</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="D">168</SlmpDeviceCode>
+                    </deviceCode>
                     <numberOfPoints dataType="uint" bitLength="16">4</numberOfPoints>
                   </SlmpDeviceBlock>
                   <SlmpDeviceBlock>
                     <headDeviceNumber dataType="uint" bitLength="24">256</headDeviceNumber>
-                    <deviceCode>W</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="W">180</SlmpDeviceCode>
+                    </deviceCode>
                     <numberOfPoints dataType="uint" bitLength="16">8</numberOfPoints>
                   </SlmpDeviceBlock>
                 </wordDeviceBlocks>
                 <bitDeviceBlocks isList="true">
                   <SlmpDeviceBlock>
                     <headDeviceNumber dataType="uint" bitLength="24">0</headDeviceNumber>
-                    <deviceCode>M</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="M">144</SlmpDeviceCode>
+                    </deviceCode>
                     <numberOfPoints dataType="uint" bitLength="16">2</numberOfPoints>
                   </SlmpDeviceBlock>
                   <SlmpDeviceBlock>
                     <headDeviceNumber dataType="uint" bitLength="24">128</headDeviceNumber>
-                    <deviceCode>M</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="M">144</SlmpDeviceCode>
+                    </deviceCode>
                     <numberOfPoints dataType="uint" bitLength="16">2</numberOfPoints>
                   </SlmpDeviceBlock>
                   <SlmpDeviceBlock>
                     <headDeviceNumber dataType="uint" bitLength="24">256</headDeviceNumber>
-                    <deviceCode>B</deviceCode>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="B">160</SlmpDeviceCode>
+                    </deviceCode>
                     <numberOfPoints dataType="uint" bitLength="16">3</numberOfPoints>
                   </SlmpDeviceBlock>
                 </bitDeviceBlocks>
