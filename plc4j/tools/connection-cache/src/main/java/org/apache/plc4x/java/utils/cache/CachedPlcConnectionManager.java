@@ -85,6 +85,15 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
     private static final long DEFAULT_IDLE_PING_THRESHOLD_MS = TimeUnit.SECONDS.toMillis(30);
     private static final long DEFAULT_CLOSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(5);
 
+    /**
+     * Grace margin added to the caller-facing lease {@code get()} timeout, on top of the per-connection
+     * max-wait. It ensures the container's own wait timeout (scheduled at exactly max-wait) fires and
+     * marks a queued waiter "done" before this manager gives up — preventing a returned connection from
+     * being handed to a waiter whose caller has already timed out. Purely an upper safety bound; the
+     * {@code get()} returns as soon as the future completes.
+     */
+    private static final long LEASE_WAIT_GRACE_MS = TimeUnit.SECONDS.toMillis(1);
+
     private final PlcConnectionManager connectionManager;
     private final ScheduledExecutorService scheduler;
     private final long maxIdleTimeMs;
@@ -155,7 +164,14 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         // Lease the connection - THIS WILL BLOCK IF ALREADY LEASED
         Future<PlcConnection> leaseFuture = container.lease();
         try {
-            return leaseFuture.get(maxWaitTimeMs, TimeUnit.MILLISECONDS);
+            // Wait a grace margin BEYOND the container's own max-wait timeout. The container already
+            // guarantees the lease future completes within maxWaitTimeMs (it schedules its own wait
+            // timeout), so letting our get() time out at exactly maxWaitTimeMs would race that: if our
+            // get() won, we'd abandon a queue entry that is still "not done", and a concurrent return
+            // could then hand the connection to that phantom waiter — wedging the connection. The grace
+            // lets the container's timeout win and mark the entry done first; get() still returns the
+            // instant the future completes, so a normal wait-timeout is not slowed down.
+            return leaseFuture.get(maxWaitTimeMs + LEASE_WAIT_GRACE_MS, TimeUnit.MILLISECONDS);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             throw new PlcConnectionException("Error acquiring lease for connection", e);
         }

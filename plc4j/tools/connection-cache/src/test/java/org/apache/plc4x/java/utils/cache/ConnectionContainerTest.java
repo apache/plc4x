@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -34,6 +35,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -220,20 +222,17 @@ class ConnectionContainerTest {
             100 // Very short idle ping threshold
         );
 
-        // Act - Lease, return, wait for validation threshold
+        // Act - Lease, return, then re-lease once the connection is due for validation.
         PlcConnection leased1 = container.lease().get();
         leased1.close();
 
-        Thread.sleep(200); // Wait past idle ping threshold
-
-        // Second lease should trigger validation
-        PlcConnection leased2 = container.lease().get();
-
-        // Assert
-        verify(mockConnection, atLeastOnce()).ping();
-
-        // Cleanup
-        leased2.close();
+        // The container arms validation via a scheduled task ~idlePingThreshold after the return.
+        // That scheduler tick can lag under load, so poll the lease/validate path until the idle
+        // connection is actually pinged instead of assuming a fixed wall-clock delay.
+        await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            container.lease().get().close();
+            verify(mockConnection, atLeastOnce()).ping();
+        });
     }
 
     @Test
@@ -261,22 +260,21 @@ class ConnectionContainerTest {
         // Make first connection's ping fail
         when(mockConnection.ping()).thenReturn(CompletableFuture.failedFuture(new RuntimeException("Ping failed")));
 
-        // Act - Lease, return, wait for validation threshold
+        // Act - Lease, return, then re-lease once the connection is due for validation.
         PlcConnection leased1 = container.lease().get();
         leased1.close();
 
-        Thread.sleep(200); // Wait past idle ping threshold
+        // Validation is armed by a scheduled task ~idlePingThreshold after the return, which can
+        // lag under load. Poll the lease/validate path until the (failing) ping has run; once the
+        // first connection's ping fails the container discards it and builds a replacement.
+        await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            container.lease().get().close();
+            verify(mockConnection, atLeastOnce()).ping();
+        });
 
-        // Second lease should fail validation and create new connection
-        PlcConnection leased2 = container.lease().get();
-
-        // Assert - Should have created connection twice
+        // Assert - the failed ping replaced the first connection exactly once.
         assertEquals(2, callCount[0]);
-        verify(mockConnection, atLeastOnce()).ping();
         verify(mockConnection, times(1)).close(); // Old connection closed
-
-        // Cleanup
-        leased2.close();
     }
 
     @Test
