@@ -179,6 +179,15 @@ func (m *defaultCodec) Connect(ctx context.Context) error {
 }
 
 func (m *defaultCodec) Disconnect() error {
+	// Lock-free fast path. A transport-error handler dispatched via
+	// emitTransportError runs on m.wg and may call back into Disconnect (through
+	// connection.Invalidate -> Close) while another Disconnect already holds
+	// stateChange and is blocked in m.wg.Wait(). The error paths store
+	// running=false before emitting, so this check lets the re-entrant call
+	// return before it contends on stateChange, breaking that deadlock cycle.
+	if !m.running.Load() {
+		return errors.New("already disconnected")
+	}
 	m.stateChange.Lock()
 	defer m.stateChange.Unlock()
 	if !m.running.Load() {
@@ -602,9 +611,29 @@ func (m *defaultCodec) handleTransportError(workerLog zerolog.Logger, err error)
 }
 
 func (m *defaultCodec) emitTransportError(kind transports.TransportErrorKind, err error) {
-	if m.transportErrorHandler != nil {
-		m.transportErrorHandler(kind, err)
+	handler := m.transportErrorHandler
+	if handler == nil {
+		return
 	}
+	// The handler is external code (typically the owning connection) that may
+	// react to a fatal error by invalidating and closing the connection, which
+	// calls back into Disconnect(). Disconnect() blocks on activeWorker.Wait()
+	// until the receive/expire workers have exited and contends on stateChange.
+	// emitTransportError is invoked *from* the receive worker, so calling the
+	// handler inline would make that worker wait for itself - or deadlock
+	// against a concurrent Disconnect() that already holds stateChange and is
+	// waiting for this worker to exit. Dispatch it on a goroutine so the worker
+	// can return and exit. The re-entrant Disconnect() is safe here because its
+	// lock-free fast path returns before contending on stateChange/m.wg once
+	// shutdown has been signalled (running == false).
+	m.wg.Go(func() {
+		defer func() {
+			if r := recover(); r != nil {
+				m.log.Error().Interface("panic", r).Msg("recovered from panic in transport error handler")
+			}
+		}()
+		handler(kind, err)
+	})
 }
 
 func (m *defaultCodec) failAllExpectations(err error) {
@@ -614,7 +643,6 @@ func (m *defaultCodec) failAllExpectations(err error) {
 	m.expectationsChangeMutex.Unlock()
 
 	for _, expectation := range expectations {
-		expectation := expectation
 		expectation.Cancel(err)
 		if handleErr := expectation.GetHandleError(); handleErr != nil {
 			m.wg.Go(func() {
