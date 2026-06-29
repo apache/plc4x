@@ -1645,9 +1645,13 @@ public enum KnxManufacturer {
 
   M_KEMCOM_GMBH((int) 809, (int) 870, "KemCom GmbH"),
 
-  M_ABB___RESERVED((int) 810, (int) 43954, "ABB - reserved"),
+  M_NANJING_PUIETEL_I_O_T_TECHNOLOGY_CO___LTD((int) 810, (int) 871, "Nanjing puietel I.O.T Technology Co., Ltd"),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 811, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_DOMUSFLOW((int) 811, (int) 872, "DomusFlow"),
+
+  M_ABB___RESERVED((int) 812, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 813, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 

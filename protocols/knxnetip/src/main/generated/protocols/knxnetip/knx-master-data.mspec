@@ -1562,8 +1562,10 @@
     ['807' M_HOM_CONTROLS ['868', '"Hom Controls"']]
     ['808' M_SHENZHEN_GOLDEN_SECURITY_TECHNOLOGY_CO__LTD ['869', '"Shenzhen Golden Security Technology Co.,Ltd"']]
     ['809' M_KEMCOM_GMBH ['870', '"KemCom GmbH"']]
-    ['810' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['811' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['810' M_NANJING_PUIETEL_I_O_T_TECHNOLOGY_CO___LTD ['871', '"Nanjing puietel I.O.T Technology Co., Ltd"']]
+    ['811' M_DOMUSFLOW ['872', '"DomusFlow"']]
+    ['812' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['813' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
