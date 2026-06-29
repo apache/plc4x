@@ -24,7 +24,19 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * These tests deliberately exercise the real configuration path - parsing a connection-string
+ * parameter map via {@link ConfigurationFactory}, which injects field values directly via
+ * reflection (it never calls setters). The previous version of these tests called setters
+ * directly and so never covered the path that actually runs in production; that is how
+ * issue #2620 (remote-slot silently dropped, connection landing on slot 0) slipped through.
+ */
 class S7CotpTransportConfigurationTest {
+
+    private S7CotpTransportConfiguration parse(String params) {
+        return new ConfigurationFactory()
+            .createConfiguration(S7CotpTransportConfiguration.class, params);
+    }
 
     @Test
     void defaultPort() {
@@ -32,72 +44,55 @@ class S7CotpTransportConfigurationTest {
     }
 
     @Test
-    void defaultsDeriveTsapsFromOthersAndPgOrPc() {
-        S7CotpTransportConfiguration cfg = new S7CotpTransportConfiguration();
-        // Constructor seeds: local = PG_OR_PC rack=1 slot=1; remote = PG_OR_PC rack=0 slot=0.
-        assertNotEquals(0, cfg.localTsap);
-        assertNotEquals(0, cfg.remoteTsap);
+    void defaultsDeriveLegacyTsaps() {
+        // No addressing parameters: local defaults to OTHERS rack=1/slot=1 -> 0x0311,
+        // remote defaults to PG_OR_PC rack=0/slot=0 -> 0x0100. These match the pre-SPI3 wire bytes.
+        S7CotpTransportConfiguration cfg = parse("");
+        assertEquals(0x0311, cfg.getLocalTsap());
+        assertEquals(0x0100, cfg.getRemoteTsap());
     }
 
     @Test
-    void rackSlotSettersRecomputeTsap() {
-        S7CotpTransportConfiguration cfg = new S7CotpTransportConfiguration();
-        int initial = cfg.localTsap;
-        cfg.setLocalRack(2);
-        cfg.setLocalSlot(3);
-        // Rack/slot change should produce a different TSAP than the initial.
-        assertNotEquals(initial, cfg.localTsap);
-        assertEquals(2, cfg.getLocalRack());
-        assertEquals(3, cfg.getLocalSlot());
+    void remoteSlotIsHonoured() {
+        // Regression test for #2620: remote-slot=3 must reach the called TSAP as 0x0103.
+        S7CotpTransportConfiguration cfg = parse("remote-rack=0&remote-slot=3&controller-type=S7_400");
+        assertEquals(0x0103, cfg.getRemoteTsap());
     }
 
     @Test
-    void deviceGroupSetterRecomputesTsap() {
-        S7CotpTransportConfiguration cfg = new S7CotpTransportConfiguration();
-        int initial = cfg.localTsap;
-        cfg.setLocalDeviceGroup(DeviceGroup.OS);
-        assertNotEquals(initial, cfg.localTsap);
+    void remoteRackAndSlotAreEncoded() {
+        // (rack << 4) | slot in the low byte, PG_OR_PC (0x01) in the high byte.
+        S7CotpTransportConfiguration cfg = parse("remote-rack=2&remote-slot=5");
+        assertEquals(0x0125, cfg.getRemoteTsap());
+    }
+
+    @Test
+    void localRackSlotAndDeviceGroupAreEncoded() {
+        S7CotpTransportConfiguration cfg = parse("local-rack=2&local-slot=3&local-device-group=OS");
         assertEquals(DeviceGroup.OS, cfg.getLocalDeviceGroup());
+        // OS (0x02) high byte, (rack=2 << 4) | slot=3 = 0x23 low byte.
+        assertEquals(0x0223, cfg.getLocalTsap());
+    }
+
+    @Test
+    void explicitTsapOverridesDerivedValue() {
+        S7CotpTransportConfiguration cfg = parse("remote-slot=3&remote-tsap=4660&local-tsap=18193");
+        // Explicit overrides win even though rack/slot would derive something else.
+        assertEquals(0x1234, cfg.getRemoteTsap());
+        assertEquals(0x4711, cfg.getLocalTsap());
+    }
+
+    @Test
+    void zeroTsapKeepsDerivedValue() {
+        // The 0 sentinel means "not set" - the rack/slot-derived value must be used.
+        S7CotpTransportConfiguration cfg = parse("remote-slot=3&remote-tsap=0&local-tsap=0");
+        assertEquals(0x0103, cfg.getRemoteTsap());
+        assertEquals(0x0311, cfg.getLocalTsap());
     }
 
     @Test
     void invalidDeviceGroupInConnectionStringFailsLoudly() {
-        // Now that the field is enum-typed, ConfigurationFactory rejects unknown values at
-        // parse time instead of silently keeping the default — what we want.
-        assertThrows(IllegalArgumentException.class, () -> new ConfigurationFactory()
-            .createConfiguration(S7CotpTransportConfiguration.class, "local-device-group=NOT_A_GROUP"));
-    }
-
-    @Test
-    void remoteSettersWork() {
-        S7CotpTransportConfiguration cfg = new S7CotpTransportConfiguration();
-        int initial = cfg.remoteTsap;
-        cfg.setRemoteRack(1);
-        cfg.setRemoteSlot(2);
-        cfg.setRemoteDeviceGroup(DeviceGroup.OTHERS);
-        assertNotEquals(initial, cfg.remoteTsap);
-        assertEquals(1, cfg.getRemoteRack());
-        assertEquals(2, cfg.getRemoteSlot());
-        assertEquals(DeviceGroup.OTHERS, cfg.getRemoteDeviceGroup());
-    }
-
-    @Test
-    void explicitTsapOverridesDerived() {
-        S7CotpTransportConfiguration cfg = new S7CotpTransportConfiguration();
-        cfg.setLocalTsap(0x4711);
-        cfg.setRemoteTsap(0x1234);
-        assertEquals(0x4711, cfg.localTsap);
-        assertEquals(0x1234, cfg.remoteTsap);
-    }
-
-    @Test
-    void zeroTsapIsIgnoredKeepingDerivedValue() {
-        S7CotpTransportConfiguration cfg = new S7CotpTransportConfiguration();
-        int derivedLocal = cfg.localTsap;
-        int derivedRemote = cfg.remoteTsap;
-        cfg.setLocalTsap(0);
-        cfg.setRemoteTsap(0);
-        assertEquals(derivedLocal, cfg.localTsap);
-        assertEquals(derivedRemote, cfg.remoteTsap);
+        assertThrows(IllegalArgumentException.class,
+            () -> parse("local-device-group=NOT_A_GROUP"));
     }
 }

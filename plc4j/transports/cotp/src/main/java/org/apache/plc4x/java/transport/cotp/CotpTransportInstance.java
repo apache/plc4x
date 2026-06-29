@@ -132,8 +132,8 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
             // Build Connection Request using generated classes
             COTPPacketConnectionRequest connectionRequest = buildConnectionRequest();
             LOGGER.info("COTP CR: localTsap=0x{}, remoteTsap=0x{}",
-                Integer.toHexString(getConfiguration().localTsap),
-                Integer.toHexString(getConfiguration().remoteTsap));
+                Integer.toHexString(getConfiguration().getLocalTsap()),
+                Integer.toHexString(getConfiguration().getRemoteTsap()));
 
             TPKTPacket tpktRequest = new TPKTPacket(connectionRequest);
 
@@ -180,7 +180,7 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
                             connected = true;
                             getAuditLog().write(AuditLogEventType.CONNECT, String.format(
                                 "COTP connection established (localTsap=0x%04X, remoteTsap=0x%04X, tpduSize=%d)",
-                                getConfiguration().localTsap, getConfiguration().remoteTsap, getConfiguration().cotpTpduSize));
+                                getConfiguration().getLocalTsap(), getConfiguration().getRemoteTsap(), getConfiguration().cotpTpduSize));
                             return;
                         } else if (cotpPacket instanceof COTPPacketTpduError) {
                             throw new TransportException("COTP connection rejected by remote");
@@ -193,8 +193,8 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
                 "COTP connection timeout - no response from remote after %dms. " +
                 "TSAP: 0x%04X → 0x%04X, TPDU size: %d bytes",
                 getConfiguration().cotpConnectionTimeout,
-                getConfiguration().localTsap,
-                getConfiguration().remoteTsap,
+                getConfiguration().getLocalTsap(),
+                getConfiguration().getRemoteTsap(),
                 getConfiguration().cotpTpduSize
             );
             throw new TransportException(errorMsg);
@@ -204,8 +204,8 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
                 "COTP connection failed (TSAP: 0x%04X → 0x%04X, TPDU: %d bytes). " +
                 "Check if PLC is reachable and configured to accept connections. " +
                 "Error: %s",
-                getConfiguration().localTsap,
-                getConfiguration().remoteTsap,
+                getConfiguration().getLocalTsap(),
+                getConfiguration().getRemoteTsap(),
                 getConfiguration().cotpTpduSize,
                 e.getMessage()
             );
@@ -221,16 +221,18 @@ public class CotpTransportInstance extends BaseTransportInstance<CotpTransportCo
         List<COTPParameter> parameters = new ArrayList<>();
 
         // Source TSAP parameter
+        int localTsap = getConfiguration().getLocalTsap();
         byte[] srcTsapBytes = new byte[]{
-            (byte) ((getConfiguration().localTsap >> 8) & 0xFF),
-            (byte) (getConfiguration().localTsap & 0xFF)
+            (byte) ((localTsap >> 8) & 0xFF),
+            (byte) (localTsap & 0xFF)
         };
         parameters.add(new COTPParameterCallingTsap(srcTsapBytes));
 
         // Destination TSAP parameter
+        int remoteTsap = getConfiguration().getRemoteTsap();
         byte[] dstTsapBytes = new byte[]{
-            (byte) ((getConfiguration().remoteTsap >> 8) & 0xFF),
-            (byte) (getConfiguration().remoteTsap & 0xFF)
+            (byte) ((remoteTsap >> 8) & 0xFF),
+            (byte) (remoteTsap & 0xFF)
         };
         parameters.add(new COTPParameterCalledTsap(dstTsapBytes));
 

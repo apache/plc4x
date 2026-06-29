@@ -29,9 +29,15 @@ import org.apache.plc4x.java.transport.cotp.config.CotpTransportConfiguration;
 
 /**
  * COTP transport configuration for the S7 driver. Pins the ISO-on-TCP port (102) and derives the
- * COTP local/remote TSAPs from the S7 rack/slot/device-group parameters when these are provided
- * (the {@code local-tsap}/{@code remote-tsap} parameters from the parent {@link CotpTransportConfiguration}
- * still take precedence when set explicitly to a non-zero value).
+ * COTP local/remote TSAPs from the S7 rack/slot/device-group parameters. The
+ * {@code local-tsap}/{@code remote-tsap} parameters inherited from the parent
+ * {@link CotpTransportConfiguration} take precedence when set explicitly to a non-zero value.
+ *
+ * <p>The TSAP is always a derived value - it is never stored. {@link #getLocalTsap()} and
+ * {@link #getRemoteTsap()} compute it on demand from the rack/slot/device-group parameters
+ * (or return the explicit override). This avoids any drift between the TSAP and the
+ * rack/slot inputs it is derived from, which is important because the SPI configuration
+ * parser injects field values directly via reflection and never invokes setters.
  */
 public class S7CotpTransportConfiguration extends CotpTransportConfiguration {
 
@@ -48,9 +54,9 @@ public class S7CotpTransportConfiguration extends CotpTransportConfiguration {
     protected int localSlot = 1;
 
     @ConfigurationParameter("local-device-group")
-    @StringDefaultValue("PG_OR_PC")
+    @StringDefaultValue("OTHERS")
     @Description("Local Device Group.")
-    protected DeviceGroup localDeviceGroup = DeviceGroup.PG_OR_PC;
+    protected DeviceGroup localDeviceGroup = DeviceGroup.OTHERS;
 
     @ConfigurationParameter("remote-rack")
     @IntDefaultValue(0)
@@ -67,33 +73,24 @@ public class S7CotpTransportConfiguration extends CotpTransportConfiguration {
     @Description("Remote Device Group.")
     protected DeviceGroup remoteDeviceGroup = DeviceGroup.PG_OR_PC;
 
-    public S7CotpTransportConfiguration() {
-        super();
-        // Default TSAPs: derive from rack/slot/device-group right away. The parser will overwrite
-        // these via setLocalTsap/setRemoteTsap (or via the rack/slot setters below) if the user
-        // supplied explicit values.
-        this.localTsap = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, 1, 1) & 0xFFFF;
-        this.remoteTsap = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, 0, 0) & 0xFFFF;
-    }
-
     @Override
     public int getDefaultPort() {
         return ISO_ON_TCP_PORT;
     }
 
-    private void recomputeTsaps() {
-        this.localTsap = S7TsapIdEncoder.encodeS7TsapId(
-            localDeviceGroup, localRack, localSlot) & 0xFFFF;
-        this.remoteTsap = S7TsapIdEncoder.encodeS7TsapId(
-            remoteDeviceGroup, remoteRack, remoteSlot) & 0xFFFF;
+    @Override
+    public int getLocalTsap() {
+        return localTsap != 0
+            ? localTsap
+            : S7TsapIdEncoder.encodeS7TsapId(localDeviceGroup, localRack, localSlot) & 0xFFFF;
     }
 
-    public void setLocalRack(int v) { this.localRack = v; recomputeTsaps(); }
-    public void setLocalSlot(int v) { this.localSlot = v; recomputeTsaps(); }
-    public void setLocalDeviceGroup(DeviceGroup v) { this.localDeviceGroup = v; recomputeTsaps(); }
-    public void setRemoteRack(int v) { this.remoteRack = v; recomputeTsaps(); }
-    public void setRemoteSlot(int v) { this.remoteSlot = v; recomputeTsaps(); }
-    public void setRemoteDeviceGroup(DeviceGroup v) { this.remoteDeviceGroup = v; recomputeTsaps(); }
+    @Override
+    public int getRemoteTsap() {
+        return remoteTsap != 0
+            ? remoteTsap
+            : S7TsapIdEncoder.encodeS7TsapId(remoteDeviceGroup, remoteRack, remoteSlot) & 0xFFFF;
+    }
 
     public int getLocalRack() { return localRack; }
     public int getLocalSlot() { return localSlot; }
@@ -101,17 +98,5 @@ public class S7CotpTransportConfiguration extends CotpTransportConfiguration {
     public int getRemoteRack() { return remoteRack; }
     public int getRemoteSlot() { return remoteSlot; }
     public DeviceGroup getRemoteDeviceGroup() { return remoteDeviceGroup; }
-
-    public void setLocalTsap(int localTsap) {
-        if (localTsap != 0) {
-            this.localTsap = localTsap;
-        }
-    }
-
-    public void setRemoteTsap(int remoteTsap) {
-        if (remoteTsap != 0) {
-            this.remoteTsap = remoteTsap;
-        }
-    }
 
 }

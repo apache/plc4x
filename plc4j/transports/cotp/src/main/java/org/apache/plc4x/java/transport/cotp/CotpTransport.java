@@ -103,8 +103,8 @@ public class CotpTransport implements Transport<CotpTransportConfiguration> {
 
         LOGGER.debug("Creating COTP transport instance for {}:{}", host, port);
         LOGGER.debug("COTP Configuration: localTsap=0x{}, remoteTsap=0x{}, tpduSize={}",
-            Integer.toHexString(cotpConfig.localTsap),
-            Integer.toHexString(cotpConfig.remoteTsap),
+            Integer.toHexString(cotpConfig.getLocalTsap()),
+            Integer.toHexString(cotpConfig.getRemoteTsap()),
             cotpConfig.cotpTpduSize);
 
         return new CotpTransportInstance(host, port, cotpConfig, auditLog);

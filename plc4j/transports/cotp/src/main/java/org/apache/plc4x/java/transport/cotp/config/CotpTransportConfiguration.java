@@ -33,22 +33,34 @@ import org.apache.plc4x.java.transport.tcp.config.TcpTransportConfiguration;
 public class CotpTransportConfiguration extends TcpTransportConfiguration implements TransportConfiguration {
 
     /**
-     * Local TSAP (Transport Service Access Point) identifier.
-     * Used in COTP connection request. Default is 0x0100.
+     * Default local TSAP used when no explicit {@code local-tsap} is configured.
+     */
+    public static final int DEFAULT_LOCAL_TSAP = 0x0311;
+
+    /**
+     * Default remote TSAP used when no explicit {@code remote-tsap} is configured.
+     */
+    public static final int DEFAULT_REMOTE_TSAP = 0x0100;
+
+    /**
+     * Raw local TSAP (Transport Service Access Point) override. A value of {@code 0} means
+     * "not set". Always read the effective value via {@link #getLocalTsap()} rather than this
+     * field directly: subclasses may derive the TSAP from other parameters (e.g. rack/slot).
      */
     @ConfigurationParameter("local-tsap")
     @Description("Local TSAP (Transport Service Access Point) identifier.")
-    @IntDefaultValue(0x0311)
-    public int localTsap = 0x0311;
+    @IntDefaultValue(0)
+    public int localTsap = 0;
 
     /**
-     * Remote TSAP (Transport Service Access Point) identifier.
-     * Used in COTP connection request. Default is 0x0102.
+     * Raw remote TSAP (Transport Service Access Point) override. A value of {@code 0} means
+     * "not set". Always read the effective value via {@link #getRemoteTsap()} rather than this
+     * field directly: subclasses may derive the TSAP from other parameters (e.g. rack/slot).
      */
     @ConfigurationParameter("remote-tsap")
     @Description("Remote TSAP (Transport Service Access Point) identifier.")
-    @IntDefaultValue(0x0100)
-    public int remoteTsap = 0x0100;
+    @IntDefaultValue(0)
+    public int remoteTsap = 0;
 
     /**
      * COTP PDU size for data transmission.
@@ -84,11 +96,27 @@ public class CotpTransportConfiguration extends TcpTransportConfiguration implem
         // COTP typically uses default TCP-settings but you can override
     }
 
+    /**
+     * @return the effective local TSAP: the explicit {@code local-tsap} override when set
+     * (non-zero), otherwise {@link #DEFAULT_LOCAL_TSAP}. Subclasses may override to derive it.
+     */
+    public int getLocalTsap() {
+        return localTsap != 0 ? localTsap : DEFAULT_LOCAL_TSAP;
+    }
+
+    /**
+     * @return the effective remote TSAP: the explicit {@code remote-tsap} override when set
+     * (non-zero), otherwise {@link #DEFAULT_REMOTE_TSAP}. Subclasses may override to derive it.
+     */
+    public int getRemoteTsap() {
+        return remoteTsap != 0 ? remoteTsap : DEFAULT_REMOTE_TSAP;
+    }
+
     @Override
     public String toString() {
         return "CotpTransportConfiguration{" +
-            "localTsap=0x" + Integer.toHexString(localTsap) +
-            ", remoteTsap=0x" + Integer.toHexString(remoteTsap) +
+            "localTsap=0x" + Integer.toHexString(getLocalTsap()) +
+            ", remoteTsap=0x" + Integer.toHexString(getRemoteTsap()) +
             ", cotpTpduSize=" + cotpTpduSize +
             ", cotpConnectionTimeout=" + cotpConnectionTimeout +
             ", protocolClass=" + protocolClass +

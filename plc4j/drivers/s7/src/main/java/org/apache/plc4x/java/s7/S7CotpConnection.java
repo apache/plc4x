@@ -216,7 +216,16 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
     }
 
     private void probeUserDataCapability() {
-        boolean userConfigured = driverContext.getControllerType() != ControllerType.ANY;
+        // If the user pinned the controller type, trust it and skip the SZL probe entirely
+        // (matches the pre-SPI3 driver, which only read SZL to auto-detect the type). The
+        // UserData-service capability (browse/alarms/cyclic) is then derived from the known type.
+        if (driverContext.getControllerType() != ControllerType.ANY) {
+            boolean supported = supportsUserDataServices(driverContext.getControllerType());
+            driverContext.setUserDataServicesSupported(supported);
+            LOGGER.info("Controller type pinned to {}; skipping SZL probe (userdata-services={})",
+                driverContext.getControllerType(), supported);
+            return;
+        }
         // Try the modern COMPONENT_IDENTIFICATION SZL first — works on S7-1200/1500 and is
         // tolerated by S7-300/400. Fall back to the legacy MODULE_IDENTIFICATION SZL if the
         // first attempt errors out or doesn't yield a recognisable article number. Either
@@ -227,9 +236,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         }
         if (result != null) {
             driverContext.setArticleNumber(result.articleNumber());
-            if (!userConfigured) {
-                driverContext.setControllerType(result.controllerType());
-            }
+            driverContext.setControllerType(result.controllerType());
             driverContext.setUserDataServicesSupported(true);
             LOGGER.info("SZL probe ok: article='{}', controllerType={}",
                 result.articleNumber(), driverContext.getControllerType());
@@ -240,6 +247,18 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             LOGGER.info("SZL probe yielded no usable identification; S7Comm UserData services "
                 + "disabled for this device");
         }
+    }
+
+    /**
+     * @return whether the given (explicitly configured) controller type speaks the S7Comm
+     * UserData services that back browse, alarm and cyclic subscriptions. Used when the SZL
+     * probe is skipped because the user pinned the controller type.
+     */
+    static boolean supportsUserDataServices(ControllerType type) {
+        return switch (type) {
+            case S7_300, S7_400, S7_1200, S7_1500 -> true;
+            default -> false; // S7_200, LOGO, ANY
+        };
     }
 
     private S7SzlService.ProbeResult trySzlProbe(SzlId szlId, int szlIndex) {

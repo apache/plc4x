@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.s7.configuration;
 
 import org.apache.plc4x.java.s7.readwrite.ControllerType;
-import org.apache.plc4x.java.s7.readwrite.DeviceGroup;
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.config.annotations.Description;
@@ -28,47 +27,9 @@ import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
 
 public class S7Configuration implements Configuration {
 
-    @ConfigurationParameter("local-rack")
-    @IntDefaultValue(1)
-    @Description("Rack value for the client (PLC4X device).")
-    protected int localRack = 1;
-
-    @ConfigurationParameter("local-slot")
-    @IntDefaultValue(1)
-    @Description("Slot value for the client (PLC4X device).")
-    protected int localSlot = 1;
-
-    @ConfigurationParameter("local-device-group")
-    @StringDefaultValue("PG_OR_PC")
-    @Description("Local Device Group. PG_OR_PC requests programming-device privileges from the PLC, "
-        + "which is required for block introspection (browse) on most CPUs. Override to OS or OTHERS "
-        + "if your CPU has no PG slot free.")
-    protected DeviceGroup localDeviceGroup = DeviceGroup.PG_OR_PC;
-
-    @ConfigurationParameter("local-tsap")
-    @IntDefaultValue(0)
-    @Description("Local Transport Service Access Point. Overrides local-rack/local-slot/local-device-group when non-zero.")
-    protected int localTsap = 0;
-
-    @ConfigurationParameter("remote-rack")
-    @IntDefaultValue(0)
-    @Description("Rack value for the remote main CPU (PLC).")
-    protected int remoteRack = 0;
-
-    @ConfigurationParameter("remote-slot")
-    @IntDefaultValue(0)
-    @Description("Slot value for the remote main CPU (PLC).")
-    protected int remoteSlot = 0;
-
-    @ConfigurationParameter("remote-device-group")
-    @StringDefaultValue("PG_OR_PC")
-    @Description("Remote Device Group.")
-    protected DeviceGroup remoteDeviceGroup = DeviceGroup.PG_OR_PC;
-
-    @ConfigurationParameter("remote-tsap")
-    @IntDefaultValue(0)
-    @Description("Remote Transport Service Access Point. Overrides remote-rack/remote-slot/remote-device-group when non-zero.")
-    protected int remoteTsap = 0;
+    // Note: the COTP addressing parameters (local/remote rack, slot, device-group and the
+    // local-tsap/remote-tsap overrides) are owned by S7CotpTransportConfiguration, which is the
+    // configuration the COTP transport actually consumes to build the connection request.
 
     @ConfigurationParameter("pdu-size")
     @IntDefaultValue(1024)
@@ -110,30 +71,6 @@ public class S7Configuration implements Configuration {
         + "is used as the per-tick ping timeout in the heartbeat. Lower values fail over "
         + "faster but risk swapping on transient slow responses. Default 2000 (2s).")
     protected int haFailoverTimeout = 2000;
-
-    public int getLocalRack() { return localRack; }
-    public void setLocalRack(int v) { this.localRack = v; }
-
-    public int getLocalSlot() { return localSlot; }
-    public void setLocalSlot(int v) { this.localSlot = v; }
-
-    public DeviceGroup getLocalDeviceGroup() { return localDeviceGroup; }
-    public void setLocalDeviceGroup(DeviceGroup v) { this.localDeviceGroup = v; }
-
-    public int getLocalTsap() { return localTsap; }
-    public void setLocalTsap(int v) { this.localTsap = v; }
-
-    public int getRemoteRack() { return remoteRack; }
-    public void setRemoteRack(int v) { this.remoteRack = v; }
-
-    public int getRemoteSlot() { return remoteSlot; }
-    public void setRemoteSlot(int v) { this.remoteSlot = v; }
-
-    public DeviceGroup getRemoteDeviceGroup() { return remoteDeviceGroup; }
-    public void setRemoteDeviceGroup(DeviceGroup v) { this.remoteDeviceGroup = v; }
-
-    public int getRemoteTsap() { return remoteTsap; }
-    public void setRemoteTsap(int v) { this.remoteTsap = v; }
 
     public int getPduSize() { return pduSize; }
     public void setPduSize(int v) { this.pduSize = v; }
