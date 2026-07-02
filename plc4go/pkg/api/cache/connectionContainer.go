@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/rs/zerolog"
 
@@ -44,6 +45,16 @@ type connectionContainer struct {
 	queue []connectionRequest
 	// Listeners for connection events.
 	listeners []connectionListener
+	// Maximum duration a connection may sit idle in the cache before it is
+	// discarded and re-established on the next lease (0 = keep forever).
+	// Remotes routinely reap idle connections without a FIN/RST reaching us
+	// (half-open TCP), which no liveness flag can detect - the death only
+	// surfaces on the first write. Refusing to hand out connections that
+	// exceeded this age avoids that failure mode and frees connection slots
+	// on connection-limited remotes between bursts.
+	maxIdleTime time.Duration
+	// idleSince records when the connection last became idle.
+	idleSince time.Time
 
 	log zerolog.Logger
 }
@@ -132,6 +143,7 @@ func (c *connectionContainer) connect(ctx context.Context) {
 	c.tracerEnabled = c.connection.IsTraceEnabled()
 	// Mark the connection as idle for now.
 	c.state = StateIdle
+	c.idleSince = time.Now()
 	// If there is a request in the queue, hand out the connection to that.
 	if queueHead := c.nextWaiter(); queueHead != nil {
 		c.log.Trace().Int("waitingClientsLen", len(c.queue)).Msg("notifies waiting clients of connection")
@@ -213,14 +225,25 @@ func (c *connectionContainer) lease(ctx context.Context) (chan *plcConnectionLea
 		// remote may have dropped it while it sat idle in the cache (idle timeouts
 		// and connection-limited gateways do this routinely); without this check
 		// the client receives a dead connection and fails on first use.
-		if c.connection == nil || !c.connection.IsConnected() {
+		// A connection that exceeded the configured max idle time is treated the
+		// same way: remotes that silently reap idle connections leave a half-open
+		// socket that IsConnected() cannot detect, so past that age the connection
+		// is not to be trusted and gets replaced proactively.
+		if c.connection == nil || !c.connection.IsConnected() || c.idleExpired() {
 			if c.closed {
 				// The cache is shutting down - don't reconnect, just report.
 				errorChan <- errors.New("connection container is closed")
 				break
 			}
-			c.log.Debug().Str("connectionString", c.connectionString).
-				Msg("Cached idle connection is no longer alive - reconnecting.")
+			if c.idleExpired() {
+				c.log.Debug().Str("connectionString", c.connectionString).
+					Dur("maxIdleTime", c.maxIdleTime).
+					Time("idleSince", c.idleSince).
+					Msg("Cached idle connection exceeded max idle time - reconnecting.")
+			} else {
+				c.log.Debug().Str("connectionString", c.connectionString).
+					Msg("Cached idle connection is no longer alive - reconnecting.")
+			}
 			c.queue = append(c.queue, connectionRequest{ctx: ctx, connChan: connectionChan, errChan: errorChan})
 			c.startReconnect(ctx)
 			break
@@ -293,7 +316,7 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 		defer c.lock.Unlock()
 		if c.connection == nil {
 			c.state = StateInvalid
-			return errors.New("Can'c return a broken connection")
+			return errors.New("Can't return a broken connection")
 		}
 		// connect() already dealt with the queue: it either handed the fresh
 		// connection to the next waiter (StateInUse) or marked it idle. Handing out
@@ -306,7 +329,7 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 	defer c.lock.Unlock()
 	if c.connection == nil {
 		c.state = StateInvalid
-		return errors.New("Can'c return a broken connection")
+		return errors.New("Can't return a broken connection")
 	}
 
 	// Check how many others are waiting for this connection.
@@ -329,8 +352,15 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 		c.log.Debug().Str("connectionString", c.connectionString).
 			Msg("Connection set to 'idle'.")
 		c.state = StateIdle
+		c.idleSince = time.Now()
 	}
 	return nil
+}
+
+// idleExpired reports whether the connection outstayed the configured max idle
+// time. Must be called with c.lock held.
+func (c *connectionContainer) idleExpired() bool {
+	return c.maxIdleTime > 0 && time.Since(c.idleSince) > c.maxIdleTime
 }
 
 func (c *connectionContainer) String() string {

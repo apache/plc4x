@@ -77,6 +77,19 @@ func WithMaxWaitTime(maxWaitTime time.Duration) WithConnectionCacheOption {
 	}
 }
 
+// WithMaxIdleTime discards cached connections that sat idle for longer than
+// the given duration and re-establishes them on the next lease (0 = keep
+// forever, the default). Use this against remotes that silently reap idle
+// connections (half-open TCP): such a death is undetectable until the first
+// write fails, so connections past this age are replaced proactively. As a
+// side effect, connection slots on connection-limited remotes are freed
+// between bursts instead of being parked indefinitely.
+func WithMaxIdleTime(maxIdleTime time.Duration) WithConnectionCacheOption {
+	return func(plcConnectionCache *plcConnectionCache) {
+		plcConnectionCache.maxIdleTime = maxIdleTime
+	}
+}
+
 func WithTracer() WithConnectionCacheOption {
 	return func(plcConnectionCache *plcConnectionCache) {
 		plcConnectionCache.EnableTracer()
@@ -107,6 +120,9 @@ type plcConnectionCache struct {
 	// If the connection is used for a longer time, it is forcefully removed from the client.
 	maxLeaseTime time.Duration
 	maxWaitTime  time.Duration
+	// Maximum duration a connection may sit idle before being replaced on the
+	// next lease (0 = keep forever). See WithMaxIdleTime.
+	maxIdleTime time.Duration
 
 	cacheLock   *sync.RWMutex
 	connections map[string]*connectionContainer
@@ -160,6 +176,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 		c.log.Debug().Str("connectionString", connectionString).Msg("Create new cached connection")
 		// Create a new connection container.
 		cc := newConnectionContainer(c.log, c.driverManager, connectionString)
+		cc.maxIdleTime = c.maxIdleTime
 		// Register for connection events (Like connection closed or error).
 		cc.addListener(c)
 		// Store the new connection container in the cache of connections.
