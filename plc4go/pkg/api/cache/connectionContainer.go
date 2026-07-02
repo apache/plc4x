@@ -113,6 +113,12 @@ func (c *connectionContainer) connect(ctx context.Context) {
 		} else {
 			c.log.Trace().Msg("no waiting clients")
 		}
+		// Mark the container as invalid so the next lease request knows it has to
+		// re-attempt the connection. Previously the state was left untouched
+		// (StateInitialized on the initial connect), which parked the container in a
+		// state where lease() queued requests forever and no reconnect was ever
+		// attempted - permanently breaking the connection string until restart.
+		c.state = StateInvalid
 		return
 	}
 
@@ -127,13 +133,11 @@ func (c *connectionContainer) connect(ctx context.Context) {
 	// Mark the connection as idle for now.
 	c.state = StateIdle
 	// If there is a request in the queue, hand out the connection to that.
-	if waitingClientsLen := len(c.queue); waitingClientsLen > 0 {
-		c.log.Trace().Int("waitingClientsLen", waitingClientsLen).Msg("notifies waiting clients of connection")
-		// Get the first in the queue.
-		queueHead := c.queue[0]
-		c.queue = c.queue[1:]
+	if queueHead := c.nextWaiter(); queueHead != nil {
+		c.log.Trace().Int("waitingClientsLen", len(c.queue)).Msg("notifies waiting clients of connection")
 		// Mark the connection as being used.
 		c.state = StateInUse
+		c.leaseCounter++
 		// Return the lease to the caller.
 		connection := newPlcConnectionLease(c, c.leaseCounter, c.connection)
 		// In this case we don'c need to check for blocks
@@ -143,6 +147,49 @@ func (c *connectionContainer) connect(ctx context.Context) {
 	} else {
 		c.log.Trace().Msg("no waiting clients")
 	}
+}
+
+// nextWaiter pops the next queued lease request whose context is still live.
+// Requests whose caller has already given up waiting are failed explicitly (their
+// error channel is buffered) instead of being handed a lease: sending a lease to
+// an abandoned request would park the connection in StateInUse forever, as nobody
+// is left to return it. Must be called with c.lock held.
+func (c *connectionContainer) nextWaiter() *connectionRequest {
+	for len(c.queue) > 0 {
+		head := c.queue[0]
+		c.queue = c.queue[1:]
+		if head.ctx.Err() != nil {
+			c.log.Debug().Str("connectionString", c.connectionString).
+				Msg("Skipping lease request with cancelled context")
+			select {
+			case head.errChan <- head.ctx.Err():
+			default:
+			}
+			continue
+		}
+		return &head
+	}
+	return nil
+}
+
+// startReconnect discards any stale connection and re-runs connect asynchronously.
+// State is set to StateInitialized so concurrent lease requests queue up instead of
+// spawning additional connect attempts. Must be called with c.lock held.
+func (c *connectionContainer) startReconnect(ctx context.Context) {
+	stale := c.connection
+	c.connection = nil
+	c.state = StateInitialized
+	go func() {
+		if stale != nil {
+			// Close the stale connection so its message-codec workers don't leak.
+			if err := stale.Close(); err != nil {
+				c.log.Debug().Err(err).
+					Str("connectionString", c.connectionString).
+					Msg("Error closing stale connection before reconnect")
+			}
+		}
+		c.connect(ctx)
+	}()
 }
 
 func (c *connectionContainer) addListener(listener connectionListener) {
@@ -162,6 +209,22 @@ func (c *connectionContainer) lease(ctx context.Context) (chan *plcConnectionLea
 	// Check if the connection is available.
 	switch c.state {
 	case StateIdle:
+		// Verify the cached connection is still alive before handing it out. The
+		// remote may have dropped it while it sat idle in the cache (idle timeouts
+		// and connection-limited gateways do this routinely); without this check
+		// the client receives a dead connection and fails on first use.
+		if c.connection == nil || !c.connection.IsConnected() {
+			if c.closed {
+				// The cache is shutting down - don't reconnect, just report.
+				errorChan <- errors.New("connection container is closed")
+				break
+			}
+			c.log.Debug().Str("connectionString", c.connectionString).
+				Msg("Cached idle connection is no longer alive - reconnecting.")
+			c.queue = append(c.queue, connectionRequest{ctx: ctx, connChan: connectionChan, errChan: errorChan})
+			c.startReconnect(ctx)
+			break
+		}
 		c.leaseCounter++
 		connection := newPlcConnectionLease(c, c.leaseCounter, c.connection)
 		c.state = StateInUse
@@ -179,7 +242,18 @@ func (c *connectionContainer) lease(ctx context.Context) (chan *plcConnectionLea
 			Int("waiting-queue-size", len(c.queue)).
 			Msg("Added lease-request to queue.")
 	case StateInvalid:
-		c.log.Debug().Str("connectionString", c.connectionString).Msg("No lease because invalid")
+		// A previous connect or reconnect failed. Previously the request was simply
+		// ignored here (nothing was ever sent on either channel), so every caller
+		// blocked until timeout and the container stayed broken forever. Instead,
+		// queue the request and attempt to re-establish the connection.
+		if c.closed {
+			errorChan <- errors.New("connection container is closed")
+			break
+		}
+		c.log.Debug().Str("connectionString", c.connectionString).
+			Msg("Connection is invalid - attempting reconnect.")
+		c.queue = append(c.queue, connectionRequest{ctx: ctx, connChan: connectionChan, errChan: errorChan})
+		c.startReconnect(ctx)
 	}
 	return connectionChan, errorChan
 }
@@ -214,6 +288,17 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 			}
 		}
 		c.connect(ctx)
+
+		c.lock.Lock()
+		defer c.lock.Unlock()
+		if c.connection == nil {
+			c.state = StateInvalid
+			return errors.New("Can'c return a broken connection")
+		}
+		// connect() already dealt with the queue: it either handed the fresh
+		// connection to the next waiter (StateInUse) or marked it idle. Handing out
+		// another lease here would lease the same connection twice.
+		return nil
 	default:
 		c.log.Debug().Str("connectionString", c.connectionString).Msg("Client returned valid connection.")
 	}
@@ -225,11 +310,10 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 	}
 
 	// Check how many others are waiting for this connection.
-	if waitingClientsLen := len(c.queue); waitingClientsLen > 0 {
-		c.log.Trace().Int("waitingClientsLen", waitingClientsLen).Msg("notifies waiting clients of connection return")
+	if next := c.nextWaiter(); next != nil {
+		c.log.Trace().Int("waitingClientsLen", len(c.queue)).Msg("notifies waiting clients of connection return")
 		// There are waiting clients, give the connection to the next client in the line.
-		next := c.queue[0]
-		c.queue = c.queue[1:]
+		c.state = StateInUse
 		c.leaseCounter++
 		connection := newPlcConnectionLease(c, c.leaseCounter, c.connection)
 
