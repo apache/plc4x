@@ -128,6 +128,12 @@ func (c *Connection) Connect(ctx context.Context) error {
 	return nil
 }
 
+func (c *Connection) Close() error {
+	err := c.DefaultConnection.Close()
+	c.wg.Wait()
+	return err
+}
+
 func (c *Connection) passToDefaultIncomingMessageChannel() {
 	incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
 	// Block (with a short timeout so the Connect loop can re-check IsConnected

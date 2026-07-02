@@ -23,6 +23,8 @@ import (
 	"math"
 	"testing"
 
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -67,7 +69,7 @@ func TestConnection_BuildersReturnNonNil(t *testing.T) {
 
 func TestConnection_AddSubscriber_IsIdempotent(t *testing.T) {
 	conn := newTestConnection(t, map[string][]string{})
-	sub := NewSubscriber(conn)
+	sub := NewSubscriber(conn, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 	conn.addSubscriber(sub)
 	conn.addSubscriber(sub) // second add should be a no-op
 	assert.Len(t, conn.subscribers, 1)
