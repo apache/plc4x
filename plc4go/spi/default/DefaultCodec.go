@@ -21,7 +21,6 @@ package _default
 
 import (
 	"context"
-	stdErrors "errors"
 	"runtime/debug"
 	"slices"
 	"sync"
@@ -544,13 +543,17 @@ func (m *defaultCodec) handleTransportError(workerLog zerolog.Logger, err error)
 	if err == nil {
 		return true
 	}
-	if stdErrors.Is(err, context.Canceled) {
+	// Use the panic-guarded transports.ErrorIs here: the error chain delivered by a
+	// transport can contain improperly constructed values (e.g. a typed-nil
+	// *net.OpError), and stdErrors.Is dereferences them while unwrapping - which
+	// killed the receive worker with a recovered nil-pointer panic in the field.
+	if transports.ErrorIs(err, context.Canceled) {
 		workerLog.Debug().Msg("receive aborted due to context cancellation")
 		return false
 	}
 
 	kind := transports.TransportErrorUnknown
-	if stdErrors.Is(err, context.DeadlineExceeded) {
+	if transports.ErrorIs(err, context.DeadlineExceeded) {
 		kind = transports.TransportErrorRetryable
 	} else if m.transportInstance != nil {
 		kind = m.transportInstance.ClassifyError(err)

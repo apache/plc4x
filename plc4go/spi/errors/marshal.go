@@ -34,7 +34,17 @@ const (
 // and returns its frames as []map[string]string keyed by StackSource*Name.
 // Returns nil if no stack trace is found in the chain. Suitable for use as
 // zerolog.ErrorStackMarshaler.
-func MarshalStack(err error) any {
+//
+// The walk is panic-guarded: error chains can contain improperly constructed
+// values (e.g. a typed-nil *net.OpError wrapped via %w) whose Unwrap method
+// dereferences a nil receiver. This marshaler runs inside zerolog on every
+// logged error, so a panic here would take down whatever worker is logging.
+func MarshalStack(err error) (result any) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = nil
+		}
+	}()
 	type stackTracer interface {
 		StackTrace() StackTrace
 	}
