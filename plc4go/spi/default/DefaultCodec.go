@@ -543,10 +543,14 @@ func (m *defaultCodec) handleTransportError(workerLog zerolog.Logger, err error)
 	if err == nil {
 		return true
 	}
-	// Use the panic-guarded transports.ErrorIs here: the error chain delivered by a
-	// transport can contain improperly constructed values (e.g. a typed-nil
-	// *net.OpError), and stdErrors.Is dereferences them while unwrapping - which
-	// killed the receive worker with a recovered nil-pointer panic in the field.
+	// Defuse improperly constructed error chains (e.g. a typed-nil *net.OpError
+	// wrapped via %w) once at the entry point: everything below - classification,
+	// wrapping, expectation fan-out, logging - walks the chain repeatedly, and
+	// unguarded walks dereference such values, which killed the receive worker
+	// with a recovered nil-pointer panic in the field. A corrupt chain is
+	// flattened and tagged with errors.ErrCorruptErrorChain so the anomaly
+	// stays visible downstream instead of being silently swallowed.
+	err = errors.SanitizeError(err)
 	if transports.ErrorIs(err, context.Canceled) {
 		workerLog.Debug().Msg("receive aborted due to context cancellation")
 		return false
