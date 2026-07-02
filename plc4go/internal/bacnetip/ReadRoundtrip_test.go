@@ -27,6 +27,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -48,6 +49,7 @@ type fakeBacnetDevice struct {
 	wg      sync.WaitGroup
 	log     zerolog.Logger
 	gotReqs int
+	ctx     context.Context
 	mu      sync.Mutex
 }
 
@@ -56,7 +58,7 @@ func startFakeBacnetDevice(t *testing.T, log zerolog.Logger) *fakeBacnetDevice {
 	addr := &net.UDPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 0}
 	conn, err := net.ListenUDP("udp4", addr)
 	require.NoError(t, err)
-	d := &fakeBacnetDevice{conn: conn, log: log}
+	d := &fakeBacnetDevice{conn: conn, log: log, ctx: t.Context()}
 	d.wg.Add(1)
 	go d.serve()
 	return d
@@ -106,7 +108,7 @@ func (d *fakeBacnetDevice) serve() {
 }
 
 func (d *fakeBacnetDevice) extractInvokeId(data []byte) (uint8, bool) {
-	bvlc, err := model.BVLCParse[model.BVLC](context.Background(), data)
+	bvlc, err := model.BVLCParse[model.BVLC](d.ctx, data)
 	if err != nil {
 		d.log.Error().Err(err).Msg("fake device: parse BVLC")
 		return 0, false
@@ -141,18 +143,14 @@ func (d *fakeBacnetDevice) stop() {
 	d.wg.Wait()
 }
 
-func traceLogger(t *testing.T) zerolog.Logger {
-	return zerolog.New(zerolog.NewTestWriter(t)).Level(zerolog.TraceLevel).With().Timestamp().Logger()
-}
-
 // readPresentValue issues a single ReadRequest for ANALOG_INPUT,1/PRESENT_VALUE
 // against the given connection and returns the response code + float value.
 func readPresentValue(t *testing.T, conn plc4go.PlcConnection) (apiModel.PlcResponseCode, float32, bool) {
 	t.Helper()
 	rr, err := conn.ReadRequestBuilder().AddTagAddress("pv", "ANALOG_INPUT,1/PRESENT_VALUE").Build()
 	require.NoError(t, err)
-	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
-	defer cancel()
+	ctx, cancel := context.WithTimeout(t.Context(), 8*time.Second)
+	t.Cleanup(cancel)
 	select {
 	case <-ctx.Done():
 		return 0, 0, false
@@ -172,20 +170,22 @@ func readPresentValue(t *testing.T, conn plc4go.PlcConnection) (apiModel.PlcResp
 }
 
 func TestNativeBacnetRead_DirectConnection(t *testing.T) {
-	log := traceLogger(t)
+	log := testutils.ProduceTestingLogger(t)
 	device := startFakeBacnetDevice(t, log)
-	defer device.stop()
+	t.Cleanup(device.stop)
 
 	dm := plc4go.NewPlcDriverManager(options.WithCustomLogger(log))
 	dm.RegisterDriver(NewDriver(options.WithCustomLogger(log)))
 	apiTransports.RegisterUdpTransport(dm)
 
 	connStr := fmt.Sprintf("bacnet-ip:udp://127.0.0.1:%d?local-port=0&ApduTimeoutMs=3000", device.port())
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	t.Cleanup(cancel)
 	conn, err := dm.GetConnection(ctx, connStr)
 	require.NoError(t, err)
-	defer conn.Close()
+	t.Cleanup(func() {
+		assert.NoError(t, conn.Close())
+	})
 
 	code, val, ok := readPresentValue(t, conn)
 	t.Logf("device received %d request(s)", device.requestCount())
@@ -195,22 +195,26 @@ func TestNativeBacnetRead_DirectConnection(t *testing.T) {
 }
 
 func TestNativeBacnetRead_ViaCache(t *testing.T) {
-	log := traceLogger(t)
+	log := testutils.ProduceTestingLogger(t)
 	device := startFakeBacnetDevice(t, log)
-	defer device.stop()
+	t.Cleanup(device.stop)
 
 	dm := plc4go.NewPlcDriverManager(options.WithCustomLogger(log))
 	dm.RegisterDriver(NewDriver(options.WithCustomLogger(log)))
 	apiTransports.RegisterUdpTransport(dm)
 	connCache := cache.NewPlcConnectionCache(dm, cache.WithCustomLogger(log))
-	defer connCache.Close()
+	t.Cleanup(func() {
+		assert.NoError(t, connCache.Close())
+	})
 
 	connStr := fmt.Sprintf("bacnet-ip:udp://127.0.0.1:%d?local-port=0&ApduTimeoutMs=3000", device.port())
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	t.Cleanup(cancel)
 	conn, err := connCache.GetConnection(ctx, connStr)
 	require.NoError(t, err)
-	defer conn.Close()
+	t.Cleanup(func() {
+		assert.NoError(t, conn.Close())
+	})
 
 	code, val, ok := readPresentValue(t, conn)
 	t.Logf("device received %d request(s)", device.requestCount())

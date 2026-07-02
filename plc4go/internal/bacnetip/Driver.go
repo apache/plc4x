@@ -57,7 +57,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
 		discoverer:              NewDiscoverer(_options...),
-		tm:                      transactions.NewRequestTransactionManager(math.MaxInt),
+		tm:                      transactions.NewRequestTransactionManager(math.MaxInt, options.WithCustomLogger(customLogger)),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 
