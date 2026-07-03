@@ -169,25 +169,38 @@ func getOrLeaveDuration(key string, setting *time.Duration) {
 	}
 }
 
+// shouldNoColor's result only depends on the environment, but it WRITES the
+// global color.NoColor - and it is called from ProduceTestingLogger for every
+// (potentially parallel) test, which the race detector flags as concurrent
+// unsynchronized writes. Compute it exactly once.
+var (
+	noColorOnce   sync.Once
+	noColorResult bool
+)
+
 func shouldNoColor() bool {
-	if _, forceColorEnv := os.LookupEnv("FORCE_COLOR"); forceColorEnv {
-		color.NoColor = false // Apparently the color.NoColor is a bit to eager
-		return false
-	}
-	noColor := false
-	{
-		_, noColorEnv := os.LookupEnv("NO_COLOR")
-		onJenkins := os.Getenv("JENKINS_URL") != ""
-		onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
-		onCI := os.Getenv("CI") != ""
-		if noColorEnv || onJenkins || onGithubAction || onCI {
-			noColor = true
+	noColorOnce.Do(func() {
+		if _, forceColorEnv := os.LookupEnv("FORCE_COLOR"); forceColorEnv {
+			color.NoColor = false // Apparently the color.NoColor is a bit to eager
+			noColorResult = false
+			return
 		}
-	}
-	if !noColor {
-		color.NoColor = false // Apparently the color.NoColor is a bit to eager
-	}
-	return noColor
+		noColor := false
+		{
+			_, noColorEnv := os.LookupEnv("NO_COLOR")
+			onJenkins := os.Getenv("JENKINS_URL") != ""
+			onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+			onCI := os.Getenv("CI") != ""
+			if noColorEnv || onJenkins || onGithubAction || onCI {
+				noColor = true
+			}
+		}
+		if !noColor {
+			color.NoColor = false // Apparently the color.NoColor is a bit to eager
+		}
+		noColorResult = noColor
+	})
+	return noColorResult
 }
 
 type TestingLog interface {
