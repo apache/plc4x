@@ -1,4 +1,4 @@
-//go:build cgo || windows
+//go:build !cgo && !windows
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,7 +23,6 @@ package pcap
 
 import (
 	"net/url"
-	"strconv"
 
 	"github.com/rs/zerolog"
 
@@ -32,17 +31,17 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-type TransportType string
-
-const (
-	UDP  TransportType = "udp"
-	TCP  TransportType = "tcp"
-	PCAP TransportType = "pcap"
-)
+// The real pcap transport binds to libpcap through gopacket/pcap, which is
+// cgo-only on every platform except Windows. This stub keeps the package
+// (and everything importing it) compilable with CGO_ENABLED=0 — e.g. when
+// cross-compiling — and reports a clear error if the transport is actually
+// used in such a build.
 
 type Transport struct {
 	log zerolog.Logger
 }
+
+var _ transports.Transport = (*Transport)(nil)
 
 func NewTransport(_options ...options.WithOption) *Transport {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
@@ -59,25 +58,8 @@ func (m *Transport) GetTransportName() string {
 	return "PCAP(NG) Playback Transport"
 }
 
-func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string, _options ...options.WithOption) (transports.TransportInstance, error) {
-	var transportType = PCAP
-	if val, ok := options["transport-type"]; ok {
-		transportType = TransportType(val[0])
-	}
-	var portRange = ""
-	if val, ok := options["transport-port-range"]; ok {
-		portRange = val[0]
-	}
-	var speedFactor float32 = 1.0
-	if val, ok := options["speed-factor"]; ok {
-		if parsedSpeedFactory, err := strconv.ParseFloat(val[0], 32); err != nil {
-			return nil, errors.Wrap(err, "error parsing speed-factor")
-		} else {
-			speedFactor = float32(parsedSpeedFactory)
-		}
-	}
-
-	return NewPcapTransportInstance(transportUrl.Path, transportType, portRange, speedFactor, m, _options...), nil
+func (m *Transport) CreateTransportInstance(_ url.URL, _ map[string][]string, _ ...options.WithOption) (transports.TransportInstance, error) {
+	return nil, errors.New("the pcap transport requires cgo (libpcap); rebuild with CGO_ENABLED=1")
 }
 
 func (m *Transport) Close() error {
