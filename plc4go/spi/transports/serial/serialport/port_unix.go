@@ -22,12 +22,102 @@
 package serialport
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"time"
 
 	"golang.org/x/sys/unix"
 )
+
+// unixPort is an open POSIX serial port: a runtime-poller-managed *os.File
+// (providing Read/Write/Close and deadlines) plus ioctl-backed control
+// operations. Control ioctls go through SyscallConn().Control — never
+// .Fd(), which would de-register the file from the poller.
+type unixPort struct {
+	*os.File
+}
+
+var _ ControlPort = (*unixPort)(nil)
+
+// control runs op on the raw fd while the runtime holds it stable.
+//
+// SyscallConn() and rawConn.Control() only fail for an invalid or closing
+// *os.File — internal/poll surfaces that as "use of closed file", which
+// does not satisfy errors.Is(err, os.ErrClosed) and would otherwise diverge
+// from Read/Write-after-close (which do) and from the Windows ControlPort
+// implementation (which returns os.ErrClosed). Normalize to os.ErrClosed
+// here; op's own error is returned separately as opErr.
+func (p *unixPort) control(op func(fd int) error) error {
+	rawConn, err := p.SyscallConn()
+	if err != nil {
+		return os.ErrClosed
+	}
+	var opErr error
+	if err := rawConn.Control(func(fd uintptr) { opErr = op(int(fd)) }); err != nil {
+		return os.ErrClosed
+	}
+	return opErr
+}
+
+func (p *unixPort) setModemBits(bits int, assert bool) error {
+	return p.control(func(fd int) error {
+		if assert {
+			return os.NewSyscallError("ioctl TIOCMBIS", unix.IoctlSetPointerInt(fd, unix.TIOCMBIS, bits))
+		}
+		return os.NewSyscallError("ioctl TIOCMBIC", unix.IoctlSetPointerInt(fd, unix.TIOCMBIC, bits))
+	})
+}
+
+func (p *unixPort) SetDTR(assert bool) error { return p.setModemBits(unix.TIOCM_DTR, assert) }
+func (p *unixPort) SetRTS(assert bool) error { return p.setModemBits(unix.TIOCM_RTS, assert) }
+
+func (p *unixPort) ModemStatus() (ModemStatus, error) {
+	var status ModemStatus
+	err := p.control(func(fd int) error {
+		bits, err := unix.IoctlGetInt(fd, unix.TIOCMGET)
+		if err != nil {
+			return os.NewSyscallError("ioctl TIOCMGET", err)
+		}
+		status = ModemStatus{
+			CTS: bits&unix.TIOCM_CTS != 0,
+			DSR: bits&unix.TIOCM_DSR != 0,
+			DCD: bits&unix.TIOCM_CAR != 0,
+			RI:  bits&unix.TIOCM_RNG != 0,
+		}
+		return nil
+	})
+	return status, err
+}
+
+func (p *unixPort) SendBreak(d time.Duration) error {
+	if d <= 0 {
+		return errors.New("serialport: break duration must be greater than 0")
+	}
+	if err := p.control(func(fd int) error {
+		return os.NewSyscallError("ioctl TIOCSBRK", unix.IoctlSetInt(fd, unix.TIOCSBRK, 0))
+	}); err != nil {
+		return err
+	}
+	time.Sleep(d)
+	return p.control(func(fd int) error {
+		return os.NewSyscallError("ioctl TIOCCBRK", unix.IoctlSetInt(fd, unix.TIOCCBRK, 0))
+	})
+}
+
+func (p *unixPort) SetConfig(cfg Config) error {
+	normalized, err := cfg.normalize()
+	if err != nil {
+		return err
+	}
+	t, err := makeTermios(normalized)
+	if err != nil {
+		return err
+	}
+	return p.control(func(fd int) error {
+		return applySettings(fd, t, normalized.BaudRate)
+	})
+}
 
 // openPort opens the device non-blocking so the Go runtime poller manages
 // it — that is what makes SetReadDeadline/SetWriteDeadline work on a plain
@@ -67,5 +157,5 @@ func openPort(portName string, cfg Config) (Port, error) {
 		_ = f.Close()
 		return nil, fmt.Errorf("serialport: %s does not support I/O deadlines: %w", portName, err)
 	}
-	return f, nil
+	return &unixPort{File: f}, nil
 }

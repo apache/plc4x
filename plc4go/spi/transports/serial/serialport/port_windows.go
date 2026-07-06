@@ -53,15 +53,25 @@ import (
 // stale by at most one slice iteration; it self-corrects on that
 // direction's next attempt.
 //
-// Close() drains in-flight Read/Write attempts (tracked via ioCount)
+// Close() drains in-flight I/O attempts (Read/Write/Drain, tracked via ioCount)
 // before releasing the handle, repeatedly cancelling outstanding I/O with
 // CancelIoEx, so a syscall can never start on, or run past, a closed/
 // recycled handle.
+//
+// Locking discipline: short, bounded comm calls (escape codes, modem
+// status, purge, SetCommState) run under mu via withHandle, since they
+// complete quickly and never block on the wire. Read, Write, and Drain
+// instead run on the in-flight I/O path (beginIO/endIO) and hold no lock
+// while their syscall is outstanding, because those syscalls can block for
+// an unbounded time (Drain's FlushFileBuffers in particular can stall
+// indefinitely under a hardware flow-control deadlock); Close's CancelIoEx
+// drain loop needs the syscall to actually be running, not queued up
+// behind mu, in order to cancel it.
 type winPort struct {
 	mu            sync.Mutex
 	handle        windows.Handle
 	closed        bool
-	ioCount       int // number of Read/Write attempts currently between beginIO and endIO
+	ioCount       int // number of I/O attempts (Read/Write/Drain) currently between beginIO and endIO
 	readDeadline  time.Time
 	writeDeadline time.Time
 }
@@ -111,6 +121,10 @@ func (p *winPort) configure(cfg Config) error {
 	dcb.Parity = s.Parity
 	dcb.StopBits = s.StopBits
 	dcb.Flags = s.Flags
+	dcb.XonLim = s.XonLim
+	dcb.XoffLim = s.XoffLim
+	dcb.XonChar = s.XonChar
+	dcb.XoffChar = s.XoffChar
 	if err := windows.SetCommState(p.handle, &dcb); err != nil {
 		return os.NewSyscallError("SetCommState", err)
 	}
@@ -323,4 +337,96 @@ func (p *winPort) Close() error {
 		return os.NewSyscallError("CloseHandle", err)
 	}
 	return nil
+}
+
+var _ ControlPort = (*winPort)(nil)
+
+// withHandle runs a short, non-blocking comm call under the state lock.
+// Only bounded, buffer-level calls may use this (escape codes, status
+// reads, purge); blocking I/O keeps using beginIO/endIO.
+func (p *winPort) withHandle(name string, op func(h windows.Handle) error) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.closed {
+		return os.ErrClosed
+	}
+	return os.NewSyscallError(name, op(p.handle))
+}
+
+func (p *winPort) SetDTR(assert bool) error {
+	return p.withHandle("EscapeCommFunction", func(h windows.Handle) error {
+		return windows.EscapeCommFunction(h, winEscapeFor(true, assert))
+	})
+}
+
+func (p *winPort) SetRTS(assert bool) error {
+	return p.withHandle("EscapeCommFunction", func(h windows.Handle) error {
+		return windows.EscapeCommFunction(h, winEscapeFor(false, assert))
+	})
+}
+
+func (p *winPort) ModemStatus() (ModemStatus, error) {
+	var bits uint32
+	err := p.withHandle("GetCommModemStatus", func(h windows.Handle) error {
+		return windows.GetCommModemStatus(h, &bits)
+	})
+	if err != nil {
+		return ModemStatus{}, err
+	}
+	return modemStatusFromWinBits(bits), nil
+}
+
+func (p *winPort) SendBreak(d time.Duration) error {
+	if d <= 0 {
+		return errors.New("serialport: break duration must be greater than 0")
+	}
+	if err := p.withHandle("SetCommBreak", windows.SetCommBreak); err != nil {
+		return err
+	}
+	time.Sleep(d) // deliberately outside the lock
+	return p.withHandle("ClearCommBreak", windows.ClearCommBreak)
+}
+
+func (p *winPort) FlushInput() error {
+	return p.withHandle("PurgeComm", func(h windows.Handle) error {
+		return windows.PurgeComm(h, windows.PURGE_RXCLEAR)
+	})
+}
+
+func (p *winPort) FlushOutput() error {
+	return p.withHandle("PurgeComm", func(h windows.Handle) error {
+		return windows.PurgeComm(h, windows.PURGE_TXCLEAR)
+	})
+}
+
+// Drain blocks until all written data has been transmitted. It runs on the
+// in-flight I/O path (beginIO/endIO) rather than under the state lock:
+// FlushFileBuffers is unbounded when hardware flow control stalls the
+// transmitter, and Close's CancelIoEx drain loop must be able to abort it.
+func (p *winPort) Drain() error {
+	handle, _, _, err := p.beginIO()
+	if err != nil {
+		return err
+	}
+	defer p.endIO()
+	if err := windows.FlushFileBuffers(handle); err != nil {
+		if errors.Is(err, windows.ERROR_OPERATION_ABORTED) && p.isClosed() {
+			return os.ErrClosed
+		}
+		return os.NewSyscallError("FlushFileBuffers", err)
+	}
+	return nil
+}
+
+func (p *winPort) SetConfig(cfg Config) error {
+	normalized, err := cfg.normalize()
+	if err != nil {
+		return err
+	}
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.closed {
+		return os.ErrClosed
+	}
+	return p.configure(normalized)
 }

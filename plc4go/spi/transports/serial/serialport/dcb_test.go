@@ -47,6 +47,10 @@ func TestMakeDCBSettings(t *testing.T) {
 				Parity:   0,                   // NOPARITY
 				StopBits: 0,                   // ONESTOPBIT
 				Flags:    0x1 | 0x10 | 0x1000, // fBinary | DTR_CONTROL_ENABLE | RTS_CONTROL_ENABLE
+				// XonChar/XoffChar/XonLim/XoffLim are always populated, even
+				// with XON/XOFF flow control disabled — see makeDCBSettings.
+				XonChar: 0x11, XoffChar: 0x13,
+				XonLim: 2048, XoffLim: 512,
 			},
 		},
 		{
@@ -58,6 +62,8 @@ func TestMakeDCBSettings(t *testing.T) {
 				Parity:   2,                         // EVENPARITY
 				StopBits: 2,                         // TWOSTOPBITS
 				Flags:    0x1 | 0x2 | 0x10 | 0x1000, // ... | fParity | ...
+				XonChar:  0x11, XoffChar: 0x13,
+				XonLim: 2048, XoffLim: 512,
 			},
 		},
 		{
@@ -69,6 +75,8 @@ func TestMakeDCBSettings(t *testing.T) {
 				Parity:   1, // ODDPARITY
 				StopBits: 0,
 				Flags:    0x1 | 0x2 | 0x10 | 0x1000,
+				XonChar:  0x11, XoffChar: 0x13,
+				XonLim: 2048, XoffLim: 512,
 			},
 		},
 		{
@@ -80,6 +88,8 @@ func TestMakeDCBSettings(t *testing.T) {
 				Parity:   0,
 				StopBits: 1, // ONE5STOPBITS
 				Flags:    0x1 | 0x10 | 0x1000,
+				XonChar:  0x11, XoffChar: 0x13,
+				XonLim: 2048, XoffLim: 512,
 			},
 		},
 		{
@@ -91,6 +101,42 @@ func TestMakeDCBSettings(t *testing.T) {
 				Parity:   0,
 				StopBits: 0,
 				Flags:    0x1 | 0x4 | 0x10 | 0x2000, // fBinary | fOutxCtsFlow | DTR_CONTROL_ENABLE | RTS_CONTROL_HANDSHAKE
+				XonChar:  0x11, XoffChar: 0x13,
+				XonLim: 2048, XoffLim: 512,
+			},
+		},
+		{
+			name: "mark parity",
+			cfg:  Config{BaudRate: 9600, DataBits: 8, StopBits: StopBitsOne, Parity: ParityMark},
+			want: dcbSettings{
+				BaudRate: 9600, ByteSize: 8,
+				Parity:   3, // MARKPARITY
+				StopBits: 0,
+				Flags:    0x1 | 0x2 | 0x10 | 0x1000,
+				XonChar:  0x11, XoffChar: 0x13,
+				XonLim: 2048, XoffLim: 512,
+			},
+		},
+		{
+			name: "space parity",
+			cfg:  Config{BaudRate: 9600, DataBits: 8, StopBits: StopBitsOne, Parity: ParitySpace},
+			want: dcbSettings{
+				BaudRate: 9600, ByteSize: 8,
+				Parity:   4, // SPACEPARITY
+				StopBits: 0,
+				Flags:    0x1 | 0x2 | 0x10 | 0x1000,
+				XonChar:  0x11, XoffChar: 0x13,
+				XonLim: 2048, XoffLim: 512,
+			},
+		},
+		{
+			name: "xon/xoff flow control sets fOutX and fInX with DC1/DC3 chars",
+			cfg:  Config{BaudRate: 9600, DataBits: 8, StopBits: StopBitsOne, Parity: ParityNone, XONXOFFFlowControl: true},
+			want: dcbSettings{
+				BaudRate: 9600, ByteSize: 8, Parity: 0, StopBits: 0,
+				Flags:   0x1 | 0x10 | 0x100 | 0x200 | 0x1000, // fBinary | DTR_CONTROL_ENABLE | fOutX | fInX | RTS_CONTROL_ENABLE
+				XonChar: 0x11, XoffChar: 0x13,
+				XonLim: 2048, XoffLim: 512,
 			},
 		},
 	}

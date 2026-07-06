@@ -140,8 +140,119 @@ func TestOpenOnPTY_UseAfterCloseFails(t *testing.T) {
 	assert.True(t, errors.Is(err, os.ErrClosed), "write after close: want os.ErrClosed, got %v", err)
 }
 
+func TestOpenOnPTY_ControlOpsAfterCloseReturnErrClosed(t *testing.T) {
+	_, slavePath := openPTY(t)
+	port, err := Open(slavePath, Config{BaudRate: 9600})
+	require.NoError(t, err)
+	cp := port.(ControlPort)
+	require.NoError(t, port.Close())
+
+	require.ErrorIs(t, cp.FlushInput(), os.ErrClosed)
+	require.ErrorIs(t, cp.Drain(), os.ErrClosed)
+	require.ErrorIs(t, cp.SetDTR(true), os.ErrClosed)
+	_, err = cp.ModemStatus()
+	require.ErrorIs(t, err, os.ErrClosed)
+	require.ErrorIs(t, cp.SetConfig(Config{BaudRate: 19200}), os.ErrClosed)
+	require.ErrorIs(t, cp.SendBreak(10*time.Millisecond), os.ErrClosed)
+}
+
 func TestOpenNonexistentDeviceFails(t *testing.T) {
 	_, err := Open("/dev/plc4x-does-not-exist", Config{BaudRate: 9600})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "plc4x-does-not-exist")
+}
+
+func TestOpenOnPTY_ImplementsControlPort(t *testing.T) {
+	_, slavePath := openPTY(t)
+	port, err := Open(slavePath, Config{BaudRate: 9600})
+	require.NoError(t, err)
+	defer port.Close()
+	_, ok := port.(ControlPort)
+	require.True(t, ok, "Open's result must implement ControlPort")
+}
+
+func TestOpenOnPTY_SetConfigReconfiguresLive(t *testing.T) {
+	_, slavePath := openPTY(t)
+	port, err := Open(slavePath, Config{BaudRate: 9600})
+	require.NoError(t, err)
+	defer port.Close()
+	cp := port.(ControlPort)
+
+	require.NoError(t, cp.SetConfig(Config{BaudRate: 19200, DataBits: 7, StopBits: StopBitsTwo, Parity: ParityEven}))
+
+	// Read back the termios state to prove the reconfiguration landed.
+	rawConn, err := port.(*unixPort).SyscallConn()
+	require.NoError(t, err)
+	var readBack *unix.Termios
+	var ioctlErr error
+	require.NoError(t, rawConn.Control(func(fd uintptr) {
+		readBack, ioctlErr = unix.IoctlGetTermios(int(fd), unix.TCGETS)
+	}))
+	require.NoError(t, ioctlErr)
+	assert.NotZero(t, readBack.Cflag&unix.CS7, "CS7")
+	assert.NotZero(t, readBack.Cflag&unix.CSTOPB, "CSTOPB")
+	// PARENB is deliberately not asserted: pty drivers may drop or reject
+	// parity flags (observed on Linux 7.x), while CS7/CSTOPB reliably stick
+	// and prove the reconfiguration reached the kernel.
+
+	// Invalid reconfiguration is rejected by validation, not the kernel.
+	require.ErrorContains(t, cp.SetConfig(Config{}), "baud rate")
+}
+
+func TestOpenOnPTY_FlushInputDiscardsPendingData(t *testing.T) {
+	master, slavePath := openPTY(t)
+	port, err := Open(slavePath, Config{BaudRate: 9600})
+	require.NoError(t, err)
+	defer port.Close()
+	cp := port.(ControlPort)
+
+	_, err = master.Write([]byte("stale"))
+	require.NoError(t, err)
+	time.Sleep(50 * time.Millisecond) // let the pty deliver into the input queue
+	require.NoError(t, cp.FlushInput())
+
+	require.NoError(t, port.SetReadDeadline(time.Now().Add(100*time.Millisecond)))
+	_, err = port.Read(make([]byte, 8))
+	require.True(t, errors.Is(err, os.ErrDeadlineExceeded), "flushed data must be gone, got %v", err)
+}
+
+func TestOpenOnPTY_FlushOutputAndDrainSucceed(t *testing.T) {
+	_, slavePath := openPTY(t)
+	port, err := Open(slavePath, Config{BaudRate: 9600})
+	require.NoError(t, err)
+	defer port.Close()
+	cp := port.(ControlPort)
+	require.NoError(t, cp.FlushOutput())
+	require.NoError(t, cp.Drain())
+}
+
+func TestOpenOnPTY_SendBreak(t *testing.T) {
+	_, slavePath := openPTY(t)
+	port, err := Open(slavePath, Config{BaudRate: 9600})
+	require.NoError(t, err)
+	defer port.Close()
+	cp := port.(ControlPort)
+
+	require.Error(t, cp.SendBreak(0), "non-positive duration must be rejected")
+
+	// Linux ptys accept break as a no-op (send_break returns 0 without a
+	// driver break_ctl), so success plus elapsed time is what we can pin.
+	start := time.Now()
+	require.NoError(t, cp.SendBreak(60*time.Millisecond))
+	assert.GreaterOrEqual(t, time.Since(start), 60*time.Millisecond)
+}
+
+func TestOpenOnPTY_ModemOpsSurfaceDriverErrors(t *testing.T) {
+	// Linux ptys have no tiocmget/tiocmset — the calls must fail cleanly
+	// (on real UARTs they succeed; this pins error propagation, not values).
+	_, slavePath := openPTY(t)
+	port, err := Open(slavePath, Config{BaudRate: 9600})
+	require.NoError(t, err)
+	defer port.Close()
+	cp := port.(ControlPort)
+
+	_, err = cp.ModemStatus()
+	require.Error(t, err)
+	require.Error(t, cp.SetDTR(true))
+	require.Error(t, cp.SetRTS(false))
 }

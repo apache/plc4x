@@ -40,6 +40,8 @@ const (
 	ParityNone Parity = iota
 	ParityOdd
 	ParityEven
+	ParityMark  // parity bit always 1 — Linux and Windows only
+	ParitySpace // parity bit always 0 — Linux and Windows only
 )
 
 // StopBits configures the number of stop bits.
@@ -59,11 +61,16 @@ const (
 // are opened non-blocking and Read returns as soon as at least one byte is
 // available, bounded by SetReadDeadline — the same semantics as net.Conn.
 type Config struct {
-	BaudRate          uint
-	DataBits          uint // 5..8; 0 defaults to 8
-	StopBits          StopBits
-	Parity            Parity
-	RTSCTSFlowControl bool
+	// BaudRate accepts any positive rate, including non-standard ones:
+	// Linux uses the termios2/BOTHER interface, Darwin falls back to
+	// IOSSIOSPEED, Windows passes the value through DCB; FreeBSD accepts
+	// whatever the driver supports.
+	BaudRate           uint
+	DataBits           uint // 5..8; 0 defaults to 8
+	StopBits           StopBits
+	Parity             Parity
+	RTSCTSFlowControl  bool
+	XONXOFFFlowControl bool // mutually exclusive with RTSCTSFlowControl
 }
 
 // Port is an open serial port. Read blocks until at least one byte is
@@ -75,8 +82,45 @@ type Port interface {
 	SetWriteDeadline(t time.Time) error
 }
 
-// ErrUnsupportedPlatform is returned by Open on operating systems without
-// a serial port implementation.
+// ModemStatus is a snapshot of the input modem-control lines.
+type ModemStatus struct {
+	CTS bool // Clear To Send
+	DSR bool // Data Set Ready
+	DCD bool // Data Carrier Detect (RLSD on Windows)
+	RI  bool // Ring Indicator
+}
+
+// ControlPort extends Port with modem-control, line-discipline and runtime
+// reconfiguration operations. Every Port returned by Open also implements
+// ControlPort; callers needing these operations type-assert:
+//
+//	cp := port.(ControlPort)
+type ControlPort interface {
+	Port
+	// SetDTR asserts (true) or clears (false) the DTR output line.
+	SetDTR(assert bool) error
+	// SetRTS asserts or clears the RTS output line. Meaningless while
+	// RTSCTSFlowControl is active (the driver owns the line then).
+	SetRTS(assert bool) error
+	// ModemStatus reads the current input line states.
+	ModemStatus() (ModemStatus, error)
+	// SendBreak holds the TX line in break condition for d (must be > 0).
+	SendBreak(d time.Duration) error
+	// FlushInput discards received-but-unread data.
+	FlushInput() error
+	// FlushOutput discards written-but-unsent data.
+	FlushOutput() error
+	// Drain blocks until all written data has been transmitted. Platform
+	// behavior around a concurrent Close differs: on Windows, closing the
+	// port aborts a blocked Drain; on POSIX, a Drain stalled by hardware
+	// flow control is not interruptible by Close (tcdrain(3) semantics).
+	Drain() error
+	// SetConfig re-validates and applies cfg to the open port.
+	SetConfig(cfg Config) error
+}
+
+// ErrUnsupportedPlatform is returned by Open, and by ListPorts, on
+// operating systems without a serial port implementation.
 var ErrUnsupportedPlatform = errors.New("serial ports are not supported on this platform")
 
 // Open opens and configures the named serial port (e.g. "/dev/ttyUSB0" or
@@ -90,6 +134,12 @@ func Open(portName string, cfg Config) (Port, error) {
 		return nil, err
 	}
 	return openPort(portName, normalized)
+}
+
+// ListPorts returns the device paths (POSIX) or names (Windows, e.g.
+// "COM3") of serial ports present on the system, sorted.
+func ListPorts() ([]string, error) {
+	return listPorts()
 }
 
 // normalize validates cfg and fills in defaults.
@@ -109,9 +159,12 @@ func (c Config) normalize() (Config, error) {
 		return c, fmt.Errorf("serialport: invalid stop bits value %d", c.StopBits)
 	}
 	switch c.Parity {
-	case ParityNone, ParityOdd, ParityEven:
+	case ParityNone, ParityOdd, ParityEven, ParityMark, ParitySpace:
 	default:
 		return c, fmt.Errorf("serialport: invalid parity value %d", c.Parity)
+	}
+	if c.RTSCTSFlowControl && c.XONXOFFFlowControl {
+		return c, errors.New("serialport: RTS/CTS and XON/XOFF flow control are mutually exclusive")
 	}
 	if c.StopBits == StopBitsOnePointFive && c.DataBits != 5 {
 		return c, errors.New("serialport: 1.5 stop bits require 5 data bits")

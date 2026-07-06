@@ -62,10 +62,24 @@ func makeTermios(cfg Config) (*unix.Termios, error) {
 		t.Cflag |= unix.PARENB | unix.PARODD
 	case ParityEven:
 		t.Cflag |= unix.PARENB
+	case ParityMark:
+		if err := setMarkSpaceParity(t, true); err != nil {
+			return nil, err
+		}
+	case ParitySpace:
+		if err := setMarkSpaceParity(t, false); err != nil {
+			return nil, err
+		}
 	}
 
 	if cfg.RTSCTSFlowControl {
 		t.Cflag |= unix.CRTSCTS
+	}
+
+	if cfg.XONXOFFFlowControl {
+		t.Iflag |= unix.IXON | unix.IXOFF
+		t.Cc[unix.VSTART] = 0x11 // DC1
+		t.Cc[unix.VSTOP] = 0x13  // DC3
 	}
 
 	// The port is opened O_NONBLOCK and driven by the runtime poller, which

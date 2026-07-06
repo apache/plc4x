@@ -79,6 +79,26 @@ func TestConfigNormalize(t *testing.T) {
 			in:   Config{BaudRate: 9600, DataBits: 5, StopBits: StopBitsOnePointFive},
 			want: Config{BaudRate: 9600, DataBits: 5, StopBits: StopBitsOnePointFive, Parity: ParityNone},
 		},
+		{
+			name: "mark parity accepted",
+			in:   Config{BaudRate: 9600, Parity: ParityMark},
+			want: Config{BaudRate: 9600, DataBits: 8, StopBits: StopBitsOne, Parity: ParityMark},
+		},
+		{
+			name: "space parity accepted",
+			in:   Config{BaudRate: 9600, Parity: ParitySpace},
+			want: Config{BaudRate: 9600, DataBits: 8, StopBits: StopBitsOne, Parity: ParitySpace},
+		},
+		{
+			name: "xon/xoff flow control accepted",
+			in:   Config{BaudRate: 9600, XONXOFFFlowControl: true},
+			want: Config{BaudRate: 9600, DataBits: 8, StopBits: StopBitsOne, Parity: ParityNone, XONXOFFFlowControl: true},
+		},
+		{
+			name:    "both flow controls rejected",
+			in:      Config{BaudRate: 9600, RTSCTSFlowControl: true, XONXOFFFlowControl: true},
+			wantErr: "mutually exclusive",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -104,4 +124,10 @@ func TestOpenRejectsInvalidConfigBeforeTouchingPort(t *testing.T) {
 	_, err := Open("/dev/does-not-matter", Config{})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "baud rate")
+}
+
+func TestControlPortEmbedsPort(t *testing.T) {
+	// Compile-time containment check: a ControlPort must be assignable to
+	// Port (i.e. ControlPort embeds Port). Fails to compile otherwise.
+	var _ Port = ControlPort(nil)
 }

@@ -97,3 +97,13 @@ func TestMakeTermiosRejectsOnePointFiveStopBits(t *testing.T) {
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "1.5 stop bits")
 }
+
+func TestMakeTermiosXONXOFF(t *testing.T) {
+	got, err := makeTermios(Config{BaudRate: 9600, DataBits: 8, StopBits: StopBitsOne, Parity: ParityNone, XONXOFFFlowControl: true})
+	require.NoError(t, err)
+	// POSIX software flow control: IXON (honor received XOFF/XON) and
+	// IXOFF (emit XOFF/XON) with the conventional DC1/DC3 characters.
+	assert.EqualValues(t, unix.IXON|unix.IXOFF, got.Iflag, "Iflag")
+	assert.EqualValues(t, 0x11, got.Cc[unix.VSTART], "VSTART must be DC1")
+	assert.EqualValues(t, 0x13, got.Cc[unix.VSTOP], "VSTOP must be DC3")
+}

@@ -23,9 +23,11 @@ package serialport
 // types) so the mapping is unit-testable on every development platform.
 // Values per Microsoft's documentation of the DCB structure (winbase.h).
 const (
-	dcbNoParity   = 0 // NOPARITY
-	dcbOddParity  = 1 // ODDPARITY
-	dcbEvenParity = 2 // EVENPARITY
+	dcbNoParity    = 0 // NOPARITY
+	dcbOddParity   = 1 // ODDPARITY
+	dcbEvenParity  = 2 // EVENPARITY
+	dcbMarkParity  = 3 // MARKPARITY
+	dcbSpaceParity = 4 // SPACEPARITY
 
 	dcbOneStopBit   = 0 // ONESTOPBIT
 	dcbOne5StopBits = 1 // ONE5STOPBITS
@@ -38,6 +40,8 @@ const (
 	dcbFlagDtrControlEnable    = 0x00000010 // fDtrControl = DTR_CONTROL_ENABLE (1 << 4)
 	dcbFlagRtsControlEnable    = 0x00001000 // fRtsControl = RTS_CONTROL_ENABLE (1 << 12)
 	dcbFlagRtsControlHandshake = 0x00002000 // fRtsControl = RTS_CONTROL_HANDSHAKE (2 << 12)
+	dcbFlagOutX                = 0x00000100 // fOutX: honor XOFF/XON received from the device
+	dcbFlagInX                 = 0x00000200 // fInX: send XOFF/XON when the RX buffer fills/drains
 )
 
 // dcbSettings carries the computed DCB field values; port_windows.go copies
@@ -48,6 +52,10 @@ type dcbSettings struct {
 	Parity   uint8
 	StopBits uint8
 	Flags    uint32
+	XonLim   uint16
+	XoffLim  uint16
+	XonChar  byte
+	XoffChar byte
 }
 
 // makeDCBSettings translates an already-normalized Config into DCB field
@@ -66,6 +74,12 @@ func makeDCBSettings(cfg Config) dcbSettings {
 	case ParityEven:
 		s.Parity = dcbEvenParity
 		s.Flags |= dcbFlagParity
+	case ParityMark:
+		s.Parity = dcbMarkParity
+		s.Flags |= dcbFlagParity
+	case ParitySpace:
+		s.Parity = dcbSpaceParity
+		s.Flags |= dcbFlagParity
 	default:
 		s.Parity = dcbNoParity
 	}
@@ -82,5 +96,20 @@ func makeDCBSettings(cfg Config) dcbSettings {
 	} else {
 		s.Flags |= dcbFlagRtsControlEnable
 	}
+	if cfg.XONXOFFFlowControl {
+		s.Flags |= dcbFlagOutX | dcbFlagInX
+	}
+	// XonChar/XoffChar/XonLim/XoffLim are set unconditionally, even when
+	// XON/XOFF flow control is disabled (fOutX/fInX clear above). Some
+	// Windows serial drivers reject SetCommState (error 87, "the parameter
+	// is incorrect") when XonChar == XoffChar == 0x00, which is what a
+	// zero-value DCB carries — purejavacomm hit this in the field on a
+	// plain 8N1 configuration. DC1/DC3 are the conventional XON/XOFF
+	// characters and are harmless when the flags are off.
+	s.XonChar = 0x11  // DC1
+	s.XoffChar = 0x13 // DC3
+	// Conventional buffer thresholds for a 4096-byte queue (SetupComm).
+	s.XonLim = 2048
+	s.XoffLim = 512
 	return s
 }
