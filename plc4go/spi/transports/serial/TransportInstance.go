@@ -45,12 +45,14 @@ type TransportInstance struct {
 	SerialPortName string
 	BaudRate       uint
 	ConnectTimeout uint32
+	cfg            serialConfig
 
 	connected        atomic.Bool
 	stateChangeMutex sync.Mutex
 
 	transport  *Transport
 	serialPort serialport.Port
+	armer      *deadlineReader
 	reader     *bufio.Reader
 
 	log zerolog.Logger
@@ -59,11 +61,19 @@ type TransportInstance struct {
 var _ transports.TransportInstance = (*TransportInstance)(nil)
 
 func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout uint32, transport *Transport, _options ...options.WithOption) *TransportInstance {
+	cfg := defaultSerialConfig()
+	cfg.port.BaudRate = baudRate
+	cfg.connectTimeout = connectTimeout
+	return NewTransportInstanceWithConfig(serialPortName, cfg, transport, _options...)
+}
+
+func NewTransportInstanceWithConfig(serialPortName string, cfg serialConfig, transport *Transport, _options ...options.WithOption) *TransportInstance {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	transportInstance := &TransportInstance{
 		SerialPortName: serialPortName,
-		BaudRate:       baudRate,
-		ConnectTimeout: connectTimeout,
+		BaudRate:       cfg.port.BaudRate,
+		ConnectTimeout: cfg.connectTimeout,
+		cfg:            cfg,
 		transport:      transport,
 
 		log: customLogger,
@@ -79,15 +89,36 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 		return errors.New("Already connected")
 	}
 
-	serialPort, err := serialport.Open(m.SerialPortName, serialport.Config{BaudRate: m.BaudRate})
+	serialPort, err := serialport.Open(m.SerialPortName, m.cfg.port)
 	if err != nil {
 		return errors.Wrap(err, "error connecting to serial port")
 	}
 	m.serialPort = serialPort
-	m.reader = bufio.NewReader(m.serialPort)
+	m.applyModemLines(serialPort)
+	m.armer = newDeadlineReader(serialPort, m.cfg.readTimeout)
+	m.reader = bufio.NewReader(m.armer)
 	m.connected.Store(true)
-
 	return nil
+}
+
+// applyModemLines asserts DTR/RTS when configured. Failures are warnings,
+// not connection errors: ptys and adapters without modem lines must stay
+// usable, and a missing line rarely prevents communication.
+func (m *TransportInstance) applyModemLines(port serialport.Port) {
+	controlPort, ok := port.(serialport.ControlPort)
+	if !ok {
+		return
+	}
+	if m.cfg.dtr {
+		if err := controlPort.SetDTR(true); err != nil {
+			m.log.Warn().Err(err).Msg("could not assert DTR")
+		}
+	}
+	if m.cfg.rts {
+		if err := controlPort.SetRTS(true); err != nil {
+			m.log.Warn().Err(err).Msg("could not assert RTS")
+		}
+	}
 }
 
 func (m *TransportInstance) Reset() {
@@ -107,6 +138,7 @@ func (m *TransportInstance) Close() error {
 		return errors.Wrap(err, "error closing serial port")
 	}
 	m.serialPort = nil
+	m.armer = nil
 
 	m.connected.Store(false)
 	return nil
@@ -127,6 +159,10 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 		if err := m.serialPort.SetWriteDeadline(deadline); err != nil {
 			return errors.Wrap(err, "error setting write deadline")
 		}
+	} else if m.cfg.writeTimeout > 0 {
+		if err := m.serialPort.SetWriteDeadline(time.Now().Add(m.cfg.writeTimeout)); err != nil {
+			return errors.Wrap(err, "error setting write deadline")
+		}
 	} else if err := m.serialPort.SetWriteDeadline(time.Time{}); err != nil {
 		return errors.Wrap(err, "error clearing write deadline")
 	}
@@ -145,11 +181,12 @@ func (m *TransportInstance) GetReader() transports.ExtendedReader {
 }
 
 func (m *TransportInstance) SetReadDeadline(deadline time.Time) error {
-	serialPort := m.serialPort
-	if serialPort == nil {
-		return errors.New("error setting read deadline. No serial port available")
+	armer := m.armer
+	if armer == nil {
+		return errors.New("error setting read deadline. Not connected")
 	}
-	return serialPort.SetReadDeadline(deadline)
+	armer.setExplicitDeadline(deadline)
+	return nil
 }
 
 func (m *TransportInstance) String() string {

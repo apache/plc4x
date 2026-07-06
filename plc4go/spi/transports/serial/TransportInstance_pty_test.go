@@ -24,6 +24,7 @@ package serial
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
 	"testing"
 	"time"
@@ -104,4 +105,71 @@ func TestTransportInstance_WriteDeadlineDoesNotStick(t *testing.T) {
 
 	// A deadline-less write must not inherit the lapsed deadline.
 	require.NoError(t, instance.Write(context.Background(), []byte{0x02}))
+}
+
+func TestTransportInstance_OptionsAppliedOnPTY(t *testing.T) {
+	master, slavePath := openPTY(t)
+
+	transport := NewTransport()
+	instance, err := transport.CreateTransportInstance(
+		url.URL{Scheme: "serial", Path: slavePath},
+		map[string][]string{
+			"data-bits": {"7"},
+			"parity":    {"EVEN"}, // deliberately non-canonical case
+			"stop-bits": {"2"},
+			"dtr":       {"true"}, // must warn, not fail, on a pty
+		},
+	)
+	require.NoError(t, err)
+	require.NoError(t, instance.Connect(context.Background()))
+	t.Cleanup(func() { _ = instance.Close() })
+
+	// The pty pair shares one termios; reading it back on the MASTER side
+	// proves the options reached the kernel.
+	readBack, err := unix.IoctlGetTermios(int(master.Fd()), unix.TCGETS)
+	require.NoError(t, err)
+	assert.NotZero(t, readBack.Cflag&unix.CS7, "CS7")
+	assert.NotZero(t, readBack.Cflag&unix.CSTOPB, "CSTOPB")
+	// PARENB deliberately not asserted (known pty parity quirk).
+}
+
+func TestTransportInstance_FallbackReadDeadlineBoundsSilentRead(t *testing.T) {
+	_, slavePath := openPTY(t)
+	transport := NewTransport()
+	instance, err := transport.CreateTransportInstance(
+		url.URL{Scheme: "serial", Path: slavePath},
+		map[string][]string{"read-timeout": {"200"}},
+	)
+	require.NoError(t, err)
+	require.NoError(t, instance.Connect(context.Background()))
+	t.Cleanup(func() { _ = instance.Close() })
+
+	start := time.Now()
+	_, err = instance.Read(context.Background(), 1) // no ctx deadline
+	elapsed := time.Since(start)
+
+	require.Error(t, err, "silent line must time out via the fallback deadline")
+	assert.GreaterOrEqual(t, elapsed, 200*time.Millisecond)
+	assert.Less(t, elapsed, 5*time.Second)
+}
+
+func TestTransportInstance_ExplicitCtxDeadlineBeatsFallback(t *testing.T) {
+	_, slavePath := openPTY(t)
+	transport := NewTransport()
+	instance, err := transport.CreateTransportInstance(
+		url.URL{Scheme: "serial", Path: slavePath},
+		map[string][]string{"read-timeout": {"60000"}},
+	)
+	require.NoError(t, err)
+	require.NoError(t, instance.Connect(context.Background()))
+	t.Cleanup(func() { _ = instance.Close() })
+
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel()
+	start := time.Now()
+	_, err = instance.Read(ctx, 1)
+	elapsed := time.Since(start)
+
+	require.Error(t, err)
+	assert.Less(t, elapsed, 5*time.Second, "the 100ms ctx deadline must win over the 60s fallback")
 }

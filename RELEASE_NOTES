@@ -16,12 +16,24 @@ New Features
   requires mandatory username/password authentication
   (configured via the new "username" and "password" connection
   parameters).
+- The Go serial transport now supports the full set of serial
+  options in the connection string: data-bits, stop-bits, parity,
+  flow-control, dtr, rts, read-timeout and write-timeout.
 
 Incompatible changes
 --------------------
 
 - Dropped support for Java 11, new baseline Java version is
   Java 21.
+- The Go serial transport's default baud-rate changed from 115200
+  to 9600 (aligning with common serial defaults and the Java
+  transport). Specify baud-rate explicitly if you relied on the
+  previous default.
+- Go serial reads/writes without an explicit context deadline are
+  now bounded by the new read-timeout/write-timeout options
+  (default 1000 ms; set to 0 for the previous blocking behavior),
+  and invalid serial option values now fail connection creation
+  instead of being silently ignored.
 - The 'plc4x' proxy driver now defaults to the TLS transport
   instead of plaintext TCP. Existing plaintext connections must
   switch to an explicit transport prefix (e.g. "plc4x:tcp://...").
