@@ -23,6 +23,11 @@ New Features
   between multiple connections ("reuse-port", e.g. multi-slave Modbus
   RTU) with broadcast reads and serialized writes, plus inter-frame
   write pacing ("interframe-delay") on both shared and dedicated ports.
+- The Java serial transport's shared-port mode ("reuse-port") now uses a
+  single broadcast reader per physical port, fixing responses being split
+  between connections, and "interframe-delay" write pacing works on both
+  shared and dedicated ports (gap measured from the last write or
+  received data).
 
 Incompatible changes
 --------------------
@@ -45,6 +50,9 @@ Incompatible changes
   falling back to defaults. Option values are case-insensitive and
   accept "-" or "_" as separator (canonical forms: none, odd, even,
   mark, space; none, rts-cts, xon-xoff).
+- Acquiring a shared Java serial port ("reuse-port") with a configuration
+  differing from the first connection's now fails with an error instead
+  of silently reusing the first configuration.
 - The 'plc4x' proxy driver now defaults to the TLS transport
   instead of plaintext TCP. Existing plaintext connections must
   switch to an explicit transport prefix (e.g. "plc4x:tcp://...").

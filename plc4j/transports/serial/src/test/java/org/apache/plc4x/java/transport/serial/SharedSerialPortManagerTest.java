@@ -60,7 +60,7 @@ class SharedSerialPortManagerTest {
 
             // Cleanup
             manager.releasePort(sharedPort);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             // Port might be in use
             System.out.println("Could not open port (expected if in use): " + e.getMessage());
         }
@@ -82,7 +82,7 @@ class SharedSerialPortManagerTest {
             // Cleanup
             manager.releasePort(port1);
             manager.releasePort(port2);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             System.out.println("Could not open port (expected if in use): " + e.getMessage());
         }
     }
@@ -108,7 +108,7 @@ class SharedSerialPortManagerTest {
             manager.releasePort(port);
             assertEquals(0, port.getRefCount());
             assertFalse(port.getPort().isOpen());
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             System.out.println("Could not open port (expected if in use): " + e.getMessage());
         }
     }
@@ -127,7 +127,7 @@ class SharedSerialPortManagerTest {
 
             assertFalse(port.getPort().isOpen());
             assertEquals(0, port.getRefCount());
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             System.out.println("Could not open port (expected if in use): " + e.getMessage());
         }
     }
@@ -151,7 +151,7 @@ class SharedSerialPortManagerTest {
 
             // Cleanup
             manager.releasePort(port2);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             System.out.println("Could not open port (expected if in use): " + e.getMessage());
         }
     }
@@ -189,7 +189,7 @@ class SharedSerialPortManagerTest {
 
             // Cleanup
             manager.releasePort(port);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             System.out.println("Could not open port (expected if in use): " + e.getMessage());
         }
     }
@@ -222,7 +222,7 @@ class SharedSerialPortManagerTest {
 
             // Cleanup
             manager.releasePort(port);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             System.out.println("Could not open port (expected if in use): " + e.getMessage());
         }
     }

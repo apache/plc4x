@@ -112,10 +112,10 @@ public class SerialTransportConfiguration implements TransportConfiguration {
 
     /**
      * Interframe delay in milliseconds for protocols that need spacing between messages.
-     * Only applies when reusePort is true.
+     * Applies to shared and dedicated ports; the gap is measured from the last write or received data.
      */
     @ConfigurationParameter( "interframe-delay")
-    @Description( "Interframe delay in milliseconds for protocols that need spacing between messages. Only applies when reusePort is true.")
+    @Description( "Interframe delay in milliseconds for protocols that need spacing between messages. Applies to shared and dedicated ports; the gap is measured from the last write or received data.")
     @IntDefaultValue(0)
     public int interframeDelay;
 }
