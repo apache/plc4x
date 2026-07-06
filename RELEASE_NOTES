@@ -28,6 +28,10 @@ New Features
   between connections, and "interframe-delay" write pacing works on both
   shared and dedicated ports (gap measured from the last write or
   received data).
+- The Java Modbus RTU codec now frames responses by function code with
+  CRC validation and byte-wise resynchronization: batched deliveries
+  (e.g. on shared serial ports) yield every frame instead of only the
+  first, and partial or corrupted frames no longer discard buffered data.
 
 Incompatible changes
 --------------------
