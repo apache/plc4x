@@ -214,7 +214,7 @@ class SerialTransportTest {
         SerialPort[] ports = SerialPort.getCommPorts();
         assumeTrue(ports.length > 0, "No serial ports available for testing");
 
-        String[] flowControlOptions = {"NONE", "RTS_CTS", "XON_XOFF", "RTS_CTS_XON_XOFF"};
+        String[] flowControlOptions = {"NONE", "RTS_CTS", "XON_XOFF"};
 
         for (String flowControl : flowControlOptions) {
             SerialTransportConfiguration config = new SerialTransportConfiguration();

@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
+import java.util.Locale;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
@@ -187,37 +188,39 @@ public class SerialTransportInstance extends BaseTransportInstance<SerialTranspo
     }
 
     /**
-     * Converts parity string to jSerialComm constant.
+     * Converts a parity option value to the matching jSerialComm constant.
+     * Values are case-insensitive and accept "-" or "_" as separator.
      */
-    private int parseParity(String parity) {
-        return switch (parity.toUpperCase()) {
-            case "NONE" -> SerialPort.NO_PARITY;
-            case "ODD" -> SerialPort.ODD_PARITY;
-            case "EVEN" -> SerialPort.EVEN_PARITY;
-            case "MARK" -> SerialPort.MARK_PARITY;
-            case "SPACE" -> SerialPort.SPACE_PARITY;
-            default -> {
-                LOGGER.warn("Unknown parity '{}', using NONE", parity);
-                yield SerialPort.NO_PARITY;
-            }
+    static int parseParity(String parity) throws TransportException {
+        return switch (normalizeOptionValue(parity)) {
+            case "none" -> SerialPort.NO_PARITY;
+            case "odd" -> SerialPort.ODD_PARITY;
+            case "even" -> SerialPort.EVEN_PARITY;
+            case "mark" -> SerialPort.MARK_PARITY;
+            case "space" -> SerialPort.SPACE_PARITY;
+            default -> throw new TransportException(
+                "Invalid value '" + parity + "' for option 'parity' (must be one of: none, odd, even, mark, space)");
         };
     }
 
     /**
-     * Converts flow control string to jSerialComm constant.
+     * Converts a flow-control option value to the matching jSerialComm
+     * constant. Values are case-insensitive and accept "-" or "_" as
+     * separator. Combining hardware and software flow control is not
+     * supported (matching the plc4go serial transport).
      */
-    private int parseFlowControl(String flowControl) {
-        return switch (flowControl.toUpperCase()) {
-            case "NONE" -> SerialPort.FLOW_CONTROL_DISABLED;
-            case "RTS_CTS", "RTSCTS" -> SerialPort.FLOW_CONTROL_RTS_ENABLED | SerialPort.FLOW_CONTROL_CTS_ENABLED;
-            case "XON_XOFF", "XONXOFF" -> SerialPort.FLOW_CONTROL_XONXOFF_IN_ENABLED | SerialPort.FLOW_CONTROL_XONXOFF_OUT_ENABLED;
-            case "RTS_CTS_XON_XOFF" -> SerialPort.FLOW_CONTROL_RTS_ENABLED | SerialPort.FLOW_CONTROL_CTS_ENABLED |
-                    SerialPort.FLOW_CONTROL_XONXOFF_IN_ENABLED | SerialPort.FLOW_CONTROL_XONXOFF_OUT_ENABLED;
-            default -> {
-                LOGGER.warn("Unknown flow control '{}', using NONE", flowControl);
-                yield SerialPort.FLOW_CONTROL_DISABLED;
-            }
+    static int parseFlowControl(String flowControl) throws TransportException {
+        return switch (normalizeOptionValue(flowControl)) {
+            case "none" -> SerialPort.FLOW_CONTROL_DISABLED;
+            case "rts-cts", "rtscts" -> SerialPort.FLOW_CONTROL_RTS_ENABLED | SerialPort.FLOW_CONTROL_CTS_ENABLED;
+            case "xon-xoff", "xonxoff" -> SerialPort.FLOW_CONTROL_XONXOFF_IN_ENABLED | SerialPort.FLOW_CONTROL_XONXOFF_OUT_ENABLED;
+            default -> throw new TransportException(
+                "Invalid value '" + flowControl + "' for option 'flow-control' (must be one of: none, rts-cts, xon-xoff)");
         };
+    }
+
+    private static String normalizeOptionValue(String value) {
+        return value.toLowerCase(Locale.ROOT).replace('_', '-');
     }
 
     @Override

@@ -69,8 +69,6 @@ class SerialTransportInstanceTest {
         config.stopBits = 1;
         config.parity = "NONE";
         config.flowControl = "NONE";
-        config.receiveBufferSize = 4096;
-        config.sendBufferSize = 4096;
 
         transportInstance = new SerialTransportInstance(new SharedSerialPortManager(), "/tmp/ttyV0"/*port.getSystemPortName()*/, config, AuditLog.builder().build());
     }
@@ -314,7 +312,7 @@ class SerialTransportInstanceTest {
             transportInstance.close();
         }
 
-        // Create config with unknown parity - should default to NONE
+        // Create config with unknown parity - should now fail fast
         SerialTransportConfiguration configWithUnknownParity = new SerialTransportConfiguration();
         configWithUnknownParity.baudRate = 9600;
         configWithUnknownParity.dataBits = 8;
@@ -323,11 +321,8 @@ class SerialTransportInstanceTest {
         configWithUnknownParity.flowControl = "NONE";
         configWithUnknownParity.reusePort = false;
 
-        SerialTransportInstance instanceWithUnknownParity = new SerialTransportInstance(
-            new SharedSerialPortManager(), "/tmp/ttyV0", configWithUnknownParity, AuditLog.builder().build());
-
-        assertTrue(instanceWithUnknownParity.isOpen());
-        instanceWithUnknownParity.close();
+        assertThrows(TransportException.class, () -> new SerialTransportInstance(
+            new SharedSerialPortManager(), "/tmp/ttyV0", configWithUnknownParity, AuditLog.builder().build()));
     }
 
     @Test
@@ -337,7 +332,7 @@ class SerialTransportInstanceTest {
             transportInstance.close();
         }
 
-        // Create config with unknown flow control - should default to NONE
+        // Create config with unknown flow control - should now fail fast
         SerialTransportConfiguration configWithUnknownFlowControl = new SerialTransportConfiguration();
         configWithUnknownFlowControl.baudRate = 9600;
         configWithUnknownFlowControl.dataBits = 8;
@@ -346,11 +341,8 @@ class SerialTransportInstanceTest {
         configWithUnknownFlowControl.flowControl = "UNKNOWN_FLOW_CONTROL";  // Unknown flow control
         configWithUnknownFlowControl.reusePort = false;
 
-        SerialTransportInstance instanceWithUnknownFlowControl = new SerialTransportInstance(
-            new SharedSerialPortManager(), "/tmp/ttyV0", configWithUnknownFlowControl, AuditLog.builder().build());
-
-        assertTrue(instanceWithUnknownFlowControl.isOpen());
-        instanceWithUnknownFlowControl.close();
+        assertThrows(TransportException.class, () -> new SerialTransportInstance(
+            new SharedSerialPortManager(), "/tmp/ttyV0", configWithUnknownFlowControl, AuditLog.builder().build()));
     }
 
     @Test
@@ -383,7 +375,7 @@ class SerialTransportInstanceTest {
             transportInstance.close();
         }
 
-        // Create config with RTS_CTS_XON_XOFF flow control
+        // Create config with RTS_CTS_XON_XOFF flow control - combined mode is no longer supported
         SerialTransportConfiguration configWithCombinedFlowControl = new SerialTransportConfiguration();
         configWithCombinedFlowControl.baudRate = 9600;
         configWithCombinedFlowControl.dataBits = 8;
@@ -392,11 +384,8 @@ class SerialTransportInstanceTest {
         configWithCombinedFlowControl.flowControl = "RTS_CTS_XON_XOFF";
         configWithCombinedFlowControl.reusePort = false;
 
-        SerialTransportInstance instanceWithCombinedFlowControl = new SerialTransportInstance(
-            new SharedSerialPortManager(), "/tmp/ttyV0", configWithCombinedFlowControl, AuditLog.builder().build());
-
-        assertTrue(instanceWithCombinedFlowControl.isOpen());
-        instanceWithCombinedFlowControl.close();
+        assertThrows(TransportException.class, () -> new SerialTransportInstance(
+            new SharedSerialPortManager(), "/tmp/ttyV0", configWithCombinedFlowControl, AuditLog.builder().build()));
     }
 
     @Test
@@ -423,5 +412,48 @@ class SerialTransportInstanceTest {
             assertTrue(instanceWithParity.isOpen(), "Instance with parity " + parity + " should be open");
             instanceWithParity.close();
         }
+    }
+
+    @Test
+    void parseParityAcceptsCaseInsensitiveForms() throws Exception {
+        assertEquals(SerialPort.NO_PARITY, SerialTransportInstance.parseParity("none"));
+        assertEquals(SerialPort.EVEN_PARITY, SerialTransportInstance.parseParity("even"));
+        assertEquals(SerialPort.EVEN_PARITY, SerialTransportInstance.parseParity("EVEN"));
+        assertEquals(SerialPort.ODD_PARITY, SerialTransportInstance.parseParity("Odd"));
+        assertEquals(SerialPort.MARK_PARITY, SerialTransportInstance.parseParity("MARK"));
+        assertEquals(SerialPort.SPACE_PARITY, SerialTransportInstance.parseParity("space"));
+    }
+
+    @Test
+    void parseParityRejectsUnknownValues() {
+        TransportException e = assertThrows(TransportException.class,
+            () -> SerialTransportInstance.parseParity("strong"));
+        assertTrue(e.getMessage().contains("parity"));
+        assertTrue(e.getMessage().contains("strong"));
+    }
+
+    @Test
+    void parseFlowControlAcceptsCanonicalAndLegacyForms() throws Exception {
+        int rtsCts = SerialPort.FLOW_CONTROL_RTS_ENABLED | SerialPort.FLOW_CONTROL_CTS_ENABLED;
+        assertEquals(rtsCts, SerialTransportInstance.parseFlowControl("rts-cts"));
+        assertEquals(rtsCts, SerialTransportInstance.parseFlowControl("RTS_CTS"));
+        assertEquals(rtsCts, SerialTransportInstance.parseFlowControl("RTSCTS"));
+        int xonXoff = SerialPort.FLOW_CONTROL_XONXOFF_IN_ENABLED | SerialPort.FLOW_CONTROL_XONXOFF_OUT_ENABLED;
+        assertEquals(xonXoff, SerialTransportInstance.parseFlowControl("xon-xoff"));
+        assertEquals(xonXoff, SerialTransportInstance.parseFlowControl("XON_XOFF"));
+        assertEquals(SerialPort.FLOW_CONTROL_DISABLED, SerialTransportInstance.parseFlowControl("NONE"));
+    }
+
+    @Test
+    void parseFlowControlRejectsCombinedMode() {
+        TransportException e = assertThrows(TransportException.class,
+            () -> SerialTransportInstance.parseFlowControl("RTS_CTS_XON_XOFF"));
+        assertTrue(e.getMessage().contains("flow-control"));
+    }
+
+    @Test
+    void parseFlowControlRejectsUnknownValues() {
+        assertThrows(TransportException.class,
+            () -> SerialTransportInstance.parseFlowControl("magic"));
     }
 }

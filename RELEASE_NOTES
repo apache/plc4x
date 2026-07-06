@@ -34,6 +34,13 @@ Incompatible changes
   (default 1000 ms; set to 0 for the previous blocking behavior),
   and invalid serial option values now fail connection creation
   instead of being silently ignored.
+- The Java serial transport removed the unused options
+  "break-enabled", "receive-buffer-size" and "send-buffer-size",
+  removed the combined "RTS_CTS_XON_XOFF" flow-control mode, and now
+  rejects invalid parity/flow-control values instead of silently
+  falling back to defaults. Option values are case-insensitive and
+  accept "-" or "_" as separator (canonical forms: none, odd, even,
+  mark, space; none, rts-cts, xon-xoff).
 - The 'plc4x' proxy driver now defaults to the TLS transport
   instead of plaintext TCP. Existing plaintext connections must
   switch to an explicit transport prefix (e.g. "plc4x:tcp://...").

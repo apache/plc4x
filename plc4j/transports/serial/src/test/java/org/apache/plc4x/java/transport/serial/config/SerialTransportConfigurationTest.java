@@ -120,30 +120,6 @@ class SerialTransportConfigurationTest {
     }
 
     @Test
-    void testReceiveBufferSizeField() {
-        SerialTransportConfiguration config = new SerialTransportConfiguration();
-        config.receiveBufferSize = 65536;
-        assertEquals(65536, config.receiveBufferSize);
-    }
-
-    @Test
-    void testSendBufferSizeField() {
-        SerialTransportConfiguration config = new SerialTransportConfiguration();
-        config.sendBufferSize = 32768;
-        assertEquals(32768, config.sendBufferSize);
-    }
-
-    @Test
-    void testBreakEnabledField() {
-        SerialTransportConfiguration config = new SerialTransportConfiguration();
-        config.breakEnabled = false;
-        assertFalse(config.breakEnabled);
-
-        config.breakEnabled = true;
-        assertTrue(config.breakEnabled);
-    }
-
-    @Test
     void testInterframeDelayField() {
         SerialTransportConfiguration config = new SerialTransportConfiguration();
         config.interframeDelay = 50;
@@ -164,9 +140,6 @@ class SerialTransportConfigurationTest {
         config.dtr = true;
         config.rts = true;
         config.reusePort = true;
-        config.receiveBufferSize = 8192;
-        config.sendBufferSize = 8192;
-        config.breakEnabled = true;
         config.interframeDelay = 10;
 
         assertEquals(115200, config.baudRate);
@@ -179,9 +152,6 @@ class SerialTransportConfigurationTest {
         assertTrue(config.dtr);
         assertTrue(config.rts);
         assertTrue(config.reusePort);
-        assertEquals(8192, config.receiveBufferSize);
-        assertEquals(8192, config.sendBufferSize);
-        assertTrue(config.breakEnabled);
         assertEquals(10, config.interframeDelay);
     }
 
@@ -193,16 +163,6 @@ class SerialTransportConfigurationTest {
 
         assertEquals(0, config.readTimeout);
         assertEquals(0, config.writeTimeout);
-    }
-
-    @Test
-    void testZeroBufferSizes() {
-        SerialTransportConfiguration config = new SerialTransportConfiguration();
-        config.sendBufferSize = 0;
-        config.receiveBufferSize = 0;
-
-        assertEquals(0, config.sendBufferSize);
-        assertEquals(0, config.receiveBufferSize);
     }
 
     @Test
