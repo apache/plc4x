@@ -208,6 +208,12 @@ plc4j/transports/test/src/main/java/io/netty/channel/embedded/Plc4xEmbeddedChann
 plc4j/transports/test/src/main/java/io/netty/channel/embedded/Plc4xEmbeddedEventLoop.java
 Are copyrighted by the The Netty Project which is distributed under the Apache 2.0 license.
 
+The files:
+plc4go/spi/transports/serial/serialport/apply_linux.go
+plc4go/spi/transports/serial/serialport/apply_darwin.go
+Contain logic derived from github.com/jacobsa/go-serial, copyrighted by Aaron Jacobs,
+which is distributed under the Apache 2.0 license.
+
 The file:
 code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/expression/Expression.g4
 is licensed under the Category A: "UNLICENSE" which is available here:

@@ -27,7 +27,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -38,6 +37,7 @@ import (
 	apiTransports "github.com/apache/plc4x/plc4go/pkg/api/transports"
 	model "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 // fakeBacnetDevice is a minimal UDP BACnet/IP device used to exercise the real

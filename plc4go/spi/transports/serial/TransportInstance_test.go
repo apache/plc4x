@@ -21,12 +21,12 @@ package serial
 
 import (
 	"bufio"
-	"io"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/apache/plc4x/plc4go/spi/transports/serial/serialport"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 )
 
@@ -60,7 +60,7 @@ func TestTransportInstance_Close(t *testing.T) {
 		BaudRate                         uint
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		serialPort                       io.ReadWriteCloser
+		serialPort                       serialport.Port
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -95,7 +95,7 @@ func TestTransportInstance_Connect(t *testing.T) {
 		BaudRate                         uint
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		serialPort                       io.ReadWriteCloser
+		serialPort                       serialport.Port
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -130,7 +130,7 @@ func TestTransportInstance_GetReader(t *testing.T) {
 		BaudRate                         uint
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		serialPort                       io.ReadWriteCloser
+		serialPort                       serialport.Port
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -165,7 +165,7 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 		BaudRate                         uint
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		serialPort                       io.ReadWriteCloser
+		serialPort                       serialport.Port
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -200,7 +200,7 @@ func TestTransportInstance_String(t *testing.T) {
 		BaudRate                         uint
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		serialPort                       io.ReadWriteCloser
+		serialPort                       serialport.Port
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
@@ -235,7 +235,7 @@ func TestTransportInstance_Write(t *testing.T) {
 		BaudRate                         uint
 		ConnectTimeout                   uint32
 		transport                        *Transport
-		serialPort                       io.ReadWriteCloser
+		serialPort                       serialport.Port
 		reader                           *bufio.Reader
 	}
 	type args struct {

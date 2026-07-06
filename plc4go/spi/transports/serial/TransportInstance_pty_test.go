@@ -1,0 +1,91 @@
+//go:build linux
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package serial
+
+import (
+	"context"
+	"fmt"
+	"os"
+	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/sys/unix"
+)
+
+// openPTY allocates a pseudo-terminal pair; the slave path stands in for a
+// real serial device (same pattern as the serialport package's own tests).
+func openPTY(t *testing.T) (master *os.File, slavePath string) {
+	t.Helper()
+	master, err := os.OpenFile("/dev/ptmx", os.O_RDWR|unix.O_NOCTTY, 0)
+	require.NoError(t, err, "opening /dev/ptmx")
+	t.Cleanup(func() { _ = master.Close() })
+	ptn, err := unix.IoctlGetInt(int(master.Fd()), unix.TIOCGPTN)
+	require.NoError(t, err, "TIOCGPTN")
+	require.NoError(t, unix.IoctlSetPointerInt(int(master.Fd()), unix.TIOCSPTLCK, 0), "unlocking pty slave")
+	return master, fmt.Sprintf("/dev/pts/%d", ptn)
+}
+
+func TestTransportInstance_EndToEndOnPTY(t *testing.T) {
+	master, slavePath := openPTY(t)
+
+	instance := NewTransportInstance(slavePath, 115200, 1, NewTransport())
+	require.NoError(t, instance.Connect(context.Background()))
+	t.Cleanup(func() { _ = instance.Close() })
+	assert.True(t, instance.IsConnected())
+
+	// Write goes out on the wire (fixes the historic "Not connected" bug:
+	// Connect previously never flipped the connected flag).
+	require.NoError(t, instance.Write(context.Background(), []byte{0x01, 0x02, 0x03}))
+	wire := make([]byte, 3)
+	_, err := master.Read(wire)
+	require.NoError(t, err)
+	assert.Equal(t, []byte{0x01, 0x02, 0x03}, wire)
+
+	// Reads work and honor context deadlines through the buffered layer.
+	_, err = master.Write([]byte{0xCA, 0xFE})
+	require.NoError(t, err)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	data, err := instance.Read(ctx, 2)
+	require.NoError(t, err)
+	assert.Equal(t, []byte{0xCA, 0xFE}, data)
+
+	// A read into silence now actually times out instead of hanging:
+	// SetReadDeadline is no longer a no-op.
+	shortCtx, shortCancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer shortCancel()
+	start := time.Now()
+	_, err = instance.Read(shortCtx, 1)
+	require.Error(t, err)
+	assert.Less(t, time.Since(start), 5*time.Second)
+}
+
+func TestTransportInstance_CloseIsIdempotentOnPTY(t *testing.T) {
+	_, slavePath := openPTY(t)
+	instance := NewTransportInstance(slavePath, 9600, 1, NewTransport())
+	require.NoError(t, instance.Connect(context.Background()))
+	require.NoError(t, instance.Close())
+	assert.False(t, instance.IsConnected())
+	require.NoError(t, instance.Close(), "second close must be a no-op")
+}

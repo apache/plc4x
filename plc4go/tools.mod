@@ -33,11 +33,10 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/google/uuid v1.6.0
 	github.com/gopacket/gopacket v1.5.0
-	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
-	github.com/libp2p/go-reuseport v0.4.0
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/net v0.43.0
+	golang.org/x/sys v0.36.0
 	golang.org/x/text v0.28.0
 	golang.org/x/tools v0.36.0
 )
@@ -67,7 +66,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/spf13/cobra v1.8.1 // indirect
@@ -80,7 +78,6 @@ require (
 	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
 	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/sync v0.17.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
 	golang.org/x/term v0.35.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/gotestsum v1.13.0 // indirect

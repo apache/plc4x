@@ -29,12 +29,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/jacobsa/go-serial/serial"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/serial/serialport"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -50,7 +50,7 @@ type TransportInstance struct {
 	stateChangeMutex sync.Mutex
 
 	transport  *Transport
-	serialPort io.ReadWriteCloser
+	serialPort serialport.Port
 	reader     *bufio.Reader
 
 	log zerolog.Logger
@@ -79,22 +79,13 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 		return errors.New("Already connected")
 	}
 
-	var err error
-	config := serial.OpenOptions{PortName: m.SerialPortName, BaudRate: m.BaudRate, DataBits: 8, StopBits: 1, MinimumReadSize: 0, InterCharacterTimeout: 100 /*, RTSCTSFlowControl: true*/}
-	m.serialPort, err = serial.Open(config)
+	serialPort, err := serialport.Open(m.SerialPortName, serialport.Config{BaudRate: m.BaudRate})
 	if err != nil {
 		return errors.Wrap(err, "error connecting to serial port")
 	}
-	// Add a logging layer ...
-	/*logFile, err := ioutil.TempFile(os.TempDir(), "transport-logger")
-	if err != nil {
-		m.log.Error().Msg("Error creating file for logging transport requests")
-	} else {
-		fileLogger := zerolog.New(logFile).With().Logger()
-		m.serialPort = utils.NewTransportLogger(m.serialPort, utils.WithLogger(fileLogger))
-		m.log.Trace().Msg("Logging Transport to file %s", logFile.Name())
-	}*/
+	m.serialPort = serialPort
 	m.reader = bufio.NewReader(m.serialPort)
+	m.connected.Store(true)
 
 	return nil
 }
@@ -132,7 +123,11 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if m.serialPort == nil {
 		return errors.New("error writing to transport. No writer available")
 	}
-	// TODO: big oof.... there is no way to set a timeout on the write operation.
+	if deadline, ok := ctx.Deadline(); ok {
+		if err := m.serialPort.SetWriteDeadline(deadline); err != nil {
+			return errors.Wrap(err, "error setting write deadline")
+		}
+	}
 	num, err := m.serialPort.Write(data)
 	if err != nil {
 		return errors.Wrap(err, "error writing")
@@ -148,8 +143,11 @@ func (m *TransportInstance) GetReader() transports.ExtendedReader {
 }
 
 func (m *TransportInstance) SetReadDeadline(deadline time.Time) error {
-	// TODO: big oof.... there is no way to set a timeout
-	return nil
+	serialPort := m.serialPort
+	if serialPort == nil {
+		return errors.New("error setting read deadline. No serial port available")
+	}
+	return serialPort.SetReadDeadline(deadline)
 }
 
 func (m *TransportInstance) String() string {
