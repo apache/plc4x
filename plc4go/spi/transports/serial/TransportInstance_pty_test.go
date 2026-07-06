@@ -89,3 +89,19 @@ func TestTransportInstance_CloseIsIdempotentOnPTY(t *testing.T) {
 	assert.False(t, instance.IsConnected())
 	require.NoError(t, instance.Close(), "second close must be a no-op")
 }
+
+func TestTransportInstance_WriteDeadlineDoesNotStick(t *testing.T) {
+	_, slavePath := openPTY(t)
+	instance := NewTransportInstance(slavePath, 9600, 1, NewTransport())
+	require.NoError(t, instance.Connect(context.Background()))
+	t.Cleanup(func() { _ = instance.Close() })
+
+	shortCtx, cancel := context.WithTimeout(context.Background(), 30*time.Millisecond)
+	defer cancel()
+	require.NoError(t, instance.Write(shortCtx, []byte{0x01}))
+
+	time.Sleep(60 * time.Millisecond) // let the first write's deadline lapse
+
+	// A deadline-less write must not inherit the lapsed deadline.
+	require.NoError(t, instance.Write(context.Background(), []byte{0x02}))
+}

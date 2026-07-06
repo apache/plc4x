@@ -267,3 +267,20 @@ func TestTransportInstance_Write(t *testing.T) {
 		})
 	}
 }
+
+// stubPort is a minimal serialport.Port for white-box state tests.
+type stubPort struct{}
+
+func (stubPort) Read([]byte) (int, error)         { return 0, nil }
+func (stubPort) Write(p []byte) (int, error)      { return len(p), nil }
+func (stubPort) Close() error                     { return nil }
+func (stubPort) SetReadDeadline(time.Time) error  { return nil }
+func (stubPort) SetWriteDeadline(time.Time) error { return nil }
+
+func TestTransportInstance_IsConnected_keysOnConnectedFlag(t *testing.T) {
+	m := &TransportInstance{}
+	m.serialPort = stubPort{}
+	assert.False(t, m.IsConnected(), "a port that never connected must not report connected")
+	m.connected.Store(true)
+	assert.True(t, m.IsConnected())
+}

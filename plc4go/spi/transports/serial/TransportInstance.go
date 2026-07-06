@@ -113,7 +113,7 @@ func (m *TransportInstance) Close() error {
 }
 
 func (m *TransportInstance) IsConnected() bool {
-	return m.serialPort != nil
+	return m.connected.Load()
 }
 
 func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
@@ -127,6 +127,8 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 		if err := m.serialPort.SetWriteDeadline(deadline); err != nil {
 			return errors.Wrap(err, "error setting write deadline")
 		}
+	} else if err := m.serialPort.SetWriteDeadline(time.Time{}); err != nil {
+		return errors.Wrap(err, "error clearing write deadline")
 	}
 	num, err := m.serialPort.Write(data)
 	if err != nil {
