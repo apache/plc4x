@@ -42,6 +42,13 @@ type serialConfig struct {
 	// 0 means no write timeout.
 	writeTimeout   time.Duration
 	connectTimeout uint32 // milliseconds
+	// reusePort shares one physical port between transport instances with
+	// identical configuration (broadcast reads, serialized paced writes).
+	reusePort bool
+	// interframeDelay is the minimum silence enforced before each write,
+	// measured from the later of last-write-end and last-received-byte.
+	// 0 disables pacing. Works on shared and dedicated ports alike.
+	interframeDelay time.Duration
 }
 
 func defaultSerialConfig() serialConfig {
@@ -146,6 +153,20 @@ func parseSerialOptions(options map[string][]string) (serialConfig, error) {
 			return cfg, optionError("connect-timeout", raw, "must be a non-negative integer (milliseconds)")
 		}
 		cfg.connectTimeout = uint32(millis)
+	}
+	if raw, ok := firstValue(options, "reuse-port"); ok {
+		value, err := strconv.ParseBool(raw)
+		if err != nil {
+			return cfg, optionError("reuse-port", raw, "must be true or false")
+		}
+		cfg.reusePort = value
+	}
+	if raw, ok := firstValue(options, "interframe-delay"); ok {
+		millis, err := strconv.ParseUint(raw, 10, 32)
+		if err != nil {
+			return cfg, optionError("interframe-delay", raw, "must be a non-negative integer (milliseconds)")
+		}
+		cfg.interframeDelay = time.Duration(millis) * time.Millisecond
 	}
 	return cfg, nil
 }

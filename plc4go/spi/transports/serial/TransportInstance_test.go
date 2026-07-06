@@ -371,3 +371,20 @@ func TestWrite_ZeroWriteTimeoutClearsDeadline(t *testing.T) {
 	require.Len(t, port.writeDeadlines, 1)
 	assert.True(t, port.writeDeadlines[0].IsZero())
 }
+
+func TestWrite_DedicatedInterframePacing(t *testing.T) {
+	port := &recordingWritePort{}
+	m := NewTransportInstanceWithConfig("test", func() serialConfig {
+		c := defaultSerialConfig()
+		c.interframeDelay = 50 * time.Millisecond
+		return c
+	}(), NewTransport())
+	m.serialPort = port
+	m.pacer = newPacer(m.cfg.interframeDelay)
+	m.connected.Store(true)
+
+	require.NoError(t, m.Write(context.Background(), []byte{0x01}))
+	start := time.Now()
+	require.NoError(t, m.Write(context.Background(), []byte{0x02}))
+	assert.GreaterOrEqual(t, time.Since(start), 40*time.Millisecond, "second write must wait out the gap")
+}

@@ -32,6 +32,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sys/unix"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 // openPTY allocates a pseudo-terminal pair; the slave path stands in for a
@@ -172,4 +174,73 @@ func TestTransportInstance_ExplicitCtxDeadlineBeatsFallback(t *testing.T) {
 
 	require.Error(t, err)
 	assert.Less(t, elapsed, 5*time.Second, "the 100ms ctx deadline must win over the 60s fallback")
+}
+
+func TestTransportInstance_ReusePortSharesOnePTY(t *testing.T) {
+	master, slavePath := openPTY(t)
+	transport := NewTransport()
+	options := map[string][]string{"reuse-port": {"true"}}
+
+	first, err := transport.CreateTransportInstance(url.URL{Scheme: "serial", Path: slavePath}, options)
+	require.NoError(t, err)
+	second, err := transport.CreateTransportInstance(url.URL{Scheme: "serial", Path: slavePath}, options)
+	require.NoError(t, err)
+
+	require.NoError(t, first.Connect(context.Background()))
+	t.Cleanup(func() { _ = first.Close() })
+	require.NoError(t, second.Connect(context.Background()))
+	t.Cleanup(func() { _ = second.Close() })
+
+	_, err = master.Write([]byte{0xCA, 0xFE})
+	require.NoError(t, err)
+
+	for _, instance := range []transports.TransportInstance{first, second} {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		data, err := instance.Read(ctx, 2)
+		cancel()
+		require.NoError(t, err)
+		assert.Equal(t, []byte{0xCA, 0xFE}, data, "both connections see the broadcast")
+	}
+}
+
+func TestTransportInstance_ReusePortConfigMismatch(t *testing.T) {
+	_, slavePath := openPTY(t)
+	transport := NewTransport()
+
+	first, err := transport.CreateTransportInstance(url.URL{Scheme: "serial", Path: slavePath},
+		map[string][]string{"reuse-port": {"true"}, "baud-rate": {"9600"}})
+	require.NoError(t, err)
+	require.NoError(t, first.Connect(context.Background()))
+	t.Cleanup(func() { _ = first.Close() })
+
+	second, err := transport.CreateTransportInstance(url.URL{Scheme: "serial", Path: slavePath},
+		map[string][]string{"reuse-port": {"true"}, "baud-rate": {"19200"}})
+	require.NoError(t, err)
+	err = second.Connect(context.Background())
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), slavePath)
+}
+
+func TestTransportInstance_DedicatedInterframeDelayOnPTY(t *testing.T) {
+	master, slavePath := openPTY(t)
+	transport := NewTransport()
+	instance, err := transport.CreateTransportInstance(url.URL{Scheme: "serial", Path: slavePath},
+		map[string][]string{"interframe-delay": {"60"}})
+	require.NoError(t, err)
+	require.NoError(t, instance.Connect(context.Background()))
+	t.Cleanup(func() { _ = instance.Close() })
+
+	require.NoError(t, instance.Write(context.Background(), []byte{0x01}))
+	start := time.Now()
+	require.NoError(t, instance.Write(context.Background(), []byte{0x02}))
+	assert.GreaterOrEqual(t, time.Since(start), 50*time.Millisecond)
+
+	buf := make([]byte, 2)
+	total := 0
+	for total < 2 {
+		n, err := master.Read(buf[total:])
+		require.NoError(t, err)
+		total += n
+	}
+	assert.Equal(t, []byte{0x01, 0x02}, buf)
 }

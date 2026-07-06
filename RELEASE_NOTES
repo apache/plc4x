@@ -19,6 +19,10 @@ New Features
 - The Go serial transport now supports the full set of serial
   options in the connection string: data-bits, stop-bits, parity,
   flow-control, dtr, rts, read-timeout and write-timeout.
+- The Go serial transport supports sharing one physical serial port
+  between multiple connections ("reuse-port", e.g. multi-slave Modbus
+  RTU) with broadcast reads and serialized writes, plus inter-frame
+  write pacing ("interframe-delay") on both shared and dedicated ports.
 
 Incompatible changes
 --------------------

@@ -31,13 +31,16 @@ import (
 )
 
 type Transport struct {
+	registry *sharedPortRegistry
+
 	log zerolog.Logger
 }
 
 func NewTransport(_options ...options.WithOption) *Transport {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Transport{
-		log: customLogger,
+		registry: newSharedPortRegistry(customLogger),
+		log:      customLogger,
 	}
 }
 

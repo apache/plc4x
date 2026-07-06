@@ -53,6 +53,7 @@ type TransportInstance struct {
 	transport  *Transport
 	serialPort serialport.Port
 	armer      *deadlineReader
+	pacer      *pacer
 	reader     *bufio.Reader
 
 	log zerolog.Logger
@@ -89,13 +90,35 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 		return errors.New("Already connected")
 	}
 
-	serialPort, err := serialport.Open(m.SerialPortName, m.cfg.port)
-	if err != nil {
-		return errors.Wrap(err, "error connecting to serial port")
+	var serialPort serialport.Port
+	var err error
+	if m.cfg.reusePort {
+		if m.transport == nil {
+			return errors.New("reuse-port requires a transport-managed instance")
+		}
+		serialPort, err = m.transport.registry.acquire(m.SerialPortName, sharedPortConfig{
+			port:            m.cfg.port,
+			dtr:             m.cfg.dtr,
+			rts:             m.cfg.rts,
+			interframeDelay: m.cfg.interframeDelay,
+		})
+		if err != nil {
+			return errors.Wrap(err, "error acquiring shared serial port")
+		}
+		m.serialPort = serialPort
+		// dtr/rts are applied by the registry at open; pacing lives inside
+		// the shared port's write path.
+		m.pacer = nil
+	} else {
+		serialPort, err = serialport.Open(m.SerialPortName, m.cfg.port)
+		if err != nil {
+			return errors.Wrap(err, "error connecting to serial port")
+		}
+		m.serialPort = serialPort
+		m.applyModemLines(serialPort)
+		m.pacer = newPacer(m.cfg.interframeDelay)
 	}
-	m.serialPort = serialPort
-	m.applyModemLines(serialPort)
-	m.armer = newDeadlineReader(serialPort, m.cfg.readTimeout)
+	m.armer = newDeadlineReader(m.serialPort, m.cfg.readTimeout, m.pacer)
 	m.reader = bufio.NewReader(m.armer)
 	m.connected.Store(true)
 	return nil
@@ -134,13 +157,13 @@ func (m *TransportInstance) Close() error {
 		return nil
 	}
 	err := m.serialPort.Close()
+	m.serialPort = nil
+	m.armer = nil
+	m.pacer = nil
+	m.connected.Store(false)
 	if err != nil {
 		return errors.Wrap(err, "error closing serial port")
 	}
-	m.serialPort = nil
-	m.armer = nil
-
-	m.connected.Store(false)
 	return nil
 }
 
@@ -155,18 +178,20 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if m.serialPort == nil {
 		return errors.New("error writing to transport. No writer available")
 	}
-	if deadline, ok := ctx.Deadline(); ok {
-		if err := m.serialPort.SetWriteDeadline(deadline); err != nil {
-			return errors.Wrap(err, "error setting write deadline")
-		}
+	var deadline time.Time
+	if ctxDeadline, ok := ctx.Deadline(); ok {
+		deadline = ctxDeadline
 	} else if m.cfg.writeTimeout > 0 {
-		if err := m.serialPort.SetWriteDeadline(time.Now().Add(m.cfg.writeTimeout)); err != nil {
-			return errors.Wrap(err, "error setting write deadline")
-		}
-	} else if err := m.serialPort.SetWriteDeadline(time.Time{}); err != nil {
-		return errors.Wrap(err, "error clearing write deadline")
+		deadline = time.Now().Add(m.cfg.writeTimeout)
+	}
+	if err := m.pacer.waitTurn(deadline); err != nil {
+		return errors.Wrap(err, "error pacing write")
+	}
+	if err := m.serialPort.SetWriteDeadline(deadline); err != nil {
+		return errors.Wrap(err, "error setting write deadline")
 	}
 	num, err := m.serialPort.Write(data)
+	m.pacer.noteActivity()
 	if err != nil {
 		return errors.Wrap(err, "error writing")
 	}

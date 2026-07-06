@@ -144,6 +144,34 @@ func TestParseSerialOptions(t *testing.T) {
 			options: map[string][]string{"break-enabled": {"true"}, "no-such-thing": {"1"}},
 			want:    defaultSerialConfig(),
 		},
+		{
+			name:    "reuse-port accepted",
+			options: map[string][]string{"reuse-port": {"true"}},
+			want: func() serialConfig {
+				c := defaultSerialConfig()
+				c.reusePort = true
+				return c
+			}(),
+		},
+		{
+			name:    "interframe-delay accepted",
+			options: map[string][]string{"interframe-delay": {"50"}},
+			want: func() serialConfig {
+				c := defaultSerialConfig()
+				c.interframeDelay = 50 * time.Millisecond
+				return c
+			}(),
+		},
+		{
+			name:    "invalid reuse-port",
+			options: map[string][]string{"reuse-port": {"maybe"}},
+			wantErr: `"reuse-port"`,
+		},
+		{
+			name:    "invalid interframe-delay",
+			options: map[string][]string{"interframe-delay": {"-1"}},
+			wantErr: `"interframe-delay"`,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

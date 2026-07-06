@@ -37,11 +37,12 @@ import (
 type deadlineReader struct {
 	port     serialport.Port
 	fallback time.Duration
+	activity *pacer       // notified on successful reads; may be nil
 	explicit atomic.Value // time.Time; zero value = none
 }
 
-func newDeadlineReader(port serialport.Port, fallback time.Duration) *deadlineReader {
-	r := &deadlineReader{port: port, fallback: fallback}
+func newDeadlineReader(port serialport.Port, fallback time.Duration, activity *pacer) *deadlineReader {
+	r := &deadlineReader{port: port, fallback: fallback, activity: activity}
 	r.explicit.Store(time.Time{})
 	return r
 }
@@ -76,5 +77,9 @@ func (r *deadlineReader) Read(p []byte) (int, error) {
 			return 0, err
 		}
 	}
-	return r.port.Read(p)
+	n, err := r.port.Read(p)
+	if n > 0 {
+		r.activity.noteActivity()
+	}
+	return n, err
 }

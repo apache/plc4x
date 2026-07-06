@@ -40,7 +40,7 @@ func (r *recordingPort) SetReadDeadline(t time.Time) error {
 
 func TestDeadlineReader_FallbackArmsRelativeDeadline(t *testing.T) {
 	port := &recordingPort{}
-	reader := newDeadlineReader(port, 200*time.Millisecond)
+	reader := newDeadlineReader(port, 200*time.Millisecond, nil)
 
 	before := time.Now()
 	_, err := reader.Read(make([]byte, 1))
@@ -54,7 +54,7 @@ func TestDeadlineReader_FallbackArmsRelativeDeadline(t *testing.T) {
 
 func TestDeadlineReader_ZeroFallbackClearsDeadline(t *testing.T) {
 	port := &recordingPort{}
-	reader := newDeadlineReader(port, 0)
+	reader := newDeadlineReader(port, 0, nil)
 
 	_, err := reader.Read(make([]byte, 1))
 	require.NoError(t, err)
@@ -65,7 +65,7 @@ func TestDeadlineReader_ZeroFallbackClearsDeadline(t *testing.T) {
 
 func TestDeadlineReader_ExplicitDeadlineWins(t *testing.T) {
 	port := &recordingPort{}
-	reader := newDeadlineReader(port, time.Hour)
+	reader := newDeadlineReader(port, time.Hour, nil)
 
 	explicit := time.Now().Add(30 * time.Millisecond)
 	reader.setExplicitDeadline(explicit)
@@ -78,7 +78,7 @@ func TestDeadlineReader_ExplicitDeadlineWins(t *testing.T) {
 
 func TestDeadlineReader_ExpiredExplicitHonoredOnceThenFallback(t *testing.T) {
 	port := &recordingPort{}
-	reader := newDeadlineReader(port, time.Hour)
+	reader := newDeadlineReader(port, time.Hour, nil)
 
 	expired := time.Now().Add(-time.Second)
 	reader.setExplicitDeadline(expired)
@@ -98,7 +98,7 @@ func TestDeadlineReader_ExpiredExplicitHonoredOnceThenFallback(t *testing.T) {
 
 func TestDeadlineReader_ClearingExplicitRestoresFallback(t *testing.T) {
 	port := &recordingPort{}
-	reader := newDeadlineReader(port, time.Minute)
+	reader := newDeadlineReader(port, time.Minute, nil)
 
 	reader.setExplicitDeadline(time.Now().Add(time.Hour))
 	_, _ = reader.Read(make([]byte, 1))

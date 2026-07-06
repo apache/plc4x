@@ -38,7 +38,8 @@ func TestNewTransport(t *testing.T) {
 		{
 			name: "create it",
 			want: &Transport{
-				log: log.Logger,
+				registry: newSharedPortRegistry(log.Logger),
+				log:      log.Logger,
 			},
 		},
 	}
