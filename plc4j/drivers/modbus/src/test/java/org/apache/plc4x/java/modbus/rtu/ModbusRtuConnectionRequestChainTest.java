@@ -18,9 +18,12 @@
  */
 package org.apache.plc4x.java.modbus.rtu;
 
+import org.apache.plc4x.java.modbus.readwrite.ModbusErrorCode;
 import org.apache.plc4x.java.modbus.readwrite.ModbusPDU;
+import org.apache.plc4x.java.modbus.readwrite.ModbusPDUError;
 import org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest;
 import org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse;
+import org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleRegisterResponse;
 import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
@@ -44,9 +47,11 @@ import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -147,13 +152,80 @@ class ModbusRtuConnectionRequestChainTest {
         }
     }
 
+    @Test
+    void mismatchedFunctionCodeIsDiscardedAndPendingSurvives() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        ModbusRtuConnection connection = newConnectedConnection(transport);
+
+        CompletableFuture<ModbusRtuADU> pendingRead = connection.sendRequest(
+            readHoldingRegistersRequestAdu(1, 0x0000, 1), (short) 1); // fc 0x03
+
+        // A write-echo frame (fc 0x06) for the same unit must NOT complete it.
+        transport.deliver(wireBytes(new ModbusRtuADU((short) 1,
+            new ModbusPDUWriteSingleRegisterResponse(0x0010, 0x1234))));
+        transport.runDataListener();
+        assertFalse(pendingRead.isDone(), "mismatched fc must be discarded, pending must survive");
+
+        // The genuine 0x03 response still completes it.
+        transport.deliver(readResponseFrame(1, new byte[]{0x11, 0x22}));
+        transport.runDataListener();
+        assertArrayEquals(new byte[]{0x11, 0x22},
+            extractRegisterBytes(pendingRead.get(2, TimeUnit.SECONDS)));
+    }
+
+    @Test
+    void exceptionResponseCompletesAnyPendingRequest() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        ModbusRtuConnection connection = newConnectedConnection(transport);
+
+        CompletableFuture<ModbusRtuADU> pendingRead = connection.sendRequest(
+            readHoldingRegistersRequestAdu(1, 0x0000, 1), (short) 1);
+
+        transport.deliver(wireBytes(new ModbusRtuADU((short) 1,
+            new ModbusPDUError(ModbusErrorCode.ILLEGAL_DATA_ADDRESS))));
+        transport.runDataListener();
+
+        ModbusRtuADU response = pendingRead.get(2, TimeUnit.SECONDS);
+        assertTrue(response.getPdu().getErrorFlag(), "exception frames answer any pending request");
+    }
+
+    @Test
+    void requestTimedOutWhileQueuedNeverReachesTheWire() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        // Short request timeout so the queued request's total budget expires
+        // while the head transaction is still outstanding.
+        ModbusRtuConnection connection = newConnectedConnection(transport, 200);
+
+        // Head request dispatches and stays pending (never answered).
+        CompletableFuture<ModbusRtuADU> head = connection.sendRequest(
+            readHoldingRegistersRequestAdu(1, 0x0000, 1), (short) 1);
+        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
+
+        // Second request queues behind it and must time out WHILE QUEUED.
+        CompletableFuture<ModbusRtuADU> queued = connection.sendRequest(
+            readHoldingRegistersRequestAdu(1, 0x0010, 1), (short) 1);
+        assertThrows(ExecutionException.class, () -> queued.get(2, TimeUnit.SECONDS),
+            "queued request must time out from its enqueue-time clock");
+
+        // Head times out too (same 200ms clock); the chain then dispatches the
+        // dead queued request — which must be SKIPPED: no second wire write.
+        assertThrows(ExecutionException.class, () -> head.get(2, TimeUnit.SECONDS));
+        Thread.sleep(200); // give the chain's async dispatch a beat
+        assertEquals(1, transport.writeCount(),
+            "a request that died in the queue must never reach the wire");
+    }
+
     /**
      * Builds a connection wired to the given fake transport, and drives it
      * through the same construction/connect path as {@code ModbusRtuConnectionTest}.
      */
     private static ModbusRtuConnection newConnectedConnection(ScriptedAsyncTransport transport) throws Exception {
+        return newConnectedConnection(transport, 5000);
+    }
+
+    private static ModbusRtuConnection newConnectedConnection(ScriptedAsyncTransport transport, int requestTimeoutMs) throws Exception {
         ModbusRtuConfiguration config = new ModbusRtuConfiguration();
-        config.setRequestTimeout(5000);
+        config.setRequestTimeout(requestTimeoutMs);
         config.setDefaultUnitIdentifier(1);
         config.setPingAddress("4x00001:BOOL");
         config.setDefaultPayloadByteOrder(ModbusByteOrder.BIG_ENDIAN);

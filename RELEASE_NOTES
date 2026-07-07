@@ -38,6 +38,10 @@ New Features
   unknown Modbus exception codes map to REMOTE_ERROR instead of failing;
   shared serial ports dispatch each connection's callbacks on their own
   thread, so one blocked callback no longer stalls the whole port.
+  Responses are additionally validated against the pending request's
+  function code (late responses from timed-out requests are discarded
+  instead of completing the wrong caller), and the request timeout now
+  covers the full time from submission, including queueing.
 
 Incompatible changes
 --------------------

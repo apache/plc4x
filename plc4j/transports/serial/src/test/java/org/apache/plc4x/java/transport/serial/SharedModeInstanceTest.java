@@ -185,6 +185,35 @@ class SharedModeInstanceTest {
         verify(mockPort).closePort();
     }
 
+    @Test
+    void eachSharedInstanceGetsAUniquelyNamedDispatchThread() throws Exception {
+        MockPortFactory factory = new MockPortFactory();
+        SharedSerialPortManager manager = new SharedSerialPortManager(factory);
+
+        SerialTransportInstance first = new SerialTransportInstance(
+            manager, "COMSHARED", config(), AuditLog.builder().build());
+        SerialTransportInstance second = new SerialTransportInstance(
+            manager, "COMSHARED", config(), AuditLog.builder().build());
+
+        try {
+            AtomicReference<String> firstThread = new AtomicReference<>();
+            AtomicReference<String> secondThread = new AtomicReference<>();
+            first.registerDataListener(() -> firstThread.compareAndSet(null, Thread.currentThread().getName()));
+            second.registerDataListener(() -> secondThread.compareAndSet(null, Thread.currentThread().getName()));
+
+            factory.broadcast(new byte[]{0x01, 0x02, 0x03, 0x04});
+            awaitTrue(() -> firstThread.get() != null && secondThread.get() != null, 5, TimeUnit.SECONDS);
+
+            assertTrue(firstThread.get().startsWith("Serial-Shared-Dispatch-"), firstThread.get());
+            assertTrue(secondThread.get().startsWith("Serial-Shared-Dispatch-"), secondThread.get());
+            assertNotEquals(firstThread.get(), secondThread.get(),
+                "two instances on one port must have distinct dispatch threads");
+        } finally {
+            first.close();
+            second.close();
+        }
+    }
+
     /**
      * Regression test for shared-mode dispatch isolation: the shared reader
      * thread iterates all subscribers' onData() inline (SharedPort.readFromPort()).

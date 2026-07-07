@@ -54,6 +54,7 @@ public class SerialTransportInstance extends BaseTransportInstance<SerialTranspo
     // subscriber rings (64 KiB) so burst tolerance is consistent.
     private static final int DEFAULT_BUFFER_SIZE = 65536;
     private static final byte[] EMPTY_BYTES = new byte[0];
+    private static final java.util.concurrent.atomic.AtomicLong DISPATCH_THREAD_COUNTER = new java.util.concurrent.atomic.AtomicLong();
 
     private final SharedSerialPortManager sharedSerialPortManager;
     private final SerialPort port;
@@ -188,7 +189,7 @@ public class SerialTransportInstance extends BaseTransportInstance<SerialTranspo
                 };
                 tempSharedPort.addSubscriber(this.sharedSubscriber);
                 this.sharedDispatchExecutor = Executors.newSingleThreadExecutor(runnable -> {
-                    Thread thread = new Thread(runnable, "Serial-Shared-Dispatch-" + port);
+                    Thread thread = new Thread(runnable, "Serial-Shared-Dispatch-" + port + "-" + DISPATCH_THREAD_COUNTER.incrementAndGet());
                     thread.setDaemon(true);
                     return thread;
                 });

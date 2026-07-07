@@ -30,7 +30,7 @@ public class ModbusRtuConfiguration implements Configuration {
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(5_000)
-    @Description("Default timeout for all types of requests.")
+    @Description("Default timeout for all types of requests. The timeout covers the full time from submission including queueing; queued requests whose remaining budget falls below a small dispatch margin (at most a quarter of the timeout, capped at 50 ms) fail fast instead of being sent.")
     private int requestTimeout;
 
     @ConfigurationParameter("default-unit-identifier")

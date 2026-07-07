@@ -34,6 +34,7 @@ import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -199,6 +200,21 @@ class ModbusAsciiConnectionTest {
         assertEquals(ModbusByteOrder.LITTLE_ENDIAN, method.invoke(connection, tag));
     }
 
+    /**
+     * pendingRequests holds {@code PendingRequest} (function-code-tagged)
+     * holders rather than raw futures; this reflects the holder in the
+     * same way production code does (byte functionFlag, CompletableFuture future).
+     */
+    private static Object newPendingRequest(byte functionFlag, CompletableFuture<ModbusAsciiADU> future) throws Exception {
+        Class<?> pendingRequestClass = Arrays.stream(ModbusAsciiConnection.class.getDeclaredClasses())
+            .filter(c -> c.getSimpleName().equals("PendingRequest"))
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("PendingRequest nested class not found"));
+        Constructor<?> constructor = pendingRequestClass.getDeclaredConstructor(byte.class, CompletableFuture.class);
+        constructor.setAccessible(true);
+        return constructor.newInstance(functionFlag, future);
+    }
+
     @Test
     void testHandleIncomingMessage() throws Exception {
         Method method = ModbusAsciiConnection.class.getDeclaredMethod("handleIncomingMessage", ModbusAsciiADU.class);
@@ -207,11 +223,10 @@ class ModbusAsciiConnectionTest {
         Field pendingField = ModbusAsciiConnection.class.getDeclaredField("pendingRequests");
         pendingField.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<Short, CompletableFuture<ModbusAsciiADU>> pendingRequests =
-            (Map<Short, CompletableFuture<ModbusAsciiADU>>) pendingField.get(connection);
+        Map<Short, Object> pendingRequests = (Map<Short, Object>) pendingField.get(connection);
 
         CompletableFuture<ModbusAsciiADU> future = new CompletableFuture<>();
-        pendingRequests.put((short) 1, future);
+        pendingRequests.put((short) 1, newPendingRequest((byte) 0x03, future));
 
         ModbusAsciiADU responseAdu = new ModbusAsciiADU((short) 1,
             new ModbusPDUReadHoldingRegistersResponse(new byte[]{0x00, 0x2A}));
@@ -235,11 +250,10 @@ class ModbusAsciiConnectionTest {
         Field pendingField = ModbusAsciiConnection.class.getDeclaredField("pendingRequests");
         pendingField.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<Short, CompletableFuture<ModbusAsciiADU>> pendingRequests =
-            (Map<Short, CompletableFuture<ModbusAsciiADU>>) pendingField.get(connection);
+        Map<Short, Object> pendingRequests = (Map<Short, Object>) pendingField.get(connection);
 
         CompletableFuture<ModbusAsciiADU> future = new CompletableFuture<>();
-        pendingRequests.put((short) 1, future);
+        pendingRequests.put((short) 1, newPendingRequest((byte) 0x03, future));
 
         connection.close();
 
@@ -252,11 +266,10 @@ class ModbusAsciiConnectionTest {
         Field pendingField = ModbusAsciiConnection.class.getDeclaredField("pendingRequests");
         pendingField.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<Short, CompletableFuture<ModbusAsciiADU>> pendingRequests =
-            (Map<Short, CompletableFuture<ModbusAsciiADU>>) pendingField.get(connection);
+        Map<Short, Object> pendingRequests = (Map<Short, Object>) pendingField.get(connection);
 
         CompletableFuture<ModbusAsciiADU> future = new CompletableFuture<>();
-        pendingRequests.put((short) 1, future);
+        pendingRequests.put((short) 1, newPendingRequest((byte) 0x03, future));
 
         Method method = ModbusAsciiConnection.class.getDeclaredMethod("onTransportDisconnected", Throwable.class);
         method.setAccessible(true);

@@ -64,7 +64,7 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModbusRtuConnection.class);
 
     private ModbusRtuMessageCodec messageCodec;
-    private final Map<Short, CompletableFuture<ModbusRtuADU>> pendingRequests = new ConcurrentHashMap<>();
+    private final Map<Short, PendingRequest> pendingRequests = new ConcurrentHashMap<>();
 
     // Serializes request/response transactions. Modbus over serial is a
     // single-outstanding-transaction protocol; without this, concurrent
@@ -107,8 +107,8 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
         if (messageCodec != null) {
             messageCodec.close();
         }
-        pendingRequests.values().forEach(future ->
-            future.completeExceptionally(new PlcRuntimeException("Connection closed")));
+        pendingRequests.values().forEach(pending ->
+            pending.future.completeExceptionally(new PlcRuntimeException("Connection closed")));
         pendingRequests.clear();
         super.close();
         LOGGER.info("Modbus RTU connection closed");
@@ -126,7 +126,7 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
         int pendingCount = pendingRequests.size();
         if (pendingCount > 0) {
             LOGGER.warn("Failing {} pending requests due to transport disconnect", pendingCount);
-            pendingRequests.values().forEach(future -> future.completeExceptionally(exception));
+            pendingRequests.values().forEach(pending -> pending.future.completeExceptionally(exception));
             pendingRequests.clear();
         }
     }
@@ -147,9 +147,31 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
     }
 
     /**
-     * Correlation is by unit id only; requests are serialized per connection
-     * via {@link #sendRequest}, and per shared port each connection must own
-     * distinct unit ids.
+     * A dispatched request awaiting its response: the future plus the
+     * request's function code for response validation.
+     */
+    private static final class PendingRequest {
+        final byte functionFlag;
+        final CompletableFuture<ModbusRtuADU> future;
+        PendingRequest(byte functionFlag, CompletableFuture<ModbusRtuADU> future) {
+            this.functionFlag = functionFlag;
+            this.future = future;
+        }
+    }
+
+    /**
+     * Correlates a received frame to the pending request for its unit id.
+     * Validation: an exception frame (errorFlag) answers any pending
+     * request; a normal frame must carry the SAME function code as the
+     * pending request — mismatches (e.g. a late response arriving after
+     * its request timed out and a different operation took its place) are
+     * discarded without touching the pending entry.
+     * <p>
+     * Residual limitation: a late response with the SAME function code as
+     * the new request is physically indistinguishable — Modbus RTU/ASCII
+     * carry no transaction ids. Requests are serialized per connection and
+     * shared ports require distinct unit ids per connection, which bounds
+     * the exposure to same-fc retry patterns.
      */
     private void handleIncomingMessage(ModbusRtuADU modbusMessage) {
         short address = modbusMessage.getAddress();
@@ -157,17 +179,61 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
             auditLog.write(AuditLogEventType.INCOMING_MESSAGE,
                 "Received Modbus RTU response, address=" + address);
         }
-        CompletableFuture<ModbusRtuADU> future = pendingRequests.remove(address);
-        if (future != null) {
-            future.complete(modbusMessage);
-        } else {
+        PendingRequest pending = pendingRequests.get(address);
+        if (pending == null) {
             LOGGER.warn("Received response for unknown address: {}", address);
+            return;
         }
+        boolean isException = modbusMessage.getPdu().getErrorFlag();
+        if (!isException && modbusMessage.getPdu().getFunctionFlag() != pending.functionFlag) {
+            LOGGER.warn("Discarding response for address {} with function code 0x{} while waiting for 0x{} (late response from a timed-out request?)",
+                address,
+                Integer.toHexString(modbusMessage.getPdu().getFunctionFlag() & 0xFF),
+                Integer.toHexString(pending.functionFlag & 0xFF));
+            return;
+        }
+        pendingRequests.remove(address, pending);
+        pending.future.complete(modbusMessage);
     }
 
     // Package-private for tests.
     CompletableFuture<ModbusRtuADU> sendRequest(ModbusRtuADU request, short address) {
         CompletableFuture<ModbusRtuADU> responseFuture = new CompletableFuture<>();
+
+        // Total budget from submission: queueing + dispatch + response.
+        long timeoutMs = getConfiguration().getRequestTimeout();
+        // Explicit deadline, checked again in dispatchRequest(): the JVM-wide
+        // CompletableFuture delay scheduler is a single thread and only gets
+        // back around to an already-overdue timeout AFTER it finishes
+        // processing the previous request's own completion (cleanup +
+        // chain-continuation + submitting the next dispatch) — that hand-off
+        // to the async pool routinely wins the race against the scheduler
+        // catching up, so responseFuture.isDone() alone can still be false
+        // for a request whose enqueue-time budget has, in wall-clock terms,
+        // already run out.
+        long nowNanos = System.nanoTime();
+        long budgetNanos = TimeUnit.MILLISECONDS.toNanos(timeoutMs);
+        // A request with only a sliver of its budget left is not worth
+        // dispatching either — it has no realistic chance of a round trip
+        // completing before its own timeout fires anyway. Backing the
+        // dispatch deadline off by this margin also absorbs scheduling
+        // jitter between a predecessor's timeout firing (on the JVM-wide
+        // single-threaded delay scheduler, see above) and this request's
+        // own deadline — queued only a hair later, on the same clock —
+        // which would otherwise let a request that is, for all practical
+        // purposes, dead slip through a raw "has my deadline passed" check.
+        long minViableRemainingNanos = Math.min(TimeUnit.MILLISECONDS.toNanos(50), budgetNanos / 4);
+        long dispatchDeadlineNanos = nowNanos + budgetNanos - minViableRemainingNanos;
+        responseFuture.orTimeout(timeoutMs, TimeUnit.MILLISECONDS)
+            .whenComplete((result, error) -> {
+                if (error instanceof TimeoutException) {
+                    // Two-arg remove semantics preserved through the holder:
+                    // only clear the entry if it is still OUR request.
+                    pendingRequests.computeIfPresent(address,
+                        (key, pending) -> pending.future == responseFuture ? null : pending);
+                }
+            });
+
         CompletableFuture<?> previous;
         synchronized (requestChainLock) {
             previous = requestTail;
@@ -177,18 +243,30 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
         }
         if (previous.isDone()) {
             // Hot path: nothing queued — dispatch on the caller thread as before.
-            dispatchRequest(request, address, responseFuture);
+            dispatchRequest(request, address, responseFuture, dispatchDeadlineNanos);
         } else {
             // Queued: hop to the async pool so long bursts release the
             // completing thread's stack (a synchronous chain nests one
             // frame per queued request and can silently overflow).
-            previous.whenCompleteAsync((ignored, ignoredError) -> dispatchRequest(request, address, responseFuture));
+            previous.whenCompleteAsync((ignored, ignoredError) -> dispatchRequest(request, address, responseFuture, dispatchDeadlineNanos));
         }
         return responseFuture;
     }
 
-    private void dispatchRequest(ModbusRtuADU request, short address, CompletableFuture<ModbusRtuADU> responseFuture) {
-        pendingRequests.put(address, responseFuture);
+    private void dispatchRequest(ModbusRtuADU request, short address, CompletableFuture<ModbusRtuADU> responseFuture, long dispatchDeadlineNanos) {
+        if (responseFuture.isDone()) {
+            // Already completed (timeout or failure) while queued.
+            return;
+        }
+        if (System.nanoTime() >= dispatchDeadlineNanos) {
+            // Fail fast: the remaining budget is below the dispatch margin,
+            // so the request is semantically dead — don't make the caller
+            // wait for the orTimeout backstop.
+            responseFuture.completeExceptionally(new TimeoutException(
+                "Request timed out while queued (remaining budget below dispatch margin)"));
+            return;
+        }
+        pendingRequests.put(address, new PendingRequest(request.getPdu().getFunctionFlag(), responseFuture));
         try {
             if (auditLog.isEnabled()) {
                 auditLog.write(AuditLogEventType.OUTGOING_MESSAGE,
@@ -196,29 +274,16 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
             }
             messageCodec.send(request);
         } catch (MessageCodecException e) {
-            pendingRequests.remove(address);
+            pendingRequests.computeIfPresent(address, (key, pending) -> pending.future == responseFuture ? null : pending);
             responseFuture.completeExceptionally(new PlcRuntimeException("Failed to send request", e));
-            return;
         } catch (RuntimeException e) {
             // The responseFuture MUST complete no matter what: the request
             // chain's tail hangs off it, so an unchecked throw here (e.g.
             // from a custom AuditLog) would otherwise silently wedge every
             // subsequent request on this connection.
-            pendingRequests.remove(address, responseFuture);
+            pendingRequests.computeIfPresent(address, (key, pending) -> pending.future == responseFuture ? null : pending);
             responseFuture.completeExceptionally(e);
-            return;
         }
-
-        long timeoutMs = getConfiguration().getRequestTimeout();
-        responseFuture.orTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-            .whenComplete((result, error) -> {
-                if (error instanceof TimeoutException) {
-                    // Two-arg remove: only clears our own entry, immune to
-                    // dependent-ordering (a late cleanup can never remove a
-                    // successor request's entry).
-                    pendingRequests.remove(address, responseFuture);
-                }
-            });
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
