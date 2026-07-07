@@ -66,6 +66,13 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
     private ModbusRtuMessageCodec messageCodec;
     private final Map<Short, CompletableFuture<ModbusRtuADU>> pendingRequests = new ConcurrentHashMap<>();
 
+    // Serializes request/response transactions. Modbus over serial is a
+    // single-outstanding-transaction protocol; without this, concurrent
+    // requests to the same unit id silently overwrite each other's entry
+    // in pendingRequests and complete with the wrong response.
+    private final Object requestChainLock = new Object();
+    private CompletableFuture<?> requestTail = CompletableFuture.completedFuture(null);
+
     public ModbusRtuConnection(ModbusRtuConfiguration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
         super(configuration, transportInstance, auditLog);
     }
@@ -139,6 +146,11 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
         return 1;
     }
 
+    /**
+     * Correlation is by unit id only; requests are serialized per connection
+     * via {@link #sendRequest}, and per shared port each connection must own
+     * distinct unit ids.
+     */
     private void handleIncomingMessage(ModbusRtuADU modbusMessage) {
         short address = modbusMessage.getAddress();
         if (auditLog.isEnabled()) {
@@ -153,10 +165,30 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
         }
     }
 
-    private CompletableFuture<ModbusRtuADU> sendRequest(ModbusRtuADU request, short address) {
+    // Package-private for tests.
+    CompletableFuture<ModbusRtuADU> sendRequest(ModbusRtuADU request, short address) {
         CompletableFuture<ModbusRtuADU> responseFuture = new CompletableFuture<>();
-        pendingRequests.put(address, responseFuture);
+        CompletableFuture<?> previous;
+        synchronized (requestChainLock) {
+            previous = requestTail;
+            // handle(): the chain continues whether this transaction
+            // completes normally, exceptionally, or by timeout.
+            requestTail = responseFuture.handle((result, error) -> null);
+        }
+        if (previous.isDone()) {
+            // Hot path: nothing queued — dispatch on the caller thread as before.
+            dispatchRequest(request, address, responseFuture);
+        } else {
+            // Queued: hop to the async pool so long bursts release the
+            // completing thread's stack (a synchronous chain nests one
+            // frame per queued request and can silently overflow).
+            previous.whenCompleteAsync((ignored, ignoredError) -> dispatchRequest(request, address, responseFuture));
+        }
+        return responseFuture;
+    }
 
+    private void dispatchRequest(ModbusRtuADU request, short address, CompletableFuture<ModbusRtuADU> responseFuture) {
+        pendingRequests.put(address, responseFuture);
         try {
             if (auditLog.isEnabled()) {
                 auditLog.write(AuditLogEventType.OUTGOING_MESSAGE,
@@ -166,18 +198,27 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
         } catch (MessageCodecException e) {
             pendingRequests.remove(address);
             responseFuture.completeExceptionally(new PlcRuntimeException("Failed to send request", e));
-            return responseFuture;
+            return;
+        } catch (RuntimeException e) {
+            // The responseFuture MUST complete no matter what: the request
+            // chain's tail hangs off it, so an unchecked throw here (e.g.
+            // from a custom AuditLog) would otherwise silently wedge every
+            // subsequent request on this connection.
+            pendingRequests.remove(address, responseFuture);
+            responseFuture.completeExceptionally(e);
+            return;
         }
 
         long timeoutMs = getConfiguration().getRequestTimeout();
         responseFuture.orTimeout(timeoutMs, TimeUnit.MILLISECONDS)
             .whenComplete((result, error) -> {
                 if (error instanceof TimeoutException) {
-                    pendingRequests.remove(address);
+                    // Two-arg remove: only clears our own entry, immune to
+                    // dependent-ordering (a late cleanup can never remove a
+                    // successor request's entry).
+                    pendingRequests.remove(address, responseFuture);
                 }
             });
-
-        return responseFuture;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -507,6 +548,10 @@ public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> 
     }
 
     private PlcResponseCode getErrorCode(ModbusPDUError errorResponse) {
+        if (errorResponse.getExceptionCode() == null) {
+            LOGGER.warn("Device returned a Modbus exception frame with an unrecognized exception code; mapping to REMOTE_ERROR");
+            return PlcResponseCode.REMOTE_ERROR;
+        }
         return switch (errorResponse.getExceptionCode()) {
             case ILLEGAL_FUNCTION -> PlcResponseCode.UNSUPPORTED;
             case ILLEGAL_DATA_ADDRESS -> PlcResponseCode.INVALID_ADDRESS;

@@ -32,6 +32,12 @@ New Features
   CRC validation and byte-wise resynchronization: batched deliveries
   (e.g. on shared serial ports) yield every frame instead of only the
   first, and partial or corrupted frames no longer discard buffered data.
+- Java Modbus serial connections (RTU/ASCII) now serialize their requests
+  per connection (single outstanding transaction, matching the protocol),
+  fixing concurrent same-unit requests receiving each other's responses;
+  unknown Modbus exception codes map to REMOTE_ERROR instead of failing;
+  shared serial ports dispatch each connection's callbacks on their own
+  thread, so one blocked callback no longer stalls the whole port.
 
 Incompatible changes
 --------------------

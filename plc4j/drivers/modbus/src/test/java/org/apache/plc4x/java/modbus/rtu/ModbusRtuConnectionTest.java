@@ -393,4 +393,16 @@ class ModbusRtuConnectionTest {
             assertInstanceOf(PlcRuntimeException.class, e.getCause());
         }
     }
+
+    @Test
+    void unknownExceptionCodeMapsToRemoteErrorInsteadOfNpe() throws Exception {
+        ModbusPDUError errorPdu = mock(ModbusPDUError.class);
+        when(errorPdu.getExceptionCode()).thenReturn(null); // unknown wire value
+
+        Method getErrorCode = ModbusRtuConnection.class.getDeclaredMethod("getErrorCode", ModbusPDUError.class);
+        getErrorCode.setAccessible(true);
+        Object result = getErrorCode.invoke(connection, errorPdu);
+
+        assertEquals(PlcResponseCode.REMOTE_ERROR, result);
+    }
 }

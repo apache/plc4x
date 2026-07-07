@@ -34,6 +34,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
@@ -47,7 +50,9 @@ public class SerialTransportInstance extends BaseTransportInstance<SerialTranspo
         implements AsyncTransportInstance<SerialTransportConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SerialTransportInstance.class);
-    private static final int DEFAULT_BUFFER_SIZE = 8192;
+    // Per-connection receive ring; matches the plc4go shared-port
+    // subscriber rings (64 KiB) so burst tolerance is consistent.
+    private static final int DEFAULT_BUFFER_SIZE = 65536;
     private static final byte[] EMPTY_BYTES = new byte[0];
 
     private final SharedSerialPortManager sharedSerialPortManager;
@@ -72,6 +77,12 @@ public class SerialTransportInstance extends BaseTransportInstance<SerialTranspo
     private SharedPortSubscriber sharedSubscriber;
     private long droppedBytes;
     private long lastWarnedDroppedBytes;
+    // Shared mode only: dispatches dataListener callbacks off the shared
+    // reader thread so one blocking callback stalls only this connection
+    // (dedicated mode already has this isolation via its own reader
+    // thread). Single-threaded => notifications stay ordered.
+    private volatile ExecutorService sharedDispatchExecutor;
+    private final java.util.concurrent.atomic.AtomicBoolean dispatchPending = new java.util.concurrent.atomic.AtomicBoolean(false);
 
     public SerialTransportInstance(SharedSerialPortManager sharedSerialPortManager, String port, SerialTransportConfiguration configuration, AuditLog auditLog) throws TransportException {
         super(configuration, auditLog);
@@ -176,6 +187,11 @@ public class SerialTransportInstance extends BaseTransportInstance<SerialTranspo
                     }
                 };
                 tempSharedPort.addSubscriber(this.sharedSubscriber);
+                this.sharedDispatchExecutor = Executors.newSingleThreadExecutor(runnable -> {
+                    Thread thread = new Thread(runnable, "Serial-Shared-Dispatch-" + port);
+                    thread.setDaemon(true);
+                    return thread;
+                });
             } else {
                 // Dedicated mode: keep the per-instance reader exactly as before.
                 // Note: Some platforms/devices don't properly support SerialPortDataListener events,
@@ -222,6 +238,9 @@ public class SerialTransportInstance extends BaseTransportInstance<SerialTranspo
                     sharedSerialPortManager.releasePort(tempSharedPort);
                 } else if (tempPort != null) {
                     tempPort.closePort();
+                }
+                if (sharedDispatchExecutor != null) {
+                    sharedDispatchExecutor.shutdown();
                 }
             } catch (Exception cleanupError) {
                 LOGGER.warn("Cleanup after failed serial transport construction also failed", cleanupError);
@@ -438,6 +457,10 @@ public class SerialTransportInstance extends BaseTransportInstance<SerialTranspo
                 sharedPort.removeSubscriber(sharedSubscriber);
             }
             sharedSerialPortManager.releasePort(sharedPort);
+            ExecutorService executor = sharedDispatchExecutor;
+            if (executor != null) {
+                executor.shutdown(); // in-flight dispatch may finish; no await needed
+            }
             LOGGER.debug("Released shared serial port");
             getAuditLog().write(AuditLogEventType.CLOSE, "Released shared serial port");
         } else {
@@ -590,12 +613,38 @@ public class SerialTransportInstance extends BaseTransportInstance<SerialTranspo
                         dropped, droppedBytes);
                 }
             }
-            Runnable listener = dataListener;
-            if (listener != null) {
-                listener.run();
+            if (dataListener != null && dispatchPending.compareAndSet(false, true)) {
+                try {
+                    sharedDispatchExecutor.execute(this::runSharedDispatch);
+                } catch (RejectedExecutionException e) {
+                    dispatchPending.set(false); // closing; nothing to dispatch to
+                }
             }
         } finally {
             readLock.unlock();
+        }
+    }
+
+    /**
+     * Runs the dataListener callback off the shared reader thread (shared
+     * mode only). Submitted to {@link #sharedDispatchExecutor}, a
+     * single-threaded executor, so callback invocations stay ordered and
+     * never overlap.
+     */
+    private void runSharedDispatch() {
+        // Clear BEFORE running: data arriving during the run triggers
+        // exactly one follow-up task; the listener drains everything
+        // available per invocation, so coalescing loses nothing.
+        dispatchPending.set(false);
+        Runnable listener = dataListener;
+        if (listener != null && open) {
+            try {
+                listener.run();
+            } catch (Exception e) {
+                // Pre-executor, SharedPort's broadcast wrapper caught and
+                // logged listener exceptions; keep that observability here.
+                LOGGER.warn("Serial data listener threw during shared-mode dispatch", e);
+            }
         }
     }
 

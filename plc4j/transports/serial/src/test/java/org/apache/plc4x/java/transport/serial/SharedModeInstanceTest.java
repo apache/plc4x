@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -116,6 +118,31 @@ class SharedModeInstanceTest {
         fail("Timed out waiting for " + expected + " bytes to become available");
     }
 
+    /**
+     * Functional interface mirroring {@link java.util.function.BooleanSupplier}
+     * but allowing checked exceptions, so conditions can call methods like
+     * {@link SerialTransportInstance#getNumBytesAvailable()} directly.
+     */
+    @FunctionalInterface
+    private interface ThrowingBooleanSupplier {
+        boolean getAsBoolean() throws Exception;
+    }
+
+    /**
+     * Generic poll-sleep helper: repeatedly evaluates {@code condition} until
+     * it returns true or {@code timeout} elapses, failing the test otherwise.
+     */
+    private static void awaitTrue(ThrowingBooleanSupplier condition, long timeout, TimeUnit unit) throws Exception {
+        long deadlineNanos = System.nanoTime() + unit.toNanos(timeout);
+        while (System.nanoTime() < deadlineNanos) {
+            if (condition.getAsBoolean()) {
+                return;
+            }
+            Thread.sleep(10);
+        }
+        fail("Timed out waiting for condition to become true");
+    }
+
     @Test
     void twoSharedInstancesReceiveBroadcastsAndCloseIndependently() throws Exception {
         MockPortFactory factory = new MockPortFactory();
@@ -156,5 +183,59 @@ class SharedModeInstanceTest {
         second.close();
         assertFalse(second.isOpen());
         verify(mockPort).closePort();
+    }
+
+    /**
+     * Regression test for shared-mode dispatch isolation: the shared reader
+     * thread iterates all subscribers' onData() inline (SharedPort.readFromPort()).
+     * If one instance's dataListener blocks, an inline dispatch would stall
+     * the reader thread before it ever reaches the next subscriber, starving
+     * every other connection sharing the physical port.
+     */
+    @Test
+    void blockedListenerOnOneConnectionDoesNotStallTheOther() throws Exception {
+        MockPortFactory factory = new MockPortFactory();
+        SharedSerialPortManager manager = new SharedSerialPortManager(factory);
+
+        SerialTransportInstance first = new SerialTransportInstance(
+            manager, "COMSHARED", config(), AuditLog.builder().build());
+        SerialTransportInstance second = new SerialTransportInstance(
+            manager, "COMSHARED", config(), AuditLog.builder().build());
+
+        try {
+            CountDownLatch blockA = new CountDownLatch(1);
+            CountDownLatch aEntered = new CountDownLatch(1);
+            AtomicInteger bNotifications = new AtomicInteger();
+
+            first.registerDataListener(() -> {
+                aEntered.countDown();
+                try {
+                    blockA.await(10, TimeUnit.SECONDS); // A's callback wedges
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+            second.registerDataListener(bNotifications::incrementAndGet);
+
+            factory.broadcast(new byte[]{0x01, 0x02, 0x03, 0x04});
+            assertTrue(aEntered.await(5, TimeUnit.SECONDS), "A's listener must have been invoked");
+
+            // While A is wedged, B must still be notified and readable.
+            awaitTrue(() -> bNotifications.get() >= 1, 5, TimeUnit.SECONDS);
+            awaitTrue(() -> second.getNumBytesAvailable() >= 4, 5, TimeUnit.SECONDS);
+
+            // A second broadcast must still reach B while A stays wedged —
+            // both the ring content AND a second dispatch notification
+            // (pins the coalescing flag being re-armed after each run).
+            factory.broadcast(new byte[]{0x05, 0x06, 0x07, 0x08});
+            awaitTrue(() -> second.getNumBytesAvailable() >= 8, 5, TimeUnit.SECONDS);
+            awaitTrue(() -> bNotifications.get() >= 2, 5, TimeUnit.SECONDS);
+
+            blockA.countDown(); // release A; its coalesced dispatch drains
+            awaitTrue(() -> first.getNumBytesAvailable() >= 8, 5, TimeUnit.SECONDS);
+        } finally {
+            first.close();
+            second.close();
+        }
     }
 }

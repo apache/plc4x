@@ -104,9 +104,11 @@ public class SerialTransportConfiguration implements TransportConfiguration {
      * When true, instances with the same port will share a connection.
      * This is useful for protocols where multiple logical connections share one serial port.
      * WARNING: Only use this when the protocol supports multiplexing (like Modbus RTU with different slave IDs).
+     * Connections sharing a port must target distinct unit ids; Modbus RTU responses carry no
+     * transaction ids, so same-unit traffic from multiple connections cannot be told apart.
      */
     @ConfigurationParameter( "reuse-port")
-    @Description( "Reuse the underlying serial port across multiple transport instances. When true, instances with the same port will share a connection. This is useful for protocols where multiple logical connections share one serial port.")
+    @Description( "Reuse the underlying serial port across multiple transport instances. When true, instances with the same port will share a connection. This is useful for protocols where multiple logical connections share one serial port. Connections sharing a port must target distinct unit ids; Modbus RTU responses carry no transaction ids, so same-unit traffic from multiple connections cannot be told apart.")
     @BooleanDefaultValue(false)
     public boolean reusePort;
 
