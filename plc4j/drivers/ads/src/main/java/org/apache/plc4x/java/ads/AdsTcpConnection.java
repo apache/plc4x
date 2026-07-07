@@ -190,8 +190,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
     private CompletableFuture<Void> doConnectHandshake() {
         // ReadDeviceInfo
         AmsPacket readDeviceInfoRequest = new AdsReadDeviceInfoRequest(
-            getConfiguration().getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
-            getConfiguration().getSourceAmsNetId(), 800, ReturnCode.OK, getInvokeId());
+            getConfiguration().getTargetAmsNetId(), getConfiguration().getTargetAmsPort(),
+            getConfiguration().getSourceAmsNetId(), getConfiguration().getSourceAmsPort(), ReturnCode.OK, getInvokeId());
 
         return sendAmsRequest(readDeviceInfoRequest, AdsReadDeviceInfoResponse.class).thenCompose(readDeviceInfoResponse -> {
             if (readDeviceInfoResponse.getResult() != ReturnCode.OK) {
@@ -204,8 +204,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
 
             // Read online version (sym-by-name "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt")
             AmsPacket readOnlineVersionRequest = new AdsReadWriteRequest(
-                getConfiguration().getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
-                getConfiguration().getSourceAmsNetId(), 800, ReturnCode.OK, getInvokeId(),
+                getConfiguration().getTargetAmsNetId(), getConfiguration().getTargetAmsPort(),
+                getConfiguration().getSourceAmsNetId(), getConfiguration().getSourceAmsPort(), ReturnCode.OK, getInvokeId(),
                 ReservedIndexGroups.ADSIGRP_SYM_VALBYNAME.getValue(), 0L, 4L, null,
                 "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt".getBytes(StandardCharsets.UTF_8));
             return sendAmsRequest(readOnlineVersionRequest, AdsReadWriteResponse.class);
@@ -223,8 +223,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             }
             // Read symbol version (Group 0xF008, Offset 0, length 1)
             AmsPacket readSymbolVersionRequest = new AdsReadRequest(
-                getConfiguration().getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
-                getConfiguration().getSourceAmsNetId(), 800, ReturnCode.OK, getInvokeId(),
+                getConfiguration().getTargetAmsNetId(), getConfiguration().getTargetAmsPort(),
+                getConfiguration().getSourceAmsNetId(), getConfiguration().getSourceAmsPort(), ReturnCode.OK, getInvokeId(),
                 ReservedIndexGroups.ADSIGRP_SYM_VERSION.getValue(), 0L, 1L);
             return sendAmsRequest(readSymbolVersionRequest, AdsReadResponse.class);
         }).thenCompose(readSymbolVersionResponse -> {
@@ -470,8 +470,8 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
     @Override
     protected CompletableFuture<PlcPingResponse> onPing(PlcPingRequest pingRequest) {
         AmsPacket pingPacket = new AdsReadDeviceInfoRequest(
-            getConfiguration().getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
-            getConfiguration().getSourceAmsNetId(), 800, ReturnCode.OK, getInvokeId());
+            getConfiguration().getTargetAmsNetId(), getConfiguration().getTargetAmsPort(),
+            getConfiguration().getSourceAmsNetId(), getConfiguration().getSourceAmsPort(), ReturnCode.OK, getInvokeId());
         return sendAmsRequest(pingPacket, AdsReadDeviceInfoResponse.class)
             .thenApply(r -> (PlcPingResponse) new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK));
     }
