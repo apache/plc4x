@@ -731,4 +731,49 @@ class ConnectionContainerTest {
         assertTrue(elapsed < 2000,
             "container.close() must be bounded by the close timeout, but took " + elapsed + "ms");
     }
+
+    /**
+     * Regression test for issue #2631: a hanging driver {@code connect()} must not hold the container
+     * lock indefinitely and deadlock other callers. The connect runs under the lock, so it is bounded
+     * by {@code maxWaitTimeMs}; after that the attempt fails and the lock is released, letting the next
+     * caller proceed instead of blocking forever on {@code lock.lock()} inside {@code lease()}.
+     */
+    @Test
+    void testConnectTimeout_AbandonsHangingConnect() throws Exception {
+        CountDownLatch connectStarted = new CountDownLatch(1);
+        // Simulate a wedged connect that never completes (far longer than the configured max wait).
+        ConnectionContainer container = new ConnectionContainer(
+            "test:tcp://localhost",
+            () -> {
+                connectStarted.countDown();
+                try {
+                    Thread.sleep(60_000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                return mockConnection;
+            },
+            scheduler,
+            5000,  // maxIdleTimeMs
+            1000,  // maxLeaseTimeMs
+            300,   // maxWaitTimeMs — bounds the connect
+            5000,  // pingTimeoutMs
+            30000  // idlePingThresholdMs
+        );
+
+        // A first caller triggers the (hanging) connect; lease() must not block past the max wait.
+        long start = System.currentTimeMillis();
+        Future<PlcConnection> future1 = container.lease();
+        long elapsed = System.currentTimeMillis() - start;
+
+        assertTrue(connectStarted.await(1, TimeUnit.SECONDS), "connect should have been invoked");
+        assertTrue(elapsed < 2000,
+            "lease() must be bounded by the max wait time, but took " + elapsed + "ms");
+        // The bounded connect failed, so the lease future completes exceptionally rather than hanging.
+        assertTrue(future1.isDone());
+        assertThrows(java.util.concurrent.ExecutionException.class, future1::get);
+
+        // The container recovered: it is not stuck leased and a subsequent caller can proceed.
+        assertFalse(container.isLeased());
+    }
 }

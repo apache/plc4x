@@ -38,6 +38,17 @@ class S7CotpTransportConfigurationTest {
             .createConfiguration(S7CotpTransportConfiguration.class, params);
     }
 
+    /**
+     * Mirrors how {@code DriverBase} actually builds the transport configuration: it parses the
+     * connection string with the transport-code ({@code cotp}) prefix, so only {@code cotp.}-prefixed
+     * parameters reach the COTP transport config. COTP addressing (rack/slot/device-group/tsap)
+     * therefore <em>must</em> be given as {@code cotp.remote-slot=...} etc.
+     */
+    private S7CotpTransportConfiguration parsePrefixed(String params) {
+        return new ConfigurationFactory()
+            .createPrefixedConfiguration(S7CotpTransportConfiguration.class, "cotp", params);
+    }
+
     @Test
     void defaultPort() {
         assertEquals(102, new S7CotpTransportConfiguration().getDefaultPort());
@@ -57,6 +68,27 @@ class S7CotpTransportConfigurationTest {
         // Regression test for #2620: remote-slot=3 must reach the called TSAP as 0x0103.
         S7CotpTransportConfiguration cfg = parse("remote-rack=0&remote-slot=3&controller-type=S7_400");
         assertEquals(0x0103, cfg.getRemoteTsap());
+    }
+
+    @Test
+    void prefixedRemoteSlotIsHonouredThroughDriverPath() {
+        // #2620, real driver path: COTP addressing must be cotp.-prefixed to reach the transport
+        // config (DriverBase parses it with the "cotp" prefix). cotp.remote-slot=3 -> 0x0103.
+        S7CotpTransportConfiguration cfg =
+            parsePrefixed("cotp.remote-rack=0&cotp.remote-slot=3&controller-type=S7_400");
+        assertEquals(3, cfg.getRemoteSlot());
+        assertEquals(0x0103, cfg.getRemoteTsap());
+    }
+
+    @Test
+    void unprefixedAddressingIsIgnoredThroughDriverPath() {
+        // The required-prefix contract: an un-prefixed remote-slot never reaches the COTP transport
+        // config, so the called TSAP falls back to the slot-0 default. This is the misconfiguration
+        // behind the original #2620 report; documented here so it can't silently regress.
+        S7CotpTransportConfiguration cfg =
+            parsePrefixed("remote-rack=0&remote-slot=3&controller-type=S7_400");
+        assertEquals(0, cfg.getRemoteSlot());
+        assertEquals(0x0100, cfg.getRemoteTsap());
     }
 
     @Test

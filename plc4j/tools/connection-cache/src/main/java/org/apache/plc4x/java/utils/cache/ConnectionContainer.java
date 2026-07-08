@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,6 +50,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * <p>
  * Deadlock Prevention: Always acquires locks in the same order and releases them promptly.
  * Timer tasks are canceled before attempting to close connections to prevent deadlocks.
+ * Every blocking I/O performed under the lock is time-bounded — connect (see {@link #connectBounded()},
+ * bounded by {@code maxWaitTimeMs}), ping ({@code pingTimeoutMs}) and close ({@code closeTimeoutMs}) — so
+ * a hung driver can never hold the lock indefinitely and starve other callers of the same connection.
  */
 class ConnectionContainer {
 
@@ -145,7 +149,7 @@ class ConnectionContainer {
                 // Try to get a new connection if we haven't got one yet.
                 if(connection == null) {
                     try {
-                        connection = connectionFactory.get();
+                        connection = connectBounded();
                     } catch (PlcConnectionException e) {
                         if (LOGGER.isTraceEnabled()) {
                             LOGGER.warn("Exception while getting connection for lease", e);
@@ -167,7 +171,7 @@ class ConnectionContainer {
                         LOGGER.debug("Connection failed validation, closing and getting new connection");
                         closeBounded(connection);
                         try {
-                            connection = connectionFactory.get();
+                            connection = connectBounded();
                             // Restore tracked state (subscriptions, event listeners) on new connection
                             if (stateTracker.hasStateToRestore()) {
                                 stateTracker.restoreState(connection);
@@ -276,7 +280,7 @@ class ConnectionContainer {
             // If the connection was previously invalidated, get a new connection.
             if (connection == null) {
                 try {
-                    connection = connectionFactory.get();
+                    connection = connectBounded();
                     // Restore tracked state (subscriptions, event listeners) on new connection
                     if (stateTracker.hasStateToRestore()) {
                         stateTracker.restoreState(connection);
@@ -558,6 +562,66 @@ class ConnectionContainer {
         PlcConnection toClose = connection;
         connection = null;
         closeBounded(toClose);
+    }
+
+    /**
+     * Establishes a connection without ever blocking the caller — and therefore the container lock —
+     * for longer than {@code maxWaitTimeMs}. The underlying driver {@code connect()} can otherwise hang
+     * indefinitely (e.g. a wedged TCP handshake, or a driver awaiting a {@code CompletableFuture} that
+     * never completes). Because this runs under the container lock, an unbounded connect would hold the
+     * lock forever and freeze every other operation on this connection — including waiters, who block on
+     * {@code lock.lock()} in {@link #lease()} before they ever obtain a future and so never see their own
+     * {@code maxWaitTimeMs} timeout. Bounding the connect turns "stuck forever" into "fails after
+     * {@code maxWaitTimeMs}, dead connect abandoned to a background daemon thread", honouring the wait
+     * timeout the caller was promised. A non-positive {@code maxWaitTimeMs} disables the bound (legacy
+     * synchronous connect).
+     *
+     * @return the freshly established connection (never {@code null})
+     * @throws PlcConnectionException if the connect fails or does not complete within {@code maxWaitTimeMs}
+     */
+    private PlcConnection connectBounded() throws PlcConnectionException {
+        if (maxWaitTimeMs <= 0) {
+            return connectionFactory.get();
+        }
+        CompletableFuture<PlcConnection> result = new CompletableFuture<>();
+        Thread connector = new Thread(() -> {
+            try {
+                PlcConnection established = connectionFactory.get();
+                // If the caller already gave up (timed out below), it will never use this connection —
+                // close it here instead of leaking it. complete() returns false iff we lost that race.
+                if (!result.complete(established)) {
+                    closeQuietly(established);
+                }
+            } catch (Throwable t) {
+                result.completeExceptionally(t);
+            }
+        }, "cache-connect-" + connectionString);
+        connector.setDaemon(true);
+        connector.start();
+        try {
+            return result.get(maxWaitTimeMs, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            // Abandon the hanging connect. If the connector produced a connection in the tiny race
+            // window between get() timing out and this line, completeExceptionally() fails — recover
+            // and close that now-orphaned connection so it is not leaked.
+            if (!result.completeExceptionally(e)) {
+                result.thenAccept(this::closeQuietly);
+            }
+            connector.interrupt(); // best-effort; the underlying connect may not honor interruption
+            LOGGER.warn("Connection establishment did not complete within {}ms; abandoning it to the "
+                + "background and failing this attempt: {}", maxWaitTimeMs, connectionString);
+            throw new PlcConnectionException("Connection establishment did not complete within "
+                + maxWaitTimeMs + "ms: " + connectionString, e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new PlcConnectionException("Interrupted while establishing connection: " + connectionString, e);
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof PlcConnectionException) {
+                throw (PlcConnectionException) cause;
+            }
+            throw new PlcConnectionException("Error establishing connection: " + connectionString, cause);
+        }
     }
 
     /**
