@@ -1564,8 +1564,14 @@
     ['809' M_KEMCOM_GMBH ['870', '"KemCom GmbH"']]
     ['810' M_NANJING_PUIETEL_I_O_T_TECHNOLOGY_CO___LTD ['871', '"Nanjing puietel I.O.T Technology Co., Ltd"']]
     ['811' M_DOMUSFLOW ['872', '"DomusFlow"']]
-    ['812' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['813' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['812' M_BEIJING_YANGRUI_TECHNOLOGY_CO__LTD_ ['873', '"Beijing Yangrui Technology Co.,Ltd."']]
+    ['813' M_SMARTOMATIC_GMBH ['874', '"Smartomatic GmbH"']]
+    ['814' M_T_MAC_TECHNOLOGIES_LTD ['875', '"t-mac Technologies Ltd"']]
+    ['815' M_SYNCPRO ['876', '"SYNCPRO"']]
+    ['816' M_HAAR_INFORMATIK ['877', '"Haar-Informatik"']]
+    ['817' M_DIE_BILDUNGSMANUFAKTUR_GMBH ['878', '"DIE-Bildungsmanufaktur GmbH"']]
+    ['818' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['819' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
