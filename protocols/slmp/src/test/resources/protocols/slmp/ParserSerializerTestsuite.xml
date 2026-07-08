@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<!--
+  Reference vectors derived from the worked examples in the Mitsubishi MELSEC
+  Communication Protocol Reference Manual (SH-080008). The full 3E binary frame
+  is assembled per section 5.2 / chapter 6.
+
+  Batch Read (0x0401) word-unit example reading the values stored in D350 and
+  D351 (section 8.1):
+    request data : 5E 01 00 A8 02 00      (head=D350, code=D, points=2)
+    response data: AB 56 0F 17            (D350=0x56AB, D351=0x170F)
+
+  Random Read (0x0403) word-unit example reading D0, T0, M100, X20 in word units
+  and D1500, Y160, M1111 in double-word units (section 8.3):
+    request data : 04 03                                          (4 word pts, 3 dword pts)
+                   00 00 00 A8  00 00 00 C2  64 00 00 90  20 00 00 9C   (D0, T0, M100, X20)
+                   DC 05 00 A8  60 01 00 9D  57 04 00 90               (D1500, Y160, M1111)
+    response data: 95 19 02 12 30 20 49 48                            (D0=0x1995, T0=0x1202, ...)
+                   4E 4F 54 4C AF B9 DE C3 B7 BC DD BA                 (D1500/01=0x4F4E/0x4C54, ...)
+
+  Batch Read Multiple Blocks (0x0406) word-unit example reading two word-device
+  blocks (D0-D3, W100-W107) and three bit-device blocks (M0-M31, M128-M159,
+  B100-B12F), section 8.4:
+    request data : 02 03                              (2 word blocks, 3 bit blocks)
+                   00 00 00 A8 04 00                  (block D0,   4 points)
+                   00 01 00 B4 08 00                  (block W100, 8 points)
+                   00 00 00 90 02 00                  (block M0,   2 points)
+                   80 00 00 90 02 00                  (block M128, 2 points)
+                   00 01 00 A0 03 00                  (block B100, 3 points)
+  The response (per the manual: word-block data then bit-block data, 16 bits per
+  point) re-uses the generic SlmpResponseFrame3E raw-byte payload already covered
+  by the Batch/Random Read response cases above, so it is not duplicated here.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="LITTLE_ENDIAN">
+
+  <name>SLMP</name>
+
+  <protocol-name>slmp</protocol-name>
+  <output-flavor>read-write</output-flavor>
+
+  <testcase>
+    <name>3E Batch Read Request - D350, 2 words</name>
+    <raw>500000ffff03000c000000010400005e0100a80200</raw>
+    <root-type>SlmpMessage</root-type>
+    <xml>
+      <SlmpMessage>
+        <subHeader dataType="uint" bitLength="8">80</subHeader>
+        <subHeaderReserved dataType="uint" bitLength="8">0</subHeaderReserved>
+        <SlmpRequestFrame3E>
+          <network dataType="uint" bitLength="8">0</network>
+          <pcNumber dataType="uint" bitLength="8">255</pcNumber>
+          <requestDestModuleIoNo dataType="uint" bitLength="16">1023</requestDestModuleIoNo>
+          <requestDestModuleStation dataType="uint" bitLength="8">0</requestDestModuleStation>
+          <requestDataLength dataType="uint" bitLength="16">12</requestDataLength>
+          <monitoringTimer dataType="uint" bitLength="16">0</monitoringTimer>
+          <command dataType="uint" bitLength="16">1025</command>
+          <subCommand dataType="uint" bitLength="16">0</subCommand>
+          <requestData>
+            <SlmpRequestData>
+              <SlmpReadRequest>
+                <headDeviceNumber dataType="uint" bitLength="24">350</headDeviceNumber>
+                <deviceCode>
+                  <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="D">168</SlmpDeviceCode>
+                </deviceCode>
+                <numberOfPoints dataType="uint" bitLength="16">2</numberOfPoints>
+              </SlmpReadRequest>
+            </SlmpRequestData>
+          </requestData>
+        </SlmpRequestFrame3E>
+      </SlmpMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>3E Batch Read Response - D350=0x56AB, D351=0x170F</name>
+    <raw>d00000ffff030006000000ab560f17</raw>
+    <root-type>SlmpMessage</root-type>
+    <xml>
+      <SlmpMessage>
+        <subHeader dataType="uint" bitLength="8">208</subHeader>
+        <subHeaderReserved dataType="uint" bitLength="8">0</subHeaderReserved>
+        <SlmpResponseFrame3E>
+          <network dataType="uint" bitLength="8">0</network>
+          <pcNumber dataType="uint" bitLength="8">255</pcNumber>
+          <requestDestModuleIoNo dataType="uint" bitLength="16">1023</requestDestModuleIoNo>
+          <requestDestModuleStation dataType="uint" bitLength="8">0</requestDestModuleStation>
+          <responseDataLength dataType="uint" bitLength="16">6</responseDataLength>
+          <endCode dataType="uint" bitLength="16">0</endCode>
+          <responseData dataType="byte" bitLength="32">0xab560f17</responseData>
+        </SlmpResponseFrame3E>
+      </SlmpMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>3E Random Read Request - D0,T0,M100,X20 word + D1500,Y160,M1111 dword</name>
+    <raw>500000ffff030024000000030400000403000000a8000000c2640000902000009cdc0500a86001009d57040090</raw>
+    <root-type>SlmpMessage</root-type>
+    <xml>
+      <SlmpMessage>
+        <subHeader dataType="uint" bitLength="8">80</subHeader>
+        <subHeaderReserved dataType="uint" bitLength="8">0</subHeaderReserved>
+        <SlmpRequestFrame3E>
+          <network dataType="uint" bitLength="8">0</network>
+          <pcNumber dataType="uint" bitLength="8">255</pcNumber>
+          <requestDestModuleIoNo dataType="uint" bitLength="16">1023</requestDestModuleIoNo>
+          <requestDestModuleStation dataType="uint" bitLength="8">0</requestDestModuleStation>
+          <requestDataLength dataType="uint" bitLength="16">36</requestDataLength>
+          <monitoringTimer dataType="uint" bitLength="16">0</monitoringTimer>
+          <command dataType="uint" bitLength="16">1027</command>
+          <subCommand dataType="uint" bitLength="16">0</subCommand>
+          <requestData>
+            <SlmpRequestData>
+              <SlmpRandomReadRequest>
+                <numberOfWordAccessPoints dataType="uint" bitLength="8">4</numberOfWordAccessPoints>
+                <numberOfDoubleWordAccessPoints dataType="uint" bitLength="8">3</numberOfDoubleWordAccessPoints>
+                <wordAccessDevices isList="true">
+                  <SlmpDeviceSpec>
+                    <deviceNumber dataType="uint" bitLength="24">0</deviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="D">168</SlmpDeviceCode>
+                    </deviceCode>
+                  </SlmpDeviceSpec>
+                  <SlmpDeviceSpec>
+                    <deviceNumber dataType="uint" bitLength="24">0</deviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="TN">194</SlmpDeviceCode>
+                    </deviceCode>
+                  </SlmpDeviceSpec>
+                  <SlmpDeviceSpec>
+                    <deviceNumber dataType="uint" bitLength="24">100</deviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="M">144</SlmpDeviceCode>
+                    </deviceCode>
+                  </SlmpDeviceSpec>
+                  <SlmpDeviceSpec>
+                    <deviceNumber dataType="uint" bitLength="24">32</deviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="X">156</SlmpDeviceCode>
+                    </deviceCode>
+                  </SlmpDeviceSpec>
+                </wordAccessDevices>
+                <doubleWordAccessDevices isList="true">
+                  <SlmpDeviceSpec>
+                    <deviceNumber dataType="uint" bitLength="24">1500</deviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="D">168</SlmpDeviceCode>
+                    </deviceCode>
+                  </SlmpDeviceSpec>
+                  <SlmpDeviceSpec>
+                    <deviceNumber dataType="uint" bitLength="24">352</deviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="Y">157</SlmpDeviceCode>
+                    </deviceCode>
+                  </SlmpDeviceSpec>
+                  <SlmpDeviceSpec>
+                    <deviceNumber dataType="uint" bitLength="24">1111</deviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="M">144</SlmpDeviceCode>
+                    </deviceCode>
+                  </SlmpDeviceSpec>
+                </doubleWordAccessDevices>
+              </SlmpRandomReadRequest>
+            </SlmpRequestData>
+          </requestData>
+        </SlmpRequestFrame3E>
+      </SlmpMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>3E Random Read Response - 4 word + 3 dword values</name>
+    <raw>d00000ffff03001600000095190212302049484e4f544cafb9dec3b7bcddba</raw>
+    <root-type>SlmpMessage</root-type>
+    <xml>
+      <SlmpMessage>
+        <subHeader dataType="uint" bitLength="8">208</subHeader>
+        <subHeaderReserved dataType="uint" bitLength="8">0</subHeaderReserved>
+        <SlmpResponseFrame3E>
+          <network dataType="uint" bitLength="8">0</network>
+          <pcNumber dataType="uint" bitLength="8">255</pcNumber>
+          <requestDestModuleIoNo dataType="uint" bitLength="16">1023</requestDestModuleIoNo>
+          <requestDestModuleStation dataType="uint" bitLength="8">0</requestDestModuleStation>
+          <responseDataLength dataType="uint" bitLength="16">22</responseDataLength>
+          <endCode dataType="uint" bitLength="16">0</endCode>
+          <responseData dataType="byte" bitLength="160">0x95190212302049484e4f544cafb9dec3b7bcddba</responseData>
+        </SlmpResponseFrame3E>
+      </SlmpMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>3E Multi-block Read Request - 2 word blocks (D0-D3, W100-W107) + 3 bit blocks (M0-M31, M128-M159, B100-B12F)</name>
+    <raw>500000ffff030026000000060400000203000000a80400000100b40800000000900200800000900200000100a00300</raw>
+    <root-type>SlmpMessage</root-type>
+    <xml>
+      <SlmpMessage>
+        <subHeader dataType="uint" bitLength="8">80</subHeader>
+        <subHeaderReserved dataType="uint" bitLength="8">0</subHeaderReserved>
+        <SlmpRequestFrame3E>
+          <network dataType="uint" bitLength="8">0</network>
+          <pcNumber dataType="uint" bitLength="8">255</pcNumber>
+          <requestDestModuleIoNo dataType="uint" bitLength="16">1023</requestDestModuleIoNo>
+          <requestDestModuleStation dataType="uint" bitLength="8">0</requestDestModuleStation>
+          <requestDataLength dataType="uint" bitLength="16">38</requestDataLength>
+          <monitoringTimer dataType="uint" bitLength="16">0</monitoringTimer>
+          <command dataType="uint" bitLength="16">1030</command>
+          <subCommand dataType="uint" bitLength="16">0</subCommand>
+          <requestData>
+            <SlmpRequestData>
+              <SlmpMultiBlockReadRequest>
+                <numberOfWordDeviceBlocks dataType="uint" bitLength="8">2</numberOfWordDeviceBlocks>
+                <numberOfBitDeviceBlocks dataType="uint" bitLength="8">3</numberOfBitDeviceBlocks>
+                <wordDeviceBlocks isList="true">
+                  <SlmpDeviceBlock>
+                    <headDeviceNumber dataType="uint" bitLength="24">0</headDeviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="D">168</SlmpDeviceCode>
+                    </deviceCode>
+                    <numberOfPoints dataType="uint" bitLength="16">4</numberOfPoints>
+                  </SlmpDeviceBlock>
+                  <SlmpDeviceBlock>
+                    <headDeviceNumber dataType="uint" bitLength="24">256</headDeviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="W">180</SlmpDeviceCode>
+                    </deviceCode>
+                    <numberOfPoints dataType="uint" bitLength="16">8</numberOfPoints>
+                  </SlmpDeviceBlock>
+                </wordDeviceBlocks>
+                <bitDeviceBlocks isList="true">
+                  <SlmpDeviceBlock>
+                    <headDeviceNumber dataType="uint" bitLength="24">0</headDeviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="M">144</SlmpDeviceCode>
+                    </deviceCode>
+                    <numberOfPoints dataType="uint" bitLength="16">2</numberOfPoints>
+                  </SlmpDeviceBlock>
+                  <SlmpDeviceBlock>
+                    <headDeviceNumber dataType="uint" bitLength="24">128</headDeviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="M">144</SlmpDeviceCode>
+                    </deviceCode>
+                    <numberOfPoints dataType="uint" bitLength="16">2</numberOfPoints>
+                  </SlmpDeviceBlock>
+                  <SlmpDeviceBlock>
+                    <headDeviceNumber dataType="uint" bitLength="24">256</headDeviceNumber>
+                    <deviceCode>
+                      <SlmpDeviceCode dataType="uint" bitLength="8" stringRepresentation="B">160</SlmpDeviceCode>
+                    </deviceCode>
+                    <numberOfPoints dataType="uint" bitLength="16">3</numberOfPoints>
+                  </SlmpDeviceBlock>
+                </bitDeviceBlocks>
+              </SlmpMultiBlockReadRequest>
+            </SlmpRequestData>
+          </requestData>
+        </SlmpRequestFrame3E>
+      </SlmpMessage>
+    </xml>
+  </testcase>
+
+</test:testsuite>
