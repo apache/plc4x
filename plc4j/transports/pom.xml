@@ -17,9 +17,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
@@ -37,19 +35,19 @@
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
-  <modules>
-    <module>api</module>
-    <module>can</module>
-    <module>can-socketcan</module>
-    <module>can-virtualcan</module>
-    <module>cotp</module>
-    <module>pcap-replay</module>
-    <module>raw-socket</module>
-    <module>serial</module>
-    <module>test</module>
-    <module>tls</module>
-    <module>tcp</module>
-    <module>udp</module>
-  </modules>
+  <subprojects>
+    <subproject>api</subproject>
+    <subproject>can</subproject>
+    <subproject>can-socketcan</subproject>
+    <subproject>can-virtualcan</subproject>
+    <subproject>cotp</subproject>
+    <subproject>pcap-replay</subproject>
+    <subproject>raw-socket</subproject>
+    <subproject>serial</subproject>
+    <subproject>test</subproject>
+    <subproject>tls</subproject>
+    <subproject>tcp</subproject>
+    <subproject>udp</subproject>
+  </subprojects>
 
 </project>

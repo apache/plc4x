@@ -17,9 +17,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
@@ -44,7 +42,12 @@
   </properties>
 
   <build>
-    <sourceDirectory>${project.basedir}</sourceDirectory>
+    <sources>
+      <source>
+        <scope>main</scope>
+        <directory>${project.basedir}</directory>
+      </source>
+    </sources>
     <plugins>
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
@@ -339,7 +342,6 @@
           </plugin>
         </plugins>
       </build>
-
 
       <dependencies>
         <dependency>

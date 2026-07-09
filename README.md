@@ -159,7 +159,7 @@ The `out` directory however is excluded per default from the assembly descriptor
 ### Getting Started
 
 You must have at least Java 21 installed on your system and connectivity to Maven Central for downloading external third party dependencies. 
-Maven 3.6 is required to build, so be sure it's installed and available on your system.
+Maven 4.0.0-rc-5 or newer is required to build, so be sure it's installed and available on your system (the bundled Maven-Wrapper takes care of this automatically).
 
 NOTE: There is a convenience Maven-Wrapper installed in the repo, when used, this automatically downloads and installs Maven. 
 If you want to use this, please use `./mvnw` or `mvnw` instead of the normal `mvn` command.

@@ -17,9 +17,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
@@ -55,7 +53,36 @@
   </properties>
 
   <build>
-    <sourceDirectory>pkg</sourceDirectory>
+    <sources>
+      <source>
+        <scope>test</scope>
+        <directory>assets</directory>
+      </source>
+      <source>
+        <scope>main</scope>
+        <directory>internal</directory>
+      </source>
+      <source>
+        <scope>main</scope>
+        <directory>pkg</directory>
+      </source>
+      <source>
+        <scope>main</scope>
+        <directory>protocols</directory>
+      </source>
+      <source>
+        <scope>main</scope>
+        <directory>spi</directory>
+      </source>
+      <source>
+        <scope>test</scope>
+        <directory>test</directory>
+      </source>
+      <source>
+        <scope>test</scope>
+        <directory>tools</directory>
+      </source>
+    </sources>
     <plugins>
       <!--
         Create surefire folder for report, as this is required to exist.

@@ -17,9 +17,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
@@ -37,12 +35,12 @@
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
-  <modules>
-    <module>capture-replay</module>
-    <module>connection-cache</module>
-    <!--module>opm</module-->
-    <!--module>scraper</module>
-    <module>scraper-ng</module-->
-  </modules>
+  <subprojects>
+    <subproject>capture-replay</subproject>
+    <subproject>connection-cache</subproject>
+    <!--subproject>opm</subproject-->
+    <!--subproject>scraper</subproject>
+    <subproject>scraper-ng</subproject-->
+  </subprojects>
 
 </project>

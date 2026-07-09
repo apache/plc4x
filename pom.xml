@@ -17,9 +17,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache</groupId>
@@ -170,12 +168,12 @@
     <reflow.skin.version>2.3.3</reflow.skin.version>
   </properties>
 
-  <modules>
-    <module>code-generation</module>
+  <subprojects>
+    <subproject>code-generation</subproject>
     <!-- Definition of the protocol message formats -->
-    <module>protocols</module>
-    <module>website</module>
-  </modules>
+    <subproject>protocols</subproject>
+    <subproject>website</subproject>
+  </subprojects>
 
   <dependencyManagement>
     <dependencies>
@@ -870,7 +868,7 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>[3.6.3,)</version>
+                  <version>[4.0.0-rc-5,)</version>
                 </requireMavenVersion>
               </rules>
               <fail>true</fail>
@@ -1355,41 +1353,41 @@
     <!-- Build PLC4X including the C modules -->
     <profile>
       <id>with-c</id>
-      <modules>
-        <module>plc4c</module>
-      </modules>
+      <subprojects>
+        <subproject>plc4c</subproject>
+      </subprojects>
     </profile>
 
     <!-- Build PLC4X including the Go modules -->
     <profile>
       <id>with-go</id>
-      <modules>
-        <module>plc4go</module>
-      </modules>
+      <subprojects>
+        <subproject>plc4go</subproject>
+      </subprojects>
     </profile>
 
     <!-- Build PLC4X including the Java modules -->
     <profile>
       <id>with-java</id>
-      <modules>
-        <module>plc4j</module>
-      </modules>
+      <subprojects>
+        <subproject>plc4j</subproject>
+      </subprojects>
     </profile>
 
     <!-- Build PLC4X including the .Net modules -->
     <profile>
       <id>with-dotnet</id>
-      <modules>
-        <module>plc4net</module>
-      </modules>
+      <subprojects>
+        <subproject>plc4net</subproject>
+      </subprojects>
     </profile>
 
     <!-- Build PLC4X including the Python modules -->
     <profile>
       <id>with-python</id>
-      <modules>
-        <module>plc4py</module>
-      </modules>
+      <subprojects>
+        <subproject>plc4py</subproject>
+      </subprojects>
     </profile>
 
     <!-- Profile for linux x86_64 (mainly Intel Processors) (Self-Enabling) -->

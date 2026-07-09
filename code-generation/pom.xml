@@ -17,9 +17,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
@@ -37,18 +35,18 @@
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
-  <modules>
-    <module>language-base-freemarker</module>
-    <module>protocol-base-mspec</module>
-    <module>protocol-test</module>
-  </modules>
+  <subprojects>
+    <subproject>language-base-freemarker</subproject>
+    <subproject>protocol-base-mspec</subproject>
+    <subproject>protocol-test</subproject>
+  </subprojects>
 
   <profiles>
     <profile>
       <id>update-generated-code</id>
-      <modules>
-        <module>language</module>
-      </modules>
+      <subprojects>
+        <subproject>language</subproject>
+      </subprojects>
     </profile>
   </profiles>
 
