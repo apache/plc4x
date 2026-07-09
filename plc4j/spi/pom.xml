@@ -35,13 +35,13 @@
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
-  <modules>
-    <module>buffers</module>
-    <module>config</module>
-    <module>drivers</module>
-    <module>fields</module>
-    <module>utils</module>
-    <module>values</module>
-  </modules>
+  <subprojects>
+    <subproject>buffers</subproject>
+    <subproject>config</subproject>
+    <subproject>drivers</subproject>
+    <subproject>fields</subproject>
+    <subproject>utils</subproject>
+    <subproject>values</subproject>
+  </subprojects>
 
 </project>
