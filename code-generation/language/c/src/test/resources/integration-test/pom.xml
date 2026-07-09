@@ -25,7 +25,7 @@
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
     <version>@project.version@</version>
-    <relativePath>../../../../pom.xml</relativePath>
+    <relativePath/>
   </parent>
 
   <artifactId>plc4j-c-mspec-test</artifactId>
