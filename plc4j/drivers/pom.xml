@@ -19,8 +19,6 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 https://maven.apache.org/xsd/maven-4.1.0.xsd">
 
-  <modelVersion>4.1.0</modelVersion>
-
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
@@ -35,30 +33,5 @@
   <properties>
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
-
-  <subprojects>
-    <subproject>ab-eth</subproject>
-    <subproject>ads</subproject>
-    <subproject>bacnet</subproject>
-    <subproject>c-bus</subproject>
-    <subproject>can</subproject>
-    <subproject>canopen</subproject>
-    <subproject>ctrlx</subproject>
-    <subproject>eip</subproject>
-    <subproject>firmata</subproject>
-    <subproject>iec-60870</subproject>
-    <subproject>knxnetip</subproject>
-    <subproject>mock</subproject>
-    <subproject>open-protocol</subproject>
-    <subproject>modbus</subproject>
-    <subproject>opcua</subproject>
-    <subproject>plc4x</subproject>
-    <subproject>profinet</subproject>
-    <subproject>profinet-ng</subproject>
-    <subproject>s7</subproject>
-    <subproject>simulated</subproject>
-    <subproject>umas</subproject>
-    <subproject>all</subproject>
-  </subprojects>
 
 </project>

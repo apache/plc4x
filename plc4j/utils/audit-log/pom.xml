@@ -17,9 +17,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
-  <modelVersion>4.1.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
@@ -34,10 +32,5 @@
   <properties>
     <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
   </properties>
-
-  <subprojects>
-    <subproject>api</subproject>
-    <subproject>impl</subproject>
-  </subprojects>
 
 </project>
