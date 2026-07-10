@@ -185,7 +185,9 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
 
         CompletableFuture<Void> allDone =
             CompletableFuture.allOf(tagFutures.values().toArray(new CompletableFuture[0]));
-        return allDone.thenApply(v -> {
+        // handle, not thenApply: allOf completes exceptionally if ANY tag failed, but a failed
+        // tag must still yield a response with that tag mapped to an error code below.
+        return allDone.handle((v, anyTagFailure) -> {
             Map<String, PlcResponseItem<PlcValue>> items = new LinkedHashMap<>();
             for (Map.Entry<String, CompletableFuture<PlcResponseItem<PlcValue>>> e : tagFutures.entrySet()) {
                 try {
