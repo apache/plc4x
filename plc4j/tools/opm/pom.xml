@@ -61,7 +61,13 @@
     <!--Testing-->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
       <version>0.14.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
