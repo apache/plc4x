@@ -27,9 +27,10 @@ import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
-import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcLINT;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -60,6 +61,14 @@ class TriggeredScraperImplTest {
         // Assign to Connections
         mock1Connection.setDevice(mockDevice1);
         mock2Connection.setDevice(mockDevice2);
+    }
+
+    @Test
+    void configConstructor_buildsDefaultConnectionManager() throws ScraperException, IOException {
+        ScraperConfiguration configuration = ScraperConfiguration.fromFile("src/test/resources/mock-scraper-config.yml", ScraperConfigurationClassicImpl.class);
+        TriggerCollector triggerCollector = new TriggerCollectorImpl(driverManager);
+
+        Assertions.assertDoesNotThrow(() -> new TriggeredScraperImpl(configuration, (j, a, m) -> {}, triggerCollector));
     }
 
     /**

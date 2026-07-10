@@ -24,6 +24,7 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
@@ -97,7 +98,9 @@ public class ScraperImpl implements Scraper {
      * (in the background) the idle connection is created and the getConnection call returns fast.
      */
     private static CachedPlcConnectionManager createCachedPlcConnectionManager() {
-        return CachedPlcConnectionManager.getBuilder().build();
+        return CachedPlcConnectionManager.getBuilder()
+            .withConnectionManager(new DefaultPlcDriverManager())
+            .build();
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -174,7 +175,9 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * (in the background) the idle connection is created and the getConnection call returns fast.
      */
     private static CachedPlcConnectionManager createCachedPlcConnectionManager() {
-        return CachedPlcConnectionManager.getBuilder().build();
+        return CachedPlcConnectionManager.getBuilder()
+            .withConnectionManager(new DefaultPlcDriverManager())
+            .build();
     }
 
     /**

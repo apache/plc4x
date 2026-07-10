@@ -25,7 +25,10 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
-import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
+import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Disabled;
@@ -36,6 +39,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -75,6 +79,13 @@ class ScraperTest implements WithAssertions {
         ));
 
         Thread.sleep(30_000_000);
+    }
+
+    @Test
+    void configConstructor_buildsDefaultConnectionManager() throws ScraperException, IOException {
+        ScraperConfiguration config = ScraperConfiguration.fromFile("src/test/resources/example.yml", ScraperConfigurationClassicImpl.class);
+
+        assertThatCode(() -> new ScraperImpl(config, (j, a, m) -> {})).doesNotThrowAnyException();
     }
 
     @Test
