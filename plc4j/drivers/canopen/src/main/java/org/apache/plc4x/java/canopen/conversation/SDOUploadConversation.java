@@ -57,6 +57,15 @@ public class SDOUploadConversation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SDOUploadConversation.class);
 
+    /**
+     * Upper bound for the buffer eagerly allocated for a segmented SDO upload. The "total bytes"
+     * figure comes from the remote node's initiate-upload response (an unsigned 32-bit wire
+     * field), so a bogus value could otherwise trigger a multi-GB allocation before a single
+     * segment is read (OOM / DoS). SDO uploads carry object-dictionary values fetched in ≤7-byte
+     * segments, so 16 MiB is already an extremely generous ceiling for any legitimate transfer.
+     */
+    private static final long MAX_SEGMENTED_UPLOAD_SIZE = 16L * 1024 * 1024;
+
     private final CANConversation conversation;
     private final int nodeId;
     private final int answerNodeId;
@@ -118,7 +127,17 @@ public class SDOUploadConversation {
             completeWithValue(receiver, payload.getData(), payload.getData().length);
         } else if (answer.getPayload() instanceof SDOInitiateSegmentedUploadResponse) {
             SDOInitiateSegmentedUploadResponse segment = (SDOInitiateSegmentedUploadResponse) answer.getPayload();
-            int totalSize = (int) segment.getBytes();
+            long announcedSize = segment.getBytes();
+            // Don't eagerly allocate a buffer sized to the untrusted, node-announced total: a bogus
+            // value (e.g. 0x40000000) would trigger a huge allocation before any segment is read,
+            // and 0xFFFFFFFF would even cast to a negative array size. Reject implausible sizes up
+            // front; the buffer is still filled incrementally from the segments actually received.
+            if (announcedSize < 0 || announcedSize > MAX_SEGMENTED_UPLOAD_SIZE) {
+                receiver.completeExceptionally(new PlcException(
+                    "SDO segmented upload announced an implausible size of " + announcedSize + " bytes"));
+                return;
+            }
+            int totalSize = (int) announcedSize;
             fetch(receiver, new byte[totalSize], 0, totalSize, false);
         } else {
             receiver.completeExceptionally(new PlcException("Unsupported SDO upload kind."));

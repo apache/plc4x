@@ -617,6 +617,15 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return new PlcList(flatValues);
         }
         int currentDim = dimensions.getFirst();
+        // The array dimensions are raw signed int32 values taken straight off the wire, independent
+        // of how many values were actually sent. Only partition when the declared dimension is
+        // consistent with the materialized value count: this bounds the work to real received data
+        // and avoids both a division by zero (currentDim == 0) and an eager multi-GB allocation /
+        // loop for an attacker-supplied dimension (e.g. 0x7fffffff). Otherwise fall back to a flat
+        // list, matching the behaviour when no dimensions are declared.
+        if (currentDim <= 0 || currentDim > flatValues.size() || flatValues.size() % currentDim != 0) {
+            return new PlcList(flatValues);
+        }
         List<Integer> remainingDims = dimensions.subList(1, dimensions.size());
         int chunkSize = flatValues.size() / currentDim;
         List<PlcValue> result = new ArrayList<>(currentDim);

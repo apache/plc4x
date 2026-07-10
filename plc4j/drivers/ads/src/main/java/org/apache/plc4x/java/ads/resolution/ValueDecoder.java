@@ -48,6 +48,14 @@ import java.util.Map;
  */
 public final class ValueDecoder {
 
+    /**
+     * Upper bound for the initial capacity of a list whose element count comes from the
+     * (server-supplied) data type table. Prevents a bogus, attacker-controlled array dimension
+     * from triggering an eager multi-GB allocation before any element is actually read. The list
+     * still grows past this if that many elements really are present on the wire.
+     */
+    private static final int MAX_INITIAL_CAPACITY = 1024;
+
     private final Map<String, AdsDataTypeTableEntry> dataTypeTable;
 
     public ValueDecoder(Map<String, AdsDataTypeTableEntry> dataTypeTable) {
@@ -98,7 +106,16 @@ public final class ValueDecoder {
         AdsDataTypeArrayInfo cur = dims.get(0);
         List<AdsDataTypeArrayInfo> rest = dims.subList(1, dims.size());
         long count = cur.getNumElements();
-        List<PlcValue> elements = new ArrayList<>((int) count);
+        // numElements is a wire-supplied unsigned 32-bit value (up to 0xFFFFFFFF). Reject counts
+        // that don't fit a positive int before the (int) cast - otherwise a large value either
+        // overflows to a negative capacity (NegativeArraySizeException) or forces an eager
+        // multi-GB allocation (OOM / DoS). The list itself is not pre-sized to the untrusted
+        // count: it grows as elements are actually decoded, and dataReader.read() throws once the
+        // buffer is exhausted.
+        if (count > Integer.MAX_VALUE) {
+            throw new BufferException("Array count of " + count + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
+        }
+        List<PlcValue> elements = new ArrayList<>((int) Math.min(count, MAX_INITIAL_CAPACITY));
         for (long i = 0; i < count; i++) {
             elements.add(decodePartialArray(rb, arrayDataType, rest));
         }

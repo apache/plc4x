@@ -35,6 +35,14 @@ public class FieldReaderArray<T> implements FieldCommons {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderArray.class);
 
+    /**
+     * Upper bound for the initial capacity of an array whose element count comes from the wire.
+     * Prevents a bogus, attacker-controlled count from triggering an eager multi-GB allocation
+     * before any element is actually read. The list still grows past this if that many elements
+     * really are present on the wire.
+     */
+    private static final int MAX_INITIAL_CAPACITY = 1024;
+
     public List<T> readArrayFieldCount(DataReader<T> dataReader, long count, WithOption... options) throws BufferException {
         LOGGER.debug("reading field {}. Count: {}", getName(options), count);
         if (count > Integer.MAX_VALUE) {
@@ -47,7 +55,11 @@ public class FieldReaderArray<T> implements FieldCommons {
         //readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         dataReader.pushContext(options);
         int itemCount = Math.max(0, (int) count);
-        List<T> result = new ArrayList<>(itemCount);
+        // Don't eagerly pre-size the backing array to an untrusted, wire-supplied count: a bogus
+        // count (e.g. 0x7fffffff) would trigger a multi-GB allocation before a single element is
+        // read (OOM / DoS). Cap the initial capacity to a modest bound and let the list grow as
+        // elements are actually decoded - once the buffer is exhausted, dataReader.read() throws.
+        List<T> result = new ArrayList<>(Math.min(itemCount, MAX_INITIAL_CAPACITY));
         for (int curItem = 0; curItem < itemCount; curItem++) {
             // Make some variables available that would be otherwise challenging to forward.
             ThreadLocalHelper.curItemThreadLocal.set(curItem);

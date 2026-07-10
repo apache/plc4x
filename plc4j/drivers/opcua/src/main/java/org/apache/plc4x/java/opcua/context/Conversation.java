@@ -503,6 +503,24 @@ public class Conversation implements SecureChannelState {
         }
         storage.append(((BinaryPayload) data).getPayload());
 
+        // Enforce the negotiated receive limits while accumulating chunks. Without this a malicious
+        // or faulty server could stream an unbounded number of CONTINUE chunks (never sending a
+        // FINAL), growing the in-memory buffer without bound until the client runs out of memory.
+        // A limit of 0 means "no limit" per the OPC UA spec, so only enforce positive limits.
+        if (limits != null) {
+            long maxChunkCount = limits.getMaxChunkCount();
+            if (maxChunkCount > 0 && storage.count() > maxChunkCount) {
+                storage.reset();
+                throw new IllegalStateException("Received message exceeds the negotiated maximum chunk count of " + maxChunkCount);
+            }
+            long maxMessageSize = limits.getMaxMessageSize();
+            if (maxMessageSize > 0 && storage.size() > maxMessageSize) {
+                storage.reset();
+                throw new IllegalStateException("Received message size " + storage.size()
+                    + " exceeds the negotiated maximum message size of " + maxMessageSize + " bytes");
+            }
+        }
+
         return FINAL.equals(chunkType);
     }
 
