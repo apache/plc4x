@@ -241,6 +241,9 @@ public abstract class DriverBase implements PlcDriver {
         ConnectionBase<?> connection = getConnection(configuration, transportInstance, auditLog);
         connection.setConnectionInfo(getProtocolCode(), getProtocolName(),
             transport.getTransportCode(), transport.getTransportName());
+        // Hand the caller-supplied authentication to the connection; previously it was accepted
+        // by this method but never propagated, so programmatic credentials were silently ignored.
+        connection.setAuthentication(plcAuthentication);
         return connection;
     }
 

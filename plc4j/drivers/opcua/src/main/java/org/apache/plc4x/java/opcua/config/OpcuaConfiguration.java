@@ -107,6 +107,14 @@ public class OpcuaConfiguration implements Configuration {
     @Description("Password used to open trust store.")
     private String trustStorePassword;
 
+    @ConfigurationParameter("insecure-certificate-verification")
+    @BooleanDefaultValue(false)
+    @Description("Disables verification of the OPC UA server certificate, trusting any certificate the server presents.\n" +
+        "This is UNSAFE: it leaves the connection open to man-in-the-middle attacks and defeats the integrity/authenticity\n" +
+        "guarantees of a signed secure channel. Only enable it for local testing. In production, establish trust with\n" +
+        "`trust-store-file` (chain validation) or `server-certificate-file` (certificate pinning) instead.")
+    private boolean insecureCertificateVerification;
+
     // the discovered certificate when discovery is enabled
     private X509Certificate serverCertificate;
 
@@ -196,6 +204,20 @@ public class OpcuaConfiguration implements Configuration {
 
     public char[] getTrustStorePassword() {
         return trustStorePassword == null ? null : trustStorePassword.toCharArray();
+    }
+
+    public boolean isInsecureCertificateVerification() {
+        return insecureCertificateVerification;
+    }
+
+    /**
+     * The filesystem path of a user-supplied server certificate to pin trust to,
+     * or {@code null} if none was configured. Unlike {@link #getServerCertificate()},
+     * this never returns a certificate that was discovered over the (unauthenticated)
+     * discovery channel, so it is safe to use as a trust anchor.
+     */
+    public String getServerCertificateFile() {
+        return serverCertificateFile;
     }
 
     public Limits getEncodingLimits() {

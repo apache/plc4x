@@ -37,7 +37,7 @@ public class TcpTransport implements Transport<TcpTransportConfiguration> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpTransport.class);
 
     private static final Pattern TRANSPORT_TCP_PATTERN = Pattern.compile(
-        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?.*");
+        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?(?<driverConfig>.*)");
 
 
     @Override
@@ -69,6 +69,9 @@ public class TcpTransport implements Transport<TcpTransportConfiguration> {
         String ip = matcher.group("ip");
         String hostname = matcher.group("hostname");
         String portString = matcher.group("port");
+        // Everything after host:port (before the '?' parameter section, which the framework
+        // already stripped) is the driver-config, e.g. the OPC UA "/milo" path.
+        String driverConfig = matcher.group("driverConfig");
 
         // If the port wasn't specified, try to get a default port from the configuration.
         int port;
@@ -83,7 +86,9 @@ public class TcpTransport implements Transport<TcpTransportConfiguration> {
         InetSocketAddress remoteAddress = new InetSocketAddress((ip != null) ? ip : hostname, port);
 
         LOGGER.debug("Creating TCP transport instance for {}:{}", (ip != null) ? ip : hostname, port);
-        return new TcpTransportInstance(remoteAddress, tcpTransportConfiguration, auditLog);
+        TcpTransportInstance instance = new TcpTransportInstance(remoteAddress, tcpTransportConfiguration, auditLog);
+        instance.setDriverConfig(driverConfig);
+        return instance;
     }
 
 }

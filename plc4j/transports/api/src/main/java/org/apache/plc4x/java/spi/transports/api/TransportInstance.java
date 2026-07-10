@@ -32,6 +32,22 @@ public interface TransportInstance<T extends TransportConfiguration> {
     T getConfiguration();
 
     /**
+     * Returns the driver-config: the part of the connection URL after the
+     * transport-config (host/port) that the transport consumes and before the
+     * parameter section. Unlike the transport-config, this portion is meaningful
+     * only to the driver. For example, in
+     * {@code opcua:tcp://localhost:4840/milo?discovery=false} (or the equivalent
+     * {@code opcua:tls://...}) the transport consumes {@code localhost:4840} and
+     * this returns {@code /milo}. Transports whose address carries no such trailing
+     * part return an empty string.
+     *
+     * @return the driver-config, never {@code null}
+     */
+    default String getDriverConfig() {
+        return "";
+    }
+
+    /**
      * Executes a check if the underlying transport is still open.
      *
      * @return true if the transport is still open, false otherwise.

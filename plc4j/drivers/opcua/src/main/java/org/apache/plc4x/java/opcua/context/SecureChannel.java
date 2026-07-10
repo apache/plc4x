@@ -330,7 +330,19 @@ public class SecureChannel {
         });
     }
 
-    public void onDisconnect() {
+    /**
+     * Closes the session and the secure channel on the server. The returned future
+     * completes once the {@code CloseSession} has been acknowledged and the
+     * {@code CloseSecureChannel} has been handed to the wire, so callers must await it
+     * before tearing down the socket — otherwise the server never sees the close, leaks
+     * the session/channel, and eventually refuses new channels once its concurrent-channel
+     * limit is reached.
+     *
+     * <p>Note that {@code CloseSecureChannel} is not awaited for a reply: per the OPC UA
+     * spec the server simply closes the channel without responding, so we only ensure its
+     * bytes are flushed (which {@code requestChannelClose} does synchronously).</p>
+     */
+    public CompletableFuture<Void> onDisconnect() {
         LOGGER.info("Disconnecting");
 
         if (keepAlive != null) {
@@ -340,13 +352,17 @@ public class SecureChannel {
 
         RequestHeader requestHeader = conversation.createRequestHeader(50000L);
         CloseSessionRequest closeSessionRequest = new CloseSessionRequest(requestHeader, true);
-        conversation.submit(closeSessionRequest, CloseSessionResponse.class).thenAccept(responseMessage -> {
-            LOGGER.trace("Got Close Session Response Connection Response" + responseMessage);
-            onDisconnectCloseSecureChannel();
-        });
+        return conversation.submit(closeSessionRequest, CloseSessionResponse.class)
+            // Proceed to close the channel even if the session close failed/timed out;
+            // the important thing is that we still tell the server to drop the channel.
+            .handle((responseMessage, error) -> {
+                LOGGER.trace("Got Close Session Response {}", responseMessage);
+                return null;
+            })
+            .thenRun(this::sendCloseSecureChannel);
     }
 
-    private void onDisconnectCloseSecureChannel() {
+    private void sendCloseSecureChannel() {
         RequestHeader requestHeader = conversation.createRequestHeader();
         CloseSecureChannelRequest closeSecureChannelRequest = new CloseSecureChannelRequest(requestHeader);
 
@@ -363,6 +379,7 @@ public class SecureChannel {
             )
         );
 
+        // Fire-and-forget: the bytes are flushed synchronously; no response is expected.
         conversation.requestChannelClose(closeRequest);
     }
 

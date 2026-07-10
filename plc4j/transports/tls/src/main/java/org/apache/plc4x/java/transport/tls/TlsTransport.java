@@ -42,7 +42,7 @@ public class TlsTransport implements Transport<TlsTransportConfiguration> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TlsTransport.class);
 
     private static final Pattern TRANSPORT_TLS_PATTERN = Pattern.compile(
-        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?.*");
+        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?(?<driverConfig>.*)");
 
     @Override
     public String getTransportCode() {
@@ -73,6 +73,8 @@ public class TlsTransport implements Transport<TlsTransportConfiguration> {
         String ip = matcher.group("ip");
         String hostname = matcher.group("hostname");
         String portString = matcher.group("port");
+        // Everything after host:port is the driver-config (e.g. an OPC UA "/milo" path).
+        String driverConfig = matcher.group("driverConfig");
 
         // If the port wasn't specified, try to get a default port from the configuration.
         int port;
@@ -89,7 +91,9 @@ public class TlsTransport implements Transport<TlsTransportConfiguration> {
         LOGGER.debug("Creating TLS transport instance for {}:{} (verify-ssl={})",
             (ip != null) ? ip : hostname, port, tlsTransportConfiguration.isVerifySsl());
 
-        return new TlsTransportInstance(remoteAddress, tlsTransportConfiguration, auditLog);
+        TlsTransportInstance instance = new TlsTransportInstance(remoteAddress, tlsTransportConfiguration, auditLog);
+        instance.setDriverConfig(driverConfig);
+        return instance;
     }
 
 }

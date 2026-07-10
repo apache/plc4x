@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.drivers;
 
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -75,6 +76,10 @@ public abstract class ConnectionBase<C extends Configuration> implements PlcConn
     private String protocolName = "unknown";
     private String transportCode = "unknown";
     private String transportName = "unknown";
+    // Authentication passed to PlcDriverManager.getConnection(url, authentication), set by
+    // DriverBase after construction. Null when the caller didn't supply one (credentials may
+    // then still come from the connection-string parameters).
+    private PlcAuthentication authentication;
 
     // Event listeners for connection state changes
     private final List<EventListener> eventListeners = new ArrayList<>();
@@ -220,6 +225,18 @@ public abstract class ConnectionBase<C extends Configuration> implements PlcConn
         this.protocolName = protocolName;
         this.transportCode = transportCode;
         this.transportName = transportName;
+    }
+
+    void setAuthentication(PlcAuthentication authentication) {
+        this.authentication = authentication;
+    }
+
+    /**
+     * The authentication supplied to {@code getConnection(url, authentication)}, or {@code null}
+     * if none was given. Drivers should prefer this over connection-string credentials.
+     */
+    protected PlcAuthentication getAuthentication() {
+        return authentication;
     }
 
     @Override

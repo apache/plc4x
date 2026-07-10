@@ -181,7 +181,12 @@ abstract class BaseEncryptionHandler {
             }
 
             if (chunk.isSigned()) {
-                verify(chunkBytes, chunk, messageLength);
+                // After decryption the body may have shrunk (for asymmetric RSA the
+                // cipher-text block is larger than the plain-text block), so the
+                // signature slice must be located relative to the post-decrypt
+                // length, not the original on-the-wire messageLength.
+                int decryptedMessageLength = SECURE_MESSAGE_HEADER_SIZE + chunk.getSecurityHeaderSize() + bodySize;
+                verify(chunkBytes, chunk, decryptedMessageLength);
             }
 
             int encryptionOverhead = getEncryptionOverhead(chunk, messageLength);

@@ -69,9 +69,16 @@ public class DefaultPlcValueHandler implements PlcValueHandler {
                 }
                 return ofElement(tag.getPlcValueType(), values[0]);
             }
-            //
+            // More than one value, but the tag carries no array metadata. Some drivers
+            // (e.g. OPC UA) don't encode array size in the tag address, so we can't rely on
+            // getArrayInfo() to recognise an array write. Rather than reject it, build a
+            // PlcList by inferring each element from the passed values.
             else {
-                throw new PlcRuntimeException("The type is not an array type, but more than one value was passed in as argument");
+                List<PlcValue> plcValues = new ArrayList<>(values.length);
+                for (Object value : values) {
+                    plcValues.add(ofElement(tag.getPlcValueType(), value));
+                }
+                return new PlcList(plcValues);
             }
         }
         // In all other cases, we're dealing with an array type and this needs to be handled separately.
@@ -120,8 +127,12 @@ public class DefaultPlcValueHandler implements PlcValueHandler {
     }
 
     private static PlcValue ofElement(PlcValueType type, Object value) {
-        // This is a temporary hack for drivers that don't have type information in their tags (ADS)
-        if (type == null) {
+        // For drivers that don't carry type information in their tags, infer the PlcValue
+        // from the Java object. Some drivers signal "no type" with a Java null (e.g. ADS),
+        // others with the PlcValueType.NULL enum (e.g. OPC UA tags without a type suffix);
+        // both mean the same thing, so treat them alike. Mapping the NULL enum onto the
+        // switch below would yield a PlcNull and silently discard the value being written.
+        if (type == null || type == PlcValueType.NULL) {
             return of(value);
         }
         return switch (type) {

@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.eclipse.milo.opcua.stack.core.Stack;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig;
 import org.eclipse.milo.opcua.sdk.server.identity.CompositeValidator;
@@ -80,6 +81,12 @@ public class TestMiloServer {
     static {
         // Required for SecurityPolicy.Aes256_Sha256_RsaPss
         Security.addProvider(new BouncyCastleProvider());
+
+        // The integration test opens many connections back-to-back (one per security
+        // policy, plus reconnection/subscription smoke tests). The stack's default
+        // connection rate limiter rejects more than 4 connection attempts per second,
+        // which has nothing to do with the driver under test, so disable it here.
+        Stack.ConnectionLimits.RATE_LIMIT_ENABLED = false;
 
         try {
             NonceUtil.blockUntilSecureRandomSeeded(10, TimeUnit.SECONDS);

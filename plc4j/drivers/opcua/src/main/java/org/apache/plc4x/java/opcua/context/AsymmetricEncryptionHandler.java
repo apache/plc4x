@@ -49,7 +49,7 @@ public class AsymmetricEncryptionHandler extends BaseEncryptionHandler {
         Signature signature = securityPolicy.getAsymmetricSignatureAlgorithm().getSignature();
         signature.initVerify(conversation.getRemoteCertificate().getPublicKey());
         signature.update(message);
-        if (signature.verify(signatureData)) {
+        if (!signature.verify(signatureData)) {
             throw new IllegalArgumentException("Invalid signature");
         }
     }

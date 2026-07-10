@@ -142,7 +142,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             getTransportCode(),
             remote.getHostString(),
             String.valueOf(remote.getPort()),
-            "",
+            // The driver-config (e.g. the OPC UA "/milo" path) is the part of the connection
+            // URL after host:port; strict servers reject a Hello whose endpoint URL omits it,
+            // so it must be carried into the endpoint the driver advertises. Read from the
+            // TransportInstance interface so this works for any transport (tcp, tls, ...).
+            transportInstance.getDriverConfig(),
             configuration);
 
         messageCodec = new OpcuaMessageCodec(transportInstance, this::handleIncoming);
@@ -155,7 +159,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         });
 
         this.conversation = new Conversation(this, driverContext, configuration);
-        this.channel = new SecureChannel(conversation, driverContext, configuration, getAuthentication());
+        this.channel = new SecureChannel(conversation, driverContext, configuration, resolveAuthentication());
 
         try {
             // Discovery only carries information needed for the encrypted modes
@@ -181,7 +185,13 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         }
     }
 
-    private PlcAuthentication getAuthentication() {
+    private PlcAuthentication resolveAuthentication() {
+        // Authentication passed to getConnection(url, authentication) takes precedence over
+        // credentials embedded in the connection string.
+        PlcAuthentication passed = getAuthentication();
+        if (passed != null) {
+            return passed;
+        }
         if (configuration.getUsername() != null && configuration.getPassword() != null) {
             return new PlcUsernamePasswordAuthentication(configuration.getUsername(), configuration.getPassword());
         }
@@ -196,7 +206,10 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         }
         if (channel != null) {
             try {
-                channel.onDisconnect();
+                // Wait for CloseSession + CloseSecureChannel to actually reach the server
+                // before we tear down the socket below; otherwise the server leaks the
+                // session/channel and refuses new channels once its limit is hit.
+                channel.onDisconnect().get(configuration.getRequestTimeout(), TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 LOGGER.warn("Error during secure channel disconnect", e);
             }

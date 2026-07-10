@@ -29,6 +29,10 @@ public abstract class BaseTransportInstance<T extends TransportConfiguration> im
 
     private final T transportConfig;
     private final AuditLog auditLog;
+    // The driver-config: the URL remainder after the transport-config (host/port),
+    // set by the transport that parsed the address. Empty unless the transport
+    // supplies one. See TransportInstance#getDriverConfig().
+    private String driverConfig = "";
 
     public BaseTransportInstance(T transportConfig, AuditLog auditLog) {
         this.transportConfig = Objects.requireNonNull(transportConfig);
@@ -38,6 +42,20 @@ public abstract class BaseTransportInstance<T extends TransportConfiguration> im
 
     public T getConfiguration() {
         return transportConfig;
+    }
+
+    @Override
+    public String getDriverConfig() {
+        return driverConfig;
+    }
+
+    /**
+     * Sets the driver-config parsed from the connection URL. Transports call this
+     * right after constructing the instance with the portion of the address they did
+     * not consume (e.g. an OPC UA {@code /milo} path).
+     */
+    public void setDriverConfig(String driverConfig) {
+        this.driverConfig = driverConfig == null ? "" : driverConfig;
     }
 
     public AuditLog getAuditLog() {

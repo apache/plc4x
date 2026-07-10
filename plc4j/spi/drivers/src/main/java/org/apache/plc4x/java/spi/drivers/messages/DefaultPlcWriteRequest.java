@@ -147,12 +147,15 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
         }
 
         private PlcValue parsePlcValue(PlcTag tag, Object[] values) {
-            if ((values == null) || (values.length != 1)) {
-                throw new PlcRuntimeException("Expecting 1 item, but got " + (values != null ? values.length : "null"));
+            if ((values == null) || (values.length == 0)) {
+                throw new PlcRuntimeException("Expecting at least 1 item, but got " + (values != null ? values.length : "null"));
             }
-            if (values[0] instanceof PlcValue) {
+            // A single, already-built PlcValue is passed through unchanged.
+            if ((values.length == 1) && (values[0] instanceof PlcValue)) {
                 return (PlcValue) values[0];
             }
+            // One or more raw values: let the value handler build the PlcValue (a PlcList
+            // for arrays). Requiring exactly one value here made array writes impossible.
             Objects.requireNonNull(valueHandler, "valueHandler must not be null");
             return valueHandler.newPlcValue(tag, values);
         }
