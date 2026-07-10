@@ -62,6 +62,16 @@ class SlmpTagTest {
     }
 
     @Test
+    void parses0xPrefixCombinedWithDatatypeAndQuantity() {
+        // the documented example form: 0x prefix + datatype + quantity in one address
+        SlmpTag tag = SlmpTag.of("W0x1A:WORD[10]");
+        assertEquals(SlmpDeviceCode.W, tag.getDeviceCode());
+        assertEquals(0x1A, tag.getDeviceNumber());
+        assertEquals(SlmpDataType.WORD, tag.getDataType());
+        assertEquals(10, tag.getQuantity());
+    }
+
+    @Test
     void canonicalAddressStringRoundTrips() {
         assertEquals("D350:INT[2]", SlmpTag.of("D350:INT[2]").getAddressString());
         assertEquals("W0x1A", SlmpTag.of("W1A").getAddressString());   // W prints 0x hex
