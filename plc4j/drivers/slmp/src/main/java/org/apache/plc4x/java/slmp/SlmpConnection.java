@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.TimeoutException;
 
 public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
@@ -58,7 +59,7 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SlmpConnection.class);
 
     private SlmpMessageCodec messageCodec;
-    private volatile CompletableFuture<SlmpResponseFrame3E> pendingResponse;
+    private final AtomicReference<CompletableFuture<SlmpResponseFrame3E>> pendingResponse = new AtomicReference<>();
 
     public SlmpConnection(SlmpConfiguration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
         super(configuration, transportInstance, auditLog);
@@ -119,8 +120,7 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
     }
 
     private void handleIncomingMessage(SlmpMessage message) {
-        CompletableFuture<SlmpResponseFrame3E> future = pendingResponse;
-        pendingResponse = null;
+        CompletableFuture<SlmpResponseFrame3E> future = pendingResponse.getAndSet(null);
         if (future == null) {
             LOGGER.warn("Received unsolicited SLMP message");
             return;
@@ -133,8 +133,7 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
     }
 
     private void failPending(Throwable cause) {
-        CompletableFuture<SlmpResponseFrame3E> future = pendingResponse;
-        pendingResponse = null;
+        CompletableFuture<SlmpResponseFrame3E> future = pendingResponse.getAndSet(null);
         if (future != null) {
             future.completeExceptionally(cause);
         }
@@ -149,21 +148,25 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
      * after the next request has installed its own slot, and would then be mis-attributed to that
      * next request. 3E cannot prevent this (no correlation key), so a timed-out read should be
      * treated as unreliable by the caller.
+     * <p>
+     * All slot clean-up is identity-checked (compare-and-clear): the timeout callback runs on the
+     * delayer thread after the throttle has already released the next request, so an unconditional
+     * clear could wipe the successor's freshly installed slot and spuriously time it out too.
      */
     private CompletableFuture<SlmpResponseFrame3E> sendRequest(SlmpRequestFrame3E request) {
         CompletableFuture<SlmpResponseFrame3E> responseFuture = new CompletableFuture<>();
-        pendingResponse = responseFuture;
+        pendingResponse.set(responseFuture);
         try {
             messageCodec.send(request);
         } catch (MessageCodecException e) {
-            pendingResponse = null;
+            pendingResponse.compareAndSet(responseFuture, null);
             responseFuture.completeExceptionally(new PlcRuntimeException("Failed to send SLMP request", e));
             return responseFuture;
         }
         responseFuture.orTimeout(getConfiguration().getRequestTimeout(), TimeUnit.MILLISECONDS)
             .whenComplete((r, e) -> {
                 if (e instanceof TimeoutException) {
-                    pendingResponse = null;
+                    pendingResponse.compareAndSet(responseFuture, null);
                 }
             });
         return responseFuture;
