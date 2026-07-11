@@ -51,8 +51,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
 
@@ -126,7 +126,9 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
             return;
         }
         if (message instanceof SlmpResponseFrame3E response) {
-            future.complete(response);
+            if (!future.complete(response)) {
+                LOGGER.warn("Late SLMP response for an already-completed request dropped");
+            }
         } else {
             future.completeExceptionally(new PlcRuntimeException("Unexpected SLMP message type: " + message));
         }
@@ -150,8 +152,10 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
      * treated as unreliable by the caller.
      * <p>
      * All slot clean-up is identity-checked (compare-and-clear): the timeout callback runs on the
-     * delayer thread after the throttle has already released the next request, so an unconditional
-     * clear could wipe the successor's freshly installed slot and spuriously time it out too.
+     * delayer thread and may run after the throttle has already released the next request (OpenJDK
+     * completes dependents LIFO), so an unconditional clear could wipe the successor's freshly
+     * installed slot and spuriously time it out too. The compare-and-clear is correct regardless
+     * of that ordering.
      */
     private CompletableFuture<SlmpResponseFrame3E> sendRequest(SlmpRequestFrame3E request) {
         CompletableFuture<SlmpResponseFrame3E> responseFuture = new CompletableFuture<>();
