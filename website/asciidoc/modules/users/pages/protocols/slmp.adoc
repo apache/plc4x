@@ -98,7 +98,7 @@ The following word devices are supported:
 
 The `0x` prefix is only valid for hexadecimally addressed devices.
 
-A single read request may cover at most 960 words (the 3E frame Batch Read limit);
+A single read request may cover at most 960 words (a conservative single-frame ceiling);
 larger requests are rejected instead of being split.
 
 === Data Types
