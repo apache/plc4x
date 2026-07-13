@@ -212,6 +212,70 @@ public class OpcuaPlcDriverTest {
         connectionStringValidSet = List.of(tcpConnectionAddress);
     }
 
+    @Test
+    void browseWildcardDiscoversWholeAddressSpace() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            // "**" is the "browse everything" wildcard: it starts at the Objects folder and
+            // recurses the whole sub-tree.
+            org.apache.plc4x.java.api.messages.PlcBrowseResponse response = connection.browseRequestBuilder()
+                .addQuery("all", "**")
+                .build().execute().get(60, TimeUnit.SECONDS);
+            assertThat(response.getResponseCode("all")).isEqualTo(PlcResponseCode.OK);
+
+            java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> top = response.getValues("all");
+            // The example server exposes the 'HelloWorld' folder under Objects.
+            assertThat(top.stream().map(org.apache.plc4x.java.api.messages.PlcBrowseItem::getName)).contains("HelloWorld");
+
+            java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> all = new ArrayList<>();
+            collectBrowseItems(top, all);
+            assertThat(all.size()).isGreaterThan(50);
+        }
+    }
+
+    @Test
+    void browseDiscoversAddressSpace() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            assertThat(connection.getMetadata().isBrowseSupported()).isTrue();
+
+            org.apache.plc4x.java.api.messages.PlcBrowseResponse response = connection.browseRequestBuilder()
+                .addQuery("hw", "ns=2;s=HelloWorld")
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(response.getResponseCode("hw")).isEqualTo(PlcResponseCode.OK);
+
+            java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> top = response.getValues("hw");
+            assertThat(top).isNotEmpty();
+
+            // 'ScalarTypes' is an Object (container) node: discovered, has children, not readable.
+            org.apache.plc4x.java.api.messages.PlcBrowseItem scalarTypes = top.stream()
+                .filter(i -> "ScalarTypes".equals(i.getName())).findFirst().orElse(null);
+            assertThat(scalarTypes).as("ScalarTypes folder").isNotNull();
+            assertThat(scalarTypes.isReadable()).isFalse();
+            assertThat(scalarTypes.getChildren()).isNotEmpty();
+
+            // A concrete variable underneath it is readable and writable, with a usable address.
+            org.apache.plc4x.java.api.messages.PlcBrowseItem boolVar = scalarTypes.getChildren().values().stream()
+                .filter(i -> "Boolean".equals(i.getName())).findFirst().orElse(null);
+            assertThat(boolVar).as("ScalarTypes/Boolean variable").isNotNull();
+            assertThat(boolVar.isReadable()).isTrue();
+            assertThat(boolVar.isWritable()).isTrue();
+            assertThat(boolVar.getTag().getAddressString()).contains("ns=2;s=HelloWorld/ScalarTypes/Boolean");
+
+            // Full-subtree recursion reached deeply-nested property nodes (AnalogValue -> EURange).
+            java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> all = new ArrayList<>();
+            collectBrowseItems(top, all);
+            assertThat(all).anyMatch(i -> "EURange".equals(i.getName()));
+            assertThat(all.size()).isGreaterThan(40);
+        }
+    }
+
+    private static void collectBrowseItems(java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> items,
+                                           java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> out) {
+        for (org.apache.plc4x.java.api.messages.PlcBrowseItem item : items) {
+            out.add(item);
+            collectBrowseItems(new ArrayList<>(item.getChildren().values()), out);
+        }
+    }
+
     @Nested
     class SmokeTest {
         @Test

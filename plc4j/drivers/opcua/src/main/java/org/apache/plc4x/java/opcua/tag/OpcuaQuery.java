@@ -18,24 +18,29 @@
  */
 package org.apache.plc4x.java.opcua.tag;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 
-public class OpcuaPlcTagHandler implements PlcTagHandler {
+/**
+ * A browse query for the OPC UA driver. The query string is the address of the node to
+ * start browsing from (e.g. {@code ns=2;s=HelloWorld}); an empty query starts at the
+ * standard {@code Objects} folder.
+ */
+public class OpcuaQuery implements PlcQuery {
 
-    @Override
-    public OpcuaTag parseTag(String tagAddress) {
-        if (OpcuaTag.matches(tagAddress)) {
-            return OpcuaTag.of(tagAddress);
-        }
-        throw new PlcInvalidTagException(tagAddress);
+    private final String queryString;
+
+    public OpcuaQuery(String queryString) {
+        this.queryString = queryString;
     }
 
     @Override
-    public PlcQuery parseQuery(String query) {
-        // The query is the address of the node to start browsing from (empty => Objects folder).
-        return new OpcuaQuery(query);
+    public String getQueryString() {
+        return queryString;
+    }
+
+    @Override
+    public String toString() {
+        return "OpcuaQuery{" + queryString + '}';
     }
 
 }
