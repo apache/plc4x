@@ -121,6 +121,48 @@ class BaseTransportInstanceTest {
         assertThrows(NullPointerException.class, () -> new TestBaseTransport(config, null));
     }
 
+    @Test
+    void testGetDriverConfig_shouldDefaultToEmptyString() {
+        // Arrange
+        TransportConfiguration config = mock(TransportConfiguration.class);
+        AuditLog auditLog = mock(AuditLog.class);
+
+        TestBaseTransport transport = new TestBaseTransport(config, auditLog);
+
+        // Act & Assert
+        assertEquals("", transport.getDriverConfig());
+    }
+
+    @Test
+    void testSetDriverConfig_shouldReturnSetValue() {
+        // Arrange
+        TransportConfiguration config = mock(TransportConfiguration.class);
+        AuditLog auditLog = mock(AuditLog.class);
+
+        TestBaseTransport transport = new TestBaseTransport(config, auditLog);
+
+        // Act
+        transport.setDriverConfig("/milo");
+
+        // Assert
+        assertEquals("/milo", transport.getDriverConfig());
+    }
+
+    @Test
+    void testSetDriverConfig_withNull_shouldReturnEmptyString() {
+        // Arrange
+        TransportConfiguration config = mock(TransportConfiguration.class);
+        AuditLog auditLog = mock(AuditLog.class);
+
+        TestBaseTransport transport = new TestBaseTransport(config, auditLog);
+
+        // Act
+        transport.setDriverConfig(null);
+
+        // Assert
+        assertEquals("", transport.getDriverConfig());
+    }
+
     /**
      * Concrete test implementation of BaseTransport for testing purposes
      */
