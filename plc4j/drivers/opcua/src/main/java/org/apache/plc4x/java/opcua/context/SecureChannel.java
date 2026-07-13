@@ -131,8 +131,18 @@ public class SecureChannel {
         LOGGER.debug("Opcua Driver running in ACTIVE mode.");
         return conversation.requestHello()
             .thenCompose(r -> onConnectOpenSecureChannel(SecurityTokenRequestType.securityTokenRequestTypeIssue, 0, 0))
-            .thenCompose(r -> onConnectCreateSessionRequest())
-            .thenCompose(r -> onConnectActivateSessionRequest(r))
+            .thenCompose(r -> onConnectSession());
+    }
+
+    /**
+     * Establishes the session (CreateSession + ActivateSession) on an already-open secure
+     * channel. Used after {@link #onDiscover()}, which has already performed the
+     * Hello/OpenSecureChannel exchange: sending a second Hello on the same TCP connection
+     * would stall, since Hello is a once-per-connection message.
+     */
+    public CompletableFuture<ActivateSessionResponse> onConnectSession() {
+        return onConnectCreateSessionRequest()
+            .thenCompose(this::onConnectActivateSessionRequest)
             .thenApply(response -> {
                 renewToken();
                 return response;

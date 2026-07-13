@@ -23,6 +23,7 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaProtocolLimits;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 
@@ -55,6 +56,14 @@ public class ChunkFactory {
 
         int localAsymmetricKeyLength = asymmetric ? keySize(localCertificate) : 0;
         int remoteAsymmetricKeyLength = asymmetric ? keySize(remoteCertificate) : 0;
+        // An asymmetric (OpenSecureChannel) chunk is encrypted with the server's RSA public
+        // key. Without a valid server certificate its key length is 0, which would later divide
+        // by zero when computing the cipher-text block count. Fail fast with a clear message.
+        if (asymmetric && remoteAsymmetricKeyLength == 0) {
+            throw new PlcRuntimeException("Cannot open an encrypted OPC UA secure channel: no valid server (remote) "
+                + "RSA certificate is available to encrypt the OpenSecureChannel request. Provide the server "
+                + "certificate via 'server-certificate-file', or use security-policy=NONE.");
+        }
         int localCertificateSize = asymmetric ? certificateBytes(localCertificate).length : 0;
         int serverCertificateThumbprint = asymmetric ? certificateThumbprint(remoteCertificate).length : 0;
 

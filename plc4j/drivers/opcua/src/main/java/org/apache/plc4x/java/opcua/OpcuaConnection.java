@@ -164,10 +164,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         try {
             // Discovery only carries information needed for the encrypted modes
             // (it fetches the server certificate). For SecurityPolicy.NONE the
-            // GetEndpoints call adds nothing and — running on the same TCP
-            // socket as the real handshake — a second HELLO after the discovery
-            // CloseSecureChannel makes most servers either reset the connection
-            // or hang waiting for nothing.
+            // GetEndpoints call adds nothing, so we skip it.
             if (configuration.isDiscovery()
                 && configuration.getSecurityPolicy() != null
                 && configuration.getSecurityPolicy() != org.apache.plc4x.java.opcua.security.SecurityPolicy.NONE) {
@@ -176,8 +173,14 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                     .get(configuration.getNegotiationTimeout(), TimeUnit.MILLISECONDS);
                 configuration.setServerCertificate(
                     getX509Certificate(endpoint.getServerCertificate().getStringValue()));
+                // onDiscover() already performed Hello + OpenSecureChannel on this TCP
+                // connection, so the secure channel is open. Reuse it and only establish the
+                // session — a second Hello on the same connection would stall (Hello is a
+                // once-per-connection message).
+                channel.onConnectSession().get(configuration.getNegotiationTimeout(), TimeUnit.MILLISECONDS);
+            } else {
+                channel.onConnect().get(configuration.getNegotiationTimeout(), TimeUnit.MILLISECONDS);
             }
-            channel.onConnect().get(configuration.getNegotiationTimeout(), TimeUnit.MILLISECONDS);
             connected = true;
             LOGGER.info("Established connection to server");
         } catch (Exception e) {

@@ -649,8 +649,6 @@ public class OpcuaPlcDriverTest {
             case Aes128_Sha256_RsaOaep:
             case Aes256_Sha256_RsaPss:
                 String connectionParams = params(
-                    // Trust is pinned via server-certificate-file below, so skip discovery.
-                    entry("discovery", "false"),
                     entry("key-store-file", CLIENT_KEY_STORE.getAbsoluteFile().toString().replace("\\", "/")), // handle windows paths
                     entry("key-store-password", "changeit"),
                     entry("key-store-type", "pkcs12"),
