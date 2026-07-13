@@ -118,8 +118,13 @@ class DefaultPlcValueHandlerTest {
     void testNewPlcValue_MultipleValuesForNonArray() {
         PlcTag tag = createMockTag(PlcValueType.INT, Collections.emptyList());
 
-        assertThrows(PlcRuntimeException.class, () ->
-            handler.newPlcValue(tag, new Object[]{1, 2}));
+        // Some drivers (e.g. OPC UA) don't encode array information in the tag address,
+        // so multiple values for a tag without array metadata are treated as an array write.
+        PlcValue result = handler.newPlcValue(tag, new Object[]{(short) 1, (short) 2});
+
+        assertNotNull(result);
+        assertTrue(result instanceof PlcList);
+        assertEquals(2, result.getLength());
     }
 
     @Test
