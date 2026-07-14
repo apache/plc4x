@@ -77,6 +77,7 @@ public class TestMiloServer {
     private final Logger logger = LoggerFactory.getLogger(TestMiloServer.class);
     private final OpcUaServer server;
     private final ExampleNamespace exampleNamespace;
+    private final Plc4xTestNamespace plc4xTestNamespace;
 
     static {
         // Required for SecurityPolicy.Aes256_Sha256_RsaPss
@@ -200,6 +201,11 @@ public class TestMiloServer {
             getLifecycleManager().addStartupTask(new EventNotifierTask(getServer()));
         }};
         exampleNamespace.startup();
+
+        // Second namespace (index 3) with the PLC4X addressing-variant test nodes
+        // (ns=3;s=Test/...): scalars, arrays and multi-dimensional matrices.
+        plc4xTestNamespace = new Plc4xTestNamespace(server);
+        plc4xTestNamespace.startup();
     }
 
     private Set<EndpointConfiguration> createEndpointConfigurations(X509Certificate certificate) {
@@ -315,6 +321,7 @@ public class TestMiloServer {
     }
 
     public CompletableFuture<OpcUaServer> shutdown() {
+        plc4xTestNamespace.shutdown();
         exampleNamespace.shutdown();
 
         return server.shutdown();

@@ -35,7 +35,10 @@ import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
+import org.apache.plc4x.java.spi.values.*;
+import org.apache.plc4x.java.utils.testutils.manual.BasicPlcTest;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -280,6 +283,177 @@ public class OpcuaPlcDriverTest {
             assertThat(all).anyMatch(i -> "EURange".equals(i.getName()));
             assertThat(all.size()).isGreaterThan(40);
         }
+    }
+
+    @Test
+    void plc4xTestNamespaceExposesScalarsArraysAndMatrices() throws Exception {
+        // The custom Plc4xTestNamespace (ns=3;s=Test/...) mirrors the ADS manual-test structure so
+        // the driver can be exercised against the same matrix of addressing variants. This verifies
+        // the namespace is present and that scalars, whole arrays and multi-dimensional matrices
+        // read back correctly.
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("bool", "ns=3;s=Test/Scalar/Bool")
+                .addTagAddress("dint", "ns=3;s=Test/Scalar/DInt")
+                .addTagAddress("string", "ns=3;s=Test/Scalar/String")
+                .addTagAddress("intArray", "ns=3;s=Test/Array/Int")
+                .addTagAddress("intMatrix", "ns=3;s=Test/Matrix/Int_2x3")
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            for (String tag : new String[]{"bool", "dint", "string", "intArray", "intMatrix"}) {
+                assertThat(response.getResponseCode(tag)).describedAs("read of '%s'", tag)
+                    .isEqualTo(PlcResponseCode.OK);
+            }
+
+            // Scalars
+            assertThat(response.getBoolean("bool")).isTrue();
+            assertThat(response.getInteger("dint")).isEqualTo(-12345678);
+            assertThat(response.getString("string")).isEqualTo("Hello PLC4X");
+
+            // Whole 1-D array -> PlcList of 5 Int16 values.
+            org.apache.plc4x.java.api.value.PlcValue intArray = response.getPlcValue("intArray");
+            assertThat(intArray.isList()).isTrue();
+            assertThat(intArray.getList()).hasSize(5);
+            assertThat(intArray.getList().get(0).getShort()).isEqualTo((short) -3);
+            assertThat(intArray.getList().get(4).getShort()).isEqualTo((short) 3);
+
+            // Whole 2-D matrix Int16[2][3] -> nested PlcList (2 rows x 3 cols).
+            org.apache.plc4x.java.api.value.PlcValue matrix = response.getPlcValue("intMatrix");
+            assertThat(matrix.isList()).isTrue();
+            assertThat(matrix.getList()).hasSize(2);
+            assertThat(matrix.getList().get(0).getList().get(0).getShort()).isEqualTo((short) 10);
+            assertThat(matrix.getList().get(1).getList().get(2).getShort()).isEqualTo((short) -12);
+        }
+    }
+
+    @Test
+    void readsAndWritesArrayElementsViaIndexRange() throws Exception {
+        // Array/Int = {-3, -1, 0, 1, 3}; Matrix/Int_2x3 = {{10,11,12},{-10,-11,-12}}.
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcReadResponse read = connection.readRequestBuilder()
+                .addTagAddress("elem", "ns=3;s=Test/Array/Int[3]")        // single element -> scalar
+                .addTagAddress("elemBase1", "ns=3;s=Test/Array/Int[4;1]") // same element, 1-based
+                .addTagAddress("slice", "ns=3;s=Test/Array/Int[1..3]")    // inclusive range -> list
+                .addTagAddress("cell", "ns=3;s=Test/Matrix/Int_2x3[1][2]") // matrix element -> scalar
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            for (String tag : new String[]{"elem", "elemBase1", "slice", "cell"}) {
+                assertThat(read.getResponseCode(tag)).describedAs("read of '%s'", tag)
+                    .isEqualTo(PlcResponseCode.OK);
+            }
+            // [3] -> index 3 (0-based) -> value 1.
+            assertThat(read.getShort("elem")).isEqualTo((short) 1);
+            // [4;1] -> base 1 -> index 3 -> value 1 (same element).
+            assertThat(read.getShort("elemBase1")).isEqualTo((short) 1);
+            // [1..3] -> indices 1,2,3 -> {-1, 0, 1}.
+            assertThat(read.getPlcValue("slice").getList()).hasSize(3);
+            assertThat(read.getPlcValue("slice").getList().get(0).getShort()).isEqualTo((short) -1);
+            assertThat(read.getPlcValue("slice").getList().get(2).getShort()).isEqualTo((short) 1);
+            // Matrix [1][2] -> row 1, col 2 -> -12.
+            assertThat(read.getShort("cell")).isEqualTo((short) -12);
+
+            // Indexed write: overwrite a single element of Array/DInt and read it back via IndexRange.
+            connection.writeRequestBuilder()
+                .addTagAddress("w", "ns=3;s=Test/Array/DInt[2]", 424242)
+                .build().execute().get(30, TimeUnit.SECONDS);
+            PlcReadResponse back = connection.readRequestBuilder()
+                .addTagAddress("w", "ns=3;s=Test/Array/DInt[2]")
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(back.getResponseCode("w")).isEqualTo(PlcResponseCode.OK);
+            assertThat(back.getInteger("w")).isEqualTo(424242);
+
+            // Restore the original value (0) so the shared server stays pristine for other tests.
+            connection.writeRequestBuilder()
+                .addTagAddress("w", "ns=3;s=Test/Array/DInt[2]", 0)
+                .build().execute().get(30, TimeUnit.SECONDS);
+        }
+    }
+
+    @Test
+    void comprehensiveAddressingVariants() throws Exception {
+        // Mirrors the ADS manual test (ManualFactoryAdsDriverTestTC3) against the Plc4xTestNamespace:
+        // the same matrix of addressing variants — scalars, whole arrays, array elements/slices and
+        // multi-dimensional matrices — driven through the generic BasicPlcTest harness.
+
+        // (A) Read + write coverage for the verified-writable set: scalars, 1-D arrays, 1-D index.
+        BasicPlcTest readWrite = new BasicPlcTest(tcpConnectionAddress, new PlcNullAuthentication(),
+            true, true, true, true, 3);
+        // Scalars
+        readWrite.addTestCase("ns=3;s=Test/Scalar/Bool", new PlcBOOL(true));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/SInt", new PlcSINT(-12));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/USInt", new PlcUSINT(250));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/Int", new PlcINT(-1234));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/UInt", new PlcUINT(54321));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/DInt", new PlcDINT(-12345678));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/UDInt", new PlcUDINT(305419896L));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/LInt", new PlcLINT(-9223372036854770000L));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/ULInt", new PlcULINT(new BigInteger("18446744073709551000")));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/Real", new PlcREAL(3.14159f));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/LReal", new PlcLREAL(2.718281828459045d));
+        readWrite.addTestCase("ns=3;s=Test/Scalar/String", new PlcSTRING("Hello PLC4X"));
+        // Whole 1-D arrays
+        readWrite.addTestCase("ns=3;s=Test/Array/Bool", new PlcList(List.of(
+            new PlcBOOL(true), new PlcBOOL(false), new PlcBOOL(true), new PlcBOOL(true),
+            new PlcBOOL(false), new PlcBOOL(false), new PlcBOOL(true), new PlcBOOL(false))));
+        readWrite.addTestCase("ns=3;s=Test/Array/Int", new PlcList(List.of(
+            new PlcINT(-3), new PlcINT(-1), new PlcINT(0), new PlcINT(1), new PlcINT(3))));
+        readWrite.addTestCase("ns=3;s=Test/Array/UInt", new PlcList(List.of(
+            new PlcUINT(1), new PlcUINT(10), new PlcUINT(100), new PlcUINT(1000), new PlcUINT(10000))));
+        readWrite.addTestCase("ns=3;s=Test/Array/DInt", new PlcList(List.of(
+            new PlcDINT(-1000), new PlcDINT(-500), new PlcDINT(0), new PlcDINT(1000000), new PlcDINT(2000000))));
+        readWrite.addTestCase("ns=3;s=Test/Array/LReal", new PlcList(List.of(
+            new PlcLREAL(1.5), new PlcLREAL(-2.0), new PlcLREAL(0.125))));
+        readWrite.addTestCase("ns=3;s=Test/Array/String", new PlcList(List.of(
+            new PlcSTRING("alpha"), new PlcSTRING("beta"), new PlcSTRING("gamma"))));
+        // Array element / slice via IndexRange (single element -> scalar, range -> list)
+        readWrite.addTestCase("ns=3;s=Test/Array/Int[3]", new PlcINT(1));
+        readWrite.addTestCase("ns=3;s=Test/Array/Int[1..3]", new PlcList(List.of(
+            new PlcINT(-1), new PlcINT(0), new PlcINT(1))));
+        readWrite.addTestCase("ns=3;s=Test/Array/DInt[0]", new PlcDINT(-1000));
+        readWrite.addTestCase("ns=3;s=Test/Array/DInt[4]", new PlcDINT(2000000));
+        readWrite.run();
+
+        // (B) Read-only coverage for multi-dimensional matrices (whole + element access). The read
+        // decode (nested PlcList / element selection) is the interesting part here; multidimensional
+        // writes are exercised elsewhere.
+        BasicPlcTest readOnly = new BasicPlcTest(tcpConnectionAddress, new PlcNullAuthentication(),
+            true, false, true, true, 2);
+        readOnly.addTestCase("ns=3;s=Test/Matrix/Int_2x3", new PlcList(List.of(
+            new PlcList(List.of(new PlcINT(10), new PlcINT(11), new PlcINT(12))),
+            new PlcList(List.of(new PlcINT(-10), new PlcINT(-11), new PlcINT(-12))))));
+        readOnly.addTestCase("ns=3;s=Test/Matrix/Real_3x2", new PlcList(List.of(
+            new PlcList(List.of(new PlcREAL(1.0f), new PlcREAL(1.5f))),
+            new PlcList(List.of(new PlcREAL(2.0f), new PlcREAL(2.5f))),
+            new PlcList(List.of(new PlcREAL(3.0f), new PlcREAL(3.5f))))));
+        readOnly.addTestCase("ns=3;s=Test/Matrix/UInt_2x2x2", new PlcList(List.of(
+            new PlcList(List.of(
+                new PlcList(List.of(new PlcUINT(1), new PlcUINT(2))),
+                new PlcList(List.of(new PlcUINT(3), new PlcUINT(4))))),
+            new PlcList(List.of(
+                new PlcList(List.of(new PlcUINT(5), new PlcUINT(6))),
+                new PlcList(List.of(new PlcUINT(7), new PlcUINT(8))))))));
+        // Matrix element via IndexRange -> scalar.
+        readOnly.addTestCase("ns=3;s=Test/Matrix/Int_2x3[0][0]", new PlcINT(10));
+        readOnly.addTestCase("ns=3;s=Test/Matrix/Int_2x3[1][2]", new PlcINT(-12));
+        readOnly.addTestCase("ns=3;s=Test/Matrix/UInt_2x2x2[1][1][1]", new PlcUINT(8));
+        readOnly.run();
+    }
+
+    @org.junit.jupiter.api.Disabled("Enable once OPC UA struct (PlcStruct) support and the custom "
+        + "struct nodes in Plc4xTestNamespace land (feature Phase 5 + task T1b).")
+    @Test
+    void comprehensiveStructsSpec() throws Exception {
+        // Acceptance spec for struct addressing. OPC UA has no per-field node addressing like ADS
+        // (g_simple.s8): a struct is one node whose value is a PlcStruct, navigated client-side.
+        BasicPlcTest test = new BasicPlcTest(tcpConnectionAddress, new PlcNullAuthentication(),
+            true, true, true, true, 1);
+        java.util.Map<String, org.apache.plc4x.java.api.value.PlcValue> simple = new java.util.LinkedHashMap<>();
+        simple.put("s8", new PlcSINT(-8));
+        simple.put("u16", new PlcUINT(1600));
+        simple.put("r64", new PlcLREAL(-0.125d));
+        simple.put("str", new PlcSTRING("struct-string"));
+        test.addTestCase("ns=3;s=Test/Struct/Simple", new PlcStruct(simple));
+        test.run();
     }
 
     @Test

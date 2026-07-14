@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -198,7 +199,9 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         // Authentication passed to getConnection(url, authentication) takes precedence over
         // credentials embedded in the connection string.
         PlcAuthentication passed = getAuthentication();
-        if (passed != null) {
+        // PlcNullAuthentication is the explicit "no credentials / anonymous" marker — treat it the
+        // same as no authentication rather than an unsupported token type.
+        if (passed != null && !(passed instanceof PlcNullAuthentication)) {
             return passed;
         }
         if (configuration.getUsername() != null && configuration.getPassword() != null) {
@@ -316,7 +319,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
 
             readValueArray.add(new ReadValueId(nodeId,
                 tag.getAttributeId().getValue(),
-                NULL_STRING,
+                indexRangeOf(tag),
                 new QualifiedName(0, NULL_STRING)));
         }
 
@@ -331,6 +334,12 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             Map<String, PlcResponseItem<PlcValue>> mappedResponse = readResponse(tagMap, response.getResults());
             return new DefaultPlcReadResponse(request, mappedResponse);
         });
+    }
+
+    /** The tag's OPC UA IndexRange as a PascalString, or the null string when the whole node is addressed. */
+    private static PascalString indexRangeOf(OpcuaTag tag) {
+        String indexRange = tag.getIndexRange();
+        return indexRange != null ? new PascalString(indexRange) : NULL_STRING;
     }
 
     public static NodeId generateNodeId(OpcuaTag tag) {
@@ -1327,6 +1336,10 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             }
         }
         int length = valueObject.getLength();
+        // When an IndexRange selects part of an array, the written value must itself be an array
+        // matching the range — even a single selected element is a 1-element array, not a scalar.
+        boolean arraySpecified = length > 1 || tag.getIndexRange() != null;
+        Integer arrayLength = arraySpecified ? length : null;
         switch (dataType) {
             // Simple boolean values
             case BOOL:
@@ -1334,11 +1347,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpBOOL[i] = valueObject.getIndex(i).getByte();
                 }
-                return new VariantBoolean(length != 1,
+                return new VariantBoolean(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpBOOL);
 
             // 8-Bit Bit-Strings (Groups of Boolean Values)
@@ -1347,11 +1360,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpBYTE.add(valueObject.getIndex(i).getShort());
                 }
-                return new VariantByte(length != 1,
+                return new VariantByte(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpBYTE);
 
             // 16-Bit Bit-Strings (Groups of Boolean Values)
@@ -1360,11 +1373,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpWORD.add(valueObject.getIndex(i).getInteger());
                 }
-                return new VariantUInt16(length != 1,
+                return new VariantUInt16(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpWORD);
 
             // 32-Bit Bit-Strings (Groups of Boolean Values)
@@ -1373,11 +1386,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpDWORD.add(valueObject.getIndex(i).getLong());
                 }
-                return new VariantUInt32(length != 1,
+                return new VariantUInt32(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpDWORD);
 
             // 64-Bit Bit-Strings (Groups of Boolean Values)
@@ -1386,11 +1399,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpLWORD.add(valueObject.getIndex(i).getBigInteger());
                 }
-                return new VariantUInt64(length != 1,
+                return new VariantUInt64(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpLWORD);
 
             // 8-Bit Unsigned Integers
@@ -1399,11 +1412,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpUSINT.add(valueObject.getIndex(i).getShort());
                 }
-                return new VariantByte(length != 1,
+                return new VariantByte(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpUSINT);
 
             // 8-Bit Signed Integers
@@ -1412,11 +1425,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpSINT[i] = valueObject.getIndex(i).getByte();
                 }
-                return new VariantSByte(length != 1,
+                return new VariantSByte(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpSINT);
 
             // 16-Bit Unsigned Integers
@@ -1425,11 +1438,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpUINT.add(valueObject.getIndex(i).getInt());
                 }
-                return new VariantUInt16(length != 1,
+                return new VariantUInt16(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpUINT);
 
             // 16-Bit Signed Integers
@@ -1438,11 +1451,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpINT16.add(valueObject.getIndex(i).getShort());
                 }
-                return new VariantInt16(length != 1,
+                return new VariantInt16(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpINT16);
 
             // 32-Bit Unsigned Integers
@@ -1451,11 +1464,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpUDINT.add(valueObject.getIndex(i).getLong());
                 }
-                return new VariantUInt32(length != 1,
+                return new VariantUInt32(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpUDINT);
 
             // 32-Bit Signed Integers
@@ -1464,11 +1477,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpDINT.add(valueObject.getIndex(i).getInt());
                 }
-                return new VariantInt32(length != 1,
+                return new VariantInt32(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpDINT);
 
             // 64-Bit Unsigned Integers
@@ -1477,11 +1490,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpULINT.add(valueObject.getIndex(i).getBigInteger());
                 }
-                return new VariantUInt64(length != 1,
+                return new VariantUInt64(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpULINT);
 
             // 64-Bit Signed Integers
@@ -1490,11 +1503,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpLINT.add(valueObject.getIndex(i).getLong());
                 }
-                return new VariantInt64(length != 1,
+                return new VariantInt64(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpLINT);
 
             // 32-Bit Floating Point Values
@@ -1503,11 +1516,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpREAL.add(valueObject.getIndex(i).getFloat());
                 }
-                return new VariantFloat(length != 1,
+                return new VariantFloat(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpREAL);
 
             // 64-Bit Floating Point Values
@@ -1516,11 +1529,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpLREAL.add(valueObject.getIndex(i).getDouble());
                 }
-                return new VariantDouble(length != 1,
+                return new VariantDouble(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpLREAL);
 
             // UTF-8 Characters and Strings
@@ -1535,11 +1548,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                     String s = valueObject.getIndex(i).getString();
                     tmpString.add(new PascalString(s));
                 }
-                return new VariantString(length != 1,
+                return new VariantString(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpString);
 
             case DATE_AND_TIME:
@@ -1547,11 +1560,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpDateTime.add(valueObject.getIndex(i).getDateTime().toEpochSecond(ZoneOffset.UTC));
                 }
-                return new VariantDateTime(length != 1,
+                return new VariantDateTime(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpDateTime);
 
             // IEC 61131-3 TIME is modelled by S7-1500 OPC UA as a signed
@@ -1561,11 +1574,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 for (int i = 0; i < length; i++) {
                     tmpTime.add((int) valueObject.getIndex(i).getDuration().toMillis());
                 }
-                return new VariantInt32(length != 1,
+                return new VariantInt32(arraySpecified,
                     dimsSpec,
                     noOfDims,
                     arrayDims,
-                    length == 1 ? null : length,
+                    arrayLength,
                     tmpTime);
             default:
                 throw new PlcRuntimeException("Unsupported write tag type " + dataType);
@@ -1590,7 +1603,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
 
                 writeValueList.add(new WriteValue(nodeId,
                     tag.getAttributeId().getValue(),
-                    NULL_STRING,
+                    indexRangeOf(tag),
                     new DataValue(
                         false,
                         false,
