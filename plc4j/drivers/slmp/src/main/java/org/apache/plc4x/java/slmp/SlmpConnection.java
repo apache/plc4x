@@ -67,6 +67,7 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
 
     @Override
     protected void onConnect() throws PlcConnectionException {
+        validateConfiguration();
         messageCodec = new SlmpMessageCodec(transportInstance, this::handleIncomingMessage);
         startReceiving(() -> {
             try {
@@ -77,6 +78,25 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
         });
         fireConnectionStateChanged(ConnectionStateChangeType.CONNECTED, null);
         LOGGER.info("SLMP connection established");
+    }
+
+    /**
+     * Validates configuration values that are consumed later without their own range check.
+     * The configuration is populated by direct field injection (bypassing the setters), so this
+     * is the guaranteed one-time enforcement point covering every construction path.
+     */
+    private void validateConfiguration() throws PlcConnectionException {
+        SlmpConfiguration configuration = getConfiguration();
+        int monitoringTimer = configuration.getMonitoringTimer();
+        if (monitoringTimer < 0 || monitoringTimer > 0xFFFF) {
+            throw new PlcConnectionException("monitoring-timer must be in [0, 65535] but was " + monitoringTimer
+                + " (it is serialized as an unsigned 16-bit field in the 3E frame)");
+        }
+        int requestTimeout = configuration.getRequestTimeout();
+        if (requestTimeout <= 0) {
+            throw new PlcConnectionException("request-timeout must be > 0 ms but was " + requestTimeout
+                + " (a non-positive value would time out every request immediately)");
+        }
     }
 
     @Override

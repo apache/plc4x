@@ -111,7 +111,16 @@ public class SlmpTag implements PlcTag, Serializable {
         }
 
         String quantityToken = matcher.group("quantity");
-        int quantity = quantityToken == null ? 1 : Integer.parseInt(quantityToken);
+        int quantity;
+        if (quantityToken == null) {
+            quantity = 1;
+        } else {
+            try {
+                quantity = Integer.parseInt(quantityToken);
+            } catch (NumberFormatException e) {
+                throw new PlcInvalidTagException("quantity out of range in: " + addressString);
+            }
+        }
         if (quantity < 1) {
             throw new PlcInvalidTagException("quantity must be >= 1 in: " + addressString);
         }

@@ -102,4 +102,11 @@ class SlmpTagTest {
     void rejectsOverCeiling() {
         assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0:WORD[961]"));
     }
+
+    @Test
+    void rejectsQuantityOverflowingInt() {
+        // a quantity beyond Integer.MAX_VALUE must surface as PlcInvalidTagException,
+        // consistent with the device-number parse, not a raw NumberFormatException
+        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0:WORD[999999999999]"));
+    }
 }

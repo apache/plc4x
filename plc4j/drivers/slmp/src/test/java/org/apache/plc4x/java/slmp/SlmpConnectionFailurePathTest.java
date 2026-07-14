@@ -26,6 +26,7 @@ import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.transports.api.AsyncTransportInstance;
 import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
 import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -128,6 +130,34 @@ class SlmpConnectionFailurePathTest {
         PlcReadResponse response = responseFuture.get(5, TimeUnit.SECONDS);
         assertEquals(PlcResponseCode.OK, response.getResponseCode("after"));
         assertEquals(0x56AB, response.getPlcValue("after").getInteger());
+    }
+
+    @Test
+    void connectRejectsMonitoringTimerOutsideUnsigned16Range() {
+        SlmpConfiguration config = new SlmpConfiguration();
+        config.setRequestTimeout(5000);
+        config.setMonitoringTimer(0x1_0000); // one past the uint16 ceiling serialized into the 3E frame
+
+        SlmpConnection connection = newDisconnectedConnection(config);
+        assertThrows(PlcConnectionException.class, connection::connect,
+            "an out-of-range monitoring-timer must be rejected at connect, before it can be truncated on the wire");
+    }
+
+    @Test
+    void connectRejectsNonPositiveRequestTimeout() {
+        SlmpConfiguration config = new SlmpConfiguration();
+        config.setRequestTimeout(0); // orTimeout(0) would time out every request immediately
+        config.setMonitoringTimer(0x0000);
+
+        SlmpConnection connection = newDisconnectedConnection(config);
+        assertThrows(PlcConnectionException.class, connection::connect,
+            "a non-positive request-timeout must be rejected at connect rather than failing every read");
+    }
+
+    private static SlmpConnection newDisconnectedConnection(SlmpConfiguration config) {
+        AuditLog auditLog = mock(AuditLog.class);
+        when(auditLog.isEnabled()).thenReturn(false);
+        return new SlmpConnection(config, new ScriptedAsyncTransport(), auditLog);
     }
 
     private static SlmpConnection newConnectedConnection(ScriptedAsyncTransport transport, int requestTimeoutMs)
