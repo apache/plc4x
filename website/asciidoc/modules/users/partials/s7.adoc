@@ -36,14 +36,6 @@
 |Supported Transports 4+|
  - `cotp`
 5+|Config options:
-|`local-rack` |INT |1| |Rack value for the client (PLC4X device).
-|`local-slot` |INT |1| |Slot value for the client (PLC4X device).
-|`local-device-group` |STRING |PG_OR_PC| |Local Device Group. PG_OR_PC requests programming-device privileges from the PLC, which is required for block introspection (browse) on most CPUs. Override to OS or OTHERS if your CPU has no PG slot free.
-|`local-tsap` |INT |0| |Local Transport Service Access Point. Overrides local-rack/local-slot/local-device-group when non-zero.
-|`remote-rack` |INT |0| |Rack value for the remote main CPU (PLC).
-|`remote-slot` |INT |0| |Slot value for the remote main CPU (PLC).
-|`remote-device-group` |STRING |PG_OR_PC| |Remote Device Group.
-|`remote-tsap` |INT |0| |Remote Transport Service Access Point. Overrides remote-rack/remote-slot/remote-device-group when non-zero.
 |`pdu-size` |INT |1024| |Maximum size of an S7 data-packet sent to and received from the remote PLC.
 |`max-amq-caller` |INT |8| |Maximum number of unconfirmed requests the PLC will accept in parallel.
 |`max-amq-callee` |INT |8| |Maximum number of unconfirmed responses or requests PLC4X will accept in parallel.
@@ -58,12 +50,12 @@
 +++
 |`cotp.local-rack` |INT |1| |Rack value for the client (PLC4X device).
 |`cotp.local-slot` |INT |1| |Slot value for the client (PLC4X device).
-|`cotp.local-device-group` |STRING |PG_OR_PC| |Local Device Group.
+|`cotp.local-device-group` |STRING |OTHERS| |Local Device Group.
 |`cotp.remote-rack` |INT |0| |Rack value for the remote main CPU (PLC).
 |`cotp.remote-slot` |INT |0| |Slot value for the remote main CPU (PLC).
 |`cotp.remote-device-group` |STRING |PG_OR_PC| |Remote Device Group.
-|`cotp.local-tsap` |INT |785| |Local TSAP (Transport Service Access Point) identifier.
-|`cotp.remote-tsap` |INT |256| |Remote TSAP (Transport Service Access Point) identifier.
+|`cotp.local-tsap` |INT |0| |Local TSAP (Transport Service Access Point) identifier.
+|`cotp.remote-tsap` |INT |0| |Remote TSAP (Transport Service Access Point) identifier.
 |`cotp.cotp-tpdu-size` |INT |8192| |COTP PDU size for data transmission. Valid values: 128, 256, 512, 1024, 2048, 4096, 8192.
 |`cotp.cotp-connection-timeout` |INT |5000| |Connection timeout for COTP handshake in milliseconds.
 |`cotp.protocol-class` |INT |0| |COTP protocol class to use. Class 0 is most commonly used (simple class, no flow control).

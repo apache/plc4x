@@ -30,19 +30,7 @@ This initial version is *read-only* and supports reading word devices (D, W and 
 
 == Connection String Options
 
-[cols="2,2a,2a,2a,4a"]
-|===
-|Name |Type |Default Value |Required |Description
-|Name 4+|SLMP
-|Code 4+|`slmp`
-|Default Transport 4+|`tcp`
-|Default Port 4+|`5007`
-|Supported Transports 4+|
- - `tcp`
-5+|Config options:
-|`monitoring-timer` |INT |0| |SLMP monitoring timer written into each 3E request frame (0 = wait infinitely).
-|`request-timeout` |INT |5000| |Client-side timeout in milliseconds awaiting a response.
-|===
+include::partial$slmp.adoc[]
 
 == Supported Operations
 

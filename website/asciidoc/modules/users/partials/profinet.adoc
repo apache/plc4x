@@ -32,9 +32,9 @@
   <version>{page-component-version}</version>
 </dependency>
 ----
-|Default Transport 4+|`raw`
+|Default Transport 4+|`raw-socket`
 |Supported Transports 4+|
- - `raw`
+ - `raw-socket`
 5+|Config options:
 |`gsd-directory` |STRING |~/.gsd|required |
 |`dap-id` |STRING | | |
@@ -42,9 +42,21 @@
 5+|Transport config options:
 5+|
 +++
-<h4>raw</h4>
+<h4>raw-socket</h4>
 +++
-|`raw.resolve-mac-address` |BOOLEAN | | |If set to true, the transport will automatically resolve the MAC address for a given IP address (Allows connecting to a raw-socket device using the devices host-name or ip-address).
-|`raw.support-vlans` |BOOLEAN |false| |Should VLan packets be automatically unpacked?
-|`raw.protocol-id` |INT |-1| |When provided, filters all packets to let only packets matching this ethernet protocol-id pass.
+|`raw-socket.interface-name` |STRING | | |Network interface name to use (e.g., "eth0", "en0", "\\Device\\NPF_{GUID}" on Windows). If not specified, will use the first available interface.
+|`raw-socket.local-address` |STRING | | |Local MAC address to send from. If not set, uses interface's MAC address.
+|`raw-socket.remote-address` |STRING | |required |Remote MAC address to send to.
+|`raw-socket.protocol-id` |INT | |required |EtherType / Protocol number (e.g., 0x88B5 for PROFINET, 0x88CC for LLDP, custom values)
+|`raw-socket.promiscuous-mode` |BOOLEAN |false| |Promiscuous mode - capture all packets on the network, not just those destined for this interface.
+|`raw-socket.capture-timeout` |INT |1000| |Packet capture timeout in milliseconds.
+|`raw-socket.snapshot-length` |INT |65536| |Snapshot length - maximum bytes to capture per packet. 0 means capture entire packet.
+|`raw-socket.buffer-size` |INT |1048576| |Buffer size for packet capture in bytes.
+|`raw-socket.vlan-id` |INT |0| |VLAN ID (0 means no VLAN tag). Range: 0-4095
+|`raw-socket.vlan-priority` |INT |0| |VLAN priority (0-7). Only used if vlanId > 0.
+|`raw-socket.reuse-interface` |BOOLEAN |false| |Reuse the underlying network interface across multiple transport instances. When true, instances with the same interface and protocol will share a pcap handle. This is useful for protocols where multiple logical connections share one Ethernet type.
+|`raw-socket.bpf-filter` |STRING | | |BPF (Berkeley Packet Filter) expression to filter packets.
+|`raw-socket.max-frame-size` |INT |1500| |Maximum frame size (MTU) in bytes.
+|`raw-socket.read-timeout` |INT |0| |Read timeout for blocking reads in milliseconds.
+|`raw-socket.include-ethernet-header` |BOOLEAN |false| |Deliver full Ethernet frames to the driver and accept raw Ethernet frames on send. Required for L2 protocols that build their own Ethernet headers.
 |===

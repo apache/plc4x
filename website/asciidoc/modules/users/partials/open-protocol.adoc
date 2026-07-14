@@ -36,12 +36,19 @@
 |Supported Transports 4+|
  - `tcp`
 5+|Config options:
+|`request-timeout` |INT |10000| |Maximum time (in milliseconds) to wait for a reply during the Open-Protocol session setup or any per-request exchange.
 5+|Transport config options:
 5+|
 +++
 <h4>tcp</h4>
 +++
-|`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
-|`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
-|`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.
+|`tcp.connect-timeout` |INT |5000| |
+|`tcp.read-timeout` |INT |0| |
+|`tcp.write-timeout` |INT |0| |
+|`tcp.tcp-no-delay` |BOOLEAN |true| |
+|`tcp.keep-alive` |BOOLEAN |false| |
+|`tcp.send-buffer-size` |INT |81920| |
+|`tcp.receive-buffer-size` |INT |81920| |
+|`tcp.local-address` |STRING | | |
+|`tcp.local-port` |INT |0| |
 |===

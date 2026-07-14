@@ -20,7 +20,7 @@
 [cols="2,2a,2a,2a,4a"]
 |===
 |Name |Type |Default Value |Required |Description
-|Name 4+|CAN open
+|Name 4+|CANopen
 |Code 4+|`canopen`
 |Maven Dependency 4+|
 
@@ -32,16 +32,20 @@
   <version>{page-component-version}</version>
 </dependency>
 ----
-|Default Transport 4+|`socketcan`
+|Default Transport 4+|`can-socketcan`
 |Supported Transports 4+|
- - `socketcan`
+ - `can-socketcan`
+ - `can-virtualcan`
 5+|Config options:
 |`node-id` |INT | | |CAN node identifier. Depending on used CAN version it might be 11 or 29 bit unsigned int.
-|`heartbeat` |BOOLEAN | | |Forces PLC4X to send CANopen heartbeat (NMT) messages to the bus.
 |`request-timeout` |INT |1000| |Time after which dispatched BUS operation (ie. SDO request) will be marked as failed.
 5+|Transport config options:
 5+|
 +++
-<h4>socketcan</h4>
+<h4>can-socketcan</h4>
++++
+5+|
++++
+<h4>can-virtualcan</h4>
 +++
 |===

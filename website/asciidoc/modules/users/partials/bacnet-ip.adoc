@@ -35,8 +35,6 @@
 |Default Transport 4+|`udp`
 |Supported Transports 4+|
  - `udp`
- - `tcp`
- - `pcap`
 5+|Config options:
 |`ede-file-path` |FILE | | |Path to the location of a single EDE file, that contains the descriptor for the target device.
 |`ede-directory-path` |FILE | | |Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.
@@ -45,29 +43,14 @@
 +++
 <h4>udp</h4>
 +++
-|`udp.local-port` |INT |-1| |Some connections require a UDP listener to listen on a fixed port. +
-Use this configuration option in order to define the port number of the local port.
-5+|
-+++
-<h4>tcp</h4>
-+++
-|`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
-|`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
-|`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.
-5+|
-+++
-<h4>pcap</h4>
-+++
-|`pcap.support-vlans` |BOOLEAN |false| |Enables support for VLans
-|`pcap.replay-speed-factor` |FLOAT |1.0| |Numeric value for changing the replay speed: +
-- 1 = Normal speed (default) +
-- 0 = Maximum speed +
-- 0.5 = Half speed +
-- 2 = Double speed
-|`pcap.loop` |BOOLEAN |false| |Should the replay start at the beginning of the file as soon as the end is reached? +
-- true = Automatically start again +
-- false = Stop at the end (default)
-|`pcap.filter` |STRING | | |Filter expression used to filter out unwanted packets from the replay.
-|`pcap.support-vlans` |BOOLEAN |false| |Should VLan packets be automatically unpacked?
-|`pcap.protocol-id` |INT |-1| |When provided, filters all packets to let only packets matching this ethernet protocol-id pass.
+|`udp.local-address` |STRING | | |Local address to bind to. If not set, binds to all interfaces.
+|`udp.local-port` |INT |0| |Local port to bind to. 0 uses ephemeral port.
+|`udp.read-timeout` |INT |0| |Socket read timeout in milliseconds. 0 means no timeout.
+|`udp.max-packet-size` |INT |65507| |Maximum UDP packet size in bytes.
+|`udp.send-buffer-size` |INT |0| |Send buffer size in bytes. 0 uses system default.
+|`udp.receive-buffer-size` |INT |0| |Receive buffer size in bytes. 0 uses system default.
+|`udp.broadcast` |BOOLEAN |false| |Enable SO_BROADCAST for sending broadcast packets.
+|`udp.reuse-address` |BOOLEAN |false| |Enable SO_REUSEADDR to allow multiple bindings to the same address/port.
+|`udp.share-socket` |BOOLEAN |false| |Share the underlying UDP socket across multiple transport instances. When true, instances with the same localAddress:localPort will share a socket. This is useful for protocols where multiple logical connections share one UDP port.
+|`udp.multicast-ttl` |INT |1| |Time-to-live for multicast packets (1-255).
 |===
