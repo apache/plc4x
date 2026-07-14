@@ -32,6 +32,7 @@ import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthenticatio
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
@@ -48,12 +49,12 @@ import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubscriptionHandle;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
-import org.apache.plc4x.java.opcua.tag.OpcuaQuery;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.drivers.ConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
 import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
 import org.apache.plc4x.java.spi.drivers.messages.*;
+import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcConsumerRegistration;
@@ -442,33 +443,38 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
      */
     private CompletableFuture<List<PlcBrowseItem>> browseNode(NodeId nodeId, Set<String> visited, String queryName,
                                                               PlcQuery query, PlcBrowseRequestInterceptor interceptor) {
-        return browseReferences(nodeId, null, new ArrayList<>()).thenCompose(references -> {
-            List<CompletableFuture<PlcBrowseItem>> itemFutures = new ArrayList<>();
-            for (ReferenceDescription reference : references) {
-                String childAddress = addressOf(reference.getNodeId());
-                if (childAddress == null) {
-                    // Node identifier form we can't turn back into an address (e.g. opaque) — skip.
-                    continue;
+        return browseReferences(nodeId, null, new ArrayList<>()).thenCompose(references ->
+            // Resolve the server-side type/access attributes of all variable children in one
+            // batched Read before turning the references into browse items.
+            resolveVariableAttributes(references).thenCompose(attributes -> {
+                List<CompletableFuture<PlcBrowseItem>> itemFutures = new ArrayList<>();
+                for (ReferenceDescription reference : references) {
+                    String childAddress = addressOf(reference.getNodeId());
+                    if (childAddress == null) {
+                        // Node identifier form we can't turn back into an address (e.g. opaque) — skip.
+                        continue;
+                    }
+                    CompletableFuture<Map<String, PlcBrowseItem>> childrenFuture;
+                    if (visited.add(childAddress)) {
+                        childrenFuture = browseNode(generateNodeId(OpcuaTag.of(childAddress)),
+                            visited, queryName, query, interceptor)
+                            .thenApply(childItems -> childItems.stream()
+                                .collect(Collectors.toMap(PlcBrowseItem::getName, item -> item,
+                                    (a, b) -> a, LinkedHashMap::new)));
+                    } else {
+                        // Already visited (cycle or shared node) — list it but don't expand again.
+                        childrenFuture = CompletableFuture.completedFuture(Collections.emptyMap());
+                    }
+                    NodeAttributes childAttributes = attributes.get(childAddress);
+                    itemFutures.add(childrenFuture.thenApply(children ->
+                        buildBrowseItem(reference, childAddress, childAttributes, children)));
                 }
-                CompletableFuture<Map<String, PlcBrowseItem>> childrenFuture;
-                if (visited.add(childAddress)) {
-                    childrenFuture = browseNode(generateNodeId(OpcuaTag.of(childAddress)),
-                        visited, queryName, query, interceptor)
-                        .thenApply(childItems -> childItems.stream()
-                            .collect(Collectors.toMap(PlcBrowseItem::getName, item -> item,
-                                (a, b) -> a, LinkedHashMap::new)));
-                } else {
-                    // Already visited (cycle or shared node) — list it but don't expand again.
-                    childrenFuture = CompletableFuture.completedFuture(Collections.emptyMap());
-                }
-                itemFutures.add(childrenFuture.thenApply(children -> buildBrowseItem(reference, childAddress, children)));
-            }
-            return CompletableFuture.allOf(itemFutures.toArray(new CompletableFuture[0]))
-                .thenApply(v -> itemFutures.stream()
-                    .map(CompletableFuture::join)
-                    .filter(item -> interceptor.intercept(queryName, query, item))
-                    .collect(Collectors.toList()));
-        });
+                return CompletableFuture.allOf(itemFutures.toArray(new CompletableFuture[0]))
+                    .thenApply(v -> itemFutures.stream()
+                        .map(CompletableFuture::join)
+                        .filter(item -> interceptor.intercept(queryName, query, item))
+                        .collect(Collectors.toList()));
+            }));
     }
 
     /**
@@ -513,13 +519,35 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         });
     }
 
-    private PlcBrowseItem buildBrowseItem(ReferenceDescription reference, String address, Map<String, PlcBrowseItem> children) {
-        OpcuaTag tag = OpcuaTag.of(address);
+    private PlcBrowseItem buildBrowseItem(ReferenceDescription reference, String address,
+                                          NodeAttributes attributes, Map<String, PlcBrowseItem> children) {
         NodeClass nodeClass = reference.getNodeClass();
         boolean isVariable = nodeClass == NodeClass.nodeClassVariable;
         String name = localizedTextValue(reference.getDisplayName());
         if (name == null || name.isEmpty()) {
             name = qualifiedNameValue(reference.getBrowseName());
+        }
+
+        // Fold the server-resolved data type into the tag address (e.g. "ns=2;i=3;DINT") so the
+        // resulting tag is correctly typed for reads/writes without a manual type suffix.
+        OpcuaDataType dataType = attributes != null ? attributes.dataType : null;
+        boolean hasDataType = dataType != null && dataType != OpcuaDataType.NULL;
+        OpcuaTag tag = hasDataType ? OpcuaTag.of(address + ";" + dataType.name()) : OpcuaTag.of(address);
+
+        boolean readable;
+        boolean writable;
+        List<ArrayInfo> arrayInfo;
+        if (attributes != null) {
+            // Real access rights and array shape read from the server.
+            readable = attributes.readable;
+            writable = attributes.writable;
+            arrayInfo = attributes.arrayInfo;
+        } else {
+            // Non-variable nodes (or variables whose attributes couldn't be read): fall back to the
+            // NodeClass heuristic — only variables are considered readable/writable.
+            readable = isVariable;
+            writable = isVariable;
+            arrayInfo = Collections.emptyList();
         }
 
         Map<String, PlcValue> options = new HashMap<>();
@@ -530,11 +558,202 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         if (browseName != null) {
             options.put("browse-name", new PlcSTRING(browseName));
         }
+        if (hasDataType) {
+            options.put("data-type", new PlcSTRING(dataType.name()));
+        }
 
-        // Phase 1: only variable nodes are readable/writable. The actual access rights (and the
-        // data type) are refined once server-side type resolution is wired in.
-        return new DefaultPlcBrowseItem(tag, name, isVariable, isVariable,
-            Collections.<PlcSubscriptionType>emptySet(), false, Collections.emptyList(), children, options);
+        return new DefaultPlcBrowseItem(tag, name, readable, writable,
+            Collections.<PlcSubscriptionType>emptySet(), false, arrayInfo, children, options);
+    }
+
+    // The node attributes read for every variable child during a browse so items carry a real
+    // data type, array shape and access rights rather than the NodeClass-based guess of Phase 1.
+    private static final AttributeId[] BROWSE_ATTRIBUTES = {
+        AttributeId.DataType, AttributeId.ValueRank, AttributeId.ArrayDimensions, AttributeId.AccessLevel};
+
+    /** The server-resolved metadata of a single variable node. */
+    private static final class NodeAttributes {
+        private final OpcuaDataType dataType;      // resolved built-in type, or null if unresolved
+        private final List<ArrayInfo> arrayInfo;   // empty for scalars
+        private final boolean readable;
+        private final boolean writable;
+
+        private NodeAttributes(OpcuaDataType dataType, List<ArrayInfo> arrayInfo, boolean readable, boolean writable) {
+            this.dataType = dataType;
+            this.arrayInfo = arrayInfo;
+            this.readable = readable;
+            this.writable = writable;
+        }
+    }
+
+    /**
+     * Reads DataType/ValueRank/ArrayDimensions/AccessLevel for every variable node among the given
+     * references in a single batched {@link ReadRequest} and returns a map keyed by node address.
+     * Object/method/other node classes are skipped (they have no such attributes). If the read
+     * fails the browse still succeeds — items just fall back to the NodeClass heuristic.
+     */
+    private CompletableFuture<Map<String, NodeAttributes>> resolveVariableAttributes(List<ReferenceDescription> references) {
+        List<String> variableAddresses = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (ReferenceDescription reference : references) {
+            if (reference.getNodeClass() != NodeClass.nodeClassVariable) {
+                continue;
+            }
+            String address = addressOf(reference.getNodeId());
+            if (address != null && seen.add(address)) {
+                variableAddresses.add(address);
+            }
+        }
+        if (variableAddresses.isEmpty()) {
+            return CompletableFuture.completedFuture(Collections.emptyMap());
+        }
+
+        List<ReadValueId> readValueIds = new ArrayList<>(variableAddresses.size() * BROWSE_ATTRIBUTES.length);
+        for (String address : variableAddresses) {
+            NodeId childNodeId = generateNodeId(OpcuaTag.of(address));
+            for (AttributeId attributeId : BROWSE_ATTRIBUTES) {
+                readValueIds.add(new ReadValueId(childNodeId, attributeId.getValue(),
+                    NULL_STRING, new QualifiedName(0, NULL_STRING)));
+            }
+        }
+        ReadRequest readRequest = new ReadRequest(conversation.createRequestHeader(), 0.0d,
+            TimestampsToReturn.timestampsToReturnNeither, readValueIds);
+
+        return conversation.submit(readRequest, ReadResponse.class).thenApply(response -> {
+            Map<String, NodeAttributes> resolved = new HashMap<>();
+            List<DataValue> results = response.getResults();
+            int index = 0;
+            for (String address : variableAddresses) {
+                DataValue dataTypeValue = results.get(index++);
+                DataValue valueRankValue = results.get(index++);
+                DataValue arrayDimensionsValue = results.get(index++);
+                DataValue accessLevelValue = results.get(index++);
+
+                Short accessLevel = byteValue(accessLevelValue);
+                // AccessLevel bit0 = CurrentRead, bit1 = CurrentWrite. If the attribute couldn't be
+                // read, assume read/write (matching the earlier NodeClass-based default).
+                boolean readable = accessLevel == null || (accessLevel & 0x01) != 0;
+                boolean writable = accessLevel == null || (accessLevel & 0x02) != 0;
+
+                resolved.put(address, new NodeAttributes(
+                    resolveDataType(dataTypeValue),
+                    arrayInfoOf(valueRankValue, arrayDimensionsValue),
+                    readable, writable));
+            }
+            return resolved;
+        }).exceptionally(error -> {
+            LOGGER.warn("Failed to resolve variable node attributes during browse; "
+                + "browse items fall back to the NodeClass heuristic", error);
+            return Collections.emptyMap();
+        });
+    }
+
+    /**
+     * Resolves the DataType attribute (a NodeId) to an {@link OpcuaDataType}. Built-in DataType
+     * NodeIds live in namespace 0 and share their numeric identifier with the OPC UA Variant
+     * built-in type (Boolean=1, Int32=6, ...), so we can map straight through. Custom/enum/struct
+     * data types (non-namespace-0 or non-numeric) are left unresolved for a later phase.
+     */
+    private static OpcuaDataType resolveDataType(DataValue dataValue) {
+        if (dataValue == null || !dataValue.getValueSpecified() || !(dataValue.getValue() instanceof VariantNodeId)) {
+            return null;
+        }
+        List<NodeId> nodeIds = ((VariantNodeId) dataValue.getValue()).getValue();
+        if (nodeIds == null || nodeIds.isEmpty()) {
+            return null;
+        }
+        NodeId dataTypeNodeId = nodeIds.get(0);
+        if (namespaceOf(dataTypeNodeId) != 0) {
+            return null;
+        }
+        Long numericId = numericIdentifierOf(dataTypeNodeId);
+        if (numericId == null || numericId <= 0 || numericId > Short.MAX_VALUE) {
+            return null;
+        }
+        return OpcuaDataType.firstEnumForFieldVariantType(numericId.shortValue());
+    }
+
+    /**
+     * Builds the array shape from the ValueRank and ArrayDimensions attributes. ValueRank &lt; 0
+     * (-1 scalar, -2 any, -3 scalar-or-one-dim) yields no array info; ValueRank &gt;= 0 marks an
+     * array, its per-dimension sizes taken from ArrayDimensions when the server supplies them.
+     */
+    private static List<ArrayInfo> arrayInfoOf(DataValue valueRankValue, DataValue arrayDimensionsValue) {
+        Integer valueRank = int32Value(valueRankValue);
+        if (valueRank == null || valueRank < 0) {
+            return Collections.emptyList();
+        }
+        List<Long> dimensions = uint32Values(arrayDimensionsValue);
+        List<ArrayInfo> arrayInfo = new ArrayList<>();
+        if (dimensions != null && !dimensions.isEmpty()) {
+            for (Long dimension : dimensions) {
+                // A dimension of 0 means "unknown size" per the spec — represent it as an empty range.
+                int upper = (dimension == null || dimension <= 0) ? -1 : (int) (dimension - 1);
+                arrayInfo.add(new DefaultArrayInfo(0, upper));
+            }
+        } else {
+            // We know the rank but not the sizes (ValueRank 0 => one-or-more dimensions).
+            int rank = Math.max(valueRank, 1);
+            for (int i = 0; i < rank; i++) {
+                arrayInfo.add(new DefaultArrayInfo(0, -1));
+            }
+        }
+        return arrayInfo;
+    }
+
+    /** Extracts the first Byte (unsigned, as Short) from a Variant, or null if not a byte scalar. */
+    private static Short byteValue(DataValue dataValue) {
+        if (dataValue == null || !dataValue.getValueSpecified() || !(dataValue.getValue() instanceof VariantByte)) {
+            return null;
+        }
+        List<Short> values = ((VariantByte) dataValue.getValue()).getValue();
+        return (values == null || values.isEmpty()) ? null : values.get(0);
+    }
+
+    /** Extracts the first Int32 from a Variant, or null if not an int32 scalar. */
+    private static Integer int32Value(DataValue dataValue) {
+        if (dataValue == null || !dataValue.getValueSpecified() || !(dataValue.getValue() instanceof VariantInt32)) {
+            return null;
+        }
+        List<Integer> values = ((VariantInt32) dataValue.getValue()).getValue();
+        return (values == null || values.isEmpty()) ? null : values.get(0);
+    }
+
+    /** Extracts the UInt32 list from a Variant, or null if not a uint32 value. */
+    private static List<Long> uint32Values(DataValue dataValue) {
+        if (dataValue == null || !dataValue.getValueSpecified() || !(dataValue.getValue() instanceof VariantUInt32)) {
+            return null;
+        }
+        return ((VariantUInt32) dataValue.getValue()).getValue();
+    }
+
+    /** Namespace index of a NodeId (0 for the implicit-namespace two-byte form; -1 if unknown). */
+    private static int namespaceOf(NodeId nodeId) {
+        NodeIdTypeDefinition definition = nodeId.getNodeId();
+        if (definition instanceof NodeIdTwoByte) {
+            return 0;
+        } else if (definition instanceof NodeIdFourByte fourByte) {
+            return fourByte.getNamespaceIndex();
+        } else if (definition instanceof NodeIdNumeric numeric) {
+            return numeric.getNamespaceIndex();
+        } else if (definition instanceof NodeIdString string) {
+            return string.getNamespaceIndex();
+        }
+        return -1;
+    }
+
+    /** Numeric identifier of a NodeId, or null when the identifier isn't numeric (string/guid/opaque). */
+    private static Long numericIdentifierOf(NodeId nodeId) {
+        NodeIdTypeDefinition definition = nodeId.getNodeId();
+        if (definition instanceof NodeIdTwoByte || definition instanceof NodeIdFourByte
+                || definition instanceof NodeIdNumeric) {
+            try {
+                return Long.parseLong(definition.getIdentifier());
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
     }
 
     /** Formats the target node of a reference back into an OpcuaTag address (or null if unsupported). */

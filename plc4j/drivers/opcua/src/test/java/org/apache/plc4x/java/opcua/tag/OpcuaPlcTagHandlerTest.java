@@ -43,10 +43,12 @@ class OpcuaPlcTagHandlerTest {
     }
 
     @Test
-    void supportsBrowsing() {
-        PlcQuery query = handler.parseQuery("anything");
-        assertThat(query).isNotNull();
-        assertThat(query.getQueryString()).isEqualTo("anything");
+    void parsesBrowseQuery() {
+        // Browsing is supported: parseQuery turns the browse expression into an OpcuaQuery
+        // carrying the start-address (or wildcard) string verbatim.
+        PlcQuery query = handler.parseQuery("ns=2;s=HelloWorld");
+        assertThat(query).isInstanceOf(OpcuaQuery.class);
+        assertThat(query.getQueryString()).isEqualTo("ns=2;s=HelloWorld");
     }
 
 }

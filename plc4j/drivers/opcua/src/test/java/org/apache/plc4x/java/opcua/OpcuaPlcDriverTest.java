@@ -229,6 +229,11 @@ public class OpcuaPlcDriverTest {
             java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> all = new ArrayList<>();
             collectBrowseItems(top, all);
             assertThat(all.size()).isGreaterThan(50);
+
+            // Phase 2: server-side type resolution applied across the whole address space — many
+            // variables carry a resolved data type, and array variables expose their dimensions.
+            assertThat(all).anyMatch(i -> i.getOptions().containsKey("data-type"));
+            assertThat(all).anyMatch(i -> !i.getArrayInformation().isEmpty());
         }
     }
 
@@ -259,6 +264,15 @@ public class OpcuaPlcDriverTest {
             assertThat(boolVar.isReadable()).isTrue();
             assertThat(boolVar.isWritable()).isTrue();
             assertThat(boolVar.getTag().getAddressString()).contains("ns=2;s=HelloWorld/ScalarTypes/Boolean");
+
+            // Phase 2: the variable's data type is resolved from the server (DataType attribute),
+            // so the tag is correctly typed (address gains a ";BOOL" suffix) without a manual hint,
+            // and the resolved type is surfaced as a browse option. A scalar has no array info.
+            assertThat(boolVar.getTag().getAddressString()).endsWith(";BOOL");
+            assertThat(((OpcuaTag) boolVar.getTag()).getDataType())
+                .isEqualTo(org.apache.plc4x.java.opcua.readwrite.OpcuaDataType.BOOL);
+            assertThat(boolVar.getOptions()).containsKey("data-type");
+            assertThat(boolVar.getArrayInformation()).isEmpty();
 
             // Full-subtree recursion reached deeply-nested property nodes (AnalogValue -> EURange).
             java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> all = new ArrayList<>();
