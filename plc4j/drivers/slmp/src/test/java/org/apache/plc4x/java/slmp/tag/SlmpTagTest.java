@@ -109,4 +109,18 @@ class SlmpTagTest {
         // consistent with the device-number parse, not a raw NumberFormatException
         assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0:WORD[999999999999]"));
     }
+
+    @Test
+    void rejectsDeviceNumberExceeding24Bit() {
+        // device addresses occupy a 24-bit field on the wire; an in-int but out-of-range value
+        // must be rejected at parse time, not leak a BufferException during serialization
+        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D16777216")); // 0x1000000, one past the 24-bit max
+    }
+
+    @Test
+    void rejectsQuantityWhoseWordCountOverflowsInt() {
+        // quantity * wordsPerElement must not overflow int and slip past the MAX_POINTS ceiling:
+        // 2147483647 * 2 words wraps negative in int arithmetic, so the tag would otherwise be accepted
+        assertThrows(PlcInvalidTagException.class, () -> SlmpTag.of("D0:REAL[2147483647]"));
+    }
 }

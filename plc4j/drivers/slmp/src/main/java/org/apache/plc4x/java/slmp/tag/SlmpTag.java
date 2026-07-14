@@ -47,6 +47,9 @@ public class SlmpTag implements PlcTag, Serializable {
     /** Conservative single-frame word ceiling for 3E binary Batch Read (not the exact device max). */
     static final int MAX_POINTS = 960;
 
+    /** Device addresses are serialized as an unsigned 24-bit field in the 3E frame. */
+    static final int MAX_DEVICE_NUMBER = 0xFFFFFF;
+
     private final SlmpDeviceCode deviceCode;
     private final int deviceNumber;
     private final SlmpDataType dataType;
@@ -96,6 +99,10 @@ public class SlmpTag implements PlcTag, Serializable {
             throw new PlcInvalidTagException("Invalid " + (radix == 16 ? "hex" : "decimal")
                 + " device number in: " + addressString);
         }
+        if (deviceNumber > MAX_DEVICE_NUMBER) {
+            throw new PlcInvalidTagException("device number " + deviceNumber
+                + " exceeds the 24-bit SLMP device-address range [0.." + MAX_DEVICE_NUMBER + "]: " + addressString);
+        }
 
         String datatypeToken = matcher.group("datatype");
         SlmpDataType dataType;
@@ -125,7 +132,7 @@ public class SlmpTag implements PlcTag, Serializable {
             throw new PlcInvalidTagException("quantity must be >= 1 in: " + addressString);
         }
 
-        int numberOfPoints = quantity * dataType.getWordsPerElement();
+        long numberOfPoints = (long) quantity * dataType.getWordsPerElement();
         if (numberOfPoints > MAX_POINTS) {
             throw new PlcInvalidTagException("requested " + numberOfPoints + " words exceeds the v0 single-frame "
                 + "Batch Read ceiling of " + MAX_POINTS + " (no optimizer to split): " + addressString);
