@@ -74,26 +74,29 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
         this.ringBuffer = new RingBuffer(configuration.receiveBufferSize);
         this.readBuffer = ByteBuffer.allocateDirect(DEFAULT_BUFFER_SIZE);  // Reused direct buffer for channel reads
 
+        // Opened into a local first, only promoted to the final `socketChannel` field once every
+        // setup step (bind, socket options, connect) has succeeded.
+        SocketChannel channel = null;
         try {
             // Open socket channel
-            this.socketChannel = SocketChannel.open();
+            channel = SocketChannel.open();
 
             // Bind to a local address if specified
             if (configuration.localAddress != null && !configuration.localAddress.isEmpty()) {
                 SocketAddress localAddr = new InetSocketAddress(configuration.localAddress, configuration.localPort);
-                socketChannel.bind(localAddr);
+                channel.bind(localAddr);
                 LOGGER.debug("Bound to local address {}:{}", configuration.localAddress, configuration.localPort);
             }
 
             // Configure socket options before connecting
-            socketChannel.socket().setTcpNoDelay(configuration.tcpNoDelay);
-            socketChannel.socket().setKeepAlive(configuration.keepAlive);
+            channel.socket().setTcpNoDelay(configuration.tcpNoDelay);
+            channel.socket().setKeepAlive(configuration.keepAlive);
 
             if (configuration.sendBufferSize > 0) {
-                socketChannel.socket().setSendBufferSize(configuration.sendBufferSize);
+                channel.socket().setSendBufferSize(configuration.sendBufferSize);
             }
             if (configuration.receiveBufferSize > 0) {
-                socketChannel.socket().setReceiveBufferSize(configuration.receiveBufferSize);
+                channel.socket().setReceiveBufferSize(configuration.receiveBufferSize);
             }
             // Note: configuration.readTimeout is intentionally NOT mapped to Socket.setSoTimeout here.
             // SO_TIMEOUT has no effect on blocking SocketChannel reads, so the previous call was a
@@ -101,11 +104,13 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
             // bounds responses via CompletableFuture timeouts), not by the transport.
 
             // Connect with timeout
-            socketChannel.socket().connect(remoteAddress, configuration.connectTimeout);
+            channel.socket().connect(remoteAddress, configuration.connectTimeout);
 
             // Blocking mode: on Java 21 a virtual thread blocked in read()/write() parks and
             // releases its carrier, so no selector is needed.
-            socketChannel.configureBlocking(true);
+            channel.configureBlocking(true);
+
+            this.socketChannel = channel;
 
             LOGGER.info("Connected to {}:{} with async support", remoteAddress.getHostName(), remoteAddress.getPort());
 
@@ -126,6 +131,13 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
             LOGGER.error(errorMsg, e);
             // errorMsg already embeds e.getMessage(); a single audit event avoids a duplicate.
             auditLog.write(AuditLogEventType.ERROR, "Error in constructor: " + errorMsg);
+            if (channel != null) {
+                try {
+                    channel.close();
+                } catch (IOException closeException) {
+                    e.addSuppressed(closeException);
+                }
+            }
             throw new TransportException(errorMsg, e);
         }
     }
