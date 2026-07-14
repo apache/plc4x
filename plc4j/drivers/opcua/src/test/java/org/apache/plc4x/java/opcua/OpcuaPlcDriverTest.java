@@ -282,6 +282,86 @@ public class OpcuaPlcDriverTest {
         }
     }
 
+    @Test
+    void resolvesAndCachesNodeTypes() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            // getConnection hands back the driver connection directly, so we can reach the
+            // per-session type cache to observe Phase-3 behaviour.
+            OpcuaConnection opcua = (OpcuaConnection) connection;
+            assertThat(opcua.nodeTypeCacheSize()).isZero();
+
+            // A lazy single-node lookup misses the cache, reads the server, and caches the result.
+            OpcuaConnection.NodeAttributes boolAttrs = opcua
+                .resolveNodeAttributes(OpcuaTag.of("ns=2;s=HelloWorld/ScalarTypes/Boolean"))
+                .get(30, TimeUnit.SECONDS);
+            assertThat(boolAttrs.dataType())
+                .isEqualTo(org.apache.plc4x.java.opcua.readwrite.OpcuaDataType.BOOL);
+            assertThat(boolAttrs.readable()).isTrue();
+            assertThat(opcua.nodeTypeCacheSize()).isEqualTo(1);
+
+            // Looking the same node up again is served from the cache — no new entry, no read.
+            opcua.resolveNodeAttributes(OpcuaTag.of("ns=2;s=HelloWorld/ScalarTypes/Boolean"))
+                .get(30, TimeUnit.SECONDS);
+            assertThat(opcua.nodeTypeCacheSize()).isEqualTo(1);
+
+            // A different node is resolved (Int32 -> DINT) and added to the cache.
+            OpcuaConnection.NodeAttributes intAttrs = opcua
+                .resolveNodeAttributes(OpcuaTag.of("ns=2;s=HelloWorld/ScalarTypes/Int32"))
+                .get(30, TimeUnit.SECONDS);
+            assertThat(intAttrs.dataType())
+                .isEqualTo(org.apache.plc4x.java.opcua.readwrite.OpcuaDataType.DINT);
+            assertThat(opcua.nodeTypeCacheSize()).isEqualTo(2);
+
+            // Browsing shares the same cache: the two already-resolved children are reused and the
+            // remaining ScalarTypes children get resolved and cached, growing the cache further.
+            connection.browseRequestBuilder().addQuery("scalars", "ns=2;s=HelloWorld/ScalarTypes")
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(opcua.nodeTypeCacheSize()).isGreaterThan(2);
+        }
+    }
+
+    @Test
+    void writeWithoutTypeSuffixUsesServerType() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            // None of these addresses carry a ";TYPE" suffix. Phase 4 resolves each node's real
+            // OPC UA type from the server, so the writes use the correct Variant type instead of a
+            // lossy Java-value guess. UInt16 is the telling case: 65535 arrives as a Java Integer,
+            // which value-inference would map to Int32 and the server would reject — the resolved
+            // UInt16 type makes it succeed.
+            PlcWriteResponse write = connection.writeRequestBuilder()
+                .addTagAddress("bool", BOOL_IDENTIFIER_READ_WRITE, true)
+                .addTagAddress("int16", INT16_IDENTIFIER_READ_WRITE, (short) -12345)
+                .addTagAddress("uint16", UINT16_IDENTIFIER_READ_WRITE, 65535)
+                .addTagAddress("int32", INT32_IDENTIFIER_READ_WRITE, 1234567)
+                .addTagAddress("float", FLOAT_IDENTIFIER_READ_WRITE, 3.5f)
+                .addTagAddress("string", STRING_IDENTIFIER_READ_WRITE, "phase4")
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            for (String tag : new String[]{"bool", "int16", "uint16", "int32", "float", "string"}) {
+                assertThat(write.getResponseCode(tag))
+                    .describedAs("write of suffix-less tag '%s'", tag)
+                    .isEqualTo(PlcResponseCode.OK);
+            }
+
+            // Read the values back (also suffix-less) and confirm they round-tripped correctly.
+            PlcReadResponse read = connection.readRequestBuilder()
+                .addTagAddress("bool", BOOL_IDENTIFIER_READ_WRITE)
+                .addTagAddress("int16", INT16_IDENTIFIER_READ_WRITE)
+                .addTagAddress("uint16", UINT16_IDENTIFIER_READ_WRITE)
+                .addTagAddress("int32", INT32_IDENTIFIER_READ_WRITE)
+                .addTagAddress("float", FLOAT_IDENTIFIER_READ_WRITE)
+                .addTagAddress("string", STRING_IDENTIFIER_READ_WRITE)
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            assertThat(read.getBoolean("bool")).isTrue();
+            assertThat(read.getShort("int16")).isEqualTo((short) -12345);
+            assertThat(read.getInteger("uint16")).isEqualTo(65535);
+            assertThat(read.getInteger("int32")).isEqualTo(1234567);
+            assertThat(read.getFloat("float")).isEqualTo(3.5f);
+            assertThat(read.getString("string")).isEqualTo("phase4");
+        }
+    }
+
     private static void collectBrowseItems(java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> items,
                                            java.util.List<org.apache.plc4x.java.api.messages.PlcBrowseItem> out) {
         for (org.apache.plc4x.java.api.messages.PlcBrowseItem item : items) {
@@ -521,24 +601,28 @@ public class OpcuaPlcDriverTest {
 
     @Nested
     class readWrite {
+        // Addresses no longer need a ";TYPE" suffix: the driver resolves each node's data type from
+        // the server (Phase 4) so writes use the correct OPC UA type without a hint — including the
+        // 'UInteger' node, whose abstract UInteger type is resolved to an unsigned type sized to the
+        // written value.
         Map<String, Entry<String, Object>> tags = Map.ofEntries(
             entry("Bool", entry(BOOL_IDENTIFIER_READ_WRITE, true)),
-            entry("Byte", entry(BYTE_IDENTIFIER_READ_WRITE + ";BYTE", (short) 3)),
+            entry("Byte", entry(BYTE_IDENTIFIER_READ_WRITE, (short) 3)),
             entry("Double", entry(DOUBLE_IDENTIFIER_READ_WRITE, 0.5d)),
             entry("Float", entry(FLOAT_IDENTIFIER_READ_WRITE, 0.5f)),
-            entry("Int16", entry(INT16_IDENTIFIER_READ_WRITE + ";INT", 1)),
+            entry("Int16", entry(INT16_IDENTIFIER_READ_WRITE, 1)),
             entry("Int32", entry(INT32_IDENTIFIER_READ_WRITE, 42)),
             entry("Int64", entry(INT64_IDENTIFIER_READ_WRITE, 42L)),
             entry("Integer", entry(INTEGER_IDENTIFIER_READ_WRITE, -127)),
             //entry("SByte", entry(SBYTE_IDENTIFIER_READ_WRITE, )),
             entry("String", entry(STRING_IDENTIFIER_READ_WRITE, "Hello Toddy!")),
-            entry("UInt16", entry(UINT16_IDENTIFIER_READ_WRITE + ";UINT", 65535)),
-            entry("UInt32", entry(UINT32_IDENTIFIER_READ_WRITE + ";UDINT", 101010101L)),
-            entry("UInt64", entry(UINT64_IDENTIFIER_READ_WRITE + ";ULINT", new BigInteger("1337"))),
-            entry("UInteger", entry(UINTEGER_IDENTIFIER_READ_WRITE + ";UDINT", 102020202L)),
+            entry("UInt16", entry(UINT16_IDENTIFIER_READ_WRITE, 65535)),
+            entry("UInt32", entry(UINT32_IDENTIFIER_READ_WRITE, 101010101L)),
+            entry("UInt64", entry(UINT64_IDENTIFIER_READ_WRITE, new BigInteger("1337"))),
+            entry("UInteger", entry(UINTEGER_IDENTIFIER_READ_WRITE, 102020202L)),
             entry("BooleanArray", entry(BOOL_ARRAY_IDENTIFIER, new boolean[]{true, true, true, true, true})),
             // entry("ByteStringArray", entry(BYTE_STRING_ARRAY_IDENTIFIER, null)),
-            entry("ByteArray", entry(BYTE_ARRAY_IDENTIFIER + ";BYTE", new Short[]{1, 100, 100, 255, 123})),
+            entry("ByteArray", entry(BYTE_ARRAY_IDENTIFIER, new Short[]{1, 100, 100, 255, 123})),
             entry("DoubleArray", entry(DOUBLE_ARRAY_IDENTIFIER, new Double[]{1.0, 2.0, 3.0, 4.0, 5.0})),
             entry("FloatArray", entry(FLOAT_ARRAY_IDENTIFIER, new Float[]{1.0F, 2.0F, 3.0F, 4.0F, 5.0F})),
             entry("Int16Array", entry(INT16_ARRAY_IDENTIFIER, new Short[]{1, 2, 3, 4, 5})),
@@ -547,9 +631,9 @@ public class OpcuaPlcDriverTest {
             entry("IntegerArray", entry(INT32_ARRAY_IDENTIFIER, new Integer[]{1, 2, 3, 4, 5})),
             entry("SByteArray", entry(SBYTE_ARRAY_IDENTIFIER, new Byte[]{1, 2, 3, 4, 5})),
             entry("StringArray", entry(STRING_ARRAY_IDENTIFIER, new String[]{"1", "2", "3", "4", "5"})),
-            entry("UInt16Array", entry(UINT16_ARRAY_IDENTIFIER + ";UINT", new Short[]{1, 2, 3, 4, 5})),
-            entry("UInt32Array", entry(UINT32_ARRAY_IDENTIFIER + ";UDINT", new Integer[]{1, 2, 3, 4, 5})),
-            entry("UInt64Array", entry(UINT64_ARRAY_IDENTIFIER + ";ULINT", new Long[]{1L, 2L, 3L, 4L, 5L})),
+            entry("UInt16Array", entry(UINT16_ARRAY_IDENTIFIER, new Short[]{1, 2, 3, 4, 5})),
+            entry("UInt32Array", entry(UINT32_ARRAY_IDENTIFIER, new Integer[]{1, 2, 3, 4, 5})),
+            entry("UInt64Array", entry(UINT64_ARRAY_IDENTIFIER, new Long[]{1L, 2L, 3L, 4L, 5L})),
             entry(DOES_NOT_EXISTS_TAG_NAME, entry(DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "11"))
         );
 

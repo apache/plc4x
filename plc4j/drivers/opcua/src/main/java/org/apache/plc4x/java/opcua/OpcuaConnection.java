@@ -107,6 +107,12 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     private Conversation conversation;
     private volatile boolean connected = false;
 
+    // Phase 3: per-session cache of server-resolved node attributes (data type, array shape,
+    // access rights), keyed by canonical node address ("ns=<ns>;<idType>=<id>"). OPC UA node
+    // types are static for the lifetime of a session, so once resolved they never need
+    // re-reading — both browsing and (Phase 4) typed read/write resolve through this cache.
+    private final Map<String, NodeAttributes> nodeTypeCache = new ConcurrentHashMap<>();
+
     public OpcuaConnection(OpcuaConfiguration configuration,
                            TransportInstance<?> transportInstance,
                            AuditLog auditLog) {
@@ -571,26 +577,57 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     private static final AttributeId[] BROWSE_ATTRIBUTES = {
         AttributeId.DataType, AttributeId.ValueRank, AttributeId.ArrayDimensions, AttributeId.AccessLevel};
 
+    // Abstract numeric supertype DataType NodeIds (namespace 0). A variable typed with one of these
+    // accepts any concrete subtype, so there is no single built-in type to resolve to — the concrete
+    // type is chosen from the written value instead. Only UInteger needs special handling: plain
+    // (signed) value inference already yields a valid subtype for Integer/Number.
+    private static final long UINTEGER_DATATYPE_ID = 28L;
+
     /** The server-resolved metadata of a single variable node. */
-    private static final class NodeAttributes {
+    static final class NodeAttributes {
         private final OpcuaDataType dataType;      // resolved built-in type, or null if unresolved
+        private final boolean unsigned;            // node is the abstract UInteger supertype
         private final List<ArrayInfo> arrayInfo;   // empty for scalars
         private final boolean readable;
         private final boolean writable;
 
-        private NodeAttributes(OpcuaDataType dataType, List<ArrayInfo> arrayInfo, boolean readable, boolean writable) {
+        private NodeAttributes(OpcuaDataType dataType, boolean unsigned, List<ArrayInfo> arrayInfo,
+                               boolean readable, boolean writable) {
             this.dataType = dataType;
+            this.unsigned = unsigned;
             this.arrayInfo = arrayInfo;
             this.readable = readable;
             this.writable = writable;
         }
+
+        OpcuaDataType dataType() {
+            return dataType;
+        }
+
+        boolean unsigned() {
+            return unsigned;
+        }
+
+        List<ArrayInfo> arrayInfo() {
+            return arrayInfo;
+        }
+
+        boolean readable() {
+            return readable;
+        }
+
+        boolean writable() {
+            return writable;
+        }
     }
 
     /**
-     * Reads DataType/ValueRank/ArrayDimensions/AccessLevel for every variable node among the given
-     * references in a single batched {@link ReadRequest} and returns a map keyed by node address.
-     * Object/method/other node classes are skipped (they have no such attributes). If the read
-     * fails the browse still succeeds — items just fall back to the NodeClass heuristic.
+     * Resolves DataType/ValueRank/ArrayDimensions/AccessLevel for every variable node among the
+     * given references and returns a map keyed by node address. Nodes already resolved this session
+     * are served from {@link #nodeTypeCache}; only the rest incur a (batched) server read. Object/
+     * method/other node classes are skipped (they have no such attributes). If the read fails the
+     * browse still succeeds — items just fall back to the NodeClass heuristic (and any cached
+     * entries are still applied).
      */
     private CompletableFuture<Map<String, NodeAttributes>> resolveVariableAttributes(List<ReferenceDescription> references) {
         List<String> variableAddresses = new ArrayList<>();
@@ -608,11 +645,57 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return CompletableFuture.completedFuture(Collections.emptyMap());
         }
 
-        List<ReadValueId> readValueIds = new ArrayList<>(variableAddresses.size() * BROWSE_ATTRIBUTES.length);
+        // Serve already-resolved nodes straight from the session cache; only read the remainder.
+        Map<String, NodeAttributes> resolved = new HashMap<>();
+        List<String> toRead = new ArrayList<>();
         for (String address : variableAddresses) {
-            NodeId childNodeId = generateNodeId(OpcuaTag.of(address));
+            NodeAttributes cached = nodeTypeCache.get(address);
+            if (cached != null) {
+                resolved.put(address, cached);
+            } else {
+                toRead.add(address);
+            }
+        }
+        if (toRead.isEmpty()) {
+            return CompletableFuture.completedFuture(resolved);
+        }
+
+        return readNodeAttributes(toRead).thenApply(fresh -> {
+            resolved.putAll(fresh);
+            return resolved;
+        }).exceptionally(error -> {
+            LOGGER.warn("Failed to resolve variable node attributes during browse; "
+                + "browse items fall back to the NodeClass heuristic", error);
+            return resolved;
+        });
+    }
+
+    /**
+     * Lazily resolves the server-side attributes of a single node, caching the result for the
+     * session. This is the entry point for typed reads/writes: on a cache hit no server round-trip
+     * happens; on a miss the four attributes are read and cached. Returns {@code null} attributes
+     * only if the read yields nothing usable.
+     */
+    CompletableFuture<NodeAttributes> resolveNodeAttributes(OpcuaTag tag) {
+        String key = cacheKey(tag);
+        NodeAttributes cached = nodeTypeCache.get(key);
+        if (cached != null) {
+            return CompletableFuture.completedFuture(cached);
+        }
+        return readNodeAttributes(Collections.singletonList(key)).thenApply(fresh -> fresh.get(key));
+    }
+
+    /**
+     * Issues one batched {@link ReadRequest} for the {@link #BROWSE_ATTRIBUTES} of every given node
+     * address, stores each resolved {@link NodeAttributes} in {@link #nodeTypeCache} and returns
+     * them keyed by address.
+     */
+    private CompletableFuture<Map<String, NodeAttributes>> readNodeAttributes(List<String> addresses) {
+        List<ReadValueId> readValueIds = new ArrayList<>(addresses.size() * BROWSE_ATTRIBUTES.length);
+        for (String address : addresses) {
+            NodeId nodeId = generateNodeId(OpcuaTag.of(address));
             for (AttributeId attributeId : BROWSE_ATTRIBUTES) {
-                readValueIds.add(new ReadValueId(childNodeId, attributeId.getValue(),
+                readValueIds.add(new ReadValueId(nodeId, attributeId.getValue(),
                     NULL_STRING, new QualifiedName(0, NULL_STRING)));
             }
         }
@@ -620,50 +703,72 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             TimestampsToReturn.timestampsToReturnNeither, readValueIds);
 
         return conversation.submit(readRequest, ReadResponse.class).thenApply(response -> {
-            Map<String, NodeAttributes> resolved = new HashMap<>();
             List<DataValue> results = response.getResults();
-            int index = 0;
-            for (String address : variableAddresses) {
-                DataValue dataTypeValue = results.get(index++);
-                DataValue valueRankValue = results.get(index++);
-                DataValue arrayDimensionsValue = results.get(index++);
-                DataValue accessLevelValue = results.get(index++);
-
-                Short accessLevel = byteValue(accessLevelValue);
-                // AccessLevel bit0 = CurrentRead, bit1 = CurrentWrite. If the attribute couldn't be
-                // read, assume read/write (matching the earlier NodeClass-based default).
-                boolean readable = accessLevel == null || (accessLevel & 0x01) != 0;
-                boolean writable = accessLevel == null || (accessLevel & 0x02) != 0;
-
-                resolved.put(address, new NodeAttributes(
-                    resolveDataType(dataTypeValue),
-                    arrayInfoOf(valueRankValue, arrayDimensionsValue),
-                    readable, writable));
+            Map<String, NodeAttributes> fresh = new LinkedHashMap<>();
+            for (int i = 0; i < addresses.size(); i++) {
+                String address = addresses.get(i);
+                NodeAttributes attributes = attributesFrom(results, i * BROWSE_ATTRIBUTES.length);
+                nodeTypeCache.put(address, attributes);
+                fresh.put(address, attributes);
             }
-            return resolved;
-        }).exceptionally(error -> {
-            LOGGER.warn("Failed to resolve variable node attributes during browse; "
-                + "browse items fall back to the NodeClass heuristic", error);
-            return Collections.emptyMap();
+            return fresh;
         });
     }
 
     /**
-     * Resolves the DataType attribute (a NodeId) to an {@link OpcuaDataType}. Built-in DataType
-     * NodeIds live in namespace 0 and share their numeric identifier with the OPC UA Variant
-     * built-in type (Boolean=1, Int32=6, ...), so we can map straight through. Custom/enum/struct
-     * data types (non-namespace-0 or non-numeric) are left unresolved for a later phase.
+     * Builds a {@link NodeAttributes} from the four consecutive {@link DataValue}s (DataType,
+     * ValueRank, ArrayDimensions, AccessLevel — in {@link #BROWSE_ATTRIBUTES} order) starting at
+     * {@code offset} in a Read response.
      */
-    private static OpcuaDataType resolveDataType(DataValue dataValue) {
+    private static NodeAttributes attributesFrom(List<DataValue> results, int offset) {
+        DataValue dataTypeValue = results.get(offset);
+        DataValue valueRankValue = results.get(offset + 1);
+        DataValue arrayDimensionsValue = results.get(offset + 2);
+        DataValue accessLevelValue = results.get(offset + 3);
+
+        Short accessLevel = byteValue(accessLevelValue);
+        // AccessLevel bit0 = CurrentRead, bit1 = CurrentWrite. If the attribute couldn't be read,
+        // assume read/write (matching the earlier NodeClass-based default).
+        boolean readable = accessLevel == null || (accessLevel & 0x01) != 0;
+        boolean writable = accessLevel == null || (accessLevel & 0x02) != 0;
+
+        NodeId dataTypeNodeId = dataTypeNodeIdOf(dataTypeValue);
+        return new NodeAttributes(
+            concreteDataType(dataTypeNodeId),
+            isUnsignedAbstract(dataTypeNodeId),
+            arrayInfoOf(valueRankValue, arrayDimensionsValue),
+            readable, writable);
+    }
+
+    /** Canonical cache key for a tag: its node address without the attribute or data-type suffix. */
+    private static String cacheKey(OpcuaTag tag) {
+        return String.format("ns=%d;%s=%s", tag.getNamespace(),
+            tag.getIdentifierType().getValue(), tag.getIdentifier());
+    }
+
+    /** Number of nodes whose attributes are currently cached for this session (test/diagnostic hook). */
+    int nodeTypeCacheSize() {
+        return nodeTypeCache.size();
+    }
+
+    /** Extracts the DataType attribute's NodeId from its {@link DataValue}, or null if not present. */
+    private static NodeId dataTypeNodeIdOf(DataValue dataValue) {
         if (dataValue == null || !dataValue.getValueSpecified() || !(dataValue.getValue() instanceof VariantNodeId)) {
             return null;
         }
         List<NodeId> nodeIds = ((VariantNodeId) dataValue.getValue()).getValue();
-        if (nodeIds == null || nodeIds.isEmpty()) {
-            return null;
-        }
-        NodeId dataTypeNodeId = nodeIds.get(0);
-        if (namespaceOf(dataTypeNodeId) != 0) {
+        return (nodeIds == null || nodeIds.isEmpty()) ? null : nodeIds.get(0);
+    }
+
+    /**
+     * Resolves a DataType NodeId to a concrete {@link OpcuaDataType}. Built-in DataType NodeIds live
+     * in namespace 0 and share their numeric identifier with the OPC UA Variant built-in type
+     * (Boolean=1, Int32=6, ...), so we can map straight through. Abstract supertypes and
+     * custom/enum/struct data types (non-namespace-0 or non-numeric) have no concrete built-in type
+     * and return null.
+     */
+    private static OpcuaDataType concreteDataType(NodeId dataTypeNodeId) {
+        if (dataTypeNodeId == null || namespaceOf(dataTypeNodeId) != 0) {
             return null;
         }
         Long numericId = numericIdentifierOf(dataTypeNodeId);
@@ -671,6 +776,15 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         return OpcuaDataType.firstEnumForFieldVariantType(numericId.shortValue());
+    }
+
+    /** Whether a DataType NodeId is the abstract UInteger supertype (so writes must pick an unsigned type). */
+    private static boolean isUnsignedAbstract(NodeId dataTypeNodeId) {
+        if (dataTypeNodeId == null || namespaceOf(dataTypeNodeId) != 0) {
+            return false;
+        }
+        Long numericId = numericIdentifierOf(dataTypeNodeId);
+        return numericId != null && numericId == UINTEGER_DATATYPE_ID;
     }
 
     /**
@@ -1123,7 +1237,58 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         return new PlcList(flat);
     }
 
-    private Variant fromPlcValue(String tagName, OpcuaTag tag, PlcWriteRequest request) {
+    /**
+     * Last-resort write type when neither a ;TYPE suffix nor a server-resolved type is available:
+     * infer from the PlcValue itself. Prefer the value's own declared PlcValueType; only when that
+     * is absent fall back to the backing Java class — which collapses the Short-backed types
+     * (BYTE/USINT/WORD/UINT) into INT, so the server may reject the write with INVALID_DATATYPE.
+     */
+    private static PlcValueType inferWriteType(PlcValue value) {
+        PlcValueType inferred = value.getPlcValueType();
+        if (inferred != null && inferred != PlcValueType.NULL) {
+            return inferred;
+        }
+        Object object = value.getObject();
+        if (object instanceof Boolean) {
+            return PlcValueType.BOOL;
+        } else if (object instanceof Byte) {
+            return PlcValueType.SINT;
+        } else if (object instanceof Short) {
+            return PlcValueType.INT;
+        } else if (object instanceof Integer) {
+            return PlcValueType.DINT;
+        } else if (object instanceof Long) {
+            return PlcValueType.LINT;
+        } else if (object instanceof Float) {
+            return PlcValueType.REAL;
+        } else if (object instanceof Double) {
+            return PlcValueType.LREAL;
+        } else if (object instanceof String) {
+            return PlcValueType.STRING;
+        }
+        return PlcValueType.NULL;
+    }
+
+    /**
+     * Write type for a node whose server DataType is the abstract UInteger supertype: pick the
+     * unsigned concrete type matching the value's width (any unsigned subtype is accepted). Falls
+     * back to plain inference for non-integer values.
+     */
+    private static PlcValueType inferUnsignedWriteType(PlcValue value) {
+        Object object = value.getObject();
+        if (object instanceof Byte) {
+            return PlcValueType.USINT;
+        } else if (object instanceof Short) {
+            return PlcValueType.UINT;
+        } else if (object instanceof Integer) {
+            return PlcValueType.UDINT;
+        } else if (object instanceof Long || object instanceof BigInteger) {
+            return PlcValueType.ULINT;
+        }
+        return inferWriteType(value);
+    }
+
+    private Variant fromPlcValue(String tagName, OpcuaTag tag, PlcWriteRequest request, NodeAttributes serverAttributes) {
         PlcList valueObject;
         if (request.getPlcValue(tagName).getObject() instanceof List) {
             valueObject = (PlcList) request.getPlcValue(tagName);
@@ -1146,29 +1311,19 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         List<PlcValue> plcValueList = valueObject.getList();
         PlcValueType dataType = tag.getPlcValueType();
         if (dataType.equals(PlcValueType.NULL) || dataType.equals(PlcValueType.List)) {
-            // When the tag address didn't carry a type suffix, infer from the
-            // PlcValue's own type. Falling back on getObject().getClass()
-            // collapses BYTE/USINT/WORD/UINT (all back-by Short) into INT,
-            // so the server rejects the write with INVALID_DATATYPE.
-            PlcValueType inferred = plcValueList.get(0).getPlcValueType();
-            if (inferred != null && inferred != PlcValueType.NULL) {
-                dataType = inferred;
-            } else if (plcValueList.get(0).getObject() instanceof Boolean) {
-                dataType = PlcValueType.BOOL;
-            } else if (plcValueList.get(0).getObject() instanceof Byte) {
-                dataType = PlcValueType.SINT;
-            } else if (plcValueList.get(0).getObject() instanceof Short) {
-                dataType = PlcValueType.INT;
-            } else if (plcValueList.get(0).getObject() instanceof Integer) {
-                dataType = PlcValueType.DINT;
-            } else if (plcValueList.get(0).getObject() instanceof Long) {
-                dataType = PlcValueType.LINT;
-            } else if (plcValueList.get(0).getObject() instanceof Float) {
-                dataType = PlcValueType.REAL;
-            } else if (plcValueList.get(0).getObject() instanceof Double) {
-                dataType = PlcValueType.LREAL;
-            } else if (plcValueList.get(0).getObject() instanceof String) {
-                dataType = PlcValueType.STRING;
+            // The tag address didn't carry a ;TYPE suffix. Phase 4: prefer the type the server
+            // declares for this node (resolved and cached up-front in onWrite) — it is
+            // authoritative and, unlike the Java-value guess below, unambiguously distinguishes
+            // the Short-backed types (BYTE/USINT/WORD/UINT/INT).
+            OpcuaDataType serverType = serverAttributes != null ? serverAttributes.dataType() : null;
+            if (serverType != null && serverType != OpcuaDataType.NULL) {
+                dataType = PlcValueType.valueOf(serverType.name());
+            } else if (serverAttributes != null && serverAttributes.unsigned()) {
+                // Node is the abstract UInteger type: no concrete built-in to resolve to, so pick
+                // an unsigned type sized to the value (an abstract node accepts any subtype).
+                dataType = inferUnsignedWriteType(plcValueList.get(0));
+            } else {
+                dataType = inferWriteType(plcValueList.get(0));
             }
         }
         int length = valueObject.getLength();
@@ -1422,35 +1577,71 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         LOGGER.trace("Writing Value");
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
-        RequestHeader requestHeader = conversation.createRequestHeader();
-        List<WriteValue> writeValueList = new ArrayList<>(request.getTagNames().size());
+        // Phase 4: for tags without an explicit ;TYPE suffix, resolve the server-declared data
+        // type (via the session type cache) up-front so the write is built with the authoritative
+        // OPC UA type instead of a lossy Java-value guess. Then assemble and submit the write.
+        return resolveWriteTypes(request).thenCompose(serverAttributes -> {
+            RequestHeader requestHeader = conversation.createRequestHeader();
+            List<WriteValue> writeValueList = new ArrayList<>(request.getTagNames().size());
+            for (String tagName : request.getTagNames()) {
+                OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
+
+                NodeId nodeId = generateNodeId(tag);
+
+                writeValueList.add(new WriteValue(nodeId,
+                    tag.getAttributeId().getValue(),
+                    NULL_STRING,
+                    new DataValue(
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        true,
+                        fromPlcValue(tagName, tag, writeRequest, serverAttributes.get(tagName)),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null)));
+            }
+
+            WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList);
+
+            return conversation.submit(opcuaWriteRequest, WriteResponse.class)
+                .thenApply(response -> writeResponse(request, response));
+        });
+    }
+
+    /**
+     * Resolves the server-declared attributes for every write tag that lacks an explicit ;TYPE
+     * suffix, returning a map (tagName -&gt; {@link NodeAttributes}). Suffix-typed tags are skipped
+     * (the suffix wins) and failed lookups are simply omitted, so {@link #fromPlcValue} falls back
+     * to Java-value inference for them.
+     */
+    private CompletableFuture<Map<String, NodeAttributes>> resolveWriteTypes(DefaultPlcWriteRequest request) {
+        Map<String, NodeAttributes> serverAttributes = new ConcurrentHashMap<>();
+        List<CompletableFuture<?>> futures = new ArrayList<>();
         for (String tagName : request.getTagNames()) {
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
-
-            NodeId nodeId = generateNodeId(tag);
-
-            writeValueList.add(new WriteValue(nodeId,
-                tag.getAttributeId().getValue(),
-                NULL_STRING,
-                new DataValue(
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    true,
-                    fromPlcValue(tagName, tag, writeRequest),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null)));
+            // An explicit ;TYPE suffix is authoritative — no server round-trip needed.
+            if (tag.getDataType() != OpcuaDataType.NULL) {
+                continue;
+            }
+            futures.add(resolveNodeAttributes(tag)
+                .thenAccept(attributes -> {
+                    if (attributes != null) {
+                        serverAttributes.put(tagName, attributes);
+                    }
+                })
+                .exceptionally(error -> {
+                    LOGGER.debug("Could not resolve server type for write tag '{}'; "
+                        + "falling back to value inference", tagName, error);
+                    return null;
+                }));
         }
-
-        WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList);
-
-        return conversation.submit(opcuaWriteRequest, WriteResponse.class)
-            .thenApply(response -> writeResponse(request, response));
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+            .thenApply(v -> serverAttributes);
     }
 
     private PlcWriteResponse writeResponse(DefaultPlcWriteRequest request, WriteResponse writeResponse) {

@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
 import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.java.utils.testutils.manual.BasicPlcTest;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 
@@ -34,27 +35,22 @@ public class ManualOpcUaS71500NewFWDriverTest extends BasicPlcTest {
     public static void main(String[] args) throws Exception {
         boolean testArrays = true;
         ManualOpcUaS71500NewFWDriverTest test = new ManualOpcUaS71500NewFWDriverTest("opcua://192.168.24.66:4840");
-        test.addTestCase(/*"g_b1",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b1\";BOOL",                   new PlcBOOL(true));
-        test.addTestCase(/*"g_b8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b8\";BYTE",	                new PlcBYTE(0xAB));
-        test.addTestCase(/*"g_s8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s8\";SINT",	                new PlcSINT(-12));
-        test.addTestCase(/*"g_u8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u8\";USINT",	                new PlcUSINT(250));
-        // TODO: Getting "INVALID_ADDRESS", as WORD is not part of OpcuaDataType
-//        test.addTestCase(/*"g_b16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b16\";WORD",	                new PlcWORD(0xBEEF));
-        test.addTestCase(/*"g_s16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s16\";INT",                  new PlcINT(-1234));
-        test.addTestCase(/*"g_u16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u16\";UINT",                  new PlcUINT(54321));
-        // TODO: Getting "INVALID_ADDRESS", as DWORD is not part of OpcuaDataType
-//        test.addTestCase(/*"g_b32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b32\";DWORD",                  new PlcDWORD(0xDEADBEEFL));
-        test.addTestCase(/*"g_s32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s32\";DINT",                  new PlcDINT(-12345678));
-        test.addTestCase(/*"g_u32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u32\";UDINT",                  new PlcUDINT(305419896));
-        // TODO: Getting "INVALID_ADDRESS", as LWORD is not part of OpcuaDataType
-//        test.addTestCase(/*"g_b64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b64\";LWORD",                  new PlcLWORD(0x0123_4567_89AB_CDEFL));
-        test.addTestCase(/*"g_s64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s64\";LINT",                  new PlcLINT(-9223372036854770000L));
-        // TODO: This seems to write different values to the plc.
-//        test.addTestCase(/*"g_u64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u64\";ULINT",                  new PlcULINT(new BigDecimal("18446744073709551000")));
-        test.addTestCase(/*"g_r32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r32\";REAL",                  new PlcREAL(3.14159));
-        test.addTestCase(/*"g_r64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r64\";LREAL",                  new PlcLREAL(2.71828182845905));
-        // TODO: Writing of TIME doesn't seem to be supported.
-//        test.addTestCase(/*"g_tim",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_tim\";TIME",             new PlcTIME(2500)); // Is returned as Int32
+        test.addTestCase(/*"g_b1",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b1\"",                   new PlcBOOL(true));
+        test.addTestCase(/*"g_b8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b8\"",	                new PlcBYTE(0xAB));
+        test.addTestCase(/*"g_s8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s8\"",	                new PlcSINT(-12));
+        test.addTestCase(/*"g_u8",*/            "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u8\"",	                new PlcUSINT(250));
+        test.addTestCase(/*"g_b16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b16\"",	                new PlcWORD(0xBEEF));
+        test.addTestCase(/*"g_s16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s16\"",                  new PlcINT(-1234));
+        test.addTestCase(/*"g_u16",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u16\"",                  new PlcUINT(54321));
+        test.addTestCase(/*"g_b32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b32\"",                  new PlcDWORD(0xDEADBEEFL));
+        test.addTestCase(/*"g_s32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s32\"",                  new PlcDINT(-12345678));
+        test.addTestCase(/*"g_u32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u32\"",                  new PlcUDINT(305419896));
+        test.addTestCase(/*"g_b64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_b64\"",                  new PlcLWORD(0x0123_4567_89AB_CDEFL));
+        test.addTestCase(/*"g_s64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_s64\"",                  new PlcLINT(-9223372036854770000L));
+        test.addTestCase(/*"g_u64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_u64\"",                  new PlcULINT(new BigDecimal("18446744073709551000")));
+        test.addTestCase(/*"g_r32",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r32\"",                  new PlcREAL(3.14159));
+        test.addTestCase(/*"g_r64",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_r64\"",                  new PlcLREAL(2.71828182845905));
+        test.addTestCase(/*"g_tim",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_tim\"",             new PlcTIME(2500)); // Is returned as Int32
         // TODO: IEC 61131-3 date types use 1990-01-01 as epoch, PlcDATE etc. use Unix epoch (1970-01-01).
 //        test.addTestCase(/*"g_dat",*/           "ns=3;s=\"OPC_UA_DB\".\"OPC Data\".\"g_dat\";DATE",             new PlcDATE(LocalDate.of(2025, 11, 12))); // Is returned as UInt16
         // TODO: S7/IEC value is milliseconds since midnight
