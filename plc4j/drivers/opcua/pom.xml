@@ -244,6 +244,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
+      <artifactId>sdk-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-core</artifactId>
       <scope>test</scope>
     </dependency>
@@ -297,6 +302,11 @@
       <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>sdk-client</artifactId>
+        <version>${milo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>sdk-core</artifactId>
         <version>${milo.version}</version>
       </dependency>
       <dependency>
