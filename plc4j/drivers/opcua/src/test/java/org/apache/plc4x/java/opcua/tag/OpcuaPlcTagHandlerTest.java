@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.opcua.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,8 +43,10 @@ class OpcuaPlcTagHandlerTest {
     }
 
     @Test
-    void doesNotSupportBrowsing() {
-        assertThatThrownBy(() -> handler.parseQuery("anything"))
-            .isInstanceOf(UnsupportedOperationException.class);
+    void supportsBrowsing() {
+        PlcQuery query = handler.parseQuery("anything");
+        assertThat(query).isNotNull();
+        assertThat(query.getQueryString()).isEqualTo("anything");
     }
+
 }

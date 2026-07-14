@@ -46,7 +46,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-transports-api</artifactId>
       <version>0.14.0-SNAPSHOT</version>
     </dependency>
   </dependencies>

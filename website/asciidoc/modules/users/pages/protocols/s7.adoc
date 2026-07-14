@@ -333,6 +333,56 @@ Not all S7 device types support the same full set of memory areas, so the last c
 
 
 
+== Siemens S7-200 / S7-200 Smart
+
+The S7-200 and the newer S7-200 Smart are lower-end controllers that behave a little differently from the S7-300/400/1200/1500 family. They can still be reached with the S7 driver over Ethernet (ISO-on-TCP), but they need a couple of specific connection settings and use a different convention for addressing their variable memory.
+
+This section collects what the community has found to work (see PLC4X issues #1925 and #2641).
+
+=== Connecting
+
+Two things are important when connecting to an S7-200 (Smart):
+
+. Disable the automatic controller-type detection by passing `controller-type=S7_200`. The S7-200 does not answer the SZL/SSL identification request the driver normally uses to auto-detect the CPU family, so — as with the `LOGO` device mentioned above — the type has to be provided explicitly.
+. Provide the TSAP (Transport Service Access Point) values explicitly. The S7-200 (Smart) expects both the local and the remote TSAP to be `0x0200`, which is `512` in decimal. Set them with `local-tsap=512` and `remote-tsap=512`; a non-zero TSAP overrides the rack/slot based addressing.
+
+A minimal, working connection string therefore looks like this:
+
+----
+s7://192.168.12.100?local-tsap=512&remote-tsap=512&controller-type=S7_200
+----
+
+`remote-rack=0` and `remote-slot=0` are the defaults, so they are optional, but may be added for clarity:
+
+----
+s7://192.168.12.100?remote-rack=0&remote-slot=0&local-tsap=512&remote-tsap=512&controller-type=S7_200
+----
+
+Both reading and writing have been confirmed to work against an S7-200 Smart with this configuration.
+
+=== Addressing the V (variable) memory area
+
+The S7-200 keeps its user variables in a `V` (variable) memory area, addressed in the Siemens tooling (STEP 7-Micro/WIN) as, for example, `VW310`, `VD732` or `V350.0`. The S7 driver does not have a dedicated `V` memory-area code.
+
+On the S7-200, however, the `V` area is simply an alias for `Data Block 1` (`DB1`). Any `V` address can therefore be read and written by addressing `DB1` instead, using the normal data-block syntax described above:
+
+[cols="2,3,3"]
+|===
+|S7-200 notation |PLC4X address |Meaning
+
+|`VB100`  |`%DB1.DBB100:BYTE`   |single byte at V100
+|`VW310`  |`%DB1.DBW310:INT`    |16-bit word at V310
+|`VD732`  |`%DB1.DBD732:UDINT`  |32-bit double word at V732
+|`V350.0` |`%DB1.DBX350.0:BOOL` |single bit V350.0
+|===
+
+The shorter data-block notation works as well, for example `%DB1:732:UDINT` for `VD732`.
+
+The `M` (flags/markers) memory area is addressed as usual, for example `%M10.0:BOOL` or `%MW20:INT`.
+
+[NOTE,icon=s7_note.png]
+Native support for a dedicated `V` memory-area code may be added in a future release. Until then, please use the `DB1` alias shown above.
+
 == Actors participating in the communication process
 
 PLC programming in general is a Pandora's box!

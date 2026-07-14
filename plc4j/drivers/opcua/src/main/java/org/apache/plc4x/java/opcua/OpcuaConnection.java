@@ -27,18 +27,17 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.metadata.Metadata;
-import org.apache.plc4x.java.api.metadata.time.TimeSource;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
@@ -49,9 +48,8 @@ import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubscriptionHandle;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
-import org.apache.plc4x.java.opcua.tag.OpcuaQualityStatus;
+import org.apache.plc4x.java.opcua.tag.OpcuaQuery;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
-import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.drivers.ConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
 import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
@@ -74,6 +72,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implements OpcuaWire {
 
@@ -164,10 +163,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         try {
             // Discovery only carries information needed for the encrypted modes
             // (it fetches the server certificate). For SecurityPolicy.NONE the
-            // GetEndpoints call adds nothing and — running on the same TCP
-            // socket as the real handshake — a second HELLO after the discovery
-            // CloseSecureChannel makes most servers either reset the connection
-            // or hang waiting for nothing.
+            // GetEndpoints call adds nothing, so we skip it.
             if (configuration.isDiscovery()
                 && configuration.getSecurityPolicy() != null
                 && configuration.getSecurityPolicy() != org.apache.plc4x.java.opcua.security.SecurityPolicy.NONE) {
@@ -176,8 +172,14 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                     .get(configuration.getNegotiationTimeout(), TimeUnit.MILLISECONDS);
                 configuration.setServerCertificate(
                     getX509Certificate(endpoint.getServerCertificate().getStringValue()));
+                // onDiscover() already performed Hello + OpenSecureChannel on this TCP
+                // connection, so the secure channel is open. Reuse it and only establish the
+                // session — a second Hello on the same connection would stall (Hello is a
+                // once-per-connection message).
+                channel.onConnectSession().get(configuration.getNegotiationTimeout(), TimeUnit.MILLISECONDS);
+            } else {
+                channel.onConnect().get(configuration.getNegotiationTimeout(), TimeUnit.MILLISECONDS);
             }
-            channel.onConnect().get(configuration.getNegotiationTimeout(), TimeUnit.MILLISECONDS);
             connected = true;
             LOGGER.info("Established connection to server");
         } catch (Exception e) {
@@ -369,6 +371,206 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             response.put(tagName, new DefaultPlcResponseItem<>(responseCode, value));
         }
         return response;
+    }
+
+    // The standard "Objects" folder — the usual entry point into a server's address space.
+    private static final String OBJECTS_FOLDER_ADDRESS = "ns=0;i=85";
+    // HierarchicalReferences (i=33): browsing only these (plus subtypes) yields the clean
+    // containment tree (Organizes / HasComponent / HasProperty, ...) instead of every
+    // reference type (which would drag in type definitions and other non-containment noise).
+    private static final NodeId HIERARCHICAL_REFERENCES = new NodeId(new NodeIdNumeric(0, 33L));
+    // resultMask 0x3F -> return all reference fields (referenceType, isForward, nodeClass,
+    // browseName, displayName, typeDefinition).
+    private static final long BROWSE_RESULT_MASK_ALL = 0x3FL;
+
+    @Override
+    protected CompletableFuture<PlcBrowseResponse> onBrowse(PlcBrowseRequest browseRequest) {
+        return onBrowseWithInterceptor(browseRequest, (queryName, query, item) -> true);
+    }
+
+    @Override
+    protected CompletableFuture<PlcBrowseResponse> onBrowseWithInterceptor(PlcBrowseRequest browseRequest,
+                                                                           PlcBrowseRequestInterceptor interceptor) {
+        Map<String, PlcResponseCode> responseCodes = new ConcurrentHashMap<>();
+        Map<String, List<PlcBrowseItem>> values = new ConcurrentHashMap<>();
+        List<CompletableFuture<?>> queryFutures = new ArrayList<>();
+
+        for (String queryName : browseRequest.getQueryNames()) {
+            PlcQuery query = browseRequest.getQuery(queryName);
+            String startAddress = query.getQueryString();
+            // An empty query or the "**" wildcard means "browse everything": start at the
+            // standard Objects folder and recurse the whole sub-tree. Otherwise the query is
+            // the address of the node to start browsing from.
+            if (startAddress == null || startAddress.isBlank() || "**".equals(startAddress.trim())) {
+                startAddress = OBJECTS_FOLDER_ADDRESS;
+            }
+            NodeId startNodeId;
+            try {
+                startNodeId = generateNodeId(OpcuaTag.of(startAddress));
+            } catch (Exception e) {
+                LOGGER.warn("Invalid browse start node '{}' for query '{}'", startAddress, queryName, e);
+                responseCodes.put(queryName, PlcResponseCode.INVALID_ADDRESS);
+                values.put(queryName, Collections.emptyList());
+                continue;
+            }
+            // A shared, global set of already-visited nodes provides cycle detection (a node
+            // is never expanded twice) and keeps a well-formed tree from being duplicated.
+            Set<String> visited = ConcurrentHashMap.newKeySet();
+            queryFutures.add(
+                browseNode(startNodeId, visited, queryName, query, interceptor)
+                    .handle((items, error) -> {
+                        if (error != null) {
+                            LOGGER.warn("Browsing failed for query '{}'", queryName, error);
+                            responseCodes.put(queryName, PlcResponseCode.INTERNAL_ERROR);
+                            values.put(queryName, Collections.emptyList());
+                        } else {
+                            responseCodes.put(queryName, PlcResponseCode.OK);
+                            values.put(queryName, items);
+                        }
+                        return null;
+                    }));
+        }
+
+        return CompletableFuture.allOf(queryFutures.toArray(new CompletableFuture[0]))
+            .thenApply(v -> new DefaultPlcBrowseResponse(browseRequest, responseCodes, values));
+    }
+
+    /**
+     * Browses the forward hierarchical references of {@code nodeId} and returns each referenced
+     * node as a {@link PlcBrowseItem}, recursing into every not-yet-visited child so the full
+     * sub-tree is returned. {@code visited} guards against reference cycles.
+     */
+    private CompletableFuture<List<PlcBrowseItem>> browseNode(NodeId nodeId, Set<String> visited, String queryName,
+                                                              PlcQuery query, PlcBrowseRequestInterceptor interceptor) {
+        return browseReferences(nodeId, null, new ArrayList<>()).thenCompose(references -> {
+            List<CompletableFuture<PlcBrowseItem>> itemFutures = new ArrayList<>();
+            for (ReferenceDescription reference : references) {
+                String childAddress = addressOf(reference.getNodeId());
+                if (childAddress == null) {
+                    // Node identifier form we can't turn back into an address (e.g. opaque) — skip.
+                    continue;
+                }
+                CompletableFuture<Map<String, PlcBrowseItem>> childrenFuture;
+                if (visited.add(childAddress)) {
+                    childrenFuture = browseNode(generateNodeId(OpcuaTag.of(childAddress)),
+                        visited, queryName, query, interceptor)
+                        .thenApply(childItems -> childItems.stream()
+                            .collect(Collectors.toMap(PlcBrowseItem::getName, item -> item,
+                                (a, b) -> a, LinkedHashMap::new)));
+                } else {
+                    // Already visited (cycle or shared node) — list it but don't expand again.
+                    childrenFuture = CompletableFuture.completedFuture(Collections.emptyMap());
+                }
+                itemFutures.add(childrenFuture.thenApply(children -> buildBrowseItem(reference, childAddress, children)));
+            }
+            return CompletableFuture.allOf(itemFutures.toArray(new CompletableFuture[0]))
+                .thenApply(v -> itemFutures.stream()
+                    .map(CompletableFuture::join)
+                    .filter(item -> interceptor.intercept(queryName, query, item))
+                    .collect(Collectors.toList()));
+        });
+    }
+
+    /**
+     * Issues a single Browse (or BrowseNext when {@code continuationPoint} is set) and follows
+     * continuation points until the server has returned all references of the node.
+     */
+    private CompletableFuture<List<ReferenceDescription>> browseReferences(NodeId nodeId, PascalByteString continuationPoint,
+                                                                           List<ReferenceDescription> accumulator) {
+        CompletableFuture<BrowseResult> resultFuture;
+        if (continuationPoint == null) {
+            BrowseDescription description = new BrowseDescription(
+                nodeId,
+                BrowseDirection.browseDirectionForward,
+                HIERARCHICAL_REFERENCES,
+                true,               // include reference subtypes
+                0L,                 // nodeClassMask 0 -> all node classes
+                BROWSE_RESULT_MASK_ALL);
+            BrowseRequest request = new BrowseRequest(
+                conversation.createRequestHeader(),
+                new ViewDescription(new NodeId(new NodeIdTwoByte((short) 0)), 0L, 0L),
+                0L,                 // requestedMaxReferencesPerNode 0 -> server decides
+                Collections.singletonList(description));
+            resultFuture = conversation.submit(request, BrowseResponse.class)
+                .thenApply(response -> response.getResults().get(0));
+        } else {
+            BrowseNextRequest request = new BrowseNextRequest(
+                conversation.createRequestHeader(),
+                false,              // don't release the continuation point, we want the next batch
+                Collections.singletonList(continuationPoint));
+            resultFuture = conversation.submit(request, BrowseNextResponse.class)
+                .thenApply(response -> response.getResults().get(0));
+        }
+        return resultFuture.thenCompose(result -> {
+            if (result.getReferences() != null) {
+                accumulator.addAll(result.getReferences());
+            }
+            PascalByteString nextContinuationPoint = result.getContinuationPoint();
+            if (nextContinuationPoint != null && nextContinuationPoint.getStringLength() > 0) {
+                return browseReferences(nodeId, nextContinuationPoint, accumulator);
+            }
+            return CompletableFuture.completedFuture(accumulator);
+        });
+    }
+
+    private PlcBrowseItem buildBrowseItem(ReferenceDescription reference, String address, Map<String, PlcBrowseItem> children) {
+        OpcuaTag tag = OpcuaTag.of(address);
+        NodeClass nodeClass = reference.getNodeClass();
+        boolean isVariable = nodeClass == NodeClass.nodeClassVariable;
+        String name = localizedTextValue(reference.getDisplayName());
+        if (name == null || name.isEmpty()) {
+            name = qualifiedNameValue(reference.getBrowseName());
+        }
+
+        Map<String, PlcValue> options = new HashMap<>();
+        if (nodeClass != null) {
+            options.put("node-class", new PlcSTRING(nodeClass.name()));
+        }
+        String browseName = qualifiedNameValue(reference.getBrowseName());
+        if (browseName != null) {
+            options.put("browse-name", new PlcSTRING(browseName));
+        }
+
+        // Phase 1: only variable nodes are readable/writable. The actual access rights (and the
+        // data type) are refined once server-side type resolution is wired in.
+        return new DefaultPlcBrowseItem(tag, name, isVariable, isVariable,
+            Collections.<PlcSubscriptionType>emptySet(), false, Collections.emptyList(), children, options);
+    }
+
+    /** Formats the target node of a reference back into an OpcuaTag address (or null if unsupported). */
+    private static String addressOf(ExpandedNodeId expandedNodeId) {
+        if (expandedNodeId == null) {
+            return null;
+        }
+        NodeIdTypeDefinition nodeId = expandedNodeId.getNodeId();
+        String identifier = nodeId.getIdentifier();
+        if (nodeId instanceof NodeIdTwoByte) {
+            return "ns=0;i=" + identifier;
+        } else if (nodeId instanceof NodeIdFourByte fourByte) {
+            return "ns=" + fourByte.getNamespaceIndex() + ";i=" + identifier;
+        } else if (nodeId instanceof NodeIdNumeric numeric) {
+            return "ns=" + numeric.getNamespaceIndex() + ";i=" + identifier;
+        } else if (nodeId instanceof NodeIdString string) {
+            return "ns=" + string.getNamespaceIndex() + ";s=" + identifier;
+        }
+        // GUID and opaque (ByteString) node identifiers are not round-tripped in Phase 1:
+        // NodeIdGuid#getIdentifier() returns the raw byte-array toString(), which the tag
+        // parser can't turn back into a usable node id. Such nodes are skipped for now.
+        return null;
+    }
+
+    private static String localizedTextValue(LocalizedText localizedText) {
+        if (localizedText == null || !localizedText.getTextSpecified() || localizedText.getText() == null) {
+            return null;
+        }
+        return localizedText.getText().getStringValue();
+    }
+
+    private static String qualifiedNameValue(QualifiedName qualifiedName) {
+        if (qualifiedName == null || qualifiedName.getName() == null) {
+            return null;
+        }
+        return qualifiedName.getName().getStringValue();
     }
 
     public static PlcValue variantToPlcValue(PlcTag tag, Variant variant) {
