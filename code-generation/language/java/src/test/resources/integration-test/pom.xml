@@ -145,7 +145,7 @@
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-spi</artifactId>
+    <artifactId>plc4j-spi-buffers-byte</artifactId>
     <version>@project.version@</version>
   </dependency>
 

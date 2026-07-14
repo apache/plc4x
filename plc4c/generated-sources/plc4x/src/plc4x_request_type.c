@@ -97,11 +97,17 @@ plc4c_plc4x_read_write_plc4x_request_type plc4c_plc4x_read_write_plc4x_request_t
     if(strcmp(value_string, "UNSUBSCRIPTION_RESPONSE") == 0) {
         return plc4c_plc4x_read_write_plc4x_request_type_UNSUBSCRIPTION_RESPONSE;
     }
+    if(strcmp(value_string, "AUTH_REQUEST") == 0) {
+        return plc4c_plc4x_read_write_plc4x_request_type_AUTH_REQUEST;
+    }
+    if(strcmp(value_string, "AUTH_RESPONSE") == 0) {
+        return plc4c_plc4x_read_write_plc4x_request_type_AUTH_RESPONSE;
+    }
     return -1;
 }
 
 int plc4c_plc4x_read_write_plc4x_request_type_num_values() {
-  return 12;
+  return 14;
 }
 
 plc4c_plc4x_read_write_plc4x_request_type plc4c_plc4x_read_write_plc4x_request_type_value_for_index(int index) {
@@ -141,6 +147,12 @@ plc4c_plc4x_read_write_plc4x_request_type plc4c_plc4x_read_write_plc4x_request_t
       }
       case 11: {
         return plc4c_plc4x_read_write_plc4x_request_type_UNSUBSCRIPTION_RESPONSE;
+      }
+      case 12: {
+        return plc4c_plc4x_read_write_plc4x_request_type_AUTH_REQUEST;
+      }
+      case 13: {
+        return plc4c_plc4x_read_write_plc4x_request_type_AUTH_RESPONSE;
       }
       default: {
         return -1;

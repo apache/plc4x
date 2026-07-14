@@ -41,7 +41,9 @@ enum plc4c_plc4x_read_write_plc4x_request_type {
   plc4c_plc4x_read_write_plc4x_request_type_SUBSCRIPTION_REQUEST = 0x09,
   plc4c_plc4x_read_write_plc4x_request_type_SUBSCRIPTION_RESPONSE = 0x0A,
   plc4c_plc4x_read_write_plc4x_request_type_UNSUBSCRIPTION_REQUEST = 0x0B,
-  plc4c_plc4x_read_write_plc4x_request_type_UNSUBSCRIPTION_RESPONSE = 0x0C
+  plc4c_plc4x_read_write_plc4x_request_type_UNSUBSCRIPTION_RESPONSE = 0x0C,
+  plc4c_plc4x_read_write_plc4x_request_type_AUTH_REQUEST = 0x0D,
+  plc4c_plc4x_read_write_plc4x_request_type_AUTH_RESPONSE = 0x0E
 };
 typedef enum plc4c_plc4x_read_write_plc4x_request_type plc4c_plc4x_read_write_plc4x_request_type;
 

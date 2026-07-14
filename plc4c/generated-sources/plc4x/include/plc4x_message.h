@@ -44,12 +44,14 @@ typedef struct plc4c_plc4x_read_write_plc4x_message_discriminator plc4c_plc4x_re
 
 // Enum assigning each subtype an individual id.
 enum plc4c_plc4x_read_write_plc4x_message_type {
-  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_request = 0,
-  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_response = 1,
-  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_read_request = 2,
-  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_read_response = 3,
-  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_write_request = 4,
-  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_write_response = 5};
+  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_auth_request = 0,
+  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_auth_response = 1,
+  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_request = 2,
+  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_response = 3,
+  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_read_request = 4,
+  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_read_response = 5,
+  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_write_request = 6,
+  plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_write_response = 7};
 typedef enum plc4c_plc4x_read_write_plc4x_message_type plc4c_plc4x_read_write_plc4x_message_type;
 
 // Function to get the discriminator values for a given type.
@@ -65,6 +67,13 @@ struct plc4c_plc4x_read_write_plc4x_message {
   uint8_t version;
   uint16_t request_id;
   union {
+    struct { /* Plc4xAuthRequest */
+      char* plc4x_auth_request_username;
+      char* plc4x_auth_request_password;
+    };
+    struct { /* Plc4xAuthResponse */
+      plc4c_plc4x_read_write_plc4x_response_code plc4x_auth_response_response_code;
+    };
     struct { /* Plc4xConnectRequest */
       char* plc4x_connect_request_connection_string;
     };
