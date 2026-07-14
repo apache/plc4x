@@ -593,8 +593,12 @@ class CachedPlcConnectionManagerTest {
         PlcConnection connection1 = manager.getConnection("test:tcp://localhost");
         connection1.close();
 
-        // Wait for connection to become idle beyond threshold
-        Thread.sleep(600);
+        // Wait for connection to become idle beyond threshold.
+        // Use a generous margin over the 500ms threshold: the connection is only marked
+        // "requires validation" by a task on the (single-thread) scheduler that fires at the
+        // threshold, and on a loaded CI runner that task can be delayed. A small margin
+        // (e.g. 100ms) makes this test flaky; 1500ms gives the scheduler ample room.
+        Thread.sleep(1500);
 
         // Reset ping mock to track subsequent calls
         reset(mockConnection);
