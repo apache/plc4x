@@ -188,14 +188,6 @@ func (b *_BinaryExtensionObjectWithMask) CreateBinaryExtensionObjectWithMaskBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BinaryExtensionObjectWithMask) GetEncodingMaskXmlBody() bool {
-	return bool(false)
-}
-
-func (m *_BinaryExtensionObjectWithMask) GetEncodingMaskBinaryBody() bool {
-	return bool(true)
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -250,7 +242,7 @@ func (m *_BinaryExtensionObjectWithMask) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BinaryExtensionObjectWithMask) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectWithMask, extensionId int32, includeEncodingMask bool) (__binaryExtensionObjectWithMask BinaryExtensionObjectWithMask, err error) {
+func (m *_BinaryExtensionObjectWithMask) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectWithMask, extensionId int32, standardEncoding bool, includeEncodingMask bool) (__binaryExtensionObjectWithMask BinaryExtensionObjectWithMask, err error) {
 	m.ExtensionObjectWithMaskContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

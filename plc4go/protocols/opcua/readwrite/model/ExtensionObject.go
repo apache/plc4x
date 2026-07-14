@@ -55,6 +55,11 @@ type ExtensionObjectContract interface {
 	GetTypeId() ExpandedNodeId
 	// GetExtensionId returns ExtensionId (virtual field)
 	GetExtensionId() int32
+	// GetStandardEncoding returns StandardEncoding (virtual field)
+	// Whether the encoding node refers to a well-known standard type (namespace 0). Computed here
+	// where typeId is in scope and threaded down like extensionId, so the masked-body dispatch can
+	// tell a decodable standard type from a custom one.
+	GetStandardEncoding() bool
 	// GetBody returns Body (abstract field)
 	GetBody() ExtensionObjectDefinition
 	// IsExtensionObject is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -266,6 +271,13 @@ func (pm *_ExtensionObject) GetExtensionId() int32 {
 	return int32(utils.InlineIf(bool((m.GetTypeId()) == (nil)), func() any { return int32(int32(0)) }, func() any { return int32(ExtensionId(ctx, m.GetTypeId())) }).(int32))
 }
 
+func (pm *_ExtensionObject) GetStandardEncoding() bool {
+	m := pm._SubType
+	ctx := context.Background()
+	_ = ctx
+	return bool(IsStandardEncoding(ctx, m.GetTypeId()))
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -304,6 +316,8 @@ func (m *_ExtensionObject) getLengthInBits(ctx context.Context) uint16 {
 
 	// Simple field (typeId)
 	lengthInBits += m.TypeId.GetLengthInBits(ctx)
+
+	// A virtual field doesn't have any in- or output.
 
 	// A virtual field doesn't have any in- or output.
 
@@ -368,6 +382,12 @@ func (m *_ExtensionObject) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	_ = extensionId
 
+	standardEncoding, err := ReadVirtualField[bool](ctx, "standardEncoding", (*bool)(nil), IsStandardEncoding(ctx, typeId), codegen.WithEncoding("UTF8"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'standardEncoding' field"))
+	}
+	_ = standardEncoding
+
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _child ExtensionObject
 	switch {
@@ -376,7 +396,7 @@ func (m *_ExtensionObject) parse(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(err, "Error parsing sub-type RootExtensionObject for type-switch of ExtensionObject")
 		}
 	case includeEncodingMask == bool(true): // ExtensionObjectWithMask
-		if _child, err = new(_ExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, includeEncodingMask); err != nil {
+		if _child, err = new(_ExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ExtensionObjectWithMask for type-switch of ExtensionObject")
 		}
 	default:
@@ -410,6 +430,12 @@ func (pm *_ExtensionObject) serializeParent(ctx context.Context, writeBuffer uti
 	_ = extensionId
 	if _extensionIdErr := writeBuffer.WriteVirtual(ctx, "extensionId", m.GetExtensionId()); _extensionIdErr != nil {
 		return errors.Wrap(_extensionIdErr, "Error serializing 'extensionId' field")
+	}
+	// Virtual field
+	standardEncoding := m.GetStandardEncoding()
+	_ = standardEncoding
+	if _standardEncodingErr := writeBuffer.WriteVirtual(ctx, "standardEncoding", m.GetStandardEncoding()); _standardEncodingErr != nil {
+		return errors.Wrap(_standardEncodingErr, "Error serializing 'standardEncoding' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

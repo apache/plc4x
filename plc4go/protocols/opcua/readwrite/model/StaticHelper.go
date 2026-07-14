@@ -42,3 +42,34 @@ func ExtensionId(_ context.Context, expandedNodeId ExpandedNodeId) int32 {
 	}
 	return int32(nodeId)
 }
+
+// IsStandardEncoding reports whether the encoding NodeId of an ExtensionObject refers to a
+// well-known OPC UA standard type, i.e. it lives in namespace 0 and is not referenced by a
+// namespace URI. Custom / user-defined structure encodings live in namespace >= 1; their bodies
+// can't be decoded by the generated dispatch and are captured as raw bytes instead.
+func IsStandardEncoding(_ context.Context, expandedNodeId ExpandedNodeId) bool {
+	if expandedNodeId == nil {
+		return true
+	}
+	// A namespace referenced by URI is, by definition, not the standard OPC UA namespace (0).
+	if expandedNodeId.GetNamespaceURISpecified() {
+		return false
+	}
+	switch nodeId := expandedNodeId.GetNodeId().(type) {
+	case NodeIdTwoByte:
+		// The two-byte form is always namespace 0.
+		return true
+	case NodeIdFourByte:
+		return nodeId.GetNamespaceIndex() == 0
+	case NodeIdNumeric:
+		return nodeId.GetNamespaceIndex() == 0
+	case NodeIdString:
+		return nodeId.GetNamespaceIndex() == 0
+	case NodeIdGuid:
+		return nodeId.GetNamespaceIndex() == 0
+	case NodeIdByteString:
+		return nodeId.GetNamespaceIndex() == 0
+	default:
+		return false
+	}
+}

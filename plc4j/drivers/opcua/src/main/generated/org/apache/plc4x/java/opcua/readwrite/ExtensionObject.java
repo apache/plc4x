@@ -66,6 +66,13 @@ public abstract class ExtensionObject implements Message {
     return (int) ((((typeId) == (null)) ? 0 : StaticHelper.extensionId(typeId)));
   }
 
+  /**
+   * Virtual field standardEncoding
+   */
+  public boolean getStandardEncoding() {
+    return (boolean) (StaticHelper.isStandardEncoding(typeId));
+  }
+
   public static ExtensionObject staticParse(ReadBuffer readBuffer, boolean includeEncodingMask)
       throws BufferException {
     readBuffer.pushContext(WithOption.WithName("ExtensionObject"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
@@ -77,12 +84,15 @@ public abstract class ExtensionObject implements Message {
     // Virtual Field: extensionId (doesn't parse anything, just makes the value available)
     int extensionId = FieldReaderFactory.readVirtualField(int.class, (((typeId) == (null)) ? 0 : StaticHelper.extensionId(typeId)), WithOption.WithName("extensionId"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
+    // Virtual Field: standardEncoding (doesn't parse anything, just makes the value available)
+    boolean standardEncoding = FieldReaderFactory.readVirtualField(boolean.class, StaticHelper.isStandardEncoding(typeId), WithOption.WithName("standardEncoding"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+
     // Switch Field
     ExtensionObjectBuilder builder = null;
     if (EvaluationHelper.equals(includeEncodingMask, (boolean) (false))) {
       builder = RootExtensionObject.staticParseExtensionObjectBuilder(readBuffer, extensionId, includeEncodingMask);
     } else if (EvaluationHelper.equals(includeEncodingMask, (boolean) (true))) {
-      builder = ExtensionObjectWithMask.staticParseExtensionObjectBuilder(readBuffer, extensionId, includeEncodingMask);
+      builder = ExtensionObjectWithMask.staticParseExtensionObjectBuilder(readBuffer, extensionId, standardEncoding, includeEncodingMask);
     }
     if (builder == null) {
       throw new BufferException("Unsupported case for discriminated type parameters parameters [includeEncodingMask]");
@@ -102,6 +112,9 @@ public abstract class ExtensionObject implements Message {
 
     // Virtual Field: extensionId (doesn't serialize anything, just makes the value available)
     int extensionId = (int) getExtensionId();
+
+    // Virtual Field: standardEncoding (doesn't serialize anything, just makes the value available)
+    boolean standardEncoding = (boolean) getStandardEncoding();
 
     // Switch Field
     serializeExtensionObjectChild(writeBuffer);
@@ -123,6 +136,8 @@ public abstract class ExtensionObject implements Message {
     lengthInBits += typeId.getLengthInBits();
 
     // Virtual Field: extensionId (doesn't produce any output, just makes the value available)
+
+    // Virtual Field: standardEncoding (doesn't produce any output, just makes the value available)
 
     // Switch Field
     // (the subtype will instead add the actual length of subtype elements)

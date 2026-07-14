@@ -39,16 +39,6 @@ public abstract class ExtensionObjectWithMask extends ExtensionObject implements
     this.encodingMask = encodingMask;
   }
 
-  /**
-   * Discriminator field encodingMaskBinaryBody
-   */
-  public abstract boolean getEncodingMaskBinaryBody();
-
-  /**
-   * Discriminator field encodingMaskXmlBody
-   */
-  public abstract boolean getEncodingMaskXmlBody();
-
   protected abstract void serializeExtensionObjectWithMaskChild(WriteBuffer writeBuffer) throws
       BufferException;
 
@@ -67,23 +57,36 @@ public abstract class ExtensionObjectWithMask extends ExtensionObject implements
     return encodingMask;
   }
 
+  /**
+   * Virtual field bodyKind
+   */
+  public byte getBodyKind() {
+    return (byte) (((encodingMask.getBinaryBody()) ? (((getStandardEncoding()) ? 1 : 2)) : 0));
+  }
+
   public static ExtensionObjectBuilder staticParseExtensionObjectBuilder(ReadBuffer readBuffer,
-      int extensionId, boolean includeEncodingMask) throws BufferException {
+      int extensionId, boolean standardEncoding, boolean includeEncodingMask) throws
+      BufferException {
     readBuffer.pushContext(WithOption.WithName("ExtensionObjectWithMask"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: encodingMask
     ExtensionObjectEncodingMask encodingMask = FieldReaderFactory.readSimpleField(DataReaderFactory.readComplex(() -> (ExtensionObjectEncodingMask) ExtensionObjectEncodingMask.staticParse(readBuffer), readBuffer), WithOption.WithName("encodingMask"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
 
+    // Virtual Field: bodyKind (doesn't parse anything, just makes the value available)
+    byte bodyKind = FieldReaderFactory.readVirtualField(byte.class, ((encodingMask.getBinaryBody()) ? (((standardEncoding) ? 1 : 2)) : 0), WithOption.WithName("bodyKind"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+
     // Switch Field
     ExtensionObjectWithMaskBuilder builder = null;
-    if (EvaluationHelper.equals(encodingMask.getXmlBody(), (boolean) (false)) && EvaluationHelper.equals(encodingMask.getBinaryBody(), (boolean) (true))) {
-      builder = BinaryExtensionObjectWithMask.staticParseExtensionObjectWithMaskBuilder(readBuffer, extensionId, includeEncodingMask);
-    } else if (EvaluationHelper.equals(encodingMask.getXmlBody(), (boolean) (false)) && EvaluationHelper.equals(encodingMask.getBinaryBody(), (boolean) (false))) {
-      builder = NullExtensionObjectWithMask.staticParseExtensionObjectWithMaskBuilder(readBuffer, extensionId, includeEncodingMask);
+    if (EvaluationHelper.equals(bodyKind, (byte) (1))) {
+      builder = BinaryExtensionObjectWithMask.staticParseExtensionObjectWithMaskBuilder(readBuffer, extensionId, standardEncoding, includeEncodingMask);
+    } else if (EvaluationHelper.equals(bodyKind, (byte) (2))) {
+      builder = RawBinaryExtensionObjectWithMask.staticParseExtensionObjectWithMaskBuilder(readBuffer, extensionId, standardEncoding, includeEncodingMask);
+    } else if (EvaluationHelper.equals(bodyKind, (byte) (0))) {
+      builder = NullExtensionObjectWithMask.staticParseExtensionObjectWithMaskBuilder(readBuffer, extensionId, standardEncoding, includeEncodingMask);
     }
     if (builder == null) {
-      throw new BufferException("Unsupported case for discriminated type parameters parameters [encodingMask.getXmlBody(), encodingMask.getBinaryBody()]");
+      throw new BufferException("Unsupported case for discriminated type parameters parameters [bodyKind]");
     }
 
     readBuffer.popContext();
@@ -96,6 +99,9 @@ public abstract class ExtensionObjectWithMask extends ExtensionObject implements
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: encodingMask
     FieldWriterFactory.writeSimpleField((ExtensionObjectEncodingMask) encodingMask, DataWriterFactory.writeComplex(writeBuffer), WithOption.WithName("encodingMask"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
+
+    // Virtual Field: bodyKind (doesn't serialize anything, just makes the value available)
+    byte bodyKind = (byte) getBodyKind();
 
     // Switch Field
     serializeExtensionObjectWithMaskChild(writeBuffer);
@@ -115,6 +121,8 @@ public abstract class ExtensionObjectWithMask extends ExtensionObject implements
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Simple Field: encodingMask
     lengthInBits += encodingMask.getLengthInBits();
+
+    // Virtual Field: bodyKind (doesn't produce any output, just makes the value available)
 
     // Switch Field
     // (the subtype will instead add the actual length of subtype elements)

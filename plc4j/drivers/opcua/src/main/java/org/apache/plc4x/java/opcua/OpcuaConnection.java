@@ -48,7 +48,12 @@ import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.context.OpcuaWire;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubscriptionHandle;
+import org.apache.plc4x.java.opcua.protocol.chunk.PayloadConverter;
 import org.apache.plc4x.java.opcua.readwrite.*;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.drivers.ConnectionBase;
@@ -63,7 +68,12 @@ import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transports.api.TransportInstance;
 import org.apache.plc4x.java.transport.tcp.TcpTransportInstance;
 
+import java.io.ByteArrayInputStream;
 import java.net.InetSocketAddress;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 import org.slf4j.Logger;
@@ -113,6 +123,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     // types are static for the lifetime of a session, so once resolved they never need
     // re-reading — both browsing and (Phase 4) typed read/write resolve through this cache.
     private final Map<String, NodeAttributes> nodeTypeCache = new ConcurrentHashMap<>();
+
+    // Phase 5: per-session cache of resolved StructureDefinitions (the field layout of custom struct
+    // types), keyed by the DataType node address. Populated lazily on the first read of a value of
+    // that type and reused for all subsequent reads/writes.
+    private final Map<String, StructureDefinition> structureDefinitionCache = new ConcurrentHashMap<>();
 
     public OpcuaConnection(OpcuaConfiguration configuration,
                            TransportInstance<?> transportInstance,
@@ -330,9 +345,31 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             readValueArray
         );
 
-        return conversation.submit(opcuaReadRequest, ReadResponse.class).thenApply(response -> {
-            Map<String, PlcResponseItem<PlcValue>> mappedResponse = readResponse(tagMap, response.getResults());
-            return new DefaultPlcReadResponse(request, mappedResponse);
+        return conversation.submit(opcuaReadRequest, ReadResponse.class).thenCompose(response -> {
+            List<DataValue> results = response.getResults();
+            // Any tag whose value came back as a custom struct (captured as raw bytes) needs its
+            // StructureDefinition resolved from the server before the raw body can be decoded into a
+            // PlcStruct. Resolve those up-front (cached per type), then map the whole response.
+            Map<String, CompletableFuture<StructureDefinition>> structFutures = new LinkedHashMap<>();
+            int index = 0;
+            for (String tagName : tagMap.keySet()) {
+                DataValue dataValue = results.get(index++);
+                if (dataValue.getValueSpecified() && containsRawStruct(dataValue.getValue())) {
+                    ExpandedNodeId encodingNodeId = rawStructEncodingId(dataValue.getValue());
+                    structFutures.put(tagName,
+                        resolveStructureDefinition((OpcuaTag) tagMap.get(tagName), encodingNodeId));
+                }
+            }
+            if (structFutures.isEmpty()) {
+                return CompletableFuture.completedFuture(new DefaultPlcReadResponse(request,
+                    readResponse(tagMap, results, Collections.emptyMap())));
+            }
+            return CompletableFuture.allOf(structFutures.values().toArray(new CompletableFuture[0]))
+                .thenApply(v -> {
+                    Map<String, StructureDefinition> structDefs = new HashMap<>();
+                    structFutures.forEach((name, future) -> structDefs.put(name, future.getNow(null)));
+                    return new DefaultPlcReadResponse(request, readResponse(tagMap, results, structDefs));
+                });
         });
     }
 
@@ -365,6 +402,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     }
 
     public Map<String, PlcResponseItem<PlcValue>> readResponse(Map<String, PlcTag> tagMap, List<DataValue> results) {
+        return readResponse(tagMap, results, Collections.emptyMap());
+    }
+
+    public Map<String, PlcResponseItem<PlcValue>> readResponse(Map<String, PlcTag> tagMap, List<DataValue> results,
+                                                               Map<String, StructureDefinition> structDefs) {
         Map<String, PlcResponseItem<PlcValue>> response = new HashMap<>();
         int index = 0;
         for (String tagName : tagMap.keySet()) {
@@ -373,7 +415,12 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             DataValue dataValue = results.get(index++);
             PlcResponseCode responseCode = PlcResponseCode.OK;
             if (dataValue.getValueSpecified()) {
-                value = variantToPlcValue(tag, dataValue.getValue());
+                StructureDefinition structDef = structDefs.get(tagName);
+                if (structDef != null && dataValue.getValue() instanceof VariantExtensionObject) {
+                    value = extensionObjectToPlcValue((VariantExtensionObject) dataValue.getValue(), structDef);
+                } else {
+                    value = variantToPlcValue(tag, dataValue.getValue());
+                }
                 if (value == null) {
                     LOGGER.error("Variant type {} is not supported.", dataValue.getValue().getClass());
                     responseCode = PlcResponseCode.UNSUPPORTED;
@@ -387,6 +434,572 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             response.put(tagName, new DefaultPlcResponseItem<>(responseCode, value));
         }
         return response;
+    }
+
+    // ======================================================================================
+    // Struct (PlcStruct) support — decode custom structure values captured as raw ExtensionObject
+    // bodies against the server-declared StructureDefinition.
+    // ======================================================================================
+
+    /** Whether a Variant carries at least one custom struct captured as raw bytes. */
+    private static boolean containsRawStruct(Variant variant) {
+        if (!(variant instanceof VariantExtensionObject)) {
+            return false;
+        }
+        List<ExtensionObject> extensionObjects = ((VariantExtensionObject) variant).getValue();
+        if (extensionObjects == null) {
+            return false;
+        }
+        return extensionObjects.stream().anyMatch(eo -> eo instanceof RawBinaryExtensionObjectWithMask);
+    }
+
+    /**
+     * Resolves (and caches, by encoding node) the {@link StructureDefinition} of a struct-typed
+     * value. Tries the modern DataTypeDefinition attribute first; if the server doesn't expose it
+     * (pre-1.04 servers), falls back to the legacy binary type dictionary reachable from the
+     * encoding node. Returns null if neither yields a layout.
+     */
+    private CompletableFuture<StructureDefinition> resolveStructureDefinition(OpcuaTag tag, ExpandedNodeId encodingNodeId) {
+        String key = encodingNodeId != null ? nodeIdKey(new NodeId(encodingNodeId.getNodeId())) : cacheKey(tag);
+        StructureDefinition cached = structureDefinitionCache.get(key);
+        if (cached != null) {
+            return CompletableFuture.completedFuture(cached);
+        }
+        return resolveStructureDefinitionModern(tag).thenCompose(modern -> {
+            if (modern != null) {
+                structureDefinitionCache.put(key, modern);
+                return CompletableFuture.completedFuture(modern);
+            }
+            if (encodingNodeId == null) {
+                return CompletableFuture.completedFuture(null);
+            }
+            return resolveStructureDefinitionFromDictionary(encodingNodeId).thenApply(legacy -> {
+                if (legacy != null) {
+                    structureDefinitionCache.put(key, legacy);
+                }
+                return legacy;
+            });
+        }).exceptionally(error -> {
+            LOGGER.warn("Failed to resolve StructureDefinition for tag '{}'", tag, error);
+            return null;
+        });
+    }
+
+    /** Modern path: variable DataType (attr 14) -&gt; data-type node -&gt; DataTypeDefinition (attr 23). */
+    private CompletableFuture<StructureDefinition> resolveStructureDefinitionModern(OpcuaTag tag) {
+        NodeId variableNode = generateNodeId(tag);
+        ReadValueId dataTypeRead = new ReadValueId(variableNode, AttributeId.DataType.getValue(),
+            NULL_STRING, new QualifiedName(0, NULL_STRING));
+        ReadRequest request = new ReadRequest(conversation.createRequestHeader(), 0.0d,
+            TimestampsToReturn.timestampsToReturnNeither, Collections.singletonList(dataTypeRead));
+        return conversation.submit(request, ReadResponse.class).thenCompose(response -> {
+            NodeId dataTypeNodeId = dataTypeNodeIdOf(response.getResults().get(0));
+            if (dataTypeNodeId == null) {
+                return CompletableFuture.completedFuture(null);
+            }
+            return readStructureDefinition(dataTypeNodeId);
+        });
+    }
+
+    /** Reads the DataTypeDefinition attribute (23) of a data-type node and extracts its StructureDefinition. */
+    private CompletableFuture<StructureDefinition> readStructureDefinition(NodeId dataTypeNodeId) {
+        ReadValueId definitionRead = new ReadValueId(dataTypeNodeId, AttributeId.DataTypeDefinition.getValue(),
+            NULL_STRING, new QualifiedName(0, NULL_STRING));
+        ReadRequest request = new ReadRequest(conversation.createRequestHeader(), 0.0d,
+            TimestampsToReturn.timestampsToReturnNeither, Collections.singletonList(definitionRead));
+        return conversation.submit(request, ReadResponse.class).thenApply(response -> {
+            DataValue value = response.getResults().get(0);
+            if (!value.getValueSpecified() || !(value.getValue() instanceof VariantExtensionObject)) {
+                // Server doesn't expose the DataTypeDefinition attribute (e.g. pre-1.04 servers
+                // return BadAttributeIdInvalid); the layout must come from the legacy type
+                // dictionary instead (handled elsewhere).
+                return null;
+            }
+            List<ExtensionObject> extensionObjects = ((VariantExtensionObject) value.getValue()).getValue();
+            if (extensionObjects == null || extensionObjects.isEmpty()) {
+                return null;
+            }
+            // The DataTypeDefinition is a well-known standard type (ns=0;i=101), so it is parsed
+            // into a typed BinaryExtensionObjectWithMask whose body is the StructureDefinition.
+            ExtensionObjectDefinition body = extensionObjects.get(0).getBody();
+            return (body instanceof StructureDefinition) ? (StructureDefinition) body : null;
+        });
+    }
+
+    // Standard reference-type NodeIds used to walk from a struct's binary-encoding node to its
+    // entry in the legacy type dictionary: encoding --HasDescription--> description, and the
+    // dictionary --HasComponent--> description (so description --HasComponent(inverse)--> dictionary).
+    private static final long HAS_COMPONENT = 47L;
+    private static final long HAS_DESCRIPTION = 39L;
+
+    /** The encoding NodeId of the first custom struct (raw ExtensionObject) in a Variant, or null. */
+    private static ExpandedNodeId rawStructEncodingId(Variant variant) {
+        if (!(variant instanceof VariantExtensionObject)) {
+            return null;
+        }
+        for (ExtensionObject extensionObject : ((VariantExtensionObject) variant).getValue()) {
+            if (extensionObject instanceof RawBinaryExtensionObjectWithMask) {
+                return extensionObject.getTypeId();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Legacy path: resolve a struct's field layout from the binary type dictionary. Walks the
+     * encoding node to its DataTypeDescription (which names the type in the dictionary) and to the
+     * DataTypeDictionary node (whose value is the OPC binary schema XML), then parses that schema.
+     */
+    private CompletableFuture<StructureDefinition> resolveStructureDefinitionFromDictionary(ExpandedNodeId encodingNodeId) {
+        NodeId encodingNode = new NodeId(encodingNodeId.getNodeId());
+        return browseFirstTarget(encodingNode, HAS_DESCRIPTION, BrowseDirection.browseDirectionForward)
+            .thenCompose(descriptionNode -> {
+                if (descriptionNode == null) {
+                    return CompletableFuture.completedFuture(null);
+                }
+                CompletableFuture<DataValue> nameValue = readNodeValue(descriptionNode, AttributeId.Value.getValue());
+                CompletableFuture<NodeId> dictionaryNode =
+                    browseFirstTarget(descriptionNode, HAS_COMPONENT, BrowseDirection.browseDirectionInverse);
+                return nameValue.thenCombine(dictionaryNode, (nv, dn) -> new Object[]{nv, dn}).thenCompose(pair -> {
+                    String typeName = stringValueOf((DataValue) pair[0]);
+                    NodeId dictNode = (NodeId) pair[1];
+                    if (typeName == null || dictNode == null) {
+                        return CompletableFuture.completedFuture(null);
+                    }
+                    return readNodeValue(dictNode, AttributeId.Value.getValue()).thenApply(dictValue -> {
+                        byte[] schema = byteStringValueOf(dictValue);
+                        return schema == null ? null : parseBsdStructure(schema, typeName, encodingNode);
+                    });
+                });
+            });
+    }
+
+    /** Browses one reference of the given type/direction and returns the first target node, or null. */
+    private CompletableFuture<NodeId> browseFirstTarget(NodeId source, long referenceTypeId, BrowseDirection direction) {
+        BrowseDescription description = new BrowseDescription(source, direction,
+            new NodeId(new NodeIdNumeric(0, referenceTypeId)), true, 0L, BROWSE_RESULT_MASK_ALL);
+        BrowseRequest request = new BrowseRequest(conversation.createRequestHeader(),
+            new ViewDescription(new NodeId(new NodeIdTwoByte((short) 0)), 0L, 0L), 0L,
+            Collections.singletonList(description));
+        return conversation.submit(request, BrowseResponse.class).thenApply(response -> {
+            BrowseResult result = response.getResults().get(0);
+            if (result.getReferences() == null || result.getReferences().isEmpty()) {
+                return null;
+            }
+            ExpandedNodeId target = result.getReferences().get(0).getNodeId();
+            return target == null ? null : new NodeId(target.getNodeId());
+        });
+    }
+
+    /** Reads a single attribute of a node and returns the raw DataValue. */
+    private CompletableFuture<DataValue> readNodeValue(NodeId node, long attributeId) {
+        ReadValueId readValueId = new ReadValueId(node, attributeId, NULL_STRING, new QualifiedName(0, NULL_STRING));
+        ReadRequest request = new ReadRequest(conversation.createRequestHeader(), 0.0d,
+            TimestampsToReturn.timestampsToReturnNeither, Collections.singletonList(readValueId));
+        return conversation.submit(request, ReadResponse.class).thenApply(response -> response.getResults().get(0));
+    }
+
+    private static String stringValueOf(DataValue dataValue) {
+        if (dataValue == null || !dataValue.getValueSpecified() || !(dataValue.getValue() instanceof VariantString)) {
+            return null;
+        }
+        List<PascalString> values = ((VariantString) dataValue.getValue()).getValue();
+        return (values == null || values.isEmpty()) ? null : values.get(0).getStringValue();
+    }
+
+    private static byte[] byteStringValueOf(DataValue dataValue) {
+        if (dataValue == null || !dataValue.getValueSpecified() || !(dataValue.getValue() instanceof VariantByteString)) {
+            return null;
+        }
+        List<ByteStringArray> arrays = ((VariantByteString) dataValue.getValue()).getValue();
+        if (arrays == null || arrays.isEmpty()) {
+            return null;
+        }
+        List<Short> bytes = arrays.get(0).getValue();
+        byte[] result = new byte[bytes.size()];
+        for (int i = 0; i < bytes.size(); i++) {
+            result[i] = bytes.get(i).byteValue();
+        }
+        return result;
+    }
+
+    /**
+     * Parses the OPC binary schema (bsd.xml) for the named structured type and turns its fields into
+     * a {@link StructureDefinition} of built-in scalars/arrays. Nested/custom field types can't be
+     * expressed this way yet, so such structures return null (decoded via a placeholder instead).
+     */
+    private static StructureDefinition parseBsdStructure(byte[] schema, String typeName, NodeId encodingNodeId) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            Document document = factory.newDocumentBuilder().parse(new ByteArrayInputStream(schema));
+
+            String localName = typeName.contains(":") ? typeName.substring(typeName.indexOf(':') + 1) : typeName;
+            Element match = null;
+            NodeList structuredTypes = document.getElementsByTagNameNS("*", "StructuredType");
+            for (int i = 0; i < structuredTypes.getLength(); i++) {
+                Element structuredType = (Element) structuredTypes.item(i);
+                String name = structuredType.getAttribute("Name");
+                if (name.equals(typeName) || name.equals(localName)) {
+                    match = structuredType;
+                    break;
+                }
+            }
+            if (match == null) {
+                return null;
+            }
+
+            NodeList fieldNodes = match.getElementsByTagNameNS("*", "Field");
+            // Arrays are encoded as a preceding int32 length field plus the array field (which
+            // references that length via LengthField); the length field itself is not a struct
+            // member, so collect and skip those names.
+            Set<String> lengthFields = new HashSet<>();
+            for (int i = 0; i < fieldNodes.getLength(); i++) {
+                String lengthField = ((Element) fieldNodes.item(i)).getAttribute("LengthField");
+                if (lengthField != null && !lengthField.isEmpty()) {
+                    lengthFields.add(lengthField);
+                }
+            }
+            List<StructureField> fields = new ArrayList<>();
+            for (int i = 0; i < fieldNodes.getLength(); i++) {
+                Element field = (Element) fieldNodes.item(i);
+                String name = field.getAttribute("Name");
+                if (lengthFields.contains(name)) {
+                    continue;
+                }
+                Integer builtInId = bsdTypeNameToBuiltInId(field.getAttribute("TypeName"));
+                if (builtInId == null) {
+                    return null;
+                }
+                boolean isArray = !field.getAttribute("LengthField").isEmpty();
+                fields.add(new StructureField(new PascalString(name), null,
+                    new NodeId(new NodeIdNumeric(0, builtInId.longValue())), isArray ? 1 : -1, null, 0L, false));
+            }
+            return new StructureDefinition(encodingNodeId, new NodeId(new NodeIdNumeric(0, 22L)),
+                StructureType.structureTypeStructure, fields);
+        } catch (Exception e) {
+            LOGGER.warn("Failed to parse type dictionary for '{}'", typeName, e);
+            return null;
+        }
+    }
+
+    /** Maps an OPC binary-schema TypeName (e.g. "opc:Int32") to its OPC UA built-in data-type id. */
+    private static Integer bsdTypeNameToBuiltInId(String typeName) {
+        if (typeName == null) {
+            return null;
+        }
+        String local = typeName.contains(":") ? typeName.substring(typeName.indexOf(':') + 1) : typeName;
+        switch (local) {
+            case "Boolean":    return 1;
+            case "SByte":      return 2;
+            case "Byte":       return 3;
+            case "Int16":      return 4;
+            case "UInt16":     return 5;
+            case "Int32":      return 6;
+            case "UInt32":     return 7;
+            case "Int64":      return 8;
+            case "UInt64":     return 9;
+            case "Float":      return 10;
+            case "Double":     return 11;
+            case "String":
+            case "CharArray":  return 12;
+            case "DateTime":   return 13;
+            case "Guid":       return 14;
+            case "ByteString": return 15;
+            default:           return null;
+        }
+    }
+
+    /** Turns a struct Variant (single or array of ExtensionObjects) into a PlcStruct / PlcList of PlcStruct. */
+    private PlcValue extensionObjectToPlcValue(VariantExtensionObject variant, StructureDefinition definition) {
+        List<ExtensionObject> extensionObjects = variant.getValue();
+        List<PlcValue> values = new ArrayList<>(extensionObjects.size());
+        for (ExtensionObject extensionObject : extensionObjects) {
+            if (extensionObject instanceof RawBinaryExtensionObjectWithMask) {
+                values.add(decodeStruct(((RawBinaryExtensionObjectWithMask) extensionObject).getRawBody(), definition));
+            } else {
+                // Standard (well-known) structure types are already parsed; surface them textually
+                // for now (decoding those to PlcStruct is a later step).
+                values.add(new PlcSTRING(extensionObject.toString()));
+            }
+        }
+        return structurePlcValues(values, variant);
+    }
+
+    /** Decodes a struct's raw binary body into a PlcStruct using its StructureDefinition. */
+    private PlcValue decodeStruct(byte[] rawBody, StructureDefinition definition) {
+        try {
+            ReadBufferByteBased buffer = new ReadBufferByteBased(rawBody, PayloadConverter.LITTLE_ENDIAN);
+            Map<String, PlcValue> fields = new LinkedHashMap<>();
+            boolean withOptionalFields =
+                definition.getStructureType() == StructureType.structureTypeStructureWithOptionalFields;
+            // Structures with optional fields are prefixed by a bit mask (one bit per optional field
+            // in declaration order) telling which ones are actually present in the encoding.
+            long optionalMask = withOptionalFields ? buffer.readUnsignedInt(32) : 0L;
+            int optionalIndex = 0;
+            for (StructureField field : definition.getFields()) {
+                String name = field.getName() != null ? field.getName().getStringValue() : null;
+                if (field.getIsOptional()) {
+                    boolean present = (optionalMask & (1L << optionalIndex)) != 0;
+                    optionalIndex++;
+                    if (!present) {
+                        continue;
+                    }
+                }
+                fields.put(name, decodeField(buffer, field));
+            }
+            return new PlcStruct(fields);
+        } catch (Exception e) {
+            LOGGER.error("Failed to decode struct value", e);
+            return null;
+        }
+    }
+
+    /** Decodes a single struct field (scalar or 1-D array) from the buffer. */
+    private static PlcValue decodeField(ReadBuffer buffer, StructureField field) throws Exception {
+        Long dataTypeId = numericIdentifierOf(field.getDataType());
+        if (field.getValueRank() < 0) {
+            return decodeScalar(buffer, dataTypeId);
+        }
+        int length = buffer.readSignedInt(32);
+        if (length < 0) {
+            return new PlcList(Collections.emptyList());
+        }
+        List<PlcValue> elements = new ArrayList<>(length);
+        for (int i = 0; i < length; i++) {
+            elements.add(decodeScalar(buffer, dataTypeId));
+        }
+        return new PlcList(elements);
+    }
+
+    /** Decodes one scalar value of the given OPC UA built-in data type from the buffer. */
+    private static PlcValue decodeScalar(ReadBuffer buffer, Long builtInDataTypeId) throws Exception {
+        int id = builtInDataTypeId == null ? -1 : builtInDataTypeId.intValue();
+        // Each OPC UA built-in is read with the smallest buffer reader that covers its bit width
+        // (readUnsignedByte only handles 1-7 bits, so 8-bit and unsigned values step up a size).
+        switch (id) {
+            case 1:  return new PlcBOOL(buffer.readUnsignedShort(8) != 0);
+            case 2:  return new PlcSINT(buffer.readSignedByte(8));
+            case 3:  return new PlcUSINT(buffer.readUnsignedShort(8));
+            case 4:  return new PlcINT(buffer.readSignedShort(16));
+            case 5:  return new PlcUINT(buffer.readUnsignedInt(16));
+            case 6:  return new PlcDINT(buffer.readSignedInt(32));
+            case 7:  return new PlcUDINT(buffer.readUnsignedLong(32));
+            case 8:  return new PlcLINT(buffer.readSignedLong(64));
+            case 9:  return new PlcULINT(buffer.readUnsignedBigInteger(64));
+            case 10: return new PlcREAL(buffer.readFloat(32));
+            case 11: return new PlcLREAL(buffer.readDouble(64));
+            case 12: return new PlcSTRING(PascalString.staticParse(buffer).getStringValue());
+            default:
+                throw new PlcRuntimeException("Unsupported struct field data type id " + id
+                    + " (nested structs, enums and non-builtin types are not yet decoded)");
+        }
+    }
+
+    /** Canonical key for a NodeId (namespace + identifier) used to cache resolved type layouts. */
+    private static String nodeIdKey(NodeId nodeId) {
+        return namespaceOf(nodeId) + ":" + nodeId.getNodeId().getIdentifier();
+    }
+
+    // ======================================================================================
+    // Struct (PlcStruct) support — WRITE side: encode a PlcStruct back into a custom-struct
+    // ExtensionObject (Phase 5d), mirroring the read decoding.
+    // ======================================================================================
+
+    private static final long HAS_ENCODING = 38L;
+    private static final ExtensionObjectEncodingMask STRUCT_BINARY_ENCODING_MASK =
+        new ExtensionObjectEncodingMask(false, false, true);
+    // The field layout + binary-encoding node needed to write a value of a custom struct type.
+    private final Map<String, StructWriteInfo> structWriteInfoCache = new ConcurrentHashMap<>();
+
+    private static final class StructWriteInfo {
+        private final StructureDefinition definition;
+        private final ExpandedNodeId encodingNodeId;
+
+        private StructWriteInfo(StructureDefinition definition, ExpandedNodeId encodingNodeId) {
+            this.definition = definition;
+            this.encodingNodeId = encodingNodeId;
+        }
+    }
+
+    /** Whether a written value is a struct (a single PlcStruct — arrays of structs are a later step). */
+    private static boolean isStructValue(PlcValue value) {
+        return value != null && value.isStruct();
+    }
+
+    /** Resolves the struct layout + encoding node for every struct-valued write tag. */
+    private CompletableFuture<Map<String, StructWriteInfo>> resolveStructWriteInfos(DefaultPlcWriteRequest request) {
+        Map<String, StructWriteInfo> resolved = new ConcurrentHashMap<>();
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        for (String tagName : request.getTagNames()) {
+            if (!isStructValue(request.getPlcValue(tagName))) {
+                continue;
+            }
+            futures.add(resolveStructWriteInfo((OpcuaTag) request.getTag(tagName))
+                .thenAccept(info -> {
+                    if (info != null) {
+                        resolved.put(tagName, info);
+                    }
+                }));
+        }
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenApply(v -> resolved);
+    }
+
+    /**
+     * Resolves (and caches) the layout and binary-encoding node of a struct-typed node for writing:
+     * reads the node's DataType, finds its "Default Binary" encoding node and its StructureDefinition
+     * (modern DataTypeDefinition attribute, else the legacy type dictionary).
+     */
+    private CompletableFuture<StructWriteInfo> resolveStructWriteInfo(OpcuaTag tag) {
+        String key = cacheKey(tag);
+        StructWriteInfo cached = structWriteInfoCache.get(key);
+        if (cached != null) {
+            return CompletableFuture.completedFuture(cached);
+        }
+        NodeId variableNode = generateNodeId(tag);
+        return readNodeValue(variableNode, AttributeId.DataType.getValue()).thenCompose(dataTypeValue -> {
+            NodeId dataTypeNode = dataTypeNodeIdOf(dataTypeValue);
+            if (dataTypeNode == null) {
+                return CompletableFuture.completedFuture(null);
+            }
+            return browseBinaryEncodingNode(dataTypeNode).thenCompose(encodingNodeId -> {
+                if (encodingNodeId == null) {
+                    return CompletableFuture.completedFuture(null);
+                }
+                return readStructureDefinition(dataTypeNode).thenCompose(modern -> {
+                    if (modern != null) {
+                        return CompletableFuture.completedFuture(new StructWriteInfo(modern, encodingNodeId));
+                    }
+                    return resolveStructureDefinitionFromDictionary(encodingNodeId)
+                        .thenApply(legacy -> legacy == null ? null : new StructWriteInfo(legacy, encodingNodeId));
+                });
+            });
+        }).thenApply(info -> {
+            if (info != null) {
+                structWriteInfoCache.put(key, info);
+            }
+            return info;
+        }).exceptionally(error -> {
+            LOGGER.warn("Failed to resolve struct write info for tag '{}'", tag, error);
+            return null;
+        });
+    }
+
+    /** Browses a data-type node's encodings and returns its "Default Binary" encoding node. */
+    private CompletableFuture<ExpandedNodeId> browseBinaryEncodingNode(NodeId dataTypeNode) {
+        BrowseDescription description = new BrowseDescription(dataTypeNode, BrowseDirection.browseDirectionForward,
+            new NodeId(new NodeIdNumeric(0, HAS_ENCODING)), true, 0L, BROWSE_RESULT_MASK_ALL);
+        BrowseRequest request = new BrowseRequest(conversation.createRequestHeader(),
+            new ViewDescription(new NodeId(new NodeIdTwoByte((short) 0)), 0L, 0L), 0L,
+            Collections.singletonList(description));
+        return conversation.submit(request, BrowseResponse.class).thenApply(response -> {
+            List<ReferenceDescription> references = response.getResults().get(0).getReferences();
+            if (references == null || references.isEmpty()) {
+                return null;
+            }
+            for (ReferenceDescription reference : references) {
+                if ("Default Binary".equals(qualifiedNameValue(reference.getBrowseName()))) {
+                    return reference.getNodeId();
+                }
+            }
+            return references.get(0).getNodeId();
+        });
+    }
+
+    /** Encodes a PlcStruct as a single-element ExtensionObject Variant of the given custom type. */
+    private Variant encodeStructVariant(PlcValue value, StructWriteInfo info) {
+        byte[] body = encodeStructBody(value, info.definition);
+        ExtensionObject extensionObject =
+            new RawBinaryExtensionObjectWithMask(info.encodingNodeId, STRUCT_BINARY_ENCODING_MASK, body);
+        return new VariantExtensionObject(false, false, null, Collections.emptyList(), null,
+            Collections.singletonList(extensionObject));
+    }
+
+    /** Serialises a PlcStruct into the OPC UA binary body described by its StructureDefinition. */
+    private static byte[] encodeStructBody(PlcValue value, StructureDefinition definition) {
+        try {
+            byte[] body = new byte[structBodySize(value, definition)];
+            WriteBufferByteBased buffer = new WriteBufferByteBased(body, PayloadConverter.LITTLE_ENDIAN);
+            for (StructureField field : definition.getFields()) {
+                encodeField(buffer, field, structField(value, field));
+            }
+            return body;
+        } catch (Exception e) {
+            throw new PlcRuntimeException("Failed to encode struct value", e);
+        }
+    }
+
+    private static PlcValue structField(PlcValue struct, StructureField field) {
+        String name = field.getName() != null ? field.getName().getStringValue() : null;
+        PlcValue value = struct.getValue(name);
+        if (value == null) {
+            throw new PlcRuntimeException("Missing struct field '" + name + "' in value to write");
+        }
+        return value;
+    }
+
+    private static void encodeField(WriteBuffer buffer, StructureField field, PlcValue value) throws Exception {
+        Long dataTypeId = numericIdentifierOf(field.getDataType());
+        if (field.getValueRank() < 0) {
+            encodeScalar(buffer, dataTypeId, value);
+            return;
+        }
+        List<? extends PlcValue> elements = value.getList();
+        buffer.writeSignedInt(32, elements.size());
+        for (PlcValue element : elements) {
+            encodeScalar(buffer, dataTypeId, element);
+        }
+    }
+
+    private static void encodeScalar(WriteBuffer buffer, Long builtInDataTypeId, PlcValue value) throws Exception {
+        int id = builtInDataTypeId == null ? -1 : builtInDataTypeId.intValue();
+        switch (id) {
+            case 1:  buffer.writeUnsignedShort(8, (short) (value.getBoolean() ? 1 : 0)); break;
+            case 2:  buffer.writeSignedByte(8, value.getByte()); break;
+            case 3:  buffer.writeUnsignedShort(8, value.getShort()); break;
+            case 4:  buffer.writeSignedShort(16, value.getShort()); break;
+            case 5:  buffer.writeUnsignedInt(16, value.getInt()); break;
+            case 6:  buffer.writeSignedInt(32, value.getInt()); break;
+            case 7:  buffer.writeUnsignedLong(32, value.getLong()); break;
+            case 8:  buffer.writeSignedLong(64, value.getLong()); break;
+            case 9:  buffer.writeUnsignedBigInteger(64, value.getBigInteger()); break;
+            case 10: buffer.writeFloat(32, value.getFloat()); break;
+            case 11: buffer.writeDouble(64, value.getDouble()); break;
+            case 12: new PascalString(value.getString()).serialize(buffer); break;
+            default:
+                throw new PlcRuntimeException("Unsupported struct field data type id " + id + " for writing");
+        }
+    }
+
+    private static int structBodySize(PlcValue value, StructureDefinition definition) {
+        int size = 0;
+        for (StructureField field : definition.getFields()) {
+            PlcValue fieldValue = structField(value, field);
+            Long dataTypeId = numericIdentifierOf(field.getDataType());
+            if (field.getValueRank() < 0) {
+                size += scalarSize(dataTypeId, fieldValue);
+            } else {
+                size += 4; // int32 array length
+                for (PlcValue element : fieldValue.getList()) {
+                    size += scalarSize(dataTypeId, element);
+                }
+            }
+        }
+        return size;
+    }
+
+    private static int scalarSize(Long builtInDataTypeId, PlcValue value) {
+        int id = builtInDataTypeId == null ? -1 : builtInDataTypeId.intValue();
+        switch (id) {
+            case 1: case 2: case 3:          return 1;
+            case 4: case 5:                  return 2;
+            case 6: case 7: case 10:         return 4;
+            case 8: case 9: case 11:         return 8;
+            case 12: return new PascalString(value.getString()).getLengthInBytes();
+            default:
+                throw new PlcRuntimeException("Unsupported struct field data type id " + id + " for writing");
+        }
     }
 
     // The standard "Objects" folder — the usual entry point into a server's address space.
@@ -1593,37 +2206,40 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         // Phase 4: for tags without an explicit ;TYPE suffix, resolve the server-declared data
         // type (via the session type cache) up-front so the write is built with the authoritative
         // OPC UA type instead of a lossy Java-value guess. Then assemble and submit the write.
-        return resolveWriteTypes(request).thenCompose(serverAttributes -> {
-            RequestHeader requestHeader = conversation.createRequestHeader();
-            List<WriteValue> writeValueList = new ArrayList<>(request.getTagNames().size());
-            for (String tagName : request.getTagNames()) {
-                OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
+        return resolveWriteTypes(request).thenCompose(serverAttributes ->
+            resolveStructWriteInfos(request).thenCompose(structInfos -> {
+                RequestHeader requestHeader = conversation.createRequestHeader();
+                List<WriteValue> writeValueList = new ArrayList<>(request.getTagNames().size());
+                for (String tagName : request.getTagNames()) {
+                    OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
 
-                NodeId nodeId = generateNodeId(tag);
+                    NodeId nodeId = generateNodeId(tag);
 
-                writeValueList.add(new WriteValue(nodeId,
-                    tag.getAttributeId().getValue(),
-                    indexRangeOf(tag),
-                    new DataValue(
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        true,
-                        fromPlcValue(tagName, tag, writeRequest, serverAttributes.get(tagName)),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null)));
-            }
+                    Variant variant;
+                    if (isStructValue(request.getPlcValue(tagName))) {
+                        // Phase 5d: encode a PlcStruct back into a custom-struct ExtensionObject.
+                        StructWriteInfo structInfo = structInfos.get(tagName);
+                        if (structInfo == null) {
+                            throw new PlcRuntimeException("Cannot resolve the structure layout to write "
+                                + "tag '" + tagName + "'");
+                        }
+                        variant = encodeStructVariant(request.getPlcValue(tagName), structInfo);
+                    } else {
+                        variant = fromPlcValue(tagName, tag, writeRequest, serverAttributes.get(tagName));
+                    }
 
-            WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList);
+                    writeValueList.add(new WriteValue(nodeId,
+                        tag.getAttributeId().getValue(),
+                        indexRangeOf(tag),
+                        new DataValue(false, false, false, false, false, true,
+                            variant, null, null, null, null, null)));
+                }
 
-            return conversation.submit(opcuaWriteRequest, WriteResponse.class)
-                .thenApply(response -> writeResponse(request, response));
-        });
+                WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList);
+
+                return conversation.submit(opcuaWriteRequest, WriteResponse.class)
+                    .thenApply(response -> writeResponse(request, response));
+            }));
     }
 
     /**

@@ -1662,6 +1662,8 @@ const (
 	BACnetVendorId_CONTROL_COM_TECHNOLOGIESLLC                                                  BACnetVendorId = 1627
 	BACnetVendorId_ELECTR_SOL                                                                   BACnetVendorId = 1628
 	BACnetVendorId_CORPORACIN_EMPRESARIAL_ALTRA                                                 BACnetVendorId = 1629
+	BACnetVendorId_IC_VALVES_NANJING_CO_LTD                                                     BACnetVendorId = 1630
+	BACnetVendorId_OCCUSPACE_INC                                                                BACnetVendorId = 1631
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3289,6 +3291,8 @@ func init() {
 		BACnetVendorId_CONTROL_COM_TECHNOLOGIESLLC,
 		BACnetVendorId_ELECTR_SOL,
 		BACnetVendorId_CORPORACIN_EMPRESARIAL_ALTRA,
+		BACnetVendorId_IC_VALVES_NANJING_CO_LTD,
+		BACnetVendorId_OCCUSPACE_INC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -6090,6 +6094,14 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 163:
 		{ /* '163' */
 			return 163
+		}
+	case 1630:
+		{ /* '1630' */
+			return 1630
+		}
+	case 1631:
+		{ /* '1631' */
+			return 1631
 		}
 	case 164:
 		{ /* '164' */
@@ -12583,11 +12595,19 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 1629:
 		{ /* '1629' */
-			return "Corporación Empresarial Altra’"
+			return "Corporación Empresarial Altra"
 		}
 	case 163:
 		{ /* '163' */
 			return "SysMik GmbH Dresden"
+		}
+	case 1630:
+		{ /* '1630' */
+			return "IC Valves (Nanjing) Co., Ltd."
+		}
+	case 1631:
+		{ /* '1631' */
+			return "Occuspace Inc."
 		}
 	case 164:
 		{ /* '164' */
@@ -17688,6 +17708,10 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_CORPORACIN_EMPRESARIAL_ALTRA, true
 	case 163:
 		return BACnetVendorId_SYS_MIK_GMBH_DRESDEN, true
+	case 1630:
+		return BACnetVendorId_IC_VALVES_NANJING_CO_LTD, true
+	case 1631:
+		return BACnetVendorId_OCCUSPACE_INC, true
 	case 164:
 		return BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH, true
 	case 165:
@@ -20934,6 +20958,10 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_CORPORACIN_EMPRESARIAL_ALTRA, true
 	case "SYS_MIK_GMBH_DRESDEN":
 		return BACnetVendorId_SYS_MIK_GMBH_DRESDEN, true
+	case "IC_VALVES_NANJING_CO_LTD":
+		return BACnetVendorId_IC_VALVES_NANJING_CO_LTD, true
+	case "OCCUSPACE_INC":
+		return BACnetVendorId_OCCUSPACE_INC, true
 	case "HSC_REGELUNGSTECHNIK_GMBH":
 		return BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH, true
 	case "SMART_TEMP_AUSTRALIA_PTY_LTD":
@@ -24252,6 +24280,10 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "CORPORACIN_EMPRESARIAL_ALTRA"
 	case BACnetVendorId_SYS_MIK_GMBH_DRESDEN:
 		return "SYS_MIK_GMBH_DRESDEN"
+	case BACnetVendorId_IC_VALVES_NANJING_CO_LTD:
+		return "IC_VALVES_NANJING_CO_LTD"
+	case BACnetVendorId_OCCUSPACE_INC:
+		return "OCCUSPACE_INC"
 	case BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH:
 		return "HSC_REGELUNGSTECHNIK_GMBH"
 	case BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD:

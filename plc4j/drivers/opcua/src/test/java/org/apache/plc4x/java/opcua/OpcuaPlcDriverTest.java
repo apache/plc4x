@@ -439,21 +439,65 @@ public class OpcuaPlcDriverTest {
         readOnly.run();
     }
 
-    @org.junit.jupiter.api.Disabled("Enable once OPC UA struct (PlcStruct) support and the custom "
-        + "struct nodes in Plc4xTestNamespace land (feature Phase 5 + task T1b).")
     @Test
-    void comprehensiveStructsSpec() throws Exception {
-        // Acceptance spec for struct addressing. OPC UA has no per-field node addressing like ADS
-        // (g_simple.s8): a struct is one node whose value is a PlcStruct, navigated client-side.
-        BasicPlcTest test = new BasicPlcTest(tcpConnectionAddress, new PlcNullAuthentication(),
-            true, true, true, true, 1);
-        java.util.Map<String, org.apache.plc4x.java.api.value.PlcValue> simple = new java.util.LinkedHashMap<>();
-        simple.put("s8", new PlcSINT(-8));
-        simple.put("u16", new PlcUINT(1600));
-        simple.put("r64", new PlcLREAL(-0.125d));
-        simple.put("str", new PlcSTRING("struct-string"));
-        test.addTestCase("ns=3;s=Test/Struct/Simple", new PlcStruct(simple));
-        test.run();
+    void writesCustomStructRoundTrip() throws Exception {
+        // A struct is one node whose value is a PlcStruct (OPC UA has no per-field node addressing).
+        // Write a PlcStruct, then read it back and confirm every field round-tripped (5d encode).
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            java.util.Map<String, org.apache.plc4x.java.api.value.PlcValue> simple = new java.util.LinkedHashMap<>();
+            simple.put("Foo", new PlcSTRING("written-struct"));
+            simple.put("Bar", new PlcDINT(987654));
+            simple.put("Baz", new PlcBOOL(false));
+            simple.put("Qux", new PlcLREAL(-1.25d));
+
+            PlcWriteResponse write = connection.writeRequestBuilder()
+                .addTagAddress("s", "ns=3;s=Test/Struct/Simple", new PlcStruct(simple))
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(write.getResponseCode("s")).isEqualTo(PlcResponseCode.OK);
+
+            PlcReadResponse read = connection.readRequestBuilder()
+                .addTagAddress("s", "ns=3;s=Test/Struct/Simple")
+                .build().execute().get(30, TimeUnit.SECONDS);
+            org.apache.plc4x.java.api.value.PlcValue value = read.getPlcValue("s");
+            assertThat(value.isStruct()).isTrue();
+            assertThat(value.getStruct().get("Foo").getString()).isEqualTo("written-struct");
+            assertThat(value.getStruct().get("Bar").getInt()).isEqualTo(987654);
+            assertThat(value.getStruct().get("Baz").getBoolean()).isFalse();
+            assertThat(value.getStruct().get("Qux").getDouble()).isEqualTo(-1.25d);
+        }
+    }
+
+    @Test
+    void customStructIsReadableWithoutCrashing() throws Exception {
+        // 5a: a custom (user-defined) struct value is captured as a raw ExtensionObject body instead
+        // of crashing the parser (it threw BufferException before). The value round-trips at least as
+        // a placeholder even when the field layout can't be resolved on this server.
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("s", "ns=3;s=Test/Struct/Simple")
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(response.getResponseCode("s")).isEqualTo(PlcResponseCode.OK);
+        }
+    }
+
+    @Test
+    void readsCustomStructAsPlcStruct() throws Exception {
+        // Plc4xTestStruct instance in the namespace: foo="hello-struct", bar=12345, baz=true, qux=2.5.
+        // Exercises the whole struct read path: 5a (raw body), the field-layout resolution (modern
+        // DataTypeDefinition attribute, or the legacy type dictionary against Milo) and 5c (decode).
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("s", "ns=3;s=Test/Struct/Simple")
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(response.getResponseCode("s")).isEqualTo(PlcResponseCode.OK);
+
+            org.apache.plc4x.java.api.value.PlcValue value = response.getPlcValue("s");
+            assertThat(value.isStruct()).isTrue();
+            assertThat(value.getStruct().get("Foo").getString()).isEqualTo("hello-struct");
+            assertThat(value.getStruct().get("Bar").getInt()).isEqualTo(12345);
+            assertThat(value.getStruct().get("Baz").getBoolean()).isTrue();
+            assertThat(value.getStruct().get("Qux").getDouble()).isEqualTo(2.5d);
+        }
     }
 
     @Test

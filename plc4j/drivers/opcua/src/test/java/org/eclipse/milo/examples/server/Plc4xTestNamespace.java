@@ -28,20 +28,28 @@ import java.util.List;
 import org.eclipse.milo.opcua.sdk.core.AccessLevel;
 import org.eclipse.milo.opcua.sdk.core.Reference;
 import org.eclipse.milo.opcua.sdk.core.ValueRank;
+import org.eclipse.milo.opcua.sdk.core.ValueRanks;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
 import org.eclipse.milo.opcua.sdk.server.api.ManagedNamespaceWithLifecycle;
 import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
+import org.eclipse.milo.opcua.sdk.server.dtd.DataTypeDictionaryManager;
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaVariableNode;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
+import org.eclipse.milo.opcua.stack.core.types.builtin.ExtensionObject;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
+import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
+import org.eclipse.milo.opcua.stack.core.types.enumerated.StructureType;
+import org.eclipse.milo.opcua.stack.core.types.structured.StructureDefinition;
+import org.eclipse.milo.opcua.stack.core.types.structured.StructureDescription;
+import org.eclipse.milo.opcua.stack.core.types.structured.StructureField;
 
 /**
  * A second server namespace (index 3) dedicated to PLC4X integration testing. Where Milo's
@@ -59,12 +67,15 @@ public class Plc4xTestNamespace extends ManagedNamespaceWithLifecycle {
     public static final String NAMESPACE_URI = "urn:apache:plc4x:test";
 
     private final SubscriptionModel subscriptionModel;
+    private final DataTypeDictionaryManager dictionaryManager;
 
     public Plc4xTestNamespace(OpcUaServer server) {
         super(server, NAMESPACE_URI);
 
         subscriptionModel = new SubscriptionModel(server, this);
+        dictionaryManager = new DataTypeDictionaryManager(getNodeContext(), NAMESPACE_URI);
         getLifecycleManager().addLifecycle(subscriptionModel);
+        getLifecycleManager().addLifecycle(dictionaryManager);
         getLifecycleManager().addStartupTask(this::createAndAddNodes);
     }
 
@@ -85,6 +96,67 @@ public class Plc4xTestNamespace extends ManagedNamespaceWithLifecycle {
         addScalarNodes(root);
         addArrayNodes(root);
         addMatrixNodes(root);
+        try {
+            registerStructType();
+            addStructNode(root);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to register the custom test struct type", e);
+        }
+    }
+
+    // =====================================================================================
+    // Custom struct — a user-defined structure (namespace >= 1) whose encoding the generated OPC UA
+    // model can't decode; it exercises the driver's PlcStruct read/write support. Registering it
+    // with a StructureDefinition exposes both the DataTypeDefinition attribute and the legacy type
+    // dictionary, so both driver code paths can resolve the field layout.
+    // =====================================================================================
+    private void registerStructType() throws Exception {
+        NodeId dataTypeId = Plc4xTestStruct.TYPE_ID.toNodeIdOrThrow(getServer().getNamespaceTable());
+        NodeId binaryEncodingId = Plc4xTestStruct.BINARY_ENCODING_ID.toNodeIdOrThrow(getServer().getNamespaceTable());
+
+        dictionaryManager.registerStructureCodec(
+            new Plc4xTestStruct.Codec().asBinaryCodec(), "Plc4xTestStruct", dataTypeId, binaryEncodingId);
+
+        UInteger maxStringLength = getServer().getConfig().getLimits().getMaxStringLength();
+        StructureField[] fields = new StructureField[]{
+            new StructureField("Foo", LocalizedText.NULL_VALUE, Identifiers.String,
+                ValueRanks.Scalar, null, maxStringLength, false),
+            new StructureField("Bar", LocalizedText.NULL_VALUE, Identifiers.Int32,
+                ValueRanks.Scalar, null, uint(0), false),
+            new StructureField("Baz", LocalizedText.NULL_VALUE, Identifiers.Boolean,
+                ValueRanks.Scalar, null, uint(0), false),
+            new StructureField("Qux", LocalizedText.NULL_VALUE, Identifiers.Double,
+                ValueRanks.Scalar, null, uint(0), false)
+        };
+        StructureDefinition definition = new StructureDefinition(
+            binaryEncodingId, Identifiers.Structure, StructureType.Structure, fields);
+        StructureDescription description = new StructureDescription(
+            dataTypeId, new QualifiedName(getNamespaceIndex(), "Plc4xTestStruct"), definition);
+        dictionaryManager.registerStructureDescription(description, binaryEncodingId);
+    }
+
+    private void addStructNode(UaFolderNode root) throws Exception {
+        UaFolderNode folder = childFolder(root, "Struct");
+        NodeId dataTypeId = Plc4xTestStruct.TYPE_ID.toNodeIdOrThrow(getServer().getNamespaceTable());
+        NodeId binaryEncodingId = Plc4xTestStruct.BINARY_ENCODING_ID.toNodeIdOrThrow(getServer().getNamespaceTable());
+
+        UaVariableNode node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
+            .setNodeId(newNodeId("Test/Struct/Simple"))
+            .setAccessLevel(AccessLevel.READ_WRITE)
+            .setUserAccessLevel(AccessLevel.READ_WRITE)
+            .setBrowseName(newQualifiedName("Simple"))
+            .setDisplayName(LocalizedText.english("Simple"))
+            .setDataType(dataTypeId)
+            .setTypeDefinition(Identifiers.BaseDataVariableType)
+            .build();
+
+        Plc4xTestStruct value = new Plc4xTestStruct("hello-struct", 12345, true, 2.5d);
+        ExtensionObject encoded = ExtensionObject.encodeDefaultBinary(
+            getServer().getSerializationContext(), value, binaryEncodingId);
+        node.setValue(new DataValue(new Variant(encoded)));
+
+        getNodeManager().addNode(node);
+        folder.addOrganizes(node);
     }
 
     // =====================================================================================

@@ -216,18 +216,33 @@
     [abstract ExtensionObjectDefinition body]
     [simple ExpandedNodeId typeId]
     [virtual int 32 extensionId 'typeId == null ? 0 : STATIC_CALL("extensionId", typeId)']
+    // Whether the encoding node refers to a well-known standard type (namespace 0). Computed here
+    // where typeId is in scope and threaded down like extensionId, so the masked-body dispatch can
+    // tell a decodable standard type from a custom one.
+    [virtual bit standardEncoding 'STATIC_CALL("isStandardEncoding", typeId)']
     [typeSwitch includeEncodingMask
         ['false' RootExtensionObject (int 32 extensionId)
             [simple ExtensionObjectDefinition('extensionId') body]
         ]
-        ['true' ExtensionObjectWithMask (int 32 extensionId)
+        ['true' ExtensionObjectWithMask (int 32 extensionId, bit standardEncoding)
             [simple ExtensionObjectEncodingMask encodingMask]
-            [typeSwitch encodingMask.xmlBody, encodingMask.binaryBody
-                ['false', 'true' BinaryExtensionObjectWithMask
+            // Body kind: 0 = no binary body (null); 1 = binary body of a well-known standard type
+            // (encoding node in namespace 0) which the generated dispatch can decode; 2 = binary
+            // body of a custom / user-defined type (encoding node in namespace >= 1) which the
+            // dispatch cannot decode, so the raw bytes are captured for the driver to decode against
+            // the type's StructureDefinition.
+            [virtual int 8 bodyKind 'encodingMask.binaryBody ? (standardEncoding ? 1 : 2) : 0']
+            [typeSwitch bodyKind
+                ['1' BinaryExtensionObjectWithMask
                     [implicit int 32 bodyLength 'body == null ? 0 : body.lengthInBytes']
                     [simple ExtensionObjectDefinition('extensionId') body]
                 ]
-                ['false', 'false' NullExtensionObjectWithMask
+                ['2' RawBinaryExtensionObjectWithMask
+                    [implicit int 32 bodyLength 'COUNT(rawBody)']
+                    [array byte rawBody count 'bodyLength']
+                    [virtual ExtensionObjectDefinition('0') body 'null']
+                ]
+                ['0' NullExtensionObjectWithMask
                     [virtual ExtensionObjectDefinition('0') body 'null']
                 ]
             ]
