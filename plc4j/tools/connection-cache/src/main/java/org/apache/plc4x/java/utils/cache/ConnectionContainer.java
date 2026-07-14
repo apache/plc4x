@@ -74,7 +74,11 @@ class ConnectionContainer {
     private final ConnectionStateTracker stateTracker;
 
     private PlcConnection connection;
-    private boolean requiresValidation;
+    // When true, the next lease MUST validate (ping) the connection regardless of how recently it
+    // was used. Set when a lease is force-returned (e.g. by a max-lease timeout) because the
+    // connection may be dead. In all other cases validation is decided purely from idle time at
+    // lease() time, so it is deterministic and needs no scheduled task.
+    private boolean forceValidationOnNextLease;
     // Tracks the last time a lease was successfully returned (i.e., the connection was used).
     // Used to determine if a ping validation is actually needed: if a successful operation
     // completed recently, the connection is known to be alive and pinging is unnecessary.
@@ -91,7 +95,6 @@ class ConnectionContainer {
 
     // Scheduled timeout tasks (must be canceled to prevent leaks)
     private volatile ScheduledFuture<?> idleTimeoutTask;
-    private volatile ScheduledFuture<?> requireValidationTimeoutTask;
     private volatile ScheduledFuture<?> maxLeaseTimeoutTask;
 
     /**
@@ -120,7 +123,7 @@ class ConnectionContainer {
         this.idlePingThresholdMs = idlePingThresholdMs;
         this.closeTimeoutMs = closeTimeoutMs;
         this.queue = new LinkedList<>();
-        this.requiresValidation = false;
+        this.forceValidationOnNextLease = false;
         this.lastSuccessfulReturnTimeMs = 0;
         this.currentLeaseId = 0;
         this.lock = new ReentrantLock(true); // Fair lock to prevent thread starvation
@@ -164,9 +167,14 @@ class ConnectionContainer {
                 // If validation fails, we need to close the existing connection and get a new one.
                 // Skip validation if a successful operation completed recently — the connection
                 // is known to be alive and pinging would just add unnecessary blocking latency.
-                else if (requiresValidation
-                    && (lastSuccessfulReturnTimeMs == 0
-                        || (System.currentTimeMillis() - lastSuccessfulReturnTimeMs) >= idlePingThresholdMs)) {
+                //
+                // This decision is computed entirely here, at lease() time, from the idle duration
+                // (plus the force flag). It does NOT depend on any scheduled task having fired, so
+                // it is fully deterministic. A zero idlePingThreshold means "always validate", which
+                // the (now - lastReturn) >= 0 comparison already yields.
+                else if (forceValidationOnNextLease
+                    || lastSuccessfulReturnTimeMs == 0
+                    || (System.currentTimeMillis() - lastSuccessfulReturnTimeMs) >= idlePingThresholdMs) {
                     if (!validate()) {
                         LOGGER.debug("Connection failed validation, closing and getting new connection");
                         closeBounded(connection);
@@ -266,13 +274,10 @@ class ConnectionContainer {
             if(queue.isEmpty()) {
                 leasedConnection = null;
                 scheduleIdleTimeout();
-                // Force validation if requested (e.g., from max lease timeout) or if idlePingThresholdMs is 0
-                if (forceValidation || idlePingThresholdMs == 0) {
-                    requiresValidation = true;
-                } else {
-                    requiresValidation = false;
-                    scheduleRequireValidationTimeout();
-                }
+                // A force-return means the connection may be dead: validate on the next lease no
+                // matter how recently it was used. Otherwise leave it to the idle-time check in
+                // lease() — no scheduled task needed.
+                forceValidationOnNextLease = forceValidation;
                 LOGGER.trace("Connection idle {}", connectionString);
                 return;
             }
@@ -317,12 +322,9 @@ class ConnectionContainer {
             // All queued entries had already timed out — go idle
             leasedConnection = null;
             scheduleIdleTimeout();
-            if (forceValidation || idlePingThresholdMs == 0) {
-                requiresValidation = true;
-            } else {
-                requiresValidation = false;
-                scheduleRequireValidationTimeout();
-            }
+            // See the queue-empty branch above: force validation only on a force-return; otherwise
+            // the idle-time check in lease() decides deterministically.
+            forceValidationOnNextLease = forceValidation;
             LOGGER.trace("Connection idle after all waiters timed out {}", connectionString);
         } finally {
             lock.unlock();
@@ -469,27 +471,6 @@ class ConnectionContainer {
         }
     }
 
-    private void scheduleRequireValidationTimeout() {
-        // Cancel any existing max lease timeout
-        cancelRequireValidationTimeout();
-
-        try {
-            requireValidationTimeoutTask = scheduler.schedule(() -> {
-                // Mutate requiresValidation under the lock so the next lease() reliably observes it.
-                lock.lock();
-                try {
-                    requiresValidation = true;
-                } finally {
-                    lock.unlock();
-                }
-            }, idlePingThresholdMs, TimeUnit.MILLISECONDS);
-            LOGGER.trace("Scheduled require validation timeout for {} in {}ms", connectionString, idlePingThresholdMs);
-        } catch (RejectedExecutionException e) {
-            // Scheduler was already shut down (manager shutting down)
-            LOGGER.debug("Cannot schedule require validation timeout, scheduler shut down: {}", connectionString);
-        }
-    }
-
     /**
      * Cancel the idle timeout task if running.
      */
@@ -512,16 +493,6 @@ class ConnectionContainer {
         }
     }
 
-    /**
-     * Cancel the require-validation timeout task if running.
-     */
-    private void cancelRequireValidationTimeout() {
-        if (requireValidationTimeoutTask != null) {
-            requireValidationTimeoutTask.cancel(false);
-            requireValidationTimeoutTask = null;
-            LOGGER.trace("Cancelled require validation timeout for {}", connectionString);
-        }
-    }
 
     /**
      * Close this connection container and the underlying connection.
