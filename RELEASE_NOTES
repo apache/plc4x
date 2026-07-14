@@ -12,6 +12,9 @@ New Features
   notifications.
 - Added a new PlcCertificateAuthentication to the API module.
 - Initial version of a new Java UMAS driver.
+- Initial version of a new Java SLMP (Mitsubishi MELSEC) driver:
+  read-only access to word devices (D/W/R) using binary 3E frames
+  over TCP.
 - The 'plc4x' proxy driver now supports TLS as a transport and
   requires mandatory username/password authentication
   (configured via the new "username" and "password" connection

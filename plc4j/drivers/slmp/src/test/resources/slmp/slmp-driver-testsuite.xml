@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd" byteOrder="LITTLE_ENDIAN">
+  <name>SLMP 3E Batch Read</name>
+  <protocol-name>slmp</protocol-name>
+  <output-flavor>read-write</output-flavor>
+  <driver-name>slmp</driver-name>
+  <driver-parameters>
+    <parameter>
+      <name>transport</name>
+      <value>test</value>
+    </parameter>
+    <parameter>
+      <name>monitoring-timer</name>
+      <value>0</value>
+    </parameter>
+  </driver-parameters>
+  <sequential>true</sequential>
+  <testcase>
+    <name>Batch Read D350, 2 words</name>
+    <steps>
+      <api-request name="Read request">
+        <PlcReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>value</name>
+              <address>D350:WORD[2]</address>
+            </tag>
+          </tags>
+        </PlcReadRequest>
+      </api-request>
+      <outgoing-plc-bytes name="Read request bytes">500000ffff03000c000000010400005e0100a80200</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Read response bytes">d00000ffff030006000000ab560f17</incoming-plc-bytes>
+      <api-response name="Read response">
+        <PlcReadResponse>
+          <values isList="true">
+            <value>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcList>
+                    <PlcWORD dataType="uint" bitLength="16">22187</PlcWORD>
+                    <PlcWORD dataType="uint" bitLength="16">5903</PlcWORD>
+                  </PlcList>
+                </value>
+              </PlcResponseItem>
+            </value>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+</test:driver-testsuite>
