@@ -1571,8 +1571,9 @@
     ['816' M_HAAR_INFORMATIK ['877', '"Haar-Informatik"']]
     ['817' M_DIE_BILDUNGSMANUFAKTUR_GMBH ['878', '"DIE-Bildungsmanufaktur GmbH"']]
     ['818' M_READYKNX ['879', '"readyKNX"']]
-    ['819' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['820' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['819' M_SMARTVOS ['880', '"smartVOS"']]
+    ['820' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['821' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
