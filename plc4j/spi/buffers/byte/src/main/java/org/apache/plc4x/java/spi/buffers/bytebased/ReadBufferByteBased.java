@@ -91,6 +91,23 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
         }
     }
 
+    /**
+     * Reads {@code numBits} (a whole number of bytes) big-endian from the current byte-aligned
+     * position into a long and advances the position. Callers gate this behind the fast-path
+     * eligibility checks; no intermediate byte[] or per-field ByteOrder object is allocated.
+     */
+    private long readAlignedBytesBE(int numBits) throws BufferException {
+        ensureAvailable(numBits);
+        int byteIndex = (startBit + positionInBits) / 8;
+        int numBytes = numBits / 8;
+        long v = 0;
+        for (int i = 0; i < numBytes; i++) {
+            v = (v << 8) | (buffer[byteIndex + i] & 0xFF);
+        }
+        positionInBits += numBits;
+        return v;
+    }
+
     @Override
     public byte readUnsignedByte(int numBits, WithOption... options) throws BufferException {
         if (numBits < 1 || numBits > 7) {
@@ -116,6 +133,10 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
             throw new BufferException("Unsigned short can only read between 1 and 15 bits");
         }
 
+        if (isFastUnsignedBinaryBE(numBits, options)) {
+            return (short) readAlignedBytesBE(numBits);
+        }
+
         Optional<Encoding> encodingOptional = getUnsignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
         if(encoding instanceof EncodingDefault encodingDefault) {
@@ -135,6 +156,12 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
             throw new BufferException("Unsigned int can only read between 1 and 31 bits");
         }
 
+        // Fast path: byte-aligned whole-byte plain-binary big-endian read straight from the backing
+        // array (no intermediate byte[] / ByteOrder object). See isFastUnsignedBinaryBE.
+        if (isFastUnsignedBinaryBE(numBits, options)) {
+            return (int) readAlignedBytesBE(numBits);
+        }
+
         Optional<Encoding> encodingOptional = getUnsignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
         if(encoding instanceof EncodingDefault encodingDefault) {
@@ -152,6 +179,10 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
     public long readUnsignedLong(int numBits, WithOption... options) throws BufferException {
         if (numBits < 1 || numBits > 63) {
             throw new BufferException("Unsigned long can only read between 1 and 63 bits");
+        }
+
+        if (isFastUnsignedBinaryBE(numBits, options)) {
+            return readAlignedBytesBE(numBits);
         }
 
         Optional<Encoding> encodingOptional = getUnsignedIntegerEncoding(options);
@@ -211,6 +242,10 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
             throw new BufferException("Signed short can only read between 1 and 16 bits");
         }
 
+        if (isFastSignedTwosComplementBE(numBits, options)) {
+            return (short) signExtend(readAlignedBytesBE(numBits), numBits);
+        }
+
         Optional<Encoding> encodingOptional = getSignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
         if(encoding instanceof EncodingDefault encodingDefault) {
@@ -230,6 +265,10 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
             throw new BufferException("Signed int can only read between 1 and 32 bits");
         }
 
+        if (isFastSignedTwosComplementBE(numBits, options)) {
+            return (int) signExtend(readAlignedBytesBE(numBits), numBits);
+        }
+
         Optional<Encoding> encodingOptional = getSignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
         if(encoding instanceof EncodingDefault encodingDefault) {
@@ -247,6 +286,10 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
     public long readSignedLong(int numBits, WithOption... options) throws BufferException {
         if (numBits < 1 || numBits > 64) {
             throw new BufferException("Signed long can only read between 1 and 64 bits");
+        }
+
+        if (isFastSignedTwosComplementBE(numBits, options)) {
+            return signExtend(readAlignedBytesBE(numBits), numBits);
         }
 
         Optional<Encoding> encodingOptional = getSignedIntegerEncoding(options);

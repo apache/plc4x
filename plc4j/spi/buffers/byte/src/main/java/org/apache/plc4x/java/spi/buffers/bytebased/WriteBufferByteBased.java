@@ -82,6 +82,20 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         }
     }
 
+    /**
+     * Writes the low {@code numBits} (a whole number of bytes) of {@code value} big-endian into the
+     * backing array at the current byte-aligned position and advances the position. Callers gate this
+     * behind the fast-path eligibility checks; no intermediate byte[] or ByteOrder object is allocated.
+     */
+    private void writeAlignedBytesBE(int numBits, long value) {
+        int byteIndex = (startBit + positionInBits) / 8;
+        int numBytes = numBits / 8;
+        for (int i = 0; i < numBytes; i++) {
+            buffer[byteIndex + i] = (byte) ((value >>> ((numBytes - 1 - i) * 8)) & 0xFF);
+        }
+        positionInBits += numBits;
+    }
+
     @Override
     public void writeUnsignedByte(int numBits, byte value, WithOption... options) throws BufferException {
         if (numBits < 1 || numBits > 7) {
@@ -121,6 +135,11 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         }
         ensureAvailable(numBits);
 
+        if (isFastUnsignedBinaryBE(numBits, options)) {
+            writeAlignedBytesBE(numBits, value & 0xFFFFL);
+            return;
+        }
+
         Optional<Encoding> encodingOptional = getUnsignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
         if(encoding instanceof EncodingDefault encodingDefault) {
@@ -148,6 +167,13 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         }
         ensureAvailable(numBits);
 
+        // Fast path: byte-aligned whole-byte plain-binary big-endian write straight into the backing
+        // array (no intermediate byte[] / ByteOrder object). See isFastUnsignedBinaryBE.
+        if (isFastUnsignedBinaryBE(numBits, options)) {
+            writeAlignedBytesBE(numBits, value);
+            return;
+        }
+
         Optional<Encoding> encodingOptional = getUnsignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
         if(encoding instanceof EncodingDefault encodingDefault) {
@@ -174,6 +200,11 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
             throw new BufferException("Value " + value + " is out of range for " + numBits + " bits. Valid range is 0 to " + maxValue);
         }
         ensureAvailable(numBits);
+
+        if (isFastUnsignedBinaryBE(numBits, options)) {
+            writeAlignedBytesBE(numBits, value);
+            return;
+        }
 
         Optional<Encoding> encodingOptional = getUnsignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
@@ -257,6 +288,11 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         }
         ensureAvailable(numBits);
 
+        if (isFastSignedTwosComplementBE(numBits, options)) {
+            writeAlignedBytesBE(numBits, value);
+            return;
+        }
+
         Optional<Encoding> encodingOptional = getSignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
         if(encoding instanceof EncodingDefault encodingDefault) {
@@ -285,6 +321,11 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         }
         ensureAvailable(numBits);
 
+        if (isFastSignedTwosComplementBE(numBits, options)) {
+            writeAlignedBytesBE(numBits, value);
+            return;
+        }
+
         Optional<Encoding> encodingOptional = getSignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
         if(encoding instanceof EncodingDefault encodingDefault) {
@@ -312,6 +353,11 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
             throw new BufferException("Value " + value + " is out of range for " + numBits + " bits. Valid range is " + minValue + " to " + maxValue);
         }
         ensureAvailable(numBits);
+
+        if (isFastSignedTwosComplementBE(numBits, options)) {
+            writeAlignedBytesBE(numBits, value);
+            return;
+        }
 
         Optional<Encoding> encodingOptional = getSignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));

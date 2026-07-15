@@ -26,6 +26,8 @@ import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderBigEndian;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderManager;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.Encoding;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingManager;
+import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingTwosComplement;
+import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingUnsignedBinary;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -65,7 +67,37 @@ public abstract class AbstractBufferByteBased extends AbstractBuffer {
                 return byteOrder.get();
             }
         }
-        return new ByteOrderBigEndian();
+        return ByteOrderBigEndian.INSTANCE;
+    }
+
+    // ---- Byte-aligned integer fast-path helpers (shared by Read/Write byte buffers) ----
+    // Eligible only when there are no per-field option overrides, the position is byte-aligned, a
+    // whole number of bytes is requested, byte order is big-endian, and the resolved integer encoding
+    // is plain binary (unsigned) / two's-complement (signed). Gated on the concrete encoding class,
+    // NOT the broader EncodingDefault, so BCD/float/etc. correctly fall through to the slow path.
+
+    protected boolean isFastUnsignedBinaryBE(int numBits, WithOption[] options) {
+        if (options.length != 0 || (positionInBits & 7) != 0 || (numBits & 7) != 0) {
+            return false;
+        }
+        Optional<Encoding> enc = getUnsignedIntegerEncoding();
+        return enc.isPresent() && enc.get() instanceof EncodingUnsignedBinary
+            && getByteOrder() == ByteOrderBigEndian.INSTANCE;
+    }
+
+    protected boolean isFastSignedTwosComplementBE(int numBits, WithOption[] options) {
+        if (options.length != 0 || (positionInBits & 7) != 0 || (numBits & 7) != 0) {
+            return false;
+        }
+        Optional<Encoding> enc = getSignedIntegerEncoding();
+        return enc.isPresent() && enc.get() instanceof EncodingTwosComplement
+            && getByteOrder() == ByteOrderBigEndian.INSTANCE;
+    }
+
+    /** Big-endian two's-complement sign extension of the low {@code numBits} of {@code raw}. */
+    protected static long signExtend(long raw, int numBits) {
+        int shift = 64 - numBits;
+        return (raw << shift) >> shift;
     }
 
     protected Optional<Encoding> getUnsignedIntegerEncoding(WithOption... options) {

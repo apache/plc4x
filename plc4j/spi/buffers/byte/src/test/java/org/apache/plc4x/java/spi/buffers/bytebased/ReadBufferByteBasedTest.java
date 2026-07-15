@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.buffers.bytebased;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderBigEndian;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderLittleEndian;
+import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingBCD;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingIEEE754;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingTwosComplement;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingUTF8;
@@ -54,6 +55,38 @@ class ReadBufferByteBasedTest {
 
         assertEquals(8, buffer.getPositionInBits());
         assertEquals(0, buffer.getRemainingBits());
+    }
+
+    // Guards the byte-aligned unsigned-int fast path: a BCD default encoding must NOT be treated as
+    // plain binary. 0x12 0x34 decodes to 1234 (BCD), not 0x1234 = 4660 (binary shift).
+    @Test
+    void byteAlignedReadHonoursBcdEncodingNotBinaryFastPath() throws Exception {
+        byte[] data = {0x12, 0x34};
+        ReadBufferByteBased buffer = new ReadBufferByteBased(data, EncodingBCD.optionEncodingBCD());
+        assertEquals(1234, buffer.readUnsignedInt(16));
+    }
+
+    // The two's-complement byte-aligned fast path must sign-extend: 0xFFFE -> -2, not 65534.
+    @Test
+    void byteAlignedSignedReadIsSignExtended() throws Exception {
+        ReadBufferByteBased b1 = new ReadBufferByteBased(new byte[]{(byte) 0xFF, (byte) 0xFE},
+            EncodingTwosComplement.optionEncodingTwosComplement());
+        assertEquals((short) -2, b1.readSignedShort(16));
+        ReadBufferByteBased b2 = new ReadBufferByteBased(new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFE},
+            EncodingTwosComplement.optionEncodingTwosComplement());
+        assertEquals(-2, b2.readSignedInt(32));
+    }
+
+    // Positive counterpart to the BCD guard: the plain unsigned-binary byte-aligned fast path must
+    // return the same value the slow path would. 0x12 0x34 -> 0x1234, 0x12 0x34 0x56 0x78 -> 0x12345678.
+    @Test
+    void byteAlignedUnsignedReadUsesFastPath() throws Exception {
+        ReadBufferByteBased b16 = new ReadBufferByteBased(new byte[]{0x12, 0x34},
+            EncodingUnsignedBinary.optionEncodingUnsignedBinary());
+        assertEquals(0x1234, b16.readUnsignedInt(16));
+        ReadBufferByteBased b32 = new ReadBufferByteBased(new byte[]{0x12, 0x34, 0x56, 0x78},
+            EncodingUnsignedBinary.optionEncodingUnsignedBinary());
+        assertEquals(0x12345678L, b32.readUnsignedLong(32));
     }
 
     // readBits
