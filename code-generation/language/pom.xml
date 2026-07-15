@@ -61,7 +61,6 @@
       <id>with-java</id>
       <subprojects>
         <subproject>java</subproject>
-        <subproject>java-jp</subproject>
       </subprojects>
     </profile>
 

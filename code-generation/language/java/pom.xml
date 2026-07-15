@@ -28,7 +28,7 @@
   <artifactId>plc4x-code-generation-language-java</artifactId>
 
   <name>Code-Generation: Language: Java</name>
-  <description>Code generation template for generating Java code</description>
+  <description>Code generation template for generating Java code (JavaPoet based version for SPI3)</description>
 
   <properties>
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
@@ -89,12 +89,20 @@
   </build>
 
   <dependencies>
-    <!-- We are using the Freemarker module to generate Java code -->
+    <!-- PLC4J API -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
+      <artifactId>plc4j-api</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <!-- PLC4X Code Generation Dependencies -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
@@ -104,59 +112,36 @@
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-types-base</artifactId>
+      <version>${plc4x-code-generation.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-language-base</artifactId>
+      <version>${plc4x-code-generation.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.freemarker</groupId>
-      <artifactId>freemarker</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-text</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.googlejavaformat</groupId>
-      <artifactId>google-java-format</artifactId>
-    </dependency>
-
-    <!-- Make sure the dependencies of the module are built first -->
+    <!-- Just needed for some utility methods -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
+      <artifactId>plc4j-spi-utils</artifactId>
       <version>1.0.0-SNAPSHOT</version>
-      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-buffers-byte</artifactId>
       <version>1.0.0-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
+
+    <!-- https://github.com/palantir/javapoet -->
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-tcp</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-protocol-test</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-protocol-test</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <type>test-jar</type>
-      <scope>test</scope>
+      <groupId>com.palantir.javapoet</groupId>
+      <artifactId>javapoet</artifactId>
+      <version>0.17.0</version>
     </dependency>
   </dependencies>
 
