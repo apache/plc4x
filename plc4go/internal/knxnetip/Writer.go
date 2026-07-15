@@ -22,20 +22,28 @@ package knxnetip
 import (
 	"context"
 
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Writer struct {
 	messageCodec spi.MessageCodec
+
+	log zerolog.Logger
 }
 
-func NewWriter(messageCodec spi.MessageCodec) Writer {
+func NewWriter(messageCodec spi.MessageCodec, _options ...options.WithOption) Writer {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return Writer{
 		messageCodec: messageCodec,
+		log:          customLogger,
 	}
 }
 
@@ -50,7 +58,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 		tag := writeRequest.GetTag(tagName)
 		groupAddressTag, err := CastToGroupAddressTagFromPlcTag(tag)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type")))
 			return result
 		}
 
@@ -59,7 +67,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 		tagType := groupAddressTag.GetTagType()
 		// TODO: why do we ignore the bytes here?
 		if _, err := readWriteModel.KnxDatapointSerialize(value, *tagType); err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("error serializing value: "+err.Error()))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("error serializing value: "+err.Error())))
 			return result
 		}
 	}

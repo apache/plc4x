@@ -60,7 +60,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				resultChan <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, resultChan, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -161,11 +161,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 		// Assemble the results
 		result := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-		resultChan <- spiModel.NewDefaultPlcReadRequestResult(
+		utils.DeliverResult(m.log, resultChan, spiModel.NewDefaultPlcReadRequestResult(
 			readRequest,
 			result,
 			nil,
-		)
+		))
 	})
 	return resultChan
 }

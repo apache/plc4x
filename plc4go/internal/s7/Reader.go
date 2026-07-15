@@ -35,6 +35,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -68,7 +69,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 
@@ -77,11 +78,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			tag := readRequest.GetTag(tagName)
 			address, err := encodeS7Address(tag)
 			if err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,
 					errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName),
-				)
+				))
 				return
 			}
 			requestItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(address)
@@ -145,32 +146,32 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				readResponse, err := m.ToPlc4xReadResponse(payload, readRequest)
 
 				if err != nil {
-					result <- spiModel.NewDefaultPlcReadRequestResult(
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 						readRequest,
 						nil,
 						errors.Wrap(err, "Error decoding response"),
-					)
+					))
 					return transaction.EndRequest()
 				}
-				result <- spiModel.NewDefaultPlcReadRequestResult(
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					readResponse,
 					nil,
-				)
+				))
 				return transaction.EndRequest()
 			}, func(err error) error {
-				result <- spiModel.NewDefaultPlcReadRequestResult(
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,
 					errors.Wrap(err, "got timeout while waiting for response"),
-				)
+				))
 				return transaction.EndRequest()
 			}); err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,
 					errors.Wrap(err, "error sending message"),
-				)
+				))
 				if err := transaction.FailRequest(errors.Errorf("timeout after %s", 1*time.Second)); err != nil {
 					m.log.Debug().Err(err).Msg("Error failing request")
 				}

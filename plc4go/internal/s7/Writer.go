@@ -35,6 +35,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Writer struct {
@@ -63,7 +64,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 		parameterItems := make([]readWriteModel.S7VarRequestParameterItem, len(writeRequest.GetTagNames()))
@@ -73,13 +74,13 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			plcValue := writeRequest.GetValue(tagName)
 			s7Address, err := encodeS7Address(tag)
 			if err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName)))
 				return
 			}
 			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
 			value, err := serializePlcValue(tag, plcValue)
 			if err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", tagName))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", tagName)))
 				return
 			}
 			payloadItems[i] = value
@@ -136,25 +137,16 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				readResponse, err := m.ToPlc4xWriteResponse(payload, writeRequest)
 
 				if err != nil {
-					result <- &spiModel.DefaultPlcWriteRequestResult{
-						Request: writeRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
-					}
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "Error decoding response")))
 					return transaction.EndRequest()
 				}
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: readResponse,
-				}
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, readResponse, nil))
 				return transaction.EndRequest()
 			}, func(err error) error {
-				result <- &spiModel.DefaultPlcWriteRequestResult{
-					Request: writeRequest,
-					Err:     errors.New("got timeout while waiting for response"),
-				}
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("got timeout while waiting for response")))
 				return transaction.EndRequest()
 			}); err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message"))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message")))
 				if err := transaction.FailRequest(errors.Errorf("timeout after %s", 1*time.Second)); err != nil {
 					m.log.Debug().Err(err).Msg("Error failing request")
 				}

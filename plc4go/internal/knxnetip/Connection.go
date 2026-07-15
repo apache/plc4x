@@ -461,7 +461,7 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return spiModel.NewDefaultPlcWriteRequestBuilder(
-		m.tagHandler, m.valueHandler, NewWriter(m.messageCodec))
+		m.tagHandler, m.valueHandler, NewWriter(m.messageCodec, options.WithCustomLogger(m.log)))
 }
 
 func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {

@@ -71,7 +71,7 @@ func (s *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 func (s *Subscriber) subscribeSync(ctx context.Context, result chan apiModel.PlcSubscriptionRequestResult, subscriptionRequest apiModel.PlcSubscriptionRequest) {
 	defer func() {
 		if err := recover(); err != nil {
-			result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+			utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 		}
 	}()
 	internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
@@ -83,7 +83,7 @@ func (s *Subscriber) subscribeSync(ctx context.Context, result chan apiModel.Plc
 
 	subscription, err := s.onSubscribeCreateSubscription(ctx, cycleTime)
 	if err != nil {
-		result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Wrap(err, "error create subscription"))
+		utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Wrap(err, "error create subscription")))
 		return
 	}
 	subscriptionId := subscription.GetSubscriptionId()
@@ -105,7 +105,7 @@ func (s *Subscriber) subscribeSync(ctx context.Context, result chan apiModel.Plc
 		subscriptionValues[tagName] = handle
 	}
 
-	result <- spiModel.NewDefaultPlcSubscriptionRequestResult(
+	utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcSubscriptionRequestResult(
 		subscriptionRequest,
 		spiModel.NewDefaultPlcSubscriptionResponse(
 			subscriptionRequest,
@@ -114,7 +114,7 @@ func (s *Subscriber) subscribeSync(ctx context.Context, result chan apiModel.Plc
 			append(s._options, options.WithCustomLogger(s.log))...,
 		),
 		nil,
-	)
+	))
 }
 
 func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTime time.Duration) (readWriteModel.CreateSubscriptionResponse, error) {
@@ -200,7 +200,7 @@ func (s *Subscriber) onDisconnect() {
 
 func (s *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
-	result <- spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("Not Implemented"))
+	utils.DeliverResult(s.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("Not Implemented")))
 
 	for _, handle := range unsubscriptionRequest.(*spiModel.DefaultPlcUnsubscriptionRequest).GetSubscriptionHandles() {
 		handle.(*SubscriptionHandle).stopSubscriber()

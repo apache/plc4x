@@ -59,7 +59,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult) {
 	defer func() {
 		if err := recover(); err != nil {
-			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 		}
 	}()
 
@@ -78,7 +78,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 
 		nodeId, err := generateNodeId(tag)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "error generating node id from tag %s", tag))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "error generating node id from tag %s", tag)))
 			return
 		}
 
@@ -106,19 +106,19 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
-		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest"))
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest")))
 		return
 	}
 
 	consumer := func(opcuaResponse []byte) {
 		reply, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Unable to read the reply"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Unable to read the reply")))
 			return
 		}
 		extensionObjectDefinition := reply.GetBody()
 		if _readResponse, ok := extensionObjectDefinition.(readWriteModel.ReadResponse); ok {
-			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, spiModel.NewDefaultPlcReadResponse(readResponse(m.log, readRequest, readRequest.GetTagNames(), _readResponse.GetResults())), nil)
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, spiModel.NewDefaultPlcReadResponse(readResponse(m.log, readRequest, readRequest.GetTagNames(), _readResponse.GetResults())), nil))
 			return
 		} else {
 			if serviceFault, ok := extensionObjectDefinition.(readWriteModel.ServiceFault); ok {
@@ -132,12 +132,12 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 			for _, tagName := range readRequest.GetTagNames() {
 				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 			}
-			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, nil), nil)
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, nil), nil))
 		}
 	}
 
 	errorDispatcher := func(err error) {
-		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, err)
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, err))
 	}
 
 	m.connection.channel.submit(ctx, m.connection.messageCodec, errorDispatcher, consumer, buffer)

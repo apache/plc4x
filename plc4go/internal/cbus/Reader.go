@@ -35,6 +35,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Reader struct {
@@ -66,12 +67,12 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult) {
 	defer func() {
 		if err := recover(); err != nil {
-			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 		}
 	}()
 	numTags := len(readRequest.GetTagNames())
 	if numTags > 20 { // letters g-z
-		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("Only 20 tags can be handled at once"))
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("Only 20 tags can be handled at once")))
 		return
 	}
 	messages := make(map[string]readWriteModel.CBusMessage)
@@ -80,11 +81,11 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		message, supportsRead, _, _, err := TagToCBusMessage(tag, nil, m.alphaGenerator, m.messageCodec)
 		switch {
 		case err != nil:
-			result <- spiModel.NewDefaultPlcReadRequestResult(
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 				readRequest,
 				nil,
 				errors.Wrapf(err, "Error encoding cbus message for tag %s", tagName),
-			)
+			))
 			return
 		case !supportsRead: // Note this should not be reachable
 			panic("this should not be possible as we always should then get the error above")
@@ -107,21 +108,21 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 	}
 	for tagName, messageToSend := range messages {
 		if err := ctx.Err(); err != nil {
-			result <- spiModel.NewDefaultPlcReadRequestResult(
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 				readRequest,
 				nil,
 				err,
-			)
+			))
 			return
 		}
 		m.createMessageTransactionAndWait(ctx, messageToSend, addResponseCode, tagName, addPlcValue)
 	}
 	readResponse := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-	result <- spiModel.NewDefaultPlcReadRequestResult(
+	utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 		readRequest,
 		readResponse,
 		nil,
-	)
+	))
 }
 
 func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {

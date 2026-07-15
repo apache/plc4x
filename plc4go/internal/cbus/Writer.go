@@ -33,6 +33,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Writer struct {
@@ -62,16 +63,16 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 		numTags := len(writeRequest.GetTagNames())
 		if numTags > 20 { // letters g-z
-			result <- spiModel.NewDefaultPlcWriteRequestResult(
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(
 				writeRequest,
 				nil,
 				errors.New("Only 20 tags can be handled at once"),
-			)
+			))
 			return
 		}
 
@@ -81,19 +82,19 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			plcValue := writeRequest.GetValue(tagName)
 			message, _, supportsWrite, _, err := TagToCBusMessage(tag, plcValue, m.alphaGenerator, m.messageCodec)
 			if !supportsWrite {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(
 					writeRequest,
 					nil,
 					errors.Wrapf(err, "Error encoding cbus message for tag %s. Tag is not meant to be written.", tagName),
-				)
+				))
 				return
 			}
 			if err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(
 					writeRequest,
 					nil,
 					errors.Wrapf(err, "Error encoding cbus message for tag %s", tagName),
-				)
+				))
 				return
 			}
 			messages[tagName] = message
@@ -107,7 +108,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		}
 		for tagName, messageToSend := range messages {
 			if err := ctx.Err(); err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, err)
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, err))
 				return
 			}
 			tagNameCopy := tagName
@@ -157,7 +158,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			})
 		}
 		readResponse := spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes)
-		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, readResponse, nil)
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, readResponse, nil))
 	})
 	return result
 }

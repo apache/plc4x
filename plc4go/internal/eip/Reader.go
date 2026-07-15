@@ -73,7 +73,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 		classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 6))
@@ -87,7 +87,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			}
 			ansi, err := toAnsi(tag)
 			if err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Error encoding eip ansi for tag %s", tagName))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Error encoding eip ansi for tag %s", tagName)))
 				return
 			}
 			requestItem := readWriteModel.NewCipUnconnectedRequest(classSegment, instanceSegment,
@@ -128,32 +128,32 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					m.log.Trace().Msg("convert response to PLC4X response")
 					readResponse, err := m.ToPlc4xReadResponse(unconnectedDataItem.GetService(), readRequest)
 					if err != nil {
-						result <- spiModel.NewDefaultPlcReadRequestResult(
+						utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 							readRequest,
 							nil,
 							errors.Wrap(err, "Error decoding response"),
-						)
+						))
 						return transaction.EndRequest()
 					}
-					result <- spiModel.NewDefaultPlcReadRequestResult(
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 						readRequest,
 						readResponse,
 						nil,
-					)
+					))
 					return transaction.EndRequest()
 				}, func(err error) error {
-					result <- spiModel.NewDefaultPlcReadRequestResult(
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 						readRequest,
 						nil,
 						errors.Wrap(err, "got timeout while waiting for response"),
-					)
+					))
 					return transaction.EndRequest()
 				}); err != nil {
-					result <- spiModel.NewDefaultPlcReadRequestResult(
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 						readRequest,
 						nil,
 						errors.Wrap(err, "error sending message"),
-					)
+					))
 					if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
 						m.log.Debug().Err(err).Msg("Error failing request")
 					}

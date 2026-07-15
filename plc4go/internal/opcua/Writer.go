@@ -61,7 +61,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRequest, result chan apiModel.PlcWriteRequestResult) {
 	defer func() {
 		if err := recover(); err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 		}
 	}()
 
@@ -80,13 +80,13 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 
 		nodeId, err := generateNodeId(tag)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "error generating node id from tag %s", tag))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "error generating node id from tag %s", tag)))
 			return
 		}
 
 		plcValue, err := m.fromPlcValue(tagName, tag, writeRequest)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error getting plcValue"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error getting plcValue")))
 			return
 		}
 		writeValueArray[i] = readWriteModel.NewWriteValue(nodeId,
@@ -130,18 +130,18 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 	)
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
-		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest"))
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest")))
 		return
 	}
 
 	consumer := func(opcuaResponse []byte) {
 		reply, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to read the reply"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to read the reply")))
 			return
 		}
 		if writeResponse, ok := reply.(readWriteModel.WriteResponse); ok {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(m.writeResponse(writeRequest, writeResponse.GetResults())), nil)
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(m.writeResponse(writeRequest, writeResponse.GetResults())), nil))
 			return
 		} else {
 			if serviceFault, ok := reply.(readWriteModel.ServiceFault); ok {
@@ -155,12 +155,12 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 			for _, tagName := range writeRequest.GetTagNames() {
 				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 			}
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil)
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil))
 		}
 	}
 
 	errorDispatcher := func(err error) {
-		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, err)
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, err))
 	}
 
 	m.connection.channel.submit(ctx, m.connection.messageCodec, errorDispatcher, consumer, buffer)

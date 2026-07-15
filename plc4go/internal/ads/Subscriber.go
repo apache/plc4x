@@ -112,7 +112,7 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		for _, subResultChannel := range subResultChannels {
 			select {
 			case <-ctx.Done():
-				globalResultChannel <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, ctx.Err())
+				utils.DeliverResult(m.log, globalResultChannel, spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, ctx.Err()))
 				return
 			case subResult := <-subResultChannel:
 				// These are all single value requests ... so it's safe to assume this shortcut.
@@ -123,7 +123,7 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		// As soon as all are done, process the results
 		result := m.processSubscriptionResponses(ctx, subscriptionRequest, subResults)
 		// Return the final result
-		globalResultChannel <- result
+		utils.DeliverResult(m.log, globalResultChannel, result)
 	})
 
 	return globalResultChannel
@@ -134,7 +134,7 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, responseChan, spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 		// At this point we are sure to only have single item direct tag requests.
@@ -146,11 +146,11 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 
 		response, err := m.ExecuteAdsAddDeviceNotificationRequest(ctx, directTag.IndexGroup, directTag.IndexOffset, directTag.DataType.GetSize(), model.AdsTransMode_ON_CHANGE, 0, 0)
 		if err != nil {
-			responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(
+			utils.DeliverResult(m.log, responseChan, spiModel.NewDefaultPlcSubscriptionRequestResult(
 				subscriptionRequest,
 				nil,
 				err,
-			)
+			))
 		}
 		// Create a new subscription handle.
 		subscriptionHandle := dirverModel.NewAdsSubscriptionHandle(
@@ -159,7 +159,7 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 			directTag,
 			append(m._options, options.WithCustomLogger(m.log))...,
 		)
-		responseChan <- spiModel.NewDefaultPlcSubscriptionRequestResult(
+		utils.DeliverResult(m.log, responseChan, spiModel.NewDefaultPlcSubscriptionRequestResult(
 			subscriptionRequest,
 			spiModel.NewDefaultPlcSubscriptionResponse(
 				subscriptionRequest,
@@ -168,7 +168,7 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 				append(m._options, options.WithCustomLogger(m.log))...,
 			),
 			nil,
-		)
+		))
 		// Store it together with the returned ADS handle.
 		m.subscriptions[response.GetNotificationHandle()] = subscriptionHandle
 	})

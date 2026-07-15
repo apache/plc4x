@@ -29,6 +29,7 @@ import (
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
@@ -46,7 +47,7 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 	m.wg.Go(func() {
 		defer func() {
 			if err := recover(); err != nil {
-				result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -56,7 +57,7 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, interceptor, queryName, query)
 		}
 		browseResponse := spiModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
-		result <- spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, browseResponse, nil)
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcBrowseRequestResult(browseRequest, browseResponse, nil))
 	})
 	return result
 }
