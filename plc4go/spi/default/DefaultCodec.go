@@ -223,6 +223,12 @@ func (m *defaultCodec) IsRunning() bool {
 }
 
 func (m *defaultCodec) Expect(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) {
+	m.expect(ctx, interactionInfo, acceptsMessage, handleMessage, handleError)
+}
+
+// expect is the implementation of Expect which additionally hands back the
+// registered expectation so internal callers can remove it again.
+func (m *defaultCodec) expect(ctx context.Context, interactionInfo string, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) spi.Expectation {
 	m.expectationsChangeMutex.Lock()
 	defer m.expectationsChangeMutex.Unlock()
 	ttl := m.receiveTimeout
@@ -240,15 +246,30 @@ func (m *defaultCodec) Expect(ctx context.Context, interactionInfo string, accep
 	case m.notifyReceiveWorker <- struct{}{}:
 	default:
 	}
+	return expectation
+}
+
+func (m *defaultCodec) removeExpectation(expectation spi.Expectation) {
+	m.expectationsChangeMutex.Lock()
+	defer m.expectationsChangeMutex.Unlock()
+	m.expectations = slices.DeleteFunc(m.expectations, func(candidate spi.Expectation) bool {
+		return candidate == expectation
+	})
 }
 
 func (m *defaultCodec) SendRequest(ctx context.Context, interactionInfo string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
 	if err := ctx.Err(); err != nil {
 		return errors.Wrap(err, "Not sending message as context is aborted")
 	}
-	m.Expect(ctx, interactionInfo, acceptsMessage, handleMessage, handleError) // We register the expectation first to avoid getting a response between sending and adding the expect
+	expectation := m.expect(ctx, interactionInfo, acceptsMessage, handleMessage, handleError) // We register the expectation first to avoid getting a response between sending and adding the expect
 	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending request")
-	return m.Send(ctx, interactionInfo, message)
+	if err := m.Send(ctx, interactionInfo, message); err != nil {
+		// The caller receives the send error directly; leaving the expectation
+		// registered would fire the error handler a second time on timeout.
+		m.removeExpectation(expectation)
+		return err
+	}
+	return nil
 }
 
 func (m *defaultCodec) TimeoutExpectations(now time.Time) time.Duration {

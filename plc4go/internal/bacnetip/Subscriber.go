@@ -34,6 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -93,7 +94,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 
 		for _, tagName := range internalReq.GetTagNames() {
 			if err := ctx.Err(); err != nil {
-				result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, err)
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, err))
 				return
 			}
 			tag, ok := internalReq.GetTag(tagName).(BacNetPlcTag)
@@ -123,7 +124,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			}
 		}
 
-		result <- spiModel.NewDefaultPlcSubscriptionRequestResult(
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcSubscriptionRequestResult(
 			subscriptionRequest,
 			spiModel.NewDefaultPlcSubscriptionResponse(
 				subscriptionRequest,
@@ -132,7 +133,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 				append(m._options, options.WithCustomLogger(m.log))...,
 			),
 			nil,
-		)
+		))
 	})
 	return result
 }
@@ -145,7 +146,7 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 	m.wg.Go(func() {
 		req, ok := unsubscriptionRequest.(*spiModel.DefaultPlcUnsubscriptionRequest)
 		if !ok {
-			result <- spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("unsupported unsubscription request type"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("unsupported unsubscription request type")))
 			return
 		}
 		for _, handle := range req.GetSubscriptionHandles() {
@@ -157,7 +158,7 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 			m.removeHandle(bh.subscriberProcessId)
 		}
 		// Build a response with OK for every handle the caller passed.
-		result <- spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, nil)
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, nil))
 	})
 	return result
 }

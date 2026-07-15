@@ -34,6 +34,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -69,7 +70,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	result := make(chan apiModel.PlcReadRequestResult, 1)
 	m.wg.Go(func() {
 		if len(readRequest.GetTagNames()) == 0 {
-			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("at least one field required"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("at least one field required")))
 			return
 		}
 		// create the service request
@@ -188,32 +189,32 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				readResponse, err := m.ToPlc4xReadResponse(apdu, readRequest)
 
 				if err != nil {
-					result <- spiModel.NewDefaultPlcReadRequestResult(
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 						readRequest,
 						nil,
 						errors.Wrap(err, "Error decoding response"),
-					)
+					))
 					return transaction.EndRequest()
 				}
-				result <- spiModel.NewDefaultPlcReadRequestResult(
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					readResponse,
 					nil,
-				)
+				))
 				return transaction.EndRequest()
 			}, func(err error) error {
-				result <- spiModel.NewDefaultPlcReadRequestResult(
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,
 					errors.Wrap(err, "got timeout while waiting for response"),
-				)
+				))
 				return transaction.EndRequest()
 			}); err != nil {
-				result <- spiModel.NewDefaultPlcReadRequestResult(
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,
 					errors.Wrap(err, "error sending message"),
-				)
+				))
 				if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
 					m.log.Debug().Err(err).Msg("Error failing request")
 				}

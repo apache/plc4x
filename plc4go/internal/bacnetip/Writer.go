@@ -34,6 +34,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // Writer issues BACnet WriteProperty / WritePropertyMultiple confirmed-service
@@ -72,18 +73,18 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 	m.wg.Go(func() {
 		defer func() {
 			if r := recover(); r != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", r, debug.Stack()))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", r, debug.Stack())))
 			}
 		}()
 		tagNames := writeRequest.GetTagNames()
 		if len(tagNames) == 0 {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("at least one tag required"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("at least one tag required")))
 			return
 		}
 
 		serviceRequest, err := m.buildServiceRequest(writeRequest)
 		if err != nil {
-			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "Error building WriteProperty request"))
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "Error building WriteProperty request")))
 			return
 		}
 
@@ -113,14 +114,14 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				bvlc := message.(readWriteModel.BVLC)
 				responseApdu := bvlc.(interface{ GetNpdu() readWriteModel.NPDU }).GetNpdu().GetApdu()
 				writeResponse := m.toPlcWriteResponse(responseApdu, writeRequest)
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, writeResponse, nil)
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, writeResponse, nil))
 				return transaction.EndRequest()
 			}, func(err error) error {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "got timeout while waiting for write response"))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "got timeout while waiting for write response")))
 				return transaction.EndRequest()
 			})
 			if err != nil {
-				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message"))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message")))
 				if failErr := transaction.FailRequest(err); failErr != nil {
 					m.log.Debug().Err(failErr).Msg("Error failing request")
 				}

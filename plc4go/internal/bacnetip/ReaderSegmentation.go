@@ -28,6 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // segmentWaitTimeout bounds how long we wait for each follow-up segment before
@@ -102,12 +103,12 @@ func (m *Reader) reassembleSegmentedRead(ctx context.Context, readRequest apiMod
 		m.failSegmentedRead(readRequest, result, errors.Wrap(err, "error decoding reassembled response"))
 		return
 	}
-	result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, readResponse, nil)
+	utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, readResponse, nil))
 }
 
 func (m *Reader) failSegmentedRead(readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult, err error) {
 	m.log.Debug().Err(err).Msg("segmented read failed")
-	result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, err)
+	utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, err))
 }
 
 // expectSegment registers a one-shot expectation for the next segmented
