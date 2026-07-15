@@ -123,15 +123,24 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 	return nil
 }
 
+// Reset is deliberately a no-op for UDP. It used to poke the read deadline,
+// drain one datagram into a discard buffer, and swap m.reader — but it is
+// called from OUTSIDE the receive worker (connection-cache lease grants,
+// DefaultCodec retryable-error handling) while the worker concurrently drives
+// GetNumBytesAvailableInBuffer/Peek on the very same socket and reader. Every
+// one of those mutations races the worker and can silently destroy a FRESH
+// inbound datagram: the drain read eats it off the socket, and the reader
+// swap throws away bytes the worker had just buffered (observed in the field
+// as a BACnet WriteProperty SimpleAck that reached the host interface with a
+// good checksum but never surfaced; reproduced by
+// bacnetip.TestNativeBacnetWrite_LeaseResetOnLiveSocket).
+//
+// Nothing here needs cleaning anyway: UDP is datagram-framed, so "stale"
+// buffered data is just a complete late reply, which the codec's expectation
+// matching already drops without harm. Reconnection semantics live in
+// Close/Connect.
 func (m *TransportInstance) Reset() {
-	if m.udpConn == nil {
-		m.log.Trace().Msg("No connection to reset")
-		return
-	}
-	_ = m.udpConn.SetReadDeadline(time.Now().Add(1))
-	_, _, _ = m.udpConn.ReadFromUDP(make([]byte, 4096))
-	m.reader = bufio.NewReader(m.udpConn)
-	m.log.Trace().Msg("Connection reset")
+	m.log.Trace().Msg("Reset is a no-op for UDP (see doc comment)")
 }
 
 func (m *TransportInstance) Close() error {
