@@ -84,6 +84,11 @@ func WithMaxWaitTime(maxWaitTime time.Duration) WithConnectionCacheOption {
 // write fails, so connections past this age are replaced proactively. As a
 // side effect, connection slots on connection-limited remotes are freed
 // between bursts instead of being parked indefinitely.
+//
+// Connections that report active subscription handles (see the drivers'
+// subscription support, e.g. BACnet COV) are exempt from the TTL: their
+// subscription state lives on the connection and would be silently destroyed
+// by a reap, cutting off passive updates until the client re-subscribes.
 func WithMaxIdleTime(maxIdleTime time.Duration) WithConnectionCacheOption {
 	return func(plcConnectionCache *plcConnectionCache) {
 		plcConnectionCache.maxIdleTime = maxIdleTime

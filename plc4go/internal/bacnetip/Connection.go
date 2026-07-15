@@ -49,6 +49,7 @@ type Connection struct {
 	configuration     Configuration
 	driverContext     DriverContext
 	subscribers       []*Subscriber
+	subscribersMu     sync.Mutex
 	tm                transactions.RequestTransactionManager
 
 	connectionId string
@@ -252,11 +253,29 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
+	c.subscribersMu.Lock()
+	defer c.subscribersMu.Unlock()
 	if slices.Contains(c.subscribers, subscriber) {
 		c.log.Debug().Interface("subscriber", subscriber).Msg("Subscriber already added")
 		return
 	}
 	c.subscribers = append(c.subscribers, subscriber)
+}
+
+// ActiveSubscriptionCount reports how many COV subscription handles are
+// currently registered across this connection's subscribers. The connection
+// cache consults it (as an optional capability) to exempt subscription-
+// carrying connections from idle reaping: their server-side COV
+// registrations and refresh timers live on this connection and would be
+// destroyed by a reap.
+func (c *Connection) ActiveSubscriptionCount() int {
+	c.subscribersMu.Lock()
+	defer c.subscribersMu.Unlock()
+	count := 0
+	for _, s := range c.subscribers {
+		count += s.activeHandleCount()
+	}
+	return count
 }
 
 func (c *Connection) String() string {

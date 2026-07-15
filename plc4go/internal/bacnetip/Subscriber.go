@@ -354,6 +354,14 @@ func (m *Subscriber) lookupHandle(processId uint32) *SubscriptionHandle {
 	return m.handles[processId]
 }
 
+// activeHandleCount reports the number of currently registered subscription
+// handles (feeds Connection.ActiveSubscriptionCount).
+func (m *Subscriber) activeHandleCount() int {
+	m.handlesMu.RLock()
+	defer m.handlesMu.RUnlock()
+	return len(m.handles)
+}
+
 // findHandle locates the SubscriptionHandle that owns the given
 // apiModel.PlcSubscriptionHandle (returned earlier in the Subscribe response).
 // Used by Unsubscribe which only has the api-level handle in hand.

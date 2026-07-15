@@ -357,10 +357,32 @@ func (c *connectionContainer) returnConnection(ctx context.Context, newState cac
 	return nil
 }
 
+// subscriptionAware is an optional capability of cached connections: drivers
+// whose connections carry stateful subscriptions (e.g. BACnet COV, with its
+// server-side registrations and client-side refresh timers) implement it so
+// the cache can tell "parked but working" apart from "abandoned".
+type subscriptionAware interface {
+	// ActiveSubscriptionCount reports the number of currently active
+	// subscription handles on the connection.
+	ActiveSubscriptionCount() int
+}
+
 // idleExpired reports whether the connection outstayed the configured max idle
 // time. Must be called with c.lock held.
+//
+// A connection with active subscription handles never expires: its
+// subscription state lives on the connection, so reaping it would silently
+// destroy server-side registrations and refresh timers, cutting off passive
+// updates until the client happens to re-subscribe. Such a connection is not
+// "idle" in any meaningful sense even when no lease touched it for a while.
 func (c *connectionContainer) idleExpired() bool {
-	return c.maxIdleTime > 0 && time.Since(c.idleSince) > c.maxIdleTime
+	if c.maxIdleTime <= 0 || time.Since(c.idleSince) <= c.maxIdleTime {
+		return false
+	}
+	if sa, ok := c.connection.(subscriptionAware); ok && sa.ActiveSubscriptionCount() > 0 {
+		return false
+	}
+	return true
 }
 
 func (c *connectionContainer) String() string {
