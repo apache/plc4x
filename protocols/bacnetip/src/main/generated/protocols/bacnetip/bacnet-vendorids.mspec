@@ -1642,6 +1642,12 @@
   ['1629' CORPORACIN_EMPRESARIAL_ALTRA ['1629', '"Corporación Empresarial Altra"']]
   ['1630' IC_VALVES_NANJING_CO_LTD ['1630', '"IC Valves (Nanjing) Co., Ltd."']]
   ['1631' OCCUSPACE_INC ['1631', '"Occuspace Inc."']]
+  ['1632' SHENZHEN_KEENYODA_TECHNOLOGIES_CO_LTD ['1632', '"Shenzhen Keenyoda Technologies Co., Ltd."']]
+  ['1633' JIANGSUCHINT_TECHSEL_INTELLIGENT_TECHNOLGOY_CO_LTD ['1633', '"Jiangsu CHINT Techsel Intelligent Technolgoy Co., Ltd."']]
+  ['1634' TECHSOUL_TRADINGLLC ['1634', '"Techsoul Trading LLC"']]
+  ['1635' ACTION_TARGET_INC ['1635', '"Action Target Inc."']]
+  ['1636' TEKTELIC_COMMUNICATIONS_INC ['1636', '"Tektelic Communications Inc."']]
+  ['1637' EXPANSION_ELECTRONICSRL ['1637', '"Expansion Electronic SRL"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

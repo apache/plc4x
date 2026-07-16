@@ -3267,6 +3267,18 @@ public enum BACnetVendorId {
 
   OCCUSPACE_INC((int) 1631, (int) 1631, "Occuspace Inc."),
 
+  SHENZHEN_KEENYODA_TECHNOLOGIES_CO_LTD((int) 1632, (int) 1632, "Shenzhen Keenyoda Technologies Co., Ltd."),
+
+  JIANGSUCHINT_TECHSEL_INTELLIGENT_TECHNOLGOY_CO_LTD((int) 1633, (int) 1633, "Jiangsu CHINT Techsel Intelligent Technolgoy Co., Ltd."),
+
+  TECHSOUL_TRADINGLLC((int) 1634, (int) 1634, "Techsoul Trading LLC"),
+
+  ACTION_TARGET_INC((int) 1635, (int) 1635, "Action Target Inc."),
+
+  TEKTELIC_COMMUNICATIONS_INC((int) 1636, (int) 1636, "Tektelic Communications Inc."),
+
+  EXPANSION_ELECTRONICSRL((int) 1637, (int) 1637, "Expansion Electronic SRL"),
+
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, "Unknown");
 
   private static final Map<Integer, BACnetVendorId> map;
