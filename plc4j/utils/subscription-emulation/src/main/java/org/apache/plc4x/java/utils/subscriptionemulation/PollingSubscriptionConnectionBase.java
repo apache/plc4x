@@ -92,7 +92,7 @@ public abstract class PollingSubscriptionConnectionBase<C extends Configuration>
     private final Map<PlcConsumerRegistration, ConsumerRegistrationInfo> consumerRegistrations = new ConcurrentHashMap<>();
     private final PlcConnectionManager singleConnectionManager;
 
-    public PollingSubscriptionConnectionBase(C configuration, TransportInstance<?> transportInstance, AuditLog auditLog, String artifactId) {
+    public PollingSubscriptionConnectionBase(C configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
         super(configuration, transportInstance, auditLog);
         // Create a connection manager that always returns this connection
         this.singleConnectionManager = new SingleConnectionManager(this);
