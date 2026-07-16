@@ -219,7 +219,7 @@ class PollingSubscriptionConnectionBaseTest {
         private final PlcTagHandler tagHandler;
 
         public TestConnection(AtomicInteger valueSupplier, PlcTagHandler tagHandler) {
-            super(new TestConfiguration(), mock(TransportInstance.class), mock(AuditLog.class), "test");
+            super(new TestConfiguration(), mock(TransportInstance.class), mock(AuditLog.class));
             this.valueSupplier = valueSupplier;
             this.tagHandler = tagHandler;
         }
@@ -266,7 +266,7 @@ class PollingSubscriptionConnectionBaseTest {
         private final PlcTagHandler tagHandler;
 
         public TestConnectionWithoutReader(PlcTagHandler tagHandler) {
-            super(new TestConfiguration(), mock(TransportInstance.class), mock(AuditLog.class), "test");
+            super(new TestConfiguration(), mock(TransportInstance.class), mock(AuditLog.class));
             this.tagHandler = tagHandler;
         }
 
