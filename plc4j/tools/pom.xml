@@ -38,6 +38,7 @@
   <subprojects>
     <subproject>capture-replay</subproject>
     <subproject>connection-cache</subproject>
+    <subproject>event-pump</subproject>
     <subproject>opm</subproject>
     <subproject>scraper</subproject>
     <!--subproject>scraper-ng</subproject-->

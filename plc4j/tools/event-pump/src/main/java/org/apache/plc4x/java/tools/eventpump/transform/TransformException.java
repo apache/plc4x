@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,22 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.transport.pcap;
 
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
+package org.apache.plc4x.java.tools.eventpump.transform;
 
-public interface PcapTransportConfiguration extends PlcTransportConfiguration {
-    int NO_DEFAULT_PORT = -1;
+/**
+ * Exception thrown when a value transformation fails.
+ */
+public class TransformException extends Exception {
 
-    boolean getSupportVlans();
-
-    default int getDefaultPort() {
-        return NO_DEFAULT_PORT;
+    public TransformException(String message) {
+        super(message);
     }
 
-    int getProtocolId();
-
-    PacketHandler getPcapPacketHandler();
-
+    public TransformException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
