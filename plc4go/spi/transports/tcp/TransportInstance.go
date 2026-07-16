@@ -96,15 +96,23 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 	return nil
 }
 
+// Reset is deliberately a no-op for TCP, matching the UDP and serial
+// transports. It used to poke the read deadline, drain one socket read into a
+// discard buffer, and swap m.reader — but it is called from OUTSIDE the
+// receive worker (connection-cache lease grants, DefaultCodec retryable-error
+// handling) while the worker concurrently drives
+// GetNumBytesAvailableInBuffer/Peek/Read on the same conn and reader. Every
+// one of those mutations races the worker, and on a STREAM they are doubly
+// destructive: the drain can consume a fresh reply, and dropping bytes the
+// reader had already buffered desyncs the protocol framing for everything
+// that follows (the swap also silently shrank the reader from the 100k
+// buffer Connect creates to bufio's 4k default). Stale complete frames from
+// an abandoned exchange are already handled by the codec's response
+// matching; reconnection semantics live in Close/Connect.
+// See TestTransportInstance_ResetKeepsBufferedBytes /
+// TestTransportInstance_ResetDoesNotRaceReceiveWorker.
 func (m *TransportInstance) Reset() {
-	if m.tcpConn == nil {
-		m.log.Trace().Msg("No connection to reset")
-		return
-	}
-	_ = m.tcpConn.SetReadDeadline(time.Now().Add(1))
-	_, _ = m.tcpConn.Read(make([]byte, 4096))
-	m.reader = bufio.NewReader(m.tcpConn)
-	m.log.Trace().Msg("Connection reset")
+	m.log.Trace().Msg("Reset is a no-op for TCP (see doc comment)")
 }
 
 func (m *TransportInstance) Close() error {
