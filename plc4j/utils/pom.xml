@@ -37,6 +37,7 @@
 
   <subprojects>
     <subproject>audit-log</subproject>
+    <subproject>subscription-emulation</subproject>
     <!-- Non-default input options -->
     <subproject>pcap-replay</subproject>
     <subproject>pcap-shared</subproject>
