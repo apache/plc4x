@@ -22,6 +22,8 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -30,12 +32,15 @@ import org.apache.plc4x.java.slmp.readwrite.SlmpMessage;
 import org.apache.plc4x.java.slmp.readwrite.SlmpReadRequest;
 import org.apache.plc4x.java.slmp.readwrite.SlmpRequestFrame3E;
 import org.apache.plc4x.java.slmp.readwrite.SlmpResponseFrame3E;
+import org.apache.plc4x.java.slmp.readwrite.SlmpWriteRequest;
 import org.apache.plc4x.java.slmp.tag.SlmpTag;
 import org.apache.plc4x.java.slmp.tag.SlmpTagHandler;
 import org.apache.plc4x.java.spi.drivers.ConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcWriteRequest;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
@@ -243,5 +248,55 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
         return executeThrottled(() ->
             sendRequest(frame).thenApply(response ->
                 SlmpResponseMapper.mapTag(tag, response.getEndCode(), response.getResponseData())));
+    }
+
+    @Override
+    protected CompletableFuture<PlcWriteResponse> onWrite(PlcWriteRequest writeRequest) {
+        // Structural mirror of onRead; see there for the handle-vs-thenApply and per-tag partial-failure-isolation rationale.
+        DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
+        LinkedHashMap<String, CompletableFuture<PlcResponseCode>> tagFutures = new LinkedHashMap<>();
+        CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
+        for (String tagName : request.getTagNames()) {
+            SlmpTag tag = (SlmpTag) request.getTag(tagName);
+            PlcValue value = request.getPlcValue(tagName);
+            CompletableFuture<PlcResponseCode> tagFuture =
+                chain.thenComposeAsync(v -> writeSingleTag(tag, value));
+            tagFutures.put(tagName, tagFuture);
+            chain = tagFuture.handle((r, e) -> null);
+        }
+        CompletableFuture<Void> allDone =
+            CompletableFuture.allOf(tagFutures.values().toArray(new CompletableFuture[0]));
+        return allDone.handle((v, anyTagFailure) -> {
+            Map<String, PlcResponseCode> responseCodes = new LinkedHashMap<>();
+            for (Map.Entry<String, CompletableFuture<PlcResponseCode>> e : tagFutures.entrySet()) {
+                try {
+                    responseCodes.put(e.getKey(), e.getValue().join());
+                } catch (Exception ex) {
+                    Throwable cause = (ex instanceof CompletionException && ex.getCause() != null)
+                        ? ex.getCause() : ex;
+                    PlcResponseCode code = (cause instanceof TimeoutException)
+                        ? PlcResponseCode.REMOTE_ERROR : PlcResponseCode.INTERNAL_ERROR;
+                    responseCodes.put(e.getKey(), code);
+                }
+            }
+            return (PlcWriteResponse) new DefaultPlcWriteResponse(request, responseCodes);
+        });
+    }
+
+    private CompletableFuture<PlcResponseCode> writeSingleTag(SlmpTag tag, PlcValue value) {
+        byte[] payload = tag.getDataType().encode(value, tag.getQuantity());
+        if (payload == null) {
+            return CompletableFuture.completedFuture(PlcResponseCode.INVALID_DATA);
+        }
+        // Invariant: encode() returns exactly quantity*wordsPerElement*2 == numberOfPoints*2 bytes,
+        // so the SlmpWriteRequest header word-count and payload length always agree (the generated
+        // serialize path derives length from writeData.length, so this must hold by construction).
+        SlmpWriteRequest data = new SlmpWriteRequest(
+            tag.getDeviceNumber(), tag.getDeviceCode(), tag.getNumberOfPoints(), payload);
+        SlmpRequestFrame3E frame = new SlmpRequestFrame3E(
+            getConfiguration().getMonitoringTimer(), 0x1401, 0x0000, data);
+        return executeThrottled(() ->
+            sendRequest(frame).thenApply(response ->
+                SlmpResponseMapper.mapWriteTag(tag, response.getEndCode())));
     }
 }
