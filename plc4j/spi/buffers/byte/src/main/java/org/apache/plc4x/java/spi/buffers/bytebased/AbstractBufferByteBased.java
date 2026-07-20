@@ -77,21 +77,24 @@ public abstract class AbstractBufferByteBased extends AbstractBuffer {
     // NOT the broader EncodingDefault, so BCD/float/etc. correctly fall through to the slow path.
 
     protected boolean isFastUnsignedBinaryBE(int numBits, WithOption[] options) {
-        if (options.length != 0 || (positionInBits & 7) != 0 || (numBits & 7) != 0) {
+        // isAligned() tests the ABSOLUTE bit index (startBit + positionInBits) — the same predicate the
+        // readBits/writeBits whole-byte fast paths use — so a non-byte-aligned sub-buffer correctly
+        // falls through to the generic path (readAlignedBytesBE indexes by (startBit+positionInBits)/8).
+        if (options.length != 0 || !isAligned() || (numBits & 7) != 0) {
             return false;
         }
         Optional<Encoding> enc = getUnsignedIntegerEncoding();
         return enc.isPresent() && enc.get() instanceof EncodingUnsignedBinary
-            && getByteOrder() == ByteOrderBigEndian.INSTANCE;
+            && getByteOrder() instanceof ByteOrderBigEndian;
     }
 
     protected boolean isFastSignedTwosComplementBE(int numBits, WithOption[] options) {
-        if (options.length != 0 || (positionInBits & 7) != 0 || (numBits & 7) != 0) {
+        if (options.length != 0 || !isAligned() || (numBits & 7) != 0) {
             return false;
         }
         Optional<Encoding> enc = getSignedIntegerEncoding();
         return enc.isPresent() && enc.get() instanceof EncodingTwosComplement
-            && getByteOrder() == ByteOrderBigEndian.INSTANCE;
+            && getByteOrder() instanceof ByteOrderBigEndian;
     }
 
     /** Big-endian two's-complement sign extension of the low {@code numBits} of {@code raw}. */
@@ -188,8 +191,16 @@ public abstract class AbstractBufferByteBased extends AbstractBuffer {
         }
     }
 
+    /**
+     * Whether the current cursor sits on a byte boundary of the BACKING ARRAY. This must be tested on
+     * the absolute bit index ({@code startBit + positionInBits}), not on {@code positionInBits} alone:
+     * a sub-buffer created at a non-byte-aligned offset (see {@code createSubBuffer}) has a non-zero
+     * {@code startBit} while its own {@code positionInBits} is 0. The whole-byte {@code arraycopy}
+     * fast paths in {@code readBits}/{@code writeBits} index the backing array by
+     * {@code (startBit + positionInBits) / 8}, so only absolute alignment makes that copy correct.
+     */
     protected boolean isAligned() {
-        return (positionInBits % 8) == 0;
+        return ((startBit + positionInBits) % 8) == 0;
     }
 
 }

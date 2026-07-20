@@ -89,6 +89,20 @@ class ReadBufferByteBasedTest {
         assertEquals(0x12345678L, b32.readUnsignedLong(32));
     }
 
+    // The fast path must key off the ABSOLUTE bit index (startBit + positionInBits), not
+    // positionInBits alone. A sub-buffer created at a non-byte-aligned offset has startBit % 8 != 0
+    // while its own positionInBits is 0; reading a whole-byte int must still land on the right bits.
+    // bits 4..19 of A1 23 45 = 0001 0010 0011 0100 = 0x1234 (NOT bytes 0..1 = 0xA123).
+    @Test
+    void byteAlignedFastPathRespectsNonByteAlignedSubBufferStartBit() throws Exception {
+        ReadBufferByteBased buffer = new ReadBufferByteBased(
+            new byte[]{(byte) 0xA1, 0x23, 0x45, 0x60},
+            EncodingUnsignedBinary.optionEncodingUnsignedBinary());
+        buffer.readUnsignedInt(4);                              // advance to absolute bit 4
+        ReadBufferByteBased sub = buffer.createSubBuffer(16);   // startBit = 4 (non-byte-aligned)
+        assertEquals(0x1234, sub.readUnsignedInt(16));
+    }
+
     // readBits
     @Test
     void testReadBitsNestedSubBufferUnaligned() throws Exception {
