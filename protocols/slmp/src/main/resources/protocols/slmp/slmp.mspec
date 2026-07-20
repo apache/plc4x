@@ -25,10 +25,9 @@
 //     - Subheader (50 00 / D0 00) ...... section 5.3
 //     - Access route (3E fixed value) .. chapter 6
 //     - Request/response data length ... section 5.3 (2-byte, little-endian)
-//     - Commands (Batch/Random/block Read, Batch Write) chapter 7 / 8.1 / 8.2 / 8.3 / 8.4
-//     - Device code list ............... section 8.1 (MELSEC-Q/L, 1-byte binary)
-//     - Batch Read data layout ......... section 8.1 (binary, word units)
-//     - Batch Write data layout ........ section 8.2 (binary, word units)
+//     - Command list ................... chapter 7 (section 7.1)
+//     - Device data to be specified .... section 8.1 (devices, device code list, points)
+//     - Batch Read/Write data layout ... section 8.2 (binary, word units; Read 0x0401 / Write 0x1401)
 //     - Random Read data layout ........ section 8.3 (binary, word units)
 //     - Multi-block Read data layout ... section 8.4 (binary, word units)
 //
@@ -147,7 +146,7 @@
             [array  SlmpDeviceBlock bitDeviceBlocks  count 'numberOfBitDeviceBlocks']
         ]
         ['0x1401' SlmpWriteRequest
-            // Batch Write in word units (SH-080008 section 8.2 "Batch Write"): the same
+            // Batch Write in word units (SH-080008 section 8.2 "Batch Read and Write"): the same
             // device addressing as SlmpReadRequest (0x0401), followed by the data to write.
             // numberOfPoints is the number of 16-bit words; writeData is exactly that many
             // little-endian words carried as raw bytes (2 * numberOfPoints). Typed encoding
