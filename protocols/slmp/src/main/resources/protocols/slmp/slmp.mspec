@@ -33,7 +33,8 @@
 //
 // Scope of this initial version: 3E binary frame, read-only, Batch Read
 // (command 0x0401), Random Read (command 0x0403) and Batch Read Multiple Blocks
-// (command 0x0406) in word units (subcommand 0x0000). This is the wire layer
+// (command 0x0406) in word units (subcommand 0x0000), plus Batch Write
+// (command 0x1401) in word units (subcommand 0x0000). This is the wire layer
 // only; typed value decoding
 // (INT/WORD/DINT/REAL) and the device-addressing tag layer are intentionally
 // NOT modelled here yet and will follow once the driver logic is built.
@@ -142,6 +143,18 @@
             [simple uint 8          numberOfBitDeviceBlocks]
             [array  SlmpDeviceBlock wordDeviceBlocks count 'numberOfWordDeviceBlocks']
             [array  SlmpDeviceBlock bitDeviceBlocks  count 'numberOfBitDeviceBlocks']
+        ]
+        ['0x1401' SlmpWriteRequest
+            // Batch Write in word units (SH-080008 section 8.2 "Batch Write"): the same
+            // device addressing as SlmpReadRequest (0x0401), followed by the data to write.
+            // numberOfPoints is the number of 16-bit words; writeData is exactly that many
+            // little-endian words carried as raw bytes (2 * numberOfPoints). Typed encoding
+            // (INT/WORD/DINT/REAL) is owned by the driver layer, symmetric with how the read
+            // response leaves responseData as raw bytes for the driver to decode.
+            [simple uint 24        headDeviceNumber]
+            [simple SlmpDeviceCode deviceCode]
+            [simple uint 16        numberOfPoints]
+            [array  byte           writeData count 'numberOfPoints * 2']
         ]
     ]
 ]

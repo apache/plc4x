@@ -52,6 +52,8 @@ public abstract class SlmpRequestData implements Message {
       builder = SlmpRandomReadRequest.staticParseSlmpRequestDataBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, (int) (0x0406))) {
       builder = SlmpMultiBlockReadRequest.staticParseSlmpRequestDataBuilder(readBuffer, command);
+    } else if (EvaluationHelper.equals(command, (int) (0x1401))) {
+      builder = SlmpWriteRequest.staticParseSlmpRequestDataBuilder(readBuffer, command);
     }
     if (builder == null) {
       throw new BufferException("Unsupported case for discriminated type parameters parameters [command]");
