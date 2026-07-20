@@ -25,9 +25,10 @@
 //     - Subheader (50 00 / D0 00) ...... section 5.3
 //     - Access route (3E fixed value) .. chapter 6
 //     - Request/response data length ... section 5.3 (2-byte, little-endian)
-//     - Commands (Batch/Random/block Read) chapter 7 / 8.1 / 8.3 / 8.4
+//     - Commands (Batch/Random/block Read, Batch Write) chapter 7 / 8.1 / 8.2 / 8.3 / 8.4
 //     - Device code list ............... section 8.1 (MELSEC-Q/L, 1-byte binary)
 //     - Batch Read data layout ......... section 8.1 (binary, word units)
+//     - Batch Write data layout ........ section 8.2 (binary, word units)
 //     - Random Read data layout ........ section 8.3 (binary, word units)
 //     - Multi-block Read data layout ... section 8.4 (binary, word units)
 //
@@ -109,8 +110,9 @@
     ]
 ]
 
-// Request data, dispatched by command. Batch Read (0x0401) and Random Read
-// (0x0403) are modelled here; both are read-only, word units (subcommand 0x0000).
+// Request data, dispatched by command: Batch Read (0x0401), Random Read (0x0403),
+// Batch Read Multiple Blocks (0x0406) and Batch Write (0x1401) are modelled here,
+// all in word units (subcommand 0x0000).
 [discriminatedType SlmpRequestData(uint 16 command)
     [typeSwitch command
         ['0x0401' SlmpReadRequest
