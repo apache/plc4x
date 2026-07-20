@@ -438,6 +438,49 @@ func Test_defaultCodec_Connect(t *testing.T) {
 	}
 }
 
+// Test_defaultCodec_Connect_workersAliveAfterConnect is a falsification test
+// for the worker-startup race: Connect used to start the workers BEFORE
+// running.Store(true), so a worker observing running==false in both its loop
+// condition and its restart defer terminated permanently — leaving a
+// successfully "connected" codec whose expectations never expire and whose
+// messages are never received (observed as an infinite hang in the cbus
+// Reader tests). An idle worker blocks in its select receiving from its
+// (unbuffered) notify channel, so a blocking send succeeds iff the worker is
+// alive.
+func Test_defaultCodec_Connect_workersAliveAfterConnect(t *testing.T) {
+	for i := 0; i < 1000; i++ {
+		requirements := NewMockDefaultCodecRequirements(t)
+		requirements.EXPECT().Receive(mock.Anything).Return(nil, nil).Maybe()
+		instance := NewMockTransportInstance(t)
+		instance.EXPECT().IsConnected().Return(true)
+		instance.EXPECT().Close().Return(nil)
+		// A receive cycle in flight during Disconnect classifies the synthetic
+		// "not running" error before the worker notices the shutdown.
+		instance.EXPECT().ClassifyError(mock.Anything).Return(transports.TransportErrorTransient).Maybe()
+		codec := buildDefaultCodec(requirements, instance, options.WithCustomLogger(testutils.ProduceTestingLogger(t))).(*defaultCodec)
+		require.NoError(t, codec.Connect(testutils.TestContext(t)))
+		t.Cleanup(func() {
+			if codec.IsRunning() {
+				_ = codec.Disconnect()
+			}
+		})
+		for _, probe := range []struct {
+			worker string
+			notify chan struct{}
+		}{
+			{"expire", codec.notifyExpireWorker},
+			{"receive", codec.notifyReceiveWorker},
+		} {
+			select {
+			case probe.notify <- struct{}{}:
+			case <-time.After(5 * time.Second):
+				t.Fatalf("iteration %d: %s worker died during Connect", i, probe.worker)
+			}
+		}
+		require.NoError(t, codec.Disconnect())
+	}
+}
+
 func Test_defaultCodec_Disconnect(t *testing.T) {
 	type fields struct {
 		DefaultCodecRequirements      DefaultCodecRequirements

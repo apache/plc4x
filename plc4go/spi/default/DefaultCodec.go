@@ -171,8 +171,12 @@ func (m *defaultCodec) Connect(ctx context.Context) error {
 	}
 
 	m.log.Debug().Msg("Message codec currently not running, starting worker now")
-	m.startWorkers()
+	// running must be true BEFORE the workers start: a worker that observes
+	// running==false in its loop condition AND in its restart defer terminates
+	// permanently, leaving a "connected" codec whose expectations never expire.
+	// The goroutine-creation happens-before edge guarantees the workers see true.
 	m.running.Store(true)
+	m.startWorkers()
 	m.log.Trace().Msg("connected")
 	return nil
 }
