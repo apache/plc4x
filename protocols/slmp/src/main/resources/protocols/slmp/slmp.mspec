@@ -32,7 +32,7 @@
 //     - Random Read data layout ........ section 8.3 (binary, word units)
 //     - Multi-block Read data layout ... section 8.4 (binary, word units)
 //
-// Scope of this initial version: 3E binary frame, read-only, Batch Read
+// Scope of this initial version: 3E binary frame, Batch Read
 // (command 0x0401), Random Read (command 0x0403) and Batch Read Multiple Blocks
 // (command 0x0406) in word units (subcommand 0x0000), plus Batch Write
 // (command 0x1401) in word units (subcommand 0x0000). This is the wire layer
@@ -53,7 +53,7 @@
 
 // Device codes for MELSEC-Q/L series commands (subcommand 0x0000 / 0x0001),
 // 1-byte binary, from the device code list in SH-080008 section 8.1.
-// Only the word/bit devices needed by the read-only road-map are listed.
+// Only the word/bit devices needed by the initial road-map are listed.
 //
 // These 1-byte binary device codes are confirmed identical in the Mitsubishi
 // MELSEC iQ-F FX5 SLMP manual (JY997D56001) -- D=A8 W=B4 R=AF M=90 X=9C Y=9D
