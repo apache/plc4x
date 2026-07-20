@@ -93,4 +93,9 @@ public class SlmpDriver extends DriverBase {
     protected boolean canRead() {
         return true;
     }
+
+    @Override
+    protected boolean canWrite() {
+        return true;
+    }
 }
