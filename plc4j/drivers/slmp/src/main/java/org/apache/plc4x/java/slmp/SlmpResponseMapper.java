@@ -47,4 +47,13 @@ final class SlmpResponseMapper {
         }
         return new DefaultPlcResponseItem<>(PlcResponseCode.OK, value);
     }
+
+    /** Maps a single Batch Write 3E response (endCode only; success carries no payload). */
+    static PlcResponseCode mapWriteTag(SlmpTag tag, int endCode) {
+        if (endCode != 0x0000) {
+            LOGGER.warn("SLMP device returned endCode {} for write {}", String.format("0x%04X", endCode), tag);
+            return PlcResponseCode.REMOTE_ERROR;
+        }
+        return PlcResponseCode.OK;
+    }
 }

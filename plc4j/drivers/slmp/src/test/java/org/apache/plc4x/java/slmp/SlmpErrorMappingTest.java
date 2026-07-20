@@ -57,4 +57,14 @@ class SlmpErrorMappingTest {
         var item = SlmpResponseMapper.mapTag(tag, 0x0000, hex("ab56")); // only 1
         assertEquals(PlcResponseCode.INVALID_DATA, item.getResponseCode());
     }
+
+    @Test
+    void mapWriteTagOkOnZeroEndCode() {
+        assertEquals(PlcResponseCode.OK, SlmpResponseMapper.mapWriteTag(SlmpTag.of("D350"), 0x0000));
+    }
+
+    @Test
+    void mapWriteTagRemoteErrorOnNonZeroEndCode() {
+        assertEquals(PlcResponseCode.REMOTE_ERROR, SlmpResponseMapper.mapWriteTag(SlmpTag.of("D350"), 0xC059));
+    }
 }
