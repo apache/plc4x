@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.slmp;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
+import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.spi.values.PlcINT;
 import org.apache.plc4x.java.spi.values.PlcList;
@@ -37,9 +39,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maps a supported PLC4X data type to its SLMP word footprint and the decode of
- * little-endian response words into a {@link PlcValue}. The SLMP wire layer leaves
- * {@code responseData} as raw bytes; this enum owns typed decoding (word units only).
+ * Maps a supported PLC4X data type to its SLMP word footprint and the conversion
+ * between little-endian SLMP words and a {@link PlcValue} in both directions. The SLMP
+ * wire layer leaves {@code responseData}/request data as raw bytes; this enum owns typed
+ * decoding and encoding of word-unit values (word units only).
  */
 public enum SlmpDataType {
     WORD(1),
@@ -87,6 +90,64 @@ public enum SlmpDataType {
         } catch (BufferException e) {
             LOGGER.warn("Failed to decode SLMP {} value", this, e);
             return null;
+        }
+    }
+
+    /**
+     * Encode {@code quantity} elements of this type to little-endian SLMP request bytes
+     * ({@code 2 * wordsPerElement} per element). Returns {@code null} on a type/arity mismatch
+     * (caller maps to INVALID_DATA), symmetric with {@link #decode}.
+     */
+    public byte[] encode(PlcValue value, int quantity) {
+        int totalBytes = quantity * wordsPerElement * 2;
+        WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[totalBytes],
+            WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"),
+            WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
+            WithOption.WithSignedIntegerEncoding("twos-complement"),
+            WithOption.WithFloatEncoding("IEEE754"));
+        try {
+            if (quantity == 1) {
+                if (value == null || value.isList()) {
+                    return null;
+                }
+                writeOne(buffer, value);
+            } else {
+                if (value == null || !value.isList() || value.getList().size() != quantity) {
+                    return null;
+                }
+                for (PlcValue element : value.getList()) {
+                    writeOne(buffer, element);
+                }
+            }
+            return buffer.getBytes();
+        } catch (BufferException | PlcRuntimeException e) {
+            LOGGER.warn("Failed to encode SLMP {} value", this, e);
+            return null;
+        }
+    }
+
+    private void writeOne(WriteBufferByteBased buffer, PlcValue value) throws BufferException {
+        switch (this) {
+            case WORD:
+            case UINT:
+                // writeUnsignedInt(16, int) accepts the full 0..65535 range; writeUnsignedShort(16, short)
+                // takes a SIGNED short and would reject 65535 (0xFFFF) as negative, corrupting unsigned WORD/UINT.
+                buffer.writeUnsignedInt(16, value.getInt());
+                break;
+            case INT:
+                buffer.writeSignedShort(16, value.getShort());
+                break;
+            case DINT:
+                buffer.writeSignedInt(32, value.getInt());
+                break;
+            case UDINT:
+                buffer.writeUnsignedLong(32, value.getLong());
+                break;
+            case REAL:
+                buffer.writeFloat(32, value.getFloat());
+                break;
+            default:
+                throw new BufferException("Unsupported SLMP data type " + this);
         }
     }
 
