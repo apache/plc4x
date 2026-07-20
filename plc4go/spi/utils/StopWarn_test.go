@@ -131,12 +131,17 @@ func TestStopWarn(t *testing.T) {
 }
 
 type logHook struct {
+	// Run is invoked concurrently: the StopWarn ticker goroutine logs its
+	// warnings while the stop func logs "done" from the test goroutine.
+	mu        sync.Mutex
 	logEvents []zerolog.Event
 	level     []zerolog.Level
 	messages  []string
 }
 
 func (logHook *logHook) Run(logEvent *zerolog.Event, level zerolog.Level, message string) {
+	logHook.mu.Lock()
+	defer logHook.mu.Unlock()
 	logHook.logEvents = append(logHook.logEvents, *logEvent)
 	logHook.level = append(logHook.level, level)
 	logHook.messages = append(logHook.messages, message)

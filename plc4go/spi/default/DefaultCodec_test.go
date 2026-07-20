@@ -423,9 +423,17 @@ func Test_defaultCodec_Connect(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 				log:                           testutils.ProduceTestingLogger(t),
 			}
+			// Connect starts the expire/receive workers, which select on m.ctx and
+			// log through m.log on panic — so ctx must be non-nil and the workers
+			// (tracked by activeWorker, not wg) must be joined before the test ends.
+			m.ctx, m.ctxCancel = context.WithCancel(t.Context())
+			t.Cleanup(func() {
+				m.running.Store(false)
+				m.ctxCancel()
+				m.activeWorker.Wait()
+				m.wg.Wait()
+			})
 			tt.wantErr(t, m.Connect(tt.args.ctx), fmt.Sprintf("Connect(%v)", tt.args.ctx))
-			m.running.Store(false)
-			m.wg.Wait()
 		})
 	}
 }

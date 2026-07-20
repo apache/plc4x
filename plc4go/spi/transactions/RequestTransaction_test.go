@@ -324,8 +324,8 @@ func Test_requestTransaction_AwaitCompletion(t1 *testing.T) {
 				wg.Go(func() {
 					time.Sleep(100 * time.Millisecond)
 					r := transaction.parent
-					r.workLogMutex.RLock()
-					defer r.workLogMutex.RUnlock()
+					r.runningRequestMutex.Lock()
+					defer r.runningRequestMutex.Unlock()
 					r.runningRequests = append(r.runningRequests, &requestTransaction{transactionId: 1})
 				})
 			},
