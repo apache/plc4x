@@ -39,6 +39,13 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+// defaultReadPollTimeout bounds reads that carry no explicit deadline (the
+// codec's receive worker polls with a deadline-less long-lived context): a
+// silent connection must yield a retryable timeout instead of blocking a
+// worker goroutine forever. Mirrors the serial transport's readTimeout
+// default.
+const defaultReadPollTimeout = time.Second
+
 type TransportInstance struct {
 	transportUtils.DefaultBufferedTransportInstance
 
@@ -49,6 +56,7 @@ type TransportInstance struct {
 	transport *Transport
 
 	tcpConn net.Conn
+	armer   *deadlineReader
 	reader  *bufio.Reader
 
 	connected        atomic.Bool
@@ -90,7 +98,8 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 
 	m.LocalAddress = m.tcpConn.LocalAddr().(*net.TCPAddr)
 
-	m.reader = bufio.NewReaderSize(m.tcpConn, 100000)
+	m.armer = newDeadlineReader(m.tcpConn, defaultReadPollTimeout)
+	m.reader = bufio.NewReaderSize(m.armer, 100000)
 
 	m.connected.Store(true)
 	return nil
@@ -137,11 +146,19 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if !m.connected.Load() {
 		return errors.New("error writing to transport. Not connected")
 	}
+	// Bound the write itself by the caller's context deadline. This used to arm
+	// a READ deadline (copy-paste from the read path): the write stayed
+	// unbounded, and the sticky read deadline broke reads of replies arriving
+	// after it had expired.
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
-		if err := m.tcpConn.SetReadDeadline(deadline); err != nil {
-			return errors.Wrap(err, "error setting read deadline")
+		if err := m.tcpConn.SetWriteDeadline(deadline); err != nil {
+			return errors.Wrap(err, "error setting write deadline")
 		}
+	} else if err := m.tcpConn.SetWriteDeadline(time.Time{}); err != nil {
+		// Clear whatever deadline a previous bounded Write left armed - an
+		// expired one would fail this (unbounded) write instantly.
+		return errors.Wrap(err, "error clearing write deadline")
 	}
 	num, err := m.tcpConn.Write(data)
 	if err != nil {
@@ -158,7 +175,16 @@ func (m *TransportInstance) GetReader() transports.ExtendedReader {
 }
 
 func (m *TransportInstance) SetReadDeadline(deadline time.Time) error {
-	return m.tcpConn.SetDeadline(deadline)
+	// Routed through the deadlineReader (NOT tcpConn.SetDeadline, which arms
+	// both directions and made read deadlines fail writes): the explicit
+	// deadline wins over the poll fallback for the next read(s) and, once
+	// observed expired, auto-clears instead of sticking to the connection.
+	armer := m.armer
+	if armer == nil {
+		return errors.New("error setting read deadline. Not connected")
+	}
+	armer.setExplicitDeadline(deadline)
+	return nil
 }
 
 func (m *TransportInstance) String() string {
