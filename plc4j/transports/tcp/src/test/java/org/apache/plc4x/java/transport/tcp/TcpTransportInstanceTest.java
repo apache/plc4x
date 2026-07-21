@@ -327,10 +327,9 @@ class TcpTransportInstanceTest {
 
             // Without the fix each failed constructor call leaks the SocketChannel it opened
             // before bind() failed, so fd count grows by ~1 per attempt. With the fix it stays flat.
-            assertTrue(grown < attempts,
-                "Open file descriptor count grew by " + grown + " across " + attempts
-                    + " failed bind attempts - each failed TcpTransportInstance constructor call "
-                    + "is leaking its SocketChannel instead of closing it");
+            assertTrue(grown <= 1,
+                "Open file descriptor count changed by " + grown + " across " + attempts
+                    + " failed bind attempts; expected no per-attempt growth (possible SocketChannel leak)");
         }
     }
 
