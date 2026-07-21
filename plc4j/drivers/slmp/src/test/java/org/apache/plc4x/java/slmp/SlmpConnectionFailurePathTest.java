@@ -154,6 +154,22 @@ class SlmpConnectionFailurePathTest {
             "a non-positive request-timeout must be rejected at connect rather than failing every read");
     }
 
+    @Test
+    void builderErrorItemIsEchoedForReads() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        SlmpConnection connection = newConnectedConnection(transport, 5000);
+        CompletableFuture<? extends PlcReadResponse> future = connection.readRequestBuilder()
+            .addTagAddress("bad", "Z99")     // unparseable device -> builder error item
+            .addTagAddress("good", "D350")
+            .build().execute();
+        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);   // only the good tag reaches the wire
+        transport.deliver(responseFrame(0x0000, new byte[]{(byte) 0xAB, 0x56}));
+        transport.runDataListener();
+        PlcReadResponse response = future.get(5, TimeUnit.SECONDS);
+        assertEquals(PlcResponseCode.INVALID_ADDRESS, response.getResponseCode("bad"));
+        assertEquals(PlcResponseCode.OK, response.getResponseCode("good"));
+    }
+
     private static SlmpConnection newDisconnectedConnection(SlmpConfiguration config) {
         AuditLog auditLog = mock(AuditLog.class);
         when(auditLog.isEnabled()).thenReturn(false);

@@ -88,6 +88,27 @@ class SlmpConnectionWritePathTest {
         assertEquals(PlcResponseCode.REMOTE_ERROR, response.getResponseCode("v"));
     }
 
+    @Test
+    void builderErrorItemsAreEchoedNotMaskedAsInternalError() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        SlmpConnection connection = newConnectedConnection(transport, 5000);
+
+        CompletableFuture<? extends PlcWriteResponse> future = connection.writeRequestBuilder()
+            .addTagAddress("badValue", "D350", 70000)       // out of WORD range -> builder error item
+            .addTagAddress("badAddress", "Z99", 1)          // unparseable device -> builder error item
+            .addTagAddress("good", "D351", 0x1234)
+            .build().execute();
+
+        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);   // only the good tag reaches the wire
+        transport.deliver(responseFrame(0x0000, new byte[0]));
+        transport.runDataListener();
+
+        PlcWriteResponse response = future.get(5, TimeUnit.SECONDS);
+        assertEquals(PlcResponseCode.INVALID_DATA, response.getResponseCode("badValue"));
+        assertEquals(PlcResponseCode.INVALID_ADDRESS, response.getResponseCode("badAddress"));
+        assertEquals(PlcResponseCode.OK, response.getResponseCode("good"));
+    }
+
     private static SlmpConnection newConnectedConnection(ScriptedAsyncTransport transport, int requestTimeoutMs)
             throws Exception {
         SlmpConfiguration config = new SlmpConfiguration();

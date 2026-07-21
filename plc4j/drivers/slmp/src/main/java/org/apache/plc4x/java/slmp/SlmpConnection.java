@@ -208,6 +208,14 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
         LinkedHashMap<String, CompletableFuture<PlcResponseItem<PlcValue>>> tagFutures = new LinkedHashMap<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (String tagName : request.getTagNames()) {
+            PlcResponseCode buildCode = request.getTagResponseCode(tagName);
+            if (buildCode != null && buildCode != PlcResponseCode.OK) {
+                // The builder already rejected this tag (unparseable address): echo its code
+                // instead of dereferencing the null tag. Nothing is sent for this tag.
+                tagFutures.put(tagName,
+                    CompletableFuture.completedFuture(new DefaultPlcResponseItem<>(buildCode, null)));
+                continue;
+            }
             SlmpTag tag = (SlmpTag) request.getTag(tagName);
             CompletableFuture<PlcResponseItem<PlcValue>> tagFuture =
                 chain.thenComposeAsync(v -> readSingleTag(tag));
@@ -257,6 +265,14 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
         LinkedHashMap<String, CompletableFuture<PlcResponseCode>> tagFutures = new LinkedHashMap<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (String tagName : request.getTagNames()) {
+            PlcResponseCode buildCode = request.getTagResponseCode(tagName);
+            if (buildCode != null && buildCode != PlcResponseCode.OK) {
+                // The builder already rejected this tag (bad address or un-coercible value):
+                // echo its code instead of dereferencing the null tag/value. Nothing is sent
+                // for this tag.
+                tagFutures.put(tagName, CompletableFuture.completedFuture(buildCode));
+                continue;
+            }
             SlmpTag tag = (SlmpTag) request.getTag(tagName);
             PlcValue value = request.getPlcValue(tagName);
             CompletableFuture<PlcResponseCode> tagFuture =
