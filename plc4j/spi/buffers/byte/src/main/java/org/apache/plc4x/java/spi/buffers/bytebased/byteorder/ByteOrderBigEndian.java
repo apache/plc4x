@@ -27,6 +27,9 @@ public class ByteOrderBigEndian implements ByteOrder {
 
     private static final WithOption OPTION = WithByteBasedOption.WithByteOrder(NAME);
 
+    /** Stateless (process() is the identity), so one shared instance is safe to reuse. */
+    public static final ByteOrderBigEndian INSTANCE = new ByteOrderBigEndian();
+
     public static WithOption optionByteOrderBigEndian() {
         return OPTION;
     }

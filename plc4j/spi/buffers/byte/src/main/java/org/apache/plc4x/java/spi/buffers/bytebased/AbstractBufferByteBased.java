@@ -65,7 +65,31 @@ public abstract class AbstractBufferByteBased extends AbstractBuffer {
                 return byteOrder.get();
             }
         }
-        return new ByteOrderBigEndian();
+        return ByteOrderBigEndian.INSTANCE;
+    }
+
+    // ---- Byte-aligned integer fast-path helpers (shared by Read/Write byte buffers) ----
+
+    /**
+     * Structural fast-path eligibility for the byte-aligned integer fast path: no per-field
+     * options, the cursor on an absolute byte boundary (see {@link #isAligned()}), and a
+     * whole number of bytes requested. The caller combines this with EXACT-CLASS checks
+     * ({@code getClass() == ...}, not {@code instanceof}) on the ALREADY RESOLVED encoding/byte
+     * order (plain binary / two's-complement, big-endian) so resolution happens exactly once per
+     * field, and a registered subclass with overridden codec behaviour falls through to the
+     * virtual-dispatch slow path instead of being silently bypassed by the fast path.
+     */
+    protected boolean isByteAlignedWholeBytes(int numBits, WithOption[] options) {
+        // isAligned() tests the ABSOLUTE bit index (startBit + positionInBits) — the same predicate the
+        // readBits/writeBits whole-byte fast paths use — so a non-byte-aligned sub-buffer correctly
+        // falls through to the generic path (the aligned fast paths index by (startBit+positionInBits)/8).
+        return options.length == 0 && isAligned() && (numBits & 7) == 0;
+    }
+
+    /** Big-endian two's-complement sign extension of the low {@code numBits} of {@code raw}. */
+    protected static long signExtend(long raw, int numBits) {
+        int shift = 64 - numBits;
+        return (raw << shift) >> shift;
     }
 
     protected Optional<Encoding> getUnsignedIntegerEncoding(WithOption... options) {
@@ -156,8 +180,16 @@ public abstract class AbstractBufferByteBased extends AbstractBuffer {
         }
     }
 
+    /**
+     * Whether the current cursor sits on a byte boundary of the BACKING ARRAY. This must be tested on
+     * the absolute bit index ({@code startBit + positionInBits}), not on {@code positionInBits} alone:
+     * a sub-buffer created at a non-byte-aligned offset (see {@code createSubBuffer}) has a non-zero
+     * {@code startBit} while its own {@code positionInBits} is 0. The whole-byte {@code arraycopy}
+     * fast paths in {@code readBits}/{@code writeBits} index the backing array by
+     * {@code (startBit + positionInBits) / 8}, so only absolute alignment makes that copy correct.
+     */
     protected boolean isAligned() {
-        return (positionInBits % 8) == 0;
+        return ((startBit + positionInBits) % 8) == 0;
     }
 
 }

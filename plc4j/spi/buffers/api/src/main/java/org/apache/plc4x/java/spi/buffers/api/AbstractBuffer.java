@@ -20,16 +20,21 @@ package org.apache.plc4x.java.spi.buffers.api;
 
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 public abstract class AbstractBuffer implements Buffer {
 
-    protected final Stack<WithOption[]> context;
+    // Used as a stack (push/pop/peek). ArrayDeque instead of java.util.Stack: a buffer is a
+    // single-threaded, per-message scratch object (positionInBits and the backing array are
+    // themselves unsynchronized), so Stack's synchronization (it extends the synchronized Vector)
+    // guards nothing here while adding a monitor enter/exit to getContext() on every field.
+    protected final Deque<WithOption[]> context;
 
     public AbstractBuffer(WithOption... options) {
-        context = new Stack<>();
+        context = new ArrayDeque<>();
         context.push(options);
     }
 

@@ -22,6 +22,7 @@ import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderBigEndian;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderLittleEndian;
+import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingBCD;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingIEEE754;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingTwosComplement;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingUTF8;
@@ -54,6 +55,47 @@ class WriteBufferByteBasedTest {
 
         byte[] result = buffer.getBytes();
         assertEquals((byte) 0b10101100, result[0]);
+    }
+
+    // Guards the byte-aligned unsigned-int fast path: a BCD default encoding must NOT be treated as
+    // plain binary. 1234 must be BCD-encoded to 0x12 0x34, not binary 0x04 0xD2.
+    @Test
+    void byteAlignedWriteHonoursBcdEncodingNotBinaryFastPath() throws Exception {
+        WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[2], EncodingBCD.optionEncodingBCD());
+        buffer.writeUnsignedInt(16, 1234);
+        assertArrayEquals(new byte[]{0x12, 0x34}, buffer.getBytes());
+    }
+
+    // The two's-complement byte-aligned fast path must emit two's complement: -2 -> 0xFF 0xFE.
+    @Test
+    void byteAlignedSignedWriteIsTwosComplement() throws Exception {
+        WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[2], EncodingTwosComplement.optionEncodingTwosComplement());
+        buffer.writeSignedShort(16, (short) -2);
+        assertArrayEquals(new byte[]{(byte) 0xFF, (byte) 0xFE}, buffer.getBytes());
+    }
+
+    // Positive counterpart to the BCD guard: the plain unsigned-binary byte-aligned fast path must
+    // emit big-endian bytes. 0x1234 -> 0x12 0x34, 0x12345678 -> 0x12 0x34 0x56 0x78.
+    @Test
+    void byteAlignedUnsignedWriteUsesFastPath() throws Exception {
+        WriteBufferByteBased b16 = new WriteBufferByteBased(new byte[2], EncodingUnsignedBinary.optionEncodingUnsignedBinary());
+        b16.writeUnsignedInt(16, 0x1234);
+        assertArrayEquals(new byte[]{0x12, 0x34}, b16.getBytes());
+        WriteBufferByteBased b32 = new WriteBufferByteBased(new byte[4], EncodingUnsignedBinary.optionEncodingUnsignedBinary());
+        b32.writeUnsignedLong(32, 0x12345678L);
+        assertArrayEquals(new byte[]{0x12, 0x34, 0x56, 0x78}, b32.getBytes());
+    }
+
+    // Mirror of the read-side sub-buffer regression: writes must honour a non-byte-aligned startBit.
+    // With startBit = 4 the position is not byte-aligned, so the write goes bit-by-bit; writeBit must
+    // index the backing array by the ABSOLUTE bit position (startBit + positionInBits), like readBit.
+    // 0x1234 into bits 4..19 of a zeroed 3-byte array = 0x01 0x23 0x40.
+    @Test
+    void writeHonoursNonByteAlignedStartBit() throws Exception {
+        WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[3], 4, 16,
+            EncodingUnsignedBinary.optionEncodingUnsignedBinary());
+        buffer.writeUnsignedInt(16, 0x1234);
+        assertArrayEquals(new byte[]{0x01, 0x23, 0x40}, buffer.getBytes());
     }
 
     // writeBits

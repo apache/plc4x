@@ -21,11 +21,15 @@ package org.apache.plc4x.java.spi.buffers.bytebased;
 import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrder;
+import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderBigEndian;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderManager;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.Encoding;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingDefault;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingManager;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingRaw;
+import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingTwosComplement;
+import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingUnsignedBinary;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -91,6 +95,23 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
         }
     }
 
+    /**
+     * Reads {@code numBits} (a whole number of bytes) big-endian from the current byte-aligned
+     * position into a long and advances the position. Callers gate this behind the fast-path
+     * eligibility checks; no intermediate byte[] or per-field ByteOrder object is allocated.
+     */
+    private long readAlignedBytesBE(int numBits) throws BufferException {
+        ensureAvailable(numBits);
+        int byteIndex = (startBit + positionInBits) / 8;
+        int numBytes = numBits / 8;
+        long v = 0;
+        for (int i = 0; i < numBytes; i++) {
+            v = (v << 8) | (buffer[byteIndex + i] & 0xFF);
+        }
+        positionInBits += numBits;
+        return v;
+    }
+
     @Override
     public byte readUnsignedByte(int numBits, WithOption... options) throws BufferException {
         if (numBits < 1 || numBits > 7) {
@@ -118,10 +139,17 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
 
         Optional<Encoding> encodingOptional = getUnsignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
+        ByteOrder byteOrder = getByteOrder(options);
+        if (isByteAlignedWholeBytes(numBits, options)
+            && encoding.getClass() == EncodingUnsignedBinary.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
+            return (short) readAlignedBytesBE(numBits);
+        }
+
         if(encoding instanceof EncodingDefault encodingDefault) {
             ensureAvailable(numBits);
             byte[] bytes = readBits(numBits);
-            bytes = getByteOrder(options).process(bytes);
+            bytes = byteOrder.process(bytes);
             return encodingDefault.decodeShort(numBits, bytes);
         } else if(encoding instanceof EncodingRaw encodingRaw) {
             return encodingRaw.decodeShort(numBits, this);
@@ -137,10 +165,19 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
 
         Optional<Encoding> encodingOptional = getUnsignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
+        ByteOrder byteOrder = getByteOrder(options);
+        // Fast path: byte-aligned whole-byte plain-binary big-endian read straight from the backing
+        // array; encoding/byte order are resolved once above and reused by the slow path below.
+        if (isByteAlignedWholeBytes(numBits, options)
+            && encoding.getClass() == EncodingUnsignedBinary.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
+            return (int) readAlignedBytesBE(numBits);
+        }
+
         if(encoding instanceof EncodingDefault encodingDefault) {
             ensureAvailable(numBits);
             byte[] bytes = readBits(numBits);
-            bytes = getByteOrder(options).process(bytes);
+            bytes = byteOrder.process(bytes);
             return encodingDefault.decodeInt(numBits, bytes);
         } else if(encoding instanceof EncodingRaw encodingRaw) {
             return encodingRaw.decodeInt(numBits, this);
@@ -156,10 +193,17 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
 
         Optional<Encoding> encodingOptional = getUnsignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
+        ByteOrder byteOrder = getByteOrder(options);
+        if (isByteAlignedWholeBytes(numBits, options)
+            && encoding.getClass() == EncodingUnsignedBinary.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
+            return readAlignedBytesBE(numBits);
+        }
+
         if(encoding instanceof EncodingDefault encodingDefault) {
             ensureAvailable(numBits);
             byte[] bytes = readBits(numBits);
-            bytes = getByteOrder(options).process(bytes);
+            bytes = byteOrder.process(bytes);
             return encodingDefault.decodeLong(numBits, bytes);
         } else if(encoding instanceof EncodingRaw encodingRaw) {
             return encodingRaw.decodeLong(numBits, this);
@@ -213,10 +257,17 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
 
         Optional<Encoding> encodingOptional = getSignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
+        ByteOrder byteOrder = getByteOrder(options);
+        if (isByteAlignedWholeBytes(numBits, options)
+            && encoding.getClass() == EncodingTwosComplement.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
+            return (short) signExtend(readAlignedBytesBE(numBits), numBits);
+        }
+
         if(encoding instanceof EncodingDefault encodingDefault) {
             ensureAvailable(numBits);
             byte[] bytes = readBits(numBits);
-            bytes = getByteOrder(options).process(bytes);
+            bytes = byteOrder.process(bytes);
             return encodingDefault.decodeShort(numBits, bytes);
         } else if(encoding instanceof EncodingRaw encodingRaw) {
             return encodingRaw.decodeShort(numBits, this);
@@ -232,10 +283,17 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
 
         Optional<Encoding> encodingOptional = getSignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
+        ByteOrder byteOrder = getByteOrder(options);
+        if (isByteAlignedWholeBytes(numBits, options)
+            && encoding.getClass() == EncodingTwosComplement.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
+            return (int) signExtend(readAlignedBytesBE(numBits), numBits);
+        }
+
         if(encoding instanceof EncodingDefault encodingDefault) {
             ensureAvailable(numBits);
             byte[] bytes = readBits(numBits);
-            bytes = getByteOrder(options).process(bytes);
+            bytes = byteOrder.process(bytes);
             return encodingDefault.decodeInt(numBits, bytes);
         } else if(encoding instanceof EncodingRaw encodingRaw) {
             return encodingRaw.decodeInt(numBits, this);
@@ -251,10 +309,17 @@ public class ReadBufferByteBased extends AbstractBufferByteBased implements Read
 
         Optional<Encoding> encodingOptional = getSignedIntegerEncoding(options);
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
+        ByteOrder byteOrder = getByteOrder(options);
+        if (isByteAlignedWholeBytes(numBits, options)
+            && encoding.getClass() == EncodingTwosComplement.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
+            return signExtend(readAlignedBytesBE(numBits), numBits);
+        }
+
         if(encoding instanceof EncodingDefault encodingDefault) {
             ensureAvailable(numBits);
             byte[] bytes = readBits(numBits);
-            bytes = getByteOrder(options).process(bytes);
+            bytes = byteOrder.process(bytes);
             return encodingDefault.decodeLong(numBits, bytes);
         } else if(encoding instanceof EncodingRaw encodingRaw) {
             return encodingRaw.decodeLong(numBits, this);
