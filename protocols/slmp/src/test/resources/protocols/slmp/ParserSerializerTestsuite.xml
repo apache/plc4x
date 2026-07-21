@@ -23,7 +23,7 @@
   is assembled per section 5.2 / chapter 6.
 
   Batch Read (0x0401) word-unit example reading the values stored in D350 and
-  D351 (section 8.1):
+  D351 (section 8.2 "Batch Read and Write"):
     request data : 5E 01 00 A8 02 00      (head=D350, code=D, points=2)
     response data: AB 56 0F 17            (D350=0x56AB, D351=0x170F)
 

@@ -25,18 +25,19 @@
 //     - Subheader (50 00 / D0 00) ...... section 5.3
 //     - Access route (3E fixed value) .. chapter 6
 //     - Request/response data length ... section 5.3 (2-byte, little-endian)
-//     - Commands (Batch/Random/block Read) chapter 7 / 8.1 / 8.3 / 8.4
-//     - Device code list ............... section 8.1 (MELSEC-Q/L, 1-byte binary)
-//     - Batch Read data layout ......... section 8.1 (binary, word units)
+//     - Command list ................... chapter 7 (section 7.1)
+//     - Device data to be specified .... section 8.1 (devices, device code list, points)
+//     - Batch Read/Write data layout ... section 8.2 (binary, word units; Read 0x0401 / Write 0x1401)
 //     - Random Read data layout ........ section 8.3 (binary, word units)
 //     - Multi-block Read data layout ... section 8.4 (binary, word units)
 //
-// Scope of this initial version: 3E binary frame, read-only, Batch Read
+// Scope of this initial version: 3E binary frame, Batch Read
 // (command 0x0401), Random Read (command 0x0403) and Batch Read Multiple Blocks
-// (command 0x0406) in word units (subcommand 0x0000). This is the wire layer
-// only; typed value decoding
-// (INT/WORD/DINT/REAL) and the device-addressing tag layer are intentionally
-// NOT modelled here yet and will follow once the driver logic is built.
+// (command 0x0406) in word units (subcommand 0x0000), plus Batch Write
+// (command 0x1401) in word units (subcommand 0x0000). This is the wire layer
+// only; typed value encoding/decoding (INT/WORD/DINT/REAL) and the
+// device-addressing tag layer are owned by the driver layer and intentionally
+// not modelled in the wire spec.
 // Validated hardware-free via the ParserSerializer test suite.
 //
 // All multi-byte numeric fields are little-endian (transmitted least-significant byte first).
@@ -51,7 +52,7 @@
 
 // Device codes for MELSEC-Q/L series commands (subcommand 0x0000 / 0x0001),
 // 1-byte binary, from the device code list in SH-080008 section 8.1.
-// Only the word/bit devices needed by the read-only road-map are listed.
+// Only the word/bit devices needed by the initial road-map are listed.
 //
 // These 1-byte binary device codes are confirmed identical in the Mitsubishi
 // MELSEC iQ-F FX5 SLMP manual (JY997D56001) -- D=A8 W=B4 R=AF M=90 X=9C Y=9D
@@ -108,8 +109,9 @@
     ]
 ]
 
-// Request data, dispatched by command. Batch Read (0x0401) and Random Read
-// (0x0403) are modelled here; both are read-only, word units (subcommand 0x0000).
+// Request data, dispatched by command: Batch Read (0x0401), Random Read (0x0403),
+// Batch Read Multiple Blocks (0x0406) and Batch Write (0x1401) are modelled here,
+// all in word units (subcommand 0x0000).
 [discriminatedType SlmpRequestData(uint 16 command)
     [typeSwitch command
         ['0x0401' SlmpReadRequest
@@ -142,6 +144,18 @@
             [simple uint 8          numberOfBitDeviceBlocks]
             [array  SlmpDeviceBlock wordDeviceBlocks count 'numberOfWordDeviceBlocks']
             [array  SlmpDeviceBlock bitDeviceBlocks  count 'numberOfBitDeviceBlocks']
+        ]
+        ['0x1401' SlmpWriteRequest
+            // Batch Write in word units (SH-080008 section 8.2 "Batch Read and Write"): the same
+            // device addressing as SlmpReadRequest (0x0401), followed by the data to write.
+            // numberOfPoints is the number of 16-bit words; writeData is exactly that many
+            // little-endian words carried as raw bytes (2 * numberOfPoints). Typed encoding
+            // (INT/WORD/DINT/REAL) is owned by the driver layer, symmetric with how the read
+            // response leaves responseData as raw bytes for the driver to decode.
+            [simple uint 24        headDeviceNumber]
+            [simple SlmpDeviceCode deviceCode]
+            [simple uint 16        numberOfPoints]
+            [array  byte           writeData count 'numberOfPoints * 2']
         ]
     ]
 ]

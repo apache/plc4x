@@ -22,6 +22,8 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -30,12 +32,15 @@ import org.apache.plc4x.java.slmp.readwrite.SlmpMessage;
 import org.apache.plc4x.java.slmp.readwrite.SlmpReadRequest;
 import org.apache.plc4x.java.slmp.readwrite.SlmpRequestFrame3E;
 import org.apache.plc4x.java.slmp.readwrite.SlmpResponseFrame3E;
+import org.apache.plc4x.java.slmp.readwrite.SlmpWriteRequest;
 import org.apache.plc4x.java.slmp.tag.SlmpTag;
 import org.apache.plc4x.java.slmp.tag.SlmpTagHandler;
 import org.apache.plc4x.java.spi.drivers.ConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcWriteRequest;
+import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.tags.PlcTagHandler;
@@ -168,8 +173,10 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
      * <p>
      * Caveat: if a request times out, a late response for it may arrive on the receiver thread
      * after the next request has installed its own slot, and would then be mis-attributed to that
-     * next request. 3E cannot prevent this (no correlation key), so a timed-out read should be
-     * treated as unreliable by the caller.
+     * next request. 3E cannot prevent this (no correlation key), so a timed-out request should be
+     * treated as unreliable by the caller. For a timed-out WRITE in particular the device may
+     * nevertheless have applied the write — the driver cannot tell — so blindly retrying a write
+     * that returned REMOTE_ERROR may apply it twice.
      * <p>
      * All slot clean-up is identity-checked (compare-and-clear): the timeout callback runs on the
      * delayer thread and may run after the throttle has already released the next request (OpenJDK
@@ -203,6 +210,14 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
         LinkedHashMap<String, CompletableFuture<PlcResponseItem<PlcValue>>> tagFutures = new LinkedHashMap<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (String tagName : request.getTagNames()) {
+            PlcResponseCode buildCode = request.getTagResponseCode(tagName);
+            if (buildCode != null && buildCode != PlcResponseCode.OK) {
+                // The builder already rejected this tag (unparseable address): echo its code
+                // instead of dereferencing the null tag. Nothing is sent for this tag.
+                tagFutures.put(tagName,
+                    CompletableFuture.completedFuture(new DefaultPlcResponseItem<>(buildCode, null)));
+                continue;
+            }
             SlmpTag tag = (SlmpTag) request.getTag(tagName);
             CompletableFuture<PlcResponseItem<PlcValue>> tagFuture =
                 chain.thenComposeAsync(v -> readSingleTag(tag));
@@ -243,5 +258,64 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
         return executeThrottled(() ->
             sendRequest(frame).thenApply(response ->
                 SlmpResponseMapper.mapTag(tag, response.getEndCode(), response.getResponseData())));
+    }
+
+    @Override
+    protected CompletableFuture<PlcWriteResponse> onWrite(PlcWriteRequest writeRequest) {
+        // Structural mirror of onRead; see there for the handle-vs-thenApply and per-tag partial-failure-isolation rationale.
+        // A tag that maps to REMOTE_ERROR after a timeout may still have been applied by the device; see sendRequest().
+        DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
+        LinkedHashMap<String, CompletableFuture<PlcResponseCode>> tagFutures = new LinkedHashMap<>();
+        CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
+        for (String tagName : request.getTagNames()) {
+            PlcResponseCode buildCode = request.getTagResponseCode(tagName);
+            if (buildCode != null && buildCode != PlcResponseCode.OK) {
+                // The builder already rejected this tag (bad address or un-coercible value):
+                // echo its code instead of dereferencing the null tag/value. Nothing is sent
+                // for this tag.
+                tagFutures.put(tagName, CompletableFuture.completedFuture(buildCode));
+                continue;
+            }
+            SlmpTag tag = (SlmpTag) request.getTag(tagName);
+            PlcValue value = request.getPlcValue(tagName);
+            CompletableFuture<PlcResponseCode> tagFuture =
+                chain.thenComposeAsync(v -> writeSingleTag(tag, value));
+            tagFutures.put(tagName, tagFuture);
+            chain = tagFuture.handle((r, e) -> null);
+        }
+        CompletableFuture<Void> allDone =
+            CompletableFuture.allOf(tagFutures.values().toArray(new CompletableFuture[0]));
+        return allDone.handle((v, anyTagFailure) -> {
+            Map<String, PlcResponseCode> responseCodes = new LinkedHashMap<>();
+            for (Map.Entry<String, CompletableFuture<PlcResponseCode>> e : tagFutures.entrySet()) {
+                try {
+                    responseCodes.put(e.getKey(), e.getValue().join());
+                } catch (Exception ex) {
+                    Throwable cause = (ex instanceof CompletionException && ex.getCause() != null)
+                        ? ex.getCause() : ex;
+                    PlcResponseCode code = (cause instanceof TimeoutException)
+                        ? PlcResponseCode.REMOTE_ERROR : PlcResponseCode.INTERNAL_ERROR;
+                    responseCodes.put(e.getKey(), code);
+                }
+            }
+            return (PlcWriteResponse) new DefaultPlcWriteResponse(request, responseCodes);
+        });
+    }
+
+    private CompletableFuture<PlcResponseCode> writeSingleTag(SlmpTag tag, PlcValue value) {
+        byte[] payload = tag.getDataType().encode(value, tag.getQuantity());
+        if (payload == null) {
+            return CompletableFuture.completedFuture(PlcResponseCode.INVALID_DATA);
+        }
+        // Invariant: encode() returns exactly quantity*wordsPerElement*2 == numberOfPoints*2 bytes,
+        // so the SlmpWriteRequest header word-count and payload length always agree (the generated
+        // serialize path derives length from writeData.length, so this must hold by construction).
+        SlmpWriteRequest data = new SlmpWriteRequest(
+            tag.getDeviceNumber(), tag.getDeviceCode(), tag.getNumberOfPoints(), payload);
+        SlmpRequestFrame3E frame = new SlmpRequestFrame3E(
+            getConfiguration().getMonitoringTimer(), 0x1401, 0x0000, data);
+        return executeThrottled(() ->
+            sendRequest(frame).thenApply(response ->
+                SlmpResponseMapper.mapWriteTag(tag, response.getEndCode(), response.getResponseData())));
     }
 }

@@ -47,4 +47,21 @@ final class SlmpResponseMapper {
         }
         return new DefaultPlcResponseItem<>(PlcResponseCode.OK, value);
     }
+
+    /** Maps a single Batch Write 3E response (endCode only; success carries no payload). */
+    static PlcResponseCode mapWriteTag(SlmpTag tag, int endCode, byte[] responseData) {
+        if (endCode != 0x0000) {
+            LOGGER.warn("SLMP device returned endCode {} for write {}", String.format("0x%04X", endCode), tag);
+            return PlcResponseCode.REMOTE_ERROR;
+        }
+        if (responseData != null && responseData.length > 0) {
+            // SH-080008: a Batch Write success response carries no data. A payload here is the
+            // signature of a mis-attributed response (e.g. a late read answer arriving after its
+            // own request timed out; 3E has no correlation id), so do not report a false OK.
+            LOGGER.warn("SLMP write success frame for {} unexpectedly carried {} payload byte(s); "
+                + "treating it as a possibly mis-attributed response", tag, responseData.length);
+            return PlcResponseCode.REMOTE_ERROR;
+        }
+        return PlcResponseCode.OK;
+    }
 }

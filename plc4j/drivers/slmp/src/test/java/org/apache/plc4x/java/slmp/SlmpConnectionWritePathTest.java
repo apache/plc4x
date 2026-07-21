@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.slmp;
 
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.slmp.config.SlmpConfiguration;
 import org.apache.plc4x.java.slmp.readwrite.SlmpResponseFrame3E;
@@ -26,154 +26,87 @@ import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.transports.api.AsyncTransportInstance;
 import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
 import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Failure-path coverage for the single-slot request/response correlation in
- * {@link SlmpConnection}: 3E frames carry no correlation id, so a timeout, a
- * lost transport or an unsolicited frame must degrade exactly one tag (or
- * nothing) instead of poisoning the connection. Mirrors the style of
- * {@code ModbusRtuConnectionRequestChainTest}.
+ * Happy-path and error-mapping coverage for the SLMP Batch Write (0x1401) path
+ * in {@link SlmpConnection}: a successful device acknowledgement maps to OK, a
+ * non-zero endCode maps to REMOTE_ERROR, and a device that never answers times
+ * out to REMOTE_ERROR for that tag. Mirrors {@code SlmpConnectionFailurePathTest}.
  */
-class SlmpConnectionFailurePathTest {
+class SlmpConnectionWritePathTest {
 
     @Test
-    void timedOutTagIsIsolatedToRemoteErrorWhileOthersSucceed() throws Exception {
+    void successfulWriteMapsToOk() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        SlmpConnection connection = newConnectedConnection(transport, 5000);
+        CompletableFuture<? extends PlcWriteResponse> future = connection.writeRequestBuilder()
+            .addTagAddress("v", "D350", 0x1234)
+            .build().execute();
+        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
+        transport.deliver(responseFrame(0x0000, new byte[0])); // Batch Write success: empty payload
+        transport.runDataListener();
+        PlcWriteResponse response = future.get(5, TimeUnit.SECONDS);
+        assertEquals(PlcResponseCode.OK, response.getResponseCode("v"));
+    }
+
+    @Test
+    void deviceErrorMapsToRemoteError() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        SlmpConnection connection = newConnectedConnection(transport, 5000);
+        CompletableFuture<? extends PlcWriteResponse> future = connection.writeRequestBuilder()
+            .addTagAddress("v", "D350", 0x1234)
+            .build().execute();
+        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
+        transport.deliver(responseFrame(0xC059, new byte[0]));
+        transport.runDataListener();
+        PlcWriteResponse response = future.get(5, TimeUnit.SECONDS);
+        assertEquals(PlcResponseCode.REMOTE_ERROR, response.getResponseCode("v"));
+    }
+
+    @Test
+    void timedOutWriteIsRemoteError() throws Exception {
         ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
         SlmpConnection connection = newConnectedConnection(transport, 200);
-
-        CompletableFuture<? extends PlcReadResponse> responseFuture = connection.readRequestBuilder()
-            .addTagAddress("answered", "D350")
-            .addTagAddress("silent", "D351")
+        CompletableFuture<? extends PlcWriteResponse> future = connection.writeRequestBuilder()
+            .addTagAddress("v", "D350", 0x1234)
             .build().execute();
-
-        // Sequential per-tag chain: only the first read may be on the wire.
-        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
-        transport.deliver(responseFrame(0x0000, new byte[]{(byte) 0xAB, 0x56}));
-        transport.runDataListener();
-
-        // The second read dispatches once the first completes — and is never answered.
-        awaitTrue(() -> transport.writeCount() == 2, 2, TimeUnit.SECONDS);
-
-        PlcReadResponse response = responseFuture.get(5, TimeUnit.SECONDS);
-        assertEquals(PlcResponseCode.OK, response.getResponseCode("answered"));
-        assertEquals(0x56AB, response.getPlcValue("answered").getInteger());
-        assertEquals(PlcResponseCode.REMOTE_ERROR, response.getResponseCode("silent"),
-            "a device that does not answer in time must surface as REMOTE_ERROR for that tag only");
+        PlcWriteResponse response = future.get(5, TimeUnit.SECONDS);
+        assertEquals(PlcResponseCode.REMOTE_ERROR, response.getResponseCode("v"));
     }
 
     @Test
-    void transportDisconnectFailsThePendingTagAsInternalError() throws Exception {
+    void builderErrorItemsAreEchoedNotMaskedAsInternalError() throws Exception {
         ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
         SlmpConnection connection = newConnectedConnection(transport, 5000);
 
-        CompletableFuture<? extends PlcReadResponse> responseFuture = connection.readRequestBuilder()
-            .addTagAddress("pending", "D350")
-            .build().execute();
-        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
-
-        connection.onTransportDisconnected(new PlcRuntimeException("link down"));
-
-        PlcReadResponse response = responseFuture.get(5, TimeUnit.SECONDS);
-        assertEquals(PlcResponseCode.INTERNAL_ERROR, response.getResponseCode("pending"),
-            "losing the transport must fail the in-flight tag instead of stranding its future");
-    }
-
-    @Test
-    void failedSendFailsOnlyThatTag() throws Exception {
-        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
-        SlmpConnection connection = newConnectedConnection(transport, 5000);
-
-        transport.failNextWrite();
-        CompletableFuture<? extends PlcReadResponse> responseFuture = connection.readRequestBuilder()
-            .addTagAddress("unsendable", "D350")
+        CompletableFuture<? extends PlcWriteResponse> future = connection.writeRequestBuilder()
+            .addTagAddress("badValue", "D350", 70000)       // out of WORD range -> builder error item
+            .addTagAddress("badAddress", "Z99", 1)          // unparseable device -> builder error item
+            .addTagAddress("good", "D351", 0x1234)
             .build().execute();
 
-        PlcReadResponse response = responseFuture.get(5, TimeUnit.SECONDS);
-        assertEquals(PlcResponseCode.INTERNAL_ERROR, response.getResponseCode("unsendable"));
-    }
-
-    @Test
-    void unsolicitedFrameIsIgnoredAndTheConnectionStaysUsable() throws Exception {
-        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
-        SlmpConnection connection = newConnectedConnection(transport, 5000);
-
-        // A frame nobody asked for must be dropped (logged), not blow up the receiver.
-        transport.deliver(responseFrame(0x0000, new byte[]{0x01, 0x02}));
-        transport.runDataListener();
-
-        // A regular read afterwards still works — the slot was not poisoned.
-        CompletableFuture<? extends PlcReadResponse> responseFuture = connection.readRequestBuilder()
-            .addTagAddress("after", "D350")
-            .build().execute();
-        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
-        transport.deliver(responseFrame(0x0000, new byte[]{(byte) 0xAB, 0x56}));
-        transport.runDataListener();
-
-        PlcReadResponse response = responseFuture.get(5, TimeUnit.SECONDS);
-        assertEquals(PlcResponseCode.OK, response.getResponseCode("after"));
-        assertEquals(0x56AB, response.getPlcValue("after").getInteger());
-    }
-
-    @Test
-    void connectRejectsMonitoringTimerOutsideUnsigned16Range() {
-        SlmpConfiguration config = new SlmpConfiguration();
-        config.setRequestTimeout(5000);
-        config.setMonitoringTimer(0x1_0000); // one past the uint16 ceiling serialized into the 3E frame
-
-        SlmpConnection connection = newDisconnectedConnection(config);
-        assertThrows(PlcConnectionException.class, connection::connect,
-            "an out-of-range monitoring-timer must be rejected at connect, before it can be truncated on the wire");
-    }
-
-    @Test
-    void connectRejectsNonPositiveRequestTimeout() {
-        SlmpConfiguration config = new SlmpConfiguration();
-        config.setRequestTimeout(0); // orTimeout(0) would time out every request immediately
-        config.setMonitoringTimer(0x0000);
-
-        SlmpConnection connection = newDisconnectedConnection(config);
-        assertThrows(PlcConnectionException.class, connection::connect,
-            "a non-positive request-timeout must be rejected at connect rather than failing every read");
-    }
-
-    @Test
-    void builderErrorItemIsEchoedForReads() throws Exception {
-        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
-        SlmpConnection connection = newConnectedConnection(transport, 5000);
-        CompletableFuture<? extends PlcReadResponse> future = connection.readRequestBuilder()
-            .addTagAddress("bad", "Z99")     // unparseable device -> builder error item
-            .addTagAddress("good", "D350")
-            .build().execute();
         awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);   // only the good tag reaches the wire
-        transport.deliver(responseFrame(0x0000, new byte[]{(byte) 0xAB, 0x56}));
+        transport.deliver(responseFrame(0x0000, new byte[0]));
         transport.runDataListener();
-        PlcReadResponse response = future.get(5, TimeUnit.SECONDS);
-        assertEquals(PlcResponseCode.INVALID_ADDRESS, response.getResponseCode("bad"));
-        assertEquals(PlcResponseCode.OK, response.getResponseCode("good"));
-    }
 
-    private static SlmpConnection newDisconnectedConnection(SlmpConfiguration config) {
-        AuditLog auditLog = mock(AuditLog.class);
-        when(auditLog.isEnabled()).thenReturn(false);
-        return new SlmpConnection(config, new ScriptedAsyncTransport(), auditLog);
+        PlcWriteResponse response = future.get(5, TimeUnit.SECONDS);
+        assertEquals(PlcResponseCode.INVALID_DATA, response.getResponseCode("badValue"));
+        assertEquals(PlcResponseCode.INVALID_ADDRESS, response.getResponseCode("badAddress"));
+        assertEquals(PlcResponseCode.OK, response.getResponseCode("good"));
     }
 
     private static SlmpConnection newConnectedConnection(ScriptedAsyncTransport transport, int requestTimeoutMs)
@@ -218,7 +151,6 @@ class SlmpConnectionFailurePathTest {
         private int readPosition;
         private boolean open = true;
         private final AtomicInteger writeCount = new AtomicInteger();
-        private final AtomicBoolean failNextWrite = new AtomicBoolean(false);
         private final AtomicReference<Runnable> dataListener = new AtomicReference<>();
 
         void deliver(byte[] bytes) {
@@ -227,10 +159,6 @@ class SlmpConnectionFailurePathTest {
 
         int writeCount() {
             return writeCount.get();
-        }
-
-        void failNextWrite() {
-            failNextWrite.set(true);
         }
 
         void runDataListener() {
@@ -277,9 +205,6 @@ class SlmpConnectionFailurePathTest {
         @Override
         public void write(byte[] bytes) throws TransportException {
             writeCount.incrementAndGet();
-            if (failNextWrite.compareAndSet(true, false)) {
-                throw new TransportException("scripted write failure");
-            }
         }
 
         @Override

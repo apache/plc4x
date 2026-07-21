@@ -20,6 +20,7 @@ package org.apache.plc4x.java.slmp;
 
 import org.apache.plc4x.java.slmp.readwrite.SlmpReadRequest;
 import org.apache.plc4x.java.slmp.readwrite.SlmpRequestFrame3E;
+import org.apache.plc4x.java.slmp.readwrite.SlmpWriteRequest;
 import org.apache.plc4x.java.slmp.tag.SlmpTag;
 import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class SlmpRequestBuildTest {
 
     @Test
     void buildsBatchReadFrameMatchingSh080008Example() throws Exception {
-        // SH-080008 section 8.1: read D350, 2 words.
+        // SH-080008 section 8.2 (Batch Read and Write): read D350, 2 words.
         SlmpTag tag = SlmpTag.of("D350:WORD[2]");
         SlmpReadRequest data = new SlmpReadRequest(
             tag.getDeviceNumber(), tag.getDeviceCode(), tag.getNumberOfPoints());
@@ -48,5 +49,21 @@ class SlmpRequestBuildTest {
         frame.serialize(buffer);
 
         assertEquals("500000ffff03000c000000010400005e0100a80200", toHex(buffer.getBytes()));
+    }
+
+    @Test
+    void buildsBatchWriteFrameForSingleWord() throws Exception {
+        // Batch Write D350 = one WORD 0x1234 (little-endian payload 34 12).
+        SlmpTag tag = SlmpTag.of("D350");
+        SlmpWriteRequest data = new SlmpWriteRequest(
+            tag.getDeviceNumber(), tag.getDeviceCode(), tag.getNumberOfPoints(),
+            new byte[]{0x34, 0x12});
+        SlmpRequestFrame3E frame = new SlmpRequestFrame3E(0x0000, 0x1401, 0x0000, data);
+
+        WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[frame.getLengthInBytes()]);
+        frame.serialize(buffer);
+
+        // requestDataLength = 6 + (3+1+2+2) = 14 (0x000E); command 0x1401 -> 01 14 LE.
+        assertEquals("500000ffff03000e000000011400005e0100a801003412", toHex(buffer.getBytes()));
     }
 }

@@ -28,7 +28,7 @@
   <artifactId>plc4j-driver-slmp</artifactId>
 
   <name>PLC4J: Driver: SLMP</name>
-  <description>Implementation of a PLC4X read-only driver for the SLMP / MELSEC Communication 3E protocol.</description>
+  <description>Implementation of a PLC4X driver for the SLMP / MELSEC Communication 3E protocol.</description>
 
   <properties>
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>

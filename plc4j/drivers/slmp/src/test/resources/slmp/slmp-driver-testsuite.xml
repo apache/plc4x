@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd" byteOrder="LITTLE_ENDIAN">
-  <name>SLMP 3E Batch Read</name>
+  <name>SLMP 3E Batch Read/Write</name>
   <protocol-name>slmp</protocol-name>
   <output-flavor>read-write</output-flavor>
   <driver-name>slmp</driver-name>
@@ -64,6 +64,35 @@
             </value>
           </values>
         </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+  <testcase>
+    <name>Batch Write D350 = 0x1234</name>
+    <steps>
+      <api-request name="Write request">
+        <PlcWriteRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.java.utils.testutils.driver.internal.api.TestTag">
+              <name>v</name>
+              <address>D350</address>
+              <value>
+                <PlcWORD dataType="uint" bitLength="16">4660</PlcWORD>
+              </value>
+            </tag>
+          </tags>
+        </PlcWriteRequest>
+      </api-request>
+      <outgoing-plc-bytes name="Write request bytes">500000ffff03000e000000011400005e0100a801003412</outgoing-plc-bytes>
+      <incoming-plc-bytes name="Write response bytes">d00000ffff030002000000</incoming-plc-bytes>
+      <api-response name="Write response">
+        <PlcWriteResponse>
+          <responseCodes>
+            <v>
+              <ResponseCode>OK</ResponseCode>
+            </v>
+          </responseCodes>
+        </PlcWriteResponse>
       </api-response>
     </steps>
   </testcase>
