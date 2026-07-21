@@ -86,6 +86,18 @@ class WriteBufferByteBasedTest {
         assertArrayEquals(new byte[]{0x12, 0x34, 0x56, 0x78}, b32.getBytes());
     }
 
+    // Mirror of the read-side sub-buffer regression: writes must honour a non-byte-aligned startBit.
+    // With startBit = 4 the position is not byte-aligned, so the write goes bit-by-bit; writeBit must
+    // index the backing array by the ABSOLUTE bit position (startBit + positionInBits), like readBit.
+    // 0x1234 into bits 4..19 of a zeroed 3-byte array = 0x01 0x23 0x40.
+    @Test
+    void writeHonoursNonByteAlignedStartBit() throws Exception {
+        WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[3], 4, 16,
+            EncodingUnsignedBinary.optionEncodingUnsignedBinary());
+        buffer.writeUnsignedInt(16, 0x1234);
+        assertArrayEquals(new byte[]{0x01, 0x23, 0x40}, buffer.getBytes());
+    }
+
     // writeBits
     @Test
     void testWriteBitsNestedSubBufferUnaligned() throws Exception {

@@ -73,10 +73,11 @@ public abstract class AbstractBufferByteBased extends AbstractBuffer {
     /**
      * Structural fast-path eligibility for the byte-aligned integer fast path: no per-field
      * options, the cursor on an absolute byte boundary (see {@link #isAligned()}), and a
-     * whole number of bytes requested. The caller combines this with checks on the ALREADY
-     * RESOLVED encoding/byte order (plain binary / two's-complement, big-endian) so resolution
-     * happens exactly once per field and non-eligible fields fall through to the slow path
-     * without a second lookup.
+     * whole number of bytes requested. The caller combines this with EXACT-CLASS checks
+     * ({@code getClass() == ...}, not {@code instanceof}) on the ALREADY RESOLVED encoding/byte
+     * order (plain binary / two's-complement, big-endian) so resolution happens exactly once per
+     * field, and a registered subclass with overridden codec behaviour falls through to the
+     * virtual-dispatch slow path instead of being silently bypassed by the fast path.
      */
     protected boolean isByteAlignedWholeBytes(int numBits, WithOption[] options) {
         // isAligned() tests the ABSOLUTE bit index (startBit + positionInBits) — the same predicate the

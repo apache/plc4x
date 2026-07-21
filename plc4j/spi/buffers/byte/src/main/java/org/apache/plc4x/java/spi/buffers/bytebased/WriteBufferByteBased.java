@@ -51,8 +51,12 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
     @Override
     public void writeBit(boolean value, WithOption... options) throws BufferException {
         ensureAvailable(1);
-        int byteIndex = positionInBits / 8;
-        int bitIndex = positionInBits % 8;
+        // Index by the ABSOLUTE bit position (startBit + positionInBits), like readBit and the
+        // whole-byte arraycopy path in writeBits — a buffer constructed with a non-zero startBit
+        // must not write from the start of the backing array.
+        int absoluteBitIndex = startBit + positionInBits;
+        int byteIndex = absoluteBitIndex / 8;
+        int bitIndex = absoluteBitIndex % 8;
         if (value) {
             buffer[byteIndex] |= (byte) (0x80 >> bitIndex);
         }
@@ -89,6 +93,9 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
      * Writes the low {@code numBits} (a whole number of bytes) of {@code value} big-endian into the
      * backing array at the current byte-aligned position and advances the position. Callers gate this
      * behind the fast-path eligibility checks; no intermediate byte[] or ByteOrder object is allocated.
+     * Unlike {@code readAlignedBytesBE} this method performs NO capacity check of its own — every
+     * caller invokes {@code ensureAvailable(numBits)} before the fast-path branch, and that call must
+     * not be removed as "redundant" with the slow path's.
      */
     private void writeAlignedBytesBE(int numBits, long value) {
         int byteIndex = (startBit + positionInBits) / 8;
@@ -142,9 +149,9 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
         ByteOrder byteOrder = getByteOrder(options);
         if (isByteAlignedWholeBytes(numBits, options)
-            && encoding instanceof EncodingUnsignedBinary
-            && byteOrder instanceof ByteOrderBigEndian) {
-            writeAlignedBytesBE(numBits, value & 0xFFFFL);
+            && encoding.getClass() == EncodingUnsignedBinary.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
+            writeAlignedBytesBE(numBits, value);
             return;
         }
 
@@ -179,8 +186,8 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         // Fast path: byte-aligned whole-byte plain-binary big-endian write straight into the backing
         // array; encoding/byte order are resolved once above and reused by the slow path below.
         if (isByteAlignedWholeBytes(numBits, options)
-            && encoding instanceof EncodingUnsignedBinary
-            && byteOrder instanceof ByteOrderBigEndian) {
+            && encoding.getClass() == EncodingUnsignedBinary.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
             writeAlignedBytesBE(numBits, value);
             return;
         }
@@ -214,8 +221,8 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for unsigned integer values"));
         ByteOrder byteOrder = getByteOrder(options);
         if (isByteAlignedWholeBytes(numBits, options)
-            && encoding instanceof EncodingUnsignedBinary
-            && byteOrder instanceof ByteOrderBigEndian) {
+            && encoding.getClass() == EncodingUnsignedBinary.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
             writeAlignedBytesBE(numBits, value);
             return;
         }
@@ -304,8 +311,8 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
         ByteOrder byteOrder = getByteOrder(options);
         if (isByteAlignedWholeBytes(numBits, options)
-            && encoding instanceof EncodingTwosComplement
-            && byteOrder instanceof ByteOrderBigEndian) {
+            && encoding.getClass() == EncodingTwosComplement.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
             writeAlignedBytesBE(numBits, value);
             return;
         }
@@ -340,8 +347,8 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
         ByteOrder byteOrder = getByteOrder(options);
         if (isByteAlignedWholeBytes(numBits, options)
-            && encoding instanceof EncodingTwosComplement
-            && byteOrder instanceof ByteOrderBigEndian) {
+            && encoding.getClass() == EncodingTwosComplement.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
             writeAlignedBytesBE(numBits, value);
             return;
         }
@@ -376,8 +383,8 @@ public class WriteBufferByteBased extends AbstractBufferByteBased implements Wri
         Encoding encoding = encodingOptional.orElseThrow(() -> new BufferException("No encoding defined for signed integer values"));
         ByteOrder byteOrder = getByteOrder(options);
         if (isByteAlignedWholeBytes(numBits, options)
-            && encoding instanceof EncodingTwosComplement
-            && byteOrder instanceof ByteOrderBigEndian) {
+            && encoding.getClass() == EncodingTwosComplement.class
+            && byteOrder.getClass() == ByteOrderBigEndian.class) {
             writeAlignedBytesBE(numBits, value);
             return;
         }
