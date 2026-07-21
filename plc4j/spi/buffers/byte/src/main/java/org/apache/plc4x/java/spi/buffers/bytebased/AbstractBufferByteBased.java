@@ -26,8 +26,6 @@ import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderBigEndian;
 import org.apache.plc4x.java.spi.buffers.bytebased.byteorder.ByteOrderManager;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.Encoding;
 import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingManager;
-import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingTwosComplement;
-import org.apache.plc4x.java.spi.buffers.bytebased.encoding.EncodingUnsignedBinary;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -71,30 +69,20 @@ public abstract class AbstractBufferByteBased extends AbstractBuffer {
     }
 
     // ---- Byte-aligned integer fast-path helpers (shared by Read/Write byte buffers) ----
-    // Eligible only when there are no per-field option overrides, the position is byte-aligned, a
-    // whole number of bytes is requested, byte order is big-endian, and the resolved integer encoding
-    // is plain binary (unsigned) / two's-complement (signed). Gated on the concrete encoding class,
-    // NOT the broader EncodingDefault, so BCD/float/etc. correctly fall through to the slow path.
 
-    protected boolean isFastUnsignedBinaryBE(int numBits, WithOption[] options) {
+    /**
+     * Structural fast-path eligibility for the byte-aligned integer fast path: no per-field
+     * options, the cursor on an absolute byte boundary (see {@link #isAligned()}), and a
+     * whole number of bytes requested. The caller combines this with checks on the ALREADY
+     * RESOLVED encoding/byte order (plain binary / two's-complement, big-endian) so resolution
+     * happens exactly once per field and non-eligible fields fall through to the slow path
+     * without a second lookup.
+     */
+    protected boolean isByteAlignedWholeBytes(int numBits, WithOption[] options) {
         // isAligned() tests the ABSOLUTE bit index (startBit + positionInBits) — the same predicate the
         // readBits/writeBits whole-byte fast paths use — so a non-byte-aligned sub-buffer correctly
-        // falls through to the generic path (readAlignedBytesBE indexes by (startBit+positionInBits)/8).
-        if (options.length != 0 || !isAligned() || (numBits & 7) != 0) {
-            return false;
-        }
-        Optional<Encoding> enc = getUnsignedIntegerEncoding();
-        return enc.isPresent() && enc.get() instanceof EncodingUnsignedBinary
-            && getByteOrder() instanceof ByteOrderBigEndian;
-    }
-
-    protected boolean isFastSignedTwosComplementBE(int numBits, WithOption[] options) {
-        if (options.length != 0 || !isAligned() || (numBits & 7) != 0) {
-            return false;
-        }
-        Optional<Encoding> enc = getSignedIntegerEncoding();
-        return enc.isPresent() && enc.get() instanceof EncodingTwosComplement
-            && getByteOrder() instanceof ByteOrderBigEndian;
+        // falls through to the generic path (the aligned fast paths index by (startBit+positionInBits)/8).
+        return options.length == 0 && isAligned() && (numBits & 7) == 0;
     }
 
     /** Big-endian two's-complement sign extension of the low {@code numBits} of {@code raw}. */
