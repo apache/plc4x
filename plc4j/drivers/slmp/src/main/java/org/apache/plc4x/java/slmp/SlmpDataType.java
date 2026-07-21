@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.slmp;
 
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
@@ -120,6 +121,11 @@ public enum SlmpDataType {
                 }
             }
             return buffer.getBytes();
+        } catch (PlcIncompatibleDatatypeException e) {
+            // An un-coercible value is an expected caller error (mapped to INVALID_DATA), not an
+            // internal fault -- keep it out of the WARN log and skip the stack trace.
+            LOGGER.debug("Incompatible value for SLMP {} encode: {}", this, e.getMessage());
+            return null;
         } catch (BufferException | PlcRuntimeException e) {
             LOGGER.warn("Failed to encode SLMP {} value", this, e);
             return null;

@@ -20,21 +20,16 @@ package org.apache.plc4x.java.slmp;
 
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SlmpDriverTest {
 
     private final SlmpDriver driver = new SlmpDriver();
 
     @Test
-    void capabilities() throws Exception {
-        // Use reflection to access the protected can* methods.
-        for (String name : new String[]{"canRead", "canWrite"}) {
-            Method m = SlmpDriver.class.getDeclaredMethod(name);
-            m.setAccessible(true);
-            assertEquals(Boolean.TRUE, m.invoke(driver), name + " should return true");
-        }
+    void capabilities() {
+        // Same package as SlmpDriver, so the protected can* methods are directly accessible.
+        assertTrue(driver.canRead(), "canRead should return true");
+        assertTrue(driver.canWrite(), "canWrite should return true");
     }
 }
