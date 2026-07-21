@@ -60,11 +60,21 @@ class SlmpErrorMappingTest {
 
     @Test
     void mapWriteTagOkOnZeroEndCode() {
-        assertEquals(PlcResponseCode.OK, SlmpResponseMapper.mapWriteTag(SlmpTag.of("D350"), 0x0000));
+        assertEquals(PlcResponseCode.OK, SlmpResponseMapper.mapWriteTag(SlmpTag.of("D350"), 0x0000, new byte[0]));
     }
 
     @Test
     void mapWriteTagRemoteErrorOnNonZeroEndCode() {
-        assertEquals(PlcResponseCode.REMOTE_ERROR, SlmpResponseMapper.mapWriteTag(SlmpTag.of("D350"), 0xC059));
+        // Extra error information alongside a non-zero endCode is still just REMOTE_ERROR.
+        assertEquals(PlcResponseCode.REMOTE_ERROR,
+            SlmpResponseMapper.mapWriteTag(SlmpTag.of("D350"), 0xC059, new byte[]{0x03, 0x04}));
+    }
+
+    @Test
+    void mapWriteTagRejectsUnexpectedPayloadOnSuccess() {
+        // SH-080008: a Batch Write success response carries NO data. A payload on endCode 0
+        // is the signature of a mis-attributed (late read) response and must not map to OK.
+        assertEquals(PlcResponseCode.REMOTE_ERROR,
+            SlmpResponseMapper.mapWriteTag(SlmpTag.of("D350"), 0x0000, new byte[]{0x01, 0x02}));
     }
 }

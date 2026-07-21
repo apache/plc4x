@@ -173,8 +173,10 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
      * <p>
      * Caveat: if a request times out, a late response for it may arrive on the receiver thread
      * after the next request has installed its own slot, and would then be mis-attributed to that
-     * next request. 3E cannot prevent this (no correlation key), so a timed-out read should be
-     * treated as unreliable by the caller.
+     * next request. 3E cannot prevent this (no correlation key), so a timed-out request should be
+     * treated as unreliable by the caller. For a timed-out WRITE in particular the device may
+     * nevertheless have applied the write — the driver cannot tell — so blindly retrying a write
+     * that returned REMOTE_ERROR may apply it twice.
      * <p>
      * All slot clean-up is identity-checked (compare-and-clear): the timeout callback runs on the
      * delayer thread and may run after the throttle has already released the next request (OpenJDK
@@ -261,6 +263,7 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
     @Override
     protected CompletableFuture<PlcWriteResponse> onWrite(PlcWriteRequest writeRequest) {
         // Structural mirror of onRead; see there for the handle-vs-thenApply and per-tag partial-failure-isolation rationale.
+        // A tag that maps to REMOTE_ERROR after a timeout may still have been applied by the device; see sendRequest().
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
         LinkedHashMap<String, CompletableFuture<PlcResponseCode>> tagFutures = new LinkedHashMap<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
@@ -313,6 +316,6 @@ public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
             getConfiguration().getMonitoringTimer(), 0x1401, 0x0000, data);
         return executeThrottled(() ->
             sendRequest(frame).thenApply(response ->
-                SlmpResponseMapper.mapWriteTag(tag, response.getEndCode())));
+                SlmpResponseMapper.mapWriteTag(tag, response.getEndCode(), response.getResponseData())));
     }
 }

@@ -35,9 +35,9 @@
 // (command 0x0401), Random Read (command 0x0403) and Batch Read Multiple Blocks
 // (command 0x0406) in word units (subcommand 0x0000), plus Batch Write
 // (command 0x1401) in word units (subcommand 0x0000). This is the wire layer
-// only; typed value decoding
-// (INT/WORD/DINT/REAL) and the device-addressing tag layer are intentionally
-// NOT modelled here yet and will follow once the driver logic is built.
+// only; typed value encoding/decoding (INT/WORD/DINT/REAL) and the
+// device-addressing tag layer are owned by the driver layer and intentionally
+// not modelled in the wire spec.
 // Validated hardware-free via the ParserSerializer test suite.
 //
 // All multi-byte numeric fields are little-endian (transmitted least-significant byte first).

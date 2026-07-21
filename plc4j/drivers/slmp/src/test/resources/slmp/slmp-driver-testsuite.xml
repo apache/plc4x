@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd" byteOrder="LITTLE_ENDIAN">
-  <name>SLMP 3E Batch Read</name>
+  <name>SLMP 3E Batch Read/Write</name>
   <protocol-name>slmp</protocol-name>
   <output-flavor>read-write</output-flavor>
   <driver-name>slmp</driver-name>
