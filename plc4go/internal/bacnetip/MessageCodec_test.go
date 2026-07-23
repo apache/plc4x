@@ -144,7 +144,7 @@ func makeWhoIsBVLC(t *testing.T) readWriteModel.BVLC {
 	t.Helper()
 	whoIs := readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(nil, nil)
 	apdu := readWriteModel.NewAPDUUnconfirmedRequest(whoIs)
-	return wrapAPDU(apdu, false)
+	return wrapAPDU(apdu, false, nil)
 }
 
 func TestMessageCodec_Send_SerializesBVLCToTransport(t *testing.T) {

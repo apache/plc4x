@@ -42,6 +42,7 @@ type Reader struct {
 	invokeIdGenerator *InvokeIdGenerator
 	messageCodec      spi.MessageCodec
 	tm                transactions.RequestTransactionManager
+	routedDest        *routedDestination // nil for local-segment connections
 
 	maxSegmentsAccepted   readWriteModel.MaxSegmentsAccepted
 	maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted
@@ -51,12 +52,13 @@ type Reader struct {
 	log zerolog.Logger
 }
 
-func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
+func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, routedDest *routedDestination, _options ...options.WithOption) *Reader {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		invokeIdGenerator: invokeIdGenerator,
 		messageCodec:      messageCodec,
 		tm:                tm,
+		routedDest:        routedDest,
 
 		maxSegmentsAccepted:   readWriteModel.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS,
 		maxApduLengthAccepted: readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_1476,
@@ -144,7 +146,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			context.AfterFunc(transactionContext, cancel)
 			// Send the  over the wire
 			m.log.Trace().Msg("Send ")
-			if err := m.messageCodec.SendRequest(ctx, "read", wrapAPDU(apdu, true), func(message spi.Message) bool {
+			if err := m.messageCodec.SendRequest(ctx, "read", wrapAPDU(apdu, true, m.routedDest), func(message spi.Message) bool {
 				bvlc, ok := message.(readWriteModel.BVLC)
 				if !ok {
 					m.log.Debug().Type("bvlc", bvlc).Msg("Received strange type")

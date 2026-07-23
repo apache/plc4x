@@ -106,6 +106,14 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if err := writeBuffer.WriteString("staticDevices", uint32(len(d.StaticDevices)*8), d.StaticDevices); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteUint16("remoteNetwork", 16, d.RemoteNetwork); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteString("remoteAddress", uint32(len(d.RemoteAddress)*8), d.RemoteAddress); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("Configuration"); err != nil {
 		return err
 	}

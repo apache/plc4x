@@ -88,6 +88,21 @@ type Configuration struct {
 	// WhoIs (e.g. routed devices on a network with no BBMD). Comma-separated entries
 	// of the form "<deviceId>@<network>:<host>:<port>".
 	StaticDevices string
+
+	// RemoteNetwork is the BACnet network number of this connection's target device
+	// when it sits behind a BACnet router (ASHRAE 135 clause 6). The connection's
+	// transport host is then the ROUTER's IP; every outgoing NPDU carries a
+	// destination specifier (DNET=RemoteNetwork, DADR=RemoteAddress, hop count 255)
+	// so the router forwards it onto that network, and replies arrive with the
+	// device's source specifier mirrored back. 0 (default) means the target is on
+	// the local segment and NPDUs stay specifier-free.
+	RemoteNetwork uint16
+
+	// RemoteAddress is the target device's MAC address on RemoteNetwork, required
+	// when RemoteNetwork is set. For BACnet/IP-to-BACnet/IP routing use
+	// "<ip>:<port>" (encoded as the 6-byte B/IP DADR); for other datalinks a hex
+	// string ("0x0C") supplies the raw MAC octets.
+	RemoteAddress string
 }
 
 // ParseFromOptions populates a Configuration from the connection-URL query options,

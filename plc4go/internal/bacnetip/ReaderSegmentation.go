@@ -149,7 +149,7 @@ func (m *Reader) sendSegmentAck(ctx context.Context, ack readWriteModel.APDUSegm
 	if ack == nil {
 		return nil
 	}
-	return m.messageCodec.Send(ctx, "segmentAck", wrapAPDU(ack, false))
+	return m.messageCodec.Send(ctx, "segmentAck", wrapAPDU(ack, false, m.routedDest))
 }
 
 // apduFromMessage safely extracts the APDU from a received BVLC message,

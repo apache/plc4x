@@ -44,6 +44,7 @@ type Writer struct {
 	messageCodec      spi.MessageCodec
 	tm                transactions.RequestTransactionManager
 	driverContext     DriverContext
+	routedDest        *routedDestination // nil for local-segment connections
 
 	wg sync.WaitGroup
 
@@ -55,6 +56,7 @@ func NewWriter(
 	messageCodec spi.MessageCodec,
 	tm transactions.RequestTransactionManager,
 	driverContext DriverContext,
+	routedDest *routedDestination,
 	_options ...options.WithOption,
 ) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
@@ -63,6 +65,7 @@ func NewWriter(
 		messageCodec:      messageCodec,
 		tm:                tm,
 		driverContext:     driverContext,
+		routedDest:        routedDest,
 		log:               customLogger,
 	}
 }
@@ -108,7 +111,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			ctx, cancel := context.WithCancel(ctx)
 			context.AfterFunc(transactionContext, cancel)
 
-			err := m.messageCodec.SendRequest(ctx, "write", wrapAPDU(apdu, true), func(message spi.Message) bool {
+			err := m.messageCodec.SendRequest(ctx, "write", wrapAPDU(apdu, true, m.routedDest), func(message spi.Message) bool {
 				return m.acceptsResponse(message, invokeId)
 			}, func(message spi.Message) error {
 				bvlc := message.(readWriteModel.BVLC)

@@ -146,7 +146,7 @@ func (d *fakeWriteDevice) extractInvokeIdAndChoice(data []byte) (uint8, model.BA
 
 func (d *fakeWriteDevice) buildSimpleAck(invokeId uint8, choice model.BACnetConfirmedServiceChoice) model.BVLC {
 	apdu := model.NewAPDUSimpleAck(invokeId, choice)
-	return wrapAPDU(apdu, false)
+	return wrapAPDU(apdu, false, nil)
 }
 
 // buildReadAckFor mirrors fakeBacnetDevice.buildReadPropertyAck: a ReadProperty
@@ -160,13 +160,13 @@ func buildReadAckFor(invokeId uint8) model.BVLC {
 		constructedDataFromTag(model.CreateBACnetApplicationTagReal(23.5)),
 	)
 	apdu := model.NewAPDUComplexAck(false, false, invokeId, nil, nil, serviceAck, nil, nil)
-	return wrapAPDU(apdu, false)
+	return wrapAPDU(apdu, false, nil)
 }
 
 func (d *fakeWriteDevice) buildErrorReply(invokeId uint8, choice model.BACnetConfirmedServiceChoice) model.BVLC {
 	base := buildErrorAPDU(model.ErrorClass_PROPERTY, model.ErrorCode_WRITE_ACCESS_DENIED)
 	apdu := model.NewAPDUError(invokeId, choice, base.GetError())
-	return wrapAPDU(apdu, false)
+	return wrapAPDU(apdu, false, nil)
 }
 
 func (d *fakeWriteDevice) stop() {

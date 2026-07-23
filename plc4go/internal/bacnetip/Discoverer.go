@@ -344,11 +344,18 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 				if err != nil {
 					d.log.Debug().Err(err).Msg("Error parsing url")
 				}
+				// A routed I-Am carries the device's origin as an NPDU source
+				// specifier (SNET/SADR, ASHRAE 135 clause 6.2.4). Surface it as
+				// ready-to-use connection options (the same RemoteNetwork /
+				// RemoteAddress keys the connection URL accepts) so consumers can
+				// reach the device through the relaying router: transport URL =
+				// the router (the frame's UDP source), options = the routed hop.
+				discoveryOptions := routedOriginOptions(npdu)
 				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
 					"bacnet-ip",
 					"udp",
 					*remoteUrl,
-					nil,
+					discoveryOptions,
 					fmt.Sprintf("device %v:%v", iAm.GetDeviceIdentifier().GetObjectType(), iAm.GetDeviceIdentifier().GetInstanceNumber()),
 					nil,
 				)

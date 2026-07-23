@@ -94,7 +94,7 @@ func (d *delayedWriteDevice) serve() {
 			if choice == model.BACnetConfirmedServiceChoice_READ_PROPERTY {
 				resp = buildReadAckFor(invokeId)
 			} else {
-				resp = wrapAPDU(model.NewAPDUSimpleAck(invokeId, choice), false)
+				resp = wrapAPDU(model.NewAPDUSimpleAck(invokeId, choice), false, nil)
 			}
 			theBytes, err := resp.Serialize()
 			if err != nil {

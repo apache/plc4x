@@ -135,7 +135,7 @@ func (d *fakeBacnetDevice) buildReadPropertyAck(invokeId uint8) model.BVLC {
 		constructedDataFromTag(model.CreateBACnetApplicationTagReal(23.5)),
 	)
 	apdu := model.NewAPDUComplexAck(false, false, invokeId, nil, nil, serviceAck, nil, nil)
-	return wrapAPDU(apdu, false)
+	return wrapAPDU(apdu, false, nil)
 }
 
 func (d *fakeBacnetDevice) stop() {

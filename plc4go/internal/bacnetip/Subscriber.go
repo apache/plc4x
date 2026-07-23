@@ -192,7 +192,7 @@ func (m *Subscriber) sendSubscribeCOV(ctx context.Context, handle *SubscriptionH
 	// SimpleAck back through the codec. Phase 5 will replace this with a real
 	// transaction-manager-backed retry loop honoring ApduTimeoutMs/Retries.
 	done := make(chan apiModel.PlcResponseCode, 1)
-	err := m.connection.messageCodec.SendRequest(ctx, "subscribe-cov", wrapAPDU(apdu, true),
+	err := m.connection.messageCodec.SendRequest(ctx, "subscribe-cov", wrapAPDU(apdu, true, m.connection.routedDest),
 		func(message spi.Message) bool {
 			return m.acceptsResponse(message, invokeId)
 		},

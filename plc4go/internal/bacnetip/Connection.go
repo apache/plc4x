@@ -47,6 +47,7 @@ type Connection struct {
 	invokeIdGenerator InvokeIdGenerator
 	messageCodec      spi.MessageCodec
 	configuration     Configuration
+	routedDest        *routedDestination // non-nil when the target device is behind a BACnet router
 	driverContext     DriverContext
 	subscribers       []*Subscriber
 	subscribersMu     sync.Mutex
@@ -72,11 +73,20 @@ func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, 
 		customLogger.Warn().Err(err).Msg("invalid driver options; falling back to defaults")
 		configuration = createDefaultConfiguration()
 	}
+	routedDest, err := routedDestinationFromConfiguration(configuration)
+	if err != nil {
+		// Fail closed on the routing options: silently ignoring them would
+		// unicast routed requests at the router without a destination
+		// specifier, which the router (correctly) cannot forward.
+		customLogger.Error().Err(err).Msg("invalid routed-destination options; connection will address the local segment only")
+		routedDest = nil
+	}
 	connection := &Connection{
 		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
 		messageCodec:      messageCodec,
 		configuration:     configuration,
 		driverContext:     NewDriverContext(configuration),
+		routedDest:        routedDest,
 		tm:                tm,
 		log:               customLogger,
 		_options:          _options,
@@ -214,6 +224,7 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 			&c.invokeIdGenerator,
 			c.messageCodec,
 			c.tm,
+			c.routedDest,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
@@ -228,6 +239,7 @@ func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 			c.messageCodec,
 			c.tm,
 			c.driverContext,
+			c.routedDest,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
