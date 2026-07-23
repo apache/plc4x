@@ -119,18 +119,13 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
                 remoteAddress.getHostName(), remoteAddress.getPort(),
                 getLocalAddress().getHostName(), getLocalAddress().getPort()));
 
-            // Start the per-connection read loop on a virtual thread (Java 21+) LAST, so an
-            // unchecked throw from the logging/audit above cannot leak an already-running thread
-            // (the catch only handles IOException and does not stop the read loop).
+            // Start the per-connection read loop on a virtual thread (Java 21+) LAST, so a
+            // throw from the logging/audit above cannot leak an already-running thread.
             this.readThread = Thread.ofVirtual()
                 .name("TCP-Read-" + remoteAddress.getHostName() + ":" + remoteAddress.getPort())
                 .start(this::runReadLoop);
-        } catch (IOException e) {
-            String errorMsg = String.format("Failed to connect to %s:%d - %s",
-                remoteAddress.getHostName(), remoteAddress.getPort(), e.getMessage());
-            LOGGER.error(errorMsg, e);
-            // errorMsg already embeds e.getMessage(); a single audit event avoids a duplicate.
-            auditLog.write(AuditLogEventType.ERROR, "Error in constructor: " + errorMsg);
+        } catch (Exception e) {
+            // Close before any other side effect (logging/audit), so a failure there can't skip cleanup.
             if (channel != null) {
                 try {
                     channel.close();
@@ -138,6 +133,11 @@ public class TcpTransportInstance extends BaseTransportInstance<TcpTransportConf
                     e.addSuppressed(closeException);
                 }
             }
+            String errorMsg = String.format("Failed to connect to %s:%d - %s",
+                remoteAddress.getHostName(), remoteAddress.getPort(), e.getMessage());
+            LOGGER.error(errorMsg, e);
+            // errorMsg already embeds e.getMessage(); a single audit event avoids a duplicate.
+            auditLog.write(AuditLogEventType.ERROR, "Error in constructor: " + errorMsg);
             throw new TransportException(errorMsg, e);
         }
     }
