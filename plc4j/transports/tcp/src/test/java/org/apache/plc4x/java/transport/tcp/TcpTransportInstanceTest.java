@@ -291,6 +291,55 @@ class TcpTransportInstanceTest {
     }*/
 
     @Test
+    void testConstructor_failedBind_doesNotLeakFileDescriptors() throws Exception {
+        // getOpenFileDescriptorCount() is only exposed on Unix-flavoured JVMs
+        java.lang.management.OperatingSystemMXBean rawOsBean =
+            java.lang.management.ManagementFactory.getOperatingSystemMXBean();
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+            rawOsBean instanceof com.sun.management.UnixOperatingSystemMXBean,
+            "Open file descriptor count not available on this platform");
+        com.sun.management.UnixOperatingSystemMXBean osBean =
+            (com.sun.management.UnixOperatingSystemMXBean) rawOsBean;
+
+        // Occupy a specific local port so binding our own channel to it deterministically fails
+        // with BindException
+        try (ServerSocketChannel occupier = ServerSocketChannel.open()) {
+            occupier.bind(new InetSocketAddress("127.0.0.1", 0));
+            int occupiedPort = ((InetSocketAddress) occupier.getLocalAddress()).getPort();
+
+            TcpTransportConfiguration config = new TcpTransportConfiguration();
+            config.receiveBufferSize = 81920;
+            config.localAddress = "127.0.0.1";
+            config.localPort = occupiedPort;
+            // Never actually reached - bind() fails first - but must be a well-formed address.
+            InetSocketAddress remoteAddress = new InetSocketAddress("127.0.0.1", occupiedPort);
+
+            // Sample the fd count after every attempt rather than just before/after
+            int attempts = 20;
+            long previous = osBean.getOpenFileDescriptorCount();
+            int increases = 0;
+            for (int i = 0; i < attempts; i++) {
+                assertThrows(TransportException.class, () ->
+                    new TcpTransportInstance(remoteAddress, config, AuditLog.builder().build())
+                );
+                long current = osBean.getOpenFileDescriptorCount();
+                if (current > previous) {
+                    increases++;
+                }
+                previous = current;
+            }
+
+            // Without the fix each failed constructor call leaks the SocketChannel it opened before
+            // bind() failed, so the fd count grows on essentially every attempt. With the fix it doesn't.
+            double leakThreshold = 0.75;
+            assertTrue(increases < attempts * leakThreshold,
+                "Open file descriptor count increased on " + increases + "/" + attempts
+                    + " failed bind attempts; expected only incidental growth, not a consistent"
+                    + " per-attempt increase (possible SocketChannel leak)");
+        }
+    }
+
+    @Test
     void testClose_idempotent() throws TransportException {
         transportInstance.close();
         assertFalse(transportInstance.isOpen());
