@@ -103,6 +103,21 @@ type Configuration struct {
 	// "<ip>:<port>" (encoded as the 6-byte B/IP DADR); for other datalinks a hex
 	// string ("0x0C") supplies the raw MAC octets.
 	RemoteAddress string
+
+	// PeerMaxApduLengthAccepted is the target device's MaxApduLengthAccepted in
+	// octets, as the device declared it in its I-Am. When a confirmed request's
+	// APDU would exceed this, the driver sends it as a segmented request
+	// (ASHRAE 135 clause 5.4) — provided PeerSegmentationSupported allows it.
+	// 0 (default) means unknown: requests are never segmented and an oversized
+	// request fails fast instead of provoking an abort from the device.
+	PeerMaxApduLengthAccepted uint16
+
+	// PeerSegmentationSupported is the target device's segmentation capability
+	// from its I-Am: "segmented-both", "segmented-transmit", "segmented-receive"
+	// or "no-segmentation". Segmented requests are only sent when the peer can
+	// RECEIVE segments ("segmented-both"/"segmented-receive"). Empty (default)
+	// means unknown and is treated as "no-segmentation".
+	PeerSegmentationSupported string
 }
 
 // ParseFromOptions populates a Configuration from the connection-URL query options,

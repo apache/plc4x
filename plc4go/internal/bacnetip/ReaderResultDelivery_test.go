@@ -76,7 +76,7 @@ func (c *captureCodec) GetDefaultIncomingMessageChannel() chan spi.Message { ret
 func TestReader_lateErrorHandlerAfterFailedSendMustNotBlock(t *testing.T) {
 	codec := newCaptureCodec(errors.New("send failed: broken pipe"))
 	tm := transactions.NewRequestTransactionManager(1)
-	reader := NewReader(&InvokeIdGenerator{}, codec, tm, nil)
+	reader := NewReader(&InvokeIdGenerator{}, codec, tm, NewDriverContext(createDefaultConfiguration()), nil)
 
 	objType := readWriteModel.BACnetObjectType_ANALOG_INPUT
 	propId := readWriteModel.BACnetPropertyIdentifier_PRESENT_VALUE

@@ -224,6 +224,7 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 			&c.invokeIdGenerator,
 			c.messageCodec,
 			c.tm,
+			c.driverContext,
 			c.routedDest,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),

@@ -135,6 +135,15 @@ func NewOutboundSegmenter(invokeId uint8, payload []byte, maxApdu uint16, window
 // HasMore reports whether more segments remain to be sent.
 func (s *outboundSegmenter) HasMore() bool { return !s.done }
 
+// TotalSegments returns how many segments the payload spans at the configured
+// per-segment budget. An empty payload still occupies one (empty) segment.
+func (s *outboundSegmenter) TotalSegments() int {
+	if len(s.payload) == 0 {
+		return 1
+	}
+	return (len(s.payload) + int(s.maxSegment) - 1) / int(s.maxSegment)
+}
+
 // NextSegment returns the next chunk of payload bytes along with a flag
 // indicating whether more segments follow. Advances the internal cursor.
 func (s *outboundSegmenter) NextSegment() (seq uint8, segment []byte, moreFollows bool) {

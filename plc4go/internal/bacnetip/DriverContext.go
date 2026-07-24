@@ -44,18 +44,43 @@ type DriverContext struct {
 	// BACnet enum value (e.g. 16 → NUM_SEGMENTS_16).
 	maxSegmentsAccepted model.MaxSegmentsAccepted `stringer:"true"`
 
+	// peerMaxApduBytes is Configuration.PeerMaxApduLengthAccepted: the target
+	// device's APDU ceiling in octets. 0 = unknown (requests are never segmented).
+	peerMaxApduBytes uint16
+
+	// peerAcceptsSegmentedRequests is derived from
+	// Configuration.PeerSegmentationSupported: true when the peer declared it can
+	// RECEIVE segmented requests ("segmented-both"/"segmented-receive").
+	peerAcceptsSegmentedRequests bool
+
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
 }
 
 func NewDriverContext(configuration Configuration) DriverContext {
 	return DriverContext{
-		configuration:           configuration,
-		maxApduLengthAccepted:   bytesToMaxApduLength(configuration.MaxApduLengthAccepted),
-		segmentation:            stringToSegmentation(configuration.SegmentationSupported),
-		maxSegmentsAccepted:     numToMaxSegments(configuration.MaxSegmentsAccepted),
-		awaitSetupComplete:      true,
-		awaitDisconnectComplete: true,
+		configuration:                configuration,
+		maxApduLengthAccepted:        bytesToMaxApduLength(configuration.MaxApduLengthAccepted),
+		segmentation:                 stringToSegmentation(configuration.SegmentationSupported),
+		maxSegmentsAccepted:          numToMaxSegments(configuration.MaxSegmentsAccepted),
+		peerMaxApduBytes:             configuration.PeerMaxApduLengthAccepted,
+		peerAcceptsSegmentedRequests: segmentationAcceptsSegmentedRequests(configuration.PeerSegmentationSupported),
+		awaitSetupComplete:           true,
+		awaitDisconnectComplete:      true,
+	}
+}
+
+// segmentationAcceptsSegmentedRequests reports whether a peer declaring the
+// given segmentation-supported string can receive segmented confirmed requests.
+// Unlike stringToSegmentation (which defaults OUR capability to segmented-both
+// for unknown strings), an unknown or empty PEER capability must conservatively
+// mean "no".
+func segmentationAcceptsSegmentedRequests(s string) bool {
+	switch s {
+	case "segmented-both", "segmented-receive":
+		return true
+	default:
+		return false
 	}
 }
 

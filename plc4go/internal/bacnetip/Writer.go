@@ -106,7 +106,69 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			nil,
 		)
 
+		// If the request exceeds the peer's declared APDU ceiling, it has to go
+		// out as a segmented request (ASHRAE 135 clause 5.4) — or fail fast when
+		// the peer can't receive segments, instead of provoking an abort.
+		var segmentedPayload []byte
+		if m.driverContext.peerMaxApduBytes > 0 {
+			payload, serErr := serviceRequest.Serialize()
+			if serErr != nil {
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(serErr, "Error serializing WriteProperty request")))
+				return
+			}
+			if m.driverContext.needsSegmentedRequest(len(payload)) {
+				if !m.driverContext.peerAcceptsSegmentedRequests {
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil,
+						errors.Errorf("write request of %d bytes exceeds the peer's max APDU of %d and the peer does not support segmented requests", len(payload), m.driverContext.peerMaxApduBytes)))
+					return
+				}
+				segmentedPayload = payload
+			}
+		}
+
 		transaction := m.tm.StartTransaction("write")
+		if segmentedPayload != nil {
+			transaction.Submit("segmentedWriteOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
+				ctx, cancel := context.WithCancel(ctx)
+				context.AfterFunc(transactionContext, cancel)
+
+				// Register the response expectation BEFORE driving the segments:
+				// the peer may answer right after acking the final segment. The
+				// matcher must not consume the peer's SegmentAcks — those belong
+				// to the sender's own expectations.
+				m.messageCodec.Expect(ctx, "segmentedWriteResponse",
+					responseMatcherExcludingSegmentAcks(func(message spi.Message) bool {
+						return m.acceptsResponse(message, invokeId)
+					}),
+					func(message spi.Message) error {
+						bvlc := message.(readWriteModel.BVLC)
+						responseApdu := bvlc.(interface{ GetNpdu() readWriteModel.NPDU }).GetNpdu().GetApdu()
+						writeResponse := m.toPlcWriteResponse(responseApdu, writeRequest)
+						utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, writeResponse, nil))
+						return transaction.EndRequest()
+					},
+					func(err error) error {
+						utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "got timeout while waiting for segmented write response")))
+						return transaction.EndRequest()
+					},
+				)
+
+				sender := &segmentedRequestSender{
+					messageCodec:  m.messageCodec,
+					routedDest:    m.routedDest,
+					driverContext: m.driverContext,
+					log:           m.log,
+				}
+				if sendErr := sender.send(ctx, invokeId, segmentedPayload); sendErr != nil {
+					// Deliver the real cause first (the buffered result channel
+					// takes it), then cancel so the armed response expectation
+					// resolves without delivering a second, less specific error.
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(sendErr, "error sending segmented write request")))
+					cancel()
+				}
+			})
+			return
+		}
 		transaction.Submit("writeOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 			ctx, cancel := context.WithCancel(ctx)
 			context.AfterFunc(transactionContext, cancel)

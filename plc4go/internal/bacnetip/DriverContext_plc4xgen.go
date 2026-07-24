@@ -68,6 +68,14 @@ func (d *DriverContext) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
+	if err := writeBuffer.WriteUint16("peerMaxApduBytes", 16, d.peerMaxApduBytes); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteBit("peerAcceptsSegmentedRequests", d.peerAcceptsSegmentedRequests); err != nil {
+		return err
+	}
+
 	if err := writeBuffer.WriteBit("awaitSetupComplete", d.awaitSetupComplete); err != nil {
 		return err
 	}

@@ -114,6 +114,14 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if err := writeBuffer.WriteString("remoteAddress", uint32(len(d.RemoteAddress)*8), d.RemoteAddress); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteUint16("peerMaxApduLengthAccepted", 16, d.PeerMaxApduLengthAccepted); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteString("peerSegmentationSupported", uint32(len(d.PeerSegmentationSupported)*8), d.PeerSegmentationSupported); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("Configuration"); err != nil {
 		return err
 	}

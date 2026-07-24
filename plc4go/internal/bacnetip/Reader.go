@@ -42,6 +42,7 @@ type Reader struct {
 	invokeIdGenerator *InvokeIdGenerator
 	messageCodec      spi.MessageCodec
 	tm                transactions.RequestTransactionManager
+	driverContext     DriverContext
 	routedDest        *routedDestination // nil for local-segment connections
 
 	maxSegmentsAccepted   readWriteModel.MaxSegmentsAccepted
@@ -52,12 +53,13 @@ type Reader struct {
 	log zerolog.Logger
 }
 
-func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, routedDest *routedDestination, _options ...options.WithOption) *Reader {
+func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, driverContext DriverContext, routedDest *routedDestination, _options ...options.WithOption) *Reader {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		invokeIdGenerator: invokeIdGenerator,
 		messageCodec:      messageCodec,
 		tm:                tm,
+		driverContext:     driverContext,
 		routedDest:        routedDest,
 
 		maxSegmentsAccepted:   readWriteModel.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS,
@@ -135,6 +137,27 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			nil,
 		)
 
+		// If the request exceeds the peer's declared APDU ceiling (large
+		// ReadPropertyMultiple access lists), it has to go out as a segmented
+		// request (ASHRAE 135 clause 5.4) — or fail fast when the peer can't
+		// receive segments, instead of provoking an abort.
+		var segmentedPayload []byte
+		if m.driverContext.peerMaxApduBytes > 0 {
+			payload, serErr := serviceRequest.Serialize()
+			if serErr != nil {
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(serErr, "Error serializing read request")))
+				return
+			}
+			if m.driverContext.needsSegmentedRequest(len(payload)) {
+				if !m.driverContext.peerAcceptsSegmentedRequests {
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil,
+						errors.Errorf("read request of %d bytes exceeds the peer's max APDU of %d and the peer does not support segmented requests", len(payload), m.driverContext.peerMaxApduBytes)))
+					return
+				}
+				segmentedPayload = payload
+			}
+		}
+
 		// Start a new request-transaction (Is ended in the response-handler)
 		transaction := m.tm.StartTransaction("read")
 		transaction.Submit("readOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
@@ -144,9 +167,8 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			readCtx := ctx
 			ctx, cancel := context.WithCancel(ctx)
 			context.AfterFunc(transactionContext, cancel)
-			// Send the  over the wire
-			m.log.Trace().Msg("Send ")
-			if err := m.messageCodec.SendRequest(ctx, "read", wrapAPDU(apdu, true, m.routedDest), func(message spi.Message) bool {
+
+			acceptsReadResponse := func(message spi.Message) bool {
 				bvlc, ok := message.(readWriteModel.BVLC)
 				if !ok {
 					m.log.Debug().Type("bvlc", bvlc).Msg("Received strange type")
@@ -168,7 +190,8 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				} else {
 					return invokeIdFromApdu == invokeId
 				}
-			}, func(message spi.Message) error {
+			}
+			handleReadResponse := func(message spi.Message) error {
 				// Convert the response into an
 				m.log.Trace().Msg("convert response to ")
 				apdu := message.(readWriteModel.BVLC).(interface{ GetNpdu() readWriteModel.NPDU }).GetNpdu().GetApdu()
@@ -204,14 +227,50 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					nil,
 				))
 				return transaction.EndRequest()
-			}, func(err error) error {
+			}
+			handleReadError := func(err error) error {
 				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,
 					errors.Wrap(err, "got timeout while waiting for response"),
 				))
 				return transaction.EndRequest()
-			}); err != nil {
+			}
+
+			if segmentedPayload != nil {
+				// Register the response expectation BEFORE driving the segments:
+				// the peer may answer right after acking the final segment. The
+				// matcher must not consume the peer's SegmentAcks — those belong
+				// to the sender's own expectations.
+				m.messageCodec.Expect(ctx, "segmentedReadResponse",
+					responseMatcherExcludingSegmentAcks(acceptsReadResponse),
+					handleReadResponse,
+					handleReadError,
+				)
+
+				sender := &segmentedRequestSender{
+					messageCodec:  m.messageCodec,
+					routedDest:    m.routedDest,
+					driverContext: m.driverContext,
+					log:           m.log,
+				}
+				if err := sender.send(ctx, invokeId, segmentedPayload); err != nil {
+					// Deliver the real cause first (the buffered result channel
+					// takes it), then cancel so the armed response expectation
+					// resolves without delivering a second, less specific error.
+					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
+						readRequest,
+						nil,
+						errors.Wrap(err, "error sending segmented read request"),
+					))
+					cancel()
+				}
+				return
+			}
+
+			// Send the  over the wire
+			m.log.Trace().Msg("Send ")
+			if err := m.messageCodec.SendRequest(ctx, "read", wrapAPDU(apdu, true, m.routedDest), acceptsReadResponse, handleReadResponse, handleReadError); err != nil {
 				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 					readRequest,
 					nil,
