@@ -13,8 +13,8 @@ New Features
 - Added a new PlcCertificateAuthentication to the API module.
 - Initial version of a new Java UMAS driver.
 - Initial version of a new Java SLMP (Mitsubishi MELSEC) driver:
-  read-only access to word devices (D/W/R) using binary 3E frames
-  over TCP.
+  read and write access to word devices (D/W/R) using binary 3E
+  frames over TCP (including Batch Write).
 - The 'plc4x' proxy driver now supports TLS as a transport and
   requires mandatory username/password authentication
   (configured via the new "username" and "password" connection
@@ -45,12 +45,66 @@ New Features
   function code (late responses from timed-out requests are discarded
   instead of completing the wrong caller), and the request timeout now
   covers the full time from submission, including queueing.
+- Drivers that don't natively support subscriptions (Modbus,
+  EtherNet/IP, AB-ETH, SLMP, UMAS) now provide subscriptions
+  through a polling-based emulation layer, supporting CYCLIC and
+  CHANGE_OF_STATE subscriptions.
+- Added a new remote-data-fetching component (event-pump)
+  replacing the old scraper.
+- Re-implemented the connection-cache with more reliable resource
+  handling and transparent re-subscription after a connection was
+  lost and re-established.
+- New TCP transport implementation using per-connection
+  virtual-thread blocking I/O (replacing the NIO selector),
+  scaling better on Java 21.
+- OPC-UA: Added reading and writing of structured values
+  (PlcStruct) and corrected array handling.
+- OPC-UA: Tag data types are now derived from the server's type
+  model instead of being guessed from the input data.
+- OPC-UA: Added browse support, resolving server-side types and
+  access rights.
+- Simulated driver: Added STRING support.
+- CANopen: Added NMT command support.
+- Go: Added a production-grade BACnet/IP driver (segmentation,
+  write priority, directed/multi-target WhoIs, routed addressing,
+  array/bit-string property decoding).
+- Go: The connection-cache now supports a configurable max idle
+  time, and connections carrying subscriptions are exempt from the
+  idle TTL.
+- The Object-PLC-Mapping (OPM) module was ported to SPI3.
+- PlcBrowseItem now reports which subscription types each item
+  supports via a new getSupportedSubscriptionTypes() method, so
+  browse results carry subscription capability information.
+- OPC-UA: Improved Siemens S7-1500 support, including reading and
+  writing of (almost) all variant types.
+- Updated the bundled KNX manufacturer data and the BACnet/KNX
+  vendor IDs for broader device recognition.
+- Go: Connections can now be invalidated (Invalidate()) to mark
+  themselves irrecoverably failed for lease management, and
+  transport errors are now classified and propagated through
+  codecs/transports (TransportErrorKind).
+- Performance: Sped up byte-aligned integer read/write in the Java
+  byte-based SPI buffers.
 
 Incompatible changes
 --------------------
 
+- All drivers were migrated to a new shared SPI ("SPI3"):
+  dependency-free Read/Write buffers, an updated code-generation
+  framework, a pluggable-transport system and a layered
+  protocol-driver model.
+- Drivers now reject connection strings using an unsupported
+  transport with an exception. The check can be force-disabled
+  via a configuration parameter.
+- Several Maven artifactIds changed (tools, transports, scraper);
+  see the "Changed Maven Coordinates" section below for the full
+  mapping. Consumers must update their coordinates.
+- The PlcBrowseItem interface gained a
+  getSupportedSubscriptionTypes() method that custom
+  implementations must now provide.
 - Dropped support for Java 11, new baseline Java version is
   Java 21.
+- Migrated the build to Apache Maven 4.
 - The Go serial transport's default baud-rate changed from 115200
   to 9600 (aligning with common serial defaults and the Java
   transport). Specify baud-rate explicitly if you relied on the
@@ -91,12 +145,77 @@ Incompatible changes
   state change options beyond a simple connected and disconnected
   event.
 
+Changed Maven Coordinates
+-------------------------
+
+The Maven groupId of all modules is unchanged ("org.apache.plc4x").
+The following artifactIds changed; consumers must update their
+dependency coordinates accordingly:
+
+- The "tools" modules were renamed to the "plc4j-tools-*" pattern:
+    plc4j-capture-replay    -> plc4j-tools-capture-replay
+    plc4j-connection-cache  -> plc4j-tools-connection-cache
+    plc4j-opm               -> plc4j-tools-opm
+- The transport modules were renamed from the singular
+  "plc4j-transport-*" to the plural "plc4j-transports-*":
+    plc4j-transport-can         -> plc4j-transports-can
+    plc4j-transport-pcap-replay -> plc4j-transports-pcap-replay
+    plc4j-transport-raw-socket  -> plc4j-transports-raw-socket
+    plc4j-transport-serial      -> plc4j-transports-serial
+    plc4j-transport-tcp         -> plc4j-transports-tcp
+    plc4j-transport-test        -> plc4j-transports-test
+    plc4j-transport-udp         -> plc4j-transports-udp
+    plc4j-transport-socketcan   -> plc4j-transports-can-socketcan
+    plc4j-transport-virtualcan  -> plc4j-transports-can-virtualcan
+- The scraper was replaced by the new event-pump component:
+    plc4j-scraper               -> plc4j-tools-event-pump
+- Removed modules (no direct replacement):
+    plc4j-scraper-ng            (experimental, dropped)
+    plc4j-transport-pcap-shared (obsolete)
+
+Note: this release also adds a number of new SPI3 modules (e.g.
+the "plc4j-spi-*" buffers/config/drivers/values split, the new
+"plc4j-transports-api"/"-cotp"/"-tls" transports, the
+"plc4j-utils-audit-log*" and "plc4j-utils-subscription-emulation"
+utilities). These are new artifacts, not renames.
+
 Bug Fixes
 ---------
 
 - Fixed serialization in the 'plc4x' proxy driver's message
   codec, which did not configure the buffer integer/string
   encodings under SPI3 and failed to serialize any message.
+- OPC-UA: Fixed several issues: a hang during discovery /
+  encrypted-policy negotiation, a divide-by-zero when the server
+  provided no certificate, and hardened parsing of corrupt or
+  malicious responses that could previously cause an
+  OutOfMemoryError.
+- ADS: The connect handshake now honors the configured AMS ports
+  instead of hardcoding RUNTIME_SYSTEM_01/851.
+- ADS: Fixed an invalid size calculation in AdsDataTypeArrayInfo.
+- ADS: Fixed serialization of STRING/WSTRING values.
+- S7: Fixed duplicate TSAP information at the COTP and S7 level.
+- Connection-cache: Fixed a deadlock when obtaining a connection,
+  plus a race condition and idle-timer/cleanup issues.
+- The base driver now redacts password information from console
+  logs.
+- TCP transport: Close the SocketChannel on a failed bind /
+  socket-option setup.
+- Request objects were made more null-safe (#2280).
+- OPC-UA: All consumers registered on a shared subscription now
+  receive notifications (previously only one consumer was
+  registered).
+- AB-ETH: Fixed reading a tag after the SPI3 refactoring.
+- The socket is now disconnected when the handshake fails instead
+  of being left hanging (#2290).
+- Go Modbus: Hardened frame parsing against truncated/extended
+  frames, trailing CRCs from misbehaving gateways and TCP
+  keep-alive padding, with stream resynchronization on desync.
+- Go: Numerous stability and resource-leak fixes (connection cache
+  no longer hands out dead connections, goroutine and codec-worker
+  leaks on Modbus reconnect, robust Modbus receive with
+  desync/resync, TCP/UDP transport deadline and reset races, codec
+  disconnect deadlock).
 
 ==============================================================
 Apache PLC4X 0.13.1
