@@ -27,9 +27,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/apache/plc4x/plc4go/spi/errors"
-
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
 // routedDestination is the NPDU destination specifier for a connection whose

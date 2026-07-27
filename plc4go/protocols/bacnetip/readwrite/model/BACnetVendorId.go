@@ -1664,6 +1664,15 @@ const (
 	BACnetVendorId_CORPORACIN_EMPRESARIAL_ALTRA                                                 BACnetVendorId = 1629
 	BACnetVendorId_IC_VALVES_NANJING_CO_LTD                                                     BACnetVendorId = 1630
 	BACnetVendorId_OCCUSPACE_INC                                                                BACnetVendorId = 1631
+	BACnetVendorId_SHENZHEN_KEENYODA_TECHNOLOGIES_CO_LTD                                        BACnetVendorId = 1632
+	BACnetVendorId_JIANGSUCHINT_TECHSEL_INTELLIGENT_TECHNOLGOY_CO_LTD                           BACnetVendorId = 1633
+	BACnetVendorId_TECHSOUL_TRADINGLLC                                                          BACnetVendorId = 1634
+	BACnetVendorId_ACTION_TARGET_INC                                                            BACnetVendorId = 1635
+	BACnetVendorId_TEKTELIC_COMMUNICATIONS_INC                                                  BACnetVendorId = 1636
+	BACnetVendorId_EXPANSION_ELECTRONICSRL                                                      BACnetVendorId = 1637
+	BACnetVendorId_SPEC_PROM_DIZAJNOOO                                                          BACnetVendorId = 1638
+	BACnetVendorId_FACTS_ENGINEERINGLLC                                                         BACnetVendorId = 1639
+	BACnetVendorId_G_ASERV_GMBH                                                                 BACnetVendorId = 1640
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3293,6 +3302,15 @@ func init() {
 		BACnetVendorId_CORPORACIN_EMPRESARIAL_ALTRA,
 		BACnetVendorId_IC_VALVES_NANJING_CO_LTD,
 		BACnetVendorId_OCCUSPACE_INC,
+		BACnetVendorId_SHENZHEN_KEENYODA_TECHNOLOGIES_CO_LTD,
+		BACnetVendorId_JIANGSUCHINT_TECHSEL_INTELLIGENT_TECHNOLGOY_CO_LTD,
+		BACnetVendorId_TECHSOUL_TRADINGLLC,
+		BACnetVendorId_ACTION_TARGET_INC,
+		BACnetVendorId_TEKTELIC_COMMUNICATIONS_INC,
+		BACnetVendorId_EXPANSION_ELECTRONICSRL,
+		BACnetVendorId_SPEC_PROM_DIZAJNOOO,
+		BACnetVendorId_FACTS_ENGINEERINGLLC,
+		BACnetVendorId_G_ASERV_GMBH,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -6103,9 +6121,45 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1631' */
 			return 1631
 		}
+	case 1632:
+		{ /* '1632' */
+			return 1632
+		}
+	case 1633:
+		{ /* '1633' */
+			return 1633
+		}
+	case 1634:
+		{ /* '1634' */
+			return 1634
+		}
+	case 1635:
+		{ /* '1635' */
+			return 1635
+		}
+	case 1636:
+		{ /* '1636' */
+			return 1636
+		}
+	case 1637:
+		{ /* '1637' */
+			return 1637
+		}
+	case 1638:
+		{ /* '1638' */
+			return 1638
+		}
+	case 1639:
+		{ /* '1639' */
+			return 1639
+		}
 	case 164:
 		{ /* '164' */
 			return 164
+		}
+	case 1640:
+		{ /* '1640' */
+			return 1640
 		}
 	case 165:
 		{ /* '165' */
@@ -12609,9 +12663,45 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1631' */
 			return "Occuspace Inc."
 		}
+	case 1632:
+		{ /* '1632' */
+			return "Shenzhen Keenyoda Technologies Co., Ltd."
+		}
+	case 1633:
+		{ /* '1633' */
+			return "Jiangsu CHINT Techsel Intelligent Technolgoy Co., Ltd."
+		}
+	case 1634:
+		{ /* '1634' */
+			return "Techsoul Trading LLC"
+		}
+	case 1635:
+		{ /* '1635' */
+			return "Action Target Inc."
+		}
+	case 1636:
+		{ /* '1636' */
+			return "Tektelic Communications Inc."
+		}
+	case 1637:
+		{ /* '1637' */
+			return "Expansion Electronic SRL"
+		}
+	case 1638:
+		{ /* '1638' */
+			return "SpecPromDizajn OOO"
+		}
+	case 1639:
+		{ /* '1639' */
+			return "FACTS Engineering, LLC"
+		}
 	case 164:
 		{ /* '164' */
 			return "HSC Regelungstechnik GmbH"
+		}
+	case 1640:
+		{ /* '1640' */
+			return "GAserv GmbH"
 		}
 	case 165:
 		{ /* '165' */
@@ -17712,8 +17802,26 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IC_VALVES_NANJING_CO_LTD, true
 	case 1631:
 		return BACnetVendorId_OCCUSPACE_INC, true
+	case 1632:
+		return BACnetVendorId_SHENZHEN_KEENYODA_TECHNOLOGIES_CO_LTD, true
+	case 1633:
+		return BACnetVendorId_JIANGSUCHINT_TECHSEL_INTELLIGENT_TECHNOLGOY_CO_LTD, true
+	case 1634:
+		return BACnetVendorId_TECHSOUL_TRADINGLLC, true
+	case 1635:
+		return BACnetVendorId_ACTION_TARGET_INC, true
+	case 1636:
+		return BACnetVendorId_TEKTELIC_COMMUNICATIONS_INC, true
+	case 1637:
+		return BACnetVendorId_EXPANSION_ELECTRONICSRL, true
+	case 1638:
+		return BACnetVendorId_SPEC_PROM_DIZAJNOOO, true
+	case 1639:
+		return BACnetVendorId_FACTS_ENGINEERINGLLC, true
 	case 164:
 		return BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH, true
+	case 1640:
+		return BACnetVendorId_G_ASERV_GMBH, true
 	case 165:
 		return BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD, true
 	case 166:
@@ -20962,8 +21070,26 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IC_VALVES_NANJING_CO_LTD, true
 	case "OCCUSPACE_INC":
 		return BACnetVendorId_OCCUSPACE_INC, true
+	case "SHENZHEN_KEENYODA_TECHNOLOGIES_CO_LTD":
+		return BACnetVendorId_SHENZHEN_KEENYODA_TECHNOLOGIES_CO_LTD, true
+	case "JIANGSUCHINT_TECHSEL_INTELLIGENT_TECHNOLGOY_CO_LTD":
+		return BACnetVendorId_JIANGSUCHINT_TECHSEL_INTELLIGENT_TECHNOLGOY_CO_LTD, true
+	case "TECHSOUL_TRADINGLLC":
+		return BACnetVendorId_TECHSOUL_TRADINGLLC, true
+	case "ACTION_TARGET_INC":
+		return BACnetVendorId_ACTION_TARGET_INC, true
+	case "TEKTELIC_COMMUNICATIONS_INC":
+		return BACnetVendorId_TEKTELIC_COMMUNICATIONS_INC, true
+	case "EXPANSION_ELECTRONICSRL":
+		return BACnetVendorId_EXPANSION_ELECTRONICSRL, true
+	case "SPEC_PROM_DIZAJNOOO":
+		return BACnetVendorId_SPEC_PROM_DIZAJNOOO, true
+	case "FACTS_ENGINEERINGLLC":
+		return BACnetVendorId_FACTS_ENGINEERINGLLC, true
 	case "HSC_REGELUNGSTECHNIK_GMBH":
 		return BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH, true
+	case "G_ASERV_GMBH":
+		return BACnetVendorId_G_ASERV_GMBH, true
 	case "SMART_TEMP_AUSTRALIA_PTY_LTD":
 		return BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD, true
 	case "COOPER_CONTROLS":
@@ -24284,8 +24410,26 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "IC_VALVES_NANJING_CO_LTD"
 	case BACnetVendorId_OCCUSPACE_INC:
 		return "OCCUSPACE_INC"
+	case BACnetVendorId_SHENZHEN_KEENYODA_TECHNOLOGIES_CO_LTD:
+		return "SHENZHEN_KEENYODA_TECHNOLOGIES_CO_LTD"
+	case BACnetVendorId_JIANGSUCHINT_TECHSEL_INTELLIGENT_TECHNOLGOY_CO_LTD:
+		return "JIANGSUCHINT_TECHSEL_INTELLIGENT_TECHNOLGOY_CO_LTD"
+	case BACnetVendorId_TECHSOUL_TRADINGLLC:
+		return "TECHSOUL_TRADINGLLC"
+	case BACnetVendorId_ACTION_TARGET_INC:
+		return "ACTION_TARGET_INC"
+	case BACnetVendorId_TEKTELIC_COMMUNICATIONS_INC:
+		return "TEKTELIC_COMMUNICATIONS_INC"
+	case BACnetVendorId_EXPANSION_ELECTRONICSRL:
+		return "EXPANSION_ELECTRONICSRL"
+	case BACnetVendorId_SPEC_PROM_DIZAJNOOO:
+		return "SPEC_PROM_DIZAJNOOO"
+	case BACnetVendorId_FACTS_ENGINEERINGLLC:
+		return "FACTS_ENGINEERINGLLC"
 	case BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH:
 		return "HSC_REGELUNGSTECHNIK_GMBH"
+	case BACnetVendorId_G_ASERV_GMBH:
+		return "G_ASERV_GMBH"
 	case BACnetVendorId_SMART_TEMP_AUSTRALIA_PTY_LTD:
 		return "SMART_TEMP_AUSTRALIA_PTY_LTD"
 	case BACnetVendorId_COOPER_CONTROLS:

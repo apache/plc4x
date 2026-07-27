@@ -845,8 +845,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_DIE_BILDUNGSMANUFAKTUR_GMBH = 817,
         M_READYKNX = 818,
         M_SMARTVOS = 819,
-        M_ABB___RESERVED = 820,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 821,
+        M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH = 820,
+        M_ABB___RESERVED = 821,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 822,
     }
 
     public static class KnxManufacturerInfo
@@ -3262,10 +3263,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_NIKO_ZUBLIN: { /* '82' */
                     return 121;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '820' */
+                case KnxManufacturer.M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH: { /* '820' */
+                    return 881;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '821' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '821' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '822' */
                     return 43959;
                 }
                 case KnxManufacturer.M_DURABLE_TECHNOLOGIES: { /* '83' */
@@ -5738,10 +5742,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_NIKO_ZUBLIN: { /* '82' */
                     return "Niko-Zublin";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '820' */
+                case KnxManufacturer.M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH: { /* '820' */
+                    return "ISG Industrielle Steuerungstechnik GmbH";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '821' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '821' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '822' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_DURABLE_TECHNOLOGIES: { /* '83' */
