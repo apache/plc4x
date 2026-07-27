@@ -1572,8 +1572,9 @@
     ['817' M_DIE_BILDUNGSMANUFAKTUR_GMBH ['878', '"DIE-Bildungsmanufaktur GmbH"']]
     ['818' M_READYKNX ['879', '"readyKNX"']]
     ['819' M_SMARTVOS ['880', '"smartVOS"']]
-    ['820' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['821' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['820' M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH ['881', '"ISG Industrielle Steuerungstechnik GmbH"']]
+    ['821' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['822' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

@@ -1648,6 +1648,9 @@
   ['1635' ACTION_TARGET_INC ['1635', '"Action Target Inc."']]
   ['1636' TEKTELIC_COMMUNICATIONS_INC ['1636', '"Tektelic Communications Inc."']]
   ['1637' EXPANSION_ELECTRONICSRL ['1637', '"Expansion Electronic SRL"']]
+  ['1638' SPEC_PROM_DIZAJNOOO ['1638', '"SpecPromDizajn OOO"']]
+  ['1639' FACTS_ENGINEERINGLLC ['1639', '"FACTS Engineering, LLC"']]
+  ['1640' G_ASERV_GMBH ['1640', '"GAserv GmbH"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

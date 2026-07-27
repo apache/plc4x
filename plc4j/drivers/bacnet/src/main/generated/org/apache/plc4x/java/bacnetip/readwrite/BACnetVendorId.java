@@ -3279,6 +3279,12 @@ public enum BACnetVendorId {
 
   EXPANSION_ELECTRONICSRL((int) 1637, (int) 1637, "Expansion Electronic SRL"),
 
+  SPEC_PROM_DIZAJNOOO((int) 1638, (int) 1638, "SpecPromDizajn OOO"),
+
+  FACTS_ENGINEERINGLLC((int) 1639, (int) 1639, "FACTS Engineering, LLC"),
+
+  G_ASERV_GMBH((int) 1640, (int) 1640, "GAserv GmbH"),
+
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, "Unknown");
 
   private static final Map<Integer, BACnetVendorId> map;
