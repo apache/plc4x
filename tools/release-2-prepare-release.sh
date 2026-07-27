@@ -83,7 +83,7 @@ echo "✅ Tag '$TAG_NAME' has hash '$TAG_COMMIT_HASH'"
 
 echo "Performing Release:"
 if ! docker compose -f "$DIRECTORY/tools/docker-compose.yaml" run releaser \
-        bash -c "/ws/mvnw -e -Dmaven.repo.local=/ws/out/.repository -DaltDeploymentRepository=snapshot-repo::default::file:/ws/out/.local-artifacts-dir release:perform"; then
+        bash -c "/ws/mvnw -e -Dmaven.repo.local=/ws/out/.repository -DaltDeploymentRepository=snapshot-repo::file:/ws/out/.local-artifacts-dir release:perform"; then
     echo "❌ Got non-0 exit code from docker compose, aborting."
     exit 1
 fi
