@@ -34,7 +34,7 @@ import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
-import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.utils.subscriptionemulation.PollingSubscriptionConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
 import org.apache.plc4x.java.spi.drivers.messages.*;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
  * EipProtocolLogic to the SPI3 ConnectionBase model. Request/response correlation
  * uses the 8-byte senderContext echoed back by the device.
  */
-public class EipTcpConnection extends ConnectionBase<EIPConfiguration> {
+public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EipTcpConnection.class);
 

@@ -159,6 +159,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-subscription-emulation</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transports-api</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>

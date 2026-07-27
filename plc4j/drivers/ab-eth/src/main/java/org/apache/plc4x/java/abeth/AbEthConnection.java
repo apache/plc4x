@@ -37,7 +37,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.utils.subscriptionemulation.PollingSubscriptionConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
@@ -72,7 +72,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * handle; every subsequent read carries that handle and a fresh
  * 16-bit transaction counter used to match responses to in-flight reads.</p>
  */
-public class AbEthConnection extends ConnectionBase<AbEthConfiguration> {
+public class AbEthConnection extends PollingSubscriptionConnectionBase<AbEthConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbEthConnection.class);
 

@@ -34,7 +34,7 @@ import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
-import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.utils.subscriptionemulation.PollingSubscriptionConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
 import org.apache.plc4x.java.spi.drivers.messages.*;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
@@ -59,7 +59,7 @@ import java.util.concurrent.*;
  * Modbus RTU connection implementation.
  * Handles read, write, and ping operations over Modbus RTU protocol.
  */
-public class ModbusRtuConnection extends ConnectionBase<ModbusRtuConfiguration> {
+public class ModbusRtuConnection extends PollingSubscriptionConnectionBase<ModbusRtuConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModbusRtuConnection.class);
 

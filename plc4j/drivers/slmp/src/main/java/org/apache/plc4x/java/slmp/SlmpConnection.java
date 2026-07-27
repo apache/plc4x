@@ -35,7 +35,7 @@ import org.apache.plc4x.java.slmp.readwrite.SlmpResponseFrame3E;
 import org.apache.plc4x.java.slmp.readwrite.SlmpWriteRequest;
 import org.apache.plc4x.java.slmp.tag.SlmpTag;
 import org.apache.plc4x.java.slmp.tag.SlmpTagHandler;
-import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.utils.subscriptionemulation.PollingSubscriptionConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadResponse;
@@ -59,7 +59,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SlmpConnection extends ConnectionBase<SlmpConfiguration> {
+public class SlmpConnection extends PollingSubscriptionConnectionBase<SlmpConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SlmpConnection.class);
 

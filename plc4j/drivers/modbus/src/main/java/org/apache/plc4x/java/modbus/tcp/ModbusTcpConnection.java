@@ -35,7 +35,7 @@ import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
-import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.utils.subscriptionemulation.PollingSubscriptionConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
 import org.apache.plc4x.java.spi.drivers.messages.*;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
@@ -60,7 +60,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Modbus TCP connection implementation.
  * Handles read, write, and ping operations over Modbus TCP protocol.
  */
-public class ModbusTcpConnection extends ConnectionBase<ModbusTcpConfiguration> {
+public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<ModbusTcpConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModbusTcpConnection.class);
 
