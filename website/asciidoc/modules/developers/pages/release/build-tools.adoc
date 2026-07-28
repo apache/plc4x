@@ -268,38 +268,38 @@ The following would be the one used to do our first TLP release:
 
 [subs="verbatim,attributes"]
 ----
-   E-Mail Topic:
-   [VOTE] Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} RC1
+E-Mail Topic:
+[VOTE] Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} RC1
 
-   Message:
-   Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} has been staged under [2]
-   and it’s time to vote on accepting it for release.
+Message:
+Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} has been staged under [2]
+and it’s time to vote on accepting it for release.
 
-   All Maven artifacts are available under [1]. Voting will be open for 72hr.
+All Maven artifacts are available under [1]. Voting will be open for 72hr.
 
-   A minimum of 3 binding +1 votes and more binding +1 than binding -1
-   are required to pass.
+A minimum of 3 binding +1 votes and more binding +1 than binding -1
+are required to pass.
 
-   Repository: https://gitbox.apache.org/repos/asf/plc4x-build-tools.git
-   Release tag: releases/code-generation/{{current-last-released-version}}
-   Hash for the release tag: {replacethiswiththerealgitcommittag}
+Repository: https://gitbox.apache.org/repos/asf/plc4x-build-tools.git
+Release tag: releases/code-generation/{{current-last-released-version}}
+Hash for the release tag: {replacethiswiththerealgitcommittag}
 
-   Per [3] "Before voting +1 PMC members are required to download
-   the signed source code package, compile it as provided, and test
-   the resulting executable on their own platform, along with also
-   verifying that the package meets the requirements of the ASF policy
-   on releases."
+Per [3] "Before voting +1 PMC members are required to download
+the signed source code package, compile it as provided, and test
+the resulting executable on their own platform, along with also
+verifying that the package meets the requirements of the ASF policy
+on releases."
 
-   You can achieve the above by following [4].
+You can achieve the above by following [4].
 
-   [ ]  +1 accept (indicate what you validated - e.g. performed the non-RM items in [4])
-   [ ]  -1 reject (explanation required)
+[ ]  +1 accept (indicate what you validated - e.g. performed the non-RM items in [4])
+[ ]  -1 reject (explanation required)
 
 
-   [1] https://repository.apache.org/content/repositories/orgapacheplc4x-{somefourdigitnumber}
-   [2] https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{{current-last-released-version}}/rc1/
-   [3] https://www.apache.org/dev/release/validation.html#approving-a-release
-   [4] https://plc4x.apache.org/plc4x/latest/developers/release/validation.html
+[1] https://repository.apache.org/content/repositories/orgapacheplc4x-{somefourdigitnumber}
+[2] https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{{current-last-released-version}}/rc1/
+[3] https://www.apache.org/legal/release-policy.html#approving-a-release
+[4] https://plc4x.apache.org/plc4x/latest/developers/release/validation.html
 ----
 
 As it is sometimes to do the vote counting, if voting and discussions are going on in the same thread, we send a second email:
@@ -307,15 +307,15 @@ As it is sometimes to do the vote counting, if voting and discussions are going 
 
 [subs="verbatim,attributes"]
 ----
-   E-Mail Topic:
-   [DISCUSS] Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} RC1
+E-Mail Topic:
+[DISCUSS] Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} RC1
 
-   Message:
-   This is the discussion thread for the corresponding VOTE thread.
+Message:
+This is the discussion thread for the corresponding VOTE thread.
 
-   Please keep discussions in this thread to simplify the counting of votes.
+Please keep discussions in this thread to simplify the counting of votes.
 
-   If you have to vote -1 please mention a brief description on why and then take the details to this thread.
+If you have to vote -1 please mention a brief description on why and then take the details to this thread.
 ----
 
 Now we have to wait 72 hours till we can announce the result of the vote.
@@ -328,13 +328,11 @@ After the 72-our minimum wait period is over, and we have fulfilled the requirem
 
 [subs="verbatim,attributes"]
 ----
-    E-Mail Topic:
-    [RESULT] [VOTE] Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} RC1
+E-Mail Topic:
+[RESULT] [VOTE] Apache PLC4X Build-Tools Code-Generation {{current-last-released-version}} RC1
 
-    Message:
-    So, the vote passes with 3 +1 votes by PMC members and one +1 vote by a non PMC member.
-
-    Chris
+Message:
+So, the vote passes with 3 +1 votes by PMC members and one +1 vote by a non PMC member.
 ----
 
 == Releasing after a successful vote
