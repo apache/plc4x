@@ -1667,9 +1667,11 @@ public enum KnxManufacturer {
 
   M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH((int) 820, (int) 881, "ISG Industrielle Steuerungstechnik GmbH"),
 
-  M_ABB___RESERVED((int) 821, (int) 43954, "ABB - reserved"),
+  M_CHINT((int) 821, (int) 883, "CHINT"),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 822, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_ABB___RESERVED((int) 822, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 823, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 
