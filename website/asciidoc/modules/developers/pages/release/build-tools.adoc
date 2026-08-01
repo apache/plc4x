@@ -357,9 +357,9 @@ As a lot of mirrors are serving our releases, it is the Apache policy to clean o
 
 This can be done like this:
 
-    svn delete https://dist.apache.org/repos/dist/release/plc4x/0.3.0/ -m"deleted version 0.3.0"
+    svn delete https://dist.apache.org/repos/dist/release/plc4x/build-tools/code-generation/{1.8.0}/ -m"deleted old version of the build-tools"
 
-After this, https://dist.apache.org/repos/dist/release/plc4x should only contain the latest release directory.
+After this, https://dist.apache.org/repos/dist/release/plc4x/build-tools/code-generation should only contain the latest release directory.
 
 == Releasing the Maven artifacts
 
