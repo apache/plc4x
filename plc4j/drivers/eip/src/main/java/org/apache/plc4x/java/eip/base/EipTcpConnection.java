@@ -249,16 +249,13 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         CipRRData eipWrapper = new CipRRData(sessionHandle, CIPStatus.Success.getValue(),
             DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
 
-        return sendRequest(eipWrapper).thenAccept(response -> {
-            if (!(response instanceof CipRRData rr) || rr.getStatus() != CIPStatus.Success.getValue()) {
-                return;
-            }
-            UnConnectedDataItem dataItem = (UnConnectedDataItem) rr.getTypeIds().get(1);
-            if (!(dataItem.getService() instanceof GetAttributeAllResponse gar)) {
-                return;
+        return sendRequest(eipWrapper).thenCompose(response -> {
+            if (!(response instanceof CipRRData rr) || rr.getStatus() != CIPStatus.Success.getValue() ||
+                !(rr.getTypeIds().get(1) instanceof UnConnectedDataItem di && di.getService() instanceof GetAttributeAllResponse gar)) {
+                return CompletableFuture.completedFuture(null);
             }
             if (gar.getStatus() == CIPStatus.ServiceNotSupported.getValue()) {
-                return;
+                return checkAttributesSingle();
             }
             if (gar.getAttributes() != null) {
                 for (Integer classId : gar.getAttributes().getClassId()) {
@@ -270,6 +267,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
                     }
                 }
             }
+            return CompletableFuture.completedFuture(null);
         }).exceptionally(e -> {
             // Treat any probe failure (timeout, parse error, malformed response,
             // ServiceNotSupported) as "device has no message router / connection
@@ -278,6 +276,51 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             LOGGER.debug("GetAttributeAll probe failed, falling back to unconnected mode", e);
             return null;
         });
+    }
+
+    private CompletableFuture<Void> checkAttributesSingle() {
+        LOGGER.debug("Checking MessageRouter and ConnectionManager using GetAttributeSingle");
+
+        CompletableFuture<Boolean> connectionManagerFuture = checkSingleAttribute(CIPClassID.ConnectionManager, 1);
+        CompletableFuture<Boolean> messageRouterFuture = checkSingleAttribute(CIPClassID.MessageRouter, 0);
+        return CompletableFuture.allOf(messageRouterFuture, connectionManagerFuture).thenRun(() -> {
+            try {
+                this.useConnectionManager = connectionManagerFuture.get();
+                this.useMessageRouter = messageRouterFuture.get();
+            } catch (InterruptedException | ExecutionException e) {
+                LOGGER.warn("Error checking single attributes", e);
+            }
+        });
+    }
+
+    private CompletableFuture<Boolean> checkSingleAttribute(CIPClassID classId, int instanceId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) classId.getValue()));
+        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) instanceId));
+        PathSegment attributeSegment = new LogicalSegment(new AttributeID((byte) 0, (short) 1));
+
+        UnConnectedDataItem exchange = new UnConnectedDataItem(
+            new GetAttributeSingleRequest(classSegment, instanceSegment, attributeSegment));
+
+        List<TypeId> typeIds = Arrays.asList(nullAddressItem, exchange);
+        CipRRData eipWrapper = new CipRRData(sessionHandle, CIPStatus.Success.getValue(),
+            DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
+
+        sendRequest(eipWrapper).thenAccept(response -> {
+            if (!(response instanceof CipRRData rr) || rr.getStatus() != CIPStatus.Success.getValue() ||
+                !(rr.getTypeIds().get(1) instanceof UnConnectedDataItem di && di.getService() instanceof GetAttributeSingleResponse gar)) {
+                return;
+            }
+            if (gar.getStatus() == CIPStatus.Success.getValue()) {
+                LOGGER.debug("{} is supported", classId);
+                future.complete(true);
+            } else {
+                LOGGER.debug("{} is not supported, status: {}", classId, gar.getStatus());
+                future.complete(false);
+            }
+        });
+        return future;
     }
 
     private CompletableFuture<Void> openConnectionManager() {

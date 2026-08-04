@@ -427,4 +427,143 @@
     </steps>
   </testcase>
 
+  <testcase>
+    <name>Get Attribute Single Request</name>
+    <steps>
+      <outgoing-plc-message name="Send GetAttributeSingleRequest">
+        <parser-arguments>
+          <response>false</response>
+        </parser-arguments>
+        <EipPacket>
+          <command dataType="uint" bitLength="16">111</command>
+          <packetLength dataType="uint" bitLength="16">22</packetLength>
+          <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+          <status dataType="uint" bitLength="32">0</status>
+          <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+          <options dataType="uint" bitLength="32">0</options>
+          <CipRRData>
+            <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+            <timeout dataType="uint" bitLength="16">0</timeout>
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
+              <TypeId>
+                <id dataType="uint" bitLength="16">0</id>
+                <NullAddressItem>
+                  <reserved dataType="uint" bitLength="16">0</reserved>
+                </NullAddressItem>
+              </TypeId>
+              <TypeId>
+                <id dataType="uint" bitLength="16">178</id>
+                <UnConnectedDataItem>
+                  <packetSize dataType="uint" bitLength="16">8</packetSize>
+                  <service>
+                    <CipService>
+                      <response dataType="bit" bitLength="1">false</response>
+                      <service dataType="uint" bitLength="7">14</service>
+                      <GetAttributeSingleRequest>
+                        <requestPathSize dataType="uint" bitLength="8">3</requestPathSize>
+                        <classSegment>
+                          <PathSegment>
+                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                            <LogicalSegment>
+                              <segmentType>
+                                <LogicalSegmentType>
+                                  <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                  <ClassID>
+                                    <format dataType="uint" bitLength="2">0</format>
+                                    <segmentClass dataType="uint" bitLength="8">1</segmentClass>
+                                  </ClassID>
+                                </LogicalSegmentType>
+                              </segmentType>
+                            </LogicalSegment>
+                          </PathSegment>
+                        </classSegment>
+                        <instanceSegment>
+                          <PathSegment>
+                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                            <LogicalSegment>
+                              <segmentType>
+                                <LogicalSegmentType>
+                                  <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                  <InstanceID>
+                                    <format dataType="uint" bitLength="2">0</format>
+                                    <instance dataType="uint" bitLength="8">1</instance>
+                                  </InstanceID>
+                                </LogicalSegmentType>
+                              </segmentType>
+                            </LogicalSegment>
+                          </PathSegment>
+                        </instanceSegment>
+                        <attributeSegment>
+                          <PathSegment>
+                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                            <LogicalSegment>
+                              <segmentType>
+                                <LogicalSegmentType>
+                                  <logicalSegmentType dataType="uint" bitLength="3">4</logicalSegmentType>
+                                  <AttributeID>
+                                    <format dataType="uint" bitLength="2">0</format>
+                                    <attribute dataType="uint" bitLength="8">1</attribute>
+                                  </AttributeID>
+                                </LogicalSegmentType>
+                              </segmentType>
+                            </LogicalSegment>
+                          </PathSegment>
+                        </attributeSegment>
+                      </GetAttributeSingleRequest>
+                    </CipService>
+                  </service>
+                </UnConnectedDataItem>
+              </TypeId>
+            </typeIds>
+          </CipRRData>
+        </EipPacket>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive GetAttributeSingleResponse">
+        <parser-arguments>
+          <response>true</response>
+        </parser-arguments>
+        <EipPacket>
+          <command dataType="uint" bitLength="16">111</command>
+          <packetLength dataType="uint" bitLength="16">22</packetLength>
+          <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+          <status dataType="uint" bitLength="32">0</status>
+          <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+          <options dataType="uint" bitLength="32">0</options>
+          <CipRRData>
+            <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+            <timeout dataType="uint" bitLength="16">0</timeout>
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
+              <TypeId>
+                <id dataType="uint" bitLength="16">0</id>
+                <NullAddressItem>
+                  <reserved dataType="uint" bitLength="16">0</reserved>
+                </NullAddressItem>
+              </TypeId>
+              <TypeId>
+                <id dataType="uint" bitLength="16">178</id>
+                <UnConnectedDataItem>
+                  <packetSize dataType="uint" bitLength="16">6</packetSize>
+                  <service>
+                    <CipService>
+                      <response dataType="bit" bitLength="1">true</response>
+                      <service dataType="uint" bitLength="7">14</service>
+                      <GetAttributeSingleResponse>
+                        <reserved dataType="uint" bitLength="8">0</reserved>
+                        <status dataType="uint" bitLength="8">0</status>
+                        <extStatusSize dataType="uint" bitLength="8">0</extStatusSize>
+                        <data dataType="byte" bitLength="16">0x0100</data>
+                      </GetAttributeSingleResponse>
+                    </CipService>
+                  </service>
+                </UnConnectedDataItem>
+              </TypeId>
+            </typeIds>
+          </CipRRData>
+        </EipPacket>
+      </incoming-plc-message>
+    </steps>
+  </testcase>
+
 </test:driver-testsuite>
