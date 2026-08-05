@@ -29,10 +29,8 @@ import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
 import org.apache.plc4x.java.eip.readwrite.*;
-import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.apache.plc4x.java.utils.subscriptionemulation.PollingSubscriptionConnectionBase;
 import org.apache.plc4x.java.spi.drivers.exceptions.MessageCodecException;
@@ -93,7 +91,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     private final NullAddressItem nullAddressItem = new NullAddressItem();
     private final List<PathSegment> routingAddress = new ArrayList<>();
     private short connectionPathSize = 0;
-    private final int connectionSerialNumber = ThreadLocalRandom.current().nextInt();
+    private final int connectionSerialNumber = ThreadLocalRandom.current().nextInt(1, 0xFFFF);
 
     public EipTcpConnection(EIPConfiguration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
         this(configuration, transportInstance, auditLog, configuration.isBigEndian());
@@ -749,7 +747,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     // Encoders / decoders
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static byte[] toAnsi(String tag) throws BufferException {
+    private byte[] toAnsi(String tag) throws BufferException {
         Pattern resourcePattern = Pattern.compile("([.\\[\\]])*([A-Za-z_0-9]+)");
         Matcher matcher = resourcePattern.matcher(tag);
         List<PathSegment> segments = new LinkedList<>();
@@ -767,12 +765,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             segments.add(newSegment);
             lengthBytes += newSegment.getLengthInBytes();
         }
-        WriteBufferByteBased buffer = new WriteBufferByteBased(new byte[lengthBytes],
-            WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"),
-            WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
-            WithOption.WithSignedIntegerEncoding("twos-complement"),
-            WithOption.WithFloatEncoding("IEEE754"),
-            WithOption.WithStringEncoding("UTF8"));
+        WriteBufferByteBased buffer = messageCodec.createWriteBuffer(lengthBytes);
         for (PathSegment segment : segments) {
             segment.serialize(buffer);
         }
@@ -795,8 +788,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             List<CipService> arr = new ArrayList<>(nb);
             try {
                 byte[] servicesData = responses.getServicesData();
-                ReadBufferByteBased read = new ReadBufferByteBased(servicesData,
-                    WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
+                ReadBufferByteBased read = messageCodec.createReadBuffer(servicesData);
                 int total = servicesData.length;
                 for (int i = 0; i < nb; i++) {
                     int offset = responses.getOffsets().get(i) - responses.getOffsets().getFirst();
@@ -934,8 +926,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             List<CipService> arr = new ArrayList<>(nb);
             try {
                 byte[] servicesData = resp.getServicesData();
-                ReadBufferByteBased read = new ReadBufferByteBased(servicesData,
-                    WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"));
+                ReadBufferByteBased read = messageCodec.createReadBuffer(servicesData);
                 int total = servicesData.length;
                 for (int i = 0; i < nb; i++) {
                     int offset = resp.getOffsets().get(i);
