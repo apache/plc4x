@@ -250,12 +250,12 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
 
         return sendRequest(eipWrapper).thenCompose(response -> {
-            if (!(response instanceof CipRRData rr) || rr.getStatus() != CIPStatus.Success.getValue() ||
-                !(rr.getTypeIds().get(1) instanceof UnConnectedDataItem di && di.getService() instanceof GetAttributeAllResponse gar)) {
+            if (!(getCipService(response) instanceof GetAttributeAllResponse gar)) {
                 return CompletableFuture.completedFuture(null);
             }
             if (gar.getStatus() == CIPStatus.ServiceNotSupported.getValue()) {
-                return checkAttributesSingle();
+                // Not all devices support Get_Attribute_All. Let's try using Get_Attribute_Single.
+                return probeAttributesUsingSingleAttributeRequest();
             }
             if (gar.getAttributes() != null) {
                 for (Integer classId : gar.getAttributes().getClassId()) {
@@ -278,11 +278,21 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         });
     }
 
-    private CompletableFuture<Void> checkAttributesSingle() {
+    private CipService getCipService(EipPacket response) {
+        if (response instanceof CipRRData rr
+            && rr.getStatus() == CIPStatus.Success.getValue()
+            && rr.getTypeIds().size() > 1
+            && rr.getTypeIds().get(1) instanceof UnConnectedDataItem di) {
+            return di.getService();
+        }
+        return null;
+    }
+
+    private CompletableFuture<Void> probeAttributesUsingSingleAttributeRequest() {
         LOGGER.debug("Checking MessageRouter and ConnectionManager using GetAttributeSingle");
 
-        CompletableFuture<Boolean> connectionManagerFuture = checkSingleAttribute(CIPClassID.ConnectionManager, 1);
-        CompletableFuture<Boolean> messageRouterFuture = checkSingleAttribute(CIPClassID.MessageRouter, 0);
+        CompletableFuture<Boolean> connectionManagerFuture = checkSupportOfAttribute(CIPClassID.ConnectionManager, 1);
+        CompletableFuture<Boolean> messageRouterFuture = checkSupportOfAttribute(CIPClassID.MessageRouter, 0);
         return CompletableFuture.allOf(messageRouterFuture, connectionManagerFuture).thenRun(() -> {
             try {
                 this.useConnectionManager = connectionManagerFuture.get();
@@ -293,7 +303,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         });
     }
 
-    private CompletableFuture<Boolean> checkSingleAttribute(CIPClassID classId, int instanceId) {
+    private CompletableFuture<Boolean> checkSupportOfAttribute(CIPClassID classId, int instanceId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) classId.getValue()));
@@ -308,17 +318,13 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
 
         sendRequest(eipWrapper).thenAccept(response -> {
-            if (!(response instanceof CipRRData rr) || rr.getStatus() != CIPStatus.Success.getValue() ||
-                !(rr.getTypeIds().get(1) instanceof UnConnectedDataItem di && di.getService() instanceof GetAttributeSingleResponse gar)) {
+            if (!(getCipService(response) instanceof GetAttributeSingleResponse gsr)) {
+	            future.complete(false);
                 return;
             }
-            if (gar.getStatus() == CIPStatus.Success.getValue()) {
-                LOGGER.debug("{} is supported", classId);
-                future.complete(true);
-            } else {
-                LOGGER.debug("{} is not supported, status: {}", classId, gar.getStatus());
-                future.complete(false);
-            }
+            boolean hasSupport = gsr.getStatus() == CIPStatus.Success.getValue();
+            LOGGER.debug("ClassId: {} status: {} hasSupport: {}", classId, gsr.getStatus(), hasSupport);
+            future.complete(hasSupport);
         });
         return future;
     }
