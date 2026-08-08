@@ -291,42 +291,33 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     private CompletableFuture<Void> probeAttributesUsingSingleAttributeRequest() {
         LOGGER.debug("Checking MessageRouter and ConnectionManager using GetAttributeSingle");
 
-        CompletableFuture<Boolean> connectionManagerFuture = checkSupportOfAttribute(CIPClassID.ConnectionManager, 1);
-        CompletableFuture<Boolean> messageRouterFuture = checkSupportOfAttribute(CIPClassID.MessageRouter, 0);
-        return CompletableFuture.allOf(messageRouterFuture, connectionManagerFuture).thenRun(() -> {
-            try {
-                this.useConnectionManager = connectionManagerFuture.get();
-                this.useMessageRouter = messageRouterFuture.get();
-            } catch (InterruptedException | ExecutionException e) {
-                LOGGER.warn("Error checking single attributes", e);
-            }
+        return checkAttributeSupport(CIPClassID.ConnectionManager).thenCompose(hasSupport -> {
+            useConnectionManager = hasSupport;
+            return checkAttributeSupport(CIPClassID.MessageRouter);
+        }).thenAccept(hasSupport -> {
+            useMessageRouter = hasSupport;
         });
     }
 
-    private CompletableFuture<Boolean> checkSupportOfAttribute(CIPClassID classId, int instanceId) {
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+    private CompletableFuture<Boolean> checkAttributeSupport(CIPClassID classId) {
 
-        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) classId.getValue()));
-        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) instanceId));
-        PathSegment attributeSegment = new LogicalSegment(new AttributeID((byte) 0, (short) 1));
-
-        UnConnectedDataItem exchange = new UnConnectedDataItem(
-            new GetAttributeSingleRequest(classSegment, instanceSegment, attributeSegment));
-
+        UnConnectedDataItem exchange = new UnConnectedDataItem(new GetAttributeSingleRequest(
+            new LogicalSegment(new ClassID((byte) 0, (short) classId.getValue())),
+            new LogicalSegment(new InstanceID((byte) 0, (short) 0)), // Class level discovery
+            new LogicalSegment(new AttributeID((byte) 0, (short) 1))) // Attribute ID 1: Revision
+        );
         List<TypeId> typeIds = Arrays.asList(nullAddressItem, exchange);
         CipRRData eipWrapper = new CipRRData(sessionHandle, CIPStatus.Success.getValue(),
             DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
 
-        sendRequest(eipWrapper).thenAccept(response -> {
+        return sendRequest(eipWrapper).thenCompose(response -> {
             if (!(getCipService(response) instanceof GetAttributeSingleResponse gsr)) {
-	            future.complete(false);
-                return;
+                return CompletableFuture.completedFuture(false);
             }
             boolean hasSupport = gsr.getStatus() == CIPStatus.Success.getValue();
             LOGGER.debug("ClassId: {} status: {} hasSupport: {}", classId, gsr.getStatus(), hasSupport);
-            future.complete(hasSupport);
+                return CompletableFuture.completedFuture(hasSupport);
         });
-        return future;
     }
 
     private CompletableFuture<Void> openConnectionManager() {
