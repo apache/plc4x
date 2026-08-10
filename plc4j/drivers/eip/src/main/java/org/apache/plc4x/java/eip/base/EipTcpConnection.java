@@ -249,26 +249,17 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         CipRRData eipWrapper = new CipRRData(sessionHandle, CIPStatus.Success.getValue(),
             DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
 
-        return sendRequest(eipWrapper).thenCompose(response -> {
-            if (!(getCipService(response) instanceof GetAttributeAllResponse gar)) {
-                return CompletableFuture.completedFuture(null);
-            }
-            if (gar.getStatus() == CIPStatus.ServiceNotSupported.getValue()) {
+        return sendRequest(eipWrapper).thenCompose(response ->
+            switch (extractCipService(response)) {
                 // Not all devices support Get_Attribute_All. Let's try using Get_Attribute_Single.
-                return probeAttributesUsingSingleAttributeRequest();
-            }
-            if (gar.getAttributes() != null) {
-                for (Integer classId : gar.getAttributes().getClassId()) {
-                    if (CIPClassID.enumForValue(classId) == CIPClassID.MessageRouter) {
-                        this.useMessageRouter = true;
-                    }
-                    if (CIPClassID.enumForValue(classId) == CIPClassID.ConnectionManager) {
-                        this.useConnectionManager = true;
-                    }
+                case GetAttributeAllResponse gar when gar.getStatus() == CIPStatus.ServiceNotSupported.getValue()
+                    -> probeAttributesUsingSingleAttributeRequest();
+                case GetAttributeAllResponse gar -> {
+                    recordSupportedClasses(gar.getAttributes());
+                    yield CompletableFuture.completedFuture(null);
                 }
-            }
-            return CompletableFuture.completedFuture(null);
-        }).exceptionally(e -> {
+                case null, default -> CompletableFuture.completedFuture(null);
+            }).exceptionally(e -> {
             // Treat any probe failure (timeout, parse error, malformed response,
             // ServiceNotSupported) as "device has no message router / connection
             // manager" and fall through to the unconnected code path. This keeps
@@ -278,7 +269,21 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         });
     }
 
-    private CipService getCipService(EipPacket response) {
+    private void recordSupportedClasses(CIPAttributes attributes) {
+        if (attributes == null) {
+            return;
+        }
+        for (Integer classId : attributes.getClassId()) {
+            if (CIPClassID.enumForValue(classId) == CIPClassID.MessageRouter) {
+                this.useMessageRouter = true;
+            }
+            if (CIPClassID.enumForValue(classId) == CIPClassID.ConnectionManager) {
+                this.useConnectionManager = true;
+            }
+        }
+    }
+
+    private CipService extractCipService(EipPacket response) {
         if (response instanceof CipRRData rr
             && rr.getStatus() == CIPStatus.Success.getValue()
             && rr.getTypeIds().size() > 1
@@ -311,12 +316,13 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
 
         return sendRequest(eipWrapper).thenCompose(response -> {
-            if (!(getCipService(response) instanceof GetAttributeSingleResponse gsr)) {
-                return CompletableFuture.completedFuture(false);
-            }
-            boolean hasSupport = gsr.getStatus() == CIPStatus.Success.getValue();
-            LOGGER.debug("ClassId: {} status: {} hasSupport: {}", classId, gsr.getStatus(), hasSupport);
+
+            if (extractCipService(response) instanceof GetAttributeSingleResponse gsr) {
+                boolean hasSupport = gsr.getStatus() == CIPStatus.Success.getValue();
+                LOGGER.debug("ClassId: {} status: {} hasSupport: {}", classId, gsr.getStatus(), hasSupport);
                 return CompletableFuture.completedFuture(hasSupport);
+            }
+            return CompletableFuture.completedFuture(false);
         });
     }
 
