@@ -91,7 +91,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     private final NullAddressItem nullAddressItem = new NullAddressItem();
     private final List<PathSegment> routingAddress = new ArrayList<>();
     private short connectionPathSize = 0;
-    private final int connectionSerialNumber = ThreadLocalRandom.current().nextInt(1, 0xFFFF);
+    private final int connectionSerialNumber = ThreadLocalRandom.current().nextInt(1, 0x10000);
 
     public EipTcpConnection(EIPConfiguration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
         this(configuration, transportInstance, auditLog, configuration.isBigEndian());
