@@ -3285,6 +3285,18 @@ public enum BACnetVendorId {
 
   G_ASERV_GMBH((int) 1640, (int) 1640, "GAserv GmbH"),
 
+  LEEDS_ELECTRONICS_ENGINEERING_LIMITED((int) 1641, (int) 1641, "Leeds Electronics Engineering Limited"),
+
+  MITO_CONTRACTING_GROUP_INC((int) 1642, (int) 1642, "MITO Contracting Group Inc."),
+
+  CALECTROAB((int) 1643, (int) 1643, "Calectro AB"),
+
+  BMSOS_TECHNOLOGY_INC((int) 1644, (int) 1644, "bmsOS Technology Inc."),
+
+  VOSSLOH_SCHWABE_DEUTSCHAND_GMBH((int) 1645, (int) 1645, "Vossloh-Schwabe Deutschand GmbH"),
+
+  IVIVA_PTE_LTD((int) 1646, (int) 1646, "Iviva Pte Ltd"),
+
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, "Unknown");
 
   private static final Map<Integer, BACnetVendorId> map;

@@ -37,7 +37,6 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 public class ArpUtils {
 
@@ -78,8 +77,7 @@ public class ArpUtils {
             // Calculate all ip addresses, this device can reach.
             Map<String, List<String>> addresses = new HashMap<>();
             for (PcapAddress address : nif.getAddresses()) {
-                if (address instanceof PcapIpV4Address) {
-                    final PcapIpV4Address ipV4Address = (PcapIpV4Address) address;
+                if (address instanceof PcapIpV4Address ipV4Address) {
                     SubnetUtils su = new SubnetUtils(ipV4Address.getAddress().getHostAddress(), ipV4Address.getNetmask().getHostAddress());
                     final String currentAddress = ipV4Address.getAddress().getHostAddress();
                     final List<String> reachableAddresses = new ArrayList<>(Arrays.asList(su.getInfo().getAllAddresses()));

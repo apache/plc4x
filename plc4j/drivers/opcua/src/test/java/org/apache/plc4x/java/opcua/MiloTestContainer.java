@@ -19,17 +19,20 @@
 
 package org.apache.plc4x.java.opcua;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 public class MiloTestContainer extends GenericContainer<MiloTestContainer> {
 
-    private final static Logger logger = LoggerFactory.getLogger(MiloTestContainer.class);
+    private final static String SERVER_RESOURCES = "opcua/server";
+
+    private final static String[] SERVER_SOURCES = {
+        "org/eclipse/milo/examples/server/EventNotifierTask.java",
+        "org/eclipse/milo/examples/server/Plc4xTestNamespace.java",
+        "org/eclipse/milo/examples/server/Plc4xTestStruct.java",
+        "org/eclipse/milo/examples/server/TestMiloServer.java"
+    };
 
     private final static ImageFromDockerfile IMAGE = inlineImage();
 
@@ -52,13 +55,19 @@ public class MiloTestContainer extends GenericContainer<MiloTestContainer> {
     }
 
     private static ImageFromDockerfile inlineImage() {
-        Path absolutePath = Paths.get(".").toAbsolutePath();
-        logger.info("Building milo server image from {}", absolutePath);
-        // Reuse the Docker layer cache across runs; the build context only changes when
-        // the milo jar or the compiled TestMiloServer classes change, so a cached build
-        // stays correct while turning a multi-minute rebuild into a near-instant one.
-        return new ImageFromDockerfile("plc4x-milo-test", false)
-            .withDockerfile(absolutePath.resolve("Dockerfile.test"));
+        // The build context is assembled from the test resources: the Dockerfile plus the
+        // sources of the test server, which are compiled inside the image against the Milo
+        // uber jar it downloads (see the Dockerfile for why Milo is not a Maven dependency).
+        //
+        // Keeping the named image around reuses the Docker layer cache across runs; the
+        // context only changes when the Dockerfile or those sources change, so a cached
+        // build stays correct while turning a multi-minute rebuild into a near-instant one.
+        ImageFromDockerfile image = new ImageFromDockerfile("plc4x-milo-test", false)
+            .withFileFromClasspath("Dockerfile", SERVER_RESOURCES + "/Dockerfile");
+        for (String source : SERVER_SOURCES) {
+            image.withFileFromClasspath("src/" + source, SERVER_RESOURCES + "/src/" + source);
+        }
+        return image;
     }
 
 }

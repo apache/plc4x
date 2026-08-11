@@ -142,6 +142,7 @@
       <artifactId>logback-classic</artifactId>
     </dependency>
 
+    <!-- TODO: Only needed for SimulatedTagTest -->
     <dependency>
       <groupId>nl.jqno.equalsverifier</groupId>
       <artifactId>equalsverifier</artifactId>
