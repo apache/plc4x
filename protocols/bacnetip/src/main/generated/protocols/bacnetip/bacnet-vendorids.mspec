@@ -1651,6 +1651,12 @@
   ['1638' SPEC_PROM_DIZAJNOOO ['1638', '"SpecPromDizajn OOO"']]
   ['1639' FACTS_ENGINEERINGLLC ['1639', '"FACTS Engineering, LLC"']]
   ['1640' G_ASERV_GMBH ['1640', '"GAserv GmbH"']]
+  ['1641' LEEDS_ELECTRONICS_ENGINEERING_LIMITED ['1641', '"Leeds Electronics Engineering Limited"']]
+  ['1642' MITO_CONTRACTING_GROUP_INC ['1642', '"MITO Contracting Group Inc."']]
+  ['1643' CALECTROAB ['1643', '"Calectro AB"']]
+  ['1644' BMSOS_TECHNOLOGY_INC ['1644', '"bmsOS Technology Inc."']]
+  ['1645' VOSSLOH_SCHWABE_DEUTSCHAND_GMBH ['1645', '"Vossloh-Schwabe Deutschand GmbH"']]
+  ['1646' IVIVA_PTE_LTD ['1646', '"Iviva Pte Ltd"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]
