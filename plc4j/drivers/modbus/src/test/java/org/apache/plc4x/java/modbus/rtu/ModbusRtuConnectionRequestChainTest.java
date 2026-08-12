@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -216,6 +217,43 @@ class ModbusRtuConnectionRequestChainTest {
     }
 
     /**
+     * A tag-level unit-id must end up on the wire instead of the connection default,
+     * for reads as well as writes (GitHub issue #2686). The connection default here is 1,
+     * so a frame addressed to unit 7 can only come from the tag.
+     */
+    @Test
+    void writeRequestUsesTheTagUnitIdOnTheWire() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        ModbusRtuConnection connection = newConnectedConnection(transport);
+
+        connection.writeRequestBuilder()
+            .addTagAddress("value", "4x00001:INT{unit-id: 7}", 42)
+            .build()
+            .execute();
+
+        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
+        assertEquals(7, transport.lastWrittenFrame()[0] & 0xFF,
+            "write must be addressed to the tag's unit id, not the connection default");
+    }
+
+    @Test
+    void readRequestUsesTheTagUnitIdOnTheWire() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        ModbusRtuConnection connection = newConnectedConnection(transport);
+
+        connection.readRequestBuilder()
+            .addTagAddress("value", "4x00001:INT{unit-id: 7}")
+            .build()
+            .execute();
+
+        // Pre-fix the optimizer dropped the unit-id when building the block-read tag,
+        // so this frame went out addressed to the connection default (1).
+        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
+        assertEquals(7, transport.lastWrittenFrame()[0] & 0xFF,
+            "read must be addressed to the tag's unit id, not the connection default");
+    }
+
+    /**
      * Builds a connection wired to the given fake transport, and drives it
      * through the same construction/connect path as {@code ModbusRtuConnectionTest}.
      */
@@ -281,6 +319,7 @@ class ModbusRtuConnectionRequestChainTest {
         private int readPosition;
         private boolean open = true;
         private final AtomicInteger writeCount = new AtomicInteger();
+        private final List<byte[]> writtenFrames = new CopyOnWriteArrayList<>();
         private final AtomicBoolean failNextWrite = new AtomicBoolean(false);
         private final AtomicBoolean failAllWrites = new AtomicBoolean(false);
         private final AtomicReference<Runnable> dataListener = new AtomicReference<>();
@@ -291,6 +330,11 @@ class ModbusRtuConnectionRequestChainTest {
 
         int writeCount() {
             return writeCount.get();
+        }
+
+        /** The bytes of the last frame handed to the transport (an RTU ADU starts with the unit id). */
+        byte[] lastWrittenFrame() {
+            return writtenFrames.isEmpty() ? null : writtenFrames.get(writtenFrames.size() - 1);
         }
 
         void failNextWrite() {
@@ -349,6 +393,7 @@ class ModbusRtuConnectionRequestChainTest {
         @Override
         public void write(byte[] bytes) throws TransportException {
             writeCount.incrementAndGet();
+            writtenFrames.add(bytes.clone());
             if (failAllWrites.get() || failNextWrite.compareAndSet(true, false)) {
                 throw new TransportException("scripted write failure");
             }

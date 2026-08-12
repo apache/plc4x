@@ -23,6 +23,7 @@ import org.apache.plc4x.java.modbus.base.tag.ModbusTagCoil;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHoldingRegister;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -35,7 +36,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ModbusOptimizerTest {
+class ModbusReadOptimizerTest {
 
     private static Stream<Arguments> coilInputData() {
         return Stream.of(
@@ -165,6 +166,81 @@ class ModbusOptimizerTest {
     @MethodSource("holdingRegisterInputData")
     void holdingRegisterTests(ModbusTag[] tags, CheckResult check) {
         processReadRequest(tags, check);
+    }
+
+    /**
+     * Tags addressing different units may never be merged into a single block read, and the
+     * unit-id of a group has to be carried over to the merged tag - otherwise the connection
+     * would silently fall back to its default unit-id (see GitHub issue #2686).
+     */
+    @Test
+    void registersWithDifferentUnitIdsAreNotMerged() {
+        processReadRequest(new ModbusTag[]{
+                new ModbusTagHoldingRegister(0, 1, ModbusDataType.INT, Collections.singletonMap("unit-id", "2")),
+                new ModbusTagHoldingRegister(1, 1, ModbusDataType.INT, Collections.singletonMap("unit-id", "3"))
+            },
+            optimizedReads -> {
+                assertEquals(2, optimizedReads.size());
+                // The addresses would have been adjacent, so without the unit-id they'd be one block.
+                ModbusTag first = optimizedReads.getFirst().mergedTag;
+                assertEquals((short) 2, first.getUnitId());
+                assertEquals(0, first.getAddress());
+                assertEquals(1, first.getNumberOfElements());
+                ModbusTag second = optimizedReads.get(1).mergedTag;
+                assertEquals((short) 3, second.getUnitId());
+                assertEquals(1, second.getAddress());
+                assertEquals(1, second.getNumberOfElements());
+            });
+    }
+
+    @Test
+    void coilsWithDifferentUnitIdsAreNotMerged() {
+        processReadRequest(new ModbusTag[]{
+                new ModbusTagCoil(0, 1, ModbusDataType.BOOL, Collections.singletonMap("unit-id", "2")),
+                new ModbusTagCoil(1, 1, ModbusDataType.BOOL, Collections.singletonMap("unit-id", "3"))
+            },
+            optimizedReads -> {
+                assertEquals(2, optimizedReads.size());
+                assertEquals((short) 2, optimizedReads.getFirst().mergedTag.getUnitId());
+                assertEquals((short) 3, optimizedReads.get(1).mergedTag.getUnitId());
+            });
+    }
+
+    /**
+     * Tags of the same unit are still merged, and the merged tag keeps the unit-id.
+     */
+    @Test
+    void registersWithSameUnitIdAreMergedKeepingTheUnitId() {
+        processReadRequest(new ModbusTag[]{
+                new ModbusTagHoldingRegister(0, 1, ModbusDataType.INT, Collections.singletonMap("unit-id", "7")),
+                new ModbusTagHoldingRegister(1, 1, ModbusDataType.INT, Collections.singletonMap("unit-id", "7"))
+            },
+            optimizedReads -> {
+                assertEquals(1, optimizedReads.size());
+                ModbusTag mergedTag = optimizedReads.getFirst().mergedTag;
+                assertEquals((short) 7, mergedTag.getUnitId());
+                assertEquals(0, mergedTag.getAddress());
+                assertEquals(2, mergedTag.getNumberOfElements());
+            });
+    }
+
+    /**
+     * Tags with an explicit unit-id must not be mixed with tags that use the connection default.
+     */
+    @Test
+    void tagsWithoutUnitIdAreNotMergedWithTagsHavingOne() {
+        processReadRequest(new ModbusTag[]{
+                new ModbusTagHoldingRegister(0, 1, ModbusDataType.INT, Collections.emptyMap()),
+                new ModbusTagHoldingRegister(1, 1, ModbusDataType.INT, Collections.singletonMap("unit-id", "2"))
+            },
+            optimizedReads -> {
+                assertEquals(2, optimizedReads.size());
+                // Tags without a unit-id are grouped first and keep using the connection default.
+                assertNull(optimizedReads.getFirst().mergedTag.getUnitId());
+                assertEquals(0, optimizedReads.getFirst().mergedTag.getAddress());
+                assertEquals((short) 2, optimizedReads.get(1).mergedTag.getUnitId());
+                assertEquals(1, optimizedReads.get(1).mergedTag.getAddress());
+            });
     }
 
     void processReadRequest(ModbusTag[] tags, CheckResult check) {

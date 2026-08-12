@@ -55,33 +55,47 @@ public class ModbusReadOptimizer {
     }
 
     /**
-     * Groups tags by type and merges adjacent ones into optimized block reads.
+     * Groups tags by type and unit-id and merges adjacent ones into optimized block reads.
      * Returns a list of OptimizedRead objects, each containing a merged tag to read
      * and the original tag names it covers.
+     * <p>
+     * A block read is addressed to exactly one unit, so tags carrying different unit-ids must
+     * never end up in the same request, and the unit-id of a group has to be passed on to the
+     * merged tag (otherwise the connection would fall back to its default unit-id).
      */
     public List<OptimizedRead> optimizeReads(Map<String, ModbusTag> tagsByName) {
-        // Sort tags by type
-        TreeMap<String, ModbusTag> coils = new TreeMap<>();
-        TreeMap<String, ModbusTag> holdingRegisters = new TreeMap<>();
-        TreeMap<String, ModbusTag> inputRegisters = new TreeMap<>();
-        TreeMap<String, ModbusTag> extendedRegisters = new TreeMap<>();
-        TreeMap<String, ModbusTag> discreteInputs = new TreeMap<>();
+        // Sort tags by type and unit-id
+        Map<Short, TreeMap<String, ModbusTag>> coils = newUnitIdGroups();
+        Map<Short, TreeMap<String, ModbusTag>> holdingRegisters = newUnitIdGroups();
+        Map<Short, TreeMap<String, ModbusTag>> inputRegisters = newUnitIdGroups();
+        Map<Short, TreeMap<String, ModbusTag>> extendedRegisters = newUnitIdGroups();
+        Map<Short, TreeMap<String, ModbusTag>> discreteInputs = newUnitIdGroups();
 
         for (Map.Entry<String, ModbusTag> entry : tagsByName.entrySet()) {
             ModbusTag tag = entry.getValue();
-            if (tag instanceof ModbusTagCoil) coils.put(entry.getKey(), tag);
-            else if (tag instanceof ModbusTagHoldingRegister) holdingRegisters.put(entry.getKey(), tag);
-            else if (tag instanceof ModbusTagInputRegister) inputRegisters.put(entry.getKey(), tag);
-            else if (tag instanceof ModbusTagExtendedRegister) extendedRegisters.put(entry.getKey(), tag);
-            else if (tag instanceof ModbusTagDiscreteInput) discreteInputs.put(entry.getKey(), tag);
+            if (tag instanceof ModbusTagCoil) addToUnitIdGroup(coils, entry);
+            else if (tag instanceof ModbusTagHoldingRegister) addToUnitIdGroup(holdingRegisters, entry);
+            else if (tag instanceof ModbusTagInputRegister) addToUnitIdGroup(inputRegisters, entry);
+            else if (tag instanceof ModbusTagExtendedRegister) addToUnitIdGroup(extendedRegisters, entry);
+            else if (tag instanceof ModbusTagDiscreteInput) addToUnitIdGroup(discreteInputs, entry);
         }
 
         List<OptimizedRead> result = new ArrayList<>();
-        if (!coils.isEmpty()) result.addAll(optimizeCoils(coils));
-        if (!holdingRegisters.isEmpty()) result.addAll(optimizeRegisters(holdingRegisters, ModbusReadOptimizer::createHoldingRegister));
-        if (!inputRegisters.isEmpty()) result.addAll(optimizeRegisters(inputRegisters, ModbusReadOptimizer::createInputRegister));
-        if (!extendedRegisters.isEmpty()) result.addAll(optimizeRegisters(extendedRegisters, ModbusReadOptimizer::createExtendedRegister));
-        if (!discreteInputs.isEmpty()) result.addAll(optimizeCoils(discreteInputs));
+        for (Map.Entry<Short, TreeMap<String, ModbusTag>> group : coils.entrySet()) {
+            result.addAll(optimizeCoils(group.getKey(), group.getValue()));
+        }
+        for (Map.Entry<Short, TreeMap<String, ModbusTag>> group : holdingRegisters.entrySet()) {
+            result.addAll(optimizeRegisters(group.getKey(), group.getValue(), ModbusReadOptimizer::createHoldingRegister));
+        }
+        for (Map.Entry<Short, TreeMap<String, ModbusTag>> group : inputRegisters.entrySet()) {
+            result.addAll(optimizeRegisters(group.getKey(), group.getValue(), ModbusReadOptimizer::createInputRegister));
+        }
+        for (Map.Entry<Short, TreeMap<String, ModbusTag>> group : extendedRegisters.entrySet()) {
+            result.addAll(optimizeRegisters(group.getKey(), group.getValue(), ModbusReadOptimizer::createExtendedRegister));
+        }
+        for (Map.Entry<Short, TreeMap<String, ModbusTag>> group : discreteInputs.entrySet()) {
+            result.addAll(optimizeCoils(group.getKey(), group.getValue()));
+        }
         return result;
     }
 
@@ -156,7 +170,29 @@ public class ModbusReadOptimizer {
     // Internal
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private List<OptimizedRead> optimizeCoils(Map<String, ModbusTag> tagsByName) {
+    /**
+     * Creates a map for grouping tags by their unit-id. Tags without an explicit unit-id (which
+     * will be read using the connection's default unit-id) are grouped under the {@code null} key.
+     */
+    private static Map<Short, TreeMap<String, ModbusTag>> newUnitIdGroups() {
+        return new TreeMap<>(Comparator.nullsFirst(Comparator.naturalOrder()));
+    }
+
+    private static void addToUnitIdGroup(Map<Short, TreeMap<String, ModbusTag>> groups,
+                                         Map.Entry<String, ModbusTag> entry) {
+        groups.computeIfAbsent(entry.getValue().getUnitId(), unitId -> new TreeMap<>())
+            .put(entry.getKey(), entry.getValue());
+    }
+
+    /**
+     * Builds the config of a merged tag, so that the unit-id of the tags it was built from is
+     * used when sending the request.
+     */
+    private static Map<String, String> mergedTagConfig(Short unitId) {
+        return unitId == null ? Collections.emptyMap() : Collections.singletonMap("unit-id", unitId.toString());
+    }
+
+    private List<OptimizedRead> optimizeCoils(Short unitId, Map<String, ModbusTag> tagsByName) {
         // Sort by address
         List<Map.Entry<String, ModbusTag>> sorted = new ArrayList<>(tagsByName.entrySet());
         sorted.sort(Comparator.comparingInt(e -> e.getValue().getAddress()));
@@ -184,8 +220,8 @@ public class ModbusReadOptimizer {
                 // Finish current group
                 boolean isDiscreteInput = currentGroup.values().iterator().next() instanceof ModbusTagDiscreteInput;
                 ModbusTag mergedTag = isDiscreteInput
-                    ? new ModbusTagDiscreteInput(firstAddress, lastAddress - firstAddress, ModbusDataType.BYTE, Collections.emptyMap())
-                    : new ModbusTagCoil(firstAddress, lastAddress - firstAddress, ModbusDataType.BYTE, Collections.emptyMap());
+                    ? new ModbusTagDiscreteInput(firstAddress, lastAddress - firstAddress, ModbusDataType.BYTE, mergedTagConfig(unitId))
+                    : new ModbusTagCoil(firstAddress, lastAddress - firstAddress, ModbusDataType.BYTE, mergedTagConfig(unitId));
                 result.add(new OptimizedRead(mergedTag, currentGroup));
 
                 // Start new group
@@ -203,14 +239,14 @@ public class ModbusReadOptimizer {
         if (!currentGroup.isEmpty()) {
             boolean isDiscreteInput = currentGroup.values().iterator().next() instanceof ModbusTagDiscreteInput;
             ModbusTag mergedTag = isDiscreteInput
-                ? new ModbusTagDiscreteInput(firstAddress, lastAddress - firstAddress, ModbusDataType.BYTE, Collections.emptyMap())
-                : new ModbusTagCoil(firstAddress, lastAddress - firstAddress, ModbusDataType.BYTE, Collections.emptyMap());
+                ? new ModbusTagDiscreteInput(firstAddress, lastAddress - firstAddress, ModbusDataType.BYTE, mergedTagConfig(unitId))
+                : new ModbusTagCoil(firstAddress, lastAddress - firstAddress, ModbusDataType.BYTE, mergedTagConfig(unitId));
             result.add(new OptimizedRead(mergedTag, currentGroup));
         }
         return result;
     }
 
-    private List<OptimizedRead> optimizeRegisters(Map<String, ModbusTag> tagsByName, TagFactory tagFactory) {
+    private List<OptimizedRead> optimizeRegisters(Short unitId, Map<String, ModbusTag> tagsByName, TagFactory tagFactory) {
         List<Map.Entry<String, ModbusTag>> sorted = new ArrayList<>(tagsByName.entrySet());
         sorted.sort(Comparator.comparingInt(e -> e.getValue().getAddress()));
 
@@ -236,7 +272,7 @@ public class ModbusReadOptimizer {
             if (tagEnd > maxRegister) {
                 // Finish current group
                 result.add(new OptimizedRead(
-                    tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD),
+                    tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD, mergedTagConfig(unitId)),
                     currentGroup));
 
                 // Start new group
@@ -252,22 +288,22 @@ public class ModbusReadOptimizer {
 
         if (!currentGroup.isEmpty()) {
             result.add(new OptimizedRead(
-                tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD),
+                tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD, mergedTagConfig(unitId)),
                 currentGroup));
         }
         return result;
     }
 
-    private static ModbusTag createHoldingRegister(int address, int count, ModbusDataType dataType) {
-        return new ModbusTagHoldingRegister(address, count, dataType, Collections.emptyMap());
+    private static ModbusTag createHoldingRegister(int address, int count, ModbusDataType dataType, Map<String, String> config) {
+        return new ModbusTagHoldingRegister(address, count, dataType, config);
     }
 
-    private static ModbusTag createInputRegister(int address, int count, ModbusDataType dataType) {
-        return new ModbusTagInputRegister(address, count, dataType, Collections.emptyMap());
+    private static ModbusTag createInputRegister(int address, int count, ModbusDataType dataType, Map<String, String> config) {
+        return new ModbusTagInputRegister(address, count, dataType, config);
     }
 
-    private static ModbusTag createExtendedRegister(int address, int count, ModbusDataType dataType) {
-        return new ModbusTagExtendedRegister(address, count, dataType, Collections.emptyMap());
+    private static ModbusTag createExtendedRegister(int address, int count, ModbusDataType dataType, Map<String, String> config) {
+        return new ModbusTagExtendedRegister(address, count, dataType, config);
     }
 
     private static byte[] byteSwap(byte[] in) {
@@ -297,7 +333,7 @@ public class ModbusReadOptimizer {
 
     @FunctionalInterface
     private interface TagFactory {
-        ModbusTag createTag(int address, int count, ModbusDataType dataType);
+        ModbusTag createTag(int address, int count, ModbusDataType dataType, Map<String, String> config);
     }
 
 }
