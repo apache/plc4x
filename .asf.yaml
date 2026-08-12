@@ -91,6 +91,7 @@ github:
       excludes: [ ]
     bypass_teams:
     - root
+    - plc4x-committers
     restrict_deletion: true
     restrict_force_push: true
     required_pull_request_reviews:
