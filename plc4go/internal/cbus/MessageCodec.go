@@ -31,10 +31,11 @@ import (
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/default"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 //go:generate go tool plc4xGenerator -type=MessageCodec
@@ -148,7 +149,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	confirmation := false
 	// Fill the buffer
 	{
-		fillCtx, fillCtxCancel := context.WithTimeout(ctx, 100*time.Millisecond)
+		fillCtx, fillCtxCancel := utils.WithNamedTimeout(ctx, "buffer fill timeout", 100*time.Millisecond)
 		if err := ti.FillBuffer(fillCtx, func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool) {
 			switch currentByte {
 			case

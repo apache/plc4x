@@ -130,7 +130,7 @@ func (c *Connection) Connect(_ context.Context) error {
 
 func (c *Connection) Close() error {
 	ctx := context.TODO()
-	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection close timeout", 5*time.Second)
 	defer cancelFunc()
 
 	// Check if the connection is connected.

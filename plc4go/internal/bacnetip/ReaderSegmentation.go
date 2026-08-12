@@ -118,7 +118,7 @@ func (m *Reader) expectSegment(ctx context.Context, invokeId uint8) (<-chan read
 	segCh := make(chan readWriteModel.APDUComplexAck, 1)
 	errCh := make(chan error, 1)
 
-	expectCtx, cancel := context.WithTimeout(ctx, segmentWaitTimeout)
+	expectCtx, cancel := utils.WithNamedTimeout(ctx, "segment wait timeout", segmentWaitTimeout)
 
 	m.messageCodec.Expect(expectCtx, "readSegment",
 		func(message spi.Message) bool {
