@@ -847,8 +847,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_SMARTVOS = 819,
         M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH = 820,
         M_CHINT = 821,
-        M_ABB___RESERVED = 822,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 823,
+        M_BEEKER_TECH_GMBH_AND_CO__KG = 822,
+        M_ABB___RESERVED = 823,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 824,
     }
 
     public static class KnxManufacturerInfo
@@ -3270,10 +3271,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_CHINT: { /* '821' */
                     return 883;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '822' */
+                case KnxManufacturer.M_BEEKER_TECH_GMBH_AND_CO__KG: { /* '822' */
+                    return 884;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '823' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '823' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '824' */
                     return 43959;
                 }
                 case KnxManufacturer.M_DURABLE_TECHNOLOGIES: { /* '83' */
@@ -5752,10 +5756,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_CHINT: { /* '821' */
                     return "CHINT";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '822' */
+                case KnxManufacturer.M_BEEKER_TECH_GMBH_AND_CO__KG: { /* '822' */
+                    return "Beeker Tech GmbH & Co. KG";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '823' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '823' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '824' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_DURABLE_TECHNOLOGIES: { /* '83' */

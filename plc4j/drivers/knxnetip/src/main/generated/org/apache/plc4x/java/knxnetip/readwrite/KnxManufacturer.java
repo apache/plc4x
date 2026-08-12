@@ -1669,9 +1669,11 @@ public enum KnxManufacturer {
 
   M_CHINT((int) 821, (int) 883, "CHINT"),
 
-  M_ABB___RESERVED((int) 822, (int) 43954, "ABB - reserved"),
+  M_BEEKER_TECH_GMBH_AND_CO__KG((int) 822, (int) 884, "Beeker Tech GmbH & Co. KG"),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 823, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_ABB___RESERVED((int) 823, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 824, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 
