@@ -43,6 +43,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 //go:generate go tool plc4xGenerator -type=ConnectionMetadata
@@ -381,7 +382,7 @@ func (m *Connection) doSomethingAndClose(something func() error) error {
 
 func (m *Connection) Close() error {
 	ctx := context.TODO()
-	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection close timeout", 5*time.Second)
 	defer cancelFunc()
 
 	// Stop the connection-state checker.
@@ -411,7 +412,7 @@ func (m *Connection) Close() error {
 
 func (m *Connection) IsConnected() bool {
 	ctx := context.TODO()
-	ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection status check timeout", 5*time.Second)
 	defer cancelFunc()
 
 	if m.messageCodec != nil {

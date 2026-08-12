@@ -28,12 +28,13 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/pkg/api"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type PlcConnectionCache interface {
@@ -288,7 +289,7 @@ func (c *plcConnectionCache) Close() error {
 			// Try to get a lease as this way we kow we're not closing the connection
 			// while some go func is still using it.
 			ccLog.Trace().Msg("getting a lease")
-			ctx, cancel := context.WithTimeout(ctx, c.maxWaitTime)
+			ctx, cancel := utils.WithNamedTimeout(ctx, "lease wait timeout", c.maxWaitTime)
 			connChan, errChan := connectionContainer.lease(ctx)
 			select {
 			// We're just getting the lease as this way we can be sure nobody else is using it.

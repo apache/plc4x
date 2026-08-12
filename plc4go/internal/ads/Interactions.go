@@ -258,7 +258,7 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 }
 
 func ReadWithTimeout[T spi.Message](ctx context.Context, ch <-chan T) (T, error) {
-	timeout, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	timeout, cancelFunc := utils.WithNamedTimeout(ctx, "read timeout", 5*time.Second)
 	defer cancelFunc()
 
 	select {
