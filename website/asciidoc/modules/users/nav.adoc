@@ -79,9 +79,9 @@
 ** xref:tools/index.adoc[]
 *** xref:tools/capture-replay.adoc[]
 *** xref:tools/connection-cache.adoc[]
+*** xref:tools/event-pump.adoc[]
 *** xref:tools/opm.adoc[]
 *** xref:tools/plc4x-server.adoc[]
-*** xref:tools/scraper.adoc[]
 *** xref:tools/testing.adoc[]
 
 ** xref:industry40.adoc[]

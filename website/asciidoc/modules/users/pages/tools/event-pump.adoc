@@ -1,0 +1,271 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+= Event-Pump
+
+
+
+While the Apache PLC4X API gives you simple access to PLC resources, reading the same set of values over and over again is a job the plain API leaves to you: scheduling the reads, leasing and returning connections, deciding what to do when the PLC stops answering, and making sure a slow response doesn't pile up behind the next poll.
+
+The `Event-Pump` does that work for you.
+
+You describe *what* to read and *when*, and it delivers each response to a listener.
+
+The Event-Pump replaces the `Scraper` from PLC4X 0.13 and earlier.
+If you are migrating, see <<Migrating from the Scraper>> at the end of this page.
+
+== Getting started with the `Event-Pump`
+The Event-Pump can be found in the Maven module:
+
+[subs=attributes+]
+----
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-tools-event-pump</artifactId>
+      <version>{current-last-released-version}</version>
+    </dependency>
+----
+
+== Concepts
+
+The Event-Pump is built from three pieces:
+
+`TagBatch`::
+A set of tags read together from one connection, with one trigger and one listener.
+A batch is the unit of scheduling: every tag in it is read in a single request.
+
+`Trigger`::
+Decides *when* a batch is fetched.
+The `TimerTrigger` fires at a fixed interval.
+
+`TagBatchListener`::
+Receives each `PlcReadResponse`, and any errors.
+
+`EventPump`::
+A container that owns a number of batches and starts and stops them together.
+
+== Using it from Java
+
+A batch is assembled with a builder and handed to the pump:
+
+[source,java]
+----
+PlcConnectionManager connectionManager = PlcDriverManager.getDefault();
+
+TagBatch batch = TagBatch.builder()
+    .withBatchId("boiler")
+    .withConnectionManager(connectionManager)
+    .withConnectionString("opcua:tcp://192.168.1.1:4840?request-timeout=10000")
+    .addTagAddress("temperature", "ns=2;i=1001")
+    .addTagAddress("pressure", "ns=2;i=1002")
+    .withTrigger(new TimerTrigger(5, TimeUnit.SECONDS))
+    .withListener((b, response) -> {
+        System.out.println("Temperature: " + response.getInt("temperature"));
+        System.out.println("Pressure: " + response.getInt("pressure"));
+    })
+    .build();
+
+EventPump pump = new EventPump();
+pump.addBatch(batch);
+pump.startAll();
+
+// ... later
+pump.close();
+----
+
+`EventPump` implements `AutoCloseable`, and closing it stops and closes every batch it owns, so a try-with-resources block works too.
+
+Individual batches can be controlled by id with `startBatch(id)`, `stopBatch(id)` and `removeBatch(id)`.
+
+The tag set of a running batch may be changed at any time with `addTag`, `removeTag` and `clearTags`; the change takes effect on the next fetch cycle.
+
+=== Handling errors
+
+Passing a lambda as the listener only covers the success case.
+Implement the interface to see failures as well:
+
+[source,java]
+----
+batch.setListener(new TagBatch.TagBatchListener() {
+    @Override
+    public void onTagsFetched(TagBatch batch, PlcReadResponse response) {
+        // process values
+    }
+
+    @Override
+    public void onError(TagBatch batch, Throwable error) {
+        // connection lost, read failed, ...
+    }
+
+    @Override
+    public void onFetchSkipped(TagBatch batch, long lastFetchDurationMs, long consecutiveSkips) {
+        // the PLC is slower than the configured interval
+    }
+});
+----
+
+== Configuration files
+
+Rather than assembling batches in code, a whole pump can be described in a YAML, JSON or XML file and loaded with `EventPumpFactory`:
+
+[source,yaml]
+----
+connections:
+  - id: plc1
+    url: "opcua:tcp://192.168.1.1:4840?request-timeout=10000"
+
+batches:
+  - id: boiler
+    connectionId: plc1
+    tags:
+      temperature: "ns=2;i=1001"
+      pressure: "ns=2;i=1002"
+    trigger:
+      type: timer
+      intervalSeconds: 5
+----
+
+[source,java]
+----
+EventPump pump = EventPumpFactory.fromYaml(
+    new File("event-pump.yml"), connectionManager, listener);
+pump.startAll();
+----
+
+`EventPumpFactory` also offers `fromJson(...)` and `fromXml(...)`, and every variant accepts an optional `ValueTransformerRegistry` as a last argument.
+
+The listener passed to the factory becomes the default listener for all batches in the file.
+
+=== Transformations
+
+A tag may carry an expression that is applied to its value before the listener sees it.
+Use the extended tag format to declare one:
+
+[source,yaml]
+----
+batches:
+  - id: boiler
+    connectionId: plc1
+    tags:
+      temperature:
+        address: "ns=2;i=1001"
+        transform: "value * 1.8 + 32"
+      pressure:
+        address: "ns=2;i=1002"
+    trigger:
+      type: timer
+      intervalSeconds: 5
+----
+
+In an expression, `value` refers to the tag's own value, and every other tag in the same batch is available under its own name, so cross-tag expressions such as `temperature + humidity` work.
+All names resolve to the values of the *current* response, before any transformation is applied.
+
+The built-in evaluator (registered under the name `simple`) supports:
+
+* arithmetic: `+`, `-`, `*`, `/`, `%`, unary minus and parentheses
+* comparisons: `>`, `<`, `>=`, `<=`, `==`, `!=`
+* boolean logic: `&&`, `||`, `!`, and the literals `true` and `false`
+
+If an expression fails to evaluate, the error is logged and the *original* value is passed through, so a broken expression degrades one tag rather than failing the whole batch.
+
+Custom transformers can be registered by implementing `ValueTransformer` and adding it to a `ValueTransformerRegistry`.
+
+The same thing is available from the builder via `addTransform(tagName, expression)`.
+
+== Timeouts, backoff and overload
+
+Getting these right matters more than the API surface does, so it is worth being explicit about which knob does what.
+
+=== Request timeouts belong on the connection string
+
+The Event-Pump does not impose a request timeout of its own.
+How long a read may take is the driver's decision, configured as a parameter on the connection URL, for example:
+
+----
+opcua:tcp://192.168.1.1:4840?request-timeout=10000
+----
+
+Consult the documentation of the driver you are using for the parameter it supports.
+
+=== The fetch watchdog
+
+As a last line of defence against a driver that never completes a read at all, each batch bounds a single fetch cycle.
+The default is 5 minutes.
+This is deliberately far above any sensible request timeout: it is not a way to limit how long a read may take, only a guarantee that a batch cannot be wedged forever by a stalled request.
+
+Set it with `withFetchTimeout(long, TimeUnit)` on the builder, or `fetchTimeoutMs` on a batch in a configuration file; a value of `0` or less disables it.
+
+WARNING: Do not use the watchdog as a substitute for the driver's request timeout. Setting it *below* the driver's timeout makes every slow read look like a stalled one.
+
+=== When the PLC is unreachable
+
+After a failed fetch, a batch backs off exponentially before trying again: 1 second, then 2, 4, 8 … capped at 60 seconds.
+The first successful fetch resets it.
+This keeps a batch from hammering a device that is down, and keeps your logs readable during an outage.
+Both ends are configurable with `withInitialBackoffMs(...)` and `withMaxBackoffMs(...)`.
+
+=== When the PLC is slower than the interval
+
+If a trigger fires while the previous fetch is still running, the new fetch is *skipped* rather than queued, a warning is logged, and `onFetchSkipped` is called on the listener.
+This is the main signal that a polling interval is set too aggressively for the device.
+
+The `TimerTrigger` schedules with a fixed delay rather than a fixed rate, so an occasional slow cycle delays the next fetch instead of producing a burst of catch-up reads.
+
+== Threading
+
+Each `TimerTrigger` owns a timer thread and a dispatch thread; listener code runs on the dispatch thread, never on the timer thread.
+A listener that blocks therefore delays only its own batch.
+
+Note that this means listener callbacks for a given batch are serialized, but callbacks for *different* batches may run concurrently — a listener shared between batches must be thread-safe.
+
+A `Timer` may also be shared between several triggers by passing it to the `TimerTrigger` constructor, which keeps the thread count down when you have many batches.
+
+== Migrating from the Scraper
+
+The Scraper was removed after PLC4X 0.13.
+The concepts map over fairly directly:
+
+|===
+| Scraper | Event-Pump
+
+| `ScrapeJob`
+| `TagBatch`
+
+| `TriggeredScraperImpl`
+| `EventPump`
+
+| `ResultHandler`
+| `TagBatch.TagBatchListener`
+
+| scrape rate
+| `TimerTrigger` interval
+
+| `futureTimeOut` constructor argument
+| the driver's own `request-timeout` connection string parameter
+|===
+
+The last row is the one to pay attention to.
+The Scraper applied a single timeout of its own — 2000 ms unless you passed something else — to every read, regardless of what the connection string said.
+The Event-Pump does not: configure the timeout on the connection URL and the driver will honour it.
+
+== Current limitations
+
+* `SubscriptionTrigger` is a placeholder. It can be constructed, and a configuration file may name `type: subscription`, but starting such a batch throws `UnsupportedOperationException`. Use a `TimerTrigger` until subscription support lands.
+* Batches read; there is no write support.
+* Leasing a connection for a fetch is a blocking call made on the batch's dispatch thread.
