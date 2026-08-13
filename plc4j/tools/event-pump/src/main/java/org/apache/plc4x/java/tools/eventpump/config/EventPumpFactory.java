@@ -123,6 +123,10 @@ public class EventPumpFactory {
                 .withTrigger(trigger)
                 .withTransformerRegistry(registry); // Share registry across all batches
 
+            if (batchConfig.getFetchTimeoutMs() != null) {
+                batchBuilder.withFetchTimeout(batchConfig.getFetchTimeoutMs(), TimeUnit.MILLISECONDS);
+            }
+
             // Add transformations
             for (Map.Entry<String, TagConfiguration> entry : batchConfig.getTags().entrySet()) {
                 if (entry.getValue().hasTransform()) {
