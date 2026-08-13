@@ -312,9 +312,17 @@ public class ModbusAsciiConnection extends PollingSubscriptionConnectionBase<Mod
     protected CompletableFuture<PlcReadResponse> onRead(PlcReadRequest readRequest) {
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
 
-        // Collect all tags
+        // Collect all tags. A tag whose address the builder couldn't parse is kept in the
+        // request with an error code and a null tag - it never goes on the wire, its code is
+        // reported as-is.
         LinkedHashMap<String, ModbusTag> tagsByName = new LinkedHashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> rejectedTags = new LinkedHashMap<>();
         for (String tagName : request.getTagNames()) {
+            PlcResponseCode requestCode = request.getTagResponseCode(tagName);
+            if (requestCode != PlcResponseCode.OK) {
+                rejectedTags.put(tagName, new DefaultPlcResponseItem<>(requestCode, null));
+                continue;
+            }
             tagsByName.put(tagName, (ModbusTag) request.getTag(tagName));
         }
 
@@ -341,7 +349,7 @@ public class ModbusAsciiConnection extends PollingSubscriptionConnectionBase<Mod
             blockFutures.toArray(new CompletableFuture[0]));
 
         return allDone.thenApply(v -> {
-            Map<String, PlcResponseItem<PlcValue>> responseItems = new LinkedHashMap<>();
+            Map<String, PlcResponseItem<PlcValue>> responseItems = new LinkedHashMap<>(rejectedTags);
             for (CompletableFuture<Map<String, PlcResponseItem<PlcValue>>> blockFuture : blockFutures) {
                 try {
                     responseItems.putAll(blockFuture.join());
@@ -400,6 +408,13 @@ public class ModbusAsciiConnection extends PollingSubscriptionConnectionBase<Mod
 
         if (request.getTagNames().size() == 1) {
             String tagName = request.getTagNames().iterator().next();
+            // An unparseable address (or value) is kept in the request with an error code and a
+            // null tag - report that code instead of trying to build a PDU from nothing.
+            PlcResponseCode requestCode = request.getTagResponseCode(tagName);
+            if (requestCode != PlcResponseCode.OK) {
+                return CompletableFuture.completedFuture((PlcWriteResponse) new DefaultPlcWriteResponse(
+                    request, Collections.singletonMap(tagName, requestCode)));
+            }
             PlcTag tag = request.getTag(tagName);
             ModbusPDU requestPdu = getWriteRequestPdu(tag, request.getPlcValue(tagName));
             short unitId = getUnitId(tag);

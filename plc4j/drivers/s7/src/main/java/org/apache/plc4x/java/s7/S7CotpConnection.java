@@ -418,13 +418,25 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
 
     @Override
     protected CompletableFuture<PlcReadResponse> onRead(PlcReadRequest readRequest) {
-        // Validate tag types up front so we fail fast.
+        // A tag whose address the builder couldn't parse stays in the request with an error code
+        // and a null tag. It is reported per tag rather than failing the whole request, so one
+        // typo doesn't stop the request's other tags from being read.
+        Map<String, PlcResponseItem<PlcValue>> rejectedTags = new LinkedHashMap<>();
         for (String tagName : readRequest.getTagNames()) {
+            PlcResponseCode requestCode = readRequest.getTagResponseCode(tagName);
+            if (requestCode != PlcResponseCode.OK) {
+                rejectedTags.put(tagName, new DefaultPlcResponseItem<>(requestCode, null));
+                continue;
+            }
             org.apache.plc4x.java.api.model.PlcTag tag = readRequest.getTag(tagName);
             if (!(tag instanceof S7Tag)) {
+                // Not a parse failure but a tag object of the wrong type handed to the API.
                 return CompletableFuture.failedFuture(
-                    new PlcProtocolException("Unsupported tag type " + (tag == null ? "null" : tag.getClass().getName())));
+                    new PlcProtocolException("Unsupported tag type " + tag.getClass().getName()));
             }
+        }
+        if (rejectedTags.size() == readRequest.getTagNames().size()) {
+            return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, rejectedTags));
         }
 
         List<S7ReadChunk> chunks;
@@ -434,7 +446,8 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             // A tag the optimizer can't fit at all is reported per-tag rather than aborting the whole request.
             Map<String, PlcResponseItem<PlcValue>> values = new LinkedHashMap<>();
             for (String t : readRequest.getTagNames()) {
-                values.put(t, new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_DATA, null));
+                values.put(t, rejectedTags.getOrDefault(t,
+                    new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_DATA, null)));
             }
             return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, values));
         }
@@ -445,9 +458,10 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
 
         // For each chunk, send one S7 read message; combine the per-chunk decoders into the final response.
         Map<String, PlcResponseItem<PlcValue>> finalValues = new LinkedHashMap<>();
-        // Pre-seed in original request order so output order is deterministic.
+        // Pre-seed in original request order so output order is deterministic. Tags the builder
+        // rejected already have their code and are never overwritten (only nulls are).
         for (String t : readRequest.getTagNames()) {
-            finalValues.put(t, null);
+            finalValues.put(t, rejectedTags.get(t));
         }
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (S7ReadChunk chunk : chunks) {
@@ -597,12 +611,23 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
 
     @Override
     protected CompletableFuture<PlcWriteResponse> onWrite(PlcWriteRequest writeRequest) {
+        // Same as for reads: a tag the builder rejected is reported per tag, not by failing the
+        // whole request.
+        Map<String, PlcResponseCode> rejectedTags = new LinkedHashMap<>();
         for (String tagName : writeRequest.getTagNames()) {
+            PlcResponseCode requestCode = writeRequest.getTagResponseCode(tagName);
+            if (requestCode != PlcResponseCode.OK) {
+                rejectedTags.put(tagName, requestCode);
+                continue;
+            }
             org.apache.plc4x.java.api.model.PlcTag tag = writeRequest.getTag(tagName);
             if (!(tag instanceof S7Tag)) {
                 return CompletableFuture.failedFuture(new PlcProtocolException(
-                    "Unsupported tag type " + (tag == null ? "null" : tag.getClass().getName())));
+                    "Unsupported tag type " + tag.getClass().getName()));
             }
+        }
+        if (rejectedTags.size() == writeRequest.getTagNames().size()) {
+            return CompletableFuture.completedFuture(new DefaultPlcWriteResponse(writeRequest, rejectedTags));
         }
 
         List<S7WriteChunk> chunks;
@@ -610,7 +635,9 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             chunks = optimizer.splitWriteRequest(writeRequest, driverContext);
         } catch (PlcRuntimeException e) {
             Map<String, PlcResponseCode> codes = new LinkedHashMap<>();
-            for (String t : writeRequest.getTagNames()) codes.put(t, PlcResponseCode.INVALID_DATA);
+            for (String t : writeRequest.getTagNames()) {
+                codes.put(t, rejectedTags.getOrDefault(t, PlcResponseCode.INVALID_DATA));
+            }
             return CompletableFuture.completedFuture(new DefaultPlcWriteResponse(writeRequest, codes));
         }
         if (chunks.isEmpty()) {
@@ -619,7 +646,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
 
         Map<String, PlcResponseCode> finalCodes = new LinkedHashMap<>();
         for (String t : writeRequest.getTagNames()) {
-            finalCodes.put(t, null);
+            finalCodes.put(t, rejectedTags.get(t));
         }
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (S7WriteChunk chunk : chunks) {

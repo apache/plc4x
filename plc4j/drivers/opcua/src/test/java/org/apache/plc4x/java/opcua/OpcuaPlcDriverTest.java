@@ -215,6 +215,70 @@ public class OpcuaPlcDriverTest {
         connectionStringValidSet = List.of(tcpConnectionAddress);
     }
 
+    /**
+     * A tag whose address the tag handler can't parse stays in the request carrying an error code
+     * and a {@code null} tag. It has to come back as INVALID_ADDRESS - reading it used to throw a
+     * NullPointerException while the driver built the node id (there was a TODO in the read path
+     * admitting the check was missing).
+     */
+    @Test
+    void readWithInvalidTagAddressIsReported() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("bad", "this-is-not-a-node-id")
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            assertThat(response.getResponseCode("bad")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+        }
+    }
+
+    /**
+     * The point of per-tag codes: one bad address must not cost the caller the other tags of the
+     * same request, and the good values must not be shifted onto the wrong names - OPC UA maps
+     * its results back to tags by position.
+     */
+    @Test
+    void readMixesValidAndInvalidTagAddresses() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("bad", "this-is-not-a-node-id")
+                .addTagAddress("bool", BOOL_IDENTIFIER_READ_WRITE)
+                .addTagAddress("int32", INT32_IDENTIFIER_READ_WRITE)
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            assertThat(response.getResponseCode("bad")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+            assertThat(response.getResponseCode("bool")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("int32")).isEqualTo(PlcResponseCode.OK);
+            // Values must still belong to the tag that asked for them.
+            assertThat(response.getPlcValue("bool").isBoolean()).isTrue();
+            assertThat(response.getPlcValue("int32").isLong() || response.getPlcValue("int32").isInteger()).isTrue();
+        }
+    }
+
+    @Test
+    void writeWithInvalidTagAddressIsReported() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcWriteResponse response = connection.writeRequestBuilder()
+                .addTagAddress("bad", "this-is-not-a-node-id", 42)
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            assertThat(response.getResponseCode("bad")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+        }
+    }
+
+    @Test
+    void writeMixesValidAndInvalidTagAddresses() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+            PlcWriteResponse response = connection.writeRequestBuilder()
+                .addTagAddress("bad", "this-is-not-a-node-id", 42)
+                .addTagAddress("bool", BOOL_IDENTIFIER_READ_WRITE, true)
+                .build().execute().get(30, TimeUnit.SECONDS);
+
+            assertThat(response.getResponseCode("bad")).isEqualTo(PlcResponseCode.INVALID_ADDRESS);
+            assertThat(response.getResponseCode("bool")).isEqualTo(PlcResponseCode.OK);
+        }
+    }
+
     @Test
     void browseWildcardDiscoversWholeAddressSpace() throws Exception {
         try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {

@@ -321,12 +321,17 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         RequestHeader requestHeader = conversation.createRequestHeader();
 
-        List<ReadValueId> readValueArray = new ArrayList<>(request.getTagNames().size());
-        Iterator<String> iterator = request.getTagNames().iterator();
+        // Tags the builder rejected (unparseable address) carry their code straight into the
+        // response; they have no node id to ask the server for.
+        Map<String, PlcResponseItem<PlcValue>> rejectedTags = rejectedReadTags(request);
+        List<String> sendable = sendableTagNames(request);
+        if (sendable.isEmpty()) {
+            return CompletableFuture.completedFuture(new DefaultPlcReadResponse(request, rejectedTags));
+        }
+
+        List<ReadValueId> readValueArray = new ArrayList<>(sendable.size());
         Map<String, PlcTag> tagMap = new LinkedHashMap<>();
-        for (int i = 0; i < request.getTagNames().size(); i++) {
-            String tagName = iterator.next();
-            // TODO: We need to check that the tag-return-code is OK as it could also be INVALID_TAG
+        for (String tagName : sendable) {
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
             tagMap.put(tagName, tag);
 
@@ -362,15 +367,56 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             }
             if (structFutures.isEmpty()) {
                 return CompletableFuture.completedFuture(new DefaultPlcReadResponse(request,
-                    readResponse(tagMap, results, Collections.emptyMap())));
+                    inRequestOrder(request, readResponse(tagMap, results, Collections.emptyMap()), rejectedTags)));
             }
             return CompletableFuture.allOf(structFutures.values().toArray(new CompletableFuture[0]))
                 .thenApply(v -> {
                     Map<String, StructureDefinition> structDefs = new HashMap<>();
                     structFutures.forEach((name, future) -> structDefs.put(name, future.getNow(null)));
-                    return new DefaultPlcReadResponse(request, readResponse(tagMap, results, structDefs));
+                    return new DefaultPlcReadResponse(request,
+                        inRequestOrder(request, readResponse(tagMap, results, structDefs), rejectedTags));
                 });
         });
+    }
+
+    /**
+     * The tag names that can actually be put on the wire. A tag whose address the builder
+     * couldn't parse stays in the request with an error code and a {@code null} tag; it must
+     * neither be sent nor take up a slot in the response, which OPC UA maps back to tags by
+     * position.
+     */
+    private static List<String> sendableTagNames(PlcTagRequest request) {
+        List<String> names = new ArrayList<>(request.getNumberOfTags());
+        for (String tagName : request.getTagNames()) {
+            if (request.getTagResponseCode(tagName) == PlcResponseCode.OK) {
+                names.add(tagName);
+            }
+        }
+        return names;
+    }
+
+    /** Response items for the tags the builder rejected, keyed by name. */
+    private static Map<String, PlcResponseItem<PlcValue>> rejectedReadTags(PlcTagRequest request) {
+        Map<String, PlcResponseItem<PlcValue>> rejected = new LinkedHashMap<>();
+        for (String tagName : request.getTagNames()) {
+            PlcResponseCode code = request.getTagResponseCode(tagName);
+            if (code != PlcResponseCode.OK) {
+                rejected.put(tagName, new DefaultPlcResponseItem<>(code, null));
+            }
+        }
+        return rejected;
+    }
+
+    /** Response codes for the tags the builder rejected, keyed by name. */
+    private static Map<String, PlcResponseCode> rejectedWriteTags(PlcTagRequest request) {
+        Map<String, PlcResponseCode> rejected = new LinkedHashMap<>();
+        for (String tagName : request.getTagNames()) {
+            PlcResponseCode code = request.getTagResponseCode(tagName);
+            if (code != PlcResponseCode.OK) {
+                rejected.put(tagName, code);
+            }
+        }
+        return rejected;
     }
 
     /** The tag's OPC UA IndexRange as a PascalString, or the null string when the whole node is addressed. */
@@ -399,6 +445,18 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             nodeId = new NodeId(new NodeIdString(tag.getNamespace(), new PascalString(tag.getIdentifier())));
         }
         return nodeId;
+    }
+
+    /** Merges decoded and rejected tags back into the order the caller asked for. */
+    private static Map<String, PlcResponseItem<PlcValue>> inRequestOrder(PlcTagRequest request,
+                                                                        Map<String, PlcResponseItem<PlcValue>> decoded,
+                                                                        Map<String, PlcResponseItem<PlcValue>> rejected) {
+        Map<String, PlcResponseItem<PlcValue>> ordered = new LinkedHashMap<>();
+        for (String tagName : request.getTagNames()) {
+            PlcResponseItem<PlcValue> item = decoded.get(tagName);
+            ordered.put(tagName, item != null ? item : rejected.get(tagName));
+        }
+        return ordered;
     }
 
     public Map<String, PlcResponseItem<PlcValue>> readResponse(Map<String, PlcTag> tagMap, List<DataValue> results) {
@@ -832,7 +890,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     private CompletableFuture<Map<String, StructWriteInfo>> resolveStructWriteInfos(DefaultPlcWriteRequest request) {
         Map<String, StructWriteInfo> resolved = new ConcurrentHashMap<>();
         List<CompletableFuture<?>> futures = new ArrayList<>();
-        for (String tagName : request.getTagNames()) {
+        for (String tagName : sendableTagNames(request)) {
             if (!isStructValue(request.getPlcValue(tagName))) {
                 continue;
             }
@@ -2203,14 +2261,19 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         LOGGER.trace("Writing Value");
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
+        if (sendableTagNames(request).isEmpty()) {
+            return CompletableFuture.completedFuture(
+                new DefaultPlcWriteResponse(request, rejectedWriteTags(request)));
+        }
+
         // Phase 4: for tags without an explicit ;TYPE suffix, resolve the server-declared data
         // type (via the session type cache) up-front so the write is built with the authoritative
         // OPC UA type instead of a lossy Java-value guess. Then assemble and submit the write.
         return resolveWriteTypes(request).thenCompose(serverAttributes ->
             resolveStructWriteInfos(request).thenCompose(structInfos -> {
                 RequestHeader requestHeader = conversation.createRequestHeader();
-                List<WriteValue> writeValueList = new ArrayList<>(request.getTagNames().size());
-                for (String tagName : request.getTagNames()) {
+                List<WriteValue> writeValueList = new ArrayList<>(request.getNumberOfTags());
+                for (String tagName : sendableTagNames(request)) {
                     OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
 
                     NodeId nodeId = generateNodeId(tag);
@@ -2251,7 +2314,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     private CompletableFuture<Map<String, NodeAttributes>> resolveWriteTypes(DefaultPlcWriteRequest request) {
         Map<String, NodeAttributes> serverAttributes = new ConcurrentHashMap<>();
         List<CompletableFuture<?>> futures = new ArrayList<>();
-        for (String tagName : request.getTagNames()) {
+        for (String tagName : sendableTagNames(request)) {
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
             // An explicit ;TYPE suffix is authoritative — no server round-trip needed.
             if (tag.getDataType() != OpcuaDataType.NULL) {
@@ -2274,10 +2337,12 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     }
 
     private PlcWriteResponse writeResponse(DefaultPlcWriteRequest request, WriteResponse writeResponse) {
-        Map<String, PlcResponseCode> responseMap = new HashMap<>();
+        Map<String, PlcResponseCode> responseMap = new HashMap<>(rejectedWriteTags(request));
         List<StatusCode> results = writeResponse.getResults();
-        Iterator<String> responseIterator = request.getTagNames().iterator();
-        for (int i = 0; i < request.getTagNames().size(); i++) {
+        // Only the tags that were actually sent have a slot in the response.
+        List<String> sendable = sendableTagNames(request);
+        Iterator<String> responseIterator = sendable.iterator();
+        for (int i = 0; i < sendable.size(); i++) {
             String tagName = responseIterator.next();
             long opcStatusCode = results.get(i).getStatusCode();
             PlcResponseCode statusCode = mapOpcStatusCode(opcStatusCode, PlcResponseCode.REMOTE_ERROR);

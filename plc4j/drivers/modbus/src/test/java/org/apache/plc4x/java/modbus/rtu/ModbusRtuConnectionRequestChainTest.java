@@ -18,6 +18,9 @@
  */
 package org.apache.plc4x.java.modbus.rtu;
 
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.modbus.readwrite.ModbusErrorCode;
 import org.apache.plc4x.java.modbus.readwrite.ModbusPDU;
 import org.apache.plc4x.java.modbus.readwrite.ModbusPDUError;
@@ -251,6 +254,64 @@ class ModbusRtuConnectionRequestChainTest {
         awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
         assertEquals(7, transport.lastWrittenFrame()[0] & 0xFF,
             "read must be addressed to the tag's unit id, not the connection default");
+    }
+
+    /**
+     * An address the tag handler rejects is kept in the request with an error code and a null
+     * tag. It must be reported as INVALID_ADDRESS and must never reach the wire - reads used to
+     * silently degrade it to INTERNAL_ERROR, writes threw a NullPointerException while building
+     * the PDU.
+     */
+    @Test
+    void readWithInvalidTagAddressIsReportedAndNeverSent() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        ModbusRtuConnection connection = newConnectedConnection(transport);
+
+        PlcReadResponse response = connection.readRequestBuilder()
+            .addTagAddress("bad", "4x00001:BOGUS")
+            .build()
+            .execute()
+            .get(2, TimeUnit.SECONDS);
+
+        assertEquals(PlcResponseCode.INVALID_ADDRESS, response.getResponseCode("bad"));
+        assertEquals(0, transport.writeCount(), "a rejected tag must not produce a request");
+    }
+
+    @Test
+    void readMixesValidAndInvalidTagAddresses() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        ModbusRtuConnection connection = newConnectedConnection(transport);
+
+        CompletableFuture<? extends PlcReadResponse> future = connection.readRequestBuilder()
+            .addTagAddress("good", "4x00001:INT")
+            .addTagAddress("bad", "4x00001:BOGUS")
+            .build()
+            .execute();
+
+        // The valid tag still goes out on its own and gets answered.
+        awaitTrue(() -> transport.writeCount() == 1, 2, TimeUnit.SECONDS);
+        transport.deliver(readResponseFrame(1, new byte[]{0x00, 0x2A}));
+        transport.runDataListener();
+
+        PlcReadResponse response = future.get(2, TimeUnit.SECONDS);
+        assertEquals(PlcResponseCode.OK, response.getResponseCode("good"));
+        assertEquals(42, response.getInteger("good"));
+        assertEquals(PlcResponseCode.INVALID_ADDRESS, response.getResponseCode("bad"));
+    }
+
+    @Test
+    void writeWithInvalidTagAddressIsReportedAndNeverSent() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        ModbusRtuConnection connection = newConnectedConnection(transport);
+
+        PlcWriteResponse response = connection.writeRequestBuilder()
+            .addTagAddress("bad", "4x00001:BOGUS", 42)
+            .build()
+            .execute()
+            .get(2, TimeUnit.SECONDS);
+
+        assertEquals(PlcResponseCode.INVALID_ADDRESS, response.getResponseCode("bad"));
+        assertEquals(0, transport.writeCount(), "a rejected tag must not produce a request");
     }
 
     /**

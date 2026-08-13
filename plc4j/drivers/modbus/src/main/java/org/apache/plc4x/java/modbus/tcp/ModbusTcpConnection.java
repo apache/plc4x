@@ -217,9 +217,17 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
     protected CompletableFuture<PlcReadResponse> onRead(PlcReadRequest readRequest) {
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
 
-        // Collect all tags
+        // Collect all tags. A tag whose address the builder couldn't parse is kept in the
+        // request with an error code and a null tag - it never goes on the wire, its code is
+        // reported as-is.
         LinkedHashMap<String, ModbusTag> tagsByName = new LinkedHashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> rejectedTags = new LinkedHashMap<>();
         for (String tagName : request.getTagNames()) {
+            PlcResponseCode requestCode = request.getTagResponseCode(tagName);
+            if (requestCode != PlcResponseCode.OK) {
+                rejectedTags.put(tagName, new DefaultPlcResponseItem<>(requestCode, null));
+                continue;
+            }
             tagsByName.put(tagName, (ModbusTag) request.getTag(tagName));
         }
 
@@ -247,7 +255,7 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
             blockFutures.toArray(new CompletableFuture[0]));
 
         return allDone.thenApply(v -> {
-            Map<String, PlcResponseItem<PlcValue>> responseItems = new LinkedHashMap<>();
+            Map<String, PlcResponseItem<PlcValue>> responseItems = new LinkedHashMap<>(rejectedTags);
             for (CompletableFuture<Map<String, PlcResponseItem<PlcValue>>> blockFuture : blockFutures) {
                 try {
                     responseItems.putAll(blockFuture.join());
@@ -313,6 +321,13 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
         LinkedHashMap<String, CompletableFuture<PlcResponseCode>> tagFutures = new LinkedHashMap<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (String tagName : request.getTagNames()) {
+            // An unparseable address (or value) is kept in the request with an error code and a
+            // null tag - report that code instead of trying to build a PDU from nothing.
+            PlcResponseCode requestCode = request.getTagResponseCode(tagName);
+            if (requestCode != PlcResponseCode.OK) {
+                tagFutures.put(tagName, CompletableFuture.completedFuture(requestCode));
+                continue;
+            }
             PlcTag tag = request.getTag(tagName);
             PlcValue value = request.getPlcValue(tagName);
             CompletableFuture<PlcResponseCode> tagFuture =
