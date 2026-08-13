@@ -33,11 +33,13 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.tools.eventpump.EventPump;
 import org.apache.plc4x.java.tools.eventpump.TagBatch;
+import org.apache.plc4x.java.tools.eventpump.triggers.TimerTrigger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -196,6 +198,151 @@ class EventPumpFactoryTest {
             () -> EventPumpFactory.create(config, connectionManager, null)
         );
         assertTrue(exception.getMessage().contains("Connection 'nonexistent' not found"));
+    }
+
+    /**
+     * Polling faster than once per second has to be expressible - it is the common case for
+     * PLC data collection, and the scraper this replaces configured its rate in milliseconds.
+     */
+    @Test
+    void testCreateWithMillisecondInterval() throws Exception {
+        EventPumpConfiguration config = new EventPumpConfiguration();
+
+        ConnectionConfiguration connection = new ConnectionConfiguration();
+        connection.setId("conn1");
+        connection.setUrl("mock:test");
+        config.getConnections().add(connection);
+
+        BatchConfiguration batch = new BatchConfiguration();
+        batch.setId("batch1");
+        batch.setConnectionId("conn1");
+        batch.setSimpleTags(Collections.singletonMap("tag1", "address1"));
+
+        TriggerConfiguration trigger = new TriggerConfiguration();
+        trigger.setType("timer");
+        trigger.setIntervalMillis(250L);
+        trigger.setInitialDelayMillis(50L);
+        batch.setTrigger(trigger);
+        config.getBatches().add(batch);
+
+        EventPump pump = EventPumpFactory.create(config, connectionManager, null);
+
+        TimerTrigger timerTrigger = (TimerTrigger) pump.getBatch("batch1").getTrigger();
+        assertEquals(250, timerTrigger.getIntervalMs());
+        assertEquals(50, timerTrigger.getInitialDelayMs());
+        pump.close();
+    }
+
+    /**
+     * Setting the interval in both units is ambiguous to whoever reads the config later, so it
+     * has to fail loudly rather than silently picking one.
+     */
+    @Test
+    void testRejectsIntervalInBothUnits() {
+        EventPumpConfiguration config = configWithTrigger(trigger -> {
+            trigger.setIntervalSeconds(10L);
+            trigger.setIntervalMillis(100L);
+        });
+
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> EventPumpFactory.create(config, connectionManager, null)
+        );
+        assertTrue(exception.getMessage().contains("intervalSeconds"));
+        assertTrue(exception.getMessage().contains("intervalMillis"));
+        // The message has to name the offending values, otherwise finding them in a large
+        // configuration file is guesswork.
+        assertTrue(exception.getMessage().contains("10"));
+        assertTrue(exception.getMessage().contains("100"));
+    }
+
+    @Test
+    void testRejectsInitialDelayInBothUnits() {
+        EventPumpConfiguration config = configWithTrigger(trigger -> {
+            trigger.setIntervalMillis(100L);
+            trigger.setInitialDelaySeconds(5L);
+            trigger.setInitialDelayMillis(50L);
+        });
+
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> EventPumpFactory.create(config, connectionManager, null)
+        );
+        assertTrue(exception.getMessage().contains("initialDelaySeconds"));
+        assertTrue(exception.getMessage().contains("initialDelayMillis"));
+    }
+
+    /**
+     * Mixing the units across the two settings stays legal - only the same setting given twice
+     * is ambiguous.
+     */
+    @Test
+    void testAllowsIntervalAndInitialDelayInDifferentUnits() throws Exception {
+        EventPumpConfiguration config = configWithTrigger(trigger -> {
+            trigger.setIntervalMillis(250L);
+            trigger.setInitialDelaySeconds(2L);
+        });
+
+        EventPump pump = EventPumpFactory.create(config, connectionManager, null);
+
+        TimerTrigger timerTrigger = (TimerTrigger) pump.getBatch("batch1").getTrigger();
+        assertEquals(250, timerTrigger.getIntervalMs());
+        assertEquals(2000, timerTrigger.getInitialDelayMs());
+        pump.close();
+    }
+
+    /**
+     * Builds a single-batch configuration whose timer trigger is set up by the given callback.
+     */
+    private static EventPumpConfiguration configWithTrigger(java.util.function.Consumer<TriggerConfiguration> customizer) {
+        EventPumpConfiguration config = new EventPumpConfiguration();
+
+        ConnectionConfiguration connection = new ConnectionConfiguration();
+        connection.setId("conn1");
+        connection.setUrl("mock:test");
+        config.getConnections().add(connection);
+
+        BatchConfiguration batch = new BatchConfiguration();
+        batch.setId("batch1");
+        batch.setConnectionId("conn1");
+        batch.setSimpleTags(Collections.singletonMap("tag1", "address1"));
+
+        TriggerConfiguration trigger = new TriggerConfiguration();
+        trigger.setType("timer");
+        customizer.accept(trigger);
+        batch.setTrigger(trigger);
+        config.getBatches().add(batch);
+        return config;
+    }
+
+    /**
+     * A timer trigger without any interval used to fail with a NullPointerException while
+     * unboxing the interval.
+     */
+    @Test
+    void testCreateWithTimerTriggerWithoutInterval() {
+        EventPumpConfiguration config = new EventPumpConfiguration();
+
+        ConnectionConfiguration connection = new ConnectionConfiguration();
+        connection.setId("conn1");
+        connection.setUrl("mock:test");
+        config.getConnections().add(connection);
+
+        BatchConfiguration batch = new BatchConfiguration();
+        batch.setId("batch1");
+        batch.setConnectionId("conn1");
+        batch.setSimpleTags(Collections.singletonMap("tag1", "address1"));
+
+        TriggerConfiguration trigger = new TriggerConfiguration();
+        trigger.setType("timer");
+        batch.setTrigger(trigger);
+        config.getBatches().add(batch);
+
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> EventPumpFactory.create(config, connectionManager, null)
+        );
+        assertTrue(exception.getMessage().contains("intervalSeconds or intervalMillis"));
     }
 
     @Test

@@ -158,11 +158,35 @@ public class EventPumpFactory {
         String type = config.getType();
 
         if ("timer".equalsIgnoreCase(type)) {
-            // Timer trigger
-            long interval = config.getIntervalSeconds();
-            long initialDelay = config.getInitialDelaySeconds() != null ? config.getInitialDelaySeconds() : 0;
+            // Timer trigger - the interval may be given in seconds or, for sub-second
+            // polling, in milliseconds. Accepting both and silently picking one would leave
+            // the reader of the config guessing at the actual rate, so it's rejected.
+            if (config.getIntervalSeconds() != null && config.getIntervalMillis() != null) {
+                throw new IllegalArgumentException(
+                    "Timer trigger has both intervalSeconds (" + config.getIntervalSeconds() +
+                        ") and intervalMillis (" + config.getIntervalMillis() + ") set - use one of them");
+            }
+            if (config.getInitialDelaySeconds() != null && config.getInitialDelayMillis() != null) {
+                throw new IllegalArgumentException(
+                    "Timer trigger has both initialDelaySeconds (" + config.getInitialDelaySeconds() +
+                        ") and initialDelayMillis (" + config.getInitialDelayMillis() + ") set - use one of them");
+            }
+            if (config.getIntervalSeconds() == null && config.getIntervalMillis() == null) {
+                throw new IllegalArgumentException(
+                    "Timer trigger requires either intervalSeconds or intervalMillis");
+            }
 
-            return new TimerTrigger(interval, initialDelay, TimeUnit.SECONDS);
+            if (config.getIntervalMillis() != null) {
+                long initialDelay = config.getInitialDelayMillis() != null ? config.getInitialDelayMillis()
+                    : TimeUnit.SECONDS.toMillis(config.getInitialDelaySeconds() != null ? config.getInitialDelaySeconds() : 0);
+                return new TimerTrigger(config.getIntervalMillis(), initialDelay, TimeUnit.MILLISECONDS);
+            }
+
+            long initialDelay = config.getInitialDelayMillis() != null ? config.getInitialDelayMillis()
+                : TimeUnit.SECONDS.toMillis(config.getInitialDelaySeconds() != null ? config.getInitialDelaySeconds() : 0);
+
+            return new TimerTrigger(TimeUnit.SECONDS.toMillis(config.getIntervalSeconds()), initialDelay,
+                TimeUnit.MILLISECONDS);
 
         } else if ("subscription".equalsIgnoreCase(type)) {
             // Subscription trigger (placeholder)

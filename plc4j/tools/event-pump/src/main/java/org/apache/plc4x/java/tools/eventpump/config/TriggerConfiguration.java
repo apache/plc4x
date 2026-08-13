@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Configuration for a trigger.
  * <p>
  * The type field determines the trigger type:
- * - "timer": Time-based trigger (requires intervalSeconds)
+ * - "timer": Time-based trigger (requires either intervalSeconds or intervalMillis, not both)
  * - "subscription": Subscription-based trigger (requires tagName and tagAddress)
  */
 public class TriggerConfiguration {
@@ -37,8 +37,17 @@ public class TriggerConfiguration {
     @JsonProperty("intervalSeconds")
     private Long intervalSeconds;
 
+    // Sub-second polling is common, so the interval can alternatively be given in
+    // milliseconds. Setting both units on the same trigger is rejected when the trigger is
+    // built, rather than silently picking one of them.
+    @JsonProperty("intervalMillis")
+    private Long intervalMillis;
+
     @JsonProperty("initialDelaySeconds")
     private Long initialDelaySeconds;
+
+    @JsonProperty("initialDelayMillis")
+    private Long initialDelayMillis;
 
     // Subscription trigger properties
     @JsonProperty("tagName")
@@ -78,12 +87,32 @@ public class TriggerConfiguration {
     }
 
     /**
-     * Set the interval in seconds (for timer triggers).
+     * Set the interval in seconds (for timer triggers). Mutually exclusive with
+     * {@link #setIntervalMillis(Long)} - setting both is a configuration error.
      *
      * @param intervalSeconds The interval in seconds
      */
     public void setIntervalSeconds(Long intervalSeconds) {
         this.intervalSeconds = intervalSeconds;
+    }
+
+    /**
+     * Get the interval in milliseconds (for timer triggers).
+     *
+     * @return The interval in milliseconds, or null if it is configured in seconds
+     */
+    public Long getIntervalMillis() {
+        return intervalMillis;
+    }
+
+    /**
+     * Set the interval in milliseconds (for timer triggers). Mutually exclusive with
+     * {@link #setIntervalSeconds(Long)} - setting both is a configuration error.
+     *
+     * @param intervalMillis The interval in milliseconds
+     */
+    public void setIntervalMillis(Long intervalMillis) {
+        this.intervalMillis = intervalMillis;
     }
 
     /**
@@ -96,12 +125,32 @@ public class TriggerConfiguration {
     }
 
     /**
-     * Set the initial delay in seconds (for timer triggers).
+     * Set the initial delay in seconds (for timer triggers). Mutually exclusive with
+     * {@link #setInitialDelayMillis(Long)} - setting both is a configuration error.
      *
      * @param initialDelaySeconds The initial delay in seconds
      */
     public void setInitialDelaySeconds(Long initialDelaySeconds) {
         this.initialDelaySeconds = initialDelaySeconds;
+    }
+
+    /**
+     * Get the initial delay in milliseconds (for timer triggers).
+     *
+     * @return The initial delay in milliseconds, or null if it is configured in seconds
+     */
+    public Long getInitialDelayMillis() {
+        return initialDelayMillis;
+    }
+
+    /**
+     * Set the initial delay in milliseconds (for timer triggers). Mutually exclusive with
+     * {@link #setInitialDelaySeconds(Long)} - setting both is a configuration error.
+     *
+     * @param initialDelayMillis The initial delay in milliseconds
+     */
+    public void setInitialDelayMillis(Long initialDelayMillis) {
+        this.initialDelayMillis = initialDelayMillis;
     }
 
     /**

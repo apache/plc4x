@@ -152,6 +152,21 @@ pump.startAll();
 
 The listener passed to the factory becomes the default listener for all batches in the file.
 
+=== Trigger intervals
+
+A timer trigger takes its interval either in seconds or - for the sub-second rates that are common in PLC data collection - in milliseconds:
+
+[source,yaml]
+----
+    trigger:
+      type: timer
+      intervalMillis: 250
+      initialDelayMillis: 100
+----
+
+`intervalSeconds`/`initialDelaySeconds` and `intervalMillis`/`initialDelayMillis` are mutually exclusive per setting: giving the same setting in both units fails at startup rather than silently picking one, since a reader of the file would otherwise have to guess the actual rate.
+Using seconds for one setting and milliseconds for the other is fine.
+
 === Transformations
 
 A tag may carry an expression that is applied to its value before the listener sees it.
