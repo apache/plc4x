@@ -95,8 +95,12 @@ class TagBatchTest {
 
         // Drive well past both failure counts where the old arithmetic broke (55 and 65).
         for (int failure = 1; failure <= 70; failure++) {
+            long beforeFetch = System.currentTimeMillis();
             batch.fetchTags();
-            long windowMs = batch.getNextAllowedFetchTimeMs() - System.currentTimeMillis();
+
+            // Assert on the window that was computed, not on what is left of it: with a window
+            // of a few milliseconds, the time spent logging the failure is enough to consume it.
+            long windowMs = batch.getCurrentBackoffMs();
 
             assertEquals(failure, batch.getConsecutiveFailures(),
                 "every attempt must be counted — a collapsed window would let extra ones through");
@@ -104,6 +108,8 @@ class TagBatchTest {
                 "backoff window must stay positive at failure " + failure + " (was " + windowMs + "ms)");
             assertTrue(windowMs <= maxBackoffMs,
                 "backoff window must stay capped at failure " + failure + " (was " + windowMs + "ms)");
+            assertTrue(batch.getNextAllowedFetchTimeMs() > beforeFetch,
+                "backoff must push the next attempt into the future at failure " + failure);
 
             // Wait out the window so the next attempt is actually made.
             Thread.sleep(maxBackoffMs + 1);

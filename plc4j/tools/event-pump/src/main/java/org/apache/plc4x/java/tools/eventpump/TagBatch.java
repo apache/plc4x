@@ -951,6 +951,18 @@ public class TagBatch implements AutoCloseable {
     }
 
     /**
+     * Get the length of the current backoff window in milliseconds (for testing).
+     * <p>
+     * Unlike {@link #getNextAllowedFetchTimeMs()} this doesn't decay as time passes, so a test
+     * can assert on the window that was computed rather than on whatever is left of it.
+     *
+     * @return The current backoff window, or 0 if the batch isn't in backoff
+     */
+    long getCurrentBackoffMs() {
+        return currentBackoffMs;
+    }
+
+    /**
      * Get the next allowed fetch time in millis (for testing).
      *
      * @return The next allowed fetch time
