@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.opm;
 
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.TypeCache;
 import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.implementation.MethodDelegation;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -86,6 +87,13 @@ public class PlcEntityManager {
     public static final String LAST_FETCHED = "_lastFetched";
     public static final String LAST_WRITTEN = "_lastWritten";
 
+    /**
+     * Generated proxy classes, keyed by class loader and entity class. Soft references so the
+     * cache can't keep class loaders alive on its own.
+     */
+    private static final TypeCache<Class<?>> PROXY_CACHE =
+        new TypeCache.WithInlineExpunction<>(TypeCache.Sort.SOFT);
+
     private final PlcConnectionManager connectionManager;
     private final SimpleAliasRegistry registry;
 
@@ -142,19 +150,7 @@ public class PlcEntityManager {
     private <T> T connect(Class<T> clazz, String address, T existingInstance) throws OPMException {
         OpmUtils.getPlcEntityAndCheckPreconditions(clazz);
         try {
-            // Use Byte Buddy to generate a subclassed proxy that delegates all PlcField Methods
-            // to the intercept method
-            T instance = new ByteBuddy()
-                .subclass(clazz)
-                .defineField(PLC_ADDRESS_FIELD_NAME, String.class, Visibility.PRIVATE)
-                .defineField(CONNECTION_MANAGER_FIELD_NAME, PlcConnectionManager.class, Visibility.PRIVATE)
-                .defineField(ALIAS_REGISTRY, AliasRegistry.class, Visibility.PRIVATE)
-                .defineField(LAST_FETCHED, Map.class, Visibility.PRIVATE)
-                .defineField(LAST_WRITTEN, Map.class, Visibility.PRIVATE)
-                .method(not(isDeclaredBy(Object.class))).intercept(MethodDelegation.to(PlcEntityInterceptor.class))
-                .make()
-                .load(Thread.currentThread().getContextClassLoader())
-                .getLoaded()
+            T instance = proxyClassFor(clazz)
                 .getConstructor()
                 .newInstance();
             // Set connection value into the private field
@@ -181,6 +177,39 @@ public class PlcEntityManager {
             return instance;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | IllegalAccessError e) {
             throw new OPMException("Unable to instantiate Proxy", e);
+        }
+    }
+
+    /**
+     * Returns the generated proxy class for the given entity class, generating it on first use.
+     * <p>
+     * The generated type depends only on the entity class, so it is cached and reused - see
+     * GH-1935. Generating and loading a fresh subclass on every {@link #connect(Class, String)}
+     * (and therefore on every {@link #read(Class, String)} / {@link #write(Class, String, Object)})
+     * leaks one class per call, which fills up metaspace in any polling application.
+     */
+    @SuppressWarnings("unchecked")
+    private <T> Class<? extends T> proxyClassFor(Class<T> clazz) throws OPMException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            // The cache is keyed by class loader and entity class, so the same entity loaded by
+            // two class loaders correctly gets a proxy per loader. The monitor makes concurrent
+            // callers wait for one generation instead of racing to generate the same class.
+            return (Class<? extends T>) PROXY_CACHE.findOrInsert(classLoader, clazz,
+                () -> new ByteBuddy()
+                    .subclass(clazz)
+                    .defineField(PLC_ADDRESS_FIELD_NAME, String.class, Visibility.PRIVATE)
+                    .defineField(CONNECTION_MANAGER_FIELD_NAME, PlcConnectionManager.class, Visibility.PRIVATE)
+                    .defineField(ALIAS_REGISTRY, AliasRegistry.class, Visibility.PRIVATE)
+                    .defineField(LAST_FETCHED, Map.class, Visibility.PRIVATE)
+                    .defineField(LAST_WRITTEN, Map.class, Visibility.PRIVATE)
+                    .method(not(isDeclaredBy(Object.class))).intercept(MethodDelegation.to(PlcEntityInterceptor.class))
+                    .make()
+                    .load(classLoader)
+                    .getLoaded(),
+                PROXY_CACHE);
+        } catch (RuntimeException e) {
+            throw new OPMException("Unable to generate Proxy for " + clazz.getName(), e);
         }
     }
 
