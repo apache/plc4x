@@ -56,6 +56,7 @@ This option is effective only when `securityPolicy` turns encryption (anything b
 |`key-store-type` |STRING |pkcs12| |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+). +
 Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`key-store-password` |STRING | | |Java keystore password used to access keystore and private key.
+|`generated-key-size` |INT |2048| |Size in bits of the RSA key of the certificate the driver generates when no `key-store-file` is configured. It is ignored when a key store is supplied, as the key then comes from that store. Some servers require a minimum size; 4096 is a common requirement.
 |`server-certificate-file` |STRING | | |Filesystem location where server certificate is located, supported formats are `DER` and `PEM`.
 |`trust-store-file` |STRING | | |The trust store file used to verify server certificates and its chain.
 |`trust-store-type` |STRING |pkcs12| |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+). +

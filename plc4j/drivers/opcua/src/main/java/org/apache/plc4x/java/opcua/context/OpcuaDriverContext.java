@@ -93,8 +93,13 @@ public class OpcuaDriverContext {
         String serverKeyStore = configuration.getKeyStoreFile();
 
         if (serverKeyStore == null) {
-            LOGGER.info("Client certificate not provided, creating temporary certificate and private key");
-            certificateKeyPair = CertificateGenerator.generateCertificate();
+            int keySize = configuration.getGeneratedKeySize();
+            if (keySize < 2048 || keySize % 1024 != 0) {
+                throw new IllegalArgumentException("'generated-key-size' has to be a multiple of 1024"
+                    + " and at least 2048, was " + keySize);
+            }
+            LOGGER.info("Client certificate not provided, creating temporary {} bit certificate and private key", keySize);
+            certificateKeyPair = CertificateGenerator.generateCertificate(keySize);
         } else {
             LOGGER.info("Loading KeyStore at {}", serverKeyStore);
 

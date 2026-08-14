@@ -31,6 +31,7 @@ import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.config.annotations.Description;
 import org.apache.plc4x.java.spi.config.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.LongDefaultValue;
+import org.apache.plc4x.java.spi.config.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
 
 public class OpcuaConfiguration implements Configuration {
@@ -88,6 +89,11 @@ public class OpcuaConfiguration implements Configuration {
     @ConfigurationParameter("key-store-password")
     @Description("Java keystore password used to access keystore and private key.")
     private String keyStorePassword;
+
+    @ConfigurationParameter("generated-key-size")
+    @IntDefaultValue(2048)
+    @Description("Size in bits of the RSA key of the certificate the driver generates when no `key-store-file` is configured. It is ignored when a key store is supplied, as the key then comes from that store. Some servers require a minimum size; 4096 is a common requirement.")
+    private int generatedKeySize;
 
     @ConfigurationParameter("server-certificate-file")
     @Description("Filesystem location where server certificate is located, supported formats are `DER` and `PEM`.")
@@ -188,6 +194,10 @@ public class OpcuaConfiguration implements Configuration {
 
     public String getKeyStoreType() {
         return keyStoreType;
+    }
+
+    public int getGeneratedKeySize() {
+        return generatedKeySize;
     }
 
     public char[] getKeyStorePassword() {

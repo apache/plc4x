@@ -92,6 +92,21 @@ WARNING: `insecure-certificate-verification=true` disables server certificate ve
 altogether. This makes the connection vulnerable to man-in-the-middle attacks and is intended for
 local testing only.
 
+=== Client certificate
+
+If no `key-store-file` is configured, the driver generates a self-signed application instance
+certificate for the session. It is a 2048 bit RSA key signed with SHA-256; use `generated-key-size`
+to ask for a larger key when the server demands one:
+
+----
+opcua:tcp://127.0.0.1:12686?security-policy=Basic256Sha256&message-security=SIGN_ENCRYPT&generated-key-size=4096
+----
+
+A generated certificate is fresh for every connection, so a server that keeps a trust list will
+reject it until it is trusted there. For anything beyond a first connection attempt, supply your own
+certificate through `key-store-file` instead - see
+link:../getting-started/opcua-client-certificate.html[the client certificate tutorial].
+
 === Negotiation procedure
 Depending on settings driver might or might not attempt to discover endpoints from remote server.
 In case when `discovery` option is set to `true` driver will look up server certificate through connection attempt.
