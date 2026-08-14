@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
@@ -948,6 +949,91 @@ public class OpcuaPlcDriverTest {
 
                 assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
             }
+        }
+    }
+
+    /**
+     * Username/password authentication against the Milo test server, which accepts
+     * {@code user}/{@code password1} and {@code admin}/{@code password2}.
+     * <p>
+     * The password is encrypted with the algorithm named by the <em>user token policy</em> the
+     * server advertises, which is not necessarily the one securing the channel. The test server
+     * exercises both variants on purpose: its unsecured endpoint advertises the username policy
+     * with Basic128Rsa15 (RSA-PKCS#1 v1.5) while the secured endpoints use Milo's default
+     * Basic256 (RSA-OAEP). PLC4X used to hardcode RSA-OAEP, so the PKCS#1 case was rejected with
+     * BadIdentityTokenInvalid - see GH-2154.
+     */
+    @Nested
+    class Authentication {
+
+        @Test
+        public void usernamePasswordOverUnsecuredEndpoint() throws Exception {
+            // The unsecured endpoint's username token policy demands RSA-PKCS#1 v1.5.
+            try (PlcConnection connection = new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "user", "password1"))) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        @Test
+        public void secondUserAccountAlsoAuthenticates() throws Exception {
+            try (PlcConnection connection = new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "admin", "password2"))) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        @ParameterizedTest
+        @MethodSource("org.apache.plc4x.java.opcua.OpcuaPlcDriverTest#getConnectionSecurityPolicies")
+        public void usernamePasswordWithSecurityPolicy(SecurityPolicy policy, MessageSecurity messageSecurity) throws Exception {
+            String connectionString = credentials(getConnectionString(policy, messageSecurity), "user", "password1");
+
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(connectionString)) {
+                assertThat(connection.isConnected())
+                    .describedAs("authenticated connection with %s/%s", policy, messageSecurity)
+                    .isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        @Test
+        public void wrongPasswordIsRejected() {
+            assertThatThrownBy(() -> new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "user", "not-the-password")))
+                .isInstanceOf(PlcConnectionException.class);
+        }
+
+        @Test
+        public void unknownUserIsRejected() {
+            assertThatThrownBy(() -> new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "nobody", "password1")))
+                .isInstanceOf(PlcConnectionException.class);
+        }
+
+        /**
+         * Without credentials the driver has to fall back to the anonymous token policy.
+         */
+        @Test
+        public void noCredentialsConnectsAnonymously() throws Exception {
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        private String credentials(String connectionString, String username, String password) {
+            return connectionString + PARAM_DIVIDER + params(
+                entry("username", username),
+                entry("password", password));
+        }
+
+        private void assertReadWorks(PlcConnection connection) throws Exception {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("value", BOOL_IDENTIFIER_READ_WRITE)
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(response.getResponseCode("value")).isEqualTo(PlcResponseCode.OK);
         }
     }
 

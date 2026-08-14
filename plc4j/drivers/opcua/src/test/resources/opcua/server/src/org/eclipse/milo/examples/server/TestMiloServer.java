@@ -56,7 +56,9 @@ import org.eclipse.milo.opcua.stack.core.transport.TransportProfile;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MessageSecurityMode;
+import org.eclipse.milo.opcua.stack.core.types.enumerated.UserTokenType;
 import org.eclipse.milo.opcua.stack.core.types.structured.BuildInfo;
+import org.eclipse.milo.opcua.stack.core.types.structured.UserTokenPolicy;
 import org.eclipse.milo.opcua.stack.core.util.CertificateUtil;
 import org.eclipse.milo.opcua.stack.core.util.NonceUtil;
 import org.eclipse.milo.opcua.stack.core.util.SelfSignedCertificateGenerator;
@@ -208,6 +210,19 @@ public class TestMiloServer {
         plc4xTestNamespace.startup();
     }
 
+    /**
+     * A UserName token policy that names Basic128Rsa15 as its security policy, so the password has
+     * to be encrypted with RSA-PKCS#1 v1.5. Milo's built-in USER_TOKEN_POLICY_USERNAME uses
+     * Basic256 (RSA-OAEP); having both lets the test suite cover either algorithm.
+     */
+    private static final UserTokenPolicy USER_TOKEN_POLICY_USERNAME_RSA15 = new UserTokenPolicy(
+        "username_rsa15",
+        UserTokenType.UserName,
+        null,
+        null,
+        SecurityPolicy.Basic128Rsa15.getUri()
+    );
+
     private Set<EndpointConfiguration> createEndpointConfigurations(X509Certificate certificate) {
         Set<EndpointConfiguration> endpointConfigurations = new LinkedHashSet<>();
 
@@ -232,7 +247,22 @@ public class TestMiloServer {
                         USER_TOKEN_POLICY_X509
                     );
 
-                EndpointConfiguration.Builder noSecurityBuilder = builder.copy()
+                // The unsecured endpoint deliberately advertises its username token policy with
+                // Basic128Rsa15 instead of Milo's default Basic256. That policy requires the
+                // password to be encrypted with RSA-PKCS#1 v1.5 rather than RSA-OAEP, which is the
+                // case PLC4X used to get wrong (it hardcoded OAEP and servers answered
+                // BadIdentityTokenInvalid - see GH-2154). The secured endpoints below keep the
+                // default username policy, so both password-encryption paths stay covered.
+                EndpointConfiguration.Builder noSecurityBuilder = EndpointConfiguration.newBuilder()
+                    .setBindAddress(bindAddress)
+                    .setHostname(hostname)
+                    .setPath("/milo")
+                    .setCertificate(certificate)
+                    .addTokenPolicies(
+                        USER_TOKEN_POLICY_ANONYMOUS,
+                        USER_TOKEN_POLICY_USERNAME_RSA15,
+                        USER_TOKEN_POLICY_X509
+                    )
                     .setSecurityPolicy(SecurityPolicy.None)
                     .setSecurityMode(MessageSecurityMode.None);
                 endpointConfigurations.add(buildTcpEndpoint(noSecurityBuilder));

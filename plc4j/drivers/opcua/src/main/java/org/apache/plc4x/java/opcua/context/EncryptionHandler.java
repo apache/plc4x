@@ -111,9 +111,17 @@ public class EncryptionHandler {
         return new SignatureData(new PascalString(securityPolicy.getAsymmetricSignatureAlgorithm().getUri()), new PascalByteString(signed.length, signed));
     }
 
-    public byte[] encryptPassword(byte[] data) {
+    /**
+     * Encrypts a user token password with the server's public key.
+     *
+     * @param data   the encodeable password (length prefix, password, server nonce)
+     * @param policy the security policy of the selected user token policy - it decides the
+     *               algorithm, which is not necessarily the one used for the secure channel
+     * @return the encrypted password, or null if it could not be encrypted
+     */
+    public byte[] encryptPassword(byte[] data, SecurityPolicy policy) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
+            Cipher cipher = policy.getAsymmetricEncryptionAlgorithm().getCipher();
             cipher.init(Cipher.ENCRYPT_MODE, this.conversation.getRemoteCertificate().getPublicKey());
             return cipher.doFinal(data);
         } catch (Exception e) {

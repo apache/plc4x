@@ -49,11 +49,12 @@ import org.apache.plc4x.java.opcua.security.SecurityPolicy.SignatureAlgorithm;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.opcua.protocol.chunk.PayloadConverter;
-import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -62,7 +63,6 @@ import java.util.regex.Pattern;
 public class SecureChannel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureChannel.class);
-    private static final String PASSWORD_ENCRYPTION_ALGORITHM = "http://www.w3.org/2001/04/xmlenc#rsa-oaep";
     public static final PascalString NULL_STRING = new PascalString("");
     public static final PascalByteString NULL_BYTE_STRING = new PascalByteString(-1, null);
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(.(?<transportCode>tcp|https?))?://" +
@@ -314,7 +314,8 @@ public class SecureChannel {
 
         PascalString policyId = selectedEndpoint.getValue().getPolicyId();
         UserTokenType tokenType = selectedEndpoint.getValue().getTokenType();
-        ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue());
+        SecurityPolicy tokenSecurityPolicy = userTokenSecurityPolicy(selectedEndpoint);
+        ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue(), tokenSecurityPolicy);
         RequestHeader requestHeader = conversation.createRequestHeader();
         SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
         if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
@@ -437,8 +438,7 @@ public class SecureChannel {
             ReadBufferByteBased readBuffer = toBuffer(opcuaOpenResponse::getMessage);
             ExtensionObject message = ExtensionObject.staticParse(readBuffer, false);
 
-            if (message.getBody() instanceof ServiceFault) {
-                ServiceFault fault = (ServiceFault) message.getBody();
+            if (message.getBody() instanceof ServiceFault fault) {
                 throw new PlcRuntimeException(Conversation.toProtocolException(fault));
             }
 
@@ -519,7 +519,7 @@ public class SecureChannel {
         }
 
         serverEndpoints.sort(Comparator.comparing(e -> e.getKey().getSecurityLevel()));
-        return serverEndpoints.get(0);
+        return serverEndpoints.getFirst();
     }
 
     private boolean isMatchingEndpointDescription(EndpointDescription endpointDescription) {
@@ -564,13 +564,41 @@ public class SecureChannel {
     }
 
     /**
+     * The security policy governing the user identity token. A UserTokenPolicy may name its own
+     * securityPolicyUri; when it doesn't, the endpoint's own policy applies.
+     */
+    private SecurityPolicy userTokenSecurityPolicy(Entry<EndpointDescription, UserTokenPolicy> selectedEndpoint) {
+        PascalString tokenPolicyUri = selectedEndpoint.getValue().getSecurityPolicyUri();
+        if (tokenPolicyUri != null && tokenPolicyUri.getStringValue() != null
+            && !tokenPolicyUri.getStringValue().isEmpty()) {
+            Optional<SecurityPolicy> policy = SecurityPolicy.findByUri(tokenPolicyUri.getStringValue());
+            if (policy.isPresent()) {
+                LOGGER.debug("User token policy declares security policy {}", policy.get());
+                return policy.get();
+            }
+            LOGGER.warn("Unknown user token security policy '{}', falling back to the endpoint policy",
+                tokenPolicyUri.getStringValue());
+        }
+        return SecurityPolicy.findByUri(selectedEndpoint.getKey().getSecurityPolicyUri().getStringValue())
+            .orElseGet(conversation::getSecurityPolicy);
+    }
+
+    /**
      * Creates an IdentityToken to authenticate with a server.
      *
      * @param tokenType      the token type
      * @param securityPolicy the security policy
      * @return returns an ExtensionObject with an IdentityToken.
+     * <p>
+     * Builds the user identity token for the selected user token policy.
+     * <p>
+     * The password encryption is dictated by the security policy of the <em>user token policy</em>,
+     * which is not necessarily the one securing the channel: a token policy may name its own, and
+     * only when it doesn't, does the endpoint's policy apply (OPC UA Part 4, UserNameIdentityToken).
+     * A policy of None means the password travels in plain text - see GH-2154.
      */
-    private ExtensionObject getIdentityToken(UserTokenType tokenType, String securityPolicy) {
+    private ExtensionObject getIdentityToken(UserTokenType tokenType, String securityPolicy,
+                                             SecurityPolicy tokenSecurityPolicy) {
         ExpandedNodeId extExpandedNodeId;
         switch (tokenType) {
             case userTokenTypeAnonymous:
@@ -589,7 +617,7 @@ public class SecureChannel {
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] remoteNonce = conversation.getRemoteNonce();
-                byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes();
+                byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes(StandardCharsets.UTF_8);
                 ByteBuffer encodeableBuffer = ByteBuffer.allocate(4 + passwordBytes.length + remoteNonce.length);
                 encodeableBuffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
                 encodeableBuffer.putInt(passwordBytes.length + remoteNonce.length);
@@ -599,12 +627,21 @@ public class SecureChannel {
                 encodeableBuffer.position(0);
                 encodeableBuffer.get(encodeablePassword);
 
-                byte[] encryptedPassword = conversation.encryptPassword(encodeablePassword);
+                byte[] tokenPassword;
+                String encryptionAlgorithm;
+                if (tokenSecurityPolicy == SecurityPolicy.NONE) {
+                    // No encryption: the password is sent as-is and no algorithm is declared.
+                    tokenPassword = encodeablePassword;
+                    encryptionAlgorithm = "";
+                } else {
+                    tokenPassword = conversation.encryptPassword(encodeablePassword, tokenSecurityPolicy);
+                    encryptionAlgorithm = tokenSecurityPolicy.getAsymmetricEncryptionAlgorithm().getUri();
+                }
                 UserNameIdentityToken userNameIdentityToken = new UserNameIdentityToken(
                     new PascalString(securityPolicy),
                     new PascalString(this.username),
-                    new PascalByteString(encryptedPassword.length, encryptedPassword),
-                    new PascalString(PASSWORD_ENCRYPTION_ALGORITHM)
+                    new PascalByteString(tokenPassword.length, tokenPassword),
+                    new PascalString(encryptionAlgorithm)
                 );
 
                 extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified

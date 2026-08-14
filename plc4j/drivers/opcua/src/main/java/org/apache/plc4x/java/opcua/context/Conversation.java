@@ -606,8 +606,8 @@ public class Conversation implements SecureChannelState {
         return messageSecurity;
     }
 
-    public byte[] encryptPassword(byte[] encodeablePassword) {
-        return encryptionHandler.encryptPassword(encodeablePassword);
+    public byte[] encryptPassword(byte[] encodeablePassword, SecurityPolicy policy) {
+        return encryptionHandler.encryptPassword(encodeablePassword, policy);
     }
 
     public void setSecurityHeader(SecurityHeader securityHeader) {
