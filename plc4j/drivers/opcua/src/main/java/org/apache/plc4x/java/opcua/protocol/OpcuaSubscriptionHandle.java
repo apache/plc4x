@@ -303,6 +303,13 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
                 if (fieldNames.hasNext()) {
                     String fieldName = fieldNames.next();
                     PlcValue plcValue = OpcuaConnection.variantToPlcValue(tag, variant);
+                    if (plcValue == null) {
+                        // Unsupported variant type: keep the field in the struct as an empty
+                        // value instead of putting a raw null into it.
+                        logger.error("Event field '{}' has unsupported variant type {}", fieldName,
+                            variant.getClass().getSimpleName());
+                        plcValue = new PlcNull();
+                    }
                     mapping.put(fieldName, plcValue);
                     tagValues.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcStruct(mapping)));
                 } else {
