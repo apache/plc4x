@@ -156,7 +156,9 @@ public class S7Tag implements PlcTag, Serializable {
     }
 
     public static boolean matches(String tagString) {
-        return DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString).matches() ||
+        return S7StringFixedLengthTag.matches(tagString) ||
+            S7StringVarLengthTag.matches(tagString) ||
+            DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString).matches() ||
             DATA_BLOCK_SHORT_PATTERN.matcher(tagString).matches() ||
             PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches() ||
             ADDRESS_PATTERN.matcher(tagString).matches();
@@ -164,6 +166,16 @@ public class S7Tag implements PlcTag, Serializable {
 
     public static S7Tag of(String tagString) {
         Matcher matcher;
+        // STRING/WSTRING addresses carry their length - "%DB69:68:STRING(20)" - which none of the
+        // patterns below accept. Delegate those to the dedicated subtypes, the same way
+        // S7PlcTagHandler.parseTag() does, so both entry points parse the same address space and
+        // the declared length isn't lost (it decides the string layout when reading/writing).
+        if (S7StringFixedLengthTag.matches(tagString)) {
+            return S7StringFixedLengthTag.of(tagString);
+        }
+        if (S7StringVarLengthTag.matches(tagString)) {
+            return S7StringVarLengthTag.of(tagString);
+        }
         if ((matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString)).matches()) {
             String dataTypeName = matcher.group(DATA_TYPE);
             if("RAW_BYTE_ARRAY".equals(dataTypeName)) {

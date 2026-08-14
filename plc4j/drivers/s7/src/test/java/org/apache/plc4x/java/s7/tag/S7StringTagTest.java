@@ -110,6 +110,61 @@ class S7StringTagTest {
         assertEquals(TransportSize.STRING, tag.getDataType());
     }
 
+    /**
+     * S7Tag.of() has to accept everything S7PlcTagHandler.parseTag() accepts, STRING lengths
+     * included - see GH-2388. Otherwise an address that works via addTagAddress(...) blows up
+     * when the very same string is handed to S7Tag.of(...).
+     */
+    @Test
+    void s7TagOfParsesFixedLengthStrings() {
+        S7Tag longForm = S7Tag.of("%DB1.DB0:STRING(80)");
+        assertInstanceOf(S7StringFixedLengthTag.class, longForm);
+        assertEquals(80, ((S7StringFixedLengthTag) longForm).getStringLength());
+
+        // the reporter's address
+        S7Tag shortForm = S7Tag.of("%DB69:68:STRING(20)");
+        assertInstanceOf(S7StringFixedLengthTag.class, shortForm);
+        assertEquals(20, ((S7StringFixedLengthTag) shortForm).getStringLength());
+        assertEquals(69, shortForm.getBlockNumber());
+        assertEquals(68, shortForm.getByteOffset());
+
+        S7Tag withCount = S7Tag.of("%DB1.DB0:WSTRING(40)[3]");
+        assertInstanceOf(S7StringFixedLengthTag.class, withCount);
+        assertEquals(40, ((S7StringFixedLengthTag) withCount).getStringLength());
+        assertEquals(3, withCount.getNumberOfElements());
+    }
+
+    @Test
+    void s7TagMatchesAcceptsStringLengths() {
+        assertTrue(S7Tag.matches("%DB69:68:STRING(20)"));
+        assertTrue(S7Tag.matches("%DB1.DB0:WSTRING(40)[3]"));
+        assertFalse(S7Tag.matches("not-a-tag"));
+    }
+
+    /**
+     * Both entry points must return equal tags for the same address.
+     */
+    @Test
+    void s7TagOfAgreesWithTagHandler() {
+        S7PlcTagHandler handler = new S7PlcTagHandler();
+        for (String address : new String[]{
+            "%DB69:68:STRING(20)",
+            "%DB1.DB0:STRING(80)",
+            "%DB1.DB0:STRING(40)[3]",
+            "%DB1.DB0:STRING",
+            "%DB1:0:STRING",
+            "%MW0:INT",
+            "%DB1.DBX0.0:BOOL"}) {
+            assertEquals(handler.parseTag(address), S7Tag.of(address), address);
+        }
+    }
+
+    @Test
+    void s7TagOfStillRejectsGarbage() {
+        assertThrows(org.apache.plc4x.java.api.exceptions.PlcInvalidTagException.class,
+            () -> S7Tag.of("not-a-tag"));
+    }
+
     @Test
     void tagHandlerRoutesToCorrectTagClass() {
         S7PlcTagHandler handler = new S7PlcTagHandler();

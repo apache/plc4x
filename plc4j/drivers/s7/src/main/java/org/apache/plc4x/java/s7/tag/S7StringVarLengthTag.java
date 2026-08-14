@@ -121,8 +121,8 @@ public class S7StringVarLengthTag extends S7Tag {
             return new S7StringVarLengthTag(dataType, memoryArea, blockNumber,
                 byteOffset, bitOffset, numElements);
         }
-        
-        return null;
-    }    
+
+        throw new PlcInvalidTagException("Unable to parse address: " + address);
+    }
 
 }

@@ -145,8 +145,8 @@ public class S7StringFixedLengthTag extends S7Tag {
             return new S7StringFixedLengthTag(dataType, memoryArea, blockNumber,
                 byteOffset, bitOffset, numElements, stringLength);
         }
-        
-        return null;
-    }    
+
+        throw new PlcInvalidTagException("Unable to parse address: " + address);
+    }
 
 }
