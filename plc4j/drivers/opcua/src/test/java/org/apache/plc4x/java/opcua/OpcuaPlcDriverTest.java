@@ -676,6 +676,37 @@ public class OpcuaPlcDriverTest {
                 }
             }
         }
+        /**
+         * A subscription covering several tags is served by a single handle, so
+         * getSubscriptionHandles() has to report exactly one - see GH-1896. Reporting it once per
+         * tag makes the documented "register a consumer on every handle" loop attach N consumers
+         * and deliver every event N times.
+         */
+        @Test
+        public void multiTagSubscriptionReportsOneHandle() throws Exception {
+            PlcConnectionManager connectionManager = new DefaultPlcDriverManager().getConnectionManager();
+
+            try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+                PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
+                    .addChangeOfStateTag("first", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
+                    .addChangeOfStateTag("second", OpcuaTag.of(BOOL_IDENTIFIER_READ_WRITE))
+                    .addChangeOfStateTag("third", OpcuaTag.of(INT32_IDENTIFIER_READ_WRITE))
+                    .build();
+
+                PlcSubscriptionResponse response = request.execute().get(60, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("first")).isEqualTo(PlcResponseCode.OK);
+                assertThat(response.getResponseCode("second")).isEqualTo(PlcResponseCode.OK);
+                assertThat(response.getResponseCode("third")).isEqualTo(PlcResponseCode.OK);
+
+                assertThat(response.getSubscriptionHandles()).hasSize(1);
+
+                connection.unsubscriptionRequestBuilder()
+                    .addHandles(response.getSubscriptionHandles())
+                    .build()
+                    .execute();
+            }
+        }
+
         @Test
         public void manySubscriptionsOnSingleConnection() throws Exception {
             final int numberOfSubscriptions = 3;

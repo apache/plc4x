@@ -89,6 +89,9 @@ import java.util.stream.Collectors;
 public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implements OpcuaWire {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaConnection.class);
+
+    /** Publishing interval used when a subscription tag doesn't ask for one. */
+    private static final Duration DEFAULT_CYCLE_TIME = Duration.ofMillis(1000);
     public static final PascalString NULL_STRING = new PascalString(null);
     private static final ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
         false,
@@ -551,7 +554,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         ReadRequest request = new ReadRequest(conversation.createRequestHeader(), 0.0d,
             TimestampsToReturn.timestampsToReturnNeither, Collections.singletonList(dataTypeRead));
         return conversation.submit(request, ReadResponse.class).thenCompose(response -> {
-            NodeId dataTypeNodeId = dataTypeNodeIdOf(response.getResults().get(0));
+            NodeId dataTypeNodeId = dataTypeNodeIdOf(response.getResults().getFirst());
             if (dataTypeNodeId == null) {
                 return CompletableFuture.completedFuture(null);
             }
@@ -566,7 +569,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         ReadRequest request = new ReadRequest(conversation.createRequestHeader(), 0.0d,
             TimestampsToReturn.timestampsToReturnNeither, Collections.singletonList(definitionRead));
         return conversation.submit(request, ReadResponse.class).thenApply(response -> {
-            DataValue value = response.getResults().get(0);
+            DataValue value = response.getResults().getFirst();
             if (!value.getValueSpecified() || !(value.getValue() instanceof VariantExtensionObject)) {
                 // Server doesn't expose the DataTypeDefinition attribute (e.g. pre-1.04 servers
                 // return BadAttributeIdInvalid); the layout must come from the legacy type
@@ -579,7 +582,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             }
             // The DataTypeDefinition is a well-known standard type (ns=0;i=101), so it is parsed
             // into a typed BinaryExtensionObjectWithMask whose body is the StructureDefinition.
-            ExtensionObjectDefinition body = extensionObjects.get(0).getBody();
+            ExtensionObjectDefinition body = extensionObjects.getFirst().getBody();
             return (body instanceof StructureDefinition) ? (StructureDefinition) body : null;
         });
     }
@@ -640,11 +643,11 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             new ViewDescription(new NodeId(new NodeIdTwoByte((short) 0)), 0L, 0L), 0L,
             Collections.singletonList(description));
         return conversation.submit(request, BrowseResponse.class).thenApply(response -> {
-            BrowseResult result = response.getResults().get(0);
+            BrowseResult result = response.getResults().getFirst();
             if (result.getReferences() == null || result.getReferences().isEmpty()) {
                 return null;
             }
-            ExpandedNodeId target = result.getReferences().get(0).getNodeId();
+            ExpandedNodeId target = result.getReferences().getFirst().getNodeId();
             return target == null ? null : new NodeId(target.getNodeId());
         });
     }
@@ -654,7 +657,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         ReadValueId readValueId = new ReadValueId(node, attributeId, NULL_STRING, new QualifiedName(0, NULL_STRING));
         ReadRequest request = new ReadRequest(conversation.createRequestHeader(), 0.0d,
             TimestampsToReturn.timestampsToReturnNeither, Collections.singletonList(readValueId));
-        return conversation.submit(request, ReadResponse.class).thenApply(response -> response.getResults().get(0));
+        return conversation.submit(request, ReadResponse.class).thenApply(response -> response.getResults().getFirst());
     }
 
     private static String stringValueOf(DataValue dataValue) {
@@ -662,7 +665,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         List<PascalString> values = ((VariantString) dataValue.getValue()).getValue();
-        return (values == null || values.isEmpty()) ? null : values.get(0).getStringValue();
+        return (values == null || values.isEmpty()) ? null : values.getFirst().getStringValue();
     }
 
     private static byte[] byteStringValueOf(DataValue dataValue) {
@@ -673,7 +676,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         if (arrays == null || arrays.isEmpty()) {
             return null;
         }
-        List<Short> bytes = arrays.get(0).getValue();
+        List<Short> bytes = arrays.getFirst().getValue();
         byte[] result = new byte[bytes.size()];
         for (int i = 0; i < bytes.size(); i++) {
             result[i] = bytes.get(i).byteValue();
@@ -715,7 +718,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             Set<String> lengthFields = new HashSet<>();
             for (int i = 0; i < fieldNodes.getLength(); i++) {
                 String lengthField = ((Element) fieldNodes.item(i)).getAttribute("LengthField");
-                if (lengthField != null && !lengthField.isEmpty()) {
+                if (!lengthField.isEmpty()) {
                     lengthFields.add(lengthField);
                 }
             }
@@ -748,25 +751,24 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         String local = typeName.contains(":") ? typeName.substring(typeName.indexOf(':') + 1) : typeName;
-        switch (local) {
-            case "Boolean":    return 1;
-            case "SByte":      return 2;
-            case "Byte":       return 3;
-            case "Int16":      return 4;
-            case "UInt16":     return 5;
-            case "Int32":      return 6;
-            case "UInt32":     return 7;
-            case "Int64":      return 8;
-            case "UInt64":     return 9;
-            case "Float":      return 10;
-            case "Double":     return 11;
-            case "String":
-            case "CharArray":  return 12;
-            case "DateTime":   return 13;
-            case "Guid":       return 14;
-            case "ByteString": return 15;
-            default:           return null;
-        }
+        return switch (local) {
+            case "Boolean" -> 1;
+            case "SByte" -> 2;
+            case "Byte" -> 3;
+            case "Int16" -> 4;
+            case "UInt16" -> 5;
+            case "Int32" -> 6;
+            case "UInt32" -> 7;
+            case "Int64" -> 8;
+            case "UInt64" -> 9;
+            case "Float" -> 10;
+            case "Double" -> 11;
+            case "String", "CharArray" -> 12;
+            case "DateTime" -> 13;
+            case "Guid" -> 14;
+            case "ByteString" -> 15;
+            default -> null;
+        };
     }
 
     /** Turns a struct Variant (single or array of ExtensionObjects) into a PlcStruct / PlcList of PlcStruct. */
@@ -836,23 +838,22 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         int id = builtInDataTypeId == null ? -1 : builtInDataTypeId.intValue();
         // Each OPC UA built-in is read with the smallest buffer reader that covers its bit width
         // (readUnsignedByte only handles 1-7 bits, so 8-bit and unsigned values step up a size).
-        switch (id) {
-            case 1:  return new PlcBOOL(buffer.readUnsignedShort(8) != 0);
-            case 2:  return new PlcSINT(buffer.readSignedByte(8));
-            case 3:  return new PlcUSINT(buffer.readUnsignedShort(8));
-            case 4:  return new PlcINT(buffer.readSignedShort(16));
-            case 5:  return new PlcUINT(buffer.readUnsignedInt(16));
-            case 6:  return new PlcDINT(buffer.readSignedInt(32));
-            case 7:  return new PlcUDINT(buffer.readUnsignedLong(32));
-            case 8:  return new PlcLINT(buffer.readSignedLong(64));
-            case 9:  return new PlcULINT(buffer.readUnsignedBigInteger(64));
-            case 10: return new PlcREAL(buffer.readFloat(32));
-            case 11: return new PlcLREAL(buffer.readDouble(64));
-            case 12: return new PlcSTRING(PascalString.staticParse(buffer).getStringValue());
-            default:
-                throw new PlcRuntimeException("Unsupported struct field data type id " + id
-                    + " (nested structs, enums and non-builtin types are not yet decoded)");
-        }
+        return switch (id) {
+            case 1 -> new PlcBOOL(buffer.readUnsignedShort(8) != 0);
+            case 2 -> new PlcSINT(buffer.readSignedByte(8));
+            case 3 -> new PlcUSINT(buffer.readUnsignedShort(8));
+            case 4 -> new PlcINT(buffer.readSignedShort(16));
+            case 5 -> new PlcUINT(buffer.readUnsignedInt(16));
+            case 6 -> new PlcDINT(buffer.readSignedInt(32));
+            case 7 -> new PlcUDINT(buffer.readUnsignedLong(32));
+            case 8 -> new PlcLINT(buffer.readSignedLong(64));
+            case 9 -> new PlcULINT(buffer.readUnsignedBigInteger(64));
+            case 10 -> new PlcREAL(buffer.readFloat(32));
+            case 11 -> new PlcLREAL(buffer.readDouble(64));
+            case 12 -> new PlcSTRING(PascalString.staticParse(buffer).getStringValue());
+            default -> throw new PlcRuntimeException("Unsupported struct field data type id " + id
+                + " (nested structs, enums and non-builtin types are not yet decoded)");
+        };
     }
 
     /** Canonical key for a NodeId (namespace + identifier) used to cache resolved type layouts. */
@@ -952,7 +953,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             new ViewDescription(new NodeId(new NodeIdTwoByte((short) 0)), 0L, 0L), 0L,
             Collections.singletonList(description));
         return conversation.submit(request, BrowseResponse.class).thenApply(response -> {
-            List<ReferenceDescription> references = response.getResults().get(0).getReferences();
+            List<ReferenceDescription> references = response.getResults().getFirst().getReferences();
             if (references == null || references.isEmpty()) {
                 return null;
             }
@@ -961,7 +962,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                     return reference.getNodeId();
                 }
             }
-            return references.get(0).getNodeId();
+            return references.getFirst().getNodeId();
         });
     }
 
@@ -974,7 +975,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             Collections.singletonList(extensionObject));
     }
 
-    /** Serialises a PlcStruct into the OPC UA binary body described by its StructureDefinition. */
+    /** Serializes a PlcStruct into the OPC UA binary body described by its StructureDefinition. */
     private static byte[] encodeStructBody(PlcValue value, StructureDefinition definition) {
         try {
             byte[] body = new byte[structBodySize(value, definition)];
@@ -1049,15 +1050,14 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
 
     private static int scalarSize(Long builtInDataTypeId, PlcValue value) {
         int id = builtInDataTypeId == null ? -1 : builtInDataTypeId.intValue();
-        switch (id) {
-            case 1: case 2: case 3:          return 1;
-            case 4: case 5:                  return 2;
-            case 6: case 7: case 10:         return 4;
-            case 8: case 9: case 11:         return 8;
-            case 12: return new PascalString(value.getString()).getLengthInBytes();
-            default:
-                throw new PlcRuntimeException("Unsupported struct field data type id " + id + " for writing");
-        }
+        return switch (id) {
+            case 1, 2, 3 -> 1;
+            case 4, 5 -> 2;
+            case 6, 7, 10 -> 4;
+            case 8, 9, 11 -> 8;
+            case 12 -> new PascalString(value.getString()).getLengthInBytes();
+            default -> throw new PlcRuntimeException("Unsupported struct field data type id " + id + " for writing");
+        };
     }
 
     // The standard "Objects" folder — the usual entry point into a server's address space.
@@ -1184,14 +1184,14 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 0L,                 // requestedMaxReferencesPerNode 0 -> server decides
                 Collections.singletonList(description));
             resultFuture = conversation.submit(request, BrowseResponse.class)
-                .thenApply(response -> response.getResults().get(0));
+                .thenApply(response -> response.getResults().getFirst());
         } else {
             BrowseNextRequest request = new BrowseNextRequest(
                 conversation.createRequestHeader(),
                 false,              // don't release the continuation point, we want the next batch
                 Collections.singletonList(continuationPoint));
             resultFuture = conversation.submit(request, BrowseNextResponse.class)
-                .thenApply(response -> response.getResults().get(0));
+                .thenApply(response -> response.getResults().getFirst());
         }
         return resultFuture.thenCompose(result -> {
             if (result.getReferences() != null) {
@@ -1249,7 +1249,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         }
 
         return new DefaultPlcBrowseItem(tag, name, readable, writable,
-            Collections.<PlcSubscriptionType>emptySet(), false, arrayInfo, children, options);
+            Collections.emptySet(), false, arrayInfo, children, options);
     }
 
     // The node attributes read for every variable child during a browse so items carry a real
@@ -1437,7 +1437,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         List<NodeId> nodeIds = ((VariantNodeId) dataValue.getValue()).getValue();
-        return (nodeIds == null || nodeIds.isEmpty()) ? null : nodeIds.get(0);
+        return (nodeIds == null || nodeIds.isEmpty()) ? null : nodeIds.getFirst();
     }
 
     /**
@@ -1501,7 +1501,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         List<Short> values = ((VariantByte) dataValue.getValue()).getValue();
-        return (values == null || values.isEmpty()) ? null : values.get(0);
+        return (values == null || values.isEmpty()) ? null : values.getFirst();
     }
 
     /** Extracts the first Int32 from a Variant, or null if not an int32 scalar. */
@@ -1510,7 +1510,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             return null;
         }
         List<Integer> values = ((VariantInt32) dataValue.getValue()).getValue();
-        return (values == null || values.isEmpty()) ? null : values.get(0);
+        return (values == null || values.isEmpty()) ? null : values.getFirst();
     }
 
     /** Extracts the UInt32 list from a Variant, or null if not a uint32 value. */
@@ -1557,19 +1557,17 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
         }
         NodeIdTypeDefinition nodeId = expandedNodeId.getNodeId();
         String identifier = nodeId.getIdentifier();
-        if (nodeId instanceof NodeIdTwoByte) {
-            return "ns=0;i=" + identifier;
-        } else if (nodeId instanceof NodeIdFourByte fourByte) {
-            return "ns=" + fourByte.getNamespaceIndex() + ";i=" + identifier;
-        } else if (nodeId instanceof NodeIdNumeric numeric) {
-            return "ns=" + numeric.getNamespaceIndex() + ";i=" + identifier;
-        } else if (nodeId instanceof NodeIdString string) {
-            return "ns=" + string.getNamespaceIndex() + ";s=" + identifier;
-        }
-        // GUID and opaque (ByteString) node identifiers are not round-tripped in Phase 1:
-        // NodeIdGuid#getIdentifier() returns the raw byte-array toString(), which the tag
-        // parser can't turn back into a usable node id. Such nodes are skipped for now.
-        return null;
+        return switch (nodeId) {
+            case NodeIdTwoByte ignored -> "ns=0;i=" + identifier;
+            case NodeIdFourByte fourByte -> "ns=" + fourByte.getNamespaceIndex() + ";i=" + identifier;
+            case NodeIdNumeric numeric -> "ns=" + numeric.getNamespaceIndex() + ";i=" + identifier;
+            case NodeIdString string -> "ns=" + string.getNamespaceIndex() + ";s=" + identifier;
+            default ->
+                // GUID and opaque (ByteString) node identifiers are not round-tripped in Phase 1:
+                // NodeIdGuid#getIdentifier() returns the raw byte-array toString(), which the tag
+                // parser can't turn back into a usable node id. Such nodes are skipped for now.
+                null;
+        };
     }
 
     private static String localizedTextValue(LocalizedText localizedText) {
@@ -1595,7 +1593,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             case null -> {
                 return new PlcNull();
             }
-            case VariantNull variantNull -> {
+            case VariantNull ignored -> {
                 return new PlcNull();
             }
             case VariantBoolean variantBoolean -> {
@@ -2036,9 +2034,9 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
             } else if (serverAttributes != null && serverAttributes.unsigned()) {
                 // Node is the abstract UInteger type: no concrete built-in to resolve to, so pick
                 // an unsigned type sized to the value (an abstract node accepts any subtype).
-                dataType = inferUnsignedWriteType(plcValueList.get(0));
+                dataType = inferUnsignedWriteType(plcValueList.getFirst());
             } else {
-                dataType = inferWriteType(plcValueList.get(0));
+                dataType = inferWriteType(plcValueList.getFirst());
             }
         }
         int length = valueObject.getLength();
@@ -2390,12 +2388,24 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     @Override
     protected CompletableFuture<PlcSubscriptionResponse> onSubscribe(PlcSubscriptionRequest subscriptionRequest) {
         List<String> tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
-        long cycleTime = (subscriptionRequest.getTag(tagNames.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
+        // A subscription has a single publishing interval, so take the fastest rate any of its tags
+        // asked for - taking the first tag's rate would starve every faster tag behind it. The
+        // individual sampling rates are set per monitored item (see onSubscribeCreateMonitoredItemsRequest).
+        long cycleTime = tagNames.stream()
+            .map(subscriptionRequest::getTag)
+            .map(tag -> tag.getDuration().orElse(DEFAULT_CYCLE_TIME))
+            .min(Duration::compareTo)
+            .orElse(DEFAULT_CYCLE_TIME)
+            .toMillis();
 
         return onSubscribeCreateSubscription(cycleTime).thenApply(response -> {
                 long subscriptionId = response.getSubscriptionId();
+                // The server may revise the publishing interval; everything we time against it
+                // (the publish request cadence and its timeouts) has to follow the revised value,
+                // not what we asked for.
+                long revisedCycleTime = revisedPublishingInterval(response, cycleTime);
                 OpcuaSubscriptionHandle handle = new OpcuaSubscriptionHandle(this,
-                    conversation, subscriptionRequest, subscriptionId, cycleTime);
+                    conversation, subscriptionRequest, subscriptionId, cycleTime, revisedCycleTime);
                 if (subscriptionRequest.getConsumer() != null) {
                     handle.register(subscriptionRequest.getConsumer());
                 }
@@ -2408,7 +2418,7 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
                 subscriptions.put(handle.getSubscriptionId(), handle);
                 return handle;
             })
-            .thenCompose(handle -> handle.onSubscribeCreateMonitoredItemsRequest())
+            .thenCompose(OpcuaSubscriptionHandle::onSubscribeCreateMonitoredItemsRequest)
             .thenApply(handle -> {
                 Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
                 for (String tagName : subscriptionRequest.getTagNames()) {
@@ -2422,6 +2432,23 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
 
                 return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
             });
+    }
+
+    /**
+     * The publishing interval the server actually granted, in milliseconds. Servers are free to
+     * revise the interval we requested (typically upwards, to their smallest supported rate).
+     * Falls back to the requested value if the server reports something unusable.
+     */
+    private static long revisedPublishingInterval(CreateSubscriptionResponse response, long requestedCycleTime) {
+        double revised = response.getRevisedPublishingInterval();
+        if (revised <= 0) {
+            return requestedCycleTime;
+        }
+        long revisedMillis = Math.round(revised);
+        if (revisedMillis != requestedCycleTime) {
+            LOGGER.debug("Server revised the publishing interval from {}ms to {}ms", requestedCycleTime, revisedMillis);
+        }
+        return revisedMillis;
     }
 
     private CompletableFuture<CreateSubscriptionResponse> onSubscribeCreateSubscription(long cycleTime) {
@@ -2476,13 +2503,5 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
     public static long getDateTime(long dateTime) {
         return (dateTime - EPOCH_OFFSET) / 10000;
     }
-
-    private GuidValue toGuidValue(String identifier) {
-        LOGGER.error("Querying Guid nodes is not supported");
-        byte[] data4 = new byte[]{0, 0};
-        byte[] data5 = new byte[]{0, 0, 0, 0, 0, 0};
-        return new GuidValue(0L, 0, 0, data4, data5);
-    }
-
 
 }
