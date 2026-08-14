@@ -32,6 +32,7 @@ import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
+import org.apache.plc4x.java.spi.values.PlcList;
 
 import java.util.*;
 
@@ -121,12 +122,27 @@ public class ModbusReadOptimizer {
 
             try {
                 if (blockTag instanceof ModbusTagCoil || blockTag instanceof ModbusTagDiscreteInput) {
-                    // Coils/discrete inputs: bit-level extraction
-                    int bitPosition = originalTag.getAddress() - blockTag.getAddress();
-                    int bytePosition = bitPosition / 8;
-                    int bitPositionInByte = bitPosition % 8;
-                    boolean isBitSet = (blockData[bytePosition] & (1 << bitPositionInByte)) != 0;
-                    result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcBOOL(isBitSet)));
+                    // Coils/discrete inputs: bit-level extraction. An array tag (BOOL[n]) occupies
+                    // n consecutive coils - the block read already covers all of them (see
+                    // optimizeCoils), so every element has to be extracted, not just the first.
+                    int firstBitPosition = originalTag.getAddress() - blockTag.getAddress();
+                    int numberOfElements = originalTag.getNumberOfElements();
+                    int lastBytePosition = (firstBitPosition + numberOfElements - 1) / 8;
+                    if (lastBytePosition >= blockData.length) {
+                        // The device returned fewer coils than we asked for.
+                        result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                        continue;
+                    }
+                    List<PlcValue> values = new ArrayList<>(numberOfElements);
+                    for (int i = 0; i < numberOfElements; i++) {
+                        int bitPosition = firstBitPosition + i;
+                        int bytePosition = bitPosition / 8;
+                        int bitPositionInByte = bitPosition % 8;
+                        boolean isBitSet = (blockData[bytePosition] & (1 << bitPositionInByte)) != 0;
+                        values.add(new PlcBOOL(isBitSet));
+                    }
+                    PlcValue plcValue = numberOfElements == 1 ? values.getFirst() : new PlcList(values);
+                    result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue));
                 } else {
                     // Registers: byte-level extraction
                     int byteOffset = (originalTag.getAddress() - blockTag.getAddress()) * 2;
