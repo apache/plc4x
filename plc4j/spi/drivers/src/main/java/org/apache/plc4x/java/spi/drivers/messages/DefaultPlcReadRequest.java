@@ -34,8 +34,12 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPlcReadRequest.class);
 
     private final PlcReader reader;
     private final LinkedHashMap<String, PlcTagItem<PlcTag>> tags;
@@ -109,6 +113,10 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest {
                     PlcTag tag = tagHandler.parseTag(tagAddress);
                     return new DefaultPlcTagItem<>(tag);
                 } catch (Exception e) {
+                    // The tag still takes part in the request, carrying INVALID_ADDRESS. Without
+                    // this log line the user is left with a response code and no way of telling
+                    // which address was rejected or why.
+                    LOGGER.warn("Invalid address '{}' for tag '{}': {}", tagAddress, name, e.getMessage(), e);
                     return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_ADDRESS);
                 }
             });
