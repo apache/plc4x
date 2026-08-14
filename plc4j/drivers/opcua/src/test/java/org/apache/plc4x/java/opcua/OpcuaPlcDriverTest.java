@@ -84,9 +84,13 @@ public class OpcuaPlcDriverTest {
     private static final String APPLICATION_URI = "urn:org.apache:plc4x";
     private static final KeystoreGenerator SERVER_KEY_STORE_GENERATOR = new KeystoreGenerator("password", 2048, APPLICATION_URI);
     private static final KeystoreGenerator CLIENT_KEY_STORE_GENERATOR = new KeystoreGenerator("changeit", 2048, APPLICATION_URI, "plc4x_plus_milo", "client");
+    // A second client identity with a 4096-bit key. Several reports blamed connection failures on
+    // large certificates (GH-2013, GH-2196, GH-2286), so the size is covered explicitly.
+    private static final KeystoreGenerator CLIENT_KEY_STORE_4096_GENERATOR = new KeystoreGenerator("changeit", 4096, APPLICATION_URI, "plc4x_plus_milo", "client4096");
 
     private static final File SECURITY_DIR;
     private static final File CLIENT_KEY_STORE;
+    private static final File CLIENT_KEY_STORE_4096;
     // The server's certificate, exported so the client can pin trust to it. Since the
     // driver now rejects server certificates by default (no permissive fallback), every
     // secured connection needs an explicit trust anchor.
@@ -125,6 +129,15 @@ public class OpcuaPlcDriverTest {
             }
             try (FileOutputStream outputStream = new FileOutputStream(new File(trustedCerts, "plc4x.crt"))) {
                 CLIENT_KEY_STORE_GENERATOR.writeCertificateTo(outputStream);
+            }
+
+            // the same, for the 4096-bit client identity
+            CLIENT_KEY_STORE_4096 = Files.createTempFile("plc4x_opcua_client_4096_", ".p12").toAbsolutePath().toFile();
+            try (FileOutputStream outputStream = new FileOutputStream(CLIENT_KEY_STORE_4096)) {
+                CLIENT_KEY_STORE_4096_GENERATOR.writeKeyStoreTo(outputStream);
+            }
+            try (FileOutputStream outputStream = new FileOutputStream(new File(trustedCerts, "plc4x_4096.crt"))) {
+                CLIENT_KEY_STORE_4096_GENERATOR.writeCertificateTo(outputStream);
             }
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
@@ -953,6 +966,38 @@ public class OpcuaPlcDriverTest {
     }
 
     /**
+     * Connecting with a 4096-bit client certificate. Several reports suspected large certificates
+     * of breaking the secure-channel handshake (GH-2013, GH-2196, GH-2286), so the key size is
+     * covered explicitly rather than only at the 2048 bits the rest of the suite uses.
+     */
+    @Nested
+    class LargeCertificates {
+
+        @ParameterizedTest
+        @MethodSource("org.apache.plc4x.java.opcua.OpcuaPlcDriverTest#getSecuredConnectionSecurityPolicies")
+        public void connectsWith4096BitClientCertificate(SecurityPolicy policy, MessageSecurity messageSecurity) throws Exception {
+            String connectionString = tcpConnectionAddress + PARAM_DIVIDER + params(
+                entry("key-store-file", CLIENT_KEY_STORE_4096.getAbsoluteFile().toString().replace("\\", "/")),
+                entry("key-store-password", "changeit"),
+                entry("key-store-type", "pkcs12"),
+                entry("server-certificate-file", SERVER_CERTIFICATE.toString().replace("\\", "/")),
+                entry("security-policy", policy.name()),
+                entry("message-security", messageSecurity.name()));
+
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(connectionString)) {
+                assertThat(connection.isConnected())
+                    .describedAs("4096-bit client certificate with %s/%s", policy, messageSecurity)
+                    .isTrue();
+
+                PlcReadResponse response = connection.readRequestBuilder()
+                    .addTagAddress("value", BOOL_IDENTIFIER_READ_WRITE)
+                    .build().execute().get(30, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("value")).isEqualTo(PlcResponseCode.OK);
+            }
+        }
+    }
+
+    /**
      * Username/password authentication against the Milo test server, which accepts
      * {@code user}/{@code password1} and {@code admin}/{@code password2}.
      * <p>
@@ -1262,6 +1307,12 @@ public class OpcuaPlcDriverTest {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    /** The secured policies only - an unsecured channel never exchanges certificates. */
+    private static Stream<Arguments> getSecuredConnectionSecurityPolicies() {
+        return getConnectionSecurityPolicies()
+            .filter(arguments -> arguments.get()[0] != SecurityPolicy.NONE);
     }
 
     private static Stream<Arguments> getConnectionSecurityPolicies() {
