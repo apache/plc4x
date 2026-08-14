@@ -47,9 +47,13 @@ The driver accepts three kinds of addresses.
 MAIN.g_plant.channels[1].setpoints[4]
 ----
 
-Array indices may appear at any position of the path, not only at the end. Symbolic addresses are
-resolved against the symbol- and data-type-table, so they require
-`load-symbol-and-data-type-tables` to be enabled (the default).
+Array indices may appear at any position of the path, not only at the end.
+
+Symbolic addresses are resolved against the symbol- and data-type-table, so they require
+`load-symbol-and-data-type-tables` to be enabled (the default). With that option disabled the
+tables are never fetched and a symbolic address is rejected with an error saying so - use a direct
+address instead. Subscriptions are the exception: they resolve symbol handles on the device and
+work either way.
 
 *Direct addresses* name the index group and index offset explicitly, in decimal or hexadecimal, and
 carry the data type:
@@ -76,7 +80,8 @@ carry the data type:
 ----
 
 Unlike symbolic addresses, direct addresses need no symbol table and therefore work regardless of
-the `load-symbol-and-data-type-tables` setting.
+the `load-symbol-and-data-type-tables` setting. Browsing does need it, since it lists the symbol
+table; with the option disabled a browse request is answered with `UNSUPPORTED`.
 
 == Connection String Options
 

@@ -66,7 +66,7 @@ public class AdsConfiguration implements Configuration {
 
     @ConfigurationParameter("load-symbol-and-data-type-tables")
     @BooleanDefaultValue(true)
-    @Description("Configures, if when connecting the data-type- and symbol-table should be read. This is an optimization that can help in cases, where the PLC program is pretty large and downloading the full tables is causing problems. When disabled, only direct addresses (`{IndexGroup}/{IndexOffset}:{TYPE}`) can be used: symbolic addresses are resolved against these tables and will fail with `Unknown symbol` if they were not loaded. Browsing is unavailable too, as it lists the symbol table.")
+    @Description("Configures, if when connecting the data-type- and symbol-table should be read. This is an optimization that can help in cases, where the PLC program is pretty large and downloading the full tables is causing problems. When disabled, reading and writing is limited to direct addresses (`{IndexGroup}/{IndexOffset}:{TYPE}`): symbolic addresses cannot be resolved without the tables and are rejected with a corresponding error. Browsing is unavailable for the same reason. Subscriptions are unaffected, as they resolve symbol handles on the device.")
     protected boolean loadSymbolAndDataTypeTables;
 
     public AmsNetId getTargetAmsNetId() {
