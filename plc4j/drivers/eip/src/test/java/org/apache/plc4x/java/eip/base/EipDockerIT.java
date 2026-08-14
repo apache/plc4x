@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -227,6 +228,43 @@ public class EipDockerIT {
             PlcReadResponse readResponse = readRequest.execute().get();
             assertEquals(PlcResponseCode.OK, readResponse.getResponseCode("arrElem"));
             assertEquals(0xCAFEBABE, readResponse.getInteger("arrElem"));
+        }
+    }
+
+    /**
+     * Reading several array elements at once - see GH-1008. The driver used to ask the device
+     * for a single element while decoding as many as the tag declared, so this returned either
+     * a wrong value or an IndexOutOfBoundsException.
+     *
+     * <p>The element count has to reach the wire in the {@code CipReadRequest}, which is what
+     * separates this from {@link #writeReadArrayElement()} - that one reads a single element
+     * and passes either way.
+     */
+    @Test
+    void readMultipleArrayElements() throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(connectionUrl)) {
+            // Seed the first four elements with recognisable values.
+            PlcWriteRequest.Builder writeBuilder = connection.writeRequestBuilder();
+            for (int i = 0; i < 4; i++) {
+                writeBuilder.addTagAddress("e" + i, "hurz_DINT_ARR[" + i + "]:DINT", 0x1000 + i);
+            }
+            PlcWriteResponse writeResponse = writeBuilder.build().execute().get();
+            for (int i = 0; i < 4; i++) {
+                assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode("e" + i));
+            }
+
+            // Read all four back with a single array read.
+            PlcReadRequest readRequest = connection.readRequestBuilder()
+                .addTagAddress("arr", "hurz_DINT_ARR[0]:DINT:4")
+                .build();
+            PlcReadResponse readResponse = readRequest.execute().get();
+
+            assertEquals(PlcResponseCode.OK, readResponse.getResponseCode("arr"));
+            PlcValue value = readResponse.getPlcValue("arr");
+            assertEquals(4, value.getLength());
+            for (int i = 0; i < 4; i++) {
+                assertEquals(0x1000 + i, value.getIndex(i).getInt(), "element " + i);
+            }
         }
     }
 

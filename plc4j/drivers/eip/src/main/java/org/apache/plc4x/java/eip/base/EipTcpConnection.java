@@ -444,7 +444,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             EipTag eipTag = (EipTag) request.getTag(tagName);
             CompletableFuture<Void> tagFuture = chain.thenComposeAsync(v -> executeThrottled(() -> {
                 try {
-                    CipReadRequest req = new CipReadRequest(toAnsi(eipTag.getTag()), 1);
+                    CipReadRequest req = new CipReadRequest(toAnsi(eipTag.getTag()), elementCount(eipTag));
                     CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
                         classSegment, instanceSegment, req,
                         (byte) getConfiguration().getBackplane(),
@@ -495,7 +495,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         for (String tagName : sendableTagNames(request)) {
             EipTag eipTag = (EipTag) request.getTag(tagName);
             try {
-                requests.add(new CipReadRequest(toAnsi(eipTag.getTag()), 1));
+                requests.add(new CipReadRequest(toAnsi(eipTag.getTag()), elementCount(eipTag)));
             } catch (BufferException e) {
                 return CompletableFuture.failedFuture(new PlcRuntimeException("Failed to read field", e));
             }
@@ -538,7 +538,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         for (String tagName : sendableTagNames(request)) {
             EipTag eipTag = (EipTag) request.getTag(tagName);
             try {
-                requests.add(new CipReadRequest(toAnsi(eipTag.getTag()), 1));
+                requests.add(new CipReadRequest(toAnsi(eipTag.getTag()), elementCount(eipTag)));
             } catch (BufferException e) {
                 return CompletableFuture.failedFuture(new PlcRuntimeException("Failed to read field", e));
             }
@@ -835,6 +835,9 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             PlcValue plcValue = null;
             if (code == PlcResponseCode.OK) {
                 plcValue = parsePlcValue(tag, resp.getData().getData(), resp.getData().getDataType());
+                if (plcValue == null) {
+                    code = PlcResponseCode.INTERNAL_ERROR;
+                }
             }
             values.put(tagName, new DefaultPlcResponseItem<>(code, plcValue));
         } else if (p instanceof MultipleServiceResponse responses) {
@@ -866,6 +869,9 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
                     PlcValue plcValue = null;
                     if (code == PlcResponseCode.OK) {
                         plcValue = parsePlcValue(tag, rr.getData().getData(), rr.getData().getDataType());
+                        if (plcValue == null) {
+                            code = PlcResponseCode.INTERNAL_ERROR;
+                        }
                     }
                     values.put(tagName, new DefaultPlcResponseItem<>(code, plcValue));
                 }
@@ -884,17 +890,49 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         PlcValue plcValue = null;
         if (code == PlcResponseCode.OK) {
             plcValue = parsePlcValue((EipTag) tag, resp.getData().getData(), resp.getData().getDataType());
+            if (plcValue == null) {
+                // Undecodable payload (unsupported type or a reply shorter than the requested
+                // number of elements) - don't report that as a successful read.
+                code = PlcResponseCode.INTERNAL_ERROR;
+            }
         }
         values.put(tagName, new DefaultPlcResponseItem<>(code, plcValue));
         return values;
     }
 
-    private PlcValue parsePlcValue(EipTag tag, byte[] rawData, CIPDataTypeCode type) {
+    /**
+     * Number of elements to ask the device for. An array tag ({@code %tag[0]:DINT:8}) has to
+     * request all of its elements - see GH-1008 - otherwise the device returns a single element
+     * and the decoder below has nothing to read the remaining ones from.
+     */
+    private static int elementCount(EipTag tag) {
+        return Math.max(tag.getElementNb(), 1);
+    }
+
+    /** Whether the type is stored as a flat sequence of equally sized elements. */
+    private static boolean isFixedSize(CIPDataTypeCode type) {
+        return switch (type) {
+            case SINT, INT, DINT, LINT, REAL, LREAL, BOOL -> true;
+            default -> false;
+        };
+    }
+
+    // Package-private and static so the decoding can be tested without a connection.
+    static PlcValue parsePlcValue(EipTag tag, byte[] rawData, CIPDataTypeCode type) {
         final int STRING_LEN_OFFSET = 2;
         final int STRING_DATA_OFFSET = 6;
         ByteBuffer data = ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN);
-        int nb = tag.getElementNb();
+        int nb = elementCount(tag);
         if (nb > 1) {
+            // Never read past what the device actually sent - a short reply must not blow up
+            // the whole response with an IndexOutOfBoundsException. Only the fixed-size types
+            // below are laid out element by element; STRING/STRUCTURED carry their own length.
+            int elementSize = isFixedSize(type) ? type.getSize() : 0;
+            if (elementSize > 0 && rawData.length < nb * elementSize) {
+                LOGGER.warn("Device returned {} bytes for tag '{}', expected {} for {} elements of {}.",
+                    rawData.length, tag.getTag(), nb * elementSize, nb, type);
+                return null;
+            }
             List<PlcValue> list = new ArrayList<>();
             int index = 0;
             for (int i = 0; i < nb; i++) {
