@@ -58,6 +58,13 @@
 |icon:exclamation[role="yellow"]
 |icon:times[role="red"]
 
+|ctrlX
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+|icon:times[role="red"]
+
 |DF1
 |icon:times[role="red"]
 |icon:times[role="red"]
@@ -160,7 +167,7 @@
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:times[role="red"]
+|icon:check[role="green"]
 |icon:check[role="green"]
 
 |===

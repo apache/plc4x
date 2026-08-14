@@ -52,6 +52,7 @@
 *** xref:protocols/s7.adoc[]
 *** xref:protocols/simulated.adoc[]
 *** xref:protocols/slmp.adoc[]
+*** xref:protocols/umas.adoc[]
 
 ** xref:transports/index.adoc[]
 *** xref:transports/tcp.adoc[]

@@ -21,28 +21,16 @@
 
 This protocol is used by Schneider Electric PLCs such as the M340, M580 and the Quantum PLCs with the Unity firmware.
 
-This driver supports reading/writing/browsing of PLC tags as well as %S/%SW addresses.
+This driver supports reading, writing and browsing of PLC tags.
 
 The Data Dictionary needs to be enabled on the PLC.
 
-(Supported by Plc4Py Only)
+NOTE: The driver is available in Java and in Plc4Py. The tag address syntax differs slightly
+between the two; where that is the case it is called out below.
 
 == Connection String Options
 
-[cols="2,2a,2a,2a,4a"]
-|===
-|Name |Type |Default Value |Required |Description
-|Name 4+|UMAS
-|Code 4+|`umas`
-|Default Transport 4+|`tcp`
-|Supported Transports 4+|
- - `tcp`
-5+|Config options:
-|`request-timeout` |INT |5000| |Default timeout for all types of requests.
-|`unit-identifier` |INT |1| |Unit-identifier or slave-id that identifies the target PLC. Defaults to 1.
-+++
-
-|===
+include::partial$umas.adoc[]
 == Supported Operations
 
 [cols="2,2a,5a"]
@@ -59,6 +47,9 @@ The Data Dictionary needs to be enabled on the PLC.
 
 |
 2+| `browse`
+
+|
+2+| `ping`
 |===
 
 == Individual Resource Address Format
@@ -78,29 +69,46 @@ Note the transport, port and option fields are optional.
 
 === General Format
 
-In general all UMAS addresses have this format:
+UMAS addresses are the symbolic names declared in the PLC program, following the usual
+IEC 61131-3 conventions:
 
 ----
-{tag-name}.{child-name}.{child-name}:{data-type}[{array-size}]
+{tag-name}
+{tag-name}[{index}]
+{tag-name}.{child-name}
+{tag-name}.{child-name}[{index}].{child-name}
 ----
 
 Depending on the type of tag the child-name parameters are optional.
-e.g. A tag with a BOOL data type could be 'TESTING_BOOL_1' whereas
-if it is a UDT the tag name is followed by the child 'TESTING_UDT_1.START' which in itself could be a BOOL.
+e.g. A tag with a BOOL data type could be `TESTING_BOOL_1`, whereas if it is a UDT the tag name is
+followed by the child `TESTING_UDT_1.START`, which in itself could be a BOOL.
+An index in square brackets selects a single element and may appear at any position of the path.
 
-If the array-size part is omitted, the size-default of `1` is assumed.
+.Examples
+[cols="2" ,options="header"]
+|===
+|Address |Meaning
+|`g_r32` |a simple global variable
+|`g_plant.meta.r32` |a nested struct member
+|`g_arrInt[3]` |the fourth element of an array
+|`g_plant.items[2].value` |mixed struct and array access
+|===
 
-If the data-type part is omitted, it defaults to the data type of the tag read from the PLC.
+IMPORTANT: The Java driver takes the data type from the PLC's data dictionary, so an address carries
+no `:{data-type}` suffix - appending one makes the address invalid.
 
 === Memory Areas
 
-Apart from tags defined in the PLC the driver is also able to access the %S and %SW
+Apart from tags defined in the PLC, Plc4Py is also able to access the %S and %SW
 system memory areas.
 
 The specific address details of the data in these areas are outlined in the devices
 manual.
 
 An example of the address format of these areas is %SW1 or %S20.
+
+NOTE: These system memory addresses are supported by Plc4Py only. The Java driver's address parser
+accepts symbolic names only and rejects addresses starting with `%`.
 
 === Data Types
 

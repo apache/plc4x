@@ -229,8 +229,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                 responseCodes.put(queryName, PlcResponseCode.OK);
                 responseItems.put(queryName, new ArrayList<>());
                 PlcQuery query = browseRequest.getQuery(queryName);
-                if (query instanceof CtrlXQuery) {
-                    CtrlXQuery ctrlXQuery = (CtrlXQuery) query;
+                if (query instanceof CtrlXQuery ctrlXQuery) {
                     matchers.put(queryName, ctrlXQuery.getMatcher());
                 } else {
                     future.completeExceptionally(
@@ -268,7 +267,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                     if (children.isEmpty()) {
                         List<String> matchingQueryNames = matchers.entrySet().stream()
                             .filter(entry -> entry.getValue().matches(curNode)).map(Map.Entry::getKey)
-                            .collect(Collectors.toList());
+                            .toList();
                         // If there's at least one matching query, read the "metadata", which contains information
                         // on if the property is readable or writable.
                         if (!matchingQueryNames.isEmpty()) {
@@ -292,7 +291,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                     // If this node has children, then it's branch, and we need to add its children to the queue.
                     else {
                         // Add all children to the list.
-                        uncheckedNodeList.addAll(children.stream().map(child -> curNode + "/" + child).collect(Collectors.toList()));
+                        uncheckedNodeList.addAll(children.stream().map(child -> curNode + "/" + child).toList());
                     }
                 } catch (ApiException e) {
                     // Ignore ...
