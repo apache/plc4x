@@ -33,6 +33,8 @@ import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -44,6 +46,8 @@ import java.util.*;
  * to serve each original tag.
  */
 public class ModbusReadOptimizer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModbusReadOptimizer.class);
 
     private final int maxCoilsPerRequest;
     private final int maxRegistersPerRequest;
@@ -125,6 +129,14 @@ public class ModbusReadOptimizer {
                     // Coils/discrete inputs: bit-level extraction. An array tag (BOOL[n]) occupies
                     // n consecutive coils - the block read already covers all of them (see
                     // optimizeCoils), so every element has to be extracted, not just the first.
+                    if (originalTag.getDataType() != ModbusDataType.BOOL) {
+                        // A coil carries a single bit. Assembling coils into wider types is not
+                        // implemented - report that instead of silently returning the first bit.
+                        LOGGER.warn("Reading coils/discrete inputs as {} is not supported (tag '{}'), only BOOL is.",
+                            originalTag.getDataType(), tagName);
+                        result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
+                        continue;
+                    }
                     int firstBitPosition = originalTag.getAddress() - blockTag.getAddress();
                     int numberOfElements = originalTag.getNumberOfElements();
                     int lastBytePosition = (firstBitPosition + numberOfElements - 1) / 8;

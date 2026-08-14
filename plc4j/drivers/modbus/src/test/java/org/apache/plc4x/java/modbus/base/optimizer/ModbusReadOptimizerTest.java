@@ -308,6 +308,20 @@ class ModbusReadOptimizerTest {
     }
 
     /**
+     * A coil holds a single bit, so anything other than BOOL has to be reported as unsupported
+     * rather than silently answered with the first bit.
+     */
+    @Test
+    void nonBoolCoilIsReportedAsUnsupported() {
+        Map<String, PlcResponseItem<PlcValue>> response =
+            splitSingleRead(new ModbusTagCoil(0, 1, ModbusDataType.INT, Collections.emptyMap()),
+                new byte[]{(byte) 0b00000001, (byte) 0b00000000});
+
+        assertEquals(PlcResponseCode.UNSUPPORTED, response.get("tag0").getResponseCode());
+        assertNull(response.get("tag0").getValue());
+    }
+
+    /**
      * A device answering with fewer coils than requested must not blow up the whole response.
      */
     @Test
