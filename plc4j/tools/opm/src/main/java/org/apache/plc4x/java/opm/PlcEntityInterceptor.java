@@ -31,8 +31,11 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -40,8 +43,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -378,7 +384,7 @@ public class PlcEntityInterceptor {
             // Fill into Cache
             lastFetched.put(field.getName(), Instant.now());
 
-            Object value = getTyped(m.getReturnType(), response, fqn);
+            Object value = getTyped(m.getReturnType(), m.getGenericReturnType(), response, fqn);
             setForField(field, proxy, value);
         } catch (ClassCastException e) {
             throw new OPMException("Unable to return response as suitable type", e);
@@ -462,20 +468,113 @@ public class PlcEntityInterceptor {
         Field field = clazz.getDeclaredField(targetTagName);
         field.setAccessible(true);
         try {
-            field.set(o, getTyped(field.getType(), response, sourceTagName));
+            field.set(o, getTyped(field.getType(), field.getGenericType(), response, sourceTagName));
         } catch (ClassCastException e) {
             throw new PlcRuntimeException(String.format("Unable to assign return value %s to tag %s with type %s",
                 response.getObject(sourceTagName), targetTagName, field.getType()), e);
         }
     }
 
+    /** The element type of a collection type, or Object when it isn't known. */
+    private static Class<?> elementType(Type genericType) {
+        if (genericType instanceof ParameterizedType parameterized) {
+            Type[] arguments = parameterized.getActualTypeArguments();
+            if (arguments.length == 1 && arguments[0] instanceof Class<?> elementClass) {
+                return elementClass;
+            }
+        }
+        return Object.class;
+    }
+
+    /** Reads all values of a tag and returns them as an array of the given component type. */
+    private static Object toArray(Class<?> componentType, PlcReadResponse response, String sourceFieldName) {
+        List<?> values = new ArrayList<>(getAllTyped(componentType, response, sourceFieldName));
+        Object array = Array.newInstance(componentType, values.size());
+        for (int i = 0; i < values.size(); i++) {
+            // Array.set unboxes for primitive component types.
+            Array.set(array, i, values.get(i));
+        }
+        return array;
+    }
+
+    /** Reads all values of a tag into a collection assignable to the declared collection type. */
+    private static Object toCollection(Class<?> clazz, Class<?> elementType, PlcReadResponse response,
+                                       String sourceFieldName) {
+        Collection<?> values = getAllTyped(elementType, response, sourceFieldName);
+        if (clazz.isAssignableFrom(ArrayList.class)) {
+            return new ArrayList<>(values);
+        }
+        if (clazz.isAssignableFrom(LinkedHashSet.class)) {
+            return new LinkedHashSet<>(values);
+        }
+        throw new ClassCastException("Unable to return the values of tag " + sourceFieldName
+            + " as an instance of " + clazz + ". Use List, Collection, Set or an array.");
+    }
+
+    /**
+     * The typed accessor matching the element type, mirroring the scalar conversions below.
+     * Unknown types fall back to the plain objects of the response.
+     */
+    private static Collection<?> getAllTyped(Class<?> elementType, PlcReadResponse response, String sourceFieldName) {
+        if (elementType == boolean.class || elementType == Boolean.class) {
+            return response.getAllBooleans(sourceFieldName);
+        } else if (elementType == byte.class || elementType == Byte.class) {
+            return response.getAllBytes(sourceFieldName);
+        } else if (elementType == short.class || elementType == Short.class) {
+            return response.getAllShorts(sourceFieldName);
+        } else if (elementType == int.class || elementType == Integer.class) {
+            return response.getAllIntegers(sourceFieldName);
+        } else if (elementType == long.class || elementType == Long.class) {
+            return response.getAllLongs(sourceFieldName);
+        } else if (elementType == float.class || elementType == Float.class) {
+            return response.getAllFloats(sourceFieldName);
+        } else if (elementType == double.class || elementType == Double.class) {
+            return response.getAllDoubles(sourceFieldName);
+        } else if (elementType == BigInteger.class) {
+            return response.getAllBigIntegers(sourceFieldName);
+        } else if (elementType == BigDecimal.class) {
+            return response.getAllBigDecimals(sourceFieldName);
+        } else if (elementType == String.class) {
+            return response.getAllStrings(sourceFieldName);
+        } else if (elementType == LocalTime.class) {
+            return response.getAllTimes(sourceFieldName);
+        } else if (elementType == LocalDate.class) {
+            return response.getAllDates(sourceFieldName);
+        } else if (elementType == LocalDateTime.class) {
+            return response.getAllDateTimes(sourceFieldName);
+        }
+        return response.getAllObjects(sourceFieldName);
+    }
+
+    static Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
+        return getTyped(clazz, null, response, sourceFieldName);
+    }
+
+    /**
+     * Converts the value of one tag of a response into the type of the annotated field.
+     *
+     * @param clazz       the declared type of the field or the return type of the getter
+     * @param genericType the generic type of the same, when known. It carries the element type of a
+     *                    collection field ({@code List<Integer>}), which the raw class does not -
+     *                    see GH-1947. May be null, in which case collection elements come back as
+     *                    plain objects.
+     */
     @SuppressWarnings({"squid:S3776", "squid:MethodCyclomaticComplexity"})
     // Cognitive Complexity not too high, as highly structured
-    static Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
+    static Object getTyped(Class<?> clazz, Type genericType, PlcReadResponse response, String sourceFieldName) {
         LOGGER.debug("getTyped clazz: {}, response: {}, tagName: {}", clazz, response, sourceFieldName);
         if (response.getResponseCode(sourceFieldName) != PlcResponseCode.OK) {
             throw new PlcRuntimeException(String.format("Unable to read specified tag '%s', response code was '%s'",
                 sourceFieldName, response.getResponseCode(sourceFieldName)));
+        }
+        // A tag reading several values (e.g. "input-register:1:UINT[2]") has to be assigned to an
+        // array or collection field, with its elements converted to the field's element type -
+        // handing out the raw PlcValues makes every element access throw a ClassCastException.
+        if (clazz.isArray()) {
+            return toArray(clazz.getComponentType(), response, sourceFieldName);
+        }
+        if (Collection.class.isAssignableFrom(clazz)) {
+            return toCollection(clazz, elementType(genericType), response, sourceFieldName);
         }
         if (clazz.isPrimitive()) {
             if (clazz == boolean.class) {
