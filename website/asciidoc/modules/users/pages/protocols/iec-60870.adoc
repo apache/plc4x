@@ -19,7 +19,14 @@
 
 = IEC-60870
 
+== Supported Operations
 
+IMPORTANT: This driver supports *subscriptions only* - reading, writing and browsing are not
+implemented and a request for any of them is rejected.
+
+Tag addresses are currently not interpreted: any address string is accepted without error, and the
+subscription receives all incoming ASDUs rather than those matching the address. Consumers have to
+filter the incoming events themselves.
 
 == Connection String Options
 

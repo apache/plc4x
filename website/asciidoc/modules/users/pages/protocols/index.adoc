@@ -58,18 +58,11 @@
 |icon:exclamation[role="yellow"]
 |icon:times[role="red"]
 
-|DeltaV
-|icon:times[role="red"]
-|icon:times[role="red"]
-|icon:times[role="red"]
-|icon:exclamation[role="yellow"]
-|icon:times[role="red"]
-
 |DF1
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:exclamation[role="yellow"]
+|icon:times[role="red"]
 |icon:times[role="red"]
 
 |EtherNet/IP
@@ -234,17 +227,6 @@ The following table contains a list of operations and the protocols that support
 |icon:question[role="red"]
 
 |CANopen
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
-|DeltaV
 |icon:question[role="red"]
 |icon:question[role="red"]
 |icon:question[role="red"]

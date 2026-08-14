@@ -35,7 +35,7 @@ logix:tcp://{ip-address}:{port}?{options}
 ----
 An example connection string would look like:-
 ----
-logix:tcp://127.0.0.1:502?communicationPath=[1,1]
+logix:tcp://127.0.0.1:44818?communication-path=[1,1]
 ----
 Note the port and option fields are optional.
 
@@ -45,12 +45,21 @@ Note the port and option fields are optional.
 In general all Logix addresses have this format:
 
 ----
-{address}:{data-type}[{array-size}]
+{tagname}
+{tagname}:{DataType}
+{tagname}:{numberOfElements}
+{tagname}[{startIndex}]:{DataType}:{numberOfElements}
 ----
 
-If the array-size part is omitted, the size-default of `1` is assumed.
-If the data-type part is omitted, the data type from the controller is used
-The address format matches that found in the controller.
+The tag name matches that found in the controller and may optionally be prefixed with `%`.
+An array index is appended to the tag name and has to be its last part.
+
+If the number-of-elements part is omitted, `1` is assumed.
+If the data type is omitted it defaults to `DINT`, so for anything that is not a 32-bit integer it
+has to be given explicitly - also when reading.
+
+NOTE: The data type comes *before* the number of elements. Reading four DINTs starting at index 0
+is `myArray[0]:DINT:4`.
 
 === Data Types
 
@@ -58,13 +67,12 @@ The following data types are supported
 
 - BOOL (boolean)
 - SINT (int 8)
-- USINT (uint 8)
-- BYTE (uint 8)
 - INT (int 16)
-- UINT (uint 16)
-- WORD (uint 16)
 - DINT (int 32)
-- UDINT (uint 32)
-- DWORD (uint 32)
 - LINT (int 64)
 - REAL (float)
+- LREAL (double)
+- STRING (character string)
+
+NOTE: Other CIP data types are accepted by the address parser but are not encoded or decoded by the
+driver; reading such a tag results in a response code of `INTERNAL_ERROR` rather than a value.

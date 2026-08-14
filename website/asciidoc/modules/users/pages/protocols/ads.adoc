@@ -37,6 +37,47 @@ ADS (Automation Device Specification) is the TwinCAT communication protocol that
 AMS (Automation Message Specification) specifies the exchange of the ADS data. A major component of the communication protocol is the AmsNetId. This is specified in the AMS/ADS package for the source and target device. An ADS device can be explicitly addressed using the AmsNetId.
 Source https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= (accessed 7 August 2022)
 
+== Address Format
+
+The driver accepts three kinds of addresses.
+
+*Symbolic addresses* use the variable name as it is known in the PLC program:
+
+----
+MAIN.g_plant.channels[1].setpoints[4]
+----
+
+Array indices may appear at any position of the path, not only at the end. Symbolic addresses are
+resolved against the symbol- and data-type-table, so they require
+`load-symbol-and-data-type-tables` to be enabled (the default).
+
+*Direct addresses* name the index group and index offset explicitly, in decimal or hexadecimal, and
+carry the data type:
+
+----
+{IndexGroup}/{IndexOffset}:{TYPE}
+{IndexGroup}/{IndexOffset}:{TYPE}[{numberOfElements}]
+----
+
+.Examples
+[cols="2" ,options="header"]
+|===
+|Address |Meaning
+|`16448/16448:DINT` |one DINT at index group 16448, offset 16448
+|`0x4040/0x4040:DINT` |the same address in hexadecimal
+|`16448/16448:INT[10]` |an array of 10 INTs
+|===
+
+*Direct string addresses* additionally carry the fixed length of the string:
+
+----
+{IndexGroup}/{IndexOffset}:STRING({length})
+{IndexGroup}/{IndexOffset}:WSTRING({length})
+----
+
+Unlike symbolic addresses, direct addresses need no symbol table and therefore work regardless of
+the `load-symbol-and-data-type-tables` setting.
+
 == Connection String Options
 
 include::partial$ads.adoc[]
