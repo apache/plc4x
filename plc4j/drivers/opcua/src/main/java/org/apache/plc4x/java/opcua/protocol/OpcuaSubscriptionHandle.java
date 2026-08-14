@@ -20,6 +20,7 @@ package org.apache.plc4x.java.opcua.protocol;
 
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -41,6 +42,7 @@ import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.slf4j.Logger;
@@ -73,6 +75,10 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
 
     private final List<SubscriptionAcknowledgement> outstandingAcknowledgements = new CopyOnWriteArrayList<>();
     private ScheduledFuture<?> publishTask;
+
+    /** Most recent value per tag, used to re-report CYCLIC tags on their own schedule. */
+    private final Map<String, PlcResponseItem<PlcValue>> lastValues = new ConcurrentHashMap<>();
+    private final List<ScheduledFuture<?>> cyclicTasks = new CopyOnWriteArrayList<>();
 
     public OpcuaSubscriptionHandle(OpcuaConnection plcSubscriber,
         Conversation conversation, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime) {
@@ -190,6 +196,7 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
 
                 logger.trace("Scheduling publish event for subscription {}", subscriptionId);
                 publishTask = EXECUTOR.scheduleAtFixedRate(this::sendPublishRequest, revisedCycleTime / 2, revisedCycleTime, TimeUnit.MILLISECONDS);
+                startCyclicEmitters();
                 return this;
             });
     }
@@ -256,13 +263,24 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
 
         //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
         conversation.submit(deleteSubscriptionRequest, DeleteSubscriptionsResponse.class)
-            .thenAccept(responseMessage -> publishTask.cancel(true))
             .whenComplete((result, error) -> {
                 if (error != null) {
                     logger.error("Deletion of subscription resulted in error", error);
                 }
+                // Stop our own scheduled work regardless of how the server answered - a failed
+                // delete must not leave the publish loop and the cyclic emitters running.
+                cancelScheduledTasks();
                 plcSubscriber.removeSubscription(subscriptionId);
             });
+    }
+
+    private void cancelScheduledTasks() {
+        if (publishTask != null) {
+            publishTask.cancel(true);
+            publishTask = null;
+        }
+        cyclicTasks.forEach(task -> task.cancel(true));
+        cyclicTasks.clear();
     }
 
     /**
@@ -289,8 +307,68 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
         }
 
         Map<String, PlcResponseItem<PlcValue>> mappedResponse = plcSubscriber.readResponse(tagMap, dataValues);
+        // Remember the values so cyclic tags can be reported again on their own schedule even
+        // though the server only notifies us when something actually changes - see GH-1102.
+        lastValues.putAll(mappedResponse);
         PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(receiveTs), mappedResponse);
         consumers.forEach(plcSubscriptionEventConsumer -> plcSubscriptionEventConsumer.accept(event));
+    }
+
+    /**
+     * Starts the emitters for CYCLIC tags.
+     * <p>
+     * OPC UA has no notion of a polling interval: a monitored item reports its initial value and
+     * then only reports again when the value changes. A CYCLIC subscription however promises an
+     * event every interval, so for those tags we re-report the most recently received value on
+     * the requested schedule (see GH-1102). Tags sharing an interval are reported together.
+     */
+    private void startCyclicEmitters() {
+        Map<Long, List<String>> tagsByInterval = new LinkedHashMap<>();
+        for (String tagName : tagNames) {
+            PlcSubscriptionTag tag = subscriptionRequest.getTag(tagName);
+            if (tag.getPlcSubscriptionType() != PlcSubscriptionType.CYCLIC) {
+                continue;
+            }
+            long interval = tag.getDuration().map(Duration::toMillis).orElse(cycleTime);
+            tagsByInterval.computeIfAbsent(interval, k -> new ArrayList<>()).add(tagName);
+        }
+
+        for (Map.Entry<Long, List<String>> entry : tagsByInterval.entrySet()) {
+            long interval = entry.getKey();
+            List<String> names = entry.getValue();
+            logger.debug("Reporting cyclic tags {} every {}ms", names, interval);
+            cyclicTasks.add(EXECUTOR.scheduleAtFixedRate(
+                () -> emitCyclicValues(names), interval, interval, TimeUnit.MILLISECONDS));
+        }
+    }
+
+    /** Reports the last known value of the given tags to the registered consumers. */
+    private void emitCyclicValues(List<String> names) {
+        try {
+            Map<String, PlcResponseItem<PlcValue>> values = new LinkedHashMap<>();
+            for (String tagName : names) {
+                PlcResponseItem<PlcValue> value = lastValues.get(tagName);
+                if (value != null) {
+                    values.put(tagName, value);
+                }
+            }
+            if (values.isEmpty()) {
+                // Nothing received from the server yet - nothing to report.
+                return;
+            }
+            PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), values);
+            for (String tagName : values.keySet()) {
+                Consumer<PlcSubscriptionEvent> tagConsumer = tagConsumers.get(tagName);
+                if (tagConsumer != null) {
+                    tagConsumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(),
+                        Map.of(tagName, values.get(tagName))));
+                }
+            }
+            consumers.forEach(consumer -> consumer.accept(event));
+        } catch (Exception e) {
+            // A failing consumer must not kill the scheduled task for good.
+            logger.error("Error while reporting cyclic values for {}", names, e);
+        }
     }
 
     private void onEventNotification(List<EventFieldList> events) {

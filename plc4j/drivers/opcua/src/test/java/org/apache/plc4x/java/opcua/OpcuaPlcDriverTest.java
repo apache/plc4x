@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.time.Duration;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -676,6 +677,44 @@ public class OpcuaPlcDriverTest {
                 }
             }
         }
+        /**
+         * A CYCLIC subscription has to report the value on every interval, even when it never
+         * changes - see GH-1102. OPC UA itself only notifies on change, so a static value used to
+         * produce exactly one event (the monitored item's initial value) and nothing after that.
+         */
+        @Test
+        public void cyclicSubscriptionReportsRepeatedly() throws Exception {
+            PlcConnectionManager connectionManager = new DefaultPlcDriverManager().getConnectionManager();
+
+            try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+                ConcurrentLinkedDeque<PlcSubscriptionEvent> events = new ConcurrentLinkedDeque<>();
+
+                PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
+                    // A value nobody is writing to - without the fix this reports once and stops.
+                    .addCyclicTagAddress("static", STRING_IDENTIFIER_READ_WRITE, Duration.ofMillis(500))
+                    .build();
+
+                PlcSubscriptionResponse response = request.execute().get(60, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("static")).isEqualTo(PlcResponseCode.OK);
+                response.getSubscriptionHandles().forEach(handle -> handle.register(events::add));
+
+                // Five cycles of head room for three expected reports.
+                for (int i = 0; i < 50 && events.size() < 3; i++) {
+                    Thread.sleep(100);
+                }
+
+                assertThat(events.size())
+                    .withFailMessage("expected repeated cyclic reports, got %d event(s)", events.size())
+                    .isGreaterThanOrEqualTo(3);
+                assertThat(events.getLast().getPlcValue("static")).isNotNull();
+
+                connection.unsubscriptionRequestBuilder()
+                    .addHandles(response.getSubscriptionHandles())
+                    .build()
+                    .execute();
+            }
+        }
+
         /**
          * A subscription covering several tags is served by a single handle, so
          * getSubscriptionHandles() has to report exactly one - see GH-1896. Reporting it once per
