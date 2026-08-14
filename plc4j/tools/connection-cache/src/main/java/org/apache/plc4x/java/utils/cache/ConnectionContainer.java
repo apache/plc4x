@@ -48,7 +48,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * the connection state. The lock prevents race conditions during lease/return operations.
  * Using ReentrantLock provides better performance under contention compared to synchronized.
  * <p>
- * Deadlock Prevention: Always acquires locks in the same order and releases them promptly.
+ * Deadlock Prevention: Always acquires locks in the same order and releases them promptly. The
+ * container lock is always the <em>inner</em> lock with respect to a {@link LeasedPlcConnection}'s
+ * own lock (lease -&gt; container), which is why {@link #close()} closes an outstanding lease before
+ * taking the container lock rather than while holding it.
  * Timer tasks are canceled before attempting to close connections to prevent deadlocks.
  * Every blocking I/O performed under the lock is time-bounded — connect (see {@link #connectBounded()},
  * bounded by {@code maxWaitTimeMs}), ping ({@code pingTimeoutMs}) and close ({@code closeTimeoutMs}) — so
@@ -501,11 +504,20 @@ class ConnectionContainer {
      * the container should not be used anymore.
      */
     public void close() {
+        // Close any outstanding lease WITHOUT holding the container lock. LeasedPlcConnection.close()
+        // takes the lease's own lock and only then re-enters this container via returnLease(), which
+        // takes the container lock — the lease -> container order every application thread follows
+        // when it closes its own lease. Doing it under the container lock here would take those two
+        // locks in the opposite order (container -> lease) and could deadlock against an application
+        // thread that is closing its lease at the same moment. The lease read is a volatile read, and
+        // LeasedPlcConnection.close() is idempotent, so racing with a concurrent lease return is safe.
+        LeasedPlcConnection outstandingLease = leasedConnection;
+        if (outstandingLease != null) {
+            outstandingLease.close();
+        }
+
         lock.lock();
         try {
-            if (leasedConnection != null) {
-                leasedConnection.close();
-            }
             closeInternal();
         } finally {
             lock.unlock();
