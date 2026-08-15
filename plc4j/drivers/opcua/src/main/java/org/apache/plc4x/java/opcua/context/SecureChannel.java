@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
@@ -308,7 +309,20 @@ public class SecureChannel {
         Entry<EndpointDescription, UserTokenPolicy> selectedEndpoint = selectEndpoint(sessionResponse.getServerEndpoints(),
             configuration.getSecurityPolicy(), configuration.getMessageSecurity());
         if (selectedEndpoint == null) {
-            throw new PlcRuntimeException("Unable to find endpoint matching  " + driverContext.getEndpoint());
+            // Endpoints are matched on the host as written in the connection string; the driver
+            // performs no name resolution. Servers commonly advertise a different name than the
+            // one that was dialed, so say what was offered and how to point the driver at it.
+            String advertised = sessionResponse.getServerEndpoints().stream()
+                .map(endpoint -> endpoint.getEndpointUrl().getStringValue()
+                    + " (" + endpoint.getSecurityPolicyUri().getStringValue()
+                    + ", " + endpoint.getSecurityMode() + ")")
+                .collect(Collectors.joining("\n  "));
+            throw new PlcRuntimeException("Unable to find an endpoint matching " + driverContext.getEndpoint()
+                + " with security policy " + configuration.getSecurityPolicy()
+                + " and message security " + configuration.getMessageSecurity()
+                + ". The server offered:\n  " + advertised
+                + "\nIf the server advertises a different host name than the one you connect to, set"
+                + " 'endpoint-host' (and 'endpoint-port' if it differs) to the name shown above.");
         }
 
         PascalString policyId = selectedEndpoint.getValue().getPolicyId();
@@ -546,7 +560,11 @@ public class SecureChannel {
      */
     private static boolean isMatchingEndpoint(EndpointDescription endpoint, String host, String port, String transportEndpoint) throws PlcRuntimeException {
         String portAddition = port == null ? "" : ":" + port;
-        return endpoint.getEndpointUrl().getStringValue().startsWith("opc.tcp://" + host + portAddition + transportEndpoint);
+        String expected = "opc.tcp://" + host + portAddition + transportEndpoint;
+        // Host names are case insensitive, so a server advertising "opc.tcp://MyServer:4840" has
+        // to match a connection string that says "myserver".
+        return endpoint.getEndpointUrl().getStringValue().toLowerCase(Locale.ROOT)
+            .startsWith(expected.toLowerCase(Locale.ROOT));
     }
 
     /**
