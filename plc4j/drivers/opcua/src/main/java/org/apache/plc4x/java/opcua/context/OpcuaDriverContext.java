@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -349,7 +350,10 @@ public class OpcuaDriverContext {
         }
 
         KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-        keyStore.load(new FileInputStream(serverKeyStore), password);
+        // The stream has to be closed explicitly - on Windows an open handle keeps the file locked.
+        try (InputStream inputStream = new FileInputStream(serverKeyStore)) {
+            keyStore.load(inputStream, password);
+        }
         return keyStore;
     }
 
