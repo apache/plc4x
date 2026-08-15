@@ -301,12 +301,22 @@ class EncryptionHandlerTest {
         return new PascalByteString(bytes.length, bytes);
     }
 
+    private static int encodedLength(X509Certificate certificate) {
+        try {
+            return certificate == null ? 0 : certificate.getEncoded().length;
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     private static Conversation createSecureChannel(X509Certificate localCertificate, X509Certificate remoteCertificate, SecurityPolicy securityPolicy,
         MessageSecurity messageSecurity, boolean encrypted, boolean signed) {
         OpcuaProtocolLimits limits = new OpcuaProtocolLimits(8196L, 8196L, 8196L * 10, 10L);
         Conversation conversation = Mockito.mock(Conversation.class);
         when(conversation.getLimits()).thenReturn(limits);
         when(conversation.getLocalCertificate()).thenReturn(localCertificate);
+        // Mirrors production: without a CA chain the header carries just this certificate.
+        when(conversation.getLocalCertificateChainSize()).thenReturn(encodedLength(localCertificate));
         when(conversation.getRemoteCertificate()).thenReturn(remoteCertificate);
         when(conversation.getSecurityPolicy()).thenReturn(securityPolicy);
         when(conversation.getMessageSecurity()).thenReturn(messageSecurity);

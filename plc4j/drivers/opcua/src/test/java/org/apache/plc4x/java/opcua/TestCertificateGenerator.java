@@ -55,6 +55,35 @@ public class TestCertificateGenerator {
         return new BigInteger(62, new SecureRandom()).setBit(62);
     }
 
+    /**
+     * Generates a certificate signed by the given issuer, so tests can build a real certificate
+     * chain. A self-signed certificate never exercises the code paths that deal with chains.
+     */
+    public static Entry<PrivateKey, X509Certificate> generateSignedBy(int keySize, String dn, long validitySec,
+        PrivateKey issuerKey, X509Certificate issuerCertificate) {
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(keySize, new SecureRandom());
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
+                issuerCertificate.getSubjectX500Principal(),
+                serialNumber(),
+                new Date(),
+                new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(validitySec)),
+                new X500Principal(dn),
+                keyPair.getPublic()
+            );
+            X509CertificateHolder cert = certGen.build(new JcaContentSignerBuilder("SHA256withRSA")
+                .build(issuerKey));
+
+            X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(cert);
+            return Map.entry(keyPair.getPrivate(), certificate);
+        } catch (CertificateException | NoSuchAlgorithmException | OperatorCreationException e) {
+            throw new RuntimeException("Could not initialize test - certificate generation failed", e);
+        }
+    }
+
     public static Entry<PrivateKey, X509Certificate> generate(int keySize, String dn, long validitySec) {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");

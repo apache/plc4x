@@ -117,12 +117,11 @@ public class SecureChannel {
         } else {
             CertificateKeyPair keyPair = driverContext.getCertificateKeyPair();
             this.remoteCertificateThumbprint = driverContext.getThumbprint();
-            try {
-                byte[] encoded = keyPair.getCertificate().getEncoded();
-                this.localCertificateString = new PascalByteString(encoded.length, encoded);
-            } catch (CertificateEncodingException e) {
-                throw new PlcRuntimeException("Could not decode certificate", e);
-            }
+            // Send the whole chain: a CA-signed certificate is not verifiable on its own by a
+            // server that only trusts the issuing CA (OPC UA Part 6, SenderCertificate). For a
+            // self-signed certificate this is just that one certificate.
+            byte[] encoded = keyPair.getEncodedCertificateChain();
+            this.localCertificateString = new PascalByteString(encoded.length, encoded);
         }
     }
 

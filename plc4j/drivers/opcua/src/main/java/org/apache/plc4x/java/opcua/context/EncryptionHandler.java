@@ -67,7 +67,8 @@ public class EncryptionHandler {
         if (message instanceof OpcuaOpenRequest || message instanceof OpcuaOpenResponse) {
             Chunk chunk = new ChunkFactory().create(true, conversation.isSymmetricEncryptionEnabled(), conversation.isSymmetricSigningEnabled(),
                 conversation.getSecurityPolicy(), limits,
-                conversation.getLocalCertificate(), conversation.getRemoteCertificate()
+                conversation.getLocalCertificate(), conversation.getRemoteCertificate(),
+                conversation.getLocalCertificateChainSize()
             );
             return asymmetricEncryptionHandler.encodeMessage(chunk, message, sequenceSupplier);
         }

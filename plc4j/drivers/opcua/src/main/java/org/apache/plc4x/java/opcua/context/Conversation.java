@@ -136,6 +136,7 @@ public class Conversation implements SecureChannelState {
     private OpcuaProtocolLimits limits;
 
     private X509Certificate localCertificate = null;
+    private int localCertificateChainSize = 0;
     private X509Certificate remoteCertificate = null;
     private byte[] remoteNonce;
     private byte[] localNonce;
@@ -176,6 +177,9 @@ public class Conversation implements SecureChannelState {
             this.remoteCertificate = configuration.getServerCertificate();
             this.encryptionHandler = new EncryptionHandler(this, senderKeyPair.getPrivateKey());
             this.localCertificate = senderKeyPair.getCertificate();
+            // The header is sized against what actually goes on the wire, which for a CA-signed
+            // certificate is the whole chain rather than the certificate alone.
+            this.localCertificateChainSize = senderKeyPair.getEncodedCertificateChain().length;
         } else {
             this.messageSecurity = MessageSecurity.NONE;
             this.encryptionHandler = new EncryptionHandler(this, null);
@@ -580,6 +584,14 @@ public class Conversation implements SecureChannelState {
     @Override
     public X509Certificate getLocalCertificate() {
         return localCertificate;
+    }
+
+    /**
+     * Number of bytes the local certificate occupies in the asymmetric security header, i.e. the
+     * whole certificate chain when there is one.
+     */
+    public int getLocalCertificateChainSize() {
+        return localCertificateChainSize;
     }
 
     public void setRemoteNonce(byte[] remoteNonce) {

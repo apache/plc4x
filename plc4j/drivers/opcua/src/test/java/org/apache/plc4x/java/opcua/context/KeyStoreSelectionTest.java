@@ -45,6 +45,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 import javax.security.auth.x500.X500Principal;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -102,6 +103,52 @@ class KeyStoreSelectionTest {
 
         assertTrue(exception.getMessage().contains("EC"), exception.getMessage());
         assertTrue(exception.getMessage().contains("RSA"), exception.getMessage());
+    }
+
+    /**
+     * A CA-signed client certificate cannot be verified on its own by a server that only trusts the
+     * issuing CA, so the certificates that signed it have to travel with it - see OPC UA Part 6,
+     * SenderCertificate. Every certificate in the test suite is self-signed, which is why this case
+     * went unnoticed (GH-2013).
+     */
+    @Test
+    void sendsTheWholeChainForACaSignedCertificate() throws Exception {
+        Entry<PrivateKey, X509Certificate> ca = TestCertificateGenerator.generate(2048, "CN=test-ca", 3600);
+        Entry<PrivateKey, X509Certificate> client =
+            TestCertificateGenerator.generateSignedBy(2048, "CN=client", 3600, ca.getKey(), ca.getValue());
+
+        KeyStore keyStore = emptyKeyStore();
+        keyStore.setKeyEntry("client", client.getKey(), PASSWORD,
+            new java.security.cert.Certificate[]{client.getValue(), ca.getValue()});
+
+        CertificateKeyPair selected = load(keyStore);
+
+        assertEquals(2, selected.getCertificateChain().size());
+        assertEquals(client.getValue(), selected.getCertificate(), "the client certificate comes first");
+
+        byte[] encoded = selected.getEncodedCertificateChain();
+        assertEquals(client.getValue().getEncoded().length + ca.getValue().getEncoded().length, encoded.length,
+            "the chain on the wire is the concatenation of both certificates");
+        assertArrayEquals(client.getValue().getEncoded(),
+            java.util.Arrays.copyOf(encoded, client.getValue().getEncoded().length));
+    }
+
+    /**
+     * The thumbprint identifies the sender's own certificate, never the chain.
+     */
+    @Test
+    void thumbprintCoversOnlyTheClientCertificate() throws Exception {
+        Entry<PrivateKey, X509Certificate> ca = TestCertificateGenerator.generate(2048, "CN=test-ca", 3600);
+        Entry<PrivateKey, X509Certificate> client =
+            TestCertificateGenerator.generateSignedBy(2048, "CN=client", 3600, ca.getKey(), ca.getValue());
+
+        CertificateKeyPair withChain = new CertificateKeyPair(
+            new KeyPair(client.getValue().getPublicKey(), client.getKey()),
+            java.util.List.of(client.getValue(), ca.getValue()));
+        CertificateKeyPair leafOnly = new CertificateKeyPair(
+            new KeyPair(client.getValue().getPublicKey(), client.getKey()), client.getValue());
+
+        assertArrayEquals(leafOnly.getThumbPrint(), withChain.getThumbPrint());
     }
 
     private CertificateKeyPair load(KeyStore keyStore) throws Exception {

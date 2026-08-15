@@ -23,7 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Optional;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -46,6 +48,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
 import java.security.Security;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.regex.Matcher;
@@ -115,7 +118,7 @@ public class OpcuaDriverContext {
                 ((RSAPublicKey) certificate.getPublicKey()).getModulus().bitLength(),
                 certificate.getPublicKey().getAlgorithm(), certificate.getSubjectX500Principal());
             KeyPair kp = new KeyPair(certificate.getPublicKey(), privateKey);
-            certificateKeyPair = new CertificateKeyPair(kp, certificate);
+            certificateKeyPair = new CertificateKeyPair(kp, certificateChain(keyStore, alias, certificate));
         }
 
         if (configuration.getServerCertificate() != null) {
@@ -144,6 +147,34 @@ public class OpcuaDriverContext {
         }
         throw new KeyStoreException("The key store '" + keyStoreFile
             + "' contains no entry with a private key, so it cannot be used as a client identity.");
+    }
+
+    /**
+     * The certificate chain stored under the given alias, the client certificate first. A
+     * CA-signed client certificate is only verifiable by a server that can build a path to its
+     * trust anchor, which usually means the issuing certificates have to travel with it - see
+     * OPC UA Part 6, SenderCertificate. A self-signed certificate simply yields a chain of one.
+     */
+    private List<X509Certificate> certificateChain(KeyStore keyStore, String alias, X509Certificate certificate)
+        throws GeneralSecurityException {
+        Certificate[] chain = keyStore.getCertificateChain(alias);
+        if (chain == null || chain.length == 0) {
+            return List.of(certificate);
+        }
+        List<X509Certificate> certificates = new ArrayList<>(chain.length);
+        for (Certificate element : chain) {
+            if (element instanceof X509Certificate x509) {
+                certificates.add(x509);
+            } else {
+                LOGGER.warn("Ignoring a {} certificate in the chain of key store entry '{}'",
+                    element.getType(), alias);
+            }
+        }
+        if (certificates.size() > 1) {
+            LOGGER.info("Key store entry '{}' carries a chain of {} certificates; sending all of them",
+                alias, certificates.size());
+        }
+        return certificates.isEmpty() ? List.of(certificate) : certificates;
     }
 
     /**

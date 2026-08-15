@@ -42,6 +42,23 @@ public interface SecureChannelState {
 
     X509Certificate getLocalCertificate();
 
+    /**
+     * Number of bytes the local certificate occupies in the asymmetric security header. That is
+     * the certificate itself, unless a CA-signed certificate is sent together with the
+     * certificates that signed it, in which case the header is correspondingly larger.
+     */
+    default int getLocalCertificateChainSize() {
+        X509Certificate certificate = getLocalCertificate();
+        if (certificate == null) {
+            return 0;
+        }
+        try {
+            return certificate.getEncoded().length;
+        } catch (java.security.cert.CertificateEncodingException e) {
+            return 0;
+        }
+    }
+
     X509Certificate getRemoteCertificate();
 
     boolean isSymmetricEncryptionEnabled();

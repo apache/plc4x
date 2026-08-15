@@ -22,6 +22,7 @@ import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import org.bouncycastle.asn1.x509.GeneralName;
 
+import java.io.ByteArrayOutputStream;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
@@ -33,13 +34,55 @@ public class CertificateKeyPair {
 
     private final KeyPair keyPair;
     private final X509Certificate certificate;
+    private final List<X509Certificate> certificateChain;
+    private final byte[] encodedCertificateChain;
     private final byte[] thumbprint;
 
     public CertificateKeyPair(KeyPair keyPair, X509Certificate certificate) throws GeneralSecurityException {
+        this(keyPair, List.of(certificate));
+    }
+
+    /**
+     * @param certificateChain the client certificate followed by the certificates that signed it,
+     *                         as it comes out of a key store. Everything but the first element is
+     *                         only relevant for a CA-signed certificate.
+     */
+    public CertificateKeyPair(KeyPair keyPair, List<X509Certificate> certificateChain) throws GeneralSecurityException {
+        if (certificateChain == null || certificateChain.isEmpty()) {
+            throw new IllegalArgumentException("A certificate chain needs at least the certificate itself");
+        }
         this.keyPair = keyPair;
-        this.certificate = certificate;
+        this.certificate = certificateChain.get(0);
+        this.certificateChain = List.copyOf(certificateChain);
+        this.encodedCertificateChain = encode(this.certificateChain);
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+        // The thumbprint identifies the sender's own certificate, never the chain.
         this.thumbprint = messageDigest.digest(this.certificate.getEncoded());
+    }
+
+    /**
+     * The certificate chain, the client's own certificate first.
+     */
+    public List<X509Certificate> getCertificateChain() {
+        return certificateChain;
+    }
+
+    /**
+     * The bytes that go into the {@code SenderCertificate} field of the asymmetric security
+     * header: the DER encoded client certificate, followed by the DER encoding of each CA
+     * certificate that signed it. OPC UA Part 6 allows appending the issuing certificates, and
+     * servers that cannot otherwise build a path to their trust anchor need them.
+     */
+    public byte[] getEncodedCertificateChain() {
+        return encodedCertificateChain;
+    }
+
+    private static byte[] encode(List<X509Certificate> chain) throws GeneralSecurityException {
+        ByteArrayOutputStream encoded = new ByteArrayOutputStream();
+        for (X509Certificate certificate : chain) {
+            encoded.writeBytes(certificate.getEncoded());
+        }
+        return encoded.toByteArray();
     }
 
     public KeyPair getKeyPair() {
