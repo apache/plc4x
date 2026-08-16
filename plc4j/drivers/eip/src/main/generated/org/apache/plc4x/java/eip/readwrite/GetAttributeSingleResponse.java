@@ -36,11 +36,11 @@ public class GetAttributeSingleResponse extends CipService implements Message {
 
   protected final short extStatusSize;
 
-  protected final List<Short> extStatus;
+  protected final List<Integer> extStatus;
 
   protected final byte[] servicesData;
 
-  public GetAttributeSingleResponse(Short status, Short extStatusSize, List<Short> extStatus,
+  public GetAttributeSingleResponse(Short status, Short extStatusSize, List<Integer> extStatus,
       byte[] servicesData) {
     this.status = status;
     this.extStatusSize = extStatusSize;
@@ -89,7 +89,7 @@ public class GetAttributeSingleResponse extends CipService implements Message {
   /**
    * Property field extStatus
    */
-  public List<Short> getExtStatus() {
+  public List<Integer> getExtStatus() {
     return extStatus;
   }
 
@@ -115,10 +115,10 @@ public class GetAttributeSingleResponse extends CipService implements Message {
     short extStatusSize = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 8), WithOption.WithName("extStatusSize"));
 
     // Array Field: extStatus
-    List<Short> extStatus = FieldReaderFactory.readCountArrayField(DataReaderFactory.readUnsignedShort(readBuffer, 8), extStatusSize, WithOption.WithName("extStatus"));
+    List<Integer> extStatus = FieldReaderFactory.readCountArrayField(DataReaderFactory.readUnsignedInt(readBuffer, 16), extStatusSize, WithOption.WithName("extStatus"));
 
     // Array Field: servicesData
-    byte[] servicesData = readBuffer.readBits(Math.toIntExact((((serviceLen) - (4)) - (extStatusSize)) * 8), WithOption.WithName("servicesData"));
+    byte[] servicesData = readBuffer.readBits(Math.toIntExact((((serviceLen) - (4)) - ((2) * (extStatusSize))) * 8), WithOption.WithName("servicesData"));
 
     readBuffer.popContext();
     return new CipServiceBuilderImpl(status, extStatusSize, extStatus, servicesData);
@@ -138,7 +138,7 @@ public class GetAttributeSingleResponse extends CipService implements Message {
     FieldWriterFactory.writeSimpleField((short) extStatusSize, DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("extStatusSize"));
 
     // Array Field: extStatus
-    FieldWriterFactory.writeSimpleTypeArrayField(extStatus, DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("extStatus"));
+    FieldWriterFactory.writeSimpleTypeArrayField(extStatus, DataWriterFactory.writeUnsignedInt(writeBuffer, 16), WithOption.WithName("extStatus"));
 
     // Array Field: servicesData
     FieldWriterFactory.writeByteArrayField(servicesData, DataWriterFactory.writeByteArray(writeBuffer, (int) ((servicesData != null) ? servicesData.length : 0)), WithOption.WithName("servicesData"));
@@ -166,7 +166,7 @@ public class GetAttributeSingleResponse extends CipService implements Message {
     lengthInBits += 8;
 
     // Array Field: extStatus
-    lengthInBits += 8 * extStatus.size();
+    lengthInBits += 16 * extStatus.size();
 
     // Array Field: servicesData
     lengthInBits += 8 * ((servicesData != null) ? servicesData.length : 0);
@@ -179,11 +179,11 @@ public class GetAttributeSingleResponse extends CipService implements Message {
 
     private final short extStatusSize;
 
-    private final List<Short> extStatus;
+    private final List<Integer> extStatus;
 
     private final byte[] servicesData;
 
-    public CipServiceBuilderImpl(short status, short extStatusSize, List<Short> extStatus,
+    public CipServiceBuilderImpl(short status, short extStatusSize, List<Integer> extStatus,
         byte[] servicesData) {
       this.status = status;
       this.extStatusSize = extStatusSize;

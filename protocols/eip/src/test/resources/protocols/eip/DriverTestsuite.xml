@@ -552,7 +552,7 @@
                       <GetAttributeSingleResponse>
                         <reserved dataType="uint" bitLength="8">0</reserved>
                         <status dataType="uint" bitLength="8">0</status>
-                        <extStatusSize dataType="uint" bitLength="8">0</extStatusSize>
+                        <extStatusSize dataType="uint" bitLength="16">0</extStatusSize>
                         <extStatus isList="true"/>
                         <servicesData dataType="byte" bitLength="16">0x0100</servicesData>
                       </GetAttributeSingleResponse>

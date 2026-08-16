@@ -166,8 +166,8 @@
             [reserved   uint    8           '0x00'                                                                     ]
             [simple     uint    8           status                                                                     ]
             [simple     uint    8           extStatusSize                                                              ]
-            [array      uint    8           extStatus count 'extStatusSize'                                            ]
-            [array      byte   servicesData count 'serviceLen - 4 - extStatusSize'                                     ]
+            [array      uint    16          extStatus count 'extStatusSize'                                            ]
+            [array      byte   servicesData count 'serviceLen - 4 - 2 * extStatusSize'                                 ]
         ]
         ['0x10','false' SetAttributeSingleRequest
             // TODO: Implement
