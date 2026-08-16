@@ -302,6 +302,18 @@ public class ConfigurationFactory {
     }
 
     /**
+     * The parameter names a connection string carries, in the order they appear. Exposed so callers
+     * can compare what was supplied against what the configurations actually declare - the factory
+     * silently ignores anything it has no field for, which makes a typo look like it was accepted.
+     *
+     * @param paramString the parameter part of a connection string (may be null or blank).
+     * @return the parameter names, never null.
+     */
+    public static Set<String> parameterNames(String paramString) {
+        return splitQuery(paramString).keySet();
+    }
+
+    /**
      * <a href="https://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection/13592567#13592567">...</a>
      */
     private static Map<String, List<String>> splitQuery(String paramString) {
