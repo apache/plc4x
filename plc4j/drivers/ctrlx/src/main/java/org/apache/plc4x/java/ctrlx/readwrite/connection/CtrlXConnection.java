@@ -132,27 +132,34 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
         return Optional.ofNullable(plcTag);
     }
 
+    /**
+     * Reading, writing and subscribing are not implemented - the corresponding request builders
+     * return {@code null}. Browsing has an implementation, but it does not work yet. Reporting any
+     * of them as supported makes callers that check the metadata first (the connection cache and
+     * the tooling among them) attempt an operation that cannot succeed, so all four are reported
+     * as unsupported until they actually work.
+     */
     @Override
     public PlcConnectionMetadata getMetadata() {
         return new PlcConnectionMetadata() {
             @Override
             public boolean isReadSupported() {
-                return true;
+                return false;
             }
 
             @Override
             public boolean isWriteSupported() {
-                return true;
+                return false;
             }
 
             @Override
             public boolean isSubscribeSupported() {
-                return true;
+                return false;
             }
 
             @Override
             public boolean isBrowseSupported() {
-                return true;
+                return false;
             }
         };
     }
