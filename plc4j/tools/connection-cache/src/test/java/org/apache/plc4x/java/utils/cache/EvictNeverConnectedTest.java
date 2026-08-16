@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -93,7 +94,7 @@ class EvictNeverConnectedTest {
      */
     @Test
     void evictsAfterTheConnectionWasAlreadyDropped() throws Exception {
-        PlcConnection connection = org.mockito.Mockito.mock(PlcConnection.class);
+        PlcConnection connection = mock(PlcConnection.class);
         when(connection.isConnected()).thenReturn(true);
         when(mockConnectionManager.getConnection(anyString())).thenReturn(connection);
 
