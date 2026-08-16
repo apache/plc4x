@@ -140,6 +140,20 @@ public final class S7ScriptedConnectionHarness {
         return S7Message.staticParse(readBuffer(frame)).getTpduReference();
     }
 
+    /** Same, for tests that need to answer a specific request they watched go out. */
+    public static int tpduReferenceOfFrame(byte[] frame) throws Exception {
+        return tpduReferenceOf(frame);
+    }
+
+    /**
+     * A response carrying an error class/code in the S7 header and nothing else, which is what a
+     * controller sends when it refuses the whole request rather than individual items.
+     */
+    public static byte[] headerErrorResponse(int tpduReference, int errorClass, int errorCode) throws Exception {
+        return wireBytes(new S7MessageResponseData(tpduReference, null, null,
+            (short) errorClass, (short) errorCode));
+    }
+
     private static byte[] s7SetupCommunicationResponse(int tpduReference) throws Exception {
         S7Message message = new S7MessageResponseData(tpduReference,
             new S7ParameterSetupCommunication(8, 8, 240), null, (short) 0, (short) 0);

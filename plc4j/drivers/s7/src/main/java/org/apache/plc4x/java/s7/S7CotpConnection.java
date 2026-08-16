@@ -1330,7 +1330,11 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
 
     private static PlcResponseCode mapPlcErrorCode(short errorClass, short errorCode) {
         // Ported error mapping from s7-light: 129/4 means PUT/GET disabled.
-        if (errorClass == 129 && errorCode == 4) return PlcResponseCode.ACCESS_DENIED;
+        if (errorClass == 0x81 && errorCode == 4) return PlcResponseCode.ACCESS_DENIED;
+        // An S7-300 reports the same refusal as 0x83/0x04 rather than 0x81/0x04 (GH-599). The
+        // generic reading of class 0x83 is "no resources available", so only this exact pairing
+        // is treated as a refusal - anything else in that class keeps falling through.
+        if (errorClass == 0x83 && errorCode == 4) return PlcResponseCode.ACCESS_DENIED;
         if (errorClass == 0x85) return PlcResponseCode.ACCESS_DENIED;
         return PlcResponseCode.INTERNAL_ERROR;
     }
