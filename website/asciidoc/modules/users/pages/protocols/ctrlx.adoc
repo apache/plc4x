@@ -19,9 +19,10 @@
 
 = CtrlX
 
-WARNING: This driver is unfinished and not usable yet. Only browsing and pinging work at all; there
-is no tag address syntax, so reading and writing are not available. This page describes the current
-state for anyone continuing the work - it is not linked from the navigation.
+WARNING: This driver is unfinished and not usable yet. Discovery and pinging are the only things
+that work; there is no tag address syntax, so reading and writing are not available, and the browse
+implementation does not work yet either. This page describes the current state for anyone
+continuing the work - it is not linked from the navigation.
 
 The CtrlX driver talks to Bosch Rexroth ctrlX CORE devices through their REST/Data-Layer API over
 HTTPS, rather than over an industrial fieldbus protocol.
@@ -32,16 +33,24 @@ HTTPS, rather than over an industrial fieldbus protocol.
 |===
 |Operation |Description
 
-|`browse`
-|Enumerates the device's Data Layer nodes. This is the driver's main capability.
-
 |`ping`
 |Checks that the device is reachable and the credentials are accepted.
 
+|`discover`
+|Locates ctrlX CORE devices on the local network.
+
+|`browse`
+|*Does not work yet.* The connection carries an implementation that is meant to enumerate the
+device's Data Layer nodes, and it is the furthest along of the unfinished operations, but it does
+not produce usable results.
+
 |`read` / `write` / `subscribe`
-|*Not implemented.* The connection reports these as supported in its metadata, but the
-corresponding request builders return `null`, so attempting one fails. Use `browse` for now.
+|*Not implemented.* The corresponding request builders return `null`, so attempting one fails.
 |===
+
+The connection reports all four of these as unsupported in its metadata, so a caller that checks
+`getMetadata()` before deciding what to do gets an honest answer rather than being sent into a
+request that cannot succeed.
 
 == Connection String
 
@@ -69,8 +78,11 @@ PlcConnection connection = new DefaultPlcDriverManager()
 
 == Browsing
 
+NOTE: Browsing does not work yet. What follows describes how the existing implementation is meant
+to be used, for whoever picks the work up.
+
 Browse queries are glob patterns matched against the Data Layer node paths, not tag addresses.
-`**` matches everything and is the simplest way to see what a device exposes:
+`**` matches everything and is intended as the simplest way to see what a device exposes:
 
 [source,java]
 ----
