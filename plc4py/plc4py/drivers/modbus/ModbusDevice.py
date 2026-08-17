@@ -181,6 +181,9 @@ class ModbusDevice:
                 request.tags[request.tag_names[0]].data_type,
                 request.tags[request.tag_names[0]].quantity,
                 True,
+                # The Python tag has no notion of a string length yet, so 1 is passed - the value it
+                # has for every data type that is not a string, leaving all other types unchanged.
+                1,
             )
 
         response_item = ResponseItem(PlcResponseCode.OK, returned_value)

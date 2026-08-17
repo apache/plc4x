@@ -1265,8 +1265,14 @@ public abstract class BaseGenerator<T> {
             if (simpleTypeReference.isByteBased()) {
                 getLengthInBitsCodeBlockBuilder.addStatement("lengthInBits += 8 * (($L != null) ? $L.length : 0)", getSizeBlock, getSizeBlock);
             } else if (simpleTypeReference.isVstringTypeReference()) {
+                // Every element of the array is a vstring of the same declared length, so the total
+                // is that length times the number of elements. The length term is rendered the same
+                // way as for a single vstring field; it may reference parser arguments (e.g. a
+                // "stringLength" parameter), which is why it cannot be reduced to a constant here.
                 VstringTypeReference vstringTypeReference = simpleTypeReference.asVstringTypeReference().orElseThrow();
-                throw new RuntimeException("Array fields of type vstring are not supported.");
+                CodeBlock elementLength = toSerializationExpression(typeDefinition, field, INT_TYPE_REFERENCE,
+                    vstringTypeReference.getLengthExpression(), parserArguments);
+                getLengthInBitsCodeBlockBuilder.addStatement("lengthInBits += ($L) * $L.size()", elementLength, getSizeBlock);
             } else {
                 // TODO: Generate dynamic type length values here.
                 Optional<Term> unsignedIntegerEncodingAttribute = field.getAttribute("unsignedIntegerEncoding");

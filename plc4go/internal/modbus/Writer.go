@@ -77,7 +77,8 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(tagName)
-		data, err := readWriteModel.DataItemSerialize(value, modbusTag.Datatype, modbusTag.Quantity, true)
+		// See the note in Reader.go: 1 is the string length for every non-string data type.
+		data, err := readWriteModel.DataItemSerialize(value, modbusTag.Datatype, modbusTag.Quantity, true, 1)
 		if err != nil {
 			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(
 				writeRequest,

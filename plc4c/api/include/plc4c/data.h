@@ -152,6 +152,16 @@ plc4c_data *plc4c_data_create_date_and_ltime_array(uint64_t *nanosecondsSinceEpo
 plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s);
 
 /**
+ * Creates a plc4c_data with a wide string. The payload is a byte string in the encoding used on
+ * the wire - the SPI has no wide-string reader that could produce a wchar_t sequence.
+ *
+ * @param size length of the string.
+ * @param s the string.
+ * @return pointer to the new plc4c_data.
+ */
+plc4c_data *plc4c_data_create_wstring_data(unsigned int size, char *s);
+
+/**
  * Creates a plc4c_data with a constant char
  * @param s the char value
  * @return pointer to plc4c_data

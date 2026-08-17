@@ -310,7 +310,11 @@
     [array    byte   data          count         'objectLength']
 ]
 
-[dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues, bit bigEndian) unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
+// stringLength comes after the discriminators on purpose: the type switch discriminates on
+// dataType, numberOfValues and bigEndian, and the Go generator matches discriminator N to
+// parser argument N positionally - putting a non-discriminating argument in between makes it
+// type bigEndian as a uint16.
+[dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues, bit bigEndian, uint 16 stringLength) unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     [typeSwitch dataType,numberOfValues,bigEndian
         ['BOOL','1','true'  BOOL
             // TODO: Possibly change the order of the bit and the reserved part.
@@ -428,6 +432,30 @@
         ]
         ['WCHAR' List
             [array string 16 value count 'numberOfValues' stringEncoding='"UTF16BE"']
+        ]
+        // The declared length of a single string comes from stringLength, so numberOfValues keeps
+        // meaning "how many of them" as it does for every other type - 'STRING(20)[3]' is three
+        // 20-character strings. Without these cases a STRING tag parsed to null without raising
+        // anything (GH-2307).
+        // stringLength is the declared length of one string, so numberOfValues keeps meaning "how
+        // many" as it does for every other type. Only the single-string case is expressible today:
+        // an array needs 'manualArray vstring', whose length expression the generator would not
+        // accept (see GH-2307 notes) - the List cases can be added once that form is known.
+        // stringLength is the declared length of one string in bytes, so numberOfValues keeps
+        // meaning "how many" as it does for every other type. Only the single-string case is
+        // expressible today: an array of strings needs length handling the code generator does not
+        // have - both 'array vstring' and 'manualArray vstring' fail in its length computation.
+        ['STRING','1' STRING
+            [simple vstring 'stringLength * 8' value stringEncoding='"UTF8"']
+        ]
+        ['STRING' List
+            [array vstring 'stringLength * 8' value count 'numberOfValues' stringEncoding='"UTF8"']
+        ]
+        ['WSTRING','1' WSTRING
+            [simple vstring 'stringLength * 16' value stringEncoding='"UTF16BE"']
+        ]
+        ['WSTRING' List
+            [array vstring 'stringLength * 16' value count 'numberOfValues' stringEncoding='"UTF16BE"']
         ]
     ]
 ]

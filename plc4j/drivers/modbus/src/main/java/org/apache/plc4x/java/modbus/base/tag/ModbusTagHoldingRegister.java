@@ -39,6 +39,10 @@ public class ModbusTagHoldingRegister extends ModbusTag {
         super(address, quantity, dataType, config);
     }
 
+    public ModbusTagHoldingRegister(int address, Integer quantity, Integer stringLength, ModbusDataType dataType, Map<String, String> config) {
+        super(address, quantity, stringLength, dataType, config);
+    }
+
     protected String getAddressStringPrefix() {
         return ADDRESS_PREFIX;
     }
@@ -89,7 +93,10 @@ public class ModbusTagHoldingRegister extends ModbusTag {
 
         ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.INT;
 
-        return new ModbusTagHoldingRegister(address, quantity, dataType, TagConfigParser.parse(addressString));
+        String stringLengthString = matcher.group("stringLength");
+        Integer stringLength = (stringLengthString != null) ? Integer.parseInt(stringLengthString) : null;
+
+        return new ModbusTagHoldingRegister(address, quantity, stringLength, dataType, TagConfigParser.parse(addressString));
     }
 
 }

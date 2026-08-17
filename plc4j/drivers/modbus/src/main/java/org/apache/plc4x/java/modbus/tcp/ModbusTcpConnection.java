@@ -488,7 +488,7 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
         throw new PlcRuntimeException("Unsupported write tag type " + tag.getClass().getName());
     }
 
-    private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType, int numberOfElements, ModbusByteOrder byteOrder) throws BufferException {
+    private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType, int numberOfElements, ModbusByteOrder byteOrder, int stringLength) throws BufferException {
         byte[] responseData = extractResponseData(request, response);
         if (responseData == null) {
             return null;
@@ -501,7 +501,7 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
 
         boolean bigEndian = (byteOrder == ModbusByteOrder.BIG_ENDIAN || byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP);
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(responseData);
-        return DataItem.staticParse(readBuffer, dataType, numberOfElements, bigEndian);
+        return DataItem.staticParse(readBuffer, dataType, numberOfElements, bigEndian, stringLength);
     }
 
     private byte[] extractResponseData(ModbusPDU request, ModbusPDU response) {
@@ -522,14 +522,15 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
 
     private byte[] fromPlcValue(PlcTag tag, PlcValue plcValue, ModbusByteOrder byteOrder) {
         ModbusDataType tagDataType = ((ModbusTag) tag).getDataType();
+        int tagStringLength = ((ModbusTag) tag).getStringLength();
         try {
             if (tag instanceof ModbusTagCoil) {
                 return fromPlcValueCoil(plcValue, byteOrder);
             }
             boolean bigEndian = (byteOrder == ModbusByteOrder.BIG_ENDIAN || byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP);
-            int size = DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength(), bigEndian);
+            int size = DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength(), bigEndian, tagStringLength);
             WriteBufferByteBased writeBuffer = createWriteBuffer(size, byteOrder);
-            DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), bigEndian);
+            DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), bigEndian, tagStringLength);
             byte[] data = writeBuffer.getBytes();
             if (byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP || byteOrder == ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP) {
                 data = byteSwap(data);

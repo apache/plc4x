@@ -517,12 +517,12 @@ class ModbusTcpConnectionTest {
     @Test
     void testToPlcValue() throws Exception {
         Method method = ModbusTcpConnection.class.getDeclaredMethod("toPlcValue",
-            ModbusPDU.class, ModbusPDU.class, ModbusDataType.class, int.class, ModbusByteOrder.class);
+            ModbusPDU.class, ModbusPDU.class, ModbusDataType.class, int.class, ModbusByteOrder.class, int.class);
         method.setAccessible(true);
 
         ModbusPDUReadHoldingRegistersRequest request = new ModbusPDUReadHoldingRegistersRequest(0, 1);
         ModbusPDUReadHoldingRegistersResponse response = new ModbusPDUReadHoldingRegistersResponse(new byte[]{0x00, 0x2A});
-        PlcValue result = (PlcValue) method.invoke(connection, request, response, ModbusDataType.INT, 1, ModbusByteOrder.BIG_ENDIAN);
+        PlcValue result = (PlcValue) method.invoke(connection, request, response, ModbusDataType.INT, 1, ModbusByteOrder.BIG_ENDIAN, 1);
         assertNotNull(result);
         assertEquals(42, result.getInteger());
     }
@@ -530,13 +530,13 @@ class ModbusTcpConnectionTest {
     @Test
     void testToPlcValue_withByteSwap() throws Exception {
         Method method = ModbusTcpConnection.class.getDeclaredMethod("toPlcValue",
-            ModbusPDU.class, ModbusPDU.class, ModbusDataType.class, int.class, ModbusByteOrder.class);
+            ModbusPDU.class, ModbusPDU.class, ModbusDataType.class, int.class, ModbusByteOrder.class, int.class);
         method.setAccessible(true);
 
         ModbusPDUReadHoldingRegistersRequest request = new ModbusPDUReadHoldingRegistersRequest(0, 1);
         // Byte-swapped data for value 42 (0x002A) would be stored as 0x2A00
         ModbusPDUReadHoldingRegistersResponse response = new ModbusPDUReadHoldingRegistersResponse(new byte[]{0x2A, 0x00});
-        PlcValue result = (PlcValue) method.invoke(connection, request, response, ModbusDataType.INT, 1, ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP);
+        PlcValue result = (PlcValue) method.invoke(connection, request, response, ModbusDataType.INT, 1, ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP, 1);
         assertNotNull(result);
         assertEquals(42, result.getInteger());
     }
@@ -595,24 +595,24 @@ class ModbusTcpConnectionTest {
     @Test
     void testToPlcValue_littleEndian() throws Exception {
         Method method = ModbusTcpConnection.class.getDeclaredMethod("toPlcValue",
-            ModbusPDU.class, ModbusPDU.class, ModbusDataType.class, int.class, ModbusByteOrder.class);
+            ModbusPDU.class, ModbusPDU.class, ModbusDataType.class, int.class, ModbusByteOrder.class, int.class);
         method.setAccessible(true);
 
         ModbusPDUReadHoldingRegistersRequest request = new ModbusPDUReadHoldingRegistersRequest(0, 1);
         ModbusPDUReadHoldingRegistersResponse response = new ModbusPDUReadHoldingRegistersResponse(new byte[]{0x00, 0x2A});
-        PlcValue result = (PlcValue) method.invoke(connection, request, response, ModbusDataType.INT, 1, ModbusByteOrder.LITTLE_ENDIAN);
+        PlcValue result = (PlcValue) method.invoke(connection, request, response, ModbusDataType.INT, 1, ModbusByteOrder.LITTLE_ENDIAN, 1);
         assertNotNull(result);
     }
 
     @Test
     void testToPlcValue_littleEndianByteSwap() throws Exception {
         Method method = ModbusTcpConnection.class.getDeclaredMethod("toPlcValue",
-            ModbusPDU.class, ModbusPDU.class, ModbusDataType.class, int.class, ModbusByteOrder.class);
+            ModbusPDU.class, ModbusPDU.class, ModbusDataType.class, int.class, ModbusByteOrder.class, int.class);
         method.setAccessible(true);
 
         ModbusPDUReadHoldingRegistersRequest request = new ModbusPDUReadHoldingRegistersRequest(0, 1);
         ModbusPDUReadHoldingRegistersResponse response = new ModbusPDUReadHoldingRegistersResponse(new byte[]{0x00, 0x2A});
-        PlcValue result = (PlcValue) method.invoke(connection, request, response, ModbusDataType.INT, 1, ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP);
+        PlcValue result = (PlcValue) method.invoke(connection, request, response, ModbusDataType.INT, 1, ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP, 1);
         assertNotNull(result);
     }
 

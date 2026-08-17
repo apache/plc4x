@@ -156,19 +156,22 @@ public class ModbusEncodeTest {
         Assertions.assertEquals("[1.1,1000.1,100000.1,1.7E308,-1.7E308,-1.0,1.038475993484E13]", list.toString());
     }
 
-    /*@Test
+    /**
+     * The length of a string is part of its address, since nothing on the wire announces it.
+     * These two were commented out for years, which is why nobody noticed that a STRING tag
+     * produced null instead of a value (GH-2307).
+     */
+    @Test
     public void testEncodeStringSTRING() {
-        String[] object = {"Hello Toddy!"};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:8:STRING");
-        PlcList list = (PlcList) handler.encodeString(holdingRegister, object);
-        Assertions.assertEquals("[H,e,l,l,o, ,T,o,d,d,y,!]", list.toString());
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:8:STRING(12)");
+        PlcValue value = new DefaultPlcValueHandler().newPlcValue(holdingRegister, "Hello Toddy!");
+        Assertions.assertEquals("Hello Toddy!", value.getString());
     }
 
     @Test
     public void testEncodeStringWSTRING() {
-        String[] object = {"Hello Toddy!"};
-        ModbusTagHoldingRegister holdingRegister = ModbusTagdHoldingRegister.of("holding-register:8:WSTRING");
-        PlcList list = (PlcList) handler.encodeString(holdingRegister, object);
-        Assertions.assertEquals("[H,e,l,l,o, ,T,o,d,d,y,!]", list.toString());
-    } */
+        ModbusTagHoldingRegister holdingRegister = ModbusTagHoldingRegister.of("holding-register:8:WSTRING(12)");
+        PlcValue value = new DefaultPlcValueHandler().newPlcValue(holdingRegister, "Hello Toddy!");
+        Assertions.assertEquals("Hello Toddy!", value.getString());
+    }
 }

@@ -33,12 +33,14 @@ from plc4py.spi.values.PlcValues import PlcLWORD
 from plc4py.spi.values.PlcValues import PlcList
 from plc4py.spi.values.PlcValues import PlcREAL
 from plc4py.spi.values.PlcValues import PlcSINT
+from plc4py.spi.values.PlcValues import PlcSTRING
 from plc4py.spi.values.PlcValues import PlcUDINT
 from plc4py.spi.values.PlcValues import PlcUINT
 from plc4py.spi.values.PlcValues import PlcULINT
 from plc4py.spi.values.PlcValues import PlcUSINT
 from plc4py.spi.values.PlcValues import PlcWCHAR
 from plc4py.spi.values.PlcValues import PlcWORD
+from plc4py.spi.values.PlcValues import PlcWSTRING
 from plc4py.utils.GenericTypes import ByteOrder
 from typing import List
 from typing import cast
@@ -53,6 +55,7 @@ class DataItem:
         data_type: ModbusDataType,
         number_of_values: int,
         big_endian: bool,
+        string_length: int,
     ):
         if (
             data_type == ModbusDataType.BOOL
@@ -437,6 +440,38 @@ class DataItem:
                 value.append(read_buffer.read_str(16, logical_name=""))
 
             return PlcList(value)
+        if data_type == ModbusDataType.STRING and number_of_values == int(1):  # STRING
+
+            # Simple Field (value)
+            value: str = read_buffer.read_str(-1, logical_name="")
+
+            return PlcSTRING(value)
+        if data_type == ModbusDataType.STRING:  # List
+            # Array field (value)
+            # Count array
+            item_count: int = int(number_of_values)
+            value: List[PlcValue] = []
+            for _ in range(item_count):
+                value.append(read_buffer.read_str(-1, logical_name=""))
+
+            return PlcList(value)
+        if data_type == ModbusDataType.WSTRING and number_of_values == int(
+            1
+        ):  # WSTRING
+
+            # Simple Field (value)
+            value: str = read_buffer.read_str(-1, logical_name="")
+
+            return PlcWSTRING(value)
+        if data_type == ModbusDataType.WSTRING:  # List
+            # Array field (value)
+            # Count array
+            item_count: int = int(number_of_values)
+            value: List[PlcValue] = []
+            for _ in range(item_count):
+                value.append(read_buffer.read_str(-1, logical_name=""))
+
+            return PlcList(value)
         return None
 
     @staticmethod
@@ -446,6 +481,7 @@ class DataItem:
         data_type: ModbusDataType,
         number_of_values: int,
         big_endian: bool,
+        string_length: int,
         byte_order: ByteOrder,
     ) -> None:
         if (
@@ -687,18 +723,45 @@ class DataItem:
                 value: str = val.get_str()
                 write_buffer.write_str((value), 16, "value", "UTF-8")
 
+        elif data_type == ModbusDataType.STRING and number_of_values == int(
+            1
+        ):  # STRING
+            # Simple Field (value)
+            value: str = _value.get_str()
+            write_buffer.write_str((value), string_length * (8), "value", "UTF-8")
+
+        elif data_type == ModbusDataType.STRING:  # List
+            values: PlcList = cast(PlcList, _value)
+            for val in values.get_list():
+                value: str = val.get_str()
+                write_buffer.write_str((value), string_length * (8), "value", "UTF-8")
+
+        elif data_type == ModbusDataType.WSTRING and number_of_values == int(
+            1
+        ):  # WSTRING
+            # Simple Field (value)
+            value: str = _value.get_str()
+            write_buffer.write_str((value), string_length * (16), "value", "UTF-8")
+
+        elif data_type == ModbusDataType.WSTRING:  # List
+            values: PlcList = cast(PlcList, _value)
+            for val in values.get_list():
+                value: str = val.get_str()
+                write_buffer.write_str((value), string_length * (16), "value", "UTF-8")
+
     @staticmethod
     def get_length_in_bytes(
         _value: PlcValue,
         data_type: ModbusDataType,
         number_of_values: int,
         big_endian: bool,
+        string_length: int,
     ) -> int:
         return int(
             math.ceil(
                 float(
                     DataItem.get_length_in_bits(
-                        _value, data_type, number_of_values, big_endian
+                        _value, data_type, number_of_values, big_endian, string_length
                     )
                 )
                 / 8.0
@@ -711,6 +774,7 @@ class DataItem:
         data_type: ModbusDataType,
         number_of_values: int,
         big_endian: bool,
+        string_length: int,
     ) -> int:
         size_in_bits: int = 0
         if (
@@ -868,5 +932,21 @@ class DataItem:
         elif data_type == ModbusDataType.WCHAR:  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 16
+        elif data_type == ModbusDataType.STRING and number_of_values == int(
+            1
+        ):  # STRING
+            # Simple Field (value)
+            size_in_bits += -1
+        elif data_type == ModbusDataType.STRING:  # List
+            values: PlcList = cast(PlcList, _value)
+            size_in_bits += len(values.get_list()) * -1
+        elif data_type == ModbusDataType.WSTRING and number_of_values == int(
+            1
+        ):  # WSTRING
+            # Simple Field (value)
+            size_in_bits += -1
+        elif data_type == ModbusDataType.WSTRING:  # List
+            values: PlcList = cast(PlcList, _value)
+            size_in_bits += len(values.get_list()) * -1
 
         return size_in_bits

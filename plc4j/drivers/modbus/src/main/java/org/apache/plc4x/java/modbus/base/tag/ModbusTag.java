@@ -36,14 +36,20 @@ import java.util.regex.Pattern;
 
 public abstract class ModbusTag implements PlcTag, Serializable {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
-    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
+    // STRING and WSTRING carry the length of one string in parentheses, the same way the S7 driver
+    // spells it: "holding-register:1:STRING(20)[3]" is three 20-character strings. The quantity in
+    // brackets keeps meaning "how many values", as it does for every other data type.
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d+)\\))?)?(\\[(?<quantity>\\d+)])?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+)(\\((?<stringLength>\\d+)\\))?)?(\\[(?<quantity>\\d+)])?");
 
     public static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
     private final int address;
 
     private final int quantity;
+
+    /** The declared length of a single string; 1 for every other data type. */
+    private final int stringLength;
 
     private final ModbusDataType dataType;
     private final Short unitId;
@@ -93,6 +99,11 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     }
 
     protected ModbusTag(int address, Integer quantity, ModbusDataType dataType, Map<String, String> config) {
+        this(address, quantity, null, dataType, config);
+    }
+
+    protected ModbusTag(int address, Integer quantity, Integer stringLength, ModbusDataType dataType,
+                        Map<String, String> config) {
         this.address = address;
         if (getLogicalAddress() <= 0) {
             throw new IllegalArgumentException("address must be greater than zero. Was " + getLogicalAddress());
@@ -102,6 +113,25 @@ public abstract class ModbusTag implements PlcTag, Serializable {
             throw new IllegalArgumentException("quantity must be greater than zero. Was " + this.quantity);
         }
         this.dataType = dataType != null ? dataType : ModbusDataType.INT;
+        // A string's length is part of its address, because nothing on the wire announces it. For
+        // everything else the notion doesn't apply, and a length of 1 keeps the size arithmetic
+        // below unchanged.
+        if ((this.dataType == ModbusDataType.STRING) || (this.dataType == ModbusDataType.WSTRING)) {
+            if (stringLength == null) {
+                throw new PlcInvalidTagException(this.dataType.name() + " requires the length of one string, "
+                    + "for example '" + this.dataType.name() + "(20)'");
+            }
+            if (stringLength <= 0) {
+                throw new IllegalArgumentException("string length must be greater than zero. Was " + stringLength);
+            }
+            this.stringLength = stringLength;
+        } else {
+            if (stringLength != null) {
+                throw new PlcInvalidTagException("A length in parentheses is only supported for STRING and "
+                    + "WSTRING, not for " + this.dataType.name());
+            }
+            this.stringLength = 1;
+        }
         this.unitId = Optional.ofNullable(config.get("unit-id"))
             .map(Short::parseShort)
             .orElse(null);
@@ -138,12 +168,17 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         return quantity;
     }
 
+    /** The declared length of a single string, or 1 for a data type that isn't a string. */
+    public int getStringLength() {
+        return stringLength;
+    }
+
     public int getLengthBytes() {
-        return quantity * dataType.getDataTypeSize();
+        return quantity * stringLength * dataType.getDataTypeSize();
     }
 
     public int getLengthWords() {
-        return (int) ((quantity * (float) dataType.getDataTypeSize()) / 2.0f);
+        return (int) ((quantity * stringLength * (float) dataType.getDataTypeSize()) / 2.0f);
     }
 
     public ModbusDataType getDataType() {
