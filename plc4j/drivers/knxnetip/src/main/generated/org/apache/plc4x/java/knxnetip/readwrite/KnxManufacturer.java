@@ -1671,9 +1671,13 @@ public enum KnxManufacturer {
 
   M_BEEKER_TECH_GMBH_AND_CO__KG((int) 822, (int) 884, "Beeker Tech GmbH & Co. KG"),
 
-  M_ABB___RESERVED((int) 823, (int) 43954, "ABB - reserved"),
+  M_CARBON_INTEGRATION((int) 823, (int) 885, "Carbon Integration"),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 824, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_ALLSMART((int) 824, (int) 886, "AllSmart"),
+
+  M_ABB___RESERVED((int) 825, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 826, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 
