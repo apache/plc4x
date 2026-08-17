@@ -222,7 +222,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             this.sessionHandle = sessionResponse.getSessionHandle();
             LOGGER.debug("Got assigned with Session handle {}", sessionHandle);
 
-            // 3) GetAttributeAll on the message router to probe capabilities.
+            // 3) Probe connection-manager and message-router capabilities.
             //    Skipped when the user has already committed to the unconnected
             //    path — the probe is only useful for choosing between the
             //    connection-manager and message-router code paths, and some
@@ -231,7 +231,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             if (getConfiguration().isForceUnconnectedOperation()) {
                 return CompletableFuture.completedFuture(null);
             }
-            return probeAttributes().thenCompose(v -> {
+            return probeClassObjectSupport().thenCompose(v -> {
                 if (useConnectionManager) {
                     return openConnectionManager();
                 }
@@ -240,8 +240,9 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         });
     }
 
-    private CompletableFuture<Void> probeAttributes() {
-        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 2));
+    // Using this method to continue having the GetAttributeAll that can be useful in the future
+    private CompletableFuture<Void> checkClassObjectAttributes(CIPClassID classId) {
+        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) classId.getValue()));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
         UnConnectedDataItem exchange = new UnConnectedDataItem(
             new GetAttributeAllRequest(classSegment, instanceSegment));
@@ -249,38 +250,14 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         CipRRData eipWrapper = new CipRRData(sessionHandle, CIPStatus.Success.getValue(),
             DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
 
-        return sendRequest(eipWrapper).thenCompose(response ->
-            switch (extractCipService(response)) {
-                // Not all devices support Get_Attribute_All. Let's try using Get_Attribute_Single.
-                case GetAttributeAllResponse gar when gar.getStatus() == CIPStatus.ServiceNotSupported.getValue()
-                    -> probeAttributesUsingSingleAttributeRequest();
-                case GetAttributeAllResponse gar -> {
-                    recordSupportedClasses(gar.getAttributes());
-                    yield CompletableFuture.completedFuture(null);
-                }
-                case null, default -> CompletableFuture.completedFuture(null);
-            }).exceptionally(e -> {
-            // Treat any probe failure (timeout, parse error, malformed response,
-            // ServiceNotSupported) as "device has no message router / connection
-            // manager" and fall through to the unconnected code path. This keeps
-            // the handshake working against non-Logix devices and simulators.
-            LOGGER.debug("GetAttributeAll probe failed, falling back to unconnected mode", e);
-            return null;
-        });
-    }
+        return sendRequest(eipWrapper).thenAccept(response -> {
 
-    private void recordSupportedClasses(CIPAttributes attributes) {
-        if (attributes == null) {
-            return;
-        }
-        for (Integer classId : attributes.getClassId()) {
-            if (CIPClassID.enumForValue(classId) == CIPClassID.MessageRouter) {
-                this.useMessageRouter = true;
+            if (extractCipService(response) instanceof GetAttributeAllResponse gar &&
+                gar.getStatus() == CIPStatus.Success.getValue() &&
+                gar.getAttributes() != null) {
+                LOGGER.debug("Identity getNumberActive {}", gar.getAttributes().getNumberActive());
             }
-            if (CIPClassID.enumForValue(classId) == CIPClassID.ConnectionManager) {
-                this.useConnectionManager = true;
-            }
-        }
+        });
     }
 
     private CipService extractCipService(EipPacket response) {
@@ -293,18 +270,24 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         return null;
     }
 
-    private CompletableFuture<Void> probeAttributesUsingSingleAttributeRequest() {
-        LOGGER.debug("Checking MessageRouter and ConnectionManager using GetAttributeSingle");
+    private CompletableFuture<Void> probeClassObjectSupport() {
 
-        return checkAttributeSupport(CIPClassID.ConnectionManager).thenCompose(hasSupport -> {
+        return checkClassObjectSupport(CIPClassID.ConnectionManager).thenCompose(hasSupport -> {
             useConnectionManager = hasSupport;
-            return checkAttributeSupport(CIPClassID.MessageRouter);
-        }).thenAccept(hasSupport -> {
+            return checkClassObjectSupport(CIPClassID.MessageRouter);
+        }).thenCompose(hasSupport -> {
             useMessageRouter = hasSupport;
+            return checkClassObjectAttributes(CIPClassID.Identity);
+        }).exceptionally(e -> {
+            // Treat any probe failure (timeout, parse error, malformed response,
+            // ServiceNotSupported) as the state that was achieved. This keeps
+            // the handshake working against non-Logix devices and simulators.
+            LOGGER.debug("probeClassObjectSupport probe failed, keeping the state achieved", e);
+            return null;
         });
     }
 
-    private CompletableFuture<Boolean> checkAttributeSupport(CIPClassID classId) {
+    private CompletableFuture<Boolean> checkClassObjectSupport(CIPClassID classId) {
 
         UnConnectedDataItem exchange = new UnConnectedDataItem(new GetAttributeSingleRequest(
             new LogicalSegment(new ClassID((byte) 0, (short) classId.getValue())),
@@ -329,7 +312,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     private CompletableFuture<Void> openConnectionManager() {
         UnConnectedDataItem exchange = new UnConnectedDataItem(
             new CipConnectionManagerRequest(
-                new LogicalSegment(new ClassID((byte) 0, (short) 6)),
+                new LogicalSegment(new ClassID((byte) 0, (short) CIPClassID.ConnectionManager.getValue())),
                 new LogicalSegment(new InstanceID((byte) 0, (short) 1)),
                 (byte) 0, (byte) 10, (short) 14, 536870914L, 33944L,
                 this.connectionSerialNumber, 4919, 42L, (short) 3, 2101812L,
