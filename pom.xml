@@ -812,7 +812,7 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>[4.0.0-rc-5,)</version>
+                  <version>[4.0.0-rc-6,)</version>
                 </requireMavenVersion>
               </rules>
               <fail>true</fail>
