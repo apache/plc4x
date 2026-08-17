@@ -133,6 +133,16 @@
                       <value>no</value>
                     </outputProperty>
                   </outputProperties>
+                  <!--
+                    Redirecting to a file as otherwise the log messages go
+                    to StdErr which adds warnings to the build.
+                  -->
+                  <attributes>
+                    <attribute>
+                      <name>http://saxon.sf.net/feature/standardErrorOutputFile</name>
+                      <value>${project.build.directory}/xslt-messages.log</value>
+                    </attribute>
+                  </attributes>
                 </transformationSet>
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
@@ -160,6 +170,16 @@
                       <value>no</value>
                     </outputProperty>
                   </outputProperties>
+                  <!--
+                    Redirecting to a file as otherwise the log messages go
+                    to StdErr which adds warnings to the build.
+                  -->
+                  <attributes>
+                    <attribute>
+                      <name>http://saxon.sf.net/feature/standardErrorOutputFile</name>
+                      <value>${project.build.directory}/xslt-messages.log</value>
+                    </attribute>
+                  </attributes>
                 </transformationSet>
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
@@ -187,6 +207,16 @@
                       <value>no</value>
                     </outputProperty>
                   </outputProperties>
+                  <!--
+                    Redirecting to a file as otherwise the log messages go
+                    to StdErr which adds warnings to the build.
+                  -->
+                  <attributes>
+                    <attribute>
+                      <name>http://saxon.sf.net/feature/standardErrorOutputFile</name>
+                      <value>${project.build.directory}/xslt-messages.log</value>
+                    </attribute>
+                  </attributes>
                 </transformationSet>
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
@@ -214,6 +244,16 @@
                       <value>no</value>
                     </outputProperty>
                   </outputProperties>
+                  <!--
+                    Redirecting to a file as otherwise the log messages go
+                    to StdErr which adds warnings to the build.
+                  -->
+                  <attributes>
+                    <attribute>
+                      <name>http://saxon.sf.net/feature/standardErrorOutputFile</name>
+                      <value>${project.build.directory}/xslt-messages.log</value>
+                    </attribute>
+                  </attributes>
                 </transformationSet>
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
@@ -231,6 +271,16 @@
                       <value>no</value>
                     </outputProperty>
                   </outputProperties>
+                  <!--
+                    Redirecting to a file as otherwise the log messages go
+                    to StdErr which adds warnings to the build.
+                  -->
+                  <attributes>
+                    <attribute>
+                      <name>http://saxon.sf.net/feature/standardErrorOutputFile</name>
+                      <value>${project.build.directory}/xslt-messages.log</value>
+                    </attribute>
+                  </attributes>
                 </transformationSet>
               </transformationSets>
             </configuration>
