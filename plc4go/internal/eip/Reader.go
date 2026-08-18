@@ -40,7 +40,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type Reader struct {
@@ -220,10 +219,9 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		code := decodeResponseCode(cipReadResponse.GetStatus())
 		var plcValue values.PlcValue
 		_type := cipReadResponse.GetData().GetDataType()
-		data := utils.NewReadBufferByteBased(cipReadResponse.GetData().GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		if code == apiModel.PlcResponseCode_OK {
 			var err error
-			plcValue, err = parsePlcValue(tag, data, _type)
+			plcValue, err = parsePlcValue(tag, cipReadResponse.GetData().GetData(), _type)
 			if err != nil {
 				return nil, err
 			}
@@ -258,11 +256,10 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 			if cipReadResponse, ok := services.Services[i].(readWriteModel.CipReadResponse); ok {
 				code := decodeResponseCode(cipReadResponse.GetStatus())
 				_type := cipReadResponse.GetData().GetDataType()
-				data := utils.NewReadBufferByteBased(cipReadResponse.GetData().GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				var plcValue values.PlcValue
 				if code == apiModel.PlcResponseCode_OK {
 					var err error
-					plcValue, err = parsePlcValue(tag, data, _type)
+					plcValue, err = parsePlcValue(tag, cipReadResponse.GetData().GetData(), _type)
 					if err != nil {
 						return nil, err
 					}
@@ -281,100 +278,4 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	// Return the response
 	m.log.Trace().Msg("Returning the response")
 	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
-}
-
-func parsePlcValue(tag PlcTag, data utils.ReadBufferByteBased, _type readWriteModel.CIPDataTypeCode) (values.PlcValue, error) {
-	nb := tag.GetElementNb()
-	if nb > 1 {
-		list := make([]values.PlcValue, 0)
-		for range nb {
-			switch _type {
-			case readWriteModel.CIPDataTypeCode_DINT:
-				readInt32, err := data.ReadInt32("", _type.Size()*8)
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcDINT(readInt32))
-			case readWriteModel.CIPDataTypeCode_INT:
-				readInt16, err := data.ReadInt16("", _type.Size()*8)
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcINT(readInt16))
-			case readWriteModel.CIPDataTypeCode_SINT:
-				readInt8, err := data.ReadInt8("", _type.Size()*8)
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcSINT(readInt8))
-			case readWriteModel.CIPDataTypeCode_REAL:
-				if _type.Size()*8 != 64 {
-					return nil, errors.New("Unexpected size")
-				}
-				readFloat64, err := data.ReadFloat64("", 64)
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcLREAL(readFloat64))
-			case readWriteModel.CIPDataTypeCode_BOOL:
-				bit, err := data.ReadBit("")
-				if err != nil {
-					return nil, err
-				}
-				list = append(list, spiValues.NewPlcBOOL(bit))
-			default:
-				return nil, errors.Errorf("Unknown type %v", _type)
-			}
-		}
-		return spiValues.NewPlcList(list), nil
-	} else {
-		switch _type {
-		case readWriteModel.CIPDataTypeCode_SINT:
-			readByte, err := data.ReadInt8("", _type.Size()*8)
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcSINT(readByte), nil
-		case readWriteModel.CIPDataTypeCode_INT:
-			readInt16, err := data.ReadInt16("", _type.Size()*8)
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcINT(readInt16), nil
-		case readWriteModel.CIPDataTypeCode_DINT:
-			readInt32, err := data.ReadInt32("", _type.Size()*8)
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcDINT(readInt32), nil
-		case readWriteModel.CIPDataTypeCode_REAL:
-			if _type.Size()*8 != 64 {
-				return nil, errors.New("Unexpected size")
-			}
-			readFloat32, err := data.ReadFloat32("", 64)
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcREAL(readFloat32), nil
-		case readWriteModel.CIPDataTypeCode_BOOL:
-			readBit, err := data.ReadBit("")
-			if err != nil {
-				return nil, err
-			}
-			return spiValues.NewPlcBOOL(readBit), nil
-		default:
-			return nil, errors.Errorf("Unknown type %v", _type)
-		}
-	}
-}
-
-// Helper to convert the return codes returned from the eip into one of our standard
-func decodeResponseCode(status uint8) apiModel.PlcResponseCode {
-	//TODO other status
-	switch status {
-	case 0:
-		return apiModel.PlcResponseCode_OK
-	default:
-		return apiModel.PlcResponseCode_INTERNAL_ERROR
-	}
 }

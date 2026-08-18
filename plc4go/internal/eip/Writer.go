@@ -21,7 +21,6 @@ package eip
 
 import (
 	"context"
-	"encoding/binary"
 	"runtime/debug"
 	"strings"
 	"sync"
@@ -29,7 +28,6 @@ import (
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -91,7 +89,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			if isArray {
 				dataLength += 2
 			}
-			data, err := encodeValue(value, eipTag.GetType(), elements)
+			data, err := encodeValue(value, eipTag.GetType())
 			if err != nil {
 				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for eipTag %s", tagName)))
 				return
@@ -281,36 +279,6 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				}*/
 	})
 	return result
-}
-
-func encodeValue(value apiValues.PlcValue, _type readWriteModel.CIPDataTypeCode, elements uint16) ([]byte, error) {
-	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	switch _type {
-	case readWriteModel.CIPDataTypeCode_SINT:
-		err := buffer.WriteByte("", value.GetUint8())
-		if err != nil {
-			return nil, err
-		}
-	case readWriteModel.CIPDataTypeCode_INT:
-		err := buffer.WriteInt16("", 16, value.GetInt16())
-		if err != nil {
-			return nil, err
-		}
-	case readWriteModel.CIPDataTypeCode_DINT:
-		err := buffer.WriteInt32("", 32, value.GetInt32())
-		if err != nil {
-			return nil, err
-		}
-	case readWriteModel.CIPDataTypeCode_REAL:
-		err := buffer.WriteFloat64("", 64, value.GetFloat64())
-		if err != nil {
-			return nil, err
-		}
-	default:
-		// TODO: what is the default type? write nothing?
-		//panic("unmapped type: " + strconv.Itoa(int(_type)))
-	}
-	return buffer.GetBytes(), nil
 }
 
 func (m *Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
