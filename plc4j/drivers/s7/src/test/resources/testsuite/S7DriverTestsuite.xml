@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<!--
+  Java-specific S7 driver testsuite.
+
+  Unlike the shared testsuite in the protocols/s7 module (which is TPKT/COTP framed and used
+  by plc4go, whose driver speaks COTP itself over a TCP transport), the plc4j S7 driver
+  delegates TPKT/COTP framing to the cotp transport. The driver testsuite runner replaces the
+  transport with the synthetic test transport, so the driver-visible wire consists of bare
+  S7 messages - which is what the steps below describe.
+
+  The message XML bodies are the canonical WriteBufferXmlBased serialization of the messages.
+  -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
+                       byteOrder="BIG_ENDIAN">
+
+  <name>S7 (COTP transport boundary)</name>
+
+  <protocol-name>s7</protocol-name>
+  <output-flavor>read-write</output-flavor>
+
+  <driver-name>s7</driver-name>
+
+  <setup>
+    <!-- The driver starts with an S7 setup-communication request (tpdu ids start at 10) -->
+    <outgoing-plc-message name="Send S7 Setup Communication Request">
+      <S7Message>
+        <protocolId dataType="uint" bitLength="8">50</protocolId>
+        <messageType dataType="uint" bitLength="8">1</messageType>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+        <parameterLength dataType="uint" bitLength="16">8</parameterLength>
+        <payloadLength dataType="uint" bitLength="16">0</payloadLength>
+        <S7MessageRequest>
+          </S7MessageRequest>
+        <parameter>
+          <S7Parameter>
+            <parameterType dataType="uint" bitLength="8">240</parameterType>
+            <S7ParameterSetupCommunication>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <maxAmqCaller dataType="uint" bitLength="16">8</maxAmqCaller>
+              <maxAmqCallee dataType="uint" bitLength="16">8</maxAmqCallee>
+              <pduLength dataType="uint" bitLength="16">1024</pduLength>
+              </S7ParameterSetupCommunication>
+            </S7Parameter>
+          </parameter>
+        </S7Message>
+    </outgoing-plc-message>
+    <!-- Which the PLC acknowledges with the negotiated values -->
+    <incoming-plc-message name="Receive S7 Setup Communication Response">
+      <S7Message>
+        <protocolId dataType="uint" bitLength="8">50</protocolId>
+        <messageType dataType="uint" bitLength="8">3</messageType>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <tpduReference dataType="uint" bitLength="16">10</tpduReference>
+        <parameterLength dataType="uint" bitLength="16">8</parameterLength>
+        <payloadLength dataType="uint" bitLength="16">0</payloadLength>
+        <S7MessageResponseData>
+          <errorClass dataType="uint" bitLength="8">0</errorClass>
+          <errorCode dataType="uint" bitLength="8">0</errorCode>
+          </S7MessageResponseData>
+        <parameter>
+          <S7Parameter>
+            <parameterType dataType="uint" bitLength="8">240</parameterType>
+            <S7ParameterSetupCommunication>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <maxAmqCaller dataType="uint" bitLength="16">3</maxAmqCaller>
+              <maxAmqCallee dataType="uint" bitLength="16">3</maxAmqCallee>
+              <pduLength dataType="uint" bitLength="16">240</pduLength>
+              </S7ParameterSetupCommunication>
+            </S7Parameter>
+          </parameter>
+        </S7Message>
+    </incoming-plc-message>
+    <!-- Next the driver probes the COMPONENT_IDENTIFICATION SZL to identify the device -->
+    <outgoing-plc-message name="Send S7 Identification Request">
+      <S7Message>
+        <protocolId dataType="uint" bitLength="8">50</protocolId>
+        <messageType dataType="uint" bitLength="8">7</messageType>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <tpduReference dataType="uint" bitLength="16">11</tpduReference>
+        <parameterLength dataType="uint" bitLength="16">8</parameterLength>
+        <payloadLength dataType="uint" bitLength="16">8</payloadLength>
+        <S7MessageUserData>
+          </S7MessageUserData>
+        <parameter>
+          <S7Parameter>
+            <parameterType dataType="uint" bitLength="8">0</parameterType>
+            <S7ParameterUserData>
+              <numItems dataType="uint" bitLength="8">1</numItems>
+              <items isList="true">
+                <S7ParameterUserDataItem>
+                  <itemType dataType="uint" bitLength="8">18</itemType>
+                  <S7ParameterUserDataItemCPUFunctions>
+                    <itemLength dataType="uint" bitLength="8">4</itemLength>
+                    <method dataType="uint" bitLength="8">17</method>
+                    <cpuFunctionType dataType="uint" bitLength="4">4</cpuFunctionType>
+                    <cpuFunctionGroup dataType="uint" bitLength="4">4</cpuFunctionGroup>
+                    <cpuSubfunction dataType="uint" bitLength="8">1</cpuSubfunction>
+                    <sequenceNumber dataType="uint" bitLength="8">0</sequenceNumber>
+                    </S7ParameterUserDataItemCPUFunctions>
+                  </S7ParameterUserDataItem>
+                </items>
+              </S7ParameterUserData>
+            </S7Parameter>
+          </parameter>
+        <payload>
+          <S7Payload>
+            <S7PayloadUserData>
+              <items isList="true">
+                <S7PayloadUserDataItem>
+                  <returnCode>
+                    <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
+                    </returnCode>
+                  <transportSize>
+                    <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9</DataTransportSize>
+                    </transportSize>
+                  <dataLength dataType="uint" bitLength="16">4</dataLength>
+                  <S7PayloadUserDataItemCpuFunctionReadSzlRequest>
+                    <szlId>
+                      <SzlId>
+                        <typeClass>
+                          <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0</SzlModuleTypeClass>
+                          </typeClass>
+                        <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
+                        <sublistList>
+                          <SzlSublist dataType="uint" bitLength="8" stringRepresentation="COMPONENT_IDENTIFICATION">28</SzlSublist>
+                          </sublistList>
+                        </SzlId>
+                      </szlId>
+                    <szlIndex dataType="uint" bitLength="16">1</szlIndex>
+                    </S7PayloadUserDataItemCpuFunctionReadSzlRequest>
+                  </S7PayloadUserDataItem>
+                </items>
+              </S7PayloadUserData>
+            </S7Payload>
+          </payload>
+        </S7Message>
+    </outgoing-plc-message>
+    <!-- Which the PLC will gladly provide to us -->
+    <incoming-plc-message name="Receive S7 Identification Response">
+      <S7Message>
+        <protocolId dataType="uint" bitLength="8">50</protocolId>
+        <messageType dataType="uint" bitLength="8">7</messageType>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <tpduReference dataType="uint" bitLength="16">11</tpduReference>
+        <parameterLength dataType="uint" bitLength="16">12</parameterLength>
+        <payloadLength dataType="uint" bitLength="16">40</payloadLength>
+        <S7MessageUserData>
+          </S7MessageUserData>
+        <parameter>
+          <S7Parameter>
+            <parameterType dataType="uint" bitLength="8">0</parameterType>
+            <S7ParameterUserData>
+              <numItems dataType="uint" bitLength="8">1</numItems>
+              <items isList="true">
+                <S7ParameterUserDataItem>
+                  <itemType dataType="uint" bitLength="8">18</itemType>
+                  <S7ParameterUserDataItemCPUFunctions>
+                    <itemLength dataType="uint" bitLength="8">8</itemLength>
+                    <method dataType="uint" bitLength="8">18</method>
+                    <cpuFunctionType dataType="uint" bitLength="4">8</cpuFunctionType>
+                    <cpuFunctionGroup dataType="uint" bitLength="4">4</cpuFunctionGroup>
+                    <cpuSubfunction dataType="uint" bitLength="8">1</cpuSubfunction>
+                    <sequenceNumber dataType="uint" bitLength="8">1</sequenceNumber>
+                    <dataUnitReferenceNumber dataType="uint" bitLength="8">0</dataUnitReferenceNumber>
+                    <lastDataUnit dataType="uint" bitLength="8">0</lastDataUnit>
+                    <errorCode dataType="uint" bitLength="16">0</errorCode>
+                    </S7ParameterUserDataItemCPUFunctions>
+                  </S7ParameterUserDataItem>
+                </items>
+              </S7ParameterUserData>
+            </S7Parameter>
+          </parameter>
+        <payload>
+          <S7Payload>
+            <S7PayloadUserData>
+              <items isList="true">
+                <S7PayloadUserDataItem>
+                  <returnCode>
+                    <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
+                    </returnCode>
+                  <transportSize>
+                    <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9</DataTransportSize>
+                    </transportSize>
+                  <dataLength dataType="uint" bitLength="16">36</dataLength>
+                  <S7PayloadUserDataItemCpuFunctionReadSzlResponse>
+                    <items dataType="byte" bitLength="288">0x001c0001001c0001000136455337203231322d31424433302d3058423020202000012020</items>
+                    </S7PayloadUserDataItemCpuFunctionReadSzlResponse>
+                  </S7PayloadUserDataItem>
+                </items>
+              </S7PayloadUserData>
+            </S7Payload>
+          </payload>
+        </S7Message>
+    </incoming-plc-message>
+  </setup>
+
+  <testcase>
+    <name>Single element read request</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag>
+              <name>hurz</name>
+              <address>%Q0.0:BOOL</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send S7 Read Request">
+        <S7Message>
+          <protocolId dataType="uint" bitLength="8">50</protocolId>
+          <messageType dataType="uint" bitLength="8">1</messageType>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <tpduReference dataType="uint" bitLength="16">12</tpduReference>
+          <parameterLength dataType="uint" bitLength="16">14</parameterLength>
+          <payloadLength dataType="uint" bitLength="16">0</payloadLength>
+          <S7MessageRequest>
+            </S7MessageRequest>
+          <parameter>
+            <S7Parameter>
+              <parameterType dataType="uint" bitLength="8">4</parameterType>
+              <S7ParameterReadVarRequest>
+                <numItems dataType="uint" bitLength="8">1</numItems>
+                <items isList="true">
+                  <S7VarRequestParameterItem>
+                    <itemType dataType="uint" bitLength="8">18</itemType>
+                    <S7VarRequestParameterItemAddress>
+                      <itemLength dataType="uint" bitLength="8">10</itemLength>
+                      <address>
+                        <S7Address>
+                          <addressType dataType="uint" bitLength="8">16</addressType>
+                          <S7AddressAny>
+                            <transportSize>
+                              <transportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</transportSize>
+                              </transportSize>
+                            <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                            <dbNumber dataType="uint" bitLength="16">0</dbNumber>
+                            <area>
+                              <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
+                              </area>
+                            <reserved dataType="uint" bitLength="5">0</reserved>
+                            <byteAddress dataType="uint" bitLength="16">0</byteAddress>
+                            <bitAddress dataType="uint" bitLength="3">0</bitAddress>
+                            </S7AddressAny>
+                          </S7Address>
+                        </address>
+                      </S7VarRequestParameterItemAddress>
+                    </S7VarRequestParameterItem>
+                  </items>
+                </S7ParameterReadVarRequest>
+              </S7Parameter>
+            </parameter>
+          </S7Message>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive S7 Read Response">
+        <S7Message>
+          <protocolId dataType="uint" bitLength="8">50</protocolId>
+          <messageType dataType="uint" bitLength="8">3</messageType>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <tpduReference dataType="uint" bitLength="16">12</tpduReference>
+          <parameterLength dataType="uint" bitLength="16">2</parameterLength>
+          <payloadLength dataType="uint" bitLength="16">5</payloadLength>
+          <S7MessageResponseData>
+            <errorClass dataType="uint" bitLength="8">0</errorClass>
+            <errorCode dataType="uint" bitLength="8">0</errorCode>
+            </S7MessageResponseData>
+          <parameter>
+            <S7Parameter>
+              <parameterType dataType="uint" bitLength="8">4</parameterType>
+              <S7ParameterReadVarResponse>
+                <numItems dataType="uint" bitLength="8">1</numItems>
+                </S7ParameterReadVarResponse>
+              </S7Parameter>
+            </parameter>
+          <payload>
+            <S7Payload>
+              <S7PayloadReadVarResponse>
+                <items isList="true">
+                  <S7VarPayloadDataItem>
+                    <returnCode>
+                      <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
+                      </returnCode>
+                    <transportSize>
+                      <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
+                      </transportSize>
+                    <dataLength dataType="uint" bitLength="16">1</dataLength>
+                    <data dataType="byte" bitLength="8">0x01</data>
+                    <padding isList="true">
+                      </padding>
+                    </S7VarPayloadDataItem>
+                  </items>
+                </S7PayloadReadVarResponse>
+              </S7Payload>
+            </payload>
+          </S7Message>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                </value>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>Single element read request with disabled PUT/GET</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag>
+              <name>hurz</name>
+              <address>%Q0.0:BOOL</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send S7 Read Request">
+        <S7Message>
+          <protocolId dataType="uint" bitLength="8">50</protocolId>
+          <messageType dataType="uint" bitLength="8">1</messageType>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <tpduReference dataType="uint" bitLength="16">12</tpduReference>
+          <parameterLength dataType="uint" bitLength="16">14</parameterLength>
+          <payloadLength dataType="uint" bitLength="16">0</payloadLength>
+          <S7MessageRequest>
+            </S7MessageRequest>
+          <parameter>
+            <S7Parameter>
+              <parameterType dataType="uint" bitLength="8">4</parameterType>
+              <S7ParameterReadVarRequest>
+                <numItems dataType="uint" bitLength="8">1</numItems>
+                <items isList="true">
+                  <S7VarRequestParameterItem>
+                    <itemType dataType="uint" bitLength="8">18</itemType>
+                    <S7VarRequestParameterItemAddress>
+                      <itemLength dataType="uint" bitLength="8">10</itemLength>
+                      <address>
+                        <S7Address>
+                          <addressType dataType="uint" bitLength="8">16</addressType>
+                          <S7AddressAny>
+                            <transportSize>
+                              <transportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</transportSize>
+                              </transportSize>
+                            <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                            <dbNumber dataType="uint" bitLength="16">0</dbNumber>
+                            <area>
+                              <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
+                              </area>
+                            <reserved dataType="uint" bitLength="5">0</reserved>
+                            <byteAddress dataType="uint" bitLength="16">0</byteAddress>
+                            <bitAddress dataType="uint" bitLength="3">0</bitAddress>
+                            </S7AddressAny>
+                          </S7Address>
+                        </address>
+                      </S7VarRequestParameterItemAddress>
+                    </S7VarRequestParameterItem>
+                  </items>
+                </S7ParameterReadVarRequest>
+              </S7Parameter>
+            </parameter>
+          </S7Message>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive S7 Read Response with PUT/GET disabled error">
+        <S7Message>
+          <protocolId dataType="uint" bitLength="8">50</protocolId>
+          <messageType dataType="uint" bitLength="8">2</messageType>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <tpduReference dataType="uint" bitLength="16">12</tpduReference>
+          <parameterLength dataType="uint" bitLength="16">0</parameterLength>
+          <payloadLength dataType="uint" bitLength="16">0</payloadLength>
+          <S7MessageResponse>
+            <errorClass dataType="uint" bitLength="8">129</errorClass>
+            <errorCode dataType="uint" bitLength="8">4</errorCode>
+            </S7MessageResponse>
+          </S7Message>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <values isList="true">
+            <hurz>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">ACCESS_DENIED</code>
+              </PlcResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+</test:driver-testsuite>
