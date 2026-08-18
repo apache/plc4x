@@ -33,6 +33,11 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
+// maxAdsDiscoveryFrameSize is the maximum total discovery frame size (header plus payload)
+// this codec accepts. Discovery responses are small; anything approaching the UDP datagram
+// limit is bogus, and the 32-bit wire length must be bounded before sizing any allocation.
+const maxAdsDiscoveryFrameSize = 64 * 1024
+
 type DiscoveryMessageCodec struct {
 	_default.DefaultCodec
 
@@ -110,8 +115,18 @@ func (m *DiscoveryMessageCodec) Receive(ctx context.Context) (spi.Message, error
 			}
 			return nil, nil
 		}
-		// Get the size of the entire packet little endian plus size of header
-		packetSize := (uint32(data[5]) << 24) + (uint32(data[4]) << 16) + (uint32(data[3]) << 8) + (uint32(data[2])) + 6
+		// Get the size of the entire packet little endian plus size of header.
+		// Compute in uint64 so a wire length close to 0xFFFFFFFF cannot wrap the
+		// packet size to zero (which would make this codec spin forever without
+		// consuming a single byte).
+		discoveryLength := (uint64(data[5]) << 24) + (uint64(data[4]) << 16) + (uint64(data[3]) << 8) + (uint64(data[2]))
+		if discoveryLength == 0 || discoveryLength+6 > maxAdsDiscoveryFrameSize {
+			// A zero length can never frame a valid discovery packet and an oversize
+			// length would force a huge allocation; both are unrecoverable framing errors.
+			return nil, transports.NewTransportError(transports.TransportErrorFatal,
+				errors.Errorf("invalid ADS discovery frame length %d (must be > 0 and at most %d)", discoveryLength, maxAdsDiscoveryFrameSize-6))
+		}
+		packetSize := uint32(discoveryLength) + 6
 		if num < packetSize {
 			m.log.Debug().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil

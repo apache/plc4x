@@ -146,6 +146,11 @@ func (m *Connection) setupConnection(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "error reading symbol version")
 	}
+	// The length of the response data is wire-controlled, so it must be checked
+	// before indexing to avoid a panic on an empty response.
+	if len(symbolVersionResponse.GetData()) < 1 {
+		return errors.New("error reading symbol version: empty response data")
+	}
 	m.driverContext.symbolVersion = symbolVersionResponse.GetData()[0]
 
 	// Read the online-version
