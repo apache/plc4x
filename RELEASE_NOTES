@@ -95,10 +95,16 @@ Incompatible changes
   "getConnectionFactory()" (formerly "getConnectionManager()").
   "PlcConnectionManager" now extends "PlcConnectionFactory" and
   adds the "close()" method, and is only implemented by managers
-  that keep the connections they hand out, such as the
-  "CachedPlcConnectionManager"; its builder method
-  "withConnectionManager()" was renamed to
-  "withConnectionFactory()".
+  that keep the connections they hand out, such as the connection
+  cache.
+- The connection cache was renamed from
+  "CachedPlcConnectionManager" to "PlcConnectionCache", matching
+  the name the concept already has in PLC4Go. Its builder method
+  "withConnectionManager()" became "withConnectionFactory()", and
+  "PlcConnectionManagerClosedException" became
+  "PlcConnectionCacheClosedException". The Maven artifactId
+  ("plc4j-tools-connection-cache") and the package are
+  unchanged.
 - All drivers were migrated to a new shared SPI ("SPI3"):
   dependency-free Read/Write buffers, an updated code-generation
   framework, a pluggable-transport system and a layered

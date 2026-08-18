@@ -44,9 +44,11 @@ Here comes an example application, that uses the connection cache:
 [source,java]
 ----
     public static void main(String[] args) throws Exception {
-        PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
+        PlcConnectionCache connectionCache = PlcConnectionCache.getBuilder()
+            .withConnectionFactory(PlcDriverManager.getDefault().getConnectionFactory())
+            .build();
         for (int i = 0; i < 10000; i++) {
-            try(PlcConnection connection = connectionManager.getConnection("s7://192.168.1.192")) {
+            try(PlcConnection connection = connectionCache.getConnection("s7://192.168.1.192")) {
                 if (connection.isConnected()){
                     PlcReadRequest.Builder builder = connection.readRequestBuilder();
                     builder.addTagAddress("PollingValue", "%DB1:4.0:BOOL");
@@ -89,14 +91,14 @@ To use the Connection Cache you have to add a dependency to the `plc4j-connectio
 
 In this snippet of code there are some considerations that are worth to be underlined.
 
-* In recent versions of PLC4X we have refactored the `PlcDriverManager` to provide access to a `PlcConnectionFactory` interface. This contains all methods that are related to creating connections. The ConnectionCache implements this same interface - via `PlcConnectionManager`, which adds the `close()` method a cache needs - therefore you can use a `CachedPlcConnectionManager` everywhere you can use a plain `PlcConnectionFactory`.
-* A new `CachedPlcConnectionManager` is usually created using a builder, that can be accessed via: `CachedPlcConnectionManager.getBuilder()`. This will be explained in more detail in the next chapter.
-* The `try-with-resources` statement (i.e. ``try (PlcConnection connection = connectionManager.getConnection(connectionString))``) ensures that a leased connection will be automatically returned to the cache after the use. As said before if the application keeps hold of the connection for too long, after a configurable amount of time will be automatically closed by the cache and the thread can no-longer use it (i.e. the `maxLeaseTime` parameter defaults to 4 seconds and is configurable - see the next chapter on configuring the connection cache).
+* In recent versions of PLC4X we have refactored the `PlcDriverManager` to provide access to a `PlcConnectionFactory` interface. This contains all methods that are related to creating connections. The ConnectionCache implements this same interface - via `PlcConnectionManager`, which adds the `close()` method a cache needs - therefore you can use a `PlcConnectionCache` everywhere you can use a plain `PlcConnectionFactory`.
+* A new `PlcConnectionCache` is usually created using a builder, that can be accessed via: `PlcConnectionCache.getBuilder()`. This will be explained in more detail in the next chapter.
+* The `try-with-resources` statement (i.e. ``try (PlcConnection connection = connectionCache.getConnection(connectionString))``) ensures that a leased connection will be automatically returned to the cache after the use. As said before if the application keeps hold of the connection for too long, after a configurable amount of time will be automatically closed by the cache and the thread can no-longer use it (i.e. the `maxLeaseTime` parameter defaults to 4 seconds and is configurable - see the next chapter on configuring the connection cache).
 * Before handing out a connection-lease, the connection cache will execute a `ping()` operation on the corresponding connection to check if it's still valid. If this check fails, the cache will terminate this connection, establish a new one and then return a handle for that new connection.
 
-=== Configuring the CachedPlcConnectionManager
+=== Configuring the PlcConnectionCache
 
-As mentioned before the `CachedPlcConnectionManager` is configurable. Mainly this involves configuring the timeouts.
+As mentioned before the `PlcConnectionCache` is configurable. Mainly this involves configuring the timeouts.
 
 [cols="2,2,2a,5a"]
 |===
@@ -114,14 +116,15 @@ As mentioned before the `CachedPlcConnectionManager` is configurable. Mainly thi
 
 |===
 
-The configuration of a `CachedPlcConnectionManager` is done when creating the instance. For this the builder contains two methods to configure the timeouts.
+The configuration of a `PlcConnectionCache` is done when creating the instance. For this the builder contains two methods to configure the timeouts.
 
 Here comes an example:
 
 [source,java]
 ----
     public static void main(String[] args) throws Exception {
-        PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder()
+        PlcConnectionCache connectionCache = PlcConnectionCache.getBuilder()
+            .withConnectionFactory(PlcDriverManager.getDefault().getConnectionFactory())
             .withMaxLeaseTime(Duration.ofSeconds(10))
             .withMaxWaitTime(Duration.ofMinutes(1))
             .build();

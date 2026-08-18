@@ -21,10 +21,10 @@ package org.apache.plc4x.java.utils.cache.exceptions;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
-public class PlcConnectionManagerClosedException extends PlcConnectionException {
+public class PlcConnectionCacheClosedException extends PlcConnectionException {
 
-    public PlcConnectionManagerClosedException() {
-        super("CachedPlcConnectionManager is closed");
+    public PlcConnectionCacheClosedException() {
+        super("PlcConnectionCache is closed");
     }
 
 }

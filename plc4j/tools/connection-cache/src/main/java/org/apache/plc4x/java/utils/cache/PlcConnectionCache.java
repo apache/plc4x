@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedException;
+import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionCacheClosedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A connection manager that caches and reuses PLC connections.
+ * A connection cache that keeps and reuses PLC connections.
  * <p>
  * This implementation provides:
  * - Connection pooling with automatic reuse
@@ -48,17 +48,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * // Get the default connection factory (supports all drivers)
  * PlcConnectionFactory connectionFactory = PlcDriverManager.getDefault().getConnectionFactory();
  *
- * CachedPlcConnectionManager manager = CachedPlcConnectionManager.getBuilder()
+ * PlcConnectionCache cache = PlcConnectionCache.getBuilder()
  *     .withConnectionFactory(connectionFactory)
  *     .withMaxIdleTime(5, TimeUnit.MINUTES)
  *     .withMaxLeaseTime(1, TimeUnit.MINUTES)
  *     .build();
  *
- * try (PlcConnection conn = manager.getConnection("ads:tcp://192.168.1.1")) {
+ * try (PlcConnection conn = cache.getConnection("ads:tcp://192.168.1.1")) {
  *     // Use connection - works with any protocol!
  * } // Automatically returned to cache
  *
- * manager.close(); // Shutdown all connections
+ * cache.close(); // Shutdown all connections
  * </pre>
  * <p>
  * Thread Safety: This class is fully thread-safe. Multiple threads can call getConnection()
@@ -74,9 +74,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  *   never blocks operations on other connections; the pool itself is never globally locked.
  * - Timeout tasks are cancelled before closing connections to avoid races.
  */
-public class CachedPlcConnectionManager implements PlcConnectionManager {
+public class PlcConnectionCache implements PlcConnectionManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CachedPlcConnectionManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlcConnectionCache.class);
 
     // Default configuration
     private static final long DEFAULT_MAX_IDLE_TIME_MS = TimeUnit.MINUTES.toMillis(5);
@@ -89,7 +89,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     /**
      * Grace margin added to the caller-facing lease {@code get()} timeout, on top of the per-connection
      * max-wait. It ensures the container's own wait timeout (scheduled at exactly max-wait) fires and
-     * marks a queued waiter "done" before this manager gives up — preventing a returned connection from
+     * marks a queued waiter "done" before this cache gives up — preventing a returned connection from
      * being handed to a waiter whose caller has already timed out. Purely an upper safety bound; the
      * {@code get()} returns as soon as the future completes.
      */
@@ -114,7 +114,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     /**
      * Private constructor - use Builder to create instances.
      */
-    private CachedPlcConnectionManager(PlcConnectionFactory connectionFactory, ScheduledExecutorService scheduler,
+    private PlcConnectionCache(PlcConnectionFactory connectionFactory, ScheduledExecutorService scheduler,
                                        long maxIdleTimeMs, long maxLeaseTimeMs, long maxWaitTimeMs,
                                        long pingTimeoutMs, long idlePingThresholdMs, long closeTimeoutMs) {
         this.connectionFactory = connectionFactory;
@@ -126,7 +126,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         this.idlePingThresholdMs = idlePingThresholdMs;
         this.closeTimeoutMs = closeTimeoutMs;
 
-        LOGGER.info("Created CachedPlcConnectionManager with maxIdle={}ms, maxLease={}ms, maxWait={}ms, pingTimeout={}ms, idlePingThreshold={}ms, closeTimeout={}ms",
+        LOGGER.info("Created PlcConnectionCache with maxIdle={}ms, maxLease={}ms, maxWait={}ms, pingTimeout={}ms, idlePingThreshold={}ms, closeTimeout={}ms",
             maxIdleTimeMs, maxLeaseTimeMs, maxWaitTimeMs, pingTimeoutMs, idlePingThresholdMs, closeTimeoutMs);
     }
 
@@ -138,7 +138,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     @Override
     public PlcConnection getConnection(String connectionString, PlcAuthentication authentication) throws PlcConnectionException {
         if (closed) {
-            throw new PlcConnectionManagerClosedException();
+            throw new PlcConnectionCacheClosedException();
         }
 
         LOGGER.debug("Requesting connection for: {}", connectionString);
@@ -181,12 +181,12 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     @Override
     public void close() {
         if (closed) {
-            LOGGER.debug("Connection manager already closed");
+            LOGGER.debug("Connection cache already closed");
             return;
         }
 
         closed = true;
-        LOGGER.info("Closing CachedPlcConnectionManager with {} connections", cachedConnections.size());
+        LOGGER.info("Closing PlcConnectionCache with {} connections", cachedConnections.size());
 
         // Shut the scheduler down first to prevent new timeout tasks from starting
         // This is critical to prevent scheduler threads from trying to close connections
@@ -211,7 +211,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         // Clear the pool
         cachedConnections.clear();
 
-        LOGGER.info("CachedPlcConnectionManager closed");
+        LOGGER.info("PlcConnectionCache closed");
     }
 
     /**
@@ -282,7 +282,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     }
 
     /**
-     * Create a new builder for CachedPlcConnectionManager.
+     * Create a new builder for PlcConnectionCache.
      *
      * @return A new builder instance
      */
@@ -291,9 +291,9 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     }
 
     /**
-     * Builder for CachedPlcConnectionManager.
+     * Builder for PlcConnectionCache.
      * <p>
-     * Provides a fluent API for configuring the connection manager.
+     * Provides a fluent API for configuring the connection cache.
      */
     public static class Builder {
         private PlcConnectionFactory connectionFactory;
@@ -322,8 +322,8 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
          * <p>
          * By default, a small daemon {@link ScheduledExecutorService} pool is created (see
          * {@code defaultScheduler()}). Provide your own if you want to share a scheduler across
-         * managers or control the scheduling threads. The supplied scheduler is shut down by
-         * {@link CachedPlcConnectionManager#close()}.
+         * caches or control the scheduling threads. The supplied scheduler is shut down by
+         * {@link PlcConnectionCache#close()}.
          *
          * @param scheduler the scheduled executor service
          * @return This builder
@@ -456,23 +456,23 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
             AtomicInteger threadIndex = new AtomicInteger();
             return Executors.newScheduledThreadPool(DEFAULT_SCHEDULER_THREADS, runnable -> {
                 Thread thread = new Thread(runnable,
-                    "CachedPlcConnectionManager-Scheduler-" + threadIndex.incrementAndGet());
+                    "PlcConnectionCache-Scheduler-" + threadIndex.incrementAndGet());
                 thread.setDaemon(true);
                 return thread;
             });
         }
 
         /**
-         * Build the CachedPlcConnectionManager.
+         * Build the PlcConnectionCache.
          *
-         * @return A new CachedPlcConnectionManager instance
+         * @return A new PlcConnectionCache instance
          * @throws IllegalStateException if connectionFactory is not set
          */
-        public CachedPlcConnectionManager build() {
+        public PlcConnectionCache build() {
             if (connectionFactory == null) {
                 throw new IllegalStateException("PlcConnectionFactory must be set using withConnectionFactory()");
             }
-            return new CachedPlcConnectionManager(
+            return new PlcConnectionCache(
                 connectionFactory,
                 scheduler,
                 maxIdleTimeMs,

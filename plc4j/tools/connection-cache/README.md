@@ -32,7 +32,7 @@ The `ConnectionCache` implements the `PlcConnectionManager` interface, which ext
 
 ## Architecture
 
-The `CachedPlcConnectionManager` contains a map of `ConnectionContainer` objects.
+The `PlcConnectionCache` contains a map of `ConnectionContainer` objects.
 Each of these generally have a reference to a real `PlcConnection` as well as all properties for managing it's state.
 
 In general there are just three properties:
@@ -41,11 +41,11 @@ In general there are just three properties:
 - A reference to the current connection-lease (`null`, if the `ConnectionContainer` is idle)
 - A queue where all further lease-requests are lined up
 
-Whenever a `PlcConnection` is required, instead of returning a real `PlcConnection`, the `CachedPlcConnectionManager` returns a `LeasedPlcConnection`. 
+Whenever a `PlcConnection` is required, instead of returning a real `PlcConnection`, the `PlcConnectionCache` returns a `LeasedPlcConnection`. 
 
 This object is a volatile container for a `PlcConnection`, allowing the container to invalidate the `PlcConnection`. 
 
-Whenever a `CachedPlcConnectionManager`'s `getConnection` method is used, it returns a new instance of such a container. Whenever the client calls `close` on this connection, it is however not really closed, but the reference to the real connection is cleared, hereby rendering the connection-lease useless and the connection is returned to the `ConnectionContainer`. Also, if the client holds on to the connection-lease for longer than the `maxLeaseTime` the container invalidates the connection-lease. 
+Whenever a `PlcConnectionCache`'s `getConnection` method is used, it returns a new instance of such a container. Whenever the client calls `close` on this connection, it is however not really closed, but the reference to the real connection is cleared, hereby rendering the connection-lease useless and the connection is returned to the `ConnectionContainer`. Also, if the client holds on to the connection-lease for longer than the `maxLeaseTime` the container invalidates the connection-lease. 
 
-If a `CachedPlcConnectionManager` is used to get a connection that is currently being used, instead of returning a reference to it, a Future is generated and added to a queue. As soon as the connection is released, the container checks if there are any requests waiting.
+If a `PlcConnectionCache` is used to get a connection that is currently being used, instead of returning a reference to it, a Future is generated and added to a queue. As soon as the connection is released, the container checks if there are any requests waiting.
 If there are it takes the oldest request and completes that future with a new lease.

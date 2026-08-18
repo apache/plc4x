@@ -384,7 +384,7 @@ class ConnectionContainer {
      * and can be used, false otherwise.
      * <p>
      * This method handles all validation logic internally, removing that
-     * responsibility from the CachedPlcConnectionManager.
+     * responsibility from the PlcConnectionCache.
      *
      * @return true if the connection is valid, false if it should be discarded
      */
@@ -427,7 +427,7 @@ class ConnectionContainer {
             idleTimeoutTask = scheduler.schedule(this::onIdleTimeout, maxIdleTimeMs, TimeUnit.MILLISECONDS);
             LOGGER.trace("Scheduled idle timeout for {} in {}ms", connectionString, maxIdleTimeMs);
         } catch (RejectedExecutionException e) {
-            // Scheduler was already shut down (manager shutting down)
+            // Scheduler was already shut down (cache shutting down)
             LOGGER.debug("Cannot schedule idle timeout, scheduler shut down: {}", connectionString);
         }
     }
@@ -469,7 +469,7 @@ class ConnectionContainer {
             }, maxLeaseTimeMs, TimeUnit.MILLISECONDS);
             LOGGER.trace("Scheduled max lease timeout for {} in {}ms", connectionString, maxLeaseTimeMs);
         } catch (RejectedExecutionException e) {
-            // Scheduler was already shut down (manager shutting down)
+            // Scheduler was already shut down (cache shutting down)
             LOGGER.debug("Cannot schedule max lease timeout, scheduler shut down: {}", connectionString);
         }
     }
