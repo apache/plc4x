@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -255,7 +256,7 @@ func (m *_SecurityDataZoneName) parse(ctx context.Context, readBuffer utils.Read
 	}
 	m.ZoneNumber = zoneNumber
 
-	zoneName, err := ReadSimpleField(ctx, "zoneName", ReadString(readBuffer, uint32(88)))
+	zoneName, err := ReadSimpleField(ctx, "zoneName", ReadString(readBuffer, uint32(88)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneName' field"))
 	}
@@ -290,7 +291,7 @@ func (m *_SecurityDataZoneName) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(err, "Error serializing 'zoneNumber' field")
 		}
 
-		if err := WriteSimpleField[string](ctx, "zoneName", m.GetZoneName(), WriteString(writeBuffer, 88)); err != nil {
+		if err := WriteSimpleField[string](ctx, "zoneName", m.GetZoneName(), WriteString(writeBuffer, 88), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'zoneName' field")
 		}
 

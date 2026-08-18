@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -278,7 +279,7 @@ func (m *_BACnetContextTagCharacterString) parse(ctx context.Context, readBuffer
 	}
 	m.Payload = payload
 
-	value, err := ReadVirtualField[string](ctx, "value", (*string)(nil), payload.GetValue())
+	value, err := ReadVirtualField[string](ctx, "value", (*string)(nil), payload.GetValue(), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

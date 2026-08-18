@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -204,7 +205,7 @@ func (m *_AdsString) parse(ctx context.Context, readBuffer utils.ReadBuffer, str
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	stringValue, err := ReadManualField[string](ctx, "stringValue", readBuffer, EnsureType[string](ParseZeroTerminatedString(ctx, readBuffer, stringLength)))
+	stringValue, err := ReadManualField[string](ctx, "stringValue", readBuffer, EnsureType[string](ParseZeroTerminatedString(ctx, readBuffer, stringLength)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringValue' field"))
 	}
@@ -236,7 +237,7 @@ func (m *_AdsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 	if err := WriteManualField[string](ctx, "stringValue", func(ctx context.Context) error {
 		return SerializeZeroTerminatedString(ctx, writeBuffer, m.GetStringValue())
-	}, writeBuffer); err != nil {
+	}, writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'stringValue' field")
 	}
 

@@ -265,7 +265,7 @@ func (m *_AnsiExtendedSymbolSegment) parse(ctx context.Context, readBuffer utils
 	}
 	_ = dataSize
 
-	symbol, err := ReadSimpleField(ctx, "symbol", ReadString(readBuffer, uint32(int32(dataSize)*int32(int32(8)))))
+	symbol, err := ReadSimpleField(ctx, "symbol", ReadString(readBuffer, uint32(int32(dataSize)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbol' field"))
 	}

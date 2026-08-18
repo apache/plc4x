@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -294,7 +295,7 @@ func (m *_NodeIdNumeric) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 	m.Id = id
 
-	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), id)
+	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), id, codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}

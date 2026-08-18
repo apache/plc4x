@@ -578,7 +578,7 @@ func (m *_CipIdentity) parse(ctx context.Context, readBuffer utils.ReadBuffer, p
 	}
 	_ = productNameLength
 
-	productName, err := ReadSimpleField(ctx, "productName", ReadString(readBuffer, uint32(int32(productNameLength)*int32(int32(8)))))
+	productName, err := ReadSimpleField(ctx, "productName", ReadString(readBuffer, uint32(int32(productNameLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productName' field"))
 	}

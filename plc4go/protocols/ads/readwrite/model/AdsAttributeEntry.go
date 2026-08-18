@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -262,7 +263,7 @@ func (m *_AdsAttributeEntry) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	_ = valueLength
 
-	name, err := ReadSimpleField(ctx, "name", ReadString(readBuffer, uint32(int32(nameLength)*int32(int32(8)))))
+	name, err := ReadSimpleField(ctx, "name", ReadString(readBuffer, uint32(int32(nameLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
@@ -274,7 +275,7 @@ func (m *_AdsAttributeEntry) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	_ = nameTerminator
 
-	value, err := ReadSimpleField(ctx, "value", ReadString(readBuffer, uint32(int32(valueLength)*int32(int32(8)))))
+	value, err := ReadSimpleField(ctx, "value", ReadString(readBuffer, uint32(int32(valueLength)*int32(int32(8)))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -323,7 +324,7 @@ func (m *_AdsAttributeEntry) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(err, "Error serializing 'valueLength' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "name", m.GetName(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetName())))*int32(int32(8))))); err != nil {
+	if err := WriteSimpleField[string](ctx, "name", m.GetName(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetName())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'name' field")
 	}
 
@@ -331,7 +332,7 @@ func (m *_AdsAttributeEntry) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(err, "Error serializing 'nameTerminator' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "value", m.GetValue(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetValue())))*int32(int32(8))))); err != nil {
+	if err := WriteSimpleField[string](ctx, "value", m.GetValue(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetValue())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 	valueTerminator := uint8(0x00)
