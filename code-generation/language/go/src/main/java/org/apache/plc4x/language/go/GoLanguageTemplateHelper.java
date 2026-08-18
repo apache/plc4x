@@ -355,6 +355,23 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return isAnTypeOfOptional && isNonComplexOrArrayElementNonComplex(field.getType());
     }
 
+    public boolean isStringTypeField(TypeReference typeReference) {
+        if (typeReference.isArrayTypeReference()) {
+            return isStringTypeField(typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference());
+        }
+        if (!typeReference.isSimpleTypeReference()) {
+            return false;
+        }
+        SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
+        switch (simpleTypeReference.getBaseType()) {
+            case STRING:
+            case VSTRING:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isNonComplexOrArrayElementNonComplex(TypeReference typeReference) {
         boolean isNotAnComplexTypeReference = !typeReference.isComplexTypeReference();
         boolean arrayTypeIsNotAnComplexTypeReference = !(
@@ -1889,10 +1906,18 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             final String encoding = toParseExpression(field, field.getType(), term, parserArguments);
             sb.append(", codegen.WithEncoding(").append(encoding).append(")");
         }, () -> {
-            field.getEncoding().ifPresent(term -> {
+            field.getEncoding().ifPresentOrElse(term -> {
                 emitCodegenRequiredImports();
                 final String encoding = toParseExpression(field, field.getType(), term, parserArguments);
                 sb.append(", codegen.WithEncoding(").append(encoding).append(")");
+            }, () -> {
+                // No explicit encoding was defined on the field. If it's a string field, default
+                // to UTF8 so the generated (de-)serializers don't fall back to zero-filling the
+                // allocated space (see WriteBufferByteBased.WriteString for the unmatched-encoding case).
+                if (isStringTypeField(field.getType())) {
+                    emitCodegenRequiredImports();
+                    sb.append(", codegen.WithEncoding(\"UTF8\")");
+                }
             });
         });
 
