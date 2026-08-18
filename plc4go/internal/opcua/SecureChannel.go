@@ -29,6 +29,7 @@ import (
 	"net"
 	"net/url"
 	"regexp"
+	"runtime/debug"
 	"slices"
 	"sync"
 	"sync/atomic"
@@ -51,6 +52,7 @@ const (
 	REQUEST_TIMEOUT_LONG          = 10000
 	PASSWORD_ENCRYPTION_ALGORITHM = "http://www.w3.org/2001/04/xmlenc#rsa-oaep"
 	EPOCH_OFFSET                  = 116444736000000000 //Offset between OPC UA epoch time and linux epoch time.
+	NONCE_LENGTH                  = 32                 //Client nonce length in bytes (Basic256Sha256 mandates 32-byte nonces).
 )
 
 var (
@@ -122,14 +124,15 @@ type SecureChannel struct {
 
 func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Configuration) *SecureChannel {
 	s := &SecureChannel{
-		configuration:             configuration,
-		endpoint:                  readWriteModel.NewPascalString(&configuration.Endpoint),
-		username:                  configuration.Username,
-		password:                  configuration.Password,
-		securityPolicy:            "http://opcfoundation.org/UA/SecurityPolicy#" + configuration.SecurityPolicy,
-		sessionName:               "UaSession:" + *APPLICATION_TEXT.GetStringValue() + ":" + utils.RandomString(20),
-		authenticationToken:       readWriteModel.NewNodeIdTwoByte(0),
-		clientNonce:               []byte(utils.RandomString(40)),
+		configuration:       configuration,
+		endpoint:            readWriteModel.NewPascalString(&configuration.Endpoint),
+		username:            configuration.Username,
+		password:            configuration.Password,
+		securityPolicy:      "http://opcfoundation.org/UA/SecurityPolicy#" + configuration.SecurityPolicy,
+		sessionName:         "UaSession:" + *APPLICATION_TEXT.GetStringValue() + ":" + utils.RandomString(20),
+		authenticationToken: readWriteModel.NewNodeIdTwoByte(0),
+		// The client nonce is key-derivation material and therefore must come from a CSPRNG.
+		clientNonce:               utils.RandomBytes(NONCE_LENGTH),
 		keyStoreFile:              configuration.KeyStoreFile,
 		channelTransactionManager: NewSecureChannelTransactionManager(log),
 		lifetime:                  DEFAULT_CONNECTION_LIFETIME,
@@ -176,6 +179,23 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 
 	s.channelId.Store(1)
 	return s
+}
+
+// goWithRecover runs f on the channel's WaitGroup and converts a panic in the connection
+// handshake chain into a failed connection instead of killing the whole embedding process.
+func (s *SecureChannel) goWithRecover(connection *Connection, errChan chan error, f func()) {
+	s.wg.Go(func() {
+		defer func() {
+			if err := recover(); err != nil {
+				s.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+				connection.fireConnectionError(errors.Errorf("panic during connection setup: %v", err), errChan)
+			}
+		}()
+		f()
+	})
 }
 
 func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDispatcher func(err error), consumer func(opcuaResponse []byte), buffer utils.WriteBufferByteBased) {
@@ -315,7 +335,7 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection) e
 			opcuaAPU := message.(readWriteModel.OpcuaAPU)
 			messagePDU := opcuaAPU.GetMessage()
 			opcuaAcknowledgeResponse := messagePDU.(readWriteModel.OpcuaAcknowledgeResponse)
-			s.wg.Go(func() {
+			s.goWithRecover(connection, errChan, func() {
 				s.onConnectOpenSecureChannel(ctx, connection, okChan, errChan, opcuaAcknowledgeResponse)
 			})
 			return nil
@@ -464,7 +484,7 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 			openSecureChannelResponse := extensionObject.GetBody().(readWriteModel.OpenSecureChannelResponse)
 			s.tokenId.Store(openSecureChannelResponse.GetSecurityToken().(readWriteModel.ChannelSecurityToken).GetTokenId())
 			s.channelId.Store(openSecureChannelResponse.GetSecurityToken().(readWriteModel.ChannelSecurityToken).GetChannelId())
-			s.wg.Go(func() {
+			s.goWithRecover(connection, errChan, func() {
 				s.onConnectCreateSessionRequest(ctx, connection, okChan, errChan)
 			})
 			return nil
@@ -566,7 +586,7 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 		if responseMessage, ok := unknownExtensionObject.(readWriteModel.CreateSessionResponse); ok {
 			s.authenticationToken = responseMessage.GetAuthenticationToken().GetNodeId()
 
-			s.wg.Go(func() {
+			s.goWithRecover(connection, errChan, func() {
 				s.onConnectActivateSessionRequest(ctx, connection, okChan, errChan, responseMessage, responseMessage)
 			})
 		} else {
@@ -599,7 +619,9 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 	s.senderNonce = sessionResponse.GetServerNonce().GetStringValue()
 	endpoints := make([]string, 3)
 	if address, err := url.Parse(s.configuration.Host); err == nil {
-		if names, err := net.LookupAddr(address.Host); err != nil {
+		// Only use the reverse-DNS result on success and with at least one name,
+		// otherwise rand.Intn(0) would panic on the empty slice.
+		if names, err := net.LookupAddr(address.Host); err == nil && len(names) > 0 {
 			endpoints[0] = "opc.tcp://" + names[rand.Intn(len(names))] + ":" + s.configuration.Port + s.configuration.TransportEndpoint
 		}
 		endpoints[1] = "opc.tcp://" + address.Hostname() + ":" + s.configuration.Port + s.configuration.TransportEndpoint

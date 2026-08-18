@@ -117,6 +117,12 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		return nil, nil
 	}
 	numberOfBytesToRead := binary.LittleEndian.Uint32(data[4:8])
+	// The driver advertises DEFAULT_RECEIVE_BUFFER_SIZE in its Hello message; a frame claiming
+	// to be larger is a protocol violation and must not be allocated or read (a malicious peer
+	// could otherwise force a ~4GiB allocation from a single 8-byte header).
+	if numberOfBytesToRead > DEFAULT_RECEIVE_BUFFER_SIZE {
+		return nil, errors.Errorf("received message length %d exceeds the advertised receive buffer size %d", numberOfBytesToRead, DEFAULT_RECEIVE_BUFFER_SIZE)
+	}
 	readBytes, err := ti.Read(ctx, numberOfBytesToRead)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not read %d bytes", readBytes)

@@ -24,10 +24,9 @@ import (
 	"path"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/rs/zerolog"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -52,45 +51,99 @@ type Configuration struct {
 	CertDirectory     string
 	KeyStorePassword  string
 	Ckp               *CertificateKeyPair
+	// AllowUnverifiedSecurityPolicies is an explicit opt-in for security policies other than "None".
+	// The plc4go OPC UA secure-channel implementation does not verify server certificates or message
+	// signatures yet, so any other policy is refused unless this is set to true.
+	AllowUnverifiedSecurityPolicies bool
 
 	log zerolog.Logger
 }
 
+// transportLevelOptionKeys are option keys (lower-cased) which are consumed by the transport
+// layer (or injected by the driver itself) rather than mapping to Configuration fields, so
+// they must not be reported as unknown options.
+var transportLevelOptionKeys = map[string]struct{}{
+	"defaulttcpport":       {},
+	"defaultudpport":       {},
+	"connect-timeout":      {},
+	"so-reuse":             {},
+	"transport-type":       {},
+	"transport-port-range": {},
+	"speed-factor":         {},
+	"failtesttransport":    {},
+	"simulatedlatency":     {},
+}
+
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {
-	titleOptions(options)
 	configuration := createDefaultConfiguration()
 	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
+	// Match option keys case-insensitively against the exported Configuration field names.
+	// (Option keys were previously title-cased, which silently broke camelCase keys like
+	// securityPolicy and thereby dropped requested security settings.)
+	fieldNamesByLowerCase := map[string]string{}
 	for i := 0; i < reflectConfiguration.NumField(); i++ {
 		field := reflectConfiguration.Type().Field(i)
-		key := field.Name
-		if optionValue := getFromOptions(log, options, key); optionValue != "" {
-			switch field.Type.Kind() {
-			case reflect.Uint8:
-				parseUint, err := strconv.ParseUint(optionValue, 0, 8)
-				if err != nil {
-					return Configuration{}, errors.Wrapf(err, "Error parsing %s", key)
-				}
-				reflectConfiguration.FieldByName(key).SetUint(parseUint)
-			case reflect.Bool:
-				parseBool, err := strconv.ParseBool(optionValue)
-				if err != nil {
-					return Configuration{}, errors.Wrapf(err, "Error parsing %s", key)
-				}
-				reflectConfiguration.FieldByName(key).SetBool(parseBool)
-			default:
-				return configuration, errors.Errorf("%s not yet supported", field.Type.Kind())
+		if !field.IsExported() {
+			continue
+		}
+		fieldNamesByLowerCase[strings.ToLower(field.Name)] = field.Name
+	}
+	for optionKey := range options {
+		fieldName, ok := fieldNamesByLowerCase[strings.ToLower(optionKey)]
+		if !ok {
+			if _, isTransportOption := transportLevelOptionKeys[strings.ToLower(optionKey)]; isTransportOption {
+				continue
 			}
+			// Fail on unknown options instead of silently ignoring them: a typo in a
+			// security-relevant option must not silently fall back to defaults.
+			return Configuration{}, errors.Errorf("unknown option %s", optionKey)
+		}
+		optionValue := getFromOptions(log, options, optionKey)
+		if optionValue == "" {
+			continue
+		}
+		field := reflectConfiguration.FieldByName(fieldName)
+		switch field.Kind() {
+		case reflect.String:
+			field.SetString(optionValue)
+		case reflect.Uint8:
+			parseUint, err := strconv.ParseUint(optionValue, 0, 8)
+			if err != nil {
+				return Configuration{}, errors.Wrapf(err, "Error parsing %s", optionKey)
+			}
+			field.SetUint(parseUint)
+		case reflect.Bool:
+			parseBool, err := strconv.ParseBool(optionValue)
+			if err != nil {
+				return Configuration{}, errors.Wrapf(err, "Error parsing %s", optionKey)
+			}
+			field.SetBool(parseBool)
+		default:
+			return Configuration{}, errors.Errorf("%s not yet supported", field.Kind())
 		}
 	}
 	configuration.log = log
+	if err := configuration.validateSecurityPolicy(); err != nil {
+		return Configuration{}, err
+	}
 	return configuration, nil
 }
 
-func titleOptions(options map[string][]string) {
-	caser := cases.Title(language.AmericanEnglish)
-	for key, value := range options {
-		options[caser.String(key)] = value
+// validateSecurityPolicy refuses security policies the driver cannot actually enforce: the
+// secure-channel implementation performs no certificate or message-signature verification yet,
+// so requesting anything but "None" must fail closed unless the user explicitly opted in.
+func (c *Configuration) validateSecurityPolicy() error {
+	if c.SecurityPolicy == "" || c.SecurityPolicy == "None" {
+		return nil
 	}
+	if !c.AllowUnverifiedSecurityPolicies {
+		return errors.Errorf("securityPolicy %s is not supported: the plc4go OPC UA driver does not verify server certificates or message signatures yet. "+
+			"Set allowUnverifiedSecurityPolicies=true to connect anyway (NOT recommended for production use)", c.SecurityPolicy)
+	}
+	c.log.Warn().
+		Str("securityPolicy", c.SecurityPolicy).
+		Msg("allowUnverifiedSecurityPolicies is set: the requested security policy is used WITHOUT certificate or message-signature verification")
+	return nil
 }
 
 func (c *Configuration) openKeyStore() error {
