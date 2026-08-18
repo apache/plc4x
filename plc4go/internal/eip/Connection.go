@@ -239,19 +239,27 @@ func (c *Connection) listServices(ctx context.Context) error {
 		readWriteModel.NewListServicesRequest(
 			EmptySessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), 0,
 		), func(message spi.Message) bool {
-			_, ok := message.(readWriteModel.ListServicesResponse)
+			_, ok := message.(readWriteModel.EipPacket)
 			return ok
 		})
 	if err != nil {
 		return err
 	}
-	listServicesResponse := message.(readWriteModel.ListServicesResponse)
+	listServicesResponse, ok := message.(readWriteModel.ListServicesResponse)
+	if !ok {
+		// Like plc4j, tolerate a device that replies with something other than a
+		// well-formed ListServicesResponse and just proceed to RegisterSession.
+		c.log.Debug().Type("responseType", message).Msg("Device did not reply with a ListServicesResponse, proceeding without it")
+		return nil
+	}
 	if len(listServicesResponse.GetTypeIds()) == 0 {
-		return errors.New("ListServices response contains no services")
+		c.log.Debug().Msg("ListServices response contains no services, proceeding without it")
+		return nil
 	}
 	servicesResponse, ok := listServicesResponse.GetTypeIds()[0].(readWriteModel.ServicesResponse)
 	if !ok {
-		return errors.Errorf("unexpected type id in ListServices response: %T", listServicesResponse.GetTypeIds()[0])
+		c.log.Debug().Type("typeId", listServicesResponse.GetTypeIds()[0]).Msg("Unexpected type id in ListServices response, proceeding without it")
+		return nil
 	}
 	if !servicesResponse.GetSupportsCIPEncapsulation() {
 		return errors.New("device does not support CIP encapsulation")
