@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -135,6 +136,16 @@ func (m plcTag) GetBitOffset() uint8 {
 
 func (m plcTag) GetQuantity() uint16 {
 	return m.NumElements
+}
+
+// GetPlcSubscriptionType makes address tags usable in subscription requests (cyclic services).
+func (m plcTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionCyclic
+}
+
+// GetDuration returns no default interval; the effective cycle time comes from the request.
+func (m plcTag) GetDuration() time.Duration {
+	return 0
 }
 
 func (m plcTag) Serialize() ([]byte, error) {

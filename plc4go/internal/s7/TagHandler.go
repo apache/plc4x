@@ -50,12 +50,14 @@ func (i TagType) GetName() string {
 }
 
 type TagHandler struct {
-	addressPattern                *regexp.Regexp
-	dataBlockAddressPattern       *regexp.Regexp
-	dataBlockShortPattern         *regexp.Regexp
-	dataBlockStringAddressPattern *regexp.Regexp
-	dataBlockStringShortPattern   *regexp.Regexp
-	plcProxyAddressPattern        *regexp.Regexp
+	addressPattern                         *regexp.Regexp
+	dataBlockAddressPattern                *regexp.Regexp
+	dataBlockShortPattern                  *regexp.Regexp
+	dataBlockStringAddressPattern          *regexp.Regexp
+	dataBlockStringShortPattern            *regexp.Regexp
+	dataBlockStringVarLengthAddressPattern *regexp.Regexp
+	dataBlockStringVarLengthShortPattern   *regexp.Regexp
+	plcProxyAddressPattern                 *regexp.Regexp
 
 	passLogToModel bool
 	log            zerolog.Logger
@@ -65,13 +67,16 @@ func NewTagHandler(_options ...options.WithOption) TagHandler {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return TagHandler{
-		addressPattern: regexp.MustCompile(`^%(?P<memoryArea>.)(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
+		// the (?:S5)? prefix is required because the character class doesn't allow digits (S5TIME)
+		addressPattern: regexp.MustCompile(`^%(?P<memoryArea>.)(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>(?:S5)?[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
 		//blockNumber usually has its max hat around 64000 --> 5digits
-		dataBlockAddressPattern:       regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
-		dataBlockShortPattern:         regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
-		dataBlockStringAddressPattern: regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?`),
-		dataBlockStringShortPattern:   regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?`),
-		plcProxyAddressPattern:        regexp.MustCompile(`[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}`),
+		dataBlockAddressPattern:                regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>(?:S5)?[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
+		dataBlockShortPattern:                  regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>(?:S5)?[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
+		dataBlockStringAddressPattern:          regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?`),
+		dataBlockStringShortPattern:            regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?`),
+		dataBlockStringVarLengthAddressPattern: regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)(\[(?P<numElements>\d+)])?$`),
+		dataBlockStringVarLengthShortPattern:   regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)(\[(?P<numElements>\d+)])?$`),
+		plcProxyAddressPattern:                 regexp.MustCompile(`[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}`),
 
 		passLogToModel: passLoggerToModel,
 		log:            customLogger,
@@ -91,6 +96,9 @@ const (
 
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	ctx := context.TODO()
+	if alarmTag, ok := tryParseAlarmTag(tagAddress); ok {
+		return alarmTag, nil
+	}
 	if match := utils.GetSubgroupMatches(m.dataBlockStringAddressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -154,7 +162,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "Error checking blocknumber")
 		}
-		parsedByteOffset, err := strconv.ParseUint(match[BYTE_OFFSET], 10, 8)
+		parsedByteOffset, err := strconv.ParseUint(match[BYTE_OFFSET], 10, 64)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
@@ -173,6 +181,86 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		}
 
 		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType), nil
+	} else if match := utils.GetSubgroupMatches(m.dataBlockStringVarLengthAddressPattern, tagAddress); match != nil {
+		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		if !ok {
+			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
+		}
+		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
+		transferSizeCode := getSizeCode(match[TRANSFER_SIZE_CODE])
+		parsedBlockNumber, err := strconv.ParseUint(match[BLOCK_NUMBER], 10, 16)
+		if err != nil {
+			return nil, errors.Wrap(err, "Error converting blocknumber")
+		}
+		blockNumber, err := checkDatablockNumber(parsedBlockNumber)
+		if err != nil {
+			return nil, errors.Wrap(err, "Error checking blocknumber")
+		}
+		parsedByteOffset, err := strconv.ParseUint(match[BYTE_OFFSET], 10, 64)
+		if err != nil {
+			return nil, errors.Wrap(err, "Error converting byteoffset")
+		}
+		byteOffset, err := checkByteOffset(parsedByteOffset)
+		if err != nil {
+			return nil, errors.Wrap(err, "Error converting byteoffset")
+		}
+		bitOffset := uint8(0)
+		if match[BIT_OFFSET] != "" {
+			parsedBitOffset, err := strconv.ParseUint(match[BIT_OFFSET], 10, 8)
+			if err != nil {
+				return nil, errors.Wrap(err, "Error converting bitoffset")
+			}
+			bitOffset = uint8(parsedBitOffset)
+		}
+		numElements := uint16(1)
+		if match[NUM_ELEMENTS] != "" {
+			parsedNumElements, err := strconv.ParseUint(match[NUM_ELEMENTS], 10, 16)
+			if err != nil {
+				return nil, errors.Wrap(err, "Error converting numelements")
+			}
+			numElements = uint16(parsedNumElements)
+		}
+
+		if (transferSizeCode != 0) && (dataType.ShortName() != transferSizeCode) {
+			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
+		}
+
+		// Var-length strings behave like fixed-length strings with the maximum length of 254.
+		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, 254, dataType), nil
+	} else if match := utils.GetSubgroupMatches(m.dataBlockStringVarLengthShortPattern, tagAddress); match != nil {
+		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		if !ok {
+			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
+		}
+		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
+		parsedBlockNumber, err := strconv.ParseUint(match[BLOCK_NUMBER], 10, 16)
+		if err != nil {
+			return nil, errors.Wrap(err, "Error converting blocknumber")
+		}
+		blockNumber, err := checkDatablockNumber(parsedBlockNumber)
+		if err != nil {
+			return nil, errors.Wrap(err, "Error checking blocknumber")
+		}
+		parsedByteOffset, err := strconv.ParseUint(match[BYTE_OFFSET], 10, 64)
+		if err != nil {
+			return nil, errors.Wrap(err, "Error converting byteoffset")
+		}
+		byteOffset, err := checkByteOffset(parsedByteOffset)
+		if err != nil {
+			return nil, errors.Wrap(err, "Error converting byteoffset")
+		}
+		bitOffset := uint8(0)
+		numElements := uint16(1)
+		if match[NUM_ELEMENTS] != "" {
+			parsedNumElements, err := strconv.ParseUint(match[NUM_ELEMENTS], 10, 16)
+			if err != nil {
+				return nil, errors.Wrap(err, "Error converting numelements")
+			}
+			numElements = uint16(parsedNumElements)
+		}
+
+		// Var-length strings behave like fixed-length strings with the maximum length of 254.
+		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, 254, dataType), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockAddressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -347,9 +435,10 @@ func checkDatablockNumber(blockNumber uint64) (uint16, error) {
 }
 
 func checkByteOffset(byteOffset uint64) (uint16, error) {
-	//ToDo check the value or add reference
-	if byteOffset > 2097151 || byteOffset < 0 {
-		return 0, errors.New("ByteOffset must be smaller than 2097151 and positive.")
+	// The generated S7AddressAny model limits the byte address to 16 bits, so anything
+	// larger would silently truncate on the wire.
+	if byteOffset > 0xFFFF {
+		return 0, errors.New("ByteOffset must fit into 16 bits (0..65535).")
 	}
 	return uint16(byteOffset), nil
 }
