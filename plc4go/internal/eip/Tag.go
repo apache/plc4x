@@ -89,6 +89,14 @@ func (m plcTag) Serialize() ([]byte, error) {
 }
 
 func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	// The driver testsuite golden expects tags wrapped as PlcTagItem/tag/EipTag
+	// (mirroring plc4j's PlcTagItem), rather than a bare EipTag.
+	if err := wb.PushContext("PlcTagItem"); err != nil {
+		return err
+	}
+	if err := wb.PushContext("tag"); err != nil {
+		return err
+	}
 	if err := wb.PushContext("EipTag"); err != nil {
 		return err
 	}
@@ -108,6 +116,12 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuff
 	}
 
 	if err := wb.PopContext("EipTag"); err != nil {
+		return err
+	}
+	if err := wb.PopContext("tag"); err != nil {
+		return err
+	}
+	if err := wb.PopContext("PlcTagItem"); err != nil {
 		return err
 	}
 	return nil

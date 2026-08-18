@@ -87,6 +87,22 @@ func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message
 func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	transportInstance := m.GetTransportInstance()
+	// Pull data from the transport until at least the 4-byte header is buffered.
+	// Some transports (e.g. the test transport) only surface queued data through fills,
+	// so checking the buffer without filling first would starve the receive worker.
+	if err := transportInstance.FillBuffer(ctx, func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
+		numBytesAvailable, err := transportInstance.GetNumBytesAvailableInBuffer()
+		if err != nil {
+			return false
+		}
+		return numBytesAvailable < 4
+	}); err != nil {
+		if transportError, ok := transports.AsTransportError(err); ok && transportError.Kind() == transports.TransportErrorFatal {
+			return nil, err
+		}
+		// Fall through on non-fatal errors, we might have enough data buffered already.
+		m.log.Trace().Err(err).Msg("Error filling buffer, continuing with what's available")
+	}
 	if num, err := transportInstance.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
 		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
 		data, err := transportInstance.PeekReadableBytes(ctx, 4)

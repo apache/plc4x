@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -306,7 +307,7 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(err, "Error serializing 'dataSize' field")
 		}
 
-		if err := WriteSimpleField[string](ctx, "symbol", m.GetSymbol(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetSymbol())))*int32(int32(8))))); err != nil {
+		if err := WriteSimpleField[string](ctx, "symbol", m.GetSymbol(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetSymbol())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'symbol' field")
 		}
 
