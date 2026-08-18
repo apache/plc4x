@@ -59,3 +59,14 @@ func TestEIPDriverMessageRouter(t *testing.T) {
 		optionsForTesting...,
 	)
 }
+
+func TestEIPDriverForcedUnconnected(t *testing.T) {
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		eip.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/eip/DriverTestsuiteForcedUnconnected.xml",
+		eipIO.EipXmlParserHelper{},
+		optionsForTesting...,
+	)
+}
