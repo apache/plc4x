@@ -40,6 +40,7 @@ type Driver struct {
 	tm                      transactions.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
+	forceLittleEndian       bool
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -56,6 +57,25 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 		_options: _options,
 	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "eip", "EthernetIP", "tcp", NewTagHandler())
+	return driver
+}
+
+// NewLogixDriver is a thin alias over the EIP driver that registers the
+// "logix" protocol code and forces little-endian wire encoding - the Logix
+// family always speaks LE on CIP, whereas generic EIP devices may go either
+// way (mirror of plc4j's LogixDriver).
+func NewLogixDriver(_options ...options.WithOption) plc4go.PlcDriver {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	driver := &Driver{
+		tm:                      transactions.NewRequestTransactionManager(1, _options...),
+		awaitSetupComplete:      true,
+		awaitDisconnectComplete: true,
+		forceLittleEndian:       true,
+
+		log:      customLogger,
+		_options: _options,
+	}
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "logix", "Logix CIP", "tcp", NewTagHandler())
 	return driver
 }
 
@@ -94,6 +114,10 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	if err != nil {
 		connectionLog.Error().Err(err).Msg("Invalid driverOptions")
 		return nil, errors.Wrap(err, "Invalid driverOptions")
+	}
+
+	if d.forceLittleEndian {
+		configuration.bigEndian = false
 	}
 
 	byteOrder := binary.ByteOrder(binary.BigEndian)

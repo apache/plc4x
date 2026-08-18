@@ -62,6 +62,13 @@ func RegisterEipDriver(driverManager plc4go.PlcDriverManager, _options ...config
 	return driver
 }
 
+func RegisterLogixDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := eip.NewLogixDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
+
 func RegisterKnxDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
 	driver := knxnetip.NewDriver(converter.WithOptionToInternal(_options...)...)
 	driverManager.RegisterDriver(driver)
