@@ -56,3 +56,9 @@ func NewDefaultPlcSubscriptionHandleWithHandleToRegister(plcSubscriber spi.PlcSu
 func (d *DefaultPlcSubscriptionHandle) Register(consumer apiModel.PlcSubscriptionEventConsumer) apiModel.PlcConsumerRegistration {
 	return d.plcSubscriber.Register(consumer, []apiModel.PlcSubscriptionHandle{d.handleToRegister})
 }
+
+// getPlcSubscriber exposes the subscriber to the unsubscription flow; through embedding it
+// also makes driver-specific handle types unsubscribable.
+func (d *DefaultPlcSubscriptionHandle) getPlcSubscriber() spi.PlcSubscriber {
+	return d.plcSubscriber
+}

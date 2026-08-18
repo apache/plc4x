@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/rs/zerolog"
 
@@ -65,6 +66,11 @@ type Connection struct {
 	configuration Configuration
 	driverContext DriverContext
 	tm            transactions.RequestTransactionManager
+
+	// subscriber is created lazily and shared: the alarm subscription and cyclic jobs are
+	// PLC-side state bound to this connection.
+	subscriber      *Subscriber
+	subscriberMutex sync.Mutex
 
 	connectionId string
 	tracer       tracer.Tracer
@@ -127,6 +133,14 @@ func (c *Connection) Connect(ctx context.Context) error {
 	err := c.messageCodec.Connect(ctx)
 	if err != nil {
 		return errors.Wrap(err, "Error during message codec setup")
+	}
+
+	// Route unsolicited UserData pushes (cyclic data, alarm indications) to the subscriber.
+	// The channel is closed when the codec disconnects, which ends this goroutine.
+	if codec, ok := c.messageCodec.(*MessageCodec); ok {
+		c.wg.Go(func() {
+			c.dispatchUnsolicitedUserData(codec.GetUnsolicitedUserData())
+		})
 	}
 
 	// Only on active connections we do a connection
@@ -394,10 +408,53 @@ func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 			"max-amq-caller":  strconv.Itoa(int(c.driverContext.MaxAmqCaller)),
 			"max-amq-callee":  strconv.Itoa(int(c.driverContext.MaxAmqCallee)),
 		},
-		ProvidesReading:  true,
-		ProvidesWriting:  true,
-		ProvidesBrowsing: c.driverContext.UserDataServicesSupported,
+		ProvidesReading:     true,
+		ProvidesWriting:     true,
+		ProvidesSubscribing: c.driverContext.UserDataServicesSupported,
+		ProvidesBrowsing:    c.driverContext.UserDataServicesSupported,
 	}
+}
+
+func (c *Connection) dispatchUnsolicitedUserData(channel <-chan readWriteModel.S7MessageUserData) {
+	for message := range channel {
+		c.subscriberMutex.Lock()
+		subscriber := c.subscriber
+		c.subscriberMutex.Unlock()
+		if subscriber == nil || !subscriber.handleUserDataPush(message) {
+			c.log.Debug().Stringer("message", message).Msg("Unsolicited user data message not handled by any subscription")
+		}
+	}
+}
+
+func (c *Connection) getSubscriber() *Subscriber {
+	c.subscriberMutex.Lock()
+	defer c.subscriberMutex.Unlock()
+	if c.subscriber == nil {
+		c.subscriber = NewSubscriber(c, append(c._options, options.WithCustomLogger(c.log))...)
+	}
+	return c.subscriber
+}
+
+func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
+		c.GetPlcTagHandler(), c.GetPlcValueHandler(), c.getSubscriber())
+}
+
+func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+	return spiModel.NewDefaultPlcUnsubscriptionRequestBuilder()
+}
+
+func (c *Connection) Close() error {
+	// Cancel PLC-side subscription state before tearing the connection down (bounded).
+	c.subscriberMutex.Lock()
+	subscriber := c.subscriber
+	c.subscriberMutex.Unlock()
+	if subscriber != nil {
+		drainCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		subscriber.drain(drainCtx)
+		cancel()
+	}
+	return c.DefaultConnection.Close()
 }
 
 func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {

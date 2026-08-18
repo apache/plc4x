@@ -21,6 +21,7 @@ package s7
 
 import (
 	"context"
+	"sync"
 
 	"github.com/rs/zerolog"
 
@@ -36,6 +37,11 @@ import (
 type MessageCodec struct {
 	_default.DefaultCodec
 
+	// unsolicitedUserData carries pushed UserData messages (cyclic data, alarm indications,
+	// mode transitions) that no request expectation claims. Closed on Disconnect.
+	unsolicitedUserData     chan model.S7MessageUserData `ignore:"true"`
+	unsolicitedCloseOnce    sync.Once                    `ignore:"true"`
+
 	passLogToModel bool
 	log            zerolog.Logger
 }
@@ -48,11 +54,55 @@ func NewMessageCodec(transportInstance transports.TransportInstance, _options ..
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
 	extractCustomLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	codec := &MessageCodec{
-		passLogToModel: passLoggerToModel,
-		log:            extractCustomLogger,
+		unsolicitedUserData: make(chan model.S7MessageUserData, 100),
+		passLogToModel:      passLoggerToModel,
+		log:                 extractCustomLogger,
 	}
-	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _options...)
+	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance,
+		append(_options, _default.WithCustomMessageHandler(extractUnsolicitedUserData(codec)))...)
 	return codec
+}
+
+// extractUnsolicitedUserData claims pushed UserData messages (cpuFunctionType 0x00) before
+// the request expectations see them and forwards them to the subscription dispatch.
+func extractUnsolicitedUserData(codec *MessageCodec) _default.CustomMessageHandler {
+	return func(ctx context.Context, _ _default.DefaultCodecRequirements, message spi.Message) bool {
+		tpktPacket, ok := message.(model.TPKTPacket)
+		if !ok {
+			return false
+		}
+		cotpPacketData, ok := tpktPacket.GetPayload().(model.COTPPacketData)
+		if !ok {
+			return false
+		}
+		messageUserData, ok := cotpPacketData.GetPayload().(model.S7MessageUserData)
+		if !ok {
+			return false
+		}
+		_, functionType, _, ok := userDataPushKey(messageUserData)
+		if !ok || functionType != 0x00 {
+			return false
+		}
+		select {
+		case codec.unsolicitedUserData <- messageUserData:
+		default:
+			codec.log.Warn().Msg("Unsolicited user data message discarded, channel full")
+		}
+		return true
+	}
+}
+
+// GetUnsolicitedUserData exposes the push channel drained by the connection's dispatcher.
+func (m *MessageCodec) GetUnsolicitedUserData() <-chan model.S7MessageUserData {
+	return m.unsolicitedUserData
+}
+
+func (m *MessageCodec) Disconnect() error {
+	err := m.DefaultCodec.Disconnect()
+	m.unsolicitedCloseOnce.Do(func() {
+		close(m.unsolicitedUserData)
+	})
+	return err
 }
 
 func (m *MessageCodec) GetCodec() spi.MessageCodec {

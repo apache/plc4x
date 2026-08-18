@@ -24,6 +24,7 @@ import (
 	"sync"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
@@ -67,8 +68,15 @@ func (d *DefaultPlcUnsubscriptionRequest) Execute(ctx context.Context) <-chan ap
 	d.wg.Go(func() {
 		var collectedErrors []error
 		for _, handle := range d.subscriptionHandles {
+			// Driver-specific handles embed *DefaultPlcSubscriptionHandle, so the unexported
+			// interface assertion covers them too (a plain type assertion would panic).
+			subscriberProvider, ok := handle.(interface{ getPlcSubscriber() spi.PlcSubscriber })
+			if !ok {
+				collectedErrors = append(collectedErrors, errors.Errorf("%T is not a supported subscription handle", handle))
+				continue
+			}
 			select {
-			case unsubscribe := <-handle.(*DefaultPlcSubscriptionHandle).plcSubscriber.Unsubscribe(ctx, d):
+			case unsubscribe := <-subscriberProvider.getPlcSubscriber().Unsubscribe(ctx, d):
 				if err := unsubscribe.GetErr(); err != nil {
 					collectedErrors = append(collectedErrors, err)
 					continue
