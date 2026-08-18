@@ -43,6 +43,7 @@ type Reader struct {
 	tpduGenerator *TpduGenerator
 	messageCodec  spi.MessageCodec
 	tm            transactions.RequestTransactionManager
+	driverContext *DriverContext
 
 	wg sync.WaitGroup // use to track spawned go routines
 
@@ -50,13 +51,14 @@ type Reader struct {
 	log            zerolog.Logger
 }
 
-func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
+func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, driverContext *DriverContext, _options ...options.WithOption) *Reader {
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		tpduGenerator:  tpduGenerator,
 		messageCodec:   messageCodec,
 		tm:             tm,
+		driverContext:  driverContext,
 		passLogToModel: passLoggerToModel,
 		log:            customLogger,
 	}
@@ -200,30 +202,13 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 
 	// If the result contains any form of non-null error code, handle this instead.
 	if (errorClass != 0) || (errorCode != 0) {
-		// This is usually the case if PUT/GET wasn't enabled on the PLC
-		if (errorClass == 129) && (errorCode == 4) {
-			m.log.Warn().Msg("Got an error response from the PLC. This particular response code usually indicates " +
-				"that PUT/GET is not enabled on the PLC.")
-			for _, tagName := range readRequest.GetTagNames() {
-				responseCodes[tagName] = apiModel.PlcResponseCode_ACCESS_DENIED
-				plcValues[tagName] = spiValues.NewPlcNULL()
-			}
-			m.log.Trace().Msg("Returning the response")
-			return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
-		} else {
-			m.log.Warn().
-				Uint8("errorClass", errorClass).
-				Uint8("errorCode", errorCode).
-				Msg("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. " +
-					"We probably need to implement explicit handling for this, so please file a bug-report " +
-					"on https://github.com/apache/plc4x/issues and ideally attach a WireShark dump " +
-					"containing a capture of the communication.")
-			for _, tagName := range readRequest.GetTagNames() {
-				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-				plcValues[tagName] = spiValues.NewPlcNULL()
-			}
-			return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+		responseCode := mapPlcErrorCode(m.log, errorClass, errorCode)
+		for _, tagName := range readRequest.GetTagNames() {
+			responseCodes[tagName] = responseCode
+			plcValues[tagName] = spiValues.NewPlcNULL()
 		}
+		m.log.Trace().Msg("Returning the response")
+		return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 	}
 
 	// In all other cases all went well.
@@ -247,7 +232,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		responseCodes[tagName] = responseCode
 		if responseCode == apiModel.PlcResponseCode_OK {
 			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			plcValue, err := parsePlcValue(ctxForModel, tag, payloadItem.GetData())
+			plcValue, err := parsePlcValue(ctxForModel, tag, payloadItem.GetData(), m.driverContext.ControllerType)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}
@@ -269,14 +254,6 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 	}
 	transportSize := s7Tag.GetDataType()
 	numElements := s7Tag.GetNumElements()
-	// For these date-types we have to convert the requests to simple byte-array requests
-	// As otherwise the S7 will deny them with "Data type not supported" replies.
-	if (transportSize == readWriteModel.TransportSize_TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
-		(transportSize == readWriteModel.TransportSize_LTIME) || (transportSize == readWriteModel.TransportSize_DATE) ||
-		(transportSize == readWriteModel.TransportSize_TIME_OF_DAY) || (transportSize == readWriteModel.TransportSize_DATE_AND_TIME) {
-		numElements = numElements * uint16(transportSize.SizeInBytes())
-		transportSize = readWriteModel.TransportSize_BYTE
-	}
 	if transportSize == readWriteModel.TransportSize_STRING {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
@@ -291,6 +268,16 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 			stringLength = s7StringTag.stringLength
 		}
 		numElements = numElements * (stringLength + 2) * 2
+	} else if transportSize == readWriteModel.TransportSize_BOOL && numElements > 1 {
+		// BOOL arrays are read as packed bytes.
+		numElements = (numElements + 7) / 8
+		transportSize = readWriteModel.TransportSize_BYTE
+	}
+	// Types without an own transport-size code (temporal types, 64-bit types, ...) have to be
+	// requested as plain byte arrays, the S7 denies them with "Data type not supported" otherwise.
+	if transportSize.Code() == 0x00 {
+		numElements = numElements * uint16(transportSize.SizeInBytes())
+		transportSize = readWriteModel.TransportSize_BYTE
 	}
 	return readWriteModel.NewS7AddressAny(
 		transportSize,
@@ -302,9 +289,63 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 	), nil
 }
 
-func parsePlcValue(ctx context.Context, tag PlcTag, data []byte) (apiValues.PlcValue, error) {
-	// TODO: port over
-	panic("not implemented yet")
+func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, controllerType readWriteModel.ControllerType) (apiValues.PlcValue, error) {
+	stringLength := int32(254)
+	if s7StringTag, ok := tag.(PlcStringTag); ok {
+		stringLength = int32(s7StringTag.stringLength)
+	}
+	numElements := tag.GetNumElements()
+	dataProtocolId := tag.GetDataType().DataProtocolId()
+	if numElements == 1 {
+		return readWriteModel.DataItemParse(ctx, data, dataProtocolId, controllerType, stringLength)
+	}
+	switch tag.GetDataType() {
+	case readWriteModel.TransportSize_BYTE:
+		return spiValues.NewPlcRawByteArray(data), nil
+	case readWriteModel.TransportSize_BOOL:
+		// BOOL arrays arrive as packed bytes (LSB first), matching the write-side packing.
+		items := make([]apiValues.PlcValue, 0, numElements)
+		for i := uint16(0); i < numElements; i++ {
+			if int(i/8) >= len(data) {
+				return nil, errors.Errorf("BOOL array response too short: got %d bytes for %d elements", len(data), numElements)
+			}
+			items = append(items, spiValues.NewPlcBOOL((data[i/8]>>(i%8))&0x01 != 0))
+		}
+		return spiValues.NewPlcList(items), nil
+	default:
+		readBuffer := utils.NewReadBufferByteBased(data)
+		items := make([]apiValues.PlcValue, 0, numElements)
+		for i := uint16(0); i < numElements; i++ {
+			item, err := readWriteModel.DataItemParseWithBuffer(ctx, readBuffer, dataProtocolId, controllerType, stringLength)
+			if err != nil {
+				return nil, errors.Wrapf(err, "error parsing element %d of type %s", i, tag.GetDataType())
+			}
+			items = append(items, item)
+		}
+		return spiValues.NewPlcList(items), nil
+	}
+}
+
+// mapPlcErrorCode maps S7 header error class/code pairs to PLC4X response codes (ported from plc4j).
+func mapPlcErrorCode(localLog zerolog.Logger, errorClass uint8, errorCode uint8) apiModel.PlcResponseCode {
+	// 0x81/4 means PUT/GET is disabled. An S7-300 reports the same refusal as 0x83/4 (GH-599),
+	// and error class 0x85 covers further access-denied situations.
+	if (errorClass == 0x81 && errorCode == 4) || (errorClass == 0x83 && errorCode == 4) {
+		localLog.Warn().Msg("Got an error response from the PLC. This particular response code usually indicates " +
+			"that PUT/GET is not enabled on the PLC.")
+		return apiModel.PlcResponseCode_ACCESS_DENIED
+	}
+	if errorClass == 0x85 {
+		return apiModel.PlcResponseCode_ACCESS_DENIED
+	}
+	localLog.Warn().
+		Uint8("errorClass", errorClass).
+		Uint8("errorCode", errorCode).
+		Msg("Got an unknown error response from the PLC. " +
+			"We probably need to implement explicit handling for this, so please file a bug-report " +
+			"on https://github.com/apache/plc4x/issues and ideally attach a WireShark dump " +
+			"containing a capture of the communication.")
+	return apiModel.PlcResponseCode_INTERNAL_ERROR
 }
 
 // Helper to convert the return codes returned from the S7 into one of our standard
@@ -312,12 +353,12 @@ func decodeResponseCode(dataTransportErrorCode readWriteModel.DataTransportError
 	switch dataTransportErrorCode {
 	case readWriteModel.DataTransportErrorCode_OK:
 		return apiModel.PlcResponseCode_OK
-	case readWriteModel.DataTransportErrorCode_NOT_FOUND:
-		return apiModel.PlcResponseCode_NOT_FOUND
-	case readWriteModel.DataTransportErrorCode_INVALID_ADDRESS:
+	case readWriteModel.DataTransportErrorCode_NOT_FOUND, readWriteModel.DataTransportErrorCode_INVALID_ADDRESS:
 		return apiModel.PlcResponseCode_INVALID_ADDRESS
 	case readWriteModel.DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED:
 		return apiModel.PlcResponseCode_INVALID_DATATYPE
+	case readWriteModel.DataTransportErrorCode_ACCESS_DENIED:
+		return apiModel.PlcResponseCode_ACCESS_DENIED
 	default:
 		return apiModel.PlcResponseCode_INTERNAL_ERROR
 	}

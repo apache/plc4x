@@ -445,6 +445,7 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 			&c.tpduGenerator,
 			c.messageCodec,
 			c.tm,
+			&c.driverContext,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
