@@ -249,7 +249,7 @@ func (c *Connection) setupConnection(ctx context.Context) error {
 			// If the controller type is explicitly set, were finished with the login
 			// process. If it's set to ANY, we have to query the serial number information
 			// in order to detect the type of PLC.
-			if c.driverContext.ControllerType != ControllerType_ANY {
+			if c.driverContext.ControllerType != readWriteModel.ControllerType_ANY {
 				// Send an event that connection setup is complete.
 				c.SetConnected(true)
 				return nil
@@ -325,24 +325,24 @@ func (c *Connection) extractControllerTypeAndFireConnected(payloadUserData readW
 				articleNumber := string(readSzlResponseItemItem.GetMlfb())
 				*/
 				articleNumber := "broken at the moment"
-				var controllerType ControllerType
+				var controllerType readWriteModel.ControllerType
 				if !strings.HasPrefix(articleNumber, "6ES7 ") {
-					controllerType = ControllerType_ANY
+					controllerType = readWriteModel.ControllerType_ANY
 				}
 				blankIndex := strings.Index(articleNumber, " ")
 				model := articleNumber[blankIndex+1 : blankIndex+2]
 				switch model {
 				case "2":
-					controllerType = ControllerType_S7_1200
+					controllerType = readWriteModel.ControllerType_S7_1200
 				case "5":
-					controllerType = ControllerType_S7_1500
+					controllerType = readWriteModel.ControllerType_S7_1500
 				case "3":
-					controllerType = ControllerType_S7_300
+					controllerType = readWriteModel.ControllerType_S7_300
 				case "4":
-					controllerType = ControllerType_S7_400
+					controllerType = readWriteModel.ControllerType_S7_400
 				default:
 					c.log.Info().Str("articleNumber", articleNumber).Msg("Looking up unknown article number")
-					controllerType = ControllerType_ANY
+					controllerType = readWriteModel.ControllerType_ANY
 				}
 				c.driverContext.ControllerType = controllerType
 

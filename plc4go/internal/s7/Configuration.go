@@ -24,6 +24,7 @@ import (
 
 	"github.com/rs/zerolog"
 
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
@@ -35,7 +36,7 @@ type Configuration struct {
 	pduSize        uint16
 	maxAmqCaller   uint16
 	maxAmqCallee   uint16
-	controllerType ControllerType
+	controllerType readWriteModel.ControllerType
 }
 
 func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Configuration, error) {
@@ -47,7 +48,7 @@ func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Con
 		pduSize:        1024,
 		maxAmqCaller:   8,
 		maxAmqCallee:   8,
-		controllerType: ControllerType_UNKNOWN,
+		controllerType: readWriteModel.ControllerType_ANY,
 	}
 	if localRackString := getFromOptions(localLog, options, "local-rack"); localRackString != "" {
 		parsedInt, err := strconv.ParseInt(localRackString, 10, 32)
@@ -78,24 +79,11 @@ func ParseFromOptions(localLog zerolog.Logger, options map[string][]string) (Con
 		configuration.remoteSlot = int32(parsedInt)
 	}
 	if controllerTypeString := getFromOptions(localLog, options, "controller-type"); controllerTypeString != "" {
-		switch controllerTypeString {
-		case "ANY":
-			configuration.controllerType = ControllerType_ANY
-		case "S7_200":
-			configuration.controllerType = ControllerType_S7_200
-		case "S7_300":
-			configuration.controllerType = ControllerType_S7_300
-		case "S7_400":
-			configuration.controllerType = ControllerType_S7_400
-		case "S7_1200":
-			configuration.controllerType = ControllerType_S7_1200
-		case "S7_1500":
-			configuration.controllerType = ControllerType_S7_1500
-		case "LOGO":
-			configuration.controllerType = ControllerType_LOGO
-		default:
+		controllerType, ok := readWriteModel.ControllerTypeByName(controllerTypeString)
+		if !ok {
 			return Configuration{}, errors.Errorf("Unknown controller type %s", controllerTypeString)
 		}
+		configuration.controllerType = controllerType
 	}
 
 	pduSizeString := getFromOptions(localLog, options, "pdu-size")
