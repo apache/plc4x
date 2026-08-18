@@ -44,6 +44,37 @@ func TestParsePlcValueSingleDINT(t *testing.T) {
 	assert.Equal(t, int32(0x216), value.GetInt32())
 }
 
+func TestParsePlcValueSingleSINT(t *testing.T) {
+	value, err := parsePlcValue(mustTag(t, "%b:SINT"), []byte{0x2A}, readWriteModel.CIPDataTypeCode_SINT)
+	require.NoError(t, err)
+	assert.Equal(t, int8(0x2A), value.GetInt8())
+}
+
+func TestParsePlcValueSingleINT(t *testing.T) {
+	value, err := parsePlcValue(mustTag(t, "%w:INT"), []byte{0x16, 0x02}, readWriteModel.CIPDataTypeCode_INT)
+	require.NoError(t, err)
+	assert.Equal(t, int16(0x216), value.GetInt16())
+}
+
+func TestParsePlcValueSingleLINT(t *testing.T) {
+	raw := binary.LittleEndian.AppendUint64(nil, uint64(0x0102030405060708))
+	value, err := parsePlcValue(mustTag(t, "%l:LINT"), raw, readWriteModel.CIPDataTypeCode_LINT)
+	require.NoError(t, err)
+	assert.Equal(t, int64(0x0102030405060708), value.GetInt64())
+}
+
+func TestParsePlcValueSingleLREAL(t *testing.T) {
+	raw := binary.LittleEndian.AppendUint64(nil, math.Float64bits(2.5))
+	value, err := parsePlcValue(mustTag(t, "%d:LREAL"), raw, readWriteModel.CIPDataTypeCode_LREAL)
+	require.NoError(t, err)
+	assert.Equal(t, 2.5, value.GetFloat64())
+}
+
+func TestParsePlcValueUnsupportedTypeIsError(t *testing.T) {
+	_, err := parsePlcValue(mustTag(t, "%x:DINT"), []byte{0x00}, readWriteModel.CIPDataTypeCode(0xFFFF))
+	require.Error(t, err)
+}
+
 func TestParsePlcValueSingleREAL(t *testing.T) {
 	raw := binary.LittleEndian.AppendUint32(nil, math.Float32bits(1.5))
 	value, err := parsePlcValue(mustTag(t, "%f:REAL"), raw, readWriteModel.CIPDataTypeCode_REAL)
@@ -86,6 +117,35 @@ func TestEncodeValueDINT(t *testing.T) {
 	raw, err := encodeValue(spiValues.NewPlcDINT(0x216), readWriteModel.CIPDataTypeCode_DINT)
 	require.NoError(t, err)
 	assert.Equal(t, []byte{0x16, 0x02, 0x00, 0x00}, raw)
+}
+
+func TestEncodeValueSINT(t *testing.T) {
+	raw, err := encodeValue(spiValues.NewPlcSINT(0x2A), readWriteModel.CIPDataTypeCode_SINT)
+	require.NoError(t, err)
+	assert.Equal(t, []byte{0x2A}, raw)
+}
+
+func TestEncodeValueINT(t *testing.T) {
+	raw, err := encodeValue(spiValues.NewPlcINT(0x216), readWriteModel.CIPDataTypeCode_INT)
+	require.NoError(t, err)
+	assert.Equal(t, []byte{0x16, 0x02}, raw)
+}
+
+func TestEncodeValueLINT(t *testing.T) {
+	raw, err := encodeValue(spiValues.NewPlcLINT(0x0102030405060708), readWriteModel.CIPDataTypeCode_LINT)
+	require.NoError(t, err)
+	assert.Equal(t, []byte{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01}, raw)
+}
+
+func TestEncodeValueLREAL(t *testing.T) {
+	raw, err := encodeValue(spiValues.NewPlcLREAL(2.5), readWriteModel.CIPDataTypeCode_LREAL)
+	require.NoError(t, err)
+	assert.Equal(t, binary.LittleEndian.AppendUint64(nil, math.Float64bits(2.5)), raw)
+}
+
+func TestEncodeValueUnsupportedTypeIsError(t *testing.T) {
+	_, err := encodeValue(spiValues.NewPlcDINT(1), readWriteModel.CIPDataTypeCode(0xFFFF))
+	require.Error(t, err)
 }
 
 func TestEncodeValueREAL(t *testing.T) {

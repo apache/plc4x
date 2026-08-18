@@ -64,6 +64,18 @@ func TestParseFromOptionsKebabCase(t *testing.T) {
 	assert.Equal(t, uint16(4660), configuration.connectionSerialNumber)
 }
 
+func TestParseFromOptionsAliasPrecedence(t *testing.T) {
+	// When both spellings of an aliased option are supplied with conflicting
+	// values, getFromOptionsAliases resolves keys in the order given - the
+	// camelCase spelling is listed first, so it wins.
+	configuration, err := ParseFromOptions(zerolog.Nop(), map[string][]string{
+		"bigEndian":  {"false"},
+		"big-endian": {"true"},
+	})
+	require.NoError(t, err)
+	assert.False(t, configuration.bigEndian)
+}
+
 func TestParseFromOptionsBadBool(t *testing.T) {
 	_, err := ParseFromOptions(zerolog.Nop(), map[string][]string{
 		"bigEndian": {"maybe"},

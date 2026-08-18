@@ -197,6 +197,21 @@ func (c *Connection) Close() error {
 	c.log.Debug().
 		Uint32("sessionHandle", c.sessionState.sessionHandle).
 		Msg("Unregistered session")
+
+	// Wait for background goroutines (e.g. the async setup handshake spawned in
+	// Connect) to finish now that the codec is disconnected - pending setup
+	// requests will fail fast against the disconnected codec. Bound the wait so
+	// a stuck goroutine can't hang Close() forever.
+	waitDone := make(chan struct{})
+	go func() {
+		c.wg.Wait()
+		close(waitDone)
+	}()
+	select {
+	case <-waitDone:
+	case <-time.After(15 * time.Second):
+		c.log.Warn().Msg("timed out waiting for background goroutines to finish during close")
+	}
 	return nil
 }
 

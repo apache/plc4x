@@ -254,6 +254,12 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 			}
 			timeout.Reset(1 * time.Second)
 			select {
+			case <-ctx.Done():
+				if !timeout.Stop() {
+					<-timeout.C
+				}
+				d.log.Debug().Err(ctx.Err()).Msg("done")
+				return
 			case message := <-codec.GetDefaultIncomingMessageChannel():
 				{
 					if !timeout.Stop() {

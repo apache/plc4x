@@ -25,7 +25,6 @@ import (
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
@@ -148,7 +147,7 @@ func parseStructured(tag PlcTag, rawData []byte) (values.PlcValue, error) {
 
 // encodeValue serializes a single value for a CIP write. Like plc4j it encodes
 // one element; array writes carry the element count in the CipWriteRequest.
-func encodeValue(value apiValues.PlcValue, dataType readWriteModel.CIPDataTypeCode) ([]byte, error) {
+func encodeValue(value values.PlcValue, dataType readWriteModel.CIPDataTypeCode) ([]byte, error) {
 	switch dataType {
 	case readWriteModel.CIPDataTypeCode_BOOL:
 		boolByte := byte(0)

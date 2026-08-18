@@ -68,7 +68,10 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
 	m.log.Trace().Str("interactionInfo", interactionInfo).Msg("Sending message")
 	// Cast the message to the correct type of struct
-	eipPacket := message.(model.EipPacket)
+	eipPacket, ok := message.(model.EipPacket)
+	if !ok {
+		return errors.Errorf("unsupported message type %T", message)
+	}
 	// Serialize the request
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(m.byteOrder))
 	err := eipPacket.SerializeWithWriteBuffer(ctx, wb)

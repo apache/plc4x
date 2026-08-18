@@ -321,6 +321,16 @@ func decodeSingleReadResponse(log zerolog.Logger, tag PlcTag, response readWrite
 	return code, value
 }
 
+// ansiPad returns the odd-length padding byte for an ANSI extended symbol
+// segment's identifier, or nil if the identifier's length is already even.
+func ansiPad(identifier string) *uint8 {
+	if len(identifier)%2 != 0 {
+		paddingValue := uint8(0)
+		return &paddingValue
+	}
+	return nil
+}
+
 func toAnsi(tag string) ([]byte, error) {
 	ctx := context.TODO()
 	resourceAddressPattern := regexp.MustCompile("([.\\[\\]])*([A-Za-z_0-9]+){1}")
@@ -341,20 +351,10 @@ func toAnsi(tag string) ([]byte, error) {
 				}
 				newSegment = readWriteModel.NewLogicalSegment(readWriteModel.NewMemberID(0, uint8(numericIdentifier)))
 			} else {
-				var pad *uint8
-				if len(identifier)%2 != 0 {
-					paddingValue := uint8(0)
-					pad = &paddingValue
-				}
-				newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, pad))
+				newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, ansiPad(identifier)))
 			}
 		} else {
-			var pad *uint8
-			if len(identifier)%2 != 0 {
-				paddingValue := uint8(0)
-				pad = &paddingValue
-			}
-			newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, pad))
+			newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, ansiPad(identifier)))
 		}
 		lengthInBytes += uint16(newSegment.GetLengthInBytes(ctx))
 		segments = append(segments, newSegment)
