@@ -38,7 +38,8 @@ import (
 type MessageCodec struct {
 	_default.DefaultCodec
 
-	none bool // TODO: just a empty field to satisfy generator (needs fixing because in this case here we have the delegate)
+	none      bool // TODO: just a empty field to satisfy generator (needs fixing because in this case here we have the delegate)
+	byteOrder binary.ByteOrder
 
 	log zerolog.Logger
 }
@@ -47,10 +48,14 @@ var (
 	_ spi.TransportInstanceExposer = (*MessageCodec)(nil)
 )
 
-func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
+func NewMessageCodec(transportInstance transports.TransportInstance, byteOrder binary.ByteOrder, _options ...options.WithOption) *MessageCodec {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	if byteOrder == nil {
+		byteOrder = binary.LittleEndian
+	}
 	codec := &MessageCodec{
-		log: customLogger,
+		byteOrder: byteOrder,
+		log:       customLogger,
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _options...)
 	return codec
@@ -65,7 +70,7 @@ func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message
 	// Cast the message to the correct type of struct
 	eipPacket := message.(model.EipPacket)
 	// Serialize the request
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(m.byteOrder))
 	err := eipPacket.SerializeWithWriteBuffer(ctx, wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
@@ -90,11 +95,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		// Second byte pair is the payload size; add the 24 byte header size.
-		// The addition must happen in uint32: doing it in uint16 lets a wire
-		// length like 0xFFE8 wrap the total to 0, making Read consume nothing
-		// and the receive worker spin forever on the same unconsumed bytes.
-		packetSize := (uint32(data[3]) << 8) + uint32(data[2]) + 24
+		packetSize := packetSizeFromHeader(data, m.byteOrder)
 		if num < packetSize {
 			m.log.Debug().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil
@@ -105,7 +106,7 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(m.byteOrder))
 		eipPacket, err := model.EipPacketParseWithBuffer[model.EipPacket](ctx, rb, true)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
@@ -119,4 +120,12 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 	}
 	// TODO: maybe we return here a not enough error error
 	return nil, nil
+}
+
+// packetSizeFromHeader computes the full packet size from the first 4 header
+// bytes. The addition must happen in uint32: doing it in uint16 lets a wire
+// length like 0xFFE8 wrap the total to 0, making Read consume nothing and the
+// receive worker spin forever on the same unconsumed bytes.
+func packetSizeFromHeader(header []byte, byteOrder binary.ByteOrder) uint32 {
+	return uint32(byteOrder.Uint16(header[2:4])) + 24
 }

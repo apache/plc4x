@@ -21,6 +21,7 @@ package eip
 
 import (
 	"context"
+	"encoding/binary"
 	"net/url"
 
 	"github.com/rs/zerolog"
@@ -89,17 +90,22 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		return nil, errors.New("couldn't initialize transport configuration for given transport url " + transportUrl.String())
 	}
 
-	codec := NewMessageCodec(
-		transportInstance,
-		append(d._options, options.WithCustomLogger(connectionLog))...,
-	)
-	connectionLog.Debug().Interface("codec", codec).Msg("working with codec")
-
 	configuration, err := ParseFromOptions(connectionLog, driverOptions)
 	if err != nil {
 		connectionLog.Error().Err(err).Msg("Invalid driverOptions")
 		return nil, errors.Wrap(err, "Invalid driverOptions")
 	}
+
+	byteOrder := binary.ByteOrder(binary.BigEndian)
+	if !configuration.bigEndian {
+		byteOrder = binary.LittleEndian
+	}
+	codec := NewMessageCodec(
+		transportInstance,
+		byteOrder,
+		append(d._options, options.WithCustomLogger(connectionLog))...,
+	)
+	connectionLog.Debug().Interface("codec", codec).Msg("working with codec")
 
 	driverContext, err := NewDriverContext(configuration)
 	if err != nil {

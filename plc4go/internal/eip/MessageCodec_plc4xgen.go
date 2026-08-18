@@ -55,6 +55,25 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.WriteBit("none", d.none); err != nil {
 		return err
 	}
+
+	if d.byteOrder != nil {
+		if serializableField, ok := any(d.byteOrder).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("byteOrder"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("byteOrder"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.byteOrder)
+			if err := writeBuffer.WriteString("byteOrder", uint32(len(stringValue)*8), stringValue); err != nil {
+				return err
+			}
+		}
+	}
 	if err := writeBuffer.PopContext("MessageCodec"); err != nil {
 		return err
 	}
