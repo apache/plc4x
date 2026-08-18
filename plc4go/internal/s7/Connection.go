@@ -453,7 +453,13 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 
 func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return spiModel.NewDefaultPlcWriteRequestBuilder(
-		c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewWriter(&c.tpduGenerator, c.messageCodec, c.tm))
+		c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewWriter(
+			&c.tpduGenerator,
+			c.messageCodec,
+			c.tm,
+			&c.driverContext,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		))
 }
 
 func (c *Connection) String() string {
