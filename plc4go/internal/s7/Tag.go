@@ -161,7 +161,8 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuff
 		return err
 	}
 
-	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
+	// encoding="UTF8" matches plc4j's S7Tag.serialize (WithOption.WithEncoding("UTF8")).
+	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String(), utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 	if err := wb.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
@@ -176,7 +177,7 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuff
 	if err := wb.WriteUint16("numElements", 16, m.NumElements); err != nil {
 		return err
 	}
-	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
+	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String(), utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 
@@ -207,7 +208,8 @@ func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.Wri
 		return err
 	}
 
-	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
+	// encoding="UTF8" matches plc4j's S7Tag.serialize (WithOption.WithEncoding("UTF8")).
+	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String(), utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 	if err := wb.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
@@ -225,7 +227,7 @@ func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.Wri
 	if err := wb.WriteUint16("stringLength", 16, m.stringLength); err != nil {
 		return err
 	}
-	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
+	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String(), utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 

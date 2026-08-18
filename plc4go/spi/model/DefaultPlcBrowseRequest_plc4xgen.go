@@ -71,7 +71,7 @@ func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		return err
 	}
 	for _, elem := range d.queryNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), elem); err != nil {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), elem, utils.WithEncoding("UTF-8")); err != nil {
 			return err
 		}
 	}

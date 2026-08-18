@@ -531,12 +531,12 @@
                 <tags isList="true">
                   <hurz>
                     <S7Tag>
-                      <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                      <memoryArea dataType="string" bitLength="56" encoding="UTF8">OUTPUTS</memoryArea>
                       <blockNumber dataType="uint" bitLength="16">0</blockNumber>
                       <byteOffset dataType="uint" bitLength="16">0</byteOffset>
                       <bitOffset dataType="uint" bitLength="8">0</bitOffset>
                       <numElements dataType="uint" bitLength="16">1</numElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">BOOL</dataType>
                     </S7Tag>
                   </hurz>
                 </tags>
@@ -679,12 +679,12 @@
                 <tags isList="true">
                   <hurz>
                     <S7Tag>
-                      <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                      <memoryArea dataType="string" bitLength="56" encoding="UTF8">OUTPUTS</memoryArea>
                       <blockNumber dataType="uint" bitLength="16">0</blockNumber>
                       <byteOffset dataType="uint" bitLength="16">0</byteOffset>
                       <bitOffset dataType="uint" bitLength="8">0</bitOffset>
                       <numElements dataType="uint" bitLength="16">1</numElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">BOOL</dataType>
                     </S7Tag>
                   </hurz>
                 </tags>

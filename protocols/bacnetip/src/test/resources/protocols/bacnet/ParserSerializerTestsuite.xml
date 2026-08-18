@@ -143,7 +143,7 @@
                                           <encoding>
                                             <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                           </encoding>
-                                          <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
+                                          <value dataType="string" bitLength="56" encoding="UTF8">SYNERGY</value>
                                         </BACnetTagPayloadCharacterString>
                                       </payload>
                                     </BACnetContextTagCharacterString>
@@ -271,7 +271,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
+                                    <value dataType="string" bitLength="56" encoding="UTF8">SYNERGY</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetApplicationTagCharacterString>
@@ -482,7 +482,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
+                                    <value dataType="string" bitLength="56" encoding="UTF8">SYNERGY</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetApplicationTagCharacterString>
@@ -3131,7 +3131,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                    <value dataType="string" bitLength="72" encoding="UTF8">wireshark</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -5934,7 +5934,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                                    <value dataType="string" bitLength="64" encoding="UTF8">filister</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -6329,7 +6329,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                    <value dataType="string" bitLength="72" encoding="UTF8">wireshark</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -6659,7 +6659,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                    <value dataType="string" bitLength="72" encoding="UTF8">wireshark</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -6769,7 +6769,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                    <value dataType="string" bitLength="72" encoding="UTF8">wireshark</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -6879,7 +6879,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                    <value dataType="string" bitLength="72" encoding="UTF8">wireshark</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -6989,7 +6989,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                    <value dataType="string" bitLength="72" encoding="UTF8">wireshark</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -7227,7 +7227,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                    <value dataType="string" bitLength="72" encoding="UTF8">wireshark</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -7430,7 +7430,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                                    <value dataType="string" bitLength="64" encoding="UTF8">filister</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -7938,7 +7938,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="96" encoding="UTF-8">SimpleServer</value>
+                                    <value dataType="string" bitLength="96" encoding="UTF8">SimpleServer</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetApplicationTagCharacterString>
@@ -8045,7 +8045,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                                    <value dataType="string" bitLength="64" encoding="UTF8">filister</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>
@@ -8248,7 +8248,7 @@
                                     <encoding>
                                       <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
                                     </encoding>
-                                    <value dataType="string" bitLength="40" encoding="UTF-8">Jesus</value>
+                                    <value dataType="string" bitLength="40" encoding="UTF8">Jesus</value>
                                   </BACnetTagPayloadCharacterString>
                                 </payload>
                               </BACnetContextTagCharacterString>

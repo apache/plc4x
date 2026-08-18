@@ -850,7 +850,7 @@ var boolFieldSerialize = `
 `
 
 var stringFieldSerialize = `
-	if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s)*8), %[1]s); err != nil {
+	if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s)*8), %[1]s, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 `

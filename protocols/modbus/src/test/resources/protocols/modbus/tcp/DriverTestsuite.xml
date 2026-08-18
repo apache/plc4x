@@ -100,7 +100,7 @@
                     <ModbusTagHoldingRegister>
                       <address dataType="uint" bitLength="16">0</address>
                       <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">REAL</dataType>
                     </ModbusTagHoldingRegister>
                   </hurz>
                 </tags>
@@ -193,7 +193,7 @@
                     <ModbusTagHoldingRegister>
                       <address dataType="uint" bitLength="16">0</address>
                       <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">REAL</dataType>
                     </ModbusTagHoldingRegister>
                   </hurz>
                 </tags>
@@ -341,14 +341,14 @@
                     <ModbusTagHoldingRegister>
                       <address dataType="uint" bitLength="16">0</address>
                       <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">REAL</dataType>
                     </ModbusTagHoldingRegister>
                   </hurz1>
                   <hurz2>
                     <ModbusTagHoldingRegister>
                       <address dataType="uint" bitLength="16">2</address>
                       <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">REAL</dataType>
                     </ModbusTagHoldingRegister>
                   </hurz2>
                 </tags>
@@ -452,7 +452,7 @@
                     <ModbusTagHoldingRegister>
                       <address dataType="uint" bitLength="16">0</address>
                       <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">REAL</dataType>
                     </ModbusTagHoldingRegister>
                   </hurz>
                 </tags>
@@ -549,7 +549,7 @@
                     <ModbusTagHoldingRegister>
                       <address dataType="uint" bitLength="16">0</address>
                       <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                      <dataType dataType="string" bitLength="32" encoding="UTF8">REAL</dataType>
                     </ModbusTagHoldingRegister>
                   </hurz>
                 </tags>

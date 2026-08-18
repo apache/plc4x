@@ -101,12 +101,14 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuff
 		return err
 	}
 
-	if err := wb.WriteString("node", uint32(len([]rune(m.Tag))*8), m.Tag); err != nil {
+	// encoding="UTF8" matches plc4j's EipTag.serialize (WithOption.WithEncoding("UTF8")
+	// on both the "node" and "type" fields).
+	if err := wb.WriteString("node", uint32(len([]rune(m.Tag))*8), m.Tag, utils.WithEncoding("UTF8")); err != nil {
 		return err
 	}
 
 	if m.Type != 0 {
-		if err := wb.WriteString("type", uint32(len([]rune(m.Type.String()))*8), m.Type.String()); err != nil {
+		if err := wb.WriteString("type", uint32(len([]rune(m.Type.String()))*8), m.Type.String(), utils.WithEncoding("UTF8")); err != nil {
 			return err
 		}
 	}

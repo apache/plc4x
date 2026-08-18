@@ -68,11 +68,11 @@ func (d *DefaultPlcBrowseItem) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 	}
 
-	if err := writeBuffer.WriteString("name", uint32(len(d.Name)*8), d.Name); err != nil {
+	if err := writeBuffer.WriteString("name", uint32(len(d.Name)*8), d.Name, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("dataTypeName", uint32(len(d.DataTypeName)*8), d.DataTypeName); err != nil {
+	if err := writeBuffer.WriteString("dataTypeName", uint32(len(d.DataTypeName)*8), d.DataTypeName, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 

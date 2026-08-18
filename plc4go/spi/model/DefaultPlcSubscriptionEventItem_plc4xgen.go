@@ -49,7 +49,7 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 		return err
 	}
 
-	if err := writeBuffer.WriteString("code", uint32(len(d.code.String())*8), d.code.String()); err != nil {
+	if err := writeBuffer.WriteString("code", uint32(len(d.code.String())*8), d.code.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -72,11 +72,11 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 		}
 	}
 
-	if err := writeBuffer.WriteString("subscriptionType", uint32(len(d.subscriptionType.String())*8), d.subscriptionType.String()); err != nil {
+	if err := writeBuffer.WriteString("subscriptionType", uint32(len(d.subscriptionType.String())*8), d.subscriptionType.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("interval", uint32(len(fmt.Sprintf("%s", d.interval))*8), fmt.Sprintf("%s", d.interval)); err != nil {
+	if err := writeBuffer.WriteString("interval", uint32(len(fmt.Sprintf("%s", d.interval))*8), fmt.Sprintf("%s", d.interval), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 

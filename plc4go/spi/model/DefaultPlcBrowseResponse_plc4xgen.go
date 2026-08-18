@@ -68,7 +68,7 @@ func (d *DefaultPlcBrowseResponse) SerializeWithWriteBuffer(ctx context.Context,
 		}
 	}
 
-	if err := writeBuffer.WriteString("responseCode", uint32(len(d.responseCode.String())*8), d.responseCode.String()); err != nil {
+	if err := writeBuffer.WriteString("responseCode", uint32(len(d.responseCode.String())*8), d.responseCode.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("results", utils.WithRenderAsList(true)); err != nil {

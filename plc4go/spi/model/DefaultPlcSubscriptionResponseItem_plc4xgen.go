@@ -49,7 +49,7 @@ func (d *DefaultPlcSubscriptionResponseItem) SerializeWithWriteBuffer(ctx contex
 		return err
 	}
 
-	if err := writeBuffer.WriteString("code", uint32(len(d.code.String())*8), d.code.String()); err != nil {
+	if err := writeBuffer.WriteString("code", uint32(len(d.code.String())*8), d.code.String(), utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 

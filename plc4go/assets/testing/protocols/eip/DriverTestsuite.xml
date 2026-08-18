@@ -401,8 +401,8 @@
                     <PlcTagItem>
                       <tag>
                         <EipTag>
-                          <node dataType="string" bitLength="40" encoding="UTF-8">%rate</node>
-                          <type dataType="string" bitLength="32" encoding="UTF-8">DINT</type>
+                          <node dataType="string" bitLength="32" encoding="UTF8">rate</node>
+                          <type dataType="string" bitLength="32" encoding="UTF8">DINT</type>
                           <elementNb dataType="uint" bitLength="16">1</elementNb>
                         </EipTag>
                       </tag>
@@ -736,8 +736,8 @@
                     <PlcTagItem>
                       <tag>
                         <EipTag>
-                          <node dataType="string" bitLength="40" encoding="UTF-8">%rate</node>
-                          <type dataType="string" bitLength="32" encoding="UTF-8">DINT</type>
+                          <node dataType="string" bitLength="32" encoding="UTF8">rate</node>
+                          <type dataType="string" bitLength="32" encoding="UTF8">DINT</type>
                           <elementNb dataType="uint" bitLength="16">1</elementNb>
                         </EipTag>
                       </tag>
@@ -747,8 +747,8 @@
                     <PlcTagItem>
                       <tag>
                         <EipTag>
-                          <node dataType="string" bitLength="48" encoding="UTF-8">%count</node>
-                          <type dataType="string" bitLength="32" encoding="UTF-8">DINT</type>
+                          <node dataType="string" bitLength="40" encoding="UTF8">count</node>
+                          <type dataType="string" bitLength="32" encoding="UTF8">DINT</type>
                           <elementNb dataType="uint" bitLength="16">1</elementNb>
                         </EipTag>
                       </tag>
@@ -945,8 +945,8 @@
                     <PlcTagItem>
                       <tag>
                         <EipTag>
-                          <node dataType="string" bitLength="40" encoding="UTF-8">%rate</node>
-                          <type dataType="string" bitLength="32" encoding="UTF-8">DINT</type>
+                          <node dataType="string" bitLength="32" encoding="UTF8">rate</node>
+                          <type dataType="string" bitLength="32" encoding="UTF8">DINT</type>
                           <elementNb dataType="uint" bitLength="16">4</elementNb>
                         </EipTag>
                       </tag>
@@ -1137,8 +1137,8 @@
                     <PlcTagItem>
                       <tag>
                         <EipTag>
-                          <node dataType="string" bitLength="32" encoding="UTF-8">rate</node>
-                          <type dataType="string" bitLength="32" encoding="UTF-8">DINT</type>
+                          <node dataType="string" bitLength="32" encoding="UTF8">rate</node>
+                          <type dataType="string" bitLength="32" encoding="UTF8">DINT</type>
                           <elementNb dataType="uint" bitLength="16">1</elementNb>
                         </EipTag>
                       </tag>
