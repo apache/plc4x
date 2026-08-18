@@ -35,6 +35,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -51,9 +52,10 @@ type TransportInstance struct {
 	// can absorb the signature change.
 	SoReUse bool
 
-	transport *Transport
-	udpConn   *net.UDPConn
-	reader    *bufio.Reader
+	transport    *Transport
+	udpConn      *net.UDPConn
+	reader       *bufio.Reader
+	maxFrameSize uint32
 
 	connected        atomic.Bool
 	stateChangeMutex sync.RWMutex
@@ -70,6 +72,7 @@ func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr,
 		RemoteAddress: remoteAddress,
 		SoReUse:       soReUse,
 		transport:     transport,
+		maxFrameSize:  transportUtils.ExtractMaxFrameSize(_options...),
 
 		log: logger,
 	}
@@ -215,19 +218,28 @@ func (m *TransportInstance) Read(ctx context.Context, numBytes uint32) ([]byte, 
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
-	data := make([]byte, numBytes)
+	// numBytes is usually a wire-announced frame length: enforce a ceiling and
+	// never pre-allocate the announced size — grow only with bytes actually read.
+	maxFrameSize := m.maxFrameSize
+	if maxFrameSize == 0 {
+		maxFrameSize = transportUtils.DefaultMaxFrameSize
+	}
+	if numBytes > maxFrameSize {
+		return nil, errors.Errorf("requested %d bytes exceeds the maximum frame size of %d bytes", numBytes, maxFrameSize)
+	}
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
 		if err := m.udpConn.SetReadDeadline(deadline); err != nil {
 			return nil, errors.Wrap(err, "error setting read deadline")
 		}
 	}
-	for i := range numBytes {
+	data := make([]byte, 0, min(numBytes, 4096))
+	for range numBytes {
 		val, err := m.reader.ReadByte()
 		if err != nil {
 			return nil, errors.Wrap(err, "error reading")
 		}
-		data[i] = val
+		data = append(data, val)
 	}
 	return data, nil
 }

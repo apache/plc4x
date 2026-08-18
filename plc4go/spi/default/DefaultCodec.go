@@ -500,6 +500,18 @@ mainLoop:
 			syncer := make(chan struct{})
 			m.wg.Go(func() {
 				defer close(syncer)
+				// A malformed frame can panic generated parsers (e.g. allocation
+				// panics on wire-declared sizes); recover here so a poisoned frame
+				// fails this receive cycle instead of killing the process.
+				defer func() {
+					if r := recover(); r != nil {
+						m.log.Error().
+							Str("stack", string(debug.Stack())).
+							Interface("err", r).
+							Msg("panic-ed while receiving")
+						err = errors.Errorf("panic while receiving: %v", r)
+					}
+				}()
 				if !m.running.Load() {
 					err = errors.New("not running")
 					return
