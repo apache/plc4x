@@ -32,8 +32,13 @@ type DriverContext struct {
 	MaxAmqCaller            uint16
 	MaxAmqCallee            uint16
 	ControllerType          model.ControllerType
-	awaitSetupComplete      bool
-	awaitDisconnectComplete bool
+	ArticleNumber           string
+	// UserDataServicesSupported reports whether the device speaks the S7Comm UserData
+	// services (browse, alarms, cyclic subscriptions). Derived from the SZL probe at
+	// connect time or from a pinned controller type.
+	UserDataServicesSupported bool
+	awaitSetupComplete        bool
+	awaitDisconnectComplete   bool
 }
 
 func NewDriverContext(configuration Configuration) (DriverContext, error) {

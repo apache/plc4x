@@ -22,7 +22,7 @@ package s7
 import (
 	"context"
 	"fmt"
-	"strings"
+	"strconv"
 	"sync"
 
 	"github.com/rs/zerolog"
@@ -246,150 +246,94 @@ func (c *Connection) setupConnection(ctx context.Context) error {
 			// requests.
 			c.tm.SetNumberOfConcurrentRequests(int(c.driverContext.MaxAmqCallee))
 
-			// If the controller type is explicitly set, were finished with the login
-			// process. If it's set to ANY, we have to query the serial number information
-			// in order to detect the type of PLC.
-			if c.driverContext.ControllerType != readWriteModel.ControllerType_ANY {
-				// Send an event that connection setup is complete.
-				c.SetConnected(true)
-				return nil
-			}
+			// Detect the controller type (unless it was pinned by the user) and derive
+			// whether the device supports the S7Comm UserData services. Probe failures are
+			// not connection failures - plain read/write stays usable (e.g. LOGO devices).
+			c.identifyRemote(ctx)
 
-			// Prepare a message to request the remote to identify itself.
-			c.log.Debug().Msg("Sending S7 Identification Request")
-			s7IdentificationResult := make(chan readWriteModel.S7PayloadUserData, 1)
-			s7IdentificationErrorChan := make(chan error, 1)
-			if err := c.messageCodec.SendRequest(ctx, "setup_connection_identify_remote_message", c.createIdentifyRemoteMessage(), func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
-				if !ok {
-					return false
-				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				if !ok {
-					return false
-				}
-				messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
-				if !ok {
-					return false
-				}
-				_, ok = messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
-				return ok
-			}, func(message spi.Message) error {
-				tpktPacket := message.(readWriteModel.TPKTPacket)
-				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				messageUserData := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
-				s7IdentificationResult <- messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
-				return nil
-			}, func(err error) error {
-				// If this is a timeout, do a check if the connection requires a reconnection
-				var timeoutError utils.TimeoutError
-				if errors.As(err, &timeoutError) {
-					c.log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-					c.Close()
-				}
-				s7IdentificationErrorChan <- errors.Wrap(err, "got error processing request")
-				return nil
-			}); err != nil {
-				return errors.Wrap(err, "Error during sending of identify remote Request")
-			}
-			select {
-			case payloadUserData := <-s7IdentificationResult:
-				c.log.Debug().Msg("Got S7 Identification Response")
-				if err := c.extractControllerTypeAndFireConnected(payloadUserData); err != nil {
-					return errors.Wrap(err, "Error extracting controller type")
-				}
-			case err := <-s7IdentificationErrorChan:
-				return errors.Wrap(err, "Error receiving identify remote Request")
-			}
+			// Send an event that connection setup is complete.
+			c.SetConnected(true)
+			return nil
 		case err := <-s7ConnectionErrorChan:
 			return errors.Wrap(err, "Error receiving S7 Connection Request")
 		}
 	case err := <-cotpConnectionErrorChan:
 		return errors.Wrap(err, "Error receiving of COTP Connection Request")
 	}
-	return nil
 }
 
-func (c *Connection) extractControllerTypeAndFireConnected(payloadUserData readWriteModel.S7PayloadUserData) error {
-	// TODO: how do we handle the case if there no items at all? Should we assume it a successful or failure...
-	// TODO ... opposed to the java implementation we treat it as a failure
-	for _, item := range payloadUserData.GetItems() {
-		switch readSzlResponseItem := item.(type) {
-		case readWriteModel.S7PayloadUserDataItemCpuFunctionReadSzlResponse:
-			for _, readSzlResponseItemItem := range readSzlResponseItem.GetItems() {
-				_ = readSzlResponseItemItem
-				/* TODO: broken by mspec changes from carcia
-				if readSzlResponseItemItem.GetItemIndex() != 0x0001 {
-					continue
-				}
-				articleNumber := string(readSzlResponseItemItem.GetMlfb())
-				*/
-				articleNumber := "broken at the moment"
-				var controllerType readWriteModel.ControllerType
-				if !strings.HasPrefix(articleNumber, "6ES7 ") {
-					controllerType = readWriteModel.ControllerType_ANY
-				}
-				blankIndex := strings.Index(articleNumber, " ")
-				model := articleNumber[blankIndex+1 : blankIndex+2]
-				switch model {
-				case "2":
-					controllerType = readWriteModel.ControllerType_S7_1200
-				case "5":
-					controllerType = readWriteModel.ControllerType_S7_1500
-				case "3":
-					controllerType = readWriteModel.ControllerType_S7_300
-				case "4":
-					controllerType = readWriteModel.ControllerType_S7_400
-				default:
-					c.log.Info().Str("articleNumber", articleNumber).Msg("Looking up unknown article number")
-					controllerType = readWriteModel.ControllerType_ANY
-				}
-				c.driverContext.ControllerType = controllerType
-
-				// Send an event that connection setup is complete.
-				c.SetConnected(true)
-				return nil
-			}
-		}
+// identifyRemote determines the controller type and UserData-service capability. If the user
+// pinned the controller type it is trusted and no SZL probe runs; otherwise the modern
+// COMPONENT_IDENTIFICATION SZL is tried first with the legacy MODULE_IDENTIFICATION as
+// fallback. Failure of both just disables the UserData services (browse/alarms/cyclic).
+func (c *Connection) identifyRemote(ctx context.Context) {
+	if c.driverContext.ControllerType != readWriteModel.ControllerType_ANY {
+		c.driverContext.UserDataServicesSupported = supportsUserDataServices(c.driverContext.ControllerType)
+		c.log.Info().
+			Stringer("controllerType", c.driverContext.ControllerType).
+			Bool("userDataServices", c.driverContext.UserDataServicesSupported).
+			Msg("Controller type pinned, skipping SZL probe")
+		return
 	}
-	return errors.New("Coudln't find the required information")
+	c.log.Debug().Msg("Sending S7 Identification Request")
+	articleNumber, controllerType, err := c.trySzlProbe(ctx, szlIdComponentIdentification(), 0x0001)
+	if err != nil {
+		c.log.Debug().Err(err).Msg("COMPONENT_IDENTIFICATION SZL probe failed, trying MODULE_IDENTIFICATION")
+		articleNumber, controllerType, err = c.trySzlProbe(ctx, szlIdModuleIdentification(), 0x0000)
+	}
+	if err != nil {
+		// Common on LOGO and other non-SZL devices.
+		c.log.Info().Err(err).Msg("SZL probe yielded no usable identification; " +
+			"S7Comm UserData services disabled for this device")
+		c.driverContext.UserDataServicesSupported = false
+		return
+	}
+	c.driverContext.ArticleNumber = articleNumber
+	c.driverContext.ControllerType = controllerType
+	c.driverContext.UserDataServicesSupported = true
+	c.log.Info().
+		Str("articleNumber", articleNumber).
+		Stringer("controllerType", controllerType).
+		Msg("SZL probe ok")
 }
 
-func (c *Connection) createIdentifyRemoteMessage() readWriteModel.TPKTPacket {
-	identifyRemoteMessage := readWriteModel.NewS7MessageUserData(
-		1,
-		readWriteModel.NewS7ParameterUserData(
-			[]readWriteModel.S7ParameterUserDataItem{
-				readWriteModel.NewS7ParameterUserDataItemCPUFunctions(
-					0x11,
-					0x4,
-					0x4,
-					0x01,
-					0x00,
-					nil,
-					nil,
-					nil,
-				),
-			},
-		),
-		readWriteModel.NewS7PayloadUserData(
-			[]readWriteModel.S7PayloadUserDataItem{
-				readWriteModel.NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(
-					readWriteModel.DataTransportErrorCode_OK,
-					readWriteModel.DataTransportSize_OCTET_STRING,
-					4,
-					readWriteModel.NewSzlId(
-						readWriteModel.SzlModuleTypeClass_CPU,
-						0x00,
-						readWriteModel.SzlSublist_MODULE_IDENTIFICATION,
-					),
-					0x0000,
-				),
-			},
-		),
-	)
-	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, identifyRemoteMessage, true, 2)
-	return readWriteModel.NewTPKTPacket(cotpPacketData)
+func (c *Connection) trySzlProbe(ctx context.Context, szlId readWriteModel.SzlId, szlIndex uint16) (string, readWriteModel.ControllerType, error) {
+	tpduId := c.tpduGenerator.getAndIncrement()
+	resultChan := make(chan readWriteModel.S7Message, 1)
+	errChan := make(chan error, 1)
+	if err := c.messageCodec.SendRequest(ctx, "setup_connection_identify_remote_message", buildSzlRequest(tpduId, szlId, szlIndex), func(message spi.Message) bool {
+		tpktPacket, ok := message.(readWriteModel.TPKTPacket)
+		if !ok {
+			return false
+		}
+		cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+		if !ok {
+			return false
+		}
+		messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
+		if !ok {
+			return false
+		}
+		return messageUserData.GetTpduReference() == tpduId
+	}, func(message spi.Message) error {
+		tpktPacket := message.(readWriteModel.TPKTPacket)
+		cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+		resultChan <- cotpPacketData.GetPayload()
+		return nil
+	}, func(err error) error {
+		errChan <- err
+		return nil
+	}); err != nil {
+		return "", 0, errors.Wrap(err, "error sending SZL identification request")
+	}
+	select {
+	case message := <-resultChan:
+		return parseSzlProbeResponse(message)
+	case err := <-errChan:
+		return "", 0, err
+	case <-ctx.Done():
+		return "", 0, ctx.Err()
+	}
 }
 
 func (c *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse readWriteModel.COTPPacketConnectionResponse) readWriteModel.TPKTPacket {
@@ -433,6 +377,13 @@ func (c *Connection) createCOTPConnectionRequest() readWriteModel.COTPPacket {
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return &_default.DefaultConnectionMetadata{
+		ConnectionAttributes: map[string]string{
+			"article-number":  c.driverContext.ArticleNumber,
+			"controller-type": c.driverContext.ControllerType.String(),
+			"pdu-size":        strconv.Itoa(int(c.driverContext.PduSize)),
+			"max-amq-caller":  strconv.Itoa(int(c.driverContext.MaxAmqCaller)),
+			"max-amq-callee":  strconv.Itoa(int(c.driverContext.MaxAmqCallee)),
+		},
 		ProvidesReading: true,
 		ProvidesWriting: true,
 	}
