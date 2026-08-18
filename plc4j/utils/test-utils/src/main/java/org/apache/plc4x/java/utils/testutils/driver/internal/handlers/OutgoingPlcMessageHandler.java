@@ -20,6 +20,7 @@ package org.apache.plc4x.java.utils.testutils.driver.internal.handlers;
 
 import org.apache.plc4x.java.spi.buffers.api.Message;
 import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
@@ -115,7 +116,14 @@ public class OutgoingPlcMessageHandler {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No staticParse method found in class " + className));
 
-            ReadBufferByteBased readBuffer = new ReadBufferByteBased(actualBytes, WithByteBasedOption.WithByteOrder(byteOrder));
+            // The default integer/float encodings match what every driver codec configures;
+            // generated parsers (e.g. S7) fail without them on fields that don't pass
+            // explicit per-field options.
+            ReadBufferByteBased readBuffer = new ReadBufferByteBased(actualBytes,
+                WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
+                WithOption.WithSignedIntegerEncoding("twos-complement"),
+                WithOption.WithFloatEncoding("IEEE754"),
+                WithByteBasedOption.WithByteOrder(byteOrder));
 
             Element parserArgumentsElement = referenceXml.element(new QName("parser-arguments"));
 

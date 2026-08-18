@@ -287,10 +287,20 @@ public class ReadBufferXmlBased extends AbstractBuffer implements ReadBuffer, Xm
 
     private void validateStartElement(StartElement startElement, String name, String dataType, int numBits) throws BufferException {
         //name = sanitizeLogicalName(name);
-        if (!startElement.getName().getLocalPart().equals(name)) {
-            throw new BufferException(String.format("unexpected element '%s'. Expected '%s'", startElement.getName().getLocalPart(), name));
+        String elementName = startElement.getName().getLocalPart();
+        // "*" matches any element name: used for elements whose serialized name is only known
+        // dynamically (e.g. enum fields are written as <fieldName><EnumTypeName ...>).
+        if (!"*".equals(name) && !elementName.equals(name) && !isReservedFieldName(name, elementName)) {
+            throw new BufferException(String.format("unexpected element '%s'. Expected '%s'", elementName, name));
         }
         validateAttr(startElement.getAttributes(), name, dataType, numBits);
+    }
+
+    private boolean isReservedFieldName(String expectedName, String elementName) {
+        // The generated parsers qualify reserved fields as "<Type>.reserved<N>" while the
+        // generated serializers write them plainly as "reserved" - accept the serializer's
+        // form so XML written by WriteBufferXmlBased can be read back.
+        return "reserved".equals(elementName) && expectedName.matches("(.*\\.)?reserved\\d*");
     }
 
     private void validateAttr(Iterator<Attribute> attr, String name, String dataType, int numBits) throws BufferException {
