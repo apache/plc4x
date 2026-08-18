@@ -415,6 +415,66 @@ func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	}
 }
 
+// Ping does a real round trip: S7 has no dedicated ping, so a one-byte read of %M0 is
+// issued and any S7 answer (including a PLC error) counts as alive - only transport
+// failures and timeouts report an error.
+func (c *Connection) Ping(ctx context.Context) error {
+	if !c.IsConnected() {
+		return errors.New("not connected")
+	}
+	tpduId := c.tpduGenerator.getAndIncrement()
+	pingRequest := readWriteModel.NewTPKTPacket(readWriteModel.NewCOTPPacketData(
+		nil,
+		readWriteModel.NewS7MessageRequest(
+			tpduId,
+			readWriteModel.NewS7ParameterReadVarRequest([]readWriteModel.S7VarRequestParameterItem{
+				readWriteModel.NewS7VarRequestParameterItemAddress(
+					readWriteModel.NewS7AddressAny(readWriteModel.TransportSize_BYTE, 1, 0, readWriteModel.MemoryArea_FLAGS_MARKERS, 0, 0),
+				),
+			}),
+			nil,
+		),
+		true,
+		uint8(tpduId),
+	))
+	successChan := make(chan struct{}, 1)
+	errChan := make(chan error, 1)
+	if err := c.messageCodec.SendRequest(ctx, "ping", pingRequest, func(message spi.Message) bool {
+		tpktPacket, ok := message.(readWriteModel.TPKTPacket)
+		if !ok {
+			return false
+		}
+		cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+		if !ok {
+			return false
+		}
+		payload := cotpPacketData.GetPayload()
+		return payload != nil && payload.GetTpduReference() == tpduId
+	}, func(message spi.Message) error {
+		select {
+		case successChan <- struct{}{}:
+		default:
+		}
+		return nil
+	}, func(err error) error {
+		select {
+		case errChan <- err:
+		default:
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "error sending ping request")
+	}
+	select {
+	case <-successChan:
+		return nil
+	case err := <-errChan:
+		return errors.Wrap(err, "got error while waiting for ping response")
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}
+
 func (c *Connection) dispatchUnsolicitedUserData(channel <-chan readWriteModel.S7MessageUserData) {
 	for message := range channel {
 		c.subscriberMutex.Lock()
