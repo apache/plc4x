@@ -53,15 +53,8 @@ type Connection struct {
 	configuration             Configuration
 	driverContext             DriverContext
 	tm                        transactions.RequestTransactionManager
-	sessionHandle             uint32
-	senderContext             []uint8
-	connectionId              uint32
+	sessionState              *SessionState
 	cipEncapsulationAvailable bool
-	connectionSerialNumber    uint16
-	connectionPathSize        uint8
-	useMessageRouter          bool
-	useConnectionManager      bool
-	routingAddress            []readWriteModel.PathSegment
 	tracer                    tracer.Tracer
 
 	wg sync.WaitGroup // use to track spawned go routines
@@ -89,6 +82,7 @@ func NewConnection(
 		configuration: configuration,
 		driverContext: driverContext,
 		tm:            tm,
+		sessionState:  NewSessionState(customLogger, configuration),
 		log:           customLogger,
 		_options:      _options,
 	}
@@ -105,8 +99,6 @@ func NewConnection(
 		)...,
 	)
 
-	// TODO: connectionPathSize
-	// TODO: routingAddress
 	return connection
 }
 
@@ -162,7 +154,7 @@ func (c *Connection) Close() error {
 	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection close timeout", 5*time.Second)
 	defer cancelFunc()
 	c.log.Debug().Msg("Sending UnregisterSession EIP Packet")
-	if err := c.messageCodec.SendRequest(ctx, "close_eip_disconnect_request", readWriteModel.NewEipDisconnectRequest(c.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
+	if err := c.messageCodec.SendRequest(ctx, "close_eip_disconnect_request", readWriteModel.NewEipDisconnectRequest(c.sessionState.sessionHandle, 0, []byte(DefaultSenderContext), 0), func(message spi.Message) bool {
 		return true
 	}, func(message spi.Message) error {
 		return nil
@@ -178,7 +170,7 @@ func (c *Connection) Close() error {
 		c.log.Warn().Err(err).Msg("error disconnecting message codec")
 	}
 	c.log.Debug().
-		Uint32("sessionHandle", c.sessionHandle).
+		Uint32("sessionHandle", c.sessionState.sessionHandle).
 		Msg("Unregistred Session %d")
 	return nil
 }
@@ -196,7 +188,7 @@ func (c *Connection) setupConnection(ctx context.Context) error {
 		return errors.Wrap(err, "error list all attributes")
 	}
 
-	if c.useConnectionManager {
+	if c.sessionState.useConnectionManager {
 		// TODO: Continue here ....
 	} else {
 		c.SetConnected(true)
@@ -269,10 +261,10 @@ func (c *Connection) connectRegisterSession(ctx context.Context) error {
 		connectionResponse := eipPacket.(readWriteModel.EipConnectionResponse)
 		if connectionResponse != nil {
 			if connectionResponse.GetStatus() == 0 {
-				c.sessionHandle = connectionResponse.GetSessionHandle()
-				c.senderContext = connectionResponse.GetSenderContext()
+				c.sessionState.sessionHandle = connectionResponse.GetSessionHandle()
+				c.sessionState.senderContext = connectionResponse.GetSenderContext()
 				c.log.Debug().
-					Uint32("sessionHandle", c.sessionHandle).
+					Uint32("sessionHandle", c.sessionState.sessionHandle).
 					Msg("Got assigned with Session")
 				connectionResponseChan <- connectionResponse
 			} else {
@@ -287,20 +279,20 @@ func (c *Connection) connectRegisterSession(ctx context.Context) error {
 			instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 1))
 			exchange := readWriteModel.NewUnConnectedDataItem(
 				readWriteModel.NewCipConnectionManagerRequest(classSegment, instanceSegment, 0, 10,
-					14, 536870914, 33944, c.connectionSerialNumber,
+					14, 536870914, 33944, c.sessionState.connectionSerialNumber,
 					4919, 42, 3, 2101812,
 					readWriteModel.NewNetworkConnectionParameters(4002, false, 2, 0, true),
 					2113537,
 					readWriteModel.NewNetworkConnectionParameters(4002, false, 2, 0, true),
 					readWriteModel.NewTransportType(true, 2, 3),
-					c.connectionPathSize, c.routingAddress))
+					c.sessionState.connectionPathSize, c.sessionState.routingAddress))
 			typeIds := []readWriteModel.TypeId{readWriteModel.NewNullAddressItem(), exchange}
 			eipWrapper := readWriteModel.NewCipRRData(
-				c.sessionHandle,
+				c.sessionState.sessionHandle,
 				uint32(readWriteModel.CIPStatus_Success),
-				c.senderContext,
+				c.sessionState.senderContext,
 				0,
-				c.sessionHandle,
+				c.sessionState.sessionHandle,
 				0,
 				typeIds,
 			)
@@ -316,9 +308,9 @@ func (c *Connection) connectRegisterSession(ctx context.Context) error {
 				if cipRRData.GetStatus() == 0 {
 					unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
 					connectionManagerResponse := unconnectedDataItem.GetService().(readWriteModel.CipConnectionManagerResponse)
-					c.connectionId = connectionManagerResponse.GetOtConnectionId()
+					c.sessionState.connectionId = connectionManagerResponse.GetOtConnectionId()
 					c.log.Debug().
-						Uint32("connectionId", c.connectionId).
+						Uint32("connectionId", c.sessionState.connectionId).
 						Msg("Got assigned with connection if")
 					connectionResponseChan <- connectionResponse
 				} else {
@@ -370,9 +362,9 @@ func (c *Connection) listAllAttributes(ctx context.Context) error {
 	classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(uint8(0), uint8(2)))
 	instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(uint8(0), uint8(1)))
 	if err := c.messageCodec.SendRequest(ctx, "list_all_attributes", readWriteModel.NewCipRRData(
-		c.sessionHandle,
+		c.sessionState.sessionHandle,
 		uint32(readWriteModel.CIPStatus_Success),
-		c.senderContext,
+		c.sessionState.senderContext,
 		0,
 		EmptyInterfaceHandle,
 		0,
@@ -397,16 +389,16 @@ func (c *Connection) listAllAttributes(ctx context.Context) error {
 					if curCipClassId, ok := readWriteModel.CIPClassIDByValue(classId); ok {
 						switch curCipClassId {
 						case readWriteModel.CIPClassID_MessageRouter:
-							c.useMessageRouter = true
+							c.sessionState.useMessageRouter = true
 						case readWriteModel.CIPClassID_ConnectionManager:
-							c.useConnectionManager = true
+							c.sessionState.useConnectionManager = true
 						}
 					}
 				}
 			}
 			c.log.Debug().
-				Bool("useMessageRouter", c.useMessageRouter).
-				Bool("useConnectionManager", c.useConnectionManager).
+				Bool("useMessageRouter", c.sessionState.useMessageRouter).
+				Bool("useConnectionManager", c.sessionState.useConnectionManager).
 				Msg("Connection using message router, using connection manager")
 			listAllAttributesResponseChan <- response
 		}
@@ -449,7 +441,7 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 			c.messageCodec,
 			c.tm,
 			c.configuration,
-			&c.sessionHandle,
+			c.sessionState,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
@@ -463,8 +455,7 @@ func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 			c.messageCodec,
 			c.tm,
 			c.configuration,
-			&c.sessionHandle,
-			&c.senderContext,
+			c.sessionState,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)

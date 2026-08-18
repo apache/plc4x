@@ -47,20 +47,20 @@ type Reader struct {
 	messageCodec  spi.MessageCodec
 	tm            transactions.RequestTransactionManager
 	configuration Configuration
-	sessionHandle *uint32
+	sessionState  *SessionState
 
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
 
-func NewReader(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, _options ...options.WithOption) *Reader {
+func NewReader(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionState *SessionState, _options ...options.WithOption) *Reader {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
 		messageCodec:  messageCodec,
 		tm:            tm,
 		configuration: configuration,
-		sessionHandle: sessionHandle,
+		sessionState:  sessionState,
 
 		log: customLogger,
 	}
@@ -98,7 +98,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				readWriteModel.NewUnConnectedDataItem(requestItem),
 			}
 			request := readWriteModel.NewCipRRData(
-				*m.sessionHandle,
+				m.sessionState.sessionHandle,
 				uint32(readWriteModel.CIPStatus_Success),
 				[]byte(DefaultSenderContext),
 				0,
@@ -119,7 +119,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					if cipRRData == nil {
 						return false
 					}
-					return cipRRData.GetSessionHandle() == *m.sessionHandle
+					return cipRRData.GetSessionHandle() == m.sessionState.sessionHandle
 				}, func(message spi.Message) error {
 					cipRRData := message.(readWriteModel.CipRRData)
 					m.log.Trace().Interface("cipRRData", cipRRData).Msg("handling")

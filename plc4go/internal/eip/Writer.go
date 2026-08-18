@@ -43,22 +43,20 @@ type Writer struct {
 	messageCodec  spi.MessageCodec
 	tm            transactions.RequestTransactionManager
 	configuration Configuration
-	sessionHandle *uint32
-	senderContext *[]uint8
+	sessionState  *SessionState
 
 	wg sync.WaitGroup // use to track spawned go routines
 
 	log zerolog.Logger
 }
 
-func NewWriter(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, senderContext *[]uint8, _options ...options.WithOption) *Writer {
+func NewWriter(messageCodec spi.MessageCodec, tm transactions.RequestTransactionManager, configuration Configuration, sessionState *SessionState, _options ...options.WithOption) *Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Writer{
 		messageCodec:  messageCodec,
 		tm:            tm,
 		configuration: configuration,
-		sessionHandle: sessionHandle,
-		senderContext: senderContext,
+		sessionState:  sessionState,
 		log:           customLogger,
 	}
 }
