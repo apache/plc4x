@@ -49,7 +49,7 @@ func (d *worker) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return err
 	}
 
-	if err := writeBuffer.WriteString("id", uint32(len(d.id)*8), d.id); err != nil {
+	if err := writeBuffer.WriteString("id", uint32(len(d.id)*8), d.id, utils.WithEncoding("UTF-8")); err != nil {
 		return err
 	}
 
@@ -66,7 +66,7 @@ func (d *worker) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.lastReceived.Load())
-			if err := writeBuffer.WriteString("lastReceived", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("lastReceived", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

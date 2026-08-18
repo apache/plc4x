@@ -2051,8 +2051,7 @@
               <tags isList="true">
                 <hurz1>
                   <SymbolicAdsField>
-                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M
-                    </symbolicAddress>
+                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
                     <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
                     <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                   </SymbolicAdsField>
@@ -2330,8 +2329,7 @@
               <tags isList="true">
                 <hurz1>
                   <SymbolicAdsField>
-                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M
-                    </symbolicAddress>
+                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
                     <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
                     <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                   </SymbolicAdsField>
@@ -2485,8 +2483,7 @@
               <tags isList="true">
                 <hurz1>
                   <SymbolicAdsField>
-                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M
-                    </symbolicAddress>
+                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
                     <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
                     <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                   </SymbolicAdsField>

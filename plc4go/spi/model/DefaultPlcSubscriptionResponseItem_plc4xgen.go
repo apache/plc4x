@@ -66,7 +66,7 @@ func (d *DefaultPlcSubscriptionResponseItem) SerializeWithWriteBuffer(ctx contex
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.subscriptionHandle)
-			if err := writeBuffer.WriteString("subscriptionHandle", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("subscriptionHandle", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

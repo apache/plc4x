@@ -66,7 +66,7 @@ func (d *PlcResponseItem) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.value)
-			if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}

@@ -66,7 +66,7 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.tag)
-			if err := writeBuffer.WriteString("tag", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("tag", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
@@ -93,7 +93,7 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.value)
-			if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
+			if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue, utils.WithEncoding("UTF-8")); err != nil {
 				return err
 			}
 		}
