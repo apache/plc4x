@@ -28,6 +28,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewStrictXmlReadBuffer(t *testing.T) {
@@ -1096,6 +1097,142 @@ func Test_xmlReadBuffer_Reset(t *testing.T) {
 			x.Reset(tt.args.pos)
 		})
 	}
+}
+
+// readTestEntry mirrors the shape a generated "terminated" array's item
+// reader has: a wrapper element containing a nested wrapper containing a
+// scalar leaf, e.g. PathSegment > LogicalSegment > ClassID. It's used by the
+// GetPos()/Reset()/token-replay invariant tests below to drive the same
+// "fully parse the next item speculatively, then either roll back and read it
+// for real, or roll back and stop" pattern generated terminated-array code
+// (see NoMorePathSegments in the eip protocol) relies on.
+func readTestEntry(x *xmlReadBuffer) (string, error) {
+	if err := x.PullContext("entry"); err != nil {
+		return "", err
+	}
+	if err := x.PullContext("wrap"); err != nil {
+		return "", err
+	}
+	// A non-zero bitLength matters here: it's what advances x.pos (via
+	// move()) past this entry, the same way a real scalar field would - and
+	// that advance is what makes each iteration's GetPos() report a distinct
+	// position instead of everything colliding on one aliased value.
+	value, err := x.ReadString("val", 8)
+	if err != nil {
+		return "", err
+	}
+	if err := x.CloseContext("wrap"); err != nil {
+		return "", err
+	}
+	if err := x.CloseContext("entry"); err != nil {
+		return "", err
+	}
+	return value, nil
+}
+
+// TestXmlReadBuffer_TerminatedArray_ParseThenRewind pins the invariant a
+// terminated-array's termination check relies on: GetPos() then a full
+// speculative parse of the next item then Reset() back to that position must
+// genuinely rewind, so a second, real parse of the same item succeeds and
+// returns it once (not skipped, not duplicated) - even though xml.Decoder's
+// own Token() only ever reads forward. It also folds in the "vestigial
+// diagnostic GetPos()" case: every generated type's parse function opens
+// with a "currentPos := positionAware.GetPos()" whose result is discarded
+// and never paired with a Reset(); several of those, nested arbitrarily
+// deep, alias to the exact same reported position as the termination check's
+// own GetPos() because none of them have read a scalar field yet. Resolving
+// each Reset(pos) to the oldest still-pending GetPos() call for that value -
+// rather than whichever call happened to run most recently - is what makes
+// that not matter.
+func TestXmlReadBuffer_TerminatedArray_ParseThenRewind(t *testing.T) {
+	x := NewXmlReadBuffer(strings.NewReader(
+		"<seq><entry><wrap><val>1</val></wrap></entry><entry><wrap><val>2</val></wrap></entry></seq>",
+	)).(*xmlReadBuffer)
+
+	require.NoError(t, x.PullContext("seq"))
+
+	var got []string
+	for {
+		// Vestigial calls a nested type's parse function would make on entry,
+		// at the same position as the termination check below - discarded,
+		// never reset.
+		_ = x.GetPos()
+		_ = x.GetPos()
+
+		pos := x.GetPos()
+		_, peekErr := readTestEntry(x)
+		x.Reset(pos)
+		if peekErr != nil {
+			break
+		}
+
+		value, err := readTestEntry(x)
+		require.NoError(t, err)
+		got = append(got, value)
+	}
+	require.NoError(t, x.CloseContext("seq"))
+
+	assert.Equal(t, []string{"1", "2"}, got)
+}
+
+// TestXmlReadBuffer_GetPos_RepeatedWithoutReset asserts that calling GetPos()
+// any number of times without a matching Reset() - the "vestigial diagnostic
+// call" every generated type's parse function makes - never disturbs
+// ordinary forward reading.
+func TestXmlReadBuffer_GetPos_RepeatedWithoutReset(t *testing.T) {
+	x := NewXmlReadBuffer(strings.NewReader("<xml><a>1</a><b>2</b></xml>")).(*xmlReadBuffer)
+
+	require.NoError(t, x.PullContext("xml"))
+
+	for range 5 {
+		_ = x.GetPos()
+	}
+	a, err := x.ReadString("a", 8)
+	require.NoError(t, err)
+	assert.Equal(t, "1", a)
+
+	for range 5 {
+		_ = x.GetPos()
+	}
+	b, err := x.ReadString("b", 8)
+	require.NoError(t, err)
+	assert.Equal(t, "2", b)
+
+	require.NoError(t, x.CloseContext("xml"))
+}
+
+// TestXmlReadBuffer_TerminatedArray_Empty covers the empty-terminated-array
+// case: GetPos() immediately followed by Reset() with no element ever
+// consumed. This is the only shape the codebase actually exercised before
+// this file's connectionPaths/NoMorePathSegments fixture (e.g. this driver's
+// own GetAttributeAll probe response), so it's pinned separately - and
+// checks that reading continues correctly for a sibling element afterward.
+func TestXmlReadBuffer_TerminatedArray_Empty(t *testing.T) {
+	x := NewXmlReadBuffer(strings.NewReader("<root><seq></seq><after>done</after></root>")).(*xmlReadBuffer)
+
+	require.NoError(t, x.PullContext("root"))
+	require.NoError(t, x.PullContext("seq"))
+
+	var got []string
+	for {
+		pos := x.GetPos()
+		_, peekErr := readTestEntry(x)
+		x.Reset(pos)
+		if peekErr != nil {
+			break
+		}
+		value, err := readTestEntry(x)
+		require.NoError(t, err)
+		got = append(got, value)
+	}
+	require.NoError(t, x.CloseContext("seq"))
+	assert.Empty(t, got)
+
+	after, err := x.ReadString("after", 8)
+	require.NoError(t, err)
+	assert.Equal(t, "done", after)
+
+	require.NoError(t, x.CloseContext("root"))
 }
 
 func Test_xmlReadBuffer_decode(t *testing.T) {
