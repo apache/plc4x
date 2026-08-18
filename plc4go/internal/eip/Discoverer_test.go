@@ -20,6 +20,7 @@
 package eip
 
 import (
+	"bytes"
 	"context"
 	"encoding/binary"
 	"testing"
@@ -46,4 +47,33 @@ func TestListIdentityRequestRoundTrip(t *testing.T) {
 	require.NoError(t, err)
 	_, ok := parsed.(readWriteModel.EipListIdentityRequest)
 	assert.True(t, ok)
+}
+
+// TestCipIdentityProductNameEncoding pins the CipIdentity.productName field to actually
+// serialize its ASCII bytes onto the wire. The generated Serialize used to write the
+// productName string without a UTF8 encoding hint, which caused the byte-based writer to
+// zero-fill the field instead of emitting the string's bytes.
+func TestCipIdentityProductNameEncoding(t *testing.T) {
+	const productName = "1756-EN2T"
+	identity := readWriteModel.NewCipIdentity(
+		uint16(0),           // encapsulationProtocolVersion
+		uint16(0),           // socketAddressFamily
+		uint16(0),           // socketAddressPort
+		[]uint8{0, 0, 0, 0}, // socketAddressAddress
+		uint16(0),           // vendorId
+		uint16(0),           // deviceType
+		uint16(0),           // productCode
+		uint8(0),            // revisionMajor
+		uint8(0),            // revisionMinor
+		uint16(0),           // status
+		uint32(0),           // serialNumber
+		productName,         // productName
+		uint8(0),            // state
+	)
+
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	require.NoError(t, identity.SerializeWithWriteBuffer(context.Background(), wb))
+	raw := wb.GetBytes()
+
+	assert.True(t, bytes.Contains(raw, []byte(productName)), "expected serialized CipIdentity to contain product name bytes %q, got % x", productName, raw)
 }

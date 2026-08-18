@@ -675,7 +675,7 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(err, "Error serializing 'productNameLength' field")
 		}
 
-		if err := WriteSimpleField[string](ctx, "productName", m.GetProductName(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetProductName())))*int32(int32(8))))); err != nil {
+		if err := WriteSimpleField[string](ctx, "productName", m.GetProductName(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetProductName())))*int32(int32(8)))), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'productName' field")
 		}
 
