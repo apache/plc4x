@@ -67,3 +67,87 @@ func TestSliceServiceReversedOffsetsIsRejected(t *testing.T) {
 	assert.False(t, ok)
 	assert.Nil(t, service)
 }
+
+// TestToAnsi pins toAnsi's byte-for-byte output against the CIP ANSI encoding
+// rules used by the Java driver (EipTcpConnection.java): every ANSI extended
+// symbol segment (0x91 tag, produced by a 3-bit DataSegment discriminator
+// (0x04) plus a 5-bit AnsiExtendedSymbolSegment discriminator (0x11) packed
+// into one byte) is followed by a length byte, the ASCII symbol bytes, and -
+// whenever the symbol has an odd length, dotted qualifier or not - a single
+// 0x00 pad byte so the segment stays an even number of bytes. An array index
+// (`[n]`) instead produces a 2-byte LogicalSegment/MemberID pair: 0x28 (3-bit
+// PathSegment discriminator 0x01 + 3-bit LogicalSegmentType discriminator
+// 0x02 + 2-bit format 0) followed by the raw index byte - MemberID has no pad
+// byte of its own.
+func TestToAnsi(t *testing.T) {
+	tests := []struct {
+		name     string
+		tag      string
+		expected []byte
+	}{
+		{
+			// simple, even-length symbol: no pad byte.
+			name:     "simple even",
+			tag:      "rate",
+			expected: []byte{0x91, 0x04, 0x72, 0x61, 0x74, 0x65},
+		},
+		{
+			// simple, odd-length symbol: padded to keep the segment even.
+			name:     "simple odd",
+			tag:      "count",
+			expected: []byte{0x91, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x00},
+		},
+		{
+			// dotted member with an even-length name: no pad on either segment.
+			name: "dotted even member",
+			tag:  "tag.rate",
+			expected: []byte{
+				0x91, 0x03, 0x74, 0x61, 0x67, 0x00, // "tag" (odd) - padded
+				0x91, 0x04, 0x72, 0x61, 0x74, 0x65, // "rate" (even) - no pad
+			},
+		},
+		{
+			// dotted member with an ODD-length name - this is the regression
+			// this test pins: prior to the fix, toAnsi passed a nil pad for
+			// the dotted branch regardless of the identifier's length, so
+			// "count" here would have serialized without its trailing 0x00,
+			// leaving the frame internally inconsistent with requestPathSize.
+			name: "dotted odd member",
+			tag:  "abcd.count",
+			expected: []byte{
+				0x91, 0x04, 0x61, 0x62, 0x63, 0x64, // "abcd" (even) - no pad
+				0x91, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x00, // "count" (odd) - padded
+			},
+		},
+		{
+			// array index: LogicalSegment(MemberID) - no pad byte here, ever.
+			name: "array index",
+			tag:  "arr[0]",
+			expected: []byte{
+				0x91, 0x03, 0x61, 0x72, 0x72, 0x00, // "arr" (odd) - padded
+				0x28, 0x00, // MemberID(format=0, instance=0)
+			},
+		},
+		{
+			// mixed: unqualified, dotted, indexed, dotted again - all with
+			// odd-length single-character/three-character names, so every
+			// ANSI segment here must carry its pad byte.
+			name: "mixed",
+			tag:  "a.b[2].cde",
+			expected: []byte{
+				0x91, 0x01, 0x61, 0x00, // "a" (odd) - padded
+				0x91, 0x01, 0x62, 0x00, // "b" (odd, dotted) - padded
+				0x28, 0x02, // MemberID(format=0, instance=2)
+				0x91, 0x03, 0x63, 0x64, 0x65, 0x00, // "cde" (odd, dotted) - padded
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual, err := toAnsi(tt.tag)
+			require.NoError(t, err)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
+}
