@@ -24,10 +24,27 @@ import (
 
 	"github.com/rs/zerolog"
 
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 )
+
+// wrapMultipleServices returns the single request unwrapped, or all of them
+// wrapped in a MultipleServiceRequest with plc4j's offset layout when there is
+// more than one.
+func wrapMultipleServices(requests []readWriteModel.CipService) readWriteModel.CipService {
+	if len(requests) == 1 {
+		return requests[0]
+	}
+	offsets := make([]uint16, 0, len(requests))
+	offset := uint16(2 + 2*len(requests))
+	for _, request := range requests {
+		offsets = append(offsets, offset)
+		offset += uint16(request.GetLengthInBytes(context.Background()))
+	}
+	return readWriteModel.NewMultipleServiceRequest(readWriteModel.NewServices(offsets, requests))
+}
 
 // sendRequestAndWait sends one request through the codec and blocks until the
 // accepted response, an error, or ctx cancellation. Every outcome resolves -

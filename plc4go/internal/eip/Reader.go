@@ -218,16 +218,7 @@ func (m *Reader) buildReadService(readRequest apiModel.PlcReadRequest) (readWrit
 		}
 		requests = append(requests, readWriteModel.NewCipReadRequest(ansi, elementCount(tag)))
 	}
-	if len(requests) == 1 {
-		return requests[0], nil
-	}
-	offsets := make([]uint16, 0, len(requests))
-	offset := uint16(2 + 2*len(requests))
-	for _, request := range requests {
-		offsets = append(offsets, offset)
-		offset += uint16(request.GetLengthInBytes(context.Background()))
-	}
-	return readWriteModel.NewMultipleServiceRequest(readWriteModel.NewServices(offsets, requests)), nil
+	return wrapMultipleServices(requests), nil
 }
 
 func (m *Reader) acceptsCipRRData(message spi.Message) bool {
