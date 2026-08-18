@@ -41,11 +41,6 @@ func TestS7Driver(t *testing.T) {
 		s7IO.S7XmlParserHelper{},
 		append(optionsForTesting,
 			testutils.WithRootTypeParser(parser),
-			testutils.WithSkippedTestCases(
-				// TODO: ignored due to carcia changes
-				"Single element read request",
-				"Single element read request with disabled PUT/GET",
-			),
 		)...,
 	)
 }
