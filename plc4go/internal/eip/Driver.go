@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -38,6 +39,7 @@ import (
 type Driver struct {
 	_default.DefaultDriver
 	tm                      transactions.RequestTransactionManager
+	discoverer              *Discoverer
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
 	forceLittleEndian       bool
@@ -50,6 +52,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
 		tm:                      transactions.NewRequestTransactionManager(1, _options...),
+		discoverer:              NewDiscoverer(_options...),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 
@@ -68,6 +71,7 @@ func NewLogixDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
 		tm:                      transactions.NewRequestTransactionManager(1, _options...),
+		discoverer:              NewDiscoverer(_options...),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 		forceLittleEndian:       true,
@@ -156,6 +160,14 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	return connection, nil
 }
 
+func (d *Driver) SupportsDiscovery() bool {
+	return true
+}
+
+func (d *Driver) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	return d.discoverer.Discover(ctx, callback, discoveryOptions...)
+}
+
 func (d *Driver) SetAwaitSetupComplete(awaitComplete bool) {
 	d.awaitSetupComplete = awaitComplete
 }
@@ -166,5 +178,12 @@ func (d *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
 
 func (d *Driver) Close() error {
 	defer utils.StopWarn(d.log)()
-	return d.tm.Close()
+	var collectedErrors []error
+	if err := d.discoverer.Close(); err != nil {
+		collectedErrors = append(collectedErrors, errors.Wrap(err, "error closing discoverer"))
+	}
+	if err := d.tm.Close(); err != nil {
+		collectedErrors = append(collectedErrors, errors.Wrap(err, "error closing transaction manager"))
+	}
+	return errors.Join(collectedErrors...)
 }
