@@ -37,6 +37,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.authentication.PlcCertificateAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.spi.values.*;
@@ -87,6 +88,14 @@ public class OpcuaPlcDriverTest {
     // A second client identity with a 4096-bit key. Several reports blamed connection failures on
     // large certificates (GH-2013, GH-2196, GH-2286), so the size is covered explicitly.
     private static final KeystoreGenerator CLIENT_KEY_STORE_4096_GENERATOR = new KeystoreGenerator("changeit", 4096, APPLICATION_URI, "plc4x_plus_milo", "client4096");
+    // The user identity of an X509IdentityToken (GH-1845). Deliberately a different certificate
+    // than the client key store above: that one is the application instance certificate securing
+    // the channel, this one says who is logged in. The test server accepts exactly this common
+    // name, so it also proves the server really looked at the certificate we sent.
+    private static final String USER_COMMON_NAME = "plc4x-user";
+    private static final char[] USER_KEY_STORE_PASSWORD = "changeit".toCharArray();
+    private static final KeystoreGenerator USER_KEY_STORE_GENERATOR = new KeystoreGenerator("changeit", 2048, APPLICATION_URI, "user", USER_COMMON_NAME);
+    private static final KeystoreGenerator UNKNOWN_USER_KEY_STORE_GENERATOR = new KeystoreGenerator("changeit", 2048, APPLICATION_URI, "user", "somebody-else");
 
     private static final File SECURITY_DIR;
     private static final File CLIENT_KEY_STORE;
@@ -400,7 +409,7 @@ public class OpcuaPlcDriverTest {
             org.apache.plc4x.java.api.value.PlcValue matrix = response.getPlcValue("intMatrix");
             assertThat(matrix.isList()).isTrue();
             assertThat(matrix.getList()).hasSize(2);
-            assertThat(matrix.getList().get(0).getList().get(0).getShort()).isEqualTo((short) 10);
+            assertThat(matrix.getList().get(0).getList().getFirst().getShort()).isEqualTo((short) 10);
             assertThat(matrix.getList().get(1).getList().get(2).getShort()).isEqualTo((short) -12);
         }
     }
@@ -1063,6 +1072,57 @@ public class OpcuaPlcDriverTest {
         @Test
         public void noCredentialsConnectsAnonymously() throws Exception {
             try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        /**
+         * Certificate authentication (GH-1845): the driver sends an X509IdentityToken carrying the
+         * user certificate, plus a signature over the server certificate and nonce that proves it
+         * holds the matching private key. The channel is secured by the application instance
+         * certificate from the key store in the connection string, while the user identity comes
+         * from the PlcCertificateAuthentication - two different certificates, as OPC UA intends.
+         */
+        @ParameterizedTest
+        @MethodSource("org.apache.plc4x.java.opcua.OpcuaPlcDriverTest#getSecuredConnectionSecurityPolicies")
+        public void certificateAuthenticationWithSecurityPolicy(SecurityPolicy policy, MessageSecurity messageSecurity) throws Exception {
+            String connectionString = getConnectionString(policy, messageSecurity);
+
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(connectionString,
+                new PlcCertificateAuthentication(USER_KEY_STORE_GENERATOR.getKeyStore(), USER_KEY_STORE_PASSWORD))) {
+                assertThat(connection.isConnected())
+                    .describedAs("connection authenticated with a user certificate over %s/%s", policy, messageSecurity)
+                    .isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        /**
+         * The server only accepts the user certificate it knows. A different one has to be turned
+         * away - otherwise the test above would pass even if the driver sent a token the server
+         * never really validated.
+         */
+        @Test
+        public void unknownUserCertificateIsRejected() throws Exception {
+            String connectionString = getConnectionString(SecurityPolicy.Basic256Sha256, MessageSecurity.SIGN_ENCRYPT);
+
+            assertThatThrownBy(() -> new DefaultPlcDriverManager().getConnection(connectionString,
+                new PlcCertificateAuthentication(UNKNOWN_USER_KEY_STORE_GENERATOR.getKeyStore(), USER_KEY_STORE_PASSWORD)))
+                .isInstanceOf(PlcConnectionException.class);
+        }
+
+        /**
+         * The security of the user token is independent of the security of the channel: Milo
+         * advertises its certificate token policy with Basic256Sha256 of its own, so the token is
+         * signed with that even on the unsecured endpoint, where the channel itself has no
+         * security at all. The driver has to take the algorithm from the token policy rather than
+         * from the channel - taking it from the channel would leave nothing to sign with here.
+         */
+        @Test
+        public void certificateAuthenticationWorksOverAnUnsecuredChannel() throws Exception {
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress,
+                new PlcCertificateAuthentication(USER_KEY_STORE_GENERATOR.getKeyStore(), USER_KEY_STORE_PASSWORD))) {
                 assertThat(connection.isConnected()).isTrue();
                 assertReadWorks(connection);
             }

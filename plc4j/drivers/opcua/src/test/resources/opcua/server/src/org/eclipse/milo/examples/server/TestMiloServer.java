@@ -157,7 +157,11 @@ public class TestMiloServer {
             }
         );
 
-        X509IdentityValidator x509IdentityValidator = new X509IdentityValidator(c -> true);
+        // Accept exactly the user certificate the test client authenticates with. Accepting any
+        // certificate would let a test pass even when the driver sent an identity the server never
+        // really looked at, so the suite could not tell a validated token from an ignored one.
+        X509IdentityValidator x509IdentityValidator = new X509IdentityValidator(
+            c -> c.getSubjectX500Principal().getName().contains("plc4x-user"));
 
         // If you need to use multiple certificates you'll have to be smarter than this.
         X509Certificate certificate = certificateManager.getCertificates()

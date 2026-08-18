@@ -23,9 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Optional;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -44,14 +41,9 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.security.KeyPair;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.PrivateKey;
 import java.security.Security;
-import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,15 +103,8 @@ public class OpcuaDriverContext {
             LOGGER.info("Loading KeyStore at {}", serverKeyStore);
 
             KeyStore keyStore = openKeyStore(configuration.getKeyStoreFile(), configuration.getKeyStoreType(), configuration.getKeyStorePassword());
-            String alias = selectKeyAlias(keyStore, configuration.getKeyStoreFile());
-            X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
-            PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, configuration.getKeyStorePassword());
-            validateClientKey(alias, certificate, privateKey);
-            LOGGER.info("Using entry '{}' of the key store: {} bit {} certificate for '{}'", alias,
-                ((RSAPublicKey) certificate.getPublicKey()).getModulus().bitLength(),
-                certificate.getPublicKey().getAlgorithm(), certificate.getSubjectX500Principal());
-            KeyPair kp = new KeyPair(certificate.getPublicKey(), privateKey);
-            certificateKeyPair = new CertificateKeyPair(kp, certificateChain(keyStore, alias, certificate));
+            certificateKeyPair = KeyStoreCredentials.load(keyStore, configuration.getKeyStorePassword(), null,
+                configuration.getKeyStoreFile(), "application instance certificates");
         }
 
         if (configuration.getServerCertificate() != null) {
@@ -131,73 +116,6 @@ public class OpcuaDriverContext {
         certificateVerifier = buildCertificateVerifier(configuration);
     }
 
-    /**
-     * Picks the key store entry to authenticate with: the first one that actually holds a private
-     * key. Taking whatever alias came first meant a key store that also carries the signing CA (as
-     * produced by the certificate tutorial) could hand the CA's entry to the server, or an entry
-     * with no private key at all.
-     */
-    private String selectKeyAlias(KeyStore keyStore, String keyStoreFile) throws GeneralSecurityException {
-        Enumeration<String> aliases = keyStore.aliases();
-        while (aliases.hasMoreElements()) {
-            String alias = aliases.nextElement();
-            if (keyStore.isKeyEntry(alias)) {
-                return alias;
-            }
-            LOGGER.debug("Skipping key store entry '{}': it holds no private key", alias);
-        }
-        throw new KeyStoreException("The key store '" + keyStoreFile
-            + "' contains no entry with a private key, so it cannot be used as a client identity.");
-    }
-
-    /**
-     * The certificate chain stored under the given alias, the client certificate first. A
-     * CA-signed client certificate is only verifiable by a server that can build a path to its
-     * trust anchor, which usually means the issuing certificates have to travel with it - see
-     * OPC UA Part 6, SenderCertificate. A self-signed certificate simply yields a chain of one.
-     */
-    private List<X509Certificate> certificateChain(KeyStore keyStore, String alias, X509Certificate certificate)
-        throws GeneralSecurityException {
-        Certificate[] chain = keyStore.getCertificateChain(alias);
-        if (chain == null || chain.length == 0) {
-            return List.of(certificate);
-        }
-        List<X509Certificate> certificates = new ArrayList<>(chain.length);
-        for (Certificate element : chain) {
-            if (element instanceof X509Certificate x509) {
-                certificates.add(x509);
-            } else {
-                LOGGER.warn("Ignoring a {} certificate in the chain of key store entry '{}'",
-                    element.getType(), alias);
-            }
-        }
-        if (certificates.size() > 1) {
-            LOGGER.info("Key store entry '{}' carries a chain of {} certificates; sending all of them",
-                alias, certificates.size());
-        }
-        return certificates.isEmpty() ? List.of(certificate) : certificates;
-    }
-
-    /**
-     * OPC UA application instance certificates are RSA; anything else is rejected by the server
-     * during the handshake, typically with an error that says nothing about the cause. Failing here
-     * names the offending key store entry instead.
-     */
-    private void validateClientKey(String alias, X509Certificate certificate, PrivateKey privateKey)
-        throws GeneralSecurityException {
-        if (certificate == null) {
-            throw new KeyStoreException("Key store entry '" + alias + "' has no certificate.");
-        }
-        if (privateKey == null) {
-            throw new KeyStoreException("Key store entry '" + alias + "' has no private key."
-                + " Check the key store password - a wrong one yields an entry without a key.");
-        }
-        if (!(certificate.getPublicKey() instanceof RSAPublicKey)) {
-            throw new KeyStoreException("Key store entry '" + alias + "' uses a "
-                + certificate.getPublicKey().getAlgorithm() + " key. OPC UA requires RSA keys for"
-                + " application instance certificates; regenerate the certificate with an RSA key.");
-        }
-    }
 
     /**
      * Selects the server-certificate trust strategy, in order of precedence:

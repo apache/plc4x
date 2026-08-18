@@ -21,6 +21,7 @@ package org.apache.plc4x.java.opcua.context;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
+import java.security.Signature;
 import java.security.Security;
 import java.util.List;
 import java.util.function.Supplier;
@@ -110,6 +111,36 @@ public class EncryptionHandler {
         byte[] bytes = ByteBuffer.allocate(cert.length + lastServerNonce.length).put(cert).put(lastServerNonce).array();
         byte[] signed = asymmetricEncryptionHandler.sign(bytes);
         return new SignatureData(new PascalString(securityPolicy.getAsymmetricSignatureAlgorithm().getUri()), new PascalByteString(signed.length, signed));
+    }
+
+    /**
+     * Proof that the client holds the private key of the certificate it presented in an
+     * {@code X509IdentityToken}: a signature over the server certificate followed by the server
+     * nonce (OPC UA Part 4, 5.6.3). Same bytes as {@link #createClientSignature()}, but signed
+     * with the <em>user's</em> key rather than the application instance key, and with the
+     * algorithm of the user token policy - which need not be the one securing the channel.
+     *
+     * @param userPrivateKey the private key belonging to the user certificate that was sent
+     * @param policy         the security policy governing the user token
+     */
+    public SignatureData createUserTokenSignature(PrivateKey userPrivateKey, SecurityPolicy policy)
+        throws GeneralSecurityException {
+        byte[] serverNonce = conversation.getRemoteNonce();
+        byte[] serverCertificate;
+        try {
+            serverCertificate = conversation.getRemoteCertificate().getEncoded();
+        } catch (Exception e) {
+            serverCertificate = new byte[0];
+        }
+        byte[] bytes = ByteBuffer.allocate(serverCertificate.length + serverNonce.length)
+            .put(serverCertificate).put(serverNonce).array();
+
+        Signature signature = policy.getAsymmetricSignatureAlgorithm().getSignature();
+        signature.initSign(userPrivateKey);
+        signature.update(bytes);
+        byte[] signed = signature.sign();
+        return new SignatureData(new PascalString(policy.getAsymmetricSignatureAlgorithm().getUri()),
+            new PascalByteString(signed.length, signed));
     }
 
     /**

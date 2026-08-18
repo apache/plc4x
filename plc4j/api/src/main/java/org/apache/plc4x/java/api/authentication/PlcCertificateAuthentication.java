@@ -23,10 +23,12 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Authentication implementation for mutual TLS (mTLS) using client certificates.
+ * Authentication with a client certificate and its private key, supplied through a KeyStore.
  * <p>
- * This class provides client certificate authentication for TLS connections that require
- * mutual authentication. The client certificate and private key are provided via a KeyStore.
+ * How a driver uses the certificate depends on its protocol: for mutual TLS (mTLS) it becomes the
+ * client certificate of the TLS handshake, while the OPC UA driver sends it as the user identity of
+ * an {@code X509IdentityToken}. Either way it identifies the user of the connection, which is not
+ * necessarily the same certificate as one securing the transport.
  * <p>
  * Example usage:
  * <pre>{@code

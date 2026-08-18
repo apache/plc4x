@@ -22,6 +22,7 @@ import static org.apache.plc4x.java.opcua.readwrite.ChunkType.ABORT;
 import static org.apache.plc4x.java.opcua.readwrite.ChunkType.FINAL;
 
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.List;
@@ -457,8 +458,7 @@ public class Conversation implements SecureChannelState {
                             }
                         }
 
-                        if (extensionObjectBody instanceof ServiceFault) {
-                            ServiceFault fault = (ServiceFault) extensionObjectBody;
+                        if (extensionObjectBody instanceof ServiceFault fault) {
                             future.completeExceptionally(toProtocolException(fault));
                         } else {
                             future.complete(extensionObjectBody);
@@ -562,8 +562,8 @@ public class Conversation implements SecureChannelState {
     }
 
     static PlcProtocolException toProtocolException(ServiceFault fault) {
-        if (fault.getResponseHeader() instanceof ResponseHeader) {
-            ResponseHeader responseHeader = (ResponseHeader) fault.getResponseHeader();
+        if (fault.getResponseHeader() != null) {
+            ResponseHeader responseHeader = fault.getResponseHeader();
             long statusCode = responseHeader.getServiceResult().getStatusCode();
             String statusName = OpcuaStatusCode.isDefined(statusCode) ? OpcuaStatusCode.enumForValue(statusCode).name() : "<unknown>";
             return new PlcProtocolException("Server returned error " + statusName + " (0x" + Long.toHexString(statusCode) + ")");
@@ -624,6 +624,11 @@ public class Conversation implements SecureChannelState {
 
     public void setSecurityHeader(SecurityHeader securityHeader) {
         this.securityHeader.set(securityHeader);
+    }
+
+    public SignatureData createUserTokenSignature(PrivateKey userPrivateKey, SecurityPolicy policy)
+        throws GeneralSecurityException {
+        return encryptionHandler.createUserTokenSignature(userPrivateKey, policy);
     }
 
     public SignatureData createClientSignature() throws GeneralSecurityException {

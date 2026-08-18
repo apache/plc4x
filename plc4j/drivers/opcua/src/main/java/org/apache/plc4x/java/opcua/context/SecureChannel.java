@@ -39,6 +39,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.authentication.PlcCertificateAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
@@ -89,6 +90,8 @@ public class SecureChannel {
     private final String password;
     private final OpcuaConfiguration configuration;
     private final OpcuaDriverContext driverContext;
+    /** The user certificate and key of an X509IdentityToken, or null when not authenticating with one. */
+    private final CertificateKeyPair userIdentity;
     private final Conversation conversation;
     private ScheduledFuture<?> keepAlive;
     private double sessionTimeout;
@@ -100,16 +103,25 @@ public class SecureChannel {
         this.driverContext = driverContext;
         this.endpoint = new PascalString(driverContext.getEndpoint());
         this.sessionTimeout = configuration.getSessionTimeout();
-        if (authentication != null) {
-            if (authentication instanceof PlcUsernamePasswordAuthentication) {
-                this.username = ((PlcUsernamePasswordAuthentication) authentication).getUsername();
-                this.password = ((PlcUsernamePasswordAuthentication) authentication).getPassword();
-            } else {
-                throw new PlcRuntimeException("This type of connection only supports username-password authentication");
-            }
-        } else {
+        if (authentication instanceof PlcUsernamePasswordAuthentication) {
+            this.username = ((PlcUsernamePasswordAuthentication) authentication).getUsername();
+            this.password = ((PlcUsernamePasswordAuthentication) authentication).getPassword();
+            this.userIdentity = null;
+        } else if (authentication instanceof PlcCertificateAuthentication certificateAuthentication) {
+            // The user identity of an X509IdentityToken. It is deliberately separate from the
+            // application instance certificate in driverContext: that one secures the channel and
+            // says which installation is talking, this one says who is talking (OPC UA Part 4).
+            this.username = null;
+            this.password = null;
+            this.userIdentity = loadUserIdentity(certificateAuthentication);
+        } else if (authentication == null) {
             this.username = configuration.getUsername();
             this.password = configuration.getPassword();
+            this.userIdentity = null;
+        } else {
+            throw new PlcRuntimeException("This type of connection only supports anonymous,"
+                + " username-password and certificate authentication, got "
+                + authentication.getClass().getSimpleName());
         }
 
         if (conversation.getSecurityPolicy() == SecurityPolicy.NONE) {
@@ -123,6 +135,15 @@ public class SecureChannel {
             // self-signed certificate this is just that one certificate.
             byte[] encoded = keyPair.getEncodedCertificateChain();
             this.localCertificateString = new PascalByteString(encoded.length, encoded);
+        }
+    }
+
+    private static CertificateKeyPair loadUserIdentity(PlcCertificateAuthentication authentication) {
+        try {
+            return KeyStoreCredentials.load(authentication.getKeyStore(), authentication.getKeyStorePassword(),
+                authentication.getKeyAlias(), "the supplied PlcCertificateAuthentication", "user certificates");
+        } catch (GeneralSecurityException e) {
+            throw new PlcRuntimeException("Could not read the user certificate to authenticate with", e);
         }
     }
 
@@ -315,38 +336,21 @@ public class SecureChannel {
             String advertised = sessionResponse.getServerEndpoints().stream()
                 .map(endpoint -> endpoint.getEndpointUrl().getStringValue()
                     + " (" + endpoint.getSecurityPolicyUri().getStringValue()
-                    + ", " + endpoint.getSecurityMode() + ")")
+                    + ", " + endpoint.getSecurityMode()
+                    + ", user tokens: " + endpoint.getUserIdentityTokens().stream()
+                        .map(policy -> String.valueOf(policy.getTokenType()))
+                        .collect(Collectors.joining("/")) + ")")
                 .collect(Collectors.joining("\n  "));
             throw new PlcRuntimeException("Unable to find an endpoint matching " + driverContext.getEndpoint()
                 + " with security policy " + configuration.getSecurityPolicy()
-                + " and message security " + configuration.getMessageSecurity()
+                + ", message security " + configuration.getMessageSecurity()
+                + " and " + requestedTokenType() + " authentication"
                 + ". The server offered:\n  " + advertised
                 + "\nIf the server advertises a different host name than the one you connect to, set"
                 + " 'endpoint-host' (and 'endpoint-port' if it differs) to the name shown above.");
         }
 
-        PascalString policyId = selectedEndpoint.getValue().getPolicyId();
-        UserTokenType tokenType = selectedEndpoint.getValue().getTokenType();
-        SecurityPolicy tokenSecurityPolicy = userTokenSecurityPolicy(selectedEndpoint);
-        ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue(), tokenSecurityPolicy);
-        RequestHeader requestHeader = conversation.createRequestHeader();
-        SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
-        if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
-            try {
-                clientSignature = conversation.createClientSignature();
-            } catch (GeneralSecurityException e) {
-                throw new PlcRuntimeException("Could not create client signature", e);
-            }
-        }
-
-        ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest(
-            requestHeader,
-            clientSignature,
-            null,
-            null,
-            userIdentityToken,
-            clientSignature
-        );
+        ActivateSessionRequest activateSessionRequest = createActivateSessionRequest(selectedEndpoint);
 
         return conversation.submit(activateSessionRequest, ActivateSessionResponse.class).thenApply(responseMessage -> {
             conversation.setRemoteNonce(responseMessage.getServerNonce().getStringValue());
@@ -520,7 +524,7 @@ public class SecureChannel {
                 }
 
                 for (UserTokenPolicy userTokenPolicy : endpointDescription.getUserIdentityTokens()) {
-                    if (isUserTokenPolicyCompatible(userTokenPolicy, this.username)) {
+                    if (isUserTokenPolicyCompatible(userTokenPolicy, this.username, this.userIdentity != null)) {
                         serverEndpoints.add(entry(endpointDescription, userTokenPolicy));
                     }
                 }
@@ -568,16 +572,85 @@ public class SecureChannel {
     }
 
     /**
-     * Confirms that given policy matches the connection string used by client.
+     * The token type the supplied credentials ask for, named in the error when no endpoint offers it.
+     */
+    private String requestedTokenType() {
+        if (userIdentity != null) {
+            return "certificate";
+        }
+        return username != null ? "username" : "anonymous";
+    }
+
+    /**
+     * Confirms that the given policy matches the credentials the client was given. Which of the
+     * three token types is wanted follows from those credentials alone: a user certificate asks for
+     * a certificate policy, a user name for a username policy, and neither for anonymous access.
      *
-     * @param policy - UserTokenPolicy configured for server endpoint.
+     * @param policy                 UserTokenPolicy configured for server endpoint.
+     * @param username               the user name to authenticate with, or null for none.
+     * @param userCertificatePresent whether a user certificate was supplied to authenticate with.
      * @return True if given token policy matches client configuration.
      */
-    private static boolean isUserTokenPolicyCompatible(UserTokenPolicy policy, String username) {
-        if ((policy.getTokenType() == UserTokenType.userTokenTypeAnonymous) && username == null) {
-            return true;
+    static boolean isUserTokenPolicyCompatible(UserTokenPolicy policy, String username,
+        boolean userCertificatePresent) {
+        if (userCertificatePresent) {
+            return policy.getTokenType() == UserTokenType.userTokenTypeCertificate;
         }
-        return policy.getTokenType() == UserTokenType.userTokenTypeUserName && username != null;
+        if (username != null) {
+            return policy.getTokenType() == UserTokenType.userTokenTypeUserName;
+        }
+        return policy.getTokenType() == UserTokenType.userTokenTypeAnonymous;
+    }
+
+    /**
+     * Builds the {@code ActivateSession} request for the user token policy that was selected.
+     */
+    ActivateSessionRequest createActivateSessionRequest(Entry<EndpointDescription, UserTokenPolicy> selectedEndpoint) {
+        PascalString policyId = selectedEndpoint.getValue().getPolicyId();
+        UserTokenType tokenType = selectedEndpoint.getValue().getTokenType();
+        SecurityPolicy tokenSecurityPolicy = userTokenSecurityPolicy(selectedEndpoint);
+        ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue(), tokenSecurityPolicy);
+        RequestHeader requestHeader = conversation.createRequestHeader();
+
+        SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
+        if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
+            try {
+                clientSignature = conversation.createClientSignature();
+            } catch (GeneralSecurityException e) {
+                throw new PlcRuntimeException("Could not create client signature", e);
+            }
+        }
+
+        return new ActivateSessionRequest(
+            requestHeader,
+            clientSignature,
+            null,
+            null,
+            userIdentityToken,
+            userTokenSignature(tokenType, tokenSecurityPolicy, clientSignature)
+        );
+    }
+
+    /**
+     * An X509IdentityToken is only accepted together with proof that the client holds the private
+     * key of the certificate it just sent (OPC UA Part 4, 5.6.3). The other token types carry no
+     * such proof, and keep sending the application instance signature the driver has always sent.
+     */
+    private SignatureData userTokenSignature(UserTokenType tokenType, SecurityPolicy tokenSecurityPolicy,
+                                             SignatureData clientSignature) {
+        if (tokenType != UserTokenType.userTokenTypeCertificate) {
+            return clientSignature;
+        }
+        if (tokenSecurityPolicy == SecurityPolicy.NONE) {
+            throw new PlcRuntimeException("The server offers certificate authentication with a security policy"
+                + " of None, which leaves no algorithm to prove possession of the user certificate's private key."
+                + " Connect with a security policy other than NONE, or authenticate with a username instead.");
+        }
+        try {
+            return conversation.createUserTokenSignature(userIdentity.getPrivateKey(), tokenSecurityPolicy);
+        } catch (GeneralSecurityException e) {
+            throw new PlcRuntimeException("Could not sign the user certificate identity token", e);
+        }
     }
 
     /**
@@ -668,6 +741,30 @@ public class SecureChannel {
                     null);
 
                 return new BinaryExtensionObjectWithMask(extExpandedNodeId, BINARY_ENCODING_MASK, userNameIdentityToken);
+            case userTokenTypeCertificate:
+                // Only the user certificate itself travels here - OPC UA Part 4 defines
+                // certificateData as the certificate, not the chain that signed it. Possession of
+                // the matching private key is proven by the userTokenSignature of ActivateSession.
+                byte[] userCertificate;
+                try {
+                    userCertificate = userIdentity.getCertificate().getEncoded();
+                } catch (CertificateEncodingException e) {
+                    throw new PlcRuntimeException("Could not encode the user certificate to authenticate with", e);
+                }
+                X509IdentityToken x509IdentityToken = new X509IdentityToken(
+                    new PascalString(securityPolicy),
+                    new PascalByteString(userCertificate.length, userCertificate)
+                );
+
+                extExpandedNodeId = new ExpandedNodeId(
+                    false,           //Namespace Uri Specified
+                    false,            //Server Index Specified
+                    new NodeIdFourByte((short) 0, x509IdentityToken.getExtensionId()),
+                    null,
+                    null
+                );
+
+                return new BinaryExtensionObjectWithMask(extExpandedNodeId, BINARY_ENCODING_MASK, x509IdentityToken);
         }
         return null;
     }
