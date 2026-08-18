@@ -113,6 +113,41 @@ func TestSupportsUserDataServices(t *testing.T) {
 	assert.False(t, supportsUserDataServices(readWriteModel.ControllerType_ANY))
 }
 
+func TestParseListBlocksOfTypeResponse(t *testing.T) {
+	makeResponse := func(items []byte, errorCode *uint16) readWriteModel.S7Message {
+		return readWriteModel.NewS7MessageUserData(
+			12,
+			readWriteModel.NewS7ParameterUserData([]readWriteModel.S7ParameterUserDataItem{
+				readWriteModel.NewS7ParameterUserDataItemCPUFunctions(
+					0x12, 0x08, 0x03, 0x02, 0x00,
+					ptr(uint8(0)), ptr(uint8(1)), errorCode,
+				),
+			}),
+			readWriteModel.NewS7PayloadUserData([]readWriteModel.S7PayloadUserDataItem{
+				readWriteModel.NewS7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponse(
+					readWriteModel.DataTransportErrorCode_OK,
+					readWriteModel.DataTransportSize_OCTET_STRING,
+					uint16(len(items)),
+					items,
+				),
+			}),
+		)
+	}
+
+	t.Run("two data blocks", func(t *testing.T) {
+		blockNumbers, err := parseListBlocksOfTypeResponse(makeResponse([]byte{
+			0x00, 0x01, 0x22, 0x01, // DB1
+			0x00, 0x45, 0x22, 0x01, // DB69
+		}, ptr(uint16(0))))
+		require.NoError(t, err)
+		assert.Equal(t, []uint16{1, 69}, blockNumbers)
+	})
+	t.Run("rejected request", func(t *testing.T) {
+		_, err := parseListBlocksOfTypeResponse(makeResponse([]byte{}, ptr(uint16(0xD401))))
+		assert.Error(t, err)
+	})
+}
+
 func ptr[T any](value T) *T {
 	return &value
 }

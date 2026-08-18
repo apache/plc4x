@@ -299,9 +299,19 @@ func (c *Connection) identifyRemote(ctx context.Context) {
 
 func (c *Connection) trySzlProbe(ctx context.Context, szlId readWriteModel.SzlId, szlIndex uint16) (string, readWriteModel.ControllerType, error) {
 	tpduId := c.tpduGenerator.getAndIncrement()
+	message, err := c.sendUserData(ctx, tpduId, buildSzlRequest(tpduId, szlId, szlIndex), "setup_connection_identify_remote_message")
+	if err != nil {
+		return "", 0, err
+	}
+	return parseSzlProbeResponse(message)
+}
+
+// sendUserData sends a single S7 UserData request and waits (blocking) for the response
+// with the matching tpdu reference.
+func (c *Connection) sendUserData(ctx context.Context, tpduId uint16, request readWriteModel.TPKTPacket, interactionInfo string) (readWriteModel.S7Message, error) {
 	resultChan := make(chan readWriteModel.S7Message, 1)
 	errChan := make(chan error, 1)
-	if err := c.messageCodec.SendRequest(ctx, "setup_connection_identify_remote_message", buildSzlRequest(tpduId, szlId, szlIndex), func(message spi.Message) bool {
+	if err := c.messageCodec.SendRequest(ctx, interactionInfo, request, func(message spi.Message) bool {
 		tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 		if !ok {
 			return false
@@ -324,15 +334,15 @@ func (c *Connection) trySzlProbe(ctx context.Context, szlId readWriteModel.SzlId
 		errChan <- err
 		return nil
 	}); err != nil {
-		return "", 0, errors.Wrap(err, "error sending SZL identification request")
+		return nil, errors.Wrapf(err, "error sending %s request", interactionInfo)
 	}
 	select {
 	case message := <-resultChan:
-		return parseSzlProbeResponse(message)
+		return message, nil
 	case err := <-errChan:
-		return "", 0, err
+		return nil, err
 	case <-ctx.Done():
-		return "", 0, ctx.Err()
+		return nil, ctx.Err()
 	}
 }
 
@@ -384,9 +394,17 @@ func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 			"max-amq-caller":  strconv.Itoa(int(c.driverContext.MaxAmqCaller)),
 			"max-amq-callee":  strconv.Itoa(int(c.driverContext.MaxAmqCallee)),
 		},
-		ProvidesReading: true,
-		ProvidesWriting: true,
+		ProvidesReading:  true,
+		ProvidesWriting:  true,
+		ProvidesBrowsing: c.driverContext.UserDataServicesSupported,
 	}
+}
+
+func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+	return spiModel.NewDefaultPlcBrowseRequestBuilder(
+		c.GetPlcTagHandler(),
+		NewBrowser(c, append(c._options, options.WithCustomLogger(c.log))...),
+	)
 }
 
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {

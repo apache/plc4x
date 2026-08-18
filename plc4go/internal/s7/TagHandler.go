@@ -22,7 +22,6 @@ package s7
 import (
 	"context"
 	"encoding/hex"
-	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -423,7 +422,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 }
 
 func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
-	return nil, fmt.Errorf("queries not supported")
+	return s7Query{queryString: query}, nil
 }
 
 func checkDatablockNumber(blockNumber uint64) (uint16, error) {

@@ -78,6 +78,51 @@ func buildSzlRequest(tpduId uint16, szlId readWriteModel.SzlId, szlIndex uint16)
 	)
 }
 
+// blockTypeDataBlock is the "list blocks of type" wire code for DBs: the two ASCII chars "0A".
+const blockTypeDataBlock = uint16(0x3041)
+
+func buildListBlocksOfTypeRequest(tpduId uint16, blockType uint16) readWriteModel.TPKTPacket {
+	return newUserDataMessage(
+		tpduId,
+		newCpuFunctionsRequestParameter(0x03, 0x02), // block functions / list blocks of type
+		readWriteModel.NewS7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest(
+			readWriteModel.DataTransportErrorCode_OK,
+			readWriteModel.DataTransportSize_OCTET_STRING,
+			2, // dataLength: the packed block-type code
+			blockType,
+		),
+	)
+}
+
+// parseListBlocksOfTypeResponse extracts the block numbers from a list-blocks-of-type
+// response. Each entry is 4 bytes: blockNumber (uint16 BE), flags, language.
+func parseListBlocksOfTypeResponse(message readWriteModel.S7Message) ([]uint16, error) {
+	messageUserData, ok := message.(readWriteModel.S7MessageUserData)
+	if !ok {
+		return nil, errors.Errorf("expected S7MessageUserData, got %T", message)
+	}
+	if err := checkUserDataErrorCode(messageUserData); err != nil {
+		return nil, err
+	}
+	payloadUserData, ok := messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
+	if !ok {
+		return nil, errors.Errorf("expected S7PayloadUserData, got %T", messageUserData.GetPayload())
+	}
+	for _, item := range payloadUserData.GetItems() {
+		response, ok := item.(readWriteModel.S7PayloadUserDataItemCpuFunctionListBlocksOfTypeResponse)
+		if !ok {
+			continue
+		}
+		data := response.GetItems()
+		blockNumbers := make([]uint16, 0, len(data)/4)
+		for i := 0; i+4 <= len(data); i += 4 {
+			blockNumbers = append(blockNumbers, uint16(data[i])<<8|uint16(data[i+1]))
+		}
+		return blockNumbers, nil
+	}
+	return nil, errors.New("no list-blocks-of-type response item in payload")
+}
+
 // checkUserDataErrorCode returns an error if any CPUFunctions parameter item reports a non-zero error code.
 func checkUserDataErrorCode(message readWriteModel.S7MessageUserData) error {
 	parameterUserData, ok := message.GetParameter().(readWriteModel.S7ParameterUserData)
