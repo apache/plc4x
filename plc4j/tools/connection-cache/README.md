@@ -28,7 +28,7 @@ If multiple places in the application want to access a PLC, the option of `every
 
 Therefore, it's the goal of the connection-cache to allow gaining access to a PLC the usual way, however as soon as a client is finished with its work, it doesn't close the connection, but gives it back to the cache for the next client to be able to use the same connection without having to re-connect.
 
-The `ConnectionCache` implements the `PlcConnectionManager` interface, just the same way the `PlcDriverManager` does, so it can generally be used instead of the un-cached version.
+The `ConnectionCache` implements the `PlcConnectionManager` interface, which extends the `PlcConnectionFactory` interface the `PlcDriverManager` implements, so it can generally be used instead of the un-cached version.
 
 ## Architecture
 

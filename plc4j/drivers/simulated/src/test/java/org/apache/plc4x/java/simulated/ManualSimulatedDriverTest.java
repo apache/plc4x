@@ -27,7 +27,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 public class ManualSimulatedDriverTest {
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection("simulated:hurz")){
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("simulated:hurz")){
             PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("test", "RANDOM/dummy:UINT[100]").build();
             PlcReadResponse readResponse = readRequest.execute().get();
             System.out.println(readResponse);

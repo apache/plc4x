@@ -39,8 +39,8 @@ type MessageCodec struct {
 
 	// unsolicitedUserData carries pushed UserData messages (cyclic data, alarm indications,
 	// mode transitions) that no request expectation claims. Closed on Disconnect.
-	unsolicitedUserData     chan model.S7MessageUserData `ignore:"true"`
-	unsolicitedCloseOnce    sync.Once                    `ignore:"true"`
+	unsolicitedUserData  chan model.S7MessageUserData `ignore:"true"`
+	unsolicitedCloseOnce sync.Once                    `ignore:"true"`
 
 	passLogToModel bool
 	log            zerolog.Logger

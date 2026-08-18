@@ -122,11 +122,11 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 	traceDefaultMessageCodecWorker, _ := options.ExtractTraceDefaultMessageCodecWorker(_options...)
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	d := &defaultCodec{
-		DefaultCodecRequirements:       defaultCodecRequirements,
-		transportInstance:              transportInstance,
-		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
-		expectations:                   []spi.Expectation{},
-		customMessageHandling:          customMessageHandler,
+		DefaultCodecRequirements:      defaultCodecRequirements,
+		transportInstance:             transportInstance,
+		defaultIncomingMessageChannel: make(chan spi.Message, 100),
+		expectations:                  []spi.Expectation{},
+		customMessageHandling:         customMessageHandler,
 		// Buffered by one so a notification sent while the worker is between selects
 		// (e.g. inside TimeoutExpectations) is deferred instead of lost.
 		notifyExpireWorker:             make(chan struct{}, 1),

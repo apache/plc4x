@@ -66,11 +66,11 @@ A batch is assembled with a builder and handed to the pump:
 
 [source,java]
 ----
-PlcConnectionManager connectionManager = PlcDriverManager.getDefault();
+PlcConnectionFactory connectionFactory = PlcDriverManager.getDefault().getConnectionFactory();
 
 TagBatch batch = TagBatch.builder()
     .withBatchId("boiler")
-    .withConnectionManager(connectionManager)
+    .withConnectionFactory(connectionFactory)
     .withConnectionString("opcua:tcp://192.168.1.1:4840?request-timeout=10000")
     .addTagAddress("temperature", "ns=2;i=1001")
     .addTagAddress("pressure", "ns=2;i=1002")

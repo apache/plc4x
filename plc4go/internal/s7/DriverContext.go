@@ -24,15 +24,15 @@ import (
 )
 
 type DriverContext struct {
-	PassiveMode             bool
-	CallingTsapId           uint16
-	CalledTsapId            uint16
-	CotpTpduSize            model.COTPTpduSize
-	PduSize                 uint16
-	MaxAmqCaller            uint16
-	MaxAmqCallee            uint16
-	ControllerType          model.ControllerType
-	ArticleNumber           string
+	PassiveMode    bool
+	CallingTsapId  uint16
+	CalledTsapId   uint16
+	CotpTpduSize   model.COTPTpduSize
+	PduSize        uint16
+	MaxAmqCaller   uint16
+	MaxAmqCallee   uint16
+	ControllerType model.ControllerType
+	ArticleNumber  string
 	// UserDataServicesSupported reports whether the device speaks the S7Comm UserData
 	// services (browse, alarms, cyclic subscriptions). Derived from the SZL probe at
 	// connect time or from a pinned controller type.

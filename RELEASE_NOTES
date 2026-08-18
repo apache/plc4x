@@ -89,6 +89,16 @@ New Features
 Incompatible changes
 --------------------
 
+- The connection-creating methods of the API moved from
+  "PlcConnectionManager" to a new "PlcConnectionFactory"
+  interface, which the "PlcDriverManager" hands out via
+  "getConnectionFactory()" (formerly "getConnectionManager()").
+  "PlcConnectionManager" now extends "PlcConnectionFactory" and
+  adds the "close()" method, and is only implemented by managers
+  that keep the connections they hand out, such as the
+  "CachedPlcConnectionManager"; its builder method
+  "withConnectionManager()" was renamed to
+  "withConnectionFactory()".
 - All drivers were migrated to a new shared SPI ("SPI3"):
   dependency-free Read/Write buffers, an updated code-generation
   framework, a pluggable-transport system and a layered

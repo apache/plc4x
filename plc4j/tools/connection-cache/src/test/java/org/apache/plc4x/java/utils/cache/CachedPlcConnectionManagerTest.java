@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.utils.cache;
 
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
@@ -45,7 +46,7 @@ import static org.mockito.Mockito.*;
 class CachedPlcConnectionManagerTest {
 
     @Mock
-    private PlcConnectionManager mockConnectionManager;
+    private PlcConnectionFactory mockConnectionFactory;
 
     @Mock
     private PlcConnection mockConnection;
@@ -80,12 +81,12 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testGetConnection_BasicAcquisition() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -95,7 +96,7 @@ class CachedPlcConnectionManagerTest {
         // Assert
         assertNotNull(connection);
         assertInstanceOf(LeasedPlcConnection.class, connection);
-        verify(mockConnectionManager, times(1)).getConnection("test:tcp://localhost");
+        verify(mockConnectionFactory, times(1)).getConnection("test:tcp://localhost");
         assertEquals(1, manager.getCachedConnectionCount());
         assertEquals(1, manager.getActiveLeaseCount());
 
@@ -110,12 +111,12 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testGetConnection_Reuse() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -128,7 +129,7 @@ class CachedPlcConnectionManagerTest {
         connection2.close();
 
         // Assert
-        verify(mockConnectionManager, times(1)).getConnection("test:tcp://localhost"); // Only created once
+        verify(mockConnectionFactory, times(1)).getConnection("test:tcp://localhost"); // Only created once
         assertEquals(1, manager.getCachedConnectionCount());
     }
 
@@ -138,12 +139,12 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testIdleTimeout() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withMaxIdleTime(500, TimeUnit.MILLISECONDS) // Short timeout for testing
             .build();
@@ -169,12 +170,12 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testMaxLeaseTimeout() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withMaxLeaseTime(500, TimeUnit.MILLISECONDS) // Short timeout for testing
             .build();
@@ -204,7 +205,7 @@ class CachedPlcConnectionManagerTest {
         PlcConnection goodConnection = mock(PlcConnection.class);
         PlcConnection badConnection = mock(PlcConnection.class);
 
-        when(mockConnectionManager.getConnection(anyString()))
+        when(mockConnectionFactory.getConnection(anyString()))
             .thenReturn(badConnection)
             .thenReturn(goodConnection);
 
@@ -217,7 +218,7 @@ class CachedPlcConnectionManagerTest {
         when(goodConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withIdlePingThreshold(0, TimeUnit.SECONDS) // Always validate
             .build();
@@ -233,7 +234,7 @@ class CachedPlcConnectionManagerTest {
         PlcConnection connection2 = manager.getConnection("test:tcp://localhost");
 
         // Assert - Should have created TWO connections (first one failed validation)
-        verify(mockConnectionManager, times(2)).getConnection("test:tcp://localhost");
+        verify(mockConnectionFactory, times(2)).getConnection("test:tcp://localhost");
         verify(badConnection, times(1)).close(); // Bad connection was closed
 
         connection2.close();
@@ -248,7 +249,7 @@ class CachedPlcConnectionManagerTest {
         PlcConnection badConnection = mock(PlcConnection.class);
         PlcConnection goodConnection = mock(PlcConnection.class);
 
-        when(mockConnectionManager.getConnection(anyString()))
+        when(mockConnectionFactory.getConnection(anyString()))
             .thenReturn(badConnection)
             .thenReturn(goodConnection);
 
@@ -261,7 +262,7 @@ class CachedPlcConnectionManagerTest {
         when(goodConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withIdlePingThreshold(0, TimeUnit.SECONDS) // Always validate
             .build();
@@ -277,7 +278,7 @@ class CachedPlcConnectionManagerTest {
         PlcConnection connection2 = manager.getConnection("test:tcp://localhost");
 
         // Assert
-        verify(mockConnectionManager, times(2)).getConnection("test:tcp://localhost");
+        verify(mockConnectionFactory, times(2)).getConnection("test:tcp://localhost");
         verify(badConnection, times(1)).close();
 
         connection2.close();
@@ -293,7 +294,7 @@ class CachedPlcConnectionManagerTest {
         // Arrange
         AtomicInteger connectionCount = new AtomicInteger(0);
 
-        when(mockConnectionManager.getConnection(anyString())).thenAnswer(invocation -> {
+        when(mockConnectionFactory.getConnection(anyString())).thenAnswer(invocation -> {
             connectionCount.incrementAndGet();
             PlcConnection conn = mock(PlcConnection.class);
             when(conn.isConnected()).thenReturn(true);
@@ -302,7 +303,7 @@ class CachedPlcConnectionManagerTest {
         });
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -345,12 +346,12 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testClose() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -369,17 +370,49 @@ class CachedPlcConnectionManagerTest {
     }
 
     /**
+     * The caller that needs the teardown (GH-1399) usually holds the interface type, not this
+     * class: closing through PlcConnectionManager in a try-with-resources block has to release the
+     * cached connections just the same, without any downcast.
+     */
+    @Test
+    void testCloseThroughTheConnectionManagerInterface() throws Exception {
+        // Arrange
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnection.isConnected()).thenReturn(true);
+        when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
+
+        CachedPlcConnectionManager cachedManager = CachedPlcConnectionManager.getBuilder()
+            .withConnectionFactory(mockConnectionFactory)
+            .withScheduler(scheduler)
+            .build();
+        manager = cachedManager;
+
+        // Act - the reference is the interface, and it is the try-with-resources resource
+        try (PlcConnectionManager connectionManager = cachedManager) {
+            PlcConnection connection = connectionManager.getConnection("test:tcp://localhost");
+            connection.close();
+            assertEquals(1, cachedManager.getCachedConnectionCount());
+        }
+
+        // Assert
+        verify(mockConnection, times(1)).close();
+        assertEquals(0, cachedManager.getCachedConnectionCount());
+        assertThrows(PlcConnectionManagerClosedException.class,
+            () -> cachedManager.getConnection("test:tcp://localhost"));
+    }
+
+    /**
      * Test that connect() cannot be called on leased connections.
      */
     @Test
     void testLeasedConnection_ConnectNotAllowed() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -398,12 +431,12 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testLeasedConnection_MultipleClose() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -439,8 +472,8 @@ class CachedPlcConnectionManagerTest {
         PlcConnection connection1 = mock(PlcConnection.class);
         PlcConnection connection2 = mock(PlcConnection.class);
 
-        when(mockConnectionManager.getConnection("test:tcp://host1")).thenReturn(connection1);
-        when(mockConnectionManager.getConnection("test:tcp://host2")).thenReturn(connection2);
+        when(mockConnectionFactory.getConnection("test:tcp://host1")).thenReturn(connection1);
+        when(mockConnectionFactory.getConnection("test:tcp://host2")).thenReturn(connection2);
 
         when(connection1.isConnected()).thenReturn(true);
         when(connection1.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
@@ -448,7 +481,7 @@ class CachedPlcConnectionManagerTest {
         when(connection2.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -473,12 +506,12 @@ class CachedPlcConnectionManagerTest {
         PlcAuthentication mockAuth = mock(PlcAuthentication.class);
         PlcConnection authConnection = mock(PlcConnection.class);
 
-        when(mockConnectionManager.getConnection(anyString(), any(PlcAuthentication.class))).thenReturn(authConnection);
+        when(mockConnectionFactory.getConnection(anyString(), any(PlcAuthentication.class))).thenReturn(authConnection);
         when(authConnection.isConnected()).thenReturn(true);
         when(authConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -487,7 +520,7 @@ class CachedPlcConnectionManagerTest {
 
         // Assert
         assertNotNull(connection);
-        verify(mockConnectionManager, times(1)).getConnection("test:tcp://localhost", mockAuth);
+        verify(mockConnectionFactory, times(1)).getConnection("test:tcp://localhost", mockAuth);
         assertEquals(1, manager.getCachedConnectionCount());
         assertEquals(1, manager.getActiveLeaseCount());
 
@@ -504,7 +537,7 @@ class CachedPlcConnectionManagerTest {
         PlcConnection badConnection = mock(PlcConnection.class);
         PlcConnection goodConnection = mock(PlcConnection.class);
 
-        when(mockConnectionManager.getConnection(anyString(), any(PlcAuthentication.class)))
+        when(mockConnectionFactory.getConnection(anyString(), any(PlcAuthentication.class)))
             .thenReturn(badConnection)
             .thenReturn(goodConnection);
 
@@ -517,7 +550,7 @@ class CachedPlcConnectionManagerTest {
         when(goodConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withIdlePingThreshold(0, TimeUnit.SECONDS) // Always ping
             .build();
@@ -533,7 +566,7 @@ class CachedPlcConnectionManagerTest {
         PlcConnection connection2 = manager.getConnection("test:tcp://localhost", mockAuth);
 
         // Assert - Should have called getConnection with authentication twice
-        verify(mockConnectionManager, times(2)).getConnection("test:tcp://localhost", mockAuth);
+        verify(mockConnectionFactory, times(2)).getConnection("test:tcp://localhost", mockAuth);
         verify(badConnection, times(1)).close();
 
         connection2.close();
@@ -545,12 +578,12 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testIdlePingThreshold_RecentlyUsedSkipsPing() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withIdlePingThreshold(5, TimeUnit.SECONDS) // 5 second threshold
             .build();
@@ -579,12 +612,12 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testIdlePingThreshold_IdleConnectionIsPinged() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withIdlePingThreshold(500, TimeUnit.MILLISECONDS) // 500ms threshold
             .build();
@@ -622,7 +655,7 @@ class CachedPlcConnectionManagerTest {
         PlcConnection badConnection = mock(PlcConnection.class);
         PlcConnection goodConnection = mock(PlcConnection.class);
 
-        when(mockConnectionManager.getConnection(anyString()))
+        when(mockConnectionFactory.getConnection(anyString()))
             .thenReturn(badConnection)
             .thenReturn(goodConnection);
 
@@ -635,7 +668,7 @@ class CachedPlcConnectionManagerTest {
         when(goodConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withIdlePingThreshold(500, TimeUnit.MILLISECONDS) // 500ms threshold
             .build();
@@ -654,7 +687,7 @@ class CachedPlcConnectionManagerTest {
         PlcConnection connection2 = manager.getConnection("test:tcp://localhost");
 
         // Assert - Should have created TWO connections (first one failed validation)
-        verify(mockConnectionManager, times(2)).getConnection("test:tcp://localhost");
+        verify(mockConnectionFactory, times(2)).getConnection("test:tcp://localhost");
         verify(badConnection, times(1)).close(); // Bad connection was closed
 
         connection2.close();
@@ -666,13 +699,13 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testIdlePingThreshold_CustomConfiguration() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         // Build with custom 1 second threshold
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withIdlePingThreshold(1, TimeUnit.SECONDS)
             .build();
@@ -712,12 +745,12 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testIdlePingThreshold_ZeroAlwaysPings() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         when(mockConnection.ping()).thenAnswer(inv -> CompletableFuture.completedFuture(mockPingResponse));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .withIdlePingThreshold(0, TimeUnit.SECONDS) // Always validate
             .build();
@@ -743,10 +776,10 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testBuilder_withMaxWaitTime() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withMaxWaitTime(100, TimeUnit.MILLISECONDS) // Very short wait time
             .build();
 
@@ -790,13 +823,13 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testBuilder_withPingTimeout() throws Exception {
         // Arrange
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
         // Mock ping to timeout - never complete the future
         when(mockConnection.ping()).thenAnswer(inv -> new CompletableFuture<PlcPingResponse>());
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withIdlePingThreshold(0, TimeUnit.MILLISECONDS) // Always ping
             .withPingTimeout(100, TimeUnit.MILLISECONDS) // Very short ping timeout
             .build();
@@ -812,7 +845,7 @@ class CachedPlcConnectionManagerTest {
         PlcConnection connection2 = manager.getConnection("test:tcp://localhost");
 
         // Assert - New connection should have been created due to ping timeout
-        verify(mockConnectionManager, times(2)).getConnection(anyString());
+        verify(mockConnectionFactory, times(2)).getConnection(anyString());
         verify(mockConnection, times(1)).ping();
 
         connection2.close();
@@ -823,11 +856,11 @@ class CachedPlcConnectionManagerTest {
      */
     @Test
     void testGetCachedConnections_ReturnsSnapshot() throws Exception {
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -852,11 +885,11 @@ class CachedPlcConnectionManagerTest {
      */
     @Test
     void testRemoveCachedConnection_EvictsAndCloses() throws Exception {
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -872,7 +905,7 @@ class CachedPlcConnectionManagerTest {
 
         // Next acquisition establishes a brand-new connection.
         manager.getConnection("test:tcp://localhost").close();
-        verify(mockConnectionManager, times(2)).getConnection("test:tcp://localhost");
+        verify(mockConnectionFactory, times(2)).getConnection("test:tcp://localhost");
     }
 
     /**
@@ -880,11 +913,11 @@ class CachedPlcConnectionManagerTest {
      */
     @Test
     void testRemoveCachedConnection_ForceClosesLeased() throws Exception {
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(mockConnection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(mockConnection);
         when(mockConnection.isConnected()).thenReturn(true);
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -905,7 +938,7 @@ class CachedPlcConnectionManagerTest {
     @Test
     void testRemoveCachedConnection_AbsentReturnsFalse() throws Exception {
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 

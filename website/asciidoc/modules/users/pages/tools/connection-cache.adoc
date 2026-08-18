@@ -31,7 +31,7 @@ Even if only one block of code repeatedly requires access to the PLC, simply cre
 
 When using the connection cache, many pieces of code can use it in parallel. However, only one piece of code can have access to a connection at the same time.
 
-So the first thread asking for a new connection will have the cache create a new connection and return it to the client. It can then use this just like any ordinary connection retrieved from the basic PlcConnectionManager. The main difference however is, that as soon as the client calls `close()` on this so-called connection-lease, the connection is not closed, but the cache puts it back into the storage, waiting for the next thread to require it.
+So the first thread asking for a new connection will have the cache create a new connection and return it to the client. It can then use this just like any ordinary connection retrieved from the basic PlcConnectionFactory. The main difference however is, that as soon as the client calls `close()` on this so-called connection-lease, the connection is not closed, but the cache puts it back into the storage, waiting for the next thread to require it.
 
 If a thread asks for a connection, which is currently leased by another thread, then the requesting thread will wait till the connection is returned and will then instantly continue using the connection till it then returns it back to the cache.
 
@@ -89,7 +89,7 @@ To use the Connection Cache you have to add a dependency to the `plc4j-connectio
 
 In this snippet of code there are some considerations that are worth to be underlined.
 
-* In recent versions of PLC4X we have refactored the `PlcDriverManager` to provide access to a `PlcConnectionManager` interface. This contains all methods that are related to creating connections. The ConnectionCache implements this same interface, therefore you can use a `CachedPlcConnectionManager` everywhere you can use the normal `PlcConnectionManager`.
+* In recent versions of PLC4X we have refactored the `PlcDriverManager` to provide access to a `PlcConnectionFactory` interface. This contains all methods that are related to creating connections. The ConnectionCache implements this same interface - via `PlcConnectionManager`, which adds the `close()` method a cache needs - therefore you can use a `CachedPlcConnectionManager` everywhere you can use a plain `PlcConnectionFactory`.
 * A new `CachedPlcConnectionManager` is usually created using a builder, that can be accessed via: `CachedPlcConnectionManager.getBuilder()`. This will be explained in more detail in the next chapter.
 * The `try-with-resources` statement (i.e. ``try (PlcConnection connection = connectionManager.getConnection(connectionString))``) ensures that a leased connection will be automatically returned to the cache after the use. As said before if the application keeps hold of the connection for too long, after a configurable amount of time will be automatically closed by the cache and the thread can no-longer use it (i.e. the `maxLeaseTime` parameter defaults to 4 seconds and is configurable - see the next chapter on configuring the connection cache).
 * Before handing out a connection-lease, the connection cache will execute a `ping()` operation on the corresponding connection to check if it's still valid. If this check fails, the cache will terminate this connection, establish a new one and then return a handle for that new connection.

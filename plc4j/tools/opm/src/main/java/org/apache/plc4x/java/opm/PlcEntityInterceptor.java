@@ -23,7 +23,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -57,7 +57,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Interceptor for dynamic functionality of @{@link PlcEntity}.
- * Basically, its {@link #interceptGetter(Object, Method, Callable, String, PlcConnectionManager, AliasRegistry, Map, Map)} method is called for each
+ * Basically, its {@link #interceptGetter(Object, Method, Callable, String, PlcConnectionFactory, AliasRegistry, Map, Map)} method is called for each
  * invocation of a method on a connected @{@link PlcEntity} and does then the dynamic part.
  * <p>
  * For those not too familiar with the JVM's dispatch on can roughly imagine the intercept method being a "regular"
@@ -78,16 +78,16 @@ public class PlcEntityInterceptor {
     /**
      * Basic Interceptor for all methods on the proxy object.
      * It checks if the invoked method is a getter and if so, only retrieves the requested tag, forwarding to
-     * the {@link #fetchAndSetValueForGetter(Object, Method, PlcConnectionManager, String, AliasRegistry, Map)} method.
+     * the {@link #fetchAndSetValueForGetter(Object, Method, PlcConnectionFactory, String, AliasRegistry, Map)} method.
      * <p>
-     * If the tag is no getter, then all tags are refreshed by calling {@link #readAllFields(Object, PlcConnectionManager, String, AliasRegistry, Map)}
+     * If the tag is no getter, then all tags are refreshed by calling {@link #readAllFields(Object, PlcConnectionFactory, String, AliasRegistry, Map)}
      * and then, the method is invoked.
      *
      * @param proxy             Object to intercept
      * @param method            Method that was intercepted
      * @param callable          Callable to call the method after fetching the values
      * @param address           Address of the plc (injected from private tag)
-     * @param connectionManager PlcConnectionManager instance to use (injected from private tag)
+     * @param connectionFactory PlcConnectionFactory instance to use (injected from private tag)
      * @return possible result of the original methods invocation
      * @throws OPMException Problems with plc / proxying
      */
@@ -95,14 +95,14 @@ public class PlcEntityInterceptor {
     @RuntimeType
     public static Object interceptGetter(@This Object proxy, @Origin Method method, @SuperCall Callable<?> callable,
                                          @FieldValue(PlcEntityManager.PLC_ADDRESS_FIELD_NAME) String address,
-                                         @FieldValue(PlcEntityManager.CONNECTION_MANAGER_FIELD_NAME) PlcConnectionManager connectionManager,
+                                         @FieldValue(PlcEntityManager.CONNECTION_FACTORY_FIELD_NAME) PlcConnectionFactory connectionFactory,
                                          @FieldValue(PlcEntityManager.ALIAS_REGISTRY) AliasRegistry registry,
                                          @FieldValue(PlcEntityManager.LAST_FETCHED) Map<String, Instant> lastFetched,
                                          @FieldValue(PlcEntityManager.LAST_WRITTEN) Map<String, Instant> lastWritten) throws OPMException {
         LOGGER.trace("Invoked method {} on connected PlcEntity {}", method.getName(), method.getDeclaringClass().getName());
 
         // If "detached" (i.e. _driverManager is null) simply forward the call
-        if (connectionManager == null) {
+        if (connectionFactory == null) {
             LOGGER.trace("Entity not connected, simply forwarding call");
             try {
                 return callable.call();
@@ -119,7 +119,7 @@ public class PlcEntityInterceptor {
             LOGGER.trace("Invoked method {} is getter, trying to find annotated tag and return requested value",
                 method.getName());
 
-            fetchAndSetValueForGetter(proxy, method, connectionManager, address, registry, lastFetched);
+            fetchAndSetValueForGetter(proxy, method, connectionFactory, address, registry, lastFetched);
             try {
                 return callable.call();
             } catch (Exception e) {
@@ -134,7 +134,7 @@ public class PlcEntityInterceptor {
             // Fetch single value
             LOGGER.trace("Invoked method {} is boolean flag method, trying to find annotated tag and return requested value",
                 method.getName());
-            fetchAndSetValueForIsGetter(proxy, method, connectionManager, address, registry, lastFetched);
+            fetchAndSetValueForIsGetter(proxy, method, connectionFactory, address, registry, lastFetched);
             try {
                 return callable.call();
             } catch (Exception e) {
@@ -145,11 +145,11 @@ public class PlcEntityInterceptor {
         // Fetch all values then invoke method
         try {
             LOGGER.trace("Invoked method is no getter, refetch all tags and invoke method {} then", method.getName());
-            readAllFields(proxy, connectionManager, address, registry, lastFetched);
+            readAllFields(proxy, connectionFactory, address, registry, lastFetched);
             Object call = callable.call();
             // We write back
             // cdutz: Disabled this, as it seemed to make no real sense to me, as we're writing back values that we just read without any chance of them being changed.
-            //writeAllFields(proxy, connectionManager, address, registry, lastWritten);
+            //writeAllFields(proxy, connectionFactory, address, registry, lastWritten);
             return call;
         } catch (Exception e) {
             throw new OPMException("Unable to forward invocation " + method.getName() + " on connected PlcEntity", e);
@@ -160,14 +160,14 @@ public class PlcEntityInterceptor {
     @RuntimeType
     public static Object interceptSetter(@This Object proxy, @Origin Method method, @SuperCall Callable<?> callable,
                                          @FieldValue(PlcEntityManager.PLC_ADDRESS_FIELD_NAME) String address,
-                                         @FieldValue(PlcEntityManager.CONNECTION_MANAGER_FIELD_NAME) PlcConnectionManager connectionManager,
+                                         @FieldValue(PlcEntityManager.CONNECTION_FACTORY_FIELD_NAME) PlcConnectionFactory connectionFactory,
                                          @FieldValue(PlcEntityManager.ALIAS_REGISTRY) AliasRegistry registry,
                                          @FieldValue(PlcEntityManager.LAST_FETCHED) Map<String, Instant> lastFetched,
                                          @Argument(0) Object argument) throws OPMException {
         LOGGER.trace("Invoked method {} on connected PlcEntity {}", method.getName(), method.getDeclaringClass().getName());
 
         // If "detached" (i.e. _driverManager is null) simply forward the call
-        if (connectionManager == null) {
+        if (connectionFactory == null) {
             LOGGER.trace("Entity not connected, simply fowarding call");
             try {
                 return callable.call();
@@ -184,13 +184,13 @@ public class PlcEntityInterceptor {
             LOGGER.trace("Invoked method {} is setter, trying to find annotated tag and return requested value",
                 method.getName());
 
-            return setValueForSetter(proxy, method, callable, connectionManager, address, registry, lastFetched, argument);
+            return setValueForSetter(proxy, method, callable, connectionFactory, address, registry, lastFetched, argument);
         }
 
         // Fetch all values then invoke method
         try {
             LOGGER.trace("Invoked method is no getter, refetch all tags and invoke method {} then", method.getName());
-            readAllFields(proxy, connectionManager, address, registry, lastFetched);
+            readAllFields(proxy, connectionFactory, address, registry, lastFetched);
             return callable.call();
         } catch (Exception e) {
             throw new OPMException("Unable to forward invocation " + method.getName() + " on connected PlcEntity", e);
@@ -201,13 +201,13 @@ public class PlcEntityInterceptor {
      * Reads all values of all tags that are annotated with {@link PlcEntity}.
      *
      * @param proxy         Object to refresh the tags on.
-     * @param connectionManager Connection Manager to use
+     * @param connectionFactory Connection Manager to use
      * @param registry      AliasRegistry to use
      * @param lastFetched   instants when which property was last fetched
      * @throws OPMException on various errors.
      */
     @SuppressWarnings("squid:S1141") // Nested try blocks readability is okay, move to other method makes it imho worse
-    static void readAllFields(Object proxy, PlcConnectionManager connectionManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
+    static void readAllFields(Object proxy, PlcConnectionFactory connectionFactory, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
         LOGGER.trace("Re-fetching all tags on proxy object of class {}", entityClass);
@@ -222,7 +222,7 @@ public class PlcEntityInterceptor {
                 OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcTag.class).value());
             }
         }
-        try (PlcConnection connection = connectionManager.getConnection(address)) {
+        try (PlcConnection connection = connectionFactory.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
             // Build the query
             PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
@@ -263,7 +263,7 @@ public class PlcEntityInterceptor {
         }
     }
 
-    static void writeAllFields(Object proxy, PlcConnectionManager connectionManager, String address, AliasRegistry registry, Map<String, Instant> lastWritten) throws OPMException {
+    static void writeAllFields(Object proxy, PlcConnectionFactory connectionFactory, String address, AliasRegistry registry, Map<String, Instant> lastWritten) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
         LOGGER.trace("Writing all tags on proxy object of class {}", entityClass);
@@ -278,7 +278,7 @@ public class PlcEntityInterceptor {
                 OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcTag.class).value());
             }
         }
-        try (PlcConnection connection = connectionManager.getConnection(address)) {
+        try (PlcConnection connection = connectionFactory.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
             // Build the query
             PlcWriteRequest.Builder requestBuilder = connection.writeRequestBuilder();
@@ -342,15 +342,15 @@ public class PlcEntityInterceptor {
         return true;
     }
 
-    private static void fetchAndSetValueForIsGetter(Object proxy, Method m, PlcConnectionManager connectionManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
-        fetchAndSetValueForGetter(proxy, m, 2, connectionManager, address, registry, lastFetched);
+    private static void fetchAndSetValueForIsGetter(Object proxy, Method m, PlcConnectionFactory connectionFactory, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
+        fetchAndSetValueForGetter(proxy, m, 2, connectionFactory, address, registry, lastFetched);
     }
 
-    private static void fetchAndSetValueForGetter(Object proxy, Method m, PlcConnectionManager connectionManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
-        fetchAndSetValueForGetter(proxy, m, 3, connectionManager, address, registry, lastFetched);
+    private static void fetchAndSetValueForGetter(Object proxy, Method m, PlcConnectionFactory connectionFactory, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
+        fetchAndSetValueForGetter(proxy, m, 3, connectionFactory, address, registry, lastFetched);
     }
 
-    private static void fetchAndSetValueForGetter(Object proxy, Method m, int prefixLength, PlcConnectionManager connectionManager,
+    private static void fetchAndSetValueForGetter(Object proxy, Method m, int prefixLength, PlcConnectionFactory connectionFactory,
                                                   String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
         String s = m.getName().substring(prefixLength);
         // First char to lower
@@ -372,7 +372,7 @@ public class PlcEntityInterceptor {
         if (!needsToBeSynced(lastFetched, field)) {
             return;
         }
-        try (PlcConnection connection = connectionManager.getConnection(address)) {
+        try (PlcConnection connection = connectionFactory.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
 
             PlcReadRequest request = connection.readRequestBuilder()
@@ -402,7 +402,7 @@ public class PlcEntityInterceptor {
         }
     }
 
-    private static Object setValueForSetter(Object proxy, Method m, Callable<?> callable, PlcConnectionManager connectionManager,
+    private static Object setValueForSetter(Object proxy, Method m, Callable<?> callable, PlcConnectionFactory connectionFactory,
                                             String address, AliasRegistry registry, Map<String, Instant> lastFetched, Object object) throws OPMException {
         String s = m.getName().substring(3);
         // First char to lower
@@ -420,7 +420,7 @@ public class PlcEntityInterceptor {
         // Use Fully qualified Name as tag index
         String fqn = getFqn(field);
 
-        try (PlcConnection connection = connectionManager.getConnection(address)) {
+        try (PlcConnection connection = connectionFactory.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
 
             PlcWriteRequest.Builder builder = connection.writeRequestBuilder();

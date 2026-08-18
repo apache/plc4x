@@ -32,7 +32,7 @@ public class ManualTest {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             shutdown.complete(null);
         }));
-        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection("iec-60870-5-104://192.168.23.10")) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionFactory().getConnection("iec-60870-5-104://192.168.23.10")) {
             if(!plcConnection.getMetadata().isSubscribeSupported()) {
                 throw new RuntimeException("Subscription not supported");
             }

@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.tools.eventpump;
 
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <pre>
  * TagBatch batch = TagBatch.builder()
  *     .withBatchId("batch1")
- *     .withConnectionManager(connectionManager)
+ *     .withConnectionFactory(connectionFactory)
  *     .withConnectionString("ads://192.168.1.1:851")
  *     .addTag("temperature", "MAIN.temperature")
  *     .addTag("pressure", "MAIN.pressure")
@@ -72,7 +72,7 @@ public class TagBatch implements AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(TagBatch.class);
 
     private final String batchId;
-    private final PlcConnectionManager connectionManager;
+    private final PlcConnectionFactory connectionFactory;
     private final String connectionString;
     private final Map<String, String> tags; // tagName -> tagAddress
     private final Map<String, String> transforms; // tagName -> transformation expression
@@ -126,7 +126,7 @@ public class TagBatch implements AutoCloseable {
      * Private constructor - use Builder to create instances.
      *
      * @param batchId A unique identifier for this batch
-     * @param connectionManager The connection manager to use for leasing connections
+     * @param connectionFactory The connection manager to use for leasing connections
      * @param connectionString The connection string to use for getting connections
      * @param tags A map of tag names to tag addresses
      * @param transforms A map of tag names to transformation expressions
@@ -135,7 +135,7 @@ public class TagBatch implements AutoCloseable {
      * @param valueTransformer The value transformer to use (or null for default from registry)
      * @param transformerRegistry The transformer registry (or null to create default)
      */
-    private TagBatch(String batchId, PlcConnectionManager connectionManager, String connectionString,
+    private TagBatch(String batchId, PlcConnectionFactory connectionFactory, String connectionString,
                      Map<String, String> tags, Map<String, String> transforms, Trigger trigger,
                      TagBatchListener listener, ValueTransformer valueTransformer,
                      ValueTransformerRegistry transformerRegistry,
@@ -143,7 +143,7 @@ public class TagBatch implements AutoCloseable {
         if (batchId == null || batchId.trim().isEmpty()) {
             throw new IllegalArgumentException("Batch ID cannot be null or empty");
         }
-        if (connectionManager == null) {
+        if (connectionFactory == null) {
             throw new IllegalArgumentException("Connection manager cannot be null");
         }
         if (connectionString == null || connectionString.trim().isEmpty()) {
@@ -157,7 +157,7 @@ public class TagBatch implements AutoCloseable {
         }
 
         this.batchId = batchId;
-        this.connectionManager = connectionManager;
+        this.connectionFactory = connectionFactory;
         this.connectionString = connectionString;
         this.tags = new LinkedHashMap<>(tags); // Preserve order
         this.transforms = transforms != null ? new LinkedHashMap<>(transforms) : new LinkedHashMap<>();
@@ -210,7 +210,7 @@ public class TagBatch implements AutoCloseable {
      */
     public static class Builder {
         private String batchId;
-        private PlcConnectionManager connectionManager;
+        private PlcConnectionFactory connectionFactory;
         private String connectionString;
         private final Map<String, String> tagAddresses = new LinkedHashMap<>();
         private final Map<String, String> transforms = new LinkedHashMap<>();
@@ -254,11 +254,11 @@ public class TagBatch implements AutoCloseable {
         /**
          * Set the connection manager.
          *
-         * @param connectionManager The connection manager to use for leasing connections
+         * @param connectionFactory The connection manager to use for leasing connections
          * @return This builder
          */
-        public Builder withConnectionManager(PlcConnectionManager connectionManager) {
-            this.connectionManager = connectionManager;
+        public Builder withConnectionFactory(PlcConnectionFactory connectionFactory) {
+            this.connectionFactory = connectionFactory;
             return this;
         }
 
@@ -401,7 +401,7 @@ public class TagBatch implements AutoCloseable {
             if (batchId == null || batchId.trim().isEmpty()) {
                 throw new IllegalStateException("Batch ID must be set");
             }
-            if (connectionManager == null) {
+            if (connectionFactory == null) {
                 throw new IllegalStateException("Connection manager must be set");
             }
             if (connectionString == null || connectionString.trim().isEmpty()) {
@@ -412,7 +412,7 @@ public class TagBatch implements AutoCloseable {
             }
             // Note: listener is optional and can be null
 
-            return new TagBatch(batchId, connectionManager, connectionString, tagAddresses, transforms,
+            return new TagBatch(batchId, connectionFactory, connectionString, tagAddresses, transforms,
                 trigger, listener, valueTransformer, transformerRegistry, maxBackoffMs, initialBackoffMs,
                 fetchTimeoutMs);
         }
@@ -513,7 +513,7 @@ public class TagBatch implements AutoCloseable {
 
             // Lease a connection from the manager for this read operation
             LOGGER.debug("Batch '{}' - Leasing connection for fetch", batchId);
-            PlcConnection connection = connectionManager.getConnection(connectionString);
+            PlcConnection connection = connectionFactory.getConnection(connectionString);
             LOGGER.debug("Batch '{}' - Connection leased successfully", batchId);
 
             try {
@@ -669,8 +669,8 @@ public class TagBatch implements AutoCloseable {
      *
      * @return The connection manager
      */
-    public PlcConnectionManager getConnectionManager() {
-        return connectionManager;
+    public PlcConnectionFactory getConnectionFactory() {
+        return connectionFactory;
     }
 
     /**

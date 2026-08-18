@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.utils.cache;
 
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.junit.jupiter.api.AfterEach;
@@ -48,7 +49,7 @@ class EvictNeverConnectedTest {
     private static final String URL = "test:tcp://localhost";
 
     @Mock
-    private PlcConnectionManager mockConnectionManager;
+    private PlcConnectionFactory mockConnectionFactory;
 
     private CachedPlcConnectionManager manager;
     private ScheduledExecutorService scheduler;
@@ -71,11 +72,11 @@ class EvictNeverConnectedTest {
 
     @Test
     void evictsAContainerWhoseConnectNeverSucceeded() throws Exception {
-        when(mockConnectionManager.getConnection(anyString()))
+        when(mockConnectionFactory.getConnection(anyString()))
             .thenThrow(new PlcConnectionException("device is unreachable"));
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
@@ -96,10 +97,10 @@ class EvictNeverConnectedTest {
     void evictsAfterTheConnectionWasAlreadyDropped() throws Exception {
         PlcConnection connection = mock(PlcConnection.class);
         when(connection.isConnected()).thenReturn(true);
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(connection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(connection);
 
         manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 

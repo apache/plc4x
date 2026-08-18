@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.utils.cache;
 
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -44,11 +45,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>
  * Usage Example:
  * <pre>
- * // Get the default connection manager (supports all drivers)
- * PlcConnectionManager connectionManager = PlcDriverManager.getDefault();
+ * // Get the default connection factory (supports all drivers)
+ * PlcConnectionFactory connectionFactory = PlcDriverManager.getDefault().getConnectionFactory();
  *
  * CachedPlcConnectionManager manager = CachedPlcConnectionManager.getBuilder()
- *     .withConnectionManager(connectionManager)
+ *     .withConnectionFactory(connectionFactory)
  *     .withMaxIdleTime(5, TimeUnit.MINUTES)
  *     .withMaxLeaseTime(1, TimeUnit.MINUTES)
  *     .build();
@@ -73,7 +74,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *   never blocks operations on other connections; the pool itself is never globally locked.
  * - Timeout tasks are cancelled before closing connections to avoid races.
  */
-public class CachedPlcConnectionManager implements PlcConnectionManager, AutoCloseable {
+public class CachedPlcConnectionManager implements PlcConnectionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CachedPlcConnectionManager.class);
 
@@ -94,7 +95,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
      */
     private static final long LEASE_WAIT_GRACE_MS = TimeUnit.SECONDS.toMillis(1);
 
-    private final PlcConnectionManager connectionManager;
+    private final PlcConnectionFactory connectionFactory;
     private final ScheduledExecutorService scheduler;
     private final long maxIdleTimeMs;
     private final long maxLeaseTimeMs;
@@ -113,10 +114,10 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
     /**
      * Private constructor - use Builder to create instances.
      */
-    private CachedPlcConnectionManager(PlcConnectionManager connectionManager, ScheduledExecutorService scheduler,
+    private CachedPlcConnectionManager(PlcConnectionFactory connectionFactory, ScheduledExecutorService scheduler,
                                        long maxIdleTimeMs, long maxLeaseTimeMs, long maxWaitTimeMs,
                                        long pingTimeoutMs, long idlePingThresholdMs, long closeTimeoutMs) {
-        this.connectionManager = connectionManager;
+        this.connectionFactory = connectionFactory;
         this.scheduler = scheduler;
         this.maxIdleTimeMs = maxIdleTimeMs;
         this.maxLeaseTimeMs = maxLeaseTimeMs;
@@ -149,9 +150,9 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
             LOGGER.debug("Creating new connection container for: {}", connectionString);
             return new ConnectionContainer(connectionString, () -> {
                 if (authentication != null) {
-                    return connectionManager.getConnection(connectionString, authentication);
+                    return connectionFactory.getConnection(connectionString, authentication);
                 } else {
-                    return connectionManager.getConnection(connectionString);
+                    return connectionFactory.getConnection(connectionString);
                 }}, scheduler,
                 maxIdleTimeMs,
                 maxLeaseTimeMs,
@@ -178,7 +179,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         if (closed) {
             LOGGER.debug("Connection manager already closed");
             return;
@@ -295,7 +296,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
      * Provides a fluent API for configuring the connection manager.
      */
     public static class Builder {
-        private PlcConnectionManager connectionManager;
+        private PlcConnectionFactory connectionFactory;
         private ScheduledExecutorService scheduler = defaultScheduler();
         private long maxIdleTimeMs = DEFAULT_MAX_IDLE_TIME_MS;
         private long maxLeaseTimeMs = DEFAULT_MAX_LEASE_TIME_MS;
@@ -305,14 +306,14 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         private long closeTimeoutMs = DEFAULT_CLOSE_TIMEOUT_MS;
 
         /**
-         * Set the PLC connection manager to use for creating connections.
+         * Set the PLC connection factory to use for creating the connections it caches.
          * This allows the cache to handle connections for multiple PLC types/protocols.
          *
-         * @param connectionManager The PLC connection manager (typically PlcDriverManager)
+         * @param connectionFactory The PLC connection factory (typically PlcDriverManager)
          * @return This builder
          */
-        public Builder withConnectionManager(PlcConnectionManager connectionManager) {
-            this.connectionManager = connectionManager;
+        public Builder withConnectionFactory(PlcConnectionFactory connectionFactory) {
+            this.connectionFactory = connectionFactory;
             return this;
         }
 
@@ -465,14 +466,14 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
          * Build the CachedPlcConnectionManager.
          *
          * @return A new CachedPlcConnectionManager instance
-         * @throws IllegalStateException if connectionManager is not set
+         * @throws IllegalStateException if connectionFactory is not set
          */
         public CachedPlcConnectionManager build() {
-            if (connectionManager == null) {
-                throw new IllegalStateException("PlcConnectionManager must be set using withConnectionManager()");
+            if (connectionFactory == null) {
+                throw new IllegalStateException("PlcConnectionFactory must be set using withConnectionFactory()");
             }
             return new CachedPlcConnectionManager(
-                connectionManager,
+                connectionFactory,
                 scheduler,
                 maxIdleTimeMs,
                 maxLeaseTimeMs,

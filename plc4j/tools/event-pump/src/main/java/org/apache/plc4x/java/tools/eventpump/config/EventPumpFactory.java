@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.tools.eventpump.config;
 
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.tools.eventpump.EventPump;
 import org.apache.plc4x.java.tools.eventpump.TagBatch;
 import org.apache.plc4x.java.tools.eventpump.transform.ValueTransformerRegistry;
@@ -43,8 +43,8 @@ import java.util.concurrent.TimeUnit;
  * Example usage:
  * <pre>
  * // From a configuration file
- * PlcConnectionManager connectionManager = PlcDriverManager.getDefault();
- * EventPump pump = EventPumpFactory.fromYaml(new File("config.yaml"), connectionManager,
+ * PlcConnectionFactory connectionFactory = PlcDriverManager.getDefault();
+ * EventPump pump = EventPumpFactory.fromYaml(new File("config.yaml"), connectionFactory,
  *     (batch, response) -> {
  *         // Handle all batches
  *     });
@@ -59,29 +59,29 @@ public class EventPumpFactory {
      * Create an EventPump from configuration.
      *
      * @param config The configuration
-     * @param connectionManager The connection manager to use for creating connections
+     * @param connectionFactory The connection manager to use for creating connections
      * @param defaultListener The default listener for all batches (can be null)
      * @return The configured EventPump
      * @throws Exception if creation fails
      */
     public static EventPump create(EventPumpConfiguration config,
-                                   PlcConnectionManager connectionManager,
+                                   PlcConnectionFactory connectionFactory,
                                    TagBatch.TagBatchListener defaultListener) throws Exception {
-        return create(config, connectionManager, defaultListener, null);
+        return create(config, connectionFactory, defaultListener, null);
     }
 
     /**
      * Create an EventPump from configuration with a custom transformer registry.
      *
      * @param config The configuration
-     * @param connectionManager The connection manager to use for creating connections
+     * @param connectionFactory The connection manager to use for creating connections
      * @param defaultListener The default listener for all batches (can be null)
      * @param transformerRegistry The transformer registry to use (or null to create default)
      * @return The configured EventPump
      * @throws Exception if creation fails
      */
     public static EventPump create(EventPumpConfiguration config,
-                                    PlcConnectionManager connectionManager,
+                                    PlcConnectionFactory connectionFactory,
                                     TagBatch.TagBatchListener defaultListener,
                                     ValueTransformerRegistry transformerRegistry) throws Exception {
 
@@ -117,7 +117,7 @@ public class EventPumpFactory {
             // Create batch using builder with ConnectionManager
             TagBatch.Builder batchBuilder = TagBatch.builder()
                 .withBatchId(batchConfig.getId())
-                .withConnectionManager(connectionManager)
+                .withConnectionFactory(connectionFactory)
                 .withConnectionString(connectionUrl)
                 .addTagAddresses(batchConfig.getSimpleTagMap())
                 .withTrigger(trigger)
@@ -210,98 +210,98 @@ public class EventPumpFactory {
      * Create an EventPump from a YAML file.
      *
      * @param file The YAML file
-     * @param connectionManager The connection manager
+     * @param connectionFactory The connection manager
      * @param defaultListener The default listener
      * @return The configured EventPump
      * @throws Exception if creation fails
      */
     public static EventPump fromYaml(java.io.File file,
-                                      PlcConnectionManager connectionManager,
+                                      PlcConnectionFactory connectionFactory,
                                       TagBatch.TagBatchListener defaultListener) throws Exception {
-        return fromYaml(file, connectionManager, defaultListener, null);
+        return fromYaml(file, connectionFactory, defaultListener, null);
     }
 
     /**
      * Create an EventPump from a YAML file with a custom transformer registry.
      *
      * @param file The YAML file
-     * @param connectionManager The connection manager
+     * @param connectionFactory The connection manager
      * @param defaultListener The default listener
      * @param transformerRegistry The transformer registry (or null to create default)
      * @return The configured EventPump
      * @throws Exception if creation fails
      */
     public static EventPump fromYaml(java.io.File file,
-                                      PlcConnectionManager connectionManager,
+                                      PlcConnectionFactory connectionFactory,
                                       TagBatch.TagBatchListener defaultListener,
                                       ValueTransformerRegistry transformerRegistry) throws Exception {
         EventPumpConfiguration config = EventPumpConfiguration.fromYaml(file);
-        return create(config, connectionManager, defaultListener, transformerRegistry);
+        return create(config, connectionFactory, defaultListener, transformerRegistry);
     }
 
     /**
      * Create an EventPump from a JSON file.
      *
      * @param file The JSON file
-     * @param connectionManager The connection manager
+     * @param connectionFactory The connection manager
      * @param defaultListener The default listener
      * @return The configured EventPump
      * @throws Exception if creation fails
      */
     public static EventPump fromJson(java.io.File file,
-                                      PlcConnectionManager connectionManager,
+                                      PlcConnectionFactory connectionFactory,
                                       TagBatch.TagBatchListener defaultListener) throws Exception {
-        return fromJson(file, connectionManager, defaultListener, null);
+        return fromJson(file, connectionFactory, defaultListener, null);
     }
 
     /**
      * Create an EventPump from a JSON file with a custom transformer registry.
      *
      * @param file The JSON file
-     * @param connectionManager The connection manager
+     * @param connectionFactory The connection manager
      * @param defaultListener The default listener
      * @param transformerRegistry The transformer registry (or null to create default)
      * @return The configured EventPump
      * @throws Exception if creation fails
      */
     public static EventPump fromJson(java.io.File file,
-                                      PlcConnectionManager connectionManager,
+                                      PlcConnectionFactory connectionFactory,
                                       TagBatch.TagBatchListener defaultListener,
                                       ValueTransformerRegistry transformerRegistry) throws Exception {
         EventPumpConfiguration config = EventPumpConfiguration.fromJson(file);
-        return create(config, connectionManager, defaultListener, transformerRegistry);
+        return create(config, connectionFactory, defaultListener, transformerRegistry);
     }
 
     /**
      * Create an EventPump from an XML file.
      *
      * @param file The XML file
-     * @param connectionManager The connection manager
+     * @param connectionFactory The connection manager
      * @param defaultListener The default listener
      * @return The configured EventPump
      * @throws Exception if creation fails
      */
     public static EventPump fromXml(java.io.File file,
-                                     PlcConnectionManager connectionManager,
+                                     PlcConnectionFactory connectionFactory,
                                      TagBatch.TagBatchListener defaultListener) throws Exception {
-        return fromXml(file, connectionManager, defaultListener, null);
+        return fromXml(file, connectionFactory, defaultListener, null);
     }
 
     /**
      * Create an EventPump from an XML file with a custom transformer registry.
      *
      * @param file The XML file
-     * @param connectionManager The connection manager
+     * @param connectionFactory The connection manager
      * @param defaultListener The default listener
      * @param transformerRegistry The transformer registry (or null to create default)
      * @return The configured EventPump
      * @throws Exception if creation fails
      */
     public static EventPump fromXml(java.io.File file,
-                                     PlcConnectionManager connectionManager,
+                                     PlcConnectionFactory connectionFactory,
                                      TagBatch.TagBatchListener defaultListener,
                                      ValueTransformerRegistry transformerRegistry) throws Exception {
         EventPumpConfiguration config = EventPumpConfiguration.fromXml(file);
-        return create(config, connectionManager, defaultListener, transformerRegistry);
+        return create(config, connectionFactory, defaultListener, transformerRegistry);
     }
 }

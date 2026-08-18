@@ -61,7 +61,7 @@ public class ManualWallS71500HFailover {
 
     public static void main(String[] args) throws Exception {
         try (PlcConnection connection = PlcDriverManager.getDefault()
-                .getConnectionManager()
+                .getConnectionFactory()
                 .getConnection(CONNECTION_URL)) {
             System.out.println("Connected to S7H dual-path (two independent S7-1500 CPUs). "
                 + "metadata.readSupported=" + connection.getMetadata().isReadSupported());

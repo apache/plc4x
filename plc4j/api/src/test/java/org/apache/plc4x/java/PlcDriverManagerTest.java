@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java;
 
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -65,6 +66,20 @@ public class PlcDriverManagerTest {
         assertThat(mockConnection.getAuthentication(), notNullValue());
         assertThat(mockConnection.getAuthentication(), instanceOf(PlcUsernamePasswordAuthentication.class));
         assertThat(mockConnection.isConnected(), is(true));
+    }
+
+    /**
+     * The driver manager creates connections and leaves them to their callers, so it is a
+     * {@link PlcConnectionFactory} and nothing more: it holds no connection it would have to
+     * release, and must therefore not pretend to be closeable.
+     */
+    @Test
+    public void theDriverManagerIsAFactoryAndNotCloseable() {
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
+
+        assertThat(driverManager.getConnectionFactory(), is(driverManager));
+        assertThat(driverManager, instanceOf(PlcConnectionFactory.class));
+        assertThat(driverManager instanceof AutoCloseable, is(false));
     }
 
     /**

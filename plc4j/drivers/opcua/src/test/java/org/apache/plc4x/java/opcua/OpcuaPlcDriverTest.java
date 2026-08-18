@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcCertificateAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
@@ -681,10 +681,10 @@ public class OpcuaPlcDriverTest {
         @Test
         public void manyReconnectionsWithSingleSubscription() throws Exception {
             PlcDriverManager driverManager = new DefaultPlcDriverManager();
-            PlcConnectionManager connectionManager = driverManager.getConnectionManager();
+            PlcConnectionFactory connectionFactory = driverManager.getConnectionFactory();
 
             for (int i = 0; i < 3; i++) {
-                try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+                try (PlcConnection connection = connectionFactory.getConnection(tcpConnectionAddress)) {
 
                     PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
                             .addChangeOfStateTag("Demo", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
@@ -707,9 +707,9 @@ public class OpcuaPlcDriverTest {
          */
         @Test
         public void cyclicSubscriptionReportsRepeatedly() throws Exception {
-            PlcConnectionManager connectionManager = new DefaultPlcDriverManager().getConnectionManager();
+            PlcConnectionFactory connectionFactory = new DefaultPlcDriverManager().getConnectionFactory();
 
-            try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+            try (PlcConnection connection = connectionFactory.getConnection(tcpConnectionAddress)) {
                 ConcurrentLinkedDeque<PlcSubscriptionEvent> events = new ConcurrentLinkedDeque<>();
 
                 PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
@@ -746,9 +746,9 @@ public class OpcuaPlcDriverTest {
          */
         @Test
         public void multiTagSubscriptionReportsOneHandle() throws Exception {
-            PlcConnectionManager connectionManager = new DefaultPlcDriverManager().getConnectionManager();
+            PlcConnectionFactory connectionFactory = new DefaultPlcDriverManager().getConnectionFactory();
 
-            try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+            try (PlcConnection connection = connectionFactory.getConnection(tcpConnectionAddress)) {
                 PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
                     .addChangeOfStateTag("first", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
                     .addChangeOfStateTag("second", OpcuaTag.of(BOOL_IDENTIFIER_READ_WRITE))
@@ -774,12 +774,12 @@ public class OpcuaPlcDriverTest {
             final int numberOfSubscriptions = 3;
 
             PlcDriverManager driverManager = new DefaultPlcDriverManager();
-            PlcConnectionManager connectionManager = driverManager.getConnectionManager();
+            PlcConnectionFactory connectionFactory = driverManager.getConnectionFactory();
 
             ArrayList<PlcSubscriptionResponse> plcSubscriptionResponses = new ArrayList<>();
             ConcurrentLinkedDeque<PlcSubscriptionEvent> events = new ConcurrentLinkedDeque<>();
 
-            try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+            try (PlcConnection connection = connectionFactory.getConnection(tcpConnectionAddress)) {
                 for (int i = 0; i < numberOfSubscriptions; i++) {
                     PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
                             .addChangeOfStateTag("Demo", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
