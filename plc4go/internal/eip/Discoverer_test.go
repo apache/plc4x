@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
+	"net"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -76,4 +77,77 @@ func TestCipIdentityProductNameEncoding(t *testing.T) {
 	raw := wb.GetBytes()
 
 	assert.True(t, bytes.Contains(raw, []byte(productName)), "expected serialized CipIdentity to contain product name bytes %q, got % x", productName, raw)
+}
+
+// TestSubnetBroadcast pins the broadcast-address computation used to target
+// the per-interface ListIdentity request (subnetBroadcast ORs in the inverted
+// mask, i.e. sets all host bits).
+func TestSubnetBroadcast(t *testing.T) {
+	tests := []struct {
+		name string
+		cidr string
+		want net.IP
+	}{
+		{
+			name: "/24",
+			cidr: "192.168.1.10/24",
+			want: net.IPv4(192, 168, 1, 255).To4(),
+		},
+		{
+			name: "/16",
+			cidr: "10.20.30.40/16",
+			want: net.IPv4(10, 20, 255, 255).To4(),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ip, ipNet, err := net.ParseCIDR(tt.cidr)
+			require.NoError(t, err)
+			// ParseCIDR zeroes the host bits in ipNet.IP; use the original
+			// host address the same way a real interface address would be
+			// reported by net.Interface.Addrs().
+			ipNet.IP = ip
+			got := subnetBroadcast(ipNet)
+			assert.True(t, tt.want.Equal(got), "expected %v, got %v", tt.want, got)
+		})
+	}
+}
+
+// TestIdentityFromPacket hand-serializes an EipListIdentityResponse carrying
+// a CipIdentity item, round-trips it through the wire format, and asserts
+// identityFromPacket (the helper the discoverer uses to decode ListIdentity
+// replies) extracts the product name.
+func TestIdentityFromPacket(t *testing.T) {
+	const productName = "1756-EN2T"
+	identity := readWriteModel.NewCipIdentity(
+		uint16(1),                          // encapsulationProtocolVersion
+		uint16(2),                          // socketAddressFamily
+		uint16(EipUdpDiscoveryDefaultPort), // socketAddressPort
+		[]uint8{192, 168, 1, 50},           // socketAddressAddress
+		uint16(1),                          // vendorId
+		uint16(14),                         // deviceType
+		uint16(54),                         // productCode
+		uint8(1),                           // revisionMajor
+		uint8(1),                           // revisionMinor
+		uint16(0),                          // status
+		uint32(123456),                     // serialNumber
+		productName,                        // productName
+		uint8(3),                           // state
+	)
+	response := readWriteModel.NewEipListIdentityResponse(
+		0, 0, []byte{0, 0, 0, 0, 0, 0, 0, 0}, 0,
+		[]readWriteModel.CommandSpecificDataItem{identity},
+	)
+
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	require.NoError(t, response.SerializeWithWriteBuffer(context.Background(), wb))
+	raw := wb.GetBytes()
+
+	rb := utils.NewReadBufferByteBased(raw, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+	packet, err := readWriteModel.EipPacketParseWithBuffer[readWriteModel.EipPacket](context.Background(), rb, true)
+	require.NoError(t, err)
+
+	gotIdentity, ok := identityFromPacket(packet)
+	require.True(t, ok)
+	assert.Equal(t, productName, gotIdentity.GetProductName())
 }
