@@ -37,3 +37,25 @@ func TestEIPDriver(t *testing.T) {
 		optionsForTesting...,
 	)
 }
+
+func TestEIPDriverConnected(t *testing.T) {
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		eip.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/eip/DriverTestsuiteConnected.xml",
+		eipIO.EipXmlParserHelper{},
+		optionsForTesting...,
+	)
+}
+
+func TestEIPDriverMessageRouter(t *testing.T) {
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		eip.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/eip/DriverTestsuiteMessageRouter.xml",
+		eipIO.EipXmlParserHelper{},
+		optionsForTesting...,
+	)
+}

@@ -26,6 +26,7 @@ import (
 	"fmt"
 	"io"
 	"math/big"
+	"strconv"
 	"strings"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -63,6 +64,30 @@ type xmlReadBuffer struct {
 	pos            uint
 	doValidateAttr bool
 	doValidateList bool
+
+	// tokenHistory/historyPos let GetPos()/Reset() genuinely rewind the token
+	// stream (xml.Decoder.Token() is forward-only, unlike a byte buffer's
+	// cursor). Speculative lookahead - e.g. terminated-array termination
+	// checks that parse-then-rewind - replays already-consumed tokens from
+	// tokenHistory instead of re-reading (and thereby corrupting) the
+	// underlying decoder.
+	//
+	// posMarks queues, per reported GetPos() value, the historyPos each call
+	// observed, in call order; Reset(pos) dequeues the oldest one. A plain
+	// "last GetPos() wins" map would misbehave here: every generated type's
+	// parse function also calls GetPos() once on entry purely for (unused)
+	// diagnostics, and because bit-level fields (e.g. a 3-bit discriminator)
+	// don't move x.pos across a full byte, several of those vestigial calls
+	// - nested arbitrarily deep - legitimately alias to the exact same
+	// reported value as the real caller's own GetPos(). Since the real
+	// caller's GetPos() always runs first (its Reset() is always the
+	// outermost pending one for that value) and none of the vestigial calls
+	// ever call Reset() at all, taking the oldest queued entry for a value
+	// is exactly the paired one, regardless of how many discarded lookups
+	// share it.
+	tokenHistory []xml.Token
+	historyPos   int
+	posMarks     map[uint32][]int
 }
 
 var _ ReadBuffer = (*xmlReadBuffer)(nil)
@@ -81,11 +106,39 @@ func (x *xmlReadBuffer) GetByteOrder() binary.ByteOrder {
 }
 
 func (x *xmlReadBuffer) GetPos() uint32 {
-	return uint32(x.pos / 8)
+	curPos := uint32(x.pos / 8)
+	if x.posMarks == nil {
+		x.posMarks = map[uint32][]int{}
+	}
+	x.posMarks[curPos] = append(x.posMarks[curPos], x.historyPos)
+	return curPos
 }
 
 func (x *xmlReadBuffer) Reset(pos uint32) {
-	x.pos = uint(pos * 8)
+	x.pos = uint(pos) * 8
+	if marks := x.posMarks[pos]; len(marks) > 0 {
+		x.historyPos = marks[0]
+		x.posMarks[pos] = marks[1:]
+	}
+}
+
+// nextToken returns the next XML token, transparently replaying tokens
+// already consumed from the underlying decoder (see tokenHistory) so a
+// Reset() to an earlier GetPos() snapshot can genuinely rewind - the
+// embedded xml.Decoder itself only ever reads forward.
+func (x *xmlReadBuffer) nextToken() (xml.Token, error) {
+	if x.historyPos < len(x.tokenHistory) {
+		token := x.tokenHistory[x.historyPos]
+		x.historyPos++
+		return token, nil
+	}
+	token, err := x.Decoder.Token()
+	if err != nil {
+		return nil, err
+	}
+	x.tokenHistory = append(x.tokenHistory, xml.CopyToken(token))
+	x.historyPos++
+	return token, nil
 }
 
 func (x *xmlReadBuffer) HasMore(bitLength uint8) bool {
@@ -303,7 +356,7 @@ func (x *xmlReadBuffer) move(bits uint8) {
 
 func (x *xmlReadBuffer) travelToNextStartElement() (xml.StartElement, error) {
 	for {
-		token, err := x.Token()
+		token, err := x.nextToken()
 		if err != nil {
 			return xml.StartElement{}, err
 		}
@@ -320,7 +373,7 @@ func (x *xmlReadBuffer) travelToNextEndElement() (xml.EndElement, error) {
 	var endElement xml.EndElement
 findTheEndToken:
 	for {
-		token, err := x.Token()
+		token, err := x.nextToken()
 		if err != nil {
 			return xml.EndElement{}, err
 		}
@@ -344,9 +397,134 @@ func (x *xmlReadBuffer) decode(logicalName string, dataType string, bitLength ui
 	if err != nil {
 		return err
 	}
-	err = x.DecodeElement(targetValue, &startElement)
+	// Deliberately not using x.DecodeElement here: DecodeElement consumes tokens
+	// straight from the embedded xml.Decoder, bypassing nextToken()'s replay
+	// buffer. That invisible consumption left GetPos()/Reset() (used by
+	// terminated-array termination checks, see NoMorePathSegments) unable to
+	// truly rewind, since the replayed history didn't include everything that
+	// had actually been consumed. Reading the element's text content by hand -
+	// through nextToken(), like everything else in this file - keeps the
+	// replay buffer complete so a Reset() to an earlier GetPos() is exact.
+	text, err := x.readElementText(startElement)
 	if err != nil {
 		return err
+	}
+	return assignDecodedText(text, targetValue)
+}
+
+// readElementText consumes tokens (via nextToken(), so they remain replayable)
+// up to and including the EndElement matching start, returning the
+// concatenated character data in between.
+func (x *xmlReadBuffer) readElementText(start xml.StartElement) (string, error) {
+	var sb strings.Builder
+	for {
+		token, err := x.nextToken()
+		if err != nil {
+			return "", err
+		}
+		switch t := token.(type) {
+		case xml.CharData:
+			sb.Write(t)
+		case xml.EndElement:
+			if t.Name != start.Name {
+				return "", errors.Errorf("unexpected end element %s. Expected end of %s", t.Name, start.Name)
+			}
+			return sb.String(), nil
+		case xml.StartElement:
+			return "", errors.Errorf("unexpected nested start element %s while reading text content of %s", t.Name, start.Name)
+		}
+	}
+}
+
+// assignDecodedText mirrors the primitive-type unmarshalling xml.DecodeElement
+// used to perform, for the handful of concrete pointer types this file ever
+// passes as a decode target. Numeric/bool/big.* targets are whitespace-trimmed
+// first, matching encoding/xml's own behavior (test fixtures sometimes wrap a
+// value's text content across a line break for readability); *string targets
+// are taken verbatim.
+func assignDecodedText(text string, targetValue any) error {
+	if _, isString := targetValue.(*string); !isString {
+		text = strings.TrimSpace(text)
+	}
+	switch v := targetValue.(type) {
+	case *bool:
+		parsed, err := strconv.ParseBool(text)
+		if err != nil {
+			return errors.Wrap(err, "error parsing bool")
+		}
+		*v = parsed
+	case *string:
+		*v = text
+	case *uint8:
+		parsed, err := strconv.ParseUint(text, 10, 8)
+		if err != nil {
+			return errors.Wrap(err, "error parsing uint8")
+		}
+		*v = uint8(parsed)
+	case *uint16:
+		parsed, err := strconv.ParseUint(text, 10, 16)
+		if err != nil {
+			return errors.Wrap(err, "error parsing uint16")
+		}
+		*v = uint16(parsed)
+	case *uint32:
+		parsed, err := strconv.ParseUint(text, 10, 32)
+		if err != nil {
+			return errors.Wrap(err, "error parsing uint32")
+		}
+		*v = uint32(parsed)
+	case *uint64:
+		parsed, err := strconv.ParseUint(text, 10, 64)
+		if err != nil {
+			return errors.Wrap(err, "error parsing uint64")
+		}
+		*v = parsed
+	case *int8:
+		parsed, err := strconv.ParseInt(text, 10, 8)
+		if err != nil {
+			return errors.Wrap(err, "error parsing int8")
+		}
+		*v = int8(parsed)
+	case *int16:
+		parsed, err := strconv.ParseInt(text, 10, 16)
+		if err != nil {
+			return errors.Wrap(err, "error parsing int16")
+		}
+		*v = int16(parsed)
+	case *int32:
+		parsed, err := strconv.ParseInt(text, 10, 32)
+		if err != nil {
+			return errors.Wrap(err, "error parsing int32")
+		}
+		*v = int32(parsed)
+	case *int64:
+		parsed, err := strconv.ParseInt(text, 10, 64)
+		if err != nil {
+			return errors.Wrap(err, "error parsing int64")
+		}
+		*v = parsed
+	case *float32:
+		parsed, err := strconv.ParseFloat(text, 32)
+		if err != nil {
+			return errors.Wrap(err, "error parsing float32")
+		}
+		*v = float32(parsed)
+	case *float64:
+		parsed, err := strconv.ParseFloat(text, 64)
+		if err != nil {
+			return errors.Wrap(err, "error parsing float64")
+		}
+		*v = parsed
+	case *big.Int:
+		if err := v.UnmarshalText([]byte(text)); err != nil {
+			return errors.Wrap(err, "error parsing big.Int")
+		}
+	case *big.Float:
+		if err := v.UnmarshalText([]byte(text)); err != nil {
+			return errors.Wrap(err, "error parsing big.Float")
+		}
+	default:
+		return errors.Errorf("unsupported xml decode target type %T", targetValue)
 	}
 	return nil
 }
