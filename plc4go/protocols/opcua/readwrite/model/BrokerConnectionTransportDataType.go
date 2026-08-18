@@ -263,8 +263,8 @@ func (m *_BrokerConnectionTransportDataType) GetPlx4xTypeName() string {
 	return "BrokerConnectionTransportDataType"
 }
 
-func (m *_BrokerConnectionTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_BrokerConnectionTransportDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (resourceUri)
 	lengthInBits += m.ResourceUri.GetLengthInBits(ctx)
@@ -275,7 +275,7 @@ func (m *_BrokerConnectionTransportDataType) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BrokerConnectionTransportDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BrokerConnectionTransportDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

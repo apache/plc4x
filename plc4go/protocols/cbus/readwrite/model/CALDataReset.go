@@ -181,13 +181,13 @@ func (m *_CALDataReset) GetPlx4xTypeName() string {
 	return "CALDataReset"
 }
 
-func (m *_CALDataReset) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
+func (m *_CALDataReset) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_CALDataReset) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALDataReset) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,11 +250,11 @@ func CastOpcuaNodeIdServicesVariableNamespaces(structType any) OpcuaNodeIdServic
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableNamespaces) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableNamespaces) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableNamespaces) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableNamespaces) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

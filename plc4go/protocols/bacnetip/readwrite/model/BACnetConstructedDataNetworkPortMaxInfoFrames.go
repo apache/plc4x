@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetPlx4xTypeName() stri
 	return "BACnetConstructedDataNetworkPortMaxInfoFrames"
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (maxInfoFrames)
 	lengthInBits += m.MaxInfoFrames.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

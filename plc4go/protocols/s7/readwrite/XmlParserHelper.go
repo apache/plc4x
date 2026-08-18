@@ -121,11 +121,11 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 	case "AssociatedQueryValueType":
 		return AssociatedQueryValueTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "COTPPacket":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
 			return nil, err
 		}
-		cotpLen := uint16(parsedUint0)
+		cotpLen := uint32(parsedUint0)
 		return COTPPacketParseWithBuffer[COTPPacket](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cotpLen)
 	case "DateAndTime":
 		return DateAndTimeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

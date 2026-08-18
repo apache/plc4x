@@ -248,8 +248,8 @@ func (m *_BACnetEventTransitionBitsTagged) GetPlx4xTypeName() string {
 	return "BACnetEventTransitionBitsTagged"
 }
 
-func (m *_BACnetEventTransitionBitsTagged) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventTransitionBitsTagged) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits(ctx)
@@ -266,7 +266,7 @@ func (m *_BACnetEventTransitionBitsTagged) GetLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
-func (m *_BACnetEventTransitionBitsTagged) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventTransitionBitsTagged) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

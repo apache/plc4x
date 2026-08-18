@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetPlx4xTypeName
 	return "BACnetConstructedDataAccessEventAuthenticationFactor"
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (accessEventAuthenticationFactor)
 	lengthInBits += m.AccessEventAuthenticationFactor.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBits(
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

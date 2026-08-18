@@ -212,8 +212,8 @@ func (m *_PublishedDataItemsDataType) GetPlx4xTypeName() string {
 	return "PublishedDataItemsDataType"
 }
 
-func (m *_PublishedDataItemsDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_PublishedDataItemsDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfPublishedData)
 	lengthInBits += 32
@@ -229,7 +229,7 @@ func (m *_PublishedDataItemsDataType) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_PublishedDataItemsDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PublishedDataItemsDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -223,8 +223,8 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetPlx4xTypeName() s
 	return "BACnetConfirmedServiceRequestGetEventInformation"
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Optional Field (lastReceivedObjectIdentifier)
 	if m.LastReceivedObjectIdentifier != nil {
@@ -234,7 +234,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits(ctx 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

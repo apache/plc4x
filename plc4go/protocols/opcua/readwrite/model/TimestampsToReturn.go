@@ -112,11 +112,11 @@ func CastTimestampsToReturn(structType any) TimestampsToReturn {
 	return castFunc(structType)
 }
 
-func (m TimestampsToReturn) GetLengthInBits(ctx context.Context) uint16 {
+func (m TimestampsToReturn) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m TimestampsToReturn) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TimestampsToReturn) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

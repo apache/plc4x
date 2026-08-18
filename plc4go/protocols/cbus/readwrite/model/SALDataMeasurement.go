@@ -231,8 +231,8 @@ func (m *_SALDataMeasurement) GetPlx4xTypeName() string {
 	return "SALDataMeasurement"
 }
 
-func (m *_SALDataMeasurement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataMeasurement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (measurementData)
 	lengthInBits += m.MeasurementData.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_SALDataMeasurement) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SALDataMeasurement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataMeasurement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

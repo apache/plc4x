@@ -212,8 +212,8 @@ func (m *_LogRecordsDataType) GetPlx4xTypeName() string {
 	return "LogRecordsDataType"
 }
 
-func (m *_LogRecordsDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_LogRecordsDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfLogRecordArray)
 	lengthInBits += 32
@@ -229,7 +229,7 @@ func (m *_LogRecordsDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_LogRecordsDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_LogRecordsDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

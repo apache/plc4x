@@ -322,8 +322,8 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWriteGroup"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (groupNumber)
 	lengthInBits += m.GroupNumber.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBits(ctx context
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

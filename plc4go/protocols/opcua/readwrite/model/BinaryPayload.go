@@ -211,18 +211,18 @@ func (m *_BinaryPayload) GetPlx4xTypeName() string {
 	return "BinaryPayload"
 }
 
-func (m *_BinaryPayload) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
+func (m *_BinaryPayload) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Payload) > 0 {
-		lengthInBits += 8 * uint16(len(m.Payload))
+		lengthInBits += 8 * uint64(len(m.Payload))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BinaryPayload) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BinaryPayload) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

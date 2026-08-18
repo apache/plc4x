@@ -58,8 +58,8 @@ type CipServiceContract interface {
 
 // CipServiceRequirements provides a set of functions which need to be implemented by a sub struct
 type CipServiceRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetConnected returns Connected (discriminator field)
 	GetConnected() bool
 	// GetResponse returns Response (discriminator field)
@@ -501,8 +501,8 @@ func (m *_CipService) GetPlx4xTypeName() string {
 	return "CipService"
 }
 
-func (m *_CipService) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CipService) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (response)
 	lengthInBits += 1
 	// Discriminator Field (service)
@@ -511,11 +511,11 @@ func (m *_CipService) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CipService) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CipService) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CipService) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CipService) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

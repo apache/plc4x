@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataElevatorGroup) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataElevatorGroup"
 }
 
-func (m *_BACnetConstructedDataElevatorGroup) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataElevatorGroup) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (elevatorGroup)
 	lengthInBits += m.ElevatorGroup.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataElevatorGroup) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataElevatorGroup) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataElevatorGroup) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

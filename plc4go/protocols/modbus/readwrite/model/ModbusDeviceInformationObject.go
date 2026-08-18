@@ -179,8 +179,8 @@ func (m *_ModbusDeviceInformationObject) GetPlx4xTypeName() string {
 	return "ModbusDeviceInformationObject"
 }
 
-func (m *_ModbusDeviceInformationObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ModbusDeviceInformationObject) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (objectId)
 	lengthInBits += 8
@@ -190,13 +190,13 @@ func (m *_ModbusDeviceInformationObject) GetLengthInBits(ctx context.Context) ui
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ModbusDeviceInformationObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusDeviceInformationObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

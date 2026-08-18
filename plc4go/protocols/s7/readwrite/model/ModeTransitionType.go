@@ -136,11 +136,11 @@ func CastModeTransitionType(structType any) ModeTransitionType {
 	return castFunc(structType)
 }
 
-func (m ModeTransitionType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ModeTransitionType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ModeTransitionType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ModeTransitionType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

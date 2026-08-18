@@ -162,8 +162,8 @@ func (m *_EipConstants) GetTypeName() string {
 	return "EipConstants"
 }
 
-func (m *_EipConstants) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_EipConstants) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (eipUdpDiscoveryDefaultPort)
 	lengthInBits += 16
@@ -174,7 +174,7 @@ func (m *_EipConstants) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_EipConstants) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_EipConstants) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

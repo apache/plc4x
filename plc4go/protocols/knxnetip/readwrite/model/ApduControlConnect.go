@@ -184,13 +184,13 @@ func (m *_ApduControlConnect) GetPlx4xTypeName() string {
 	return "ApduControlConnect"
 }
 
-func (m *_ApduControlConnect) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduControlContract.(*_ApduControl).getLengthInBits(ctx))
+func (m *_ApduControlConnect) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduControlContract.(*_ApduControl).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduControlConnect) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduControlConnect) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

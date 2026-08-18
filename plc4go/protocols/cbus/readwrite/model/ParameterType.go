@@ -148,11 +148,11 @@ func CastParameterType(structType any) ParameterType {
 	return castFunc(structType)
 }
 
-func (m ParameterType) GetLengthInBits(ctx context.Context) uint16 {
+func (m ParameterType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ParameterType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ParameterType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -886,11 +886,11 @@ func CastOpcuaNodeIdServicesVariableWriter(structType any) OpcuaNodeIdServicesVa
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableWriter) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableWriter) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableWriter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableWriter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataValidSamples) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataValidSamples"
 }
 
-func (m *_BACnetConstructedDataValidSamples) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataValidSamples) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (validSamples)
 	lengthInBits += m.ValidSamples.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataValidSamples) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataValidSamples) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataValidSamples) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

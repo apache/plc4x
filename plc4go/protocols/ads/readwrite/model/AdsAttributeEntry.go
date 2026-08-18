@@ -195,8 +195,8 @@ func (m *_AdsAttributeEntry) GetPlx4xTypeName() string {
 	return "AdsAttributeEntry"
 }
 
-func (m *_AdsAttributeEntry) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsAttributeEntry) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (nameLength)
 	lengthInBits += 8
@@ -205,13 +205,13 @@ func (m *_AdsAttributeEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 8
 
 	// Simple field (name)
-	lengthInBits += uint16(int32(uint8(len(m.GetName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint8(len(m.GetName()))) * int32(int32(8)))
 
 	// Const Field (nameTerminator)
 	lengthInBits += 8
 
 	// Simple field (value)
-	lengthInBits += uint16(int32(uint8(len(m.GetValue()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint8(len(m.GetValue()))) * int32(int32(8)))
 
 	// Implicit Field (valueTerminator)
 	lengthInBits += 8
@@ -219,7 +219,7 @@ func (m *_AdsAttributeEntry) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsAttributeEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsAttributeEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

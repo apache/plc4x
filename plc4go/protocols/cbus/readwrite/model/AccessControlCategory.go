@@ -94,11 +94,11 @@ func CastAccessControlCategory(structType any) AccessControlCategory {
 	return castFunc(structType)
 }
 
-func (m AccessControlCategory) GetLengthInBits(ctx context.Context) uint16 {
+func (m AccessControlCategory) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m AccessControlCategory) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AccessControlCategory) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

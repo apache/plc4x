@@ -407,8 +407,8 @@ func (m *_CipConnectionManagerCloseRequest) GetPlx4xTypeName() string {
 	return "CipConnectionManagerCloseRequest"
 }
 
-func (m *_CipConnectionManagerCloseRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+func (m *_CipConnectionManagerCloseRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	// Simple field (requestPathSize)
 	lengthInBits += 8
@@ -453,7 +453,7 @@ func (m *_CipConnectionManagerCloseRequest) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_CipConnectionManagerCloseRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CipConnectionManagerCloseRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

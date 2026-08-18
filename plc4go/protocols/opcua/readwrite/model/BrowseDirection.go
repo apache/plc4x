@@ -106,11 +106,11 @@ func CastBrowseDirection(structType any) BrowseDirection {
 	return castFunc(structType)
 }
 
-func (m BrowseDirection) GetLengthInBits(ctx context.Context) uint16 {
+func (m BrowseDirection) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m BrowseDirection) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BrowseDirection) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

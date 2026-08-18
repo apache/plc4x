@@ -106,11 +106,11 @@ func CastQueryType(structType any) QueryType {
 	return castFunc(structType)
 }
 
-func (m QueryType) GetLengthInBits(ctx context.Context) uint16 {
+func (m QueryType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m QueryType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m QueryType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

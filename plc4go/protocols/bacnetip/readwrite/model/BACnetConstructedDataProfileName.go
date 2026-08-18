@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataProfileName) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProfileName"
 }
 
-func (m *_BACnetConstructedDataProfileName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataProfileName) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (profileName)
 	lengthInBits += m.ProfileName.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataProfileName) GetLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataProfileName) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataProfileName) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

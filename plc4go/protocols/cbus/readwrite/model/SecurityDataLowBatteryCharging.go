@@ -232,8 +232,8 @@ func (m *_SecurityDataLowBatteryCharging) GetPlx4xTypeName() string {
 	return "SecurityDataLowBatteryCharging"
 }
 
-func (m *_SecurityDataLowBatteryCharging) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataLowBatteryCharging) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (startStop)
 	lengthInBits += 8
@@ -245,7 +245,7 @@ func (m *_SecurityDataLowBatteryCharging) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_SecurityDataLowBatteryCharging) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataLowBatteryCharging) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

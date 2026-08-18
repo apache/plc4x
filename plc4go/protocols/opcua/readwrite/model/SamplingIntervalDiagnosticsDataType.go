@@ -257,8 +257,8 @@ func (m *_SamplingIntervalDiagnosticsDataType) GetPlx4xTypeName() string {
 	return "SamplingIntervalDiagnosticsDataType"
 }
 
-func (m *_SamplingIntervalDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SamplingIntervalDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (samplingInterval)
 	lengthInBits += 64
@@ -275,7 +275,7 @@ func (m *_SamplingIntervalDiagnosticsDataType) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_SamplingIntervalDiagnosticsDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SamplingIntervalDiagnosticsDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

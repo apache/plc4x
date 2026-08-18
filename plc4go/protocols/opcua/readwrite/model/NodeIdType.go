@@ -118,11 +118,11 @@ func CastNodeIdType(structType any) NodeIdType {
 	return castFunc(structType)
 }
 
-func (m NodeIdType) GetLengthInBits(ctx context.Context) uint16 {
+func (m NodeIdType) GetLengthInBits(ctx context.Context) uint64 {
 	return 6
 }
 
-func (m NodeIdType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m NodeIdType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

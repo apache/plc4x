@@ -106,11 +106,11 @@ func CastOpenFileMode(structType any) OpenFileMode {
 	return castFunc(structType)
 }
 
-func (m OpenFileMode) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpenFileMode) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpenFileMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpenFileMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

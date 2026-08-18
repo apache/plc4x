@@ -222,15 +222,15 @@ func (m *_CipConnectedRequest) GetPlx4xTypeName() string {
 	return "CipConnectedRequest"
 }
 
-func (m *_CipConnectedRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+func (m *_CipConnectedRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	// Implicit Field (requestPathSize)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.PathSegments) > 0 {
-		lengthInBits += 8 * uint16(len(m.PathSegments))
+		lengthInBits += 8 * uint64(len(m.PathSegments))
 	}
 
 	// Reserved Field (reserved)
@@ -242,7 +242,7 @@ func (m *_CipConnectedRequest) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CipConnectedRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CipConnectedRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

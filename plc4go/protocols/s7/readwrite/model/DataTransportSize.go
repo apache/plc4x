@@ -170,11 +170,11 @@ func CastDataTransportSize(structType any) DataTransportSize {
 	return castFunc(structType)
 }
 
-func (m DataTransportSize) GetLengthInBits(ctx context.Context) uint16 {
+func (m DataTransportSize) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m DataTransportSize) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DataTransportSize) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

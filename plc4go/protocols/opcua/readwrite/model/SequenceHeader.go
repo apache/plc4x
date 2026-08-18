@@ -179,8 +179,8 @@ func (m *_SequenceHeader) GetPlx4xTypeName() string {
 	return "SequenceHeader"
 }
 
-func (m *_SequenceHeader) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_SequenceHeader) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (sequenceNumber)
 	lengthInBits += 32
@@ -191,7 +191,7 @@ func (m *_SequenceHeader) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SequenceHeader) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SequenceHeader) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

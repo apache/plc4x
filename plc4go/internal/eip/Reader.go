@@ -194,7 +194,7 @@ func toAnsi(tag string) ([]byte, error) {
 			}
 			newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, pad))
 		}
-		lengthInBytes += newSegment.GetLengthInBytes(ctx)
+		lengthInBytes += uint16(newSegment.GetLengthInBytes(ctx))
 		segments = append(segments, newSegment)
 	}
 	buffer := utils.NewWriteBufferByteBased(

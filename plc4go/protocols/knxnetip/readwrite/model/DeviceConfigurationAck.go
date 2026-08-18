@@ -231,8 +231,8 @@ func (m *_DeviceConfigurationAck) GetPlx4xTypeName() string {
 	return "DeviceConfigurationAck"
 }
 
-func (m *_DeviceConfigurationAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+func (m *_DeviceConfigurationAck) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
 
 	// Simple field (deviceConfigurationAckDataBlock)
 	lengthInBits += m.DeviceConfigurationAckDataBlock.GetLengthInBits(ctx)
@@ -240,7 +240,7 @@ func (m *_DeviceConfigurationAck) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DeviceConfigurationAck) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DeviceConfigurationAck) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

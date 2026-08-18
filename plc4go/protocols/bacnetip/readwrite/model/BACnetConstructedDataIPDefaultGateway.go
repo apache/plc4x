@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPDefaultGateway"
 }
 
-func (m *_BACnetConstructedDataIPDefaultGateway) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataIPDefaultGateway) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (ipDefaultGateway)
 	lengthInBits += m.IpDefaultGateway.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPDefaultGateway) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataIPDefaultGateway) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

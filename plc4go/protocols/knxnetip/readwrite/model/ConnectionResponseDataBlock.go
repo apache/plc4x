@@ -58,8 +58,8 @@ type ConnectionResponseDataBlockContract interface {
 
 // ConnectionResponseDataBlockRequirements provides a set of functions which need to be implemented by a sub struct
 type ConnectionResponseDataBlockRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetConnectionType returns ConnectionType (discriminator field)
 	GetConnectionType() uint8
 }
@@ -221,8 +221,8 @@ func (m *_ConnectionResponseDataBlock) GetPlx4xTypeName() string {
 	return "ConnectionResponseDataBlock"
 }
 
-func (m *_ConnectionResponseDataBlock) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ConnectionResponseDataBlock) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (structureLength)
 	lengthInBits += 8
@@ -232,11 +232,11 @@ func (m *_ConnectionResponseDataBlock) getLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
-func (m *_ConnectionResponseDataBlock) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ConnectionResponseDataBlock) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ConnectionResponseDataBlock) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConnectionResponseDataBlock) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

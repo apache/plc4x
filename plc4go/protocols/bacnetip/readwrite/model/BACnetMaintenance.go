@@ -112,11 +112,11 @@ func CastBACnetMaintenance(structType any) BACnetMaintenance {
 	return castFunc(structType)
 }
 
-func (m BACnetMaintenance) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetMaintenance) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetMaintenance) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetMaintenance) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

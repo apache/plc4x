@@ -23037,11 +23037,11 @@ func CastBACnetVendorId(structType any) BACnetVendorId {
 	return castFunc(structType)
 }
 
-func (m BACnetVendorId) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetVendorId) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetVendorId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetVendorId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetPlx4xTypeNa
 	return "BACnetConstructedDataBinaryLightingOutputFeedbackValue"
 }
 
-func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (feedbackValue)
 	lengthInBits += m.FeedbackValue.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetLengthInBit
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

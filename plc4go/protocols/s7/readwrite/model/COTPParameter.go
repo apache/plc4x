@@ -58,8 +58,8 @@ type COTPParameterContract interface {
 
 // COTPParameterRequirements provides a set of functions which need to be implemented by a sub struct
 type COTPParameterRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() uint8
 }
@@ -257,8 +257,8 @@ func (m *_COTPParameter) GetPlx4xTypeName() string {
 	return "COTPParameter"
 }
 
-func (m *_COTPParameter) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_COTPParameter) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 
@@ -268,11 +268,11 @@ func (m *_COTPParameter) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPParameter) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_COTPParameter) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_COTPParameter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPParameter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

@@ -328,8 +328,8 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIAm"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
@@ -346,7 +346,7 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -167,8 +167,8 @@ func (m *_StatusCode) GetPlx4xTypeName() string {
 	return "StatusCode"
 }
 
-func (m *_StatusCode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_StatusCode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (statusCode)
 	lengthInBits += 32
@@ -176,7 +176,7 @@ func (m *_StatusCode) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_StatusCode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_StatusCode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -66,8 +66,8 @@ type VariantContract interface {
 
 // VariantRequirements provides a set of functions which need to be implemented by a sub struct
 type VariantRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetVariantType returns VariantType (discriminator field)
 	GetVariantType() uint8
 	// GetArrayLengthSpecified returns ArrayLengthSpecified (discriminator field)
@@ -577,8 +577,8 @@ func (m *_Variant) GetPlx4xTypeName() string {
 	return "Variant"
 }
 
-func (m *_Variant) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_Variant) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (arrayLengthSpecified)
 	lengthInBits += 1
@@ -595,17 +595,17 @@ func (m *_Variant) getLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.ArrayDimensions) > 0 {
-		lengthInBits += 32 * uint16(len(m.ArrayDimensions))
+		lengthInBits += 32 * uint64(len(m.ArrayDimensions))
 	}
 
 	return lengthInBits
 }
 
-func (m *_Variant) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_Variant) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_Variant) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_Variant) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

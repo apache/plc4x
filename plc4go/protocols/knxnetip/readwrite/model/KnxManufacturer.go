@@ -11697,11 +11697,11 @@ func CastKnxManufacturer(structType any) KnxManufacturer {
 	return castFunc(structType)
 }
 
-func (m KnxManufacturer) GetLengthInBits(ctx context.Context) uint16 {
+func (m KnxManufacturer) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m KnxManufacturer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m KnxManufacturer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

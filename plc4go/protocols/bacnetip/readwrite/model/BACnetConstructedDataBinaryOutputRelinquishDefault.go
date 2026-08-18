@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) GetPlx4xTypeName()
 	return "BACnetConstructedDataBinaryOutputRelinquishDefault"
 }
 
-func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) GetLengthInBits(ct
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -63,8 +63,8 @@ type BACnetConfirmedServiceRequestContract interface {
 
 // BACnetConfirmedServiceRequestRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConfirmedServiceRequestRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
 }
@@ -624,8 +624,8 @@ func (m *_BACnetConfirmedServiceRequest) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequest"
 }
 
-func (m *_BACnetConfirmedServiceRequest) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetConfirmedServiceRequest) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
@@ -634,11 +634,11 @@ func (m *_BACnetConfirmedServiceRequest) getLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequest) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetConfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

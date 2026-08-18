@@ -66,8 +66,8 @@ type BACnetEventLogRecordLogDatumContract interface {
 
 // BACnetEventLogRecordLogDatumRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetEventLogRecordLogDatumRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -357,8 +357,8 @@ func (m *_BACnetEventLogRecordLogDatum) GetPlx4xTypeName() string {
 	return "BACnetEventLogRecordLogDatum"
 }
 
-func (m *_BACnetEventLogRecordLogDatum) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetEventLogRecordLogDatum) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -371,11 +371,11 @@ func (m *_BACnetEventLogRecordLogDatum) getLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetEventLogRecordLogDatum) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetEventLogRecordLogDatum) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetEventLogRecordLogDatum) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventLogRecordLogDatum) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

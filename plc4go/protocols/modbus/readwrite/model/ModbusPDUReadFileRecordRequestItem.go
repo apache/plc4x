@@ -207,8 +207,8 @@ func (m *_ModbusPDUReadFileRecordRequestItem) GetPlx4xTypeName() string {
 	return "ModbusPDUReadFileRecordRequestItem"
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ModbusPDUReadFileRecordRequestItem) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (referenceType)
 	lengthInBits += 8
@@ -225,7 +225,7 @@ func (m *_ModbusPDUReadFileRecordRequestItem) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUReadFileRecordRequestItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

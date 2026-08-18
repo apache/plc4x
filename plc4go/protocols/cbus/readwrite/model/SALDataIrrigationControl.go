@@ -232,8 +232,8 @@ func (m *_SALDataIrrigationControl) GetPlx4xTypeName() string {
 	return "SALDataIrrigationControl"
 }
 
-func (m *_SALDataIrrigationControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+func (m *_SALDataIrrigationControl) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
 
 	// Simple field (irrigationControlData)
 	lengthInBits += m.IrrigationControlData.GetLengthInBits(ctx)
@@ -241,7 +241,7 @@ func (m *_SALDataIrrigationControl) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_SALDataIrrigationControl) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SALDataIrrigationControl) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

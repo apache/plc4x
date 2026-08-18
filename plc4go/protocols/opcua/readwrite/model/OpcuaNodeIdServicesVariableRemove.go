@@ -172,11 +172,11 @@ func CastOpcuaNodeIdServicesVariableRemove(structType any) OpcuaNodeIdServicesVa
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableRemove) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableRemove) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableRemove) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableRemove) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

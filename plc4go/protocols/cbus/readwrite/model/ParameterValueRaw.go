@@ -213,18 +213,18 @@ func (m *_ParameterValueRaw) GetPlx4xTypeName() string {
 	return "ParameterValueRaw"
 }
 
-func (m *_ParameterValueRaw) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
+func (m *_ParameterValueRaw) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_ParameterValueRaw) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ParameterValueRaw) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

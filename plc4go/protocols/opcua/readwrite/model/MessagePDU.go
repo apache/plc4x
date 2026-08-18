@@ -60,8 +60,8 @@ type MessagePDUContract interface {
 
 // MessagePDURequirements provides a set of functions which need to be implemented by a sub struct
 type MessagePDURequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() string
 	// GetResponse returns Response (discriminator field)
@@ -319,8 +319,8 @@ func (m *_MessagePDU) GetPlx4xTypeName() string {
 	return "MessagePDU"
 }
 
-func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 24
 
@@ -333,11 +333,11 @@ func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_MessagePDU) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_MessagePDU) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_MessagePDU) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MessagePDU) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

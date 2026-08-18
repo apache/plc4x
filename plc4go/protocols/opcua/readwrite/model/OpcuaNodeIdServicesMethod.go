@@ -9868,11 +9868,11 @@ func CastOpcuaNodeIdServicesMethod(structType any) OpcuaNodeIdServicesMethod {
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesMethod) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesMethod) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesMethod) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesMethod) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

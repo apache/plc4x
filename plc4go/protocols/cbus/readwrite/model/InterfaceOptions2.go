@@ -188,8 +188,8 @@ func (m *_InterfaceOptions2) GetPlx4xTypeName() string {
 	return "InterfaceOptions2"
 }
 
-func (m *_InterfaceOptions2) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_InterfaceOptions2) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 1
@@ -218,7 +218,7 @@ func (m *_InterfaceOptions2) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_InterfaceOptions2) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_InterfaceOptions2) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -229,8 +229,8 @@ func (m *_BACnetReadAccessResultListOfResults) GetPlx4xTypeName() string {
 	return "BACnetReadAccessResultListOfResults"
 }
 
-func (m *_BACnetReadAccessResultListOfResults) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetReadAccessResultListOfResults) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -248,7 +248,7 @@ func (m *_BACnetReadAccessResultListOfResults) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetReadAccessResultListOfResults) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetReadAccessResultListOfResults) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

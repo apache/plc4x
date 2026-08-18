@@ -680,11 +680,11 @@ func CastAdsDataType(structType any) AdsDataType {
 	return castFunc(structType)
 }
 
-func (m AdsDataType) GetLengthInBits(ctx context.Context) uint16 {
+func (m AdsDataType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m AdsDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AdsDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

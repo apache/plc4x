@@ -222,19 +222,19 @@ func (m *_TelephonyDataLineOffHook) GetPlx4xTypeName() string {
 	return "TelephonyDataLineOffHook"
 }
 
-func (m *_TelephonyDataLineOffHook) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+func (m *_TelephonyDataLineOffHook) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	// Simple field (reason)
 	lengthInBits += 8
 
 	// Simple field (number)
-	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint64(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(2)))) * int32(int32(8)))
 
 	return lengthInBits
 }
 
-func (m *_TelephonyDataLineOffHook) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TelephonyDataLineOffHook) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

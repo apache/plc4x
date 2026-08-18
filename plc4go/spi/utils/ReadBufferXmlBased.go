@@ -80,11 +80,11 @@ func (x *xmlReadBuffer) GetByteOrder() binary.ByteOrder {
 	return binary.BigEndian
 }
 
-func (x *xmlReadBuffer) GetPos() uint16 {
-	return uint16(x.pos / 8)
+func (x *xmlReadBuffer) GetPos() uint32 {
+	return uint32(x.pos / 8)
 }
 
-func (x *xmlReadBuffer) Reset(pos uint16) {
+func (x *xmlReadBuffer) Reset(pos uint32) {
 	x.pos = uint(pos * 8)
 }
 

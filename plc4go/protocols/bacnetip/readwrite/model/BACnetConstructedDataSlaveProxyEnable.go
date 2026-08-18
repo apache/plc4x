@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSlaveProxyEnable"
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (slaveProxyEnable)
 	lengthInBits += m.SlaveProxyEnable.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBits(ctx context.Con
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

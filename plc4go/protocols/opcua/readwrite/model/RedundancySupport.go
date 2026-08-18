@@ -118,11 +118,11 @@ func CastRedundancySupport(structType any) RedundancySupport {
 	return castFunc(structType)
 }
 
-func (m RedundancySupport) GetLengthInBits(ctx context.Context) uint16 {
+func (m RedundancySupport) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m RedundancySupport) GetLengthInBytes(ctx context.Context) uint16 {
+func (m RedundancySupport) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

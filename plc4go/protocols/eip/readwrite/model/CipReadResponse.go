@@ -263,8 +263,8 @@ func (m *_CipReadResponse) GetPlx4xTypeName() string {
 	return "CipReadResponse"
 }
 
-func (m *_CipReadResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+func (m *_CipReadResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -283,7 +283,7 @@ func (m *_CipReadResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CipReadResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CipReadResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

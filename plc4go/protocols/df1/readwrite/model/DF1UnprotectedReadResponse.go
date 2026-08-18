@@ -210,16 +210,16 @@ func (m *_DF1UnprotectedReadResponse) GetPlx4xTypeName() string {
 	return "DF1UnprotectedReadResponse"
 }
 
-func (m *_DF1UnprotectedReadResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1CommandContract.(*_DF1Command).getLengthInBits(ctx))
+func (m *_DF1UnprotectedReadResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DF1CommandContract.(*_DF1Command).getLengthInBits(ctx))
 
 	// Manual Array Field (data)
-	lengthInBits += uint16(DataLength(ctx, m.GetData()))
+	lengthInBits += uint64(DataLength(ctx, m.GetData()))
 
 	return lengthInBits
 }
 
-func (m *_DF1UnprotectedReadResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1UnprotectedReadResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

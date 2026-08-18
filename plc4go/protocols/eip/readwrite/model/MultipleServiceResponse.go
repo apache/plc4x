@@ -281,8 +281,8 @@ func (m *_MultipleServiceResponse) GetPlx4xTypeName() string {
 	return "MultipleServiceResponse"
 }
 
-func (m *_MultipleServiceResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+func (m *_MultipleServiceResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -298,18 +298,18 @@ func (m *_MultipleServiceResponse) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Offsets) > 0 {
-		lengthInBits += 16 * uint16(len(m.Offsets))
+		lengthInBits += 16 * uint64(len(m.Offsets))
 	}
 
 	// Array field
 	if len(m.ServicesData) > 0 {
-		lengthInBits += 8 * uint16(len(m.ServicesData))
+		lengthInBits += 8 * uint64(len(m.ServicesData))
 	}
 
 	return lengthInBits
 }
 
-func (m *_MultipleServiceResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MultipleServiceResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

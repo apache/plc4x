@@ -118,11 +118,11 @@ func CastBACnetProgramError(structType any) BACnetProgramError {
 	return castFunc(structType)
 }
 
-func (m BACnetProgramError) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetProgramError) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetProgramError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetProgramError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

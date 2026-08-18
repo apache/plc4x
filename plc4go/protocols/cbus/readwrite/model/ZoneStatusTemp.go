@@ -106,11 +106,11 @@ func CastZoneStatusTemp(structType any) ZoneStatusTemp {
 	return castFunc(structType)
 }
 
-func (m ZoneStatusTemp) GetLengthInBits(ctx context.Context) uint16 {
+func (m ZoneStatusTemp) GetLengthInBits(ctx context.Context) uint64 {
 	return 2
 }
 
-func (m ZoneStatusTemp) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ZoneStatusTemp) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

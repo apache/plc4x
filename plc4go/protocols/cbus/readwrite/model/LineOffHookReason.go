@@ -130,11 +130,11 @@ func CastLineOffHookReason(structType any) LineOffHookReason {
 	return castFunc(structType)
 }
 
-func (m LineOffHookReason) GetLengthInBits(ctx context.Context) uint16 {
+func (m LineOffHookReason) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m LineOffHookReason) GetLengthInBytes(ctx context.Context) uint16 {
+func (m LineOffHookReason) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

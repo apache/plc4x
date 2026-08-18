@@ -215,8 +215,8 @@ func (m *_BACnetHostNPort) GetPlx4xTypeName() string {
 	return "BACnetHostNPort"
 }
 
-func (m *_BACnetHostNPort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetHostNPort) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (host)
 	lengthInBits += m.Host.GetLengthInBits(ctx)
@@ -227,7 +227,7 @@ func (m *_BACnetHostNPort) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetHostNPort) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetHostNPort) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

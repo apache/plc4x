@@ -177,8 +177,8 @@ func (m *_BACnetSetpointReference) GetPlx4xTypeName() string {
 	return "BACnetSetpointReference"
 }
 
-func (m *_BACnetSetpointReference) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetSetpointReference) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Optional Field (setPointReference)
 	if m.SetPointReference != nil {
@@ -188,7 +188,7 @@ func (m *_BACnetSetpointReference) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetSetpointReference) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetSetpointReference) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

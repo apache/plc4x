@@ -232,11 +232,11 @@ func CastApplicationId(structType any) ApplicationId {
 	return castFunc(structType)
 }
 
-func (m ApplicationId) GetLengthInBits(ctx context.Context) uint16 {
+func (m ApplicationId) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ApplicationId) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ApplicationId) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

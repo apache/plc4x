@@ -2830,11 +2830,11 @@ func CastBACnetPropertyIdentifier(structType any) BACnetPropertyIdentifier {
 	return castFunc(structType)
 }
 
-func (m BACnetPropertyIdentifier) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetPropertyIdentifier) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m BACnetPropertyIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetPropertyIdentifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

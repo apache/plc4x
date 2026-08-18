@@ -323,8 +323,8 @@ func (m *_ServerStatusDataType) GetPlx4xTypeName() string {
 	return "ServerStatusDataType"
 }
 
-func (m *_ServerStatusDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ServerStatusDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (startTime)
 	lengthInBits += 64
@@ -347,7 +347,7 @@ func (m *_ServerStatusDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ServerStatusDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ServerStatusDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

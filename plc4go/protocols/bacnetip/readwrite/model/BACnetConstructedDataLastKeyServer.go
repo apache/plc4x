@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataLastKeyServer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastKeyServer"
 }
 
-func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (lastKeyServer)
 	lengthInBits += m.LastKeyServer.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

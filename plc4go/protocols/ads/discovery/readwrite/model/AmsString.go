@@ -167,14 +167,14 @@ func (m *_AmsString) GetPlx4xTypeName() string {
 	return "AmsString"
 }
 
-func (m *_AmsString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AmsString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (strLen)
 	lengthInBits += 16
 
 	// Simple field (text)
-	lengthInBits += uint16(int32(int32(8)) * int32((int32(uint16(uint16(len(m.GetText())))+uint16(uint16(1))) - int32(int32(1)))))
+	lengthInBits += uint64(int32(int32(8)) * int32((int32(uint16(uint16(len(m.GetText())))+uint16(uint16(1))) - int32(int32(1)))))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -182,7 +182,7 @@ func (m *_AmsString) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AmsString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AmsString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
@@ -218,6 +218,11 @@ func (m *_AmsString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'strLen' field"))
 	}
 	_ = strLen
+
+	// Validation
+	if !(bool((strLen) >= (1))) {
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "AmsString length must be at least 1"})
+	}
 
 	text, err := ReadSimpleField(ctx, "text", ReadString(readBuffer, uint32(int32(int32(8))*int32((int32(strLen)-int32(int32(1)))))))
 	if err != nil {

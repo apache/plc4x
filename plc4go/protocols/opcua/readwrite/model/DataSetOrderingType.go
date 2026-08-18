@@ -100,11 +100,11 @@ func CastDataSetOrderingType(structType any) DataSetOrderingType {
 	return castFunc(structType)
 }
 
-func (m DataSetOrderingType) GetLengthInBits(ctx context.Context) uint16 {
+func (m DataSetOrderingType) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m DataSetOrderingType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DataSetOrderingType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

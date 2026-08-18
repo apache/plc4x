@@ -229,8 +229,8 @@ func (m *_ExtensiblePayload) GetPlx4xTypeName() string {
 	return "ExtensiblePayload"
 }
 
-func (m *_ExtensiblePayload) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
+func (m *_ExtensiblePayload) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_ExtensiblePayload) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ExtensiblePayload) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ExtensiblePayload) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

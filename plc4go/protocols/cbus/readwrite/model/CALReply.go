@@ -64,8 +64,8 @@ type CALReplyContract interface {
 
 // CALReplyRequirements provides a set of functions which need to be implemented by a sub struct
 type CALReplyRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCalType returns CalType (discriminator field)
 	GetCalType() byte
 }
@@ -279,8 +279,8 @@ func (m *_CALReply) GetPlx4xTypeName() string {
 	return "CALReply"
 }
 
-func (m *_CALReply) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CALReply) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (calData)
 	lengthInBits += m.CalData.GetLengthInBits(ctx)
@@ -288,11 +288,11 @@ func (m *_CALReply) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CALReply) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CALReply) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CALReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

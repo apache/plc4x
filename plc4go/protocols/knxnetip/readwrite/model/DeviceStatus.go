@@ -167,8 +167,8 @@ func (m *_DeviceStatus) GetPlx4xTypeName() string {
 	return "DeviceStatus"
 }
 
-func (m *_DeviceStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_DeviceStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Reserved Field (reserved)
 	lengthInBits += 7
@@ -179,7 +179,7 @@ func (m *_DeviceStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_DeviceStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DeviceStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

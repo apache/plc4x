@@ -165,8 +165,8 @@ func (m *_AdsExtendedInfos) GetPlx4xTypeName() string {
 	return "AdsExtendedInfos"
 }
 
-func (m *_AdsExtendedInfos) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsExtendedInfos) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (count)
 	lengthInBits += 16
@@ -182,7 +182,7 @@ func (m *_AdsExtendedInfos) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsExtendedInfos) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsExtendedInfos) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataLoggingObject) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLoggingObject"
 }
 
-func (m *_BACnetConstructedDataLoggingObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataLoggingObject) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (loggingObject)
 	lengthInBits += m.LoggingObject.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataLoggingObject) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLoggingObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataLoggingObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

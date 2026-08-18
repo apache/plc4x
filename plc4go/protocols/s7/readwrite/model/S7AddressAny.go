@@ -288,8 +288,8 @@ func (m *_S7AddressAny) GetPlx4xTypeName() string {
 	return "S7AddressAny"
 }
 
-func (m *_S7AddressAny) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7AddressContract.(*_S7Address).getLengthInBits(ctx))
+func (m *_S7AddressAny) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7AddressContract.(*_S7Address).getLengthInBits(ctx))
 
 	// Enum Field (transportSize)
 	lengthInBits += 8
@@ -315,7 +315,7 @@ func (m *_S7AddressAny) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_S7AddressAny) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7AddressAny) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

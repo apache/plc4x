@@ -225,8 +225,8 @@ func (m *_BACnetLogRecordLogDatumTimeChange) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumTimeChange"
 }
 
-func (m *_BACnetLogRecordLogDatumTimeChange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
+func (m *_BACnetLogRecordLogDatumTimeChange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).getLengthInBits(ctx))
 
 	// Simple field (timeChange)
 	lengthInBits += m.TimeChange.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetLogRecordLogDatumTimeChange) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecordLogDatumTimeChange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLogRecordLogDatumTimeChange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -100,11 +100,11 @@ func CastTsnTalkerStatus(structType any) TsnTalkerStatus {
 	return castFunc(structType)
 }
 
-func (m TsnTalkerStatus) GetLengthInBits(ctx context.Context) uint16 {
+func (m TsnTalkerStatus) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m TsnTalkerStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TsnTalkerStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

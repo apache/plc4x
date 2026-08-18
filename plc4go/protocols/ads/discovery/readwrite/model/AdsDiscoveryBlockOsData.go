@@ -211,21 +211,21 @@ func (m *_AdsDiscoveryBlockOsData) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockOsData"
 }
 
-func (m *_AdsDiscoveryBlockOsData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+func (m *_AdsDiscoveryBlockOsData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
 
 	// Implicit Field (osDataLen)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.OsData) > 0 {
-		lengthInBits += 8 * uint16(len(m.OsData))
+		lengthInBits += 8 * uint64(len(m.OsData))
 	}
 
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockOsData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryBlockOsData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

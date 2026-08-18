@@ -414,8 +414,8 @@ func (m *_CipIdentity) GetPlx4xTypeName() string {
 	return "CipIdentity"
 }
 
-func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).getLengthInBits(ctx))
+func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).getLengthInBits(ctx))
 
 	// Implicit Field (itemLength)
 	lengthInBits += 16
@@ -431,7 +431,7 @@ func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.SocketAddressAddress) > 0 {
-		lengthInBits += 8 * uint16(len(m.SocketAddressAddress))
+		lengthInBits += 8 * uint64(len(m.SocketAddressAddress))
 	}
 
 	// Const Field (zeroes1)
@@ -465,7 +465,7 @@ func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 8
 
 	// Simple field (productName)
-	lengthInBits += uint16(int32(uint8(len(m.GetProductName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint8(len(m.GetProductName()))) * int32(int32(8)))
 
 	// Simple field (state)
 	lengthInBits += 8
@@ -473,7 +473,7 @@ func (m *_CipIdentity) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CipIdentity) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CipIdentity) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

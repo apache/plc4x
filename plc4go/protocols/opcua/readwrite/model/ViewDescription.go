@@ -260,8 +260,8 @@ func (m *_ViewDescription) GetPlx4xTypeName() string {
 	return "ViewDescription"
 }
 
-func (m *_ViewDescription) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ViewDescription) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (viewId)
 	lengthInBits += m.ViewId.GetLengthInBits(ctx)
@@ -275,7 +275,7 @@ func (m *_ViewDescription) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ViewDescription) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ViewDescription) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -124,11 +124,11 @@ func CastBACnetBackupState(structType any) BACnetBackupState {
 	return castFunc(structType)
 }
 
-func (m BACnetBackupState) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetBackupState) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetBackupState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetBackupState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

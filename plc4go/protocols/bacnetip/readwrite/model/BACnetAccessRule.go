@@ -299,8 +299,8 @@ func (m *_BACnetAccessRule) GetPlx4xTypeName() string {
 	return "BACnetAccessRule"
 }
 
-func (m *_BACnetAccessRule) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetAccessRule) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (timeRangeSpecifier)
 	lengthInBits += m.TimeRangeSpecifier.GetLengthInBits(ctx)
@@ -324,7 +324,7 @@ func (m *_BACnetAccessRule) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetAccessRule) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetAccessRule) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -3703,11 +3703,11 @@ func CastApplicationIdContainer(structType any) ApplicationIdContainer {
 	return castFunc(structType)
 }
 
-func (m ApplicationIdContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m ApplicationIdContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m ApplicationIdContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ApplicationIdContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -242,8 +242,8 @@ func (m *_SessionlessInvokeResponseType) GetPlx4xTypeName() string {
 	return "SessionlessInvokeResponseType"
 }
 
-func (m *_SessionlessInvokeResponseType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SessionlessInvokeResponseType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfNamespaceUris)
 	lengthInBits += 32
@@ -273,7 +273,7 @@ func (m *_SessionlessInvokeResponseType) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_SessionlessInvokeResponseType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SessionlessInvokeResponseType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

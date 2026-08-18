@@ -412,11 +412,11 @@ func CastDefaultAmsPorts(structType any) DefaultAmsPorts {
 	return castFunc(structType)
 }
 
-func (m DefaultAmsPorts) GetLengthInBits(ctx context.Context) uint16 {
+func (m DefaultAmsPorts) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m DefaultAmsPorts) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DefaultAmsPorts) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

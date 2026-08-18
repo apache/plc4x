@@ -256,8 +256,8 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetPlx4xTypeName() st
 	return "BACnetConfirmedServiceRequestReinitializeDevice"
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (reinitializedStateOfDevice)
 	lengthInBits += m.ReinitializedStateOfDevice.GetLengthInBits(ctx)
@@ -270,7 +270,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits(ctx c
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

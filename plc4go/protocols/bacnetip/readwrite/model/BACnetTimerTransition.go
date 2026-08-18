@@ -130,11 +130,11 @@ func CastBACnetTimerTransition(structType any) BACnetTimerTransition {
 	return castFunc(structType)
 }
 
-func (m BACnetTimerTransition) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetTimerTransition) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetTimerTransition) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetTimerTransition) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

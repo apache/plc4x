@@ -57,8 +57,8 @@ type IdentifyReplyCommandContract interface {
 
 // IdentifyReplyCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type IdentifyReplyCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetAttribute returns Attribute (discriminator field)
 	GetAttribute() Attribute
 }
@@ -412,17 +412,17 @@ func (m *_IdentifyReplyCommand) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommand"
 }
 
-func (m *_IdentifyReplyCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_IdentifyReplyCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_IdentifyReplyCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_IdentifyReplyCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

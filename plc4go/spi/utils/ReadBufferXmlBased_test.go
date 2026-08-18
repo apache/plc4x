@@ -160,7 +160,7 @@ func Test_xmlReadBuffer_GetPos(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   uint16
+		want   uint32
 	}{
 		{
 			name: "get it",
@@ -1073,7 +1073,7 @@ func Test_xmlReadBuffer_Reset(t *testing.T) {
 		doValidateList bool
 	}
 	type args struct {
-		pos uint16
+		pos uint32
 	}
 	tests := []struct {
 		name   string

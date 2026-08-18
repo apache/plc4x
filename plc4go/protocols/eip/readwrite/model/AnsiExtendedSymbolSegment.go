@@ -226,14 +226,14 @@ func (m *_AnsiExtendedSymbolSegment) GetPlx4xTypeName() string {
 	return "AnsiExtendedSymbolSegment"
 }
 
-func (m *_AnsiExtendedSymbolSegment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DataSegmentTypeContract.(*_DataSegmentType).getLengthInBits(ctx))
+func (m *_AnsiExtendedSymbolSegment) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DataSegmentTypeContract.(*_DataSegmentType).getLengthInBits(ctx))
 
 	// Implicit Field (dataSize)
 	lengthInBits += 8
 
 	// Simple field (symbol)
-	lengthInBits += uint16(int32(uint8(len(m.GetSymbol()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint8(len(m.GetSymbol()))) * int32(int32(8)))
 
 	// Optional Field (pad)
 	if m.Pad != nil {
@@ -243,7 +243,7 @@ func (m *_AnsiExtendedSymbolSegment) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_AnsiExtendedSymbolSegment) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AnsiExtendedSymbolSegment) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -66,8 +66,8 @@ type AccessControlDataContract interface {
 
 // AccessControlDataRequirements provides a set of functions which need to be implemented by a sub struct
 type AccessControlDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() AccessControlCommandType
 }
@@ -363,8 +363,8 @@ func (m *_AccessControlData) GetPlx4xTypeName() string {
 	return "AccessControlData"
 }
 
-func (m *_AccessControlData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AccessControlData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (commandTypeContainer)
 	lengthInBits += 8
@@ -380,11 +380,11 @@ func (m *_AccessControlData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AccessControlData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_AccessControlData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_AccessControlData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AccessControlData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

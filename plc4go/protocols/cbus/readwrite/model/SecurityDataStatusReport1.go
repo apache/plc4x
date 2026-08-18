@@ -306,8 +306,8 @@ func (m *_SecurityDataStatusReport1) GetPlx4xTypeName() string {
 	return "SecurityDataStatusReport1"
 }
 
-func (m *_SecurityDataStatusReport1) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataStatusReport1) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	// Simple field (armCodeType)
 	lengthInBits += m.ArmCodeType.GetLengthInBits(ctx)
@@ -329,7 +329,7 @@ func (m *_SecurityDataStatusReport1) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_SecurityDataStatusReport1) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataStatusReport1) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

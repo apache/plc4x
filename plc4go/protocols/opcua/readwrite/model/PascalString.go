@@ -184,8 +184,8 @@ func (m *_PascalString) GetPlx4xTypeName() string {
 	return "PascalString"
 }
 
-func (m *_PascalString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_PascalString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (sLength)
 	lengthInBits += 32
@@ -200,7 +200,7 @@ func (m *_PascalString) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_PascalString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PascalString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -293,8 +293,8 @@ func (m *_SimpleAttributeOperand) GetPlx4xTypeName() string {
 	return "SimpleAttributeOperand"
 }
 
-func (m *_SimpleAttributeOperand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SimpleAttributeOperand) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (typeDefinitionId)
 	lengthInBits += m.TypeDefinitionId.GetLengthInBits(ctx)
@@ -319,7 +319,7 @@ func (m *_SimpleAttributeOperand) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_SimpleAttributeOperand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SimpleAttributeOperand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

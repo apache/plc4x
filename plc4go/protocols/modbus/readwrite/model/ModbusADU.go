@@ -57,8 +57,8 @@ type ModbusADUContract interface {
 
 // ModbusADURequirements provides a set of functions which need to be implemented by a sub struct
 type ModbusADURequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetDriverType returns DriverType (discriminator field)
 	GetDriverType() DriverType
 }
@@ -232,17 +232,17 @@ func (m *_ModbusADU) GetPlx4xTypeName() string {
 	return "ModbusADU"
 }
 
-func (m *_ModbusADU) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ModbusADU) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_ModbusADU) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_ModbusADU) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_ModbusADU) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusADU) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

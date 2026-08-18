@@ -324,8 +324,8 @@ func (m *_BACnetFaultParameterFaultOutOfRange) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultOutOfRange"
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRange) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetFaultParameterContract.(*_BACnetFaultParameter).getLengthInBits(ctx))
+func (m *_BACnetFaultParameterFaultOutOfRange) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetFaultParameterContract.(*_BACnetFaultParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetFaultParameterFaultOutOfRange) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRange) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameterFaultOutOfRange) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

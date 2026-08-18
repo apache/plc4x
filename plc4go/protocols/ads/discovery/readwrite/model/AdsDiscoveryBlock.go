@@ -58,8 +58,8 @@ type AdsDiscoveryBlockContract interface {
 
 // AdsDiscoveryBlockRequirements provides a set of functions which need to be implemented by a sub struct
 type AdsDiscoveryBlockRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetBlockType returns BlockType (discriminator field)
 	GetBlockType() AdsDiscoveryBlockType
 }
@@ -305,19 +305,19 @@ func (m *_AdsDiscoveryBlock) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlock"
 }
 
-func (m *_AdsDiscoveryBlock) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsDiscoveryBlock) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (blockType)
 	lengthInBits += 16
 
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlock) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryBlock) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_AdsDiscoveryBlock) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryBlock) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

@@ -307,8 +307,8 @@ func (m *_AdsMethodParam) GetPlx4xTypeName() string {
 	return "AdsMethodParam"
 }
 
-func (m *_AdsMethodParam) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsMethodParam) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (paramLength)
 	lengthInBits += 32
@@ -330,7 +330,7 @@ func (m *_AdsMethodParam) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Guid) > 0 {
-		lengthInBits += 8 * uint16(len(m.Guid))
+		lengthInBits += 8 * uint64(len(m.Guid))
 	}
 
 	// Reserved Field (reserved)
@@ -346,19 +346,19 @@ func (m *_AdsMethodParam) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 16
 
 	// Simple field (name)
-	lengthInBits += uint16(int32(uint16(len(m.GetName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetName()))) * int32(int32(8)))
 
 	// Const Field (nameTerminator)
 	lengthInBits += 8
 
 	// Simple field (typeName)
-	lengthInBits += uint16(int32(uint16(len(m.GetTypeName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetTypeName()))) * int32(int32(8)))
 
 	// Const Field (typeNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (comment)
-	lengthInBits += uint16(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
 
 	// Const Field (commentTerminator)
 	lengthInBits += 8
@@ -366,7 +366,7 @@ func (m *_AdsMethodParam) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsMethodParam) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsMethodParam) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

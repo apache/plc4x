@@ -106,11 +106,11 @@ func CastMessageSecurityMode(structType any) MessageSecurityMode {
 	return castFunc(structType)
 }
 
-func (m MessageSecurityMode) GetLengthInBits(ctx context.Context) uint16 {
+func (m MessageSecurityMode) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m MessageSecurityMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MessageSecurityMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -142,11 +142,11 @@ func CastBACnetDoorAlarmState(structType any) BACnetDoorAlarmState {
 	return castFunc(structType)
 }
 
-func (m BACnetDoorAlarmState) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetDoorAlarmState) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetDoorAlarmState) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetDoorAlarmState) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

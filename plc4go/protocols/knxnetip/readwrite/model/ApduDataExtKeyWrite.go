@@ -184,13 +184,13 @@ func (m *_ApduDataExtKeyWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtKeyWrite"
 }
 
-func (m *_ApduDataExtKeyWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+func (m *_ApduDataExtKeyWrite) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtKeyWrite) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApduDataExtKeyWrite) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

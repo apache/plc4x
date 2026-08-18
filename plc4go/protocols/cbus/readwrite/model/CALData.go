@@ -71,8 +71,8 @@ type CALDataContract interface {
 
 // CALDataRequirements provides a set of functions which need to be implemented by a sub struct
 type CALDataRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() CALCommandType
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (discriminator field)
@@ -432,8 +432,8 @@ func (m *_CALData) GetPlx4xTypeName() string {
 	return "CALData"
 }
 
-func (m *_CALData) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CALData) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (commandTypeContainer)
 	lengthInBits += 8
@@ -450,11 +450,11 @@ func (m *_CALData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CALData) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CALData) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CALData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CALData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

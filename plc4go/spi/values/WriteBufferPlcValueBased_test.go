@@ -87,7 +87,7 @@ func Test_writeBufferPlcValueBased_GetPos(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   uint16
+		want   uint32
 	}{
 		{
 			name: "get it",

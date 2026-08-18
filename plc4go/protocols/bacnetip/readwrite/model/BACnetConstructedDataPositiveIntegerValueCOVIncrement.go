@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetPlx4xTypeNam
 	return "BACnetConstructedDataPositiveIntegerValueCOVIncrement"
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (covIncrement)
 	lengthInBits += m.CovIncrement.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

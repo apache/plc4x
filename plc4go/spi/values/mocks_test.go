@@ -154,18 +154,18 @@ func (_c *MockWriteBufferPlcValueBased_GetPlcValue_Call) RunAndReturn(run func()
 }
 
 // GetPos provides a mock function for the type MockWriteBufferPlcValueBased
-func (_mock *MockWriteBufferPlcValueBased) GetPos() uint16 {
+func (_mock *MockWriteBufferPlcValueBased) GetPos() uint32 {
 	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPos")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func() uint16); ok {
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func() uint32); ok {
 		r0 = returnFunc()
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint32)
 	}
 	return r0
 }
@@ -187,12 +187,12 @@ func (_c *MockWriteBufferPlcValueBased_GetPos_Call) Run(run func()) *MockWriteBu
 	return _c
 }
 
-func (_c *MockWriteBufferPlcValueBased_GetPos_Call) Return(v uint16) *MockWriteBufferPlcValueBased_GetPos_Call {
+func (_c *MockWriteBufferPlcValueBased_GetPos_Call) Return(v uint32) *MockWriteBufferPlcValueBased_GetPos_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockWriteBufferPlcValueBased_GetPos_Call) RunAndReturn(run func() uint16) *MockWriteBufferPlcValueBased_GetPos_Call {
+func (_c *MockWriteBufferPlcValueBased_GetPos_Call) RunAndReturn(run func() uint32) *MockWriteBufferPlcValueBased_GetPos_Call {
 	_c.Call.Return(run)
 	return _c
 }

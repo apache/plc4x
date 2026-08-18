@@ -62,8 +62,8 @@ type BACnetScaleContract interface {
 
 // BACnetScaleRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetScaleRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -281,19 +281,19 @@ func (m *_BACnetScale) GetPlx4xTypeName() string {
 	return "BACnetScale"
 }
 
-func (m *_BACnetScale) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetScale) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetScale) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetScale) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetScale) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetScale) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

@@ -229,8 +229,8 @@ func (m *_NLMSetMasterKey) GetPlx4xTypeName() string {
 	return "NLMSetMasterKey"
 }
 
-func (m *_NLMSetMasterKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMSetMasterKey) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (key)
 	lengthInBits += m.Key.GetLengthInBits(ctx)
@@ -238,7 +238,7 @@ func (m *_NLMSetMasterKey) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NLMSetMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMSetMasterKey) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

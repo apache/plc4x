@@ -66,8 +66,8 @@ type BACnetNotificationParametersChangeOfValueNewValueContract interface {
 
 // BACnetNotificationParametersChangeOfValueNewValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetNotificationParametersChangeOfValueNewValueRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
 	GetPeekedTagNumber() uint8
 }
@@ -345,8 +345,8 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValue) GetPlx4xTypeName() 
 	return "BACnetNotificationParametersChangeOfValueNewValue"
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValue) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -359,11 +359,11 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValue) getLengthInBits(ctx
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValue) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

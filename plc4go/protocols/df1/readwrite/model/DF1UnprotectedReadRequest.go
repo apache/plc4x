@@ -226,8 +226,8 @@ func (m *_DF1UnprotectedReadRequest) GetPlx4xTypeName() string {
 	return "DF1UnprotectedReadRequest"
 }
 
-func (m *_DF1UnprotectedReadRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1CommandContract.(*_DF1Command).getLengthInBits(ctx))
+func (m *_DF1UnprotectedReadRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.DF1CommandContract.(*_DF1Command).getLengthInBits(ctx))
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -238,7 +238,7 @@ func (m *_DF1UnprotectedReadRequest) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_DF1UnprotectedReadRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_DF1UnprotectedReadRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

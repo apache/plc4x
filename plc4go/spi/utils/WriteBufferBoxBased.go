@@ -139,8 +139,8 @@ func (b *boxedWriteBuffer) PushContext(_ string, _ ...WithWriterArgs) error {
 	return nil
 }
 
-func (b *boxedWriteBuffer) GetPos() uint16 {
-	return uint16(b.pos / 8)
+func (b *boxedWriteBuffer) GetPos() uint32 {
+	return uint32(b.pos / 8)
 }
 
 func (b *boxedWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error {

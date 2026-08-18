@@ -181,21 +181,21 @@ func (m *_XmlElement) GetPlx4xTypeName() string {
 	return "XmlElement"
 }
 
-func (m *_XmlElement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_XmlElement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (length)
 	lengthInBits += 32
 
 	// Array field
 	if len(m.Value) > 0 {
-		lengthInBits += 8 * uint16(len(m.Value))
+		lengthInBits += 8 * uint64(len(m.Value))
 	}
 
 	return lengthInBits
 }
 
-func (m *_XmlElement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_XmlElement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

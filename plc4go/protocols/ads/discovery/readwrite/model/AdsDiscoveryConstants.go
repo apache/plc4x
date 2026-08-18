@@ -157,8 +157,8 @@ func (m *_AdsDiscoveryConstants) GetTypeName() string {
 	return "AdsDiscoveryConstants"
 }
 
-func (m *_AdsDiscoveryConstants) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsDiscoveryConstants) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (adsDiscoveryUdpDefaultPort)
 	lengthInBits += 16
@@ -166,7 +166,7 @@ func (m *_AdsDiscoveryConstants) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryConstants) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsDiscoveryConstants) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

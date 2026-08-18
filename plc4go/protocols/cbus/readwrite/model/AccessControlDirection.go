@@ -100,11 +100,11 @@ func CastAccessControlDirection(structType any) AccessControlDirection {
 	return castFunc(structType)
 }
 
-func (m AccessControlDirection) GetLengthInBits(ctx context.Context) uint16 {
+func (m AccessControlDirection) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m AccessControlDirection) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AccessControlDirection) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

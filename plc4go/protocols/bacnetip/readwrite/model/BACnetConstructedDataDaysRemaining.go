@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataDaysRemaining) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDaysRemaining"
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (daysRemaining)
 	lengthInBits += m.DaysRemaining.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataDaysRemaining) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

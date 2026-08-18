@@ -293,8 +293,8 @@ func (m *_CurrencyUnitType) GetPlx4xTypeName() string {
 	return "CurrencyUnitType"
 }
 
-func (m *_CurrencyUnitType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_CurrencyUnitType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (numericCode)
 	lengthInBits += 16
@@ -311,7 +311,7 @@ func (m *_CurrencyUnitType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CurrencyUnitType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CurrencyUnitType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

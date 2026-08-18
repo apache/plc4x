@@ -213,18 +213,18 @@ func (m *_BVLCSecureBVLL) GetPlx4xTypeName() string {
 	return "BVLCSecureBVLL"
 }
 
-func (m *_BVLCSecureBVLL) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+func (m *_BVLCSecureBVLL) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.SecurityWrapper) > 0 {
-		lengthInBits += 8 * uint16(len(m.SecurityWrapper))
+		lengthInBits += 8 * uint64(len(m.SecurityWrapper))
 	}
 
 	return lengthInBits
 }
 
-func (m *_BVLCSecureBVLL) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLCSecureBVLL) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

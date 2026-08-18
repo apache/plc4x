@@ -58,8 +58,8 @@ type FirmataCommandContract interface {
 
 // FirmataCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type FirmataCommandRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 }
@@ -257,19 +257,19 @@ func (m *_FirmataCommand) GetPlx4xTypeName() string {
 	return "FirmataCommand"
 }
 
-func (m *_FirmataCommand) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_FirmataCommand) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (commandCode)
 	lengthInBits += 4
 
 	return lengthInBits
 }
 
-func (m *_FirmataCommand) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_FirmataCommand) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_FirmataCommand) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataCommand) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

@@ -207,8 +207,8 @@ func (m *_MeteringDataOilConsumption) GetPlx4xTypeName() string {
 	return "MeteringDataOilConsumption"
 }
 
-func (m *_MeteringDataOilConsumption) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
+func (m *_MeteringDataOilConsumption) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MeteringDataContract.(*_MeteringData).getLengthInBits(ctx))
 
 	// Simple field (L)
 	lengthInBits += 32
@@ -216,7 +216,7 @@ func (m *_MeteringDataOilConsumption) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_MeteringDataOilConsumption) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MeteringDataOilConsumption) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

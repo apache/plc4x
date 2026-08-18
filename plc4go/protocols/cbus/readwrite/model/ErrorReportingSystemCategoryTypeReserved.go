@@ -211,8 +211,8 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategoryTypeReserved"
 }
 
-func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).getLengthInBits(ctx))
+func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).getLengthInBits(ctx))
 
 	// Simple field (reservedValue)
 	lengthInBits += 4
@@ -220,7 +220,7 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

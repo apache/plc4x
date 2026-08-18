@@ -164,16 +164,16 @@ func (m *_AdsString) GetPlx4xTypeName() string {
 	return "AdsString"
 }
 
-func (m *_AdsString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Manual Field (stringValue)
-	lengthInBits += uint16(LengthZeroTerminatedString(ctx, m.GetStringValue()))
+	lengthInBits += uint64(LengthZeroTerminatedString(ctx, m.GetStringValue()))
 
 	return lengthInBits
 }
 
-func (m *_AdsString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

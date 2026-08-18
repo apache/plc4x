@@ -94,11 +94,11 @@ func CastBACnetAccessRuleLocationSpecifier(structType any) BACnetAccessRuleLocat
 	return castFunc(structType)
 }
 
-func (m BACnetAccessRuleLocationSpecifier) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetAccessRuleLocationSpecifier) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetAccessRuleLocationSpecifier) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetAccessRuleLocationSpecifier) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

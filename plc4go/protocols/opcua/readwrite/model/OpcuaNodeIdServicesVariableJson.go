@@ -118,11 +118,11 @@ func CastOpcuaNodeIdServicesVariableJson(structType any) OpcuaNodeIdServicesVari
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableJson) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableJson) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableJson) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableJson) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

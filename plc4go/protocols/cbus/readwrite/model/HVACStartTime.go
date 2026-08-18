@@ -214,8 +214,8 @@ func (m *_HVACStartTime) GetPlx4xTypeName() string {
 	return "HVACStartTime"
 }
 
-func (m *_HVACStartTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_HVACStartTime) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (minutesSinceSunday12AM)
 	lengthInBits += 16
@@ -233,7 +233,7 @@ func (m *_HVACStartTime) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACStartTime) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HVACStartTime) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -58,8 +58,8 @@ type S7ParameterContract interface {
 
 // S7ParameterRequirements provides a set of functions which need to be implemented by a sub struct
 type S7ParameterRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetParameterType returns ParameterType (discriminator field)
@@ -283,19 +283,19 @@ func (m *_S7Parameter) GetPlx4xTypeName() string {
 	return "S7Parameter"
 }
 
-func (m *_S7Parameter) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_S7Parameter) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_S7Parameter) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_S7Parameter) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_S7Parameter) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7Parameter) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

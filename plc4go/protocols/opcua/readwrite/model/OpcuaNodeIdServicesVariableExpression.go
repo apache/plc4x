@@ -88,11 +88,11 @@ func CastOpcuaNodeIdServicesVariableExpression(structType any) OpcuaNodeIdServic
 	return castFunc(structType)
 }
 
-func (m OpcuaNodeIdServicesVariableExpression) GetLengthInBits(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableExpression) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m OpcuaNodeIdServicesVariableExpression) GetLengthInBytes(ctx context.Context) uint16 {
+func (m OpcuaNodeIdServicesVariableExpression) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

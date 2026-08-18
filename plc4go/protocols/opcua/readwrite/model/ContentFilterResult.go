@@ -227,8 +227,8 @@ func (m *_ContentFilterResult) GetPlx4xTypeName() string {
 	return "ContentFilterResult"
 }
 
-func (m *_ContentFilterResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ContentFilterResult) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfElementResults)
 	lengthInBits += 32
@@ -255,7 +255,7 @@ func (m *_ContentFilterResult) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ContentFilterResult) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ContentFilterResult) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

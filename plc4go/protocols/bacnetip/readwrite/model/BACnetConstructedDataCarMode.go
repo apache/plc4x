@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataCarMode) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCarMode"
 }
 
-func (m *_BACnetConstructedDataCarMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataCarMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (carMode)
 	lengthInBits += m.CarMode.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataCarMode) GetLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCarMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataCarMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

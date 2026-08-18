@@ -212,8 +212,8 @@ func (m *_HistoryEventFieldList) GetPlx4xTypeName() string {
 	return "HistoryEventFieldList"
 }
 
-func (m *_HistoryEventFieldList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_HistoryEventFieldList) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Implicit Field (noOfEventFields)
 	lengthInBits += 32
@@ -229,7 +229,7 @@ func (m *_HistoryEventFieldList) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_HistoryEventFieldList) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_HistoryEventFieldList) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

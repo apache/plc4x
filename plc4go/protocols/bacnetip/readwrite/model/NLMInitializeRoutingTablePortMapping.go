@@ -207,8 +207,8 @@ func (m *_NLMInitializeRoutingTablePortMapping) GetPlx4xTypeName() string {
 	return "NLMInitializeRoutingTablePortMapping"
 }
 
-func (m *_NLMInitializeRoutingTablePortMapping) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_NLMInitializeRoutingTablePortMapping) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -221,13 +221,13 @@ func (m *_NLMInitializeRoutingTablePortMapping) GetLengthInBits(ctx context.Cont
 
 	// Array field
 	if len(m.PortInfo) > 0 {
-		lengthInBits += 8 * uint16(len(m.PortInfo))
+		lengthInBits += 8 * uint64(len(m.PortInfo))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMInitializeRoutingTablePortMapping) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMInitializeRoutingTablePortMapping) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

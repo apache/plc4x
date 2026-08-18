@@ -65,8 +65,8 @@ type BVLCContract interface {
 
 // BVLCRequirements provides a set of functions which need to be implemented by a sub struct
 type BVLCRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetBvlcFunction returns BvlcFunction (discriminator field)
 	GetBvlcFunction() uint8
 }
@@ -390,8 +390,8 @@ func (m *_BVLC) GetPlx4xTypeName() string {
 	return "BVLC"
 }
 
-func (m *_BVLC) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BVLC) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Const Field (bacnetType)
 	lengthInBits += 8
@@ -406,11 +406,11 @@ func (m *_BVLC) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BVLC) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_BVLC) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_BVLC) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BVLC) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

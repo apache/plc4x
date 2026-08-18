@@ -154,11 +154,11 @@ func CastPinMode(structType any) PinMode {
 	return castFunc(structType)
 }
 
-func (m PinMode) GetLengthInBits(ctx context.Context) uint16 {
+func (m PinMode) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m PinMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PinMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

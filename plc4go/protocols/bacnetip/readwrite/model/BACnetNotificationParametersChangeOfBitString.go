@@ -324,8 +324,8 @@ func (m *_BACnetNotificationParametersChangeOfBitString) GetPlx4xTypeName() stri
 	return "BACnetNotificationParametersChangeOfBitString"
 }
 
-func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
+func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).getLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBits(ctx con
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

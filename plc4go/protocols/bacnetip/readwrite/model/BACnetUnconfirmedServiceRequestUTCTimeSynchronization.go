@@ -262,8 +262,8 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetPlx4xTypeNam
 	return "BACnetUnconfirmedServiceRequestUTCTimeSynchronization"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Simple field (synchronizedDate)
 	lengthInBits += m.SynchronizedDate.GetLengthInBits(ctx)
@@ -274,7 +274,7 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBits
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

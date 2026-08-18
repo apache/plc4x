@@ -225,8 +225,8 @@ func (m *_BACnetProcessIdSelectionValue) GetPlx4xTypeName() string {
 	return "BACnetProcessIdSelectionValue"
 }
 
-func (m *_BACnetProcessIdSelectionValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection).getLengthInBits(ctx))
+func (m *_BACnetProcessIdSelectionValue) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection).getLengthInBits(ctx))
 
 	// Simple field (processIdentifier)
 	lengthInBits += m.ProcessIdentifier.GetLengthInBits(ctx)
@@ -234,7 +234,7 @@ func (m *_BACnetProcessIdSelectionValue) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetProcessIdSelectionValue) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetProcessIdSelectionValue) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

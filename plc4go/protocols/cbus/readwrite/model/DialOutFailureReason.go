@@ -118,11 +118,11 @@ func CastDialOutFailureReason(structType any) DialOutFailureReason {
 	return castFunc(structType)
 }
 
-func (m DialOutFailureReason) GetLengthInBits(ctx context.Context) uint16 {
+func (m DialOutFailureReason) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m DialOutFailureReason) GetLengthInBytes(ctx context.Context) uint16 {
+func (m DialOutFailureReason) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

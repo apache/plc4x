@@ -179,21 +179,21 @@ func (m *_CIPData) GetPlx4xTypeName() string {
 	return "CIPData"
 }
 
-func (m *_CIPData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CIPData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (dataType)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_CIPData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CIPData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

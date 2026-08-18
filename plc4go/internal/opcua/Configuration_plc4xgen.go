@@ -135,6 +135,10 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			}
 		}
 	}
+
+	if err := writeBuffer.WriteBit("allowUnverifiedSecurityPolicies", d.AllowUnverifiedSecurityPolicies); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("Configuration"); err != nil {
 		return err
 	}

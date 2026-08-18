@@ -1715,11 +1715,11 @@ func CastMediaTransportControlCommandTypeContainer(structType any) MediaTranspor
 	return castFunc(structType)
 }
 
-func (m MediaTransportControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
+func (m MediaTransportControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m MediaTransportControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+func (m MediaTransportControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

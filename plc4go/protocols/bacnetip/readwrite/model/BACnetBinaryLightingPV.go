@@ -124,11 +124,11 @@ func CastBACnetBinaryLightingPV(structType any) BACnetBinaryLightingPV {
 	return castFunc(structType)
 }
 
-func (m BACnetBinaryLightingPV) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetBinaryLightingPV) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetBinaryLightingPV) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetBinaryLightingPV) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

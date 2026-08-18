@@ -187,7 +187,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 					offset := 2 + nb*2
 					for i := uint16(0); i < nb; i++ {
 						offsets[i] = offset
-						offset += items[i].GetLengthInBytes(context.Background())
+						offset += uint16(items[i].GetLengthInBytes(context.Background()))
 					}
 
 					serviceArr := make([]readWriteModel.CipService, nb)

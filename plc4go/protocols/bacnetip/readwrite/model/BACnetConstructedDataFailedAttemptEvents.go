@@ -215,8 +215,8 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFailedAttemptEvents"
 }
 
-func (m *_BACnetConstructedDataFailedAttemptEvents) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFailedAttemptEvents) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.FailedAttemptEvents) > 0 {
@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) GetLengthInBits(ctx context.
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFailedAttemptEvents) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFailedAttemptEvents) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

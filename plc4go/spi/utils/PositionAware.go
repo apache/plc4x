@@ -21,5 +21,5 @@ package utils
 
 type PositionAware interface {
 	// GetPos return the current byte position
-	GetPos() uint16
+	GetPos() uint32
 }

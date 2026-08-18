@@ -392,8 +392,8 @@ func (m *_FieldTargetDataType) GetPlx4xTypeName() string {
 	return "FieldTargetDataType"
 }
 
-func (m *_FieldTargetDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_FieldTargetDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (dataSetFieldId)
 	lengthInBits += m.DataSetFieldId.GetLengthInBits(ctx)
@@ -419,7 +419,7 @@ func (m *_FieldTargetDataType) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_FieldTargetDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FieldTargetDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

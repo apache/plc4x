@@ -267,8 +267,8 @@ func (m *_ClockAndTimekeepingDataUpdateDate) GetPlx4xTypeName() string {
 	return "ClockAndTimekeepingDataUpdateDate"
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).getLengthInBits(ctx))
+func (m *_ClockAndTimekeepingDataUpdateDate) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).getLengthInBits(ctx))
 
 	// Simple field (yearHigh)
 	lengthInBits += 8
@@ -288,7 +288,7 @@ func (m *_ClockAndTimekeepingDataUpdateDate) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDate) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ClockAndTimekeepingDataUpdateDate) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

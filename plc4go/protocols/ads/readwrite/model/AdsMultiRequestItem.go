@@ -56,8 +56,8 @@ type AdsMultiRequestItemContract interface {
 
 // AdsMultiRequestItemRequirements provides a set of functions which need to be implemented by a sub struct
 type AdsMultiRequestItemRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetIndexGroup returns IndexGroup (discriminator field)
 	GetIndexGroup() uint32
 }
@@ -231,17 +231,17 @@ func (m *_AdsMultiRequestItem) GetPlx4xTypeName() string {
 	return "AdsMultiRequestItem"
 }
 
-func (m *_AdsMultiRequestItem) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsMultiRequestItem) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	return lengthInBits
 }
 
-func (m *_AdsMultiRequestItem) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_AdsMultiRequestItem) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_AdsMultiRequestItem) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsMultiRequestItem) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

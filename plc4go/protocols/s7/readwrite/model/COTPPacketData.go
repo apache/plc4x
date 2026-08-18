@@ -226,8 +226,8 @@ func (m *_COTPPacketData) GetPlx4xTypeName() string {
 	return "COTPPacketData"
 }
 
-func (m *_COTPPacketData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
+func (m *_COTPPacketData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPPacketContract.(*_COTPPacket).getLengthInBits(ctx))
 
 	// Simple field (eot)
 	lengthInBits += 1
@@ -238,11 +238,11 @@ func (m *_COTPPacketData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPPacketData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPPacketData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_COTPPacketData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint16) (__cOTPPacketData COTPPacketData, err error) {
+func (m *_COTPPacketData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint32) (__cOTPPacketData COTPPacketData, err error) {
 	m.COTPPacketContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

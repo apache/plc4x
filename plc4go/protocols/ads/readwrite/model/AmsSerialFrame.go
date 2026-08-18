@@ -285,8 +285,8 @@ func (m *_AmsSerialFrame) GetPlx4xTypeName() string {
 	return "AmsSerialFrame"
 }
 
-func (m *_AmsSerialFrame) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AmsSerialFrame) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (magicCookie)
 	lengthInBits += 16
@@ -312,7 +312,7 @@ func (m *_AmsSerialFrame) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AmsSerialFrame) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AmsSerialFrame) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

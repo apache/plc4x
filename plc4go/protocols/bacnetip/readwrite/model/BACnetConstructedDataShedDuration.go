@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataShedDuration) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataShedDuration"
 }
 
-func (m *_BACnetConstructedDataShedDuration) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataShedDuration) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (shedDuration)
 	lengthInBits += m.ShedDuration.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataShedDuration) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataShedDuration) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataShedDuration) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

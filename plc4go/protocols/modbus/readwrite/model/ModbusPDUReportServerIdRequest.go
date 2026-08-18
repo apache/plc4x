@@ -192,13 +192,13 @@ func (m *_ModbusPDUReportServerIdRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReportServerIdRequest"
 }
 
-func (m *_ModbusPDUReportServerIdRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUReportServerIdRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReportServerIdRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUReportServerIdRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

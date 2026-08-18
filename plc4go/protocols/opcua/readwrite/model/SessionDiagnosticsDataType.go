@@ -1454,8 +1454,8 @@ func (m *_SessionDiagnosticsDataType) GetPlx4xTypeName() string {
 	return "SessionDiagnosticsDataType"
 }
 
-func (m *_SessionDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_SessionDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (sessionId)
 	lengthInBits += m.SessionId.GetLengthInBits(ctx)
@@ -1597,7 +1597,7 @@ func (m *_SessionDiagnosticsDataType) GetLengthInBits(ctx context.Context) uint1
 	return lengthInBits
 }
 
-func (m *_SessionDiagnosticsDataType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SessionDiagnosticsDataType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

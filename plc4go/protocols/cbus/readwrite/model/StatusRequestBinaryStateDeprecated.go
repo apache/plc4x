@@ -212,8 +212,8 @@ func (m *_StatusRequestBinaryStateDeprecated) GetPlx4xTypeName() string {
 	return "StatusRequestBinaryStateDeprecated"
 }
 
-func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.StatusRequestContract.(*_StatusRequest).getLengthInBits(ctx))
+func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.StatusRequestContract.(*_StatusRequest).getLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -227,7 +227,7 @@ func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBits(ctx context.Contex
 	return lengthInBits
 }
 
-func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

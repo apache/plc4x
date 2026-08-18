@@ -112,11 +112,11 @@ func CastAccessRestrictionType(structType any) AccessRestrictionType {
 	return castFunc(structType)
 }
 
-func (m AccessRestrictionType) GetLengthInBits(ctx context.Context) uint16 {
+func (m AccessRestrictionType) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m AccessRestrictionType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m AccessRestrictionType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

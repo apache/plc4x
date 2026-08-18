@@ -27,7 +27,7 @@ type ReadBuffer interface {
 	PositionAware
 	ByteOrderAware
 	// Reset sets the position to the supplied byte position
-	Reset(pos uint16)
+	Reset(pos uint32)
 	// HasMore returns true if there are bitLength bits available
 	HasMore(bitLength uint8) bool
 	// PullContext signals that we expect now a context with the supplied logical name

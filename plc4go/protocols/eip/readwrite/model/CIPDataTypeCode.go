@@ -394,11 +394,11 @@ func CastCIPDataTypeCode(structType any) CIPDataTypeCode {
 	return castFunc(structType)
 }
 
-func (m CIPDataTypeCode) GetLengthInBits(ctx context.Context) uint16 {
+func (m CIPDataTypeCode) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m CIPDataTypeCode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m CIPDataTypeCode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

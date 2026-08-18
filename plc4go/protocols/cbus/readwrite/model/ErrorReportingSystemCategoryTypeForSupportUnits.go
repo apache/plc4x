@@ -178,11 +178,11 @@ func CastErrorReportingSystemCategoryTypeForSupportUnits(structType any) ErrorRe
 	return castFunc(structType)
 }
 
-func (m ErrorReportingSystemCategoryTypeForSupportUnits) GetLengthInBits(ctx context.Context) uint16 {
+func (m ErrorReportingSystemCategoryTypeForSupportUnits) GetLengthInBits(ctx context.Context) uint64 {
 	return 4
 }
 
-func (m ErrorReportingSystemCategoryTypeForSupportUnits) GetLengthInBytes(ctx context.Context) uint16 {
+func (m ErrorReportingSystemCategoryTypeForSupportUnits) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

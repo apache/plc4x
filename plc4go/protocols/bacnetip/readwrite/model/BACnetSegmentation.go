@@ -106,11 +106,11 @@ func CastBACnetSegmentation(structType any) BACnetSegmentation {
 	return castFunc(structType)
 }
 
-func (m BACnetSegmentation) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetSegmentation) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetSegmentation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetSegmentation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

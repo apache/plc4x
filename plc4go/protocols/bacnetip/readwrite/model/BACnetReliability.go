@@ -232,11 +232,11 @@ func CastBACnetReliability(structType any) BACnetReliability {
 	return castFunc(structType)
 }
 
-func (m BACnetReliability) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetReliability) GetLengthInBits(ctx context.Context) uint64 {
 	return 16
 }
 
-func (m BACnetReliability) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetReliability) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

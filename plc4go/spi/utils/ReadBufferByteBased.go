@@ -104,11 +104,11 @@ func (rb *byteReadBuffer) GetByteOrder() binary.ByteOrder {
 	return rb.byteOrder
 }
 
-func (rb *byteReadBuffer) GetPos() uint16 {
-	return uint16(rb.pos / 8)
+func (rb *byteReadBuffer) GetPos() uint32 {
+	return uint32(rb.pos / 8)
 }
 
-func (rb *byteReadBuffer) Reset(pos uint16) {
+func (rb *byteReadBuffer) Reset(pos uint32) {
 	rb.pos = uint64(pos) * 8
 	rb.bits.ResetTo(rb.pos)
 }
@@ -126,7 +126,7 @@ func (rb *byteReadBuffer) HasMore(bitLength uint8) bool {
 }
 
 func (rb *byteReadBuffer) PeekByte(offset uint8) uint8 {
-	return rb.data[rb.GetPos()+uint16(offset)]
+	return rb.data[rb.GetPos()+uint32(offset)]
 }
 
 func (rb *byteReadBuffer) PullContext(logicalName string, _ ...WithReaderArgs) error {

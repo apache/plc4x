@@ -219,8 +219,8 @@ func (m *_ModbusPDUReadFifoQueueRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReadFifoQueueRequest"
 }
 
-func (m *_ModbusPDUReadFifoQueueRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+func (m *_ModbusPDUReadFifoQueueRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
 
 	// Simple field (fifoPointerAddress)
 	lengthInBits += 16
@@ -228,7 +228,7 @@ func (m *_ModbusPDUReadFifoQueueRequest) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadFifoQueueRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModbusPDUReadFifoQueueRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

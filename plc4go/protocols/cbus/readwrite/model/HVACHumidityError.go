@@ -922,11 +922,11 @@ func CastHVACHumidityError(structType any) HVACHumidityError {
 	return castFunc(structType)
 }
 
-func (m HVACHumidityError) GetLengthInBits(ctx context.Context) uint16 {
+func (m HVACHumidityError) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m HVACHumidityError) GetLengthInBytes(ctx context.Context) uint16 {
+func (m HVACHumidityError) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

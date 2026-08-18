@@ -241,8 +241,8 @@ func (m *_BACnetLandingCallStatus) GetPlx4xTypeName() string {
 	return "BACnetLandingCallStatus"
 }
 
-func (m *_BACnetLandingCallStatus) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_BACnetLandingCallStatus) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (floorNumber)
 	lengthInBits += m.FloorNumber.GetLengthInBits(ctx)
@@ -258,7 +258,7 @@ func (m *_BACnetLandingCallStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetLandingCallStatus) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetLandingCallStatus) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

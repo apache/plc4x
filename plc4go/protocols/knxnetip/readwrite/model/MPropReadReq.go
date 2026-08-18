@@ -271,8 +271,8 @@ func (m *_MPropReadReq) GetPlx4xTypeName() string {
 	return "MPropReadReq"
 }
 
-func (m *_MPropReadReq) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
+func (m *_MPropReadReq) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.CEMIContract.(*_CEMI).getLengthInBits(ctx))
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -292,7 +292,7 @@ func (m *_MPropReadReq) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_MPropReadReq) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MPropReadReq) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

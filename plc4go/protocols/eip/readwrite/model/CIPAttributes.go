@@ -207,15 +207,15 @@ func (m *_CIPAttributes) GetPlx4xTypeName() string {
 	return "CIPAttributes"
 }
 
-func (m *_CIPAttributes) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CIPAttributes) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (numberOfClasses)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.ClassId) > 0 {
-		lengthInBits += 16 * uint16(len(m.ClassId))
+		lengthInBits += 16 * uint64(len(m.ClassId))
 	}
 
 	// Optional Field (numberAvailable)
@@ -230,13 +230,13 @@ func (m *_CIPAttributes) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_CIPAttributes) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CIPAttributes) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -185,8 +185,8 @@ func (m *_OpcuaAPU) GetPlx4xTypeName() string {
 	return "OpcuaAPU"
 }
 
-func (m *_OpcuaAPU) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_OpcuaAPU) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (message)
 	lengthInBits += m.Message.GetLengthInBits(ctx)
@@ -194,7 +194,7 @@ func (m *_OpcuaAPU) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_OpcuaAPU) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_OpcuaAPU) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

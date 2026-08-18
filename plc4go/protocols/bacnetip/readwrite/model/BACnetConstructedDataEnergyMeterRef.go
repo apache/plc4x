@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataEnergyMeterRef) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEnergyMeterRef"
 }
 
-func (m *_BACnetConstructedDataEnergyMeterRef) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataEnergyMeterRef) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (energyMeterRef)
 	lengthInBits += m.EnergyMeterRef.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataEnergyMeterRef) GetLengthInBits(ctx context.Conte
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEnergyMeterRef) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataEnergyMeterRef) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

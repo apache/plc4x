@@ -185,8 +185,8 @@ func (m *_ApplicationAddress2) GetPlx4xTypeName() string {
 	return "ApplicationAddress2"
 }
 
-func (m *_ApplicationAddress2) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_ApplicationAddress2) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Simple field (address)
 	lengthInBits += 8
@@ -196,7 +196,7 @@ func (m *_ApplicationAddress2) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ApplicationAddress2) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ApplicationAddress2) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -359,8 +359,8 @@ func (m *_JsonApplicationDescriptionMessage) GetPlx4xTypeName() string {
 	return "JsonApplicationDescriptionMessage"
 }
 
-func (m *_JsonApplicationDescriptionMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_JsonApplicationDescriptionMessage) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (messageId)
 	lengthInBits += m.MessageId.GetLengthInBits(ctx)
@@ -391,7 +391,7 @@ func (m *_JsonApplicationDescriptionMessage) GetLengthInBits(ctx context.Context
 	return lengthInBits
 }
 
-func (m *_JsonApplicationDescriptionMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_JsonApplicationDescriptionMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

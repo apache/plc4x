@@ -230,8 +230,8 @@ func (m *_RootExtensionObject) GetPlx4xTypeName() string {
 	return "RootExtensionObject"
 }
 
-func (m *_RootExtensionObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectContract.(*_ExtensionObject).getLengthInBits(ctx))
+func (m *_RootExtensionObject) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectContract.(*_ExtensionObject).getLengthInBits(ctx))
 
 	// Simple field (body)
 	lengthInBits += m.Body.GetLengthInBits(ctx)
@@ -239,7 +239,7 @@ func (m *_RootExtensionObject) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_RootExtensionObject) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_RootExtensionObject) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

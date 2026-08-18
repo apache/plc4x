@@ -94,11 +94,11 @@ func CastBACnetLimitEnable(structType any) BACnetLimitEnable {
 	return castFunc(structType)
 }
 
-func (m BACnetLimitEnable) GetLengthInBits(ctx context.Context) uint16 {
+func (m BACnetLimitEnable) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m BACnetLimitEnable) GetLengthInBytes(ctx context.Context) uint16 {
+func (m BACnetLimitEnable) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

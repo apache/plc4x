@@ -106,11 +106,11 @@ func CastLightingLabelFlavour(structType any) LightingLabelFlavour {
 	return castFunc(structType)
 }
 
-func (m LightingLabelFlavour) GetLengthInBits(ctx context.Context) uint16 {
+func (m LightingLabelFlavour) GetLengthInBits(ctx context.Context) uint64 {
 	return 2
 }
 
-func (m LightingLabelFlavour) GetLengthInBytes(ctx context.Context) uint16 {
+func (m LightingLabelFlavour) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

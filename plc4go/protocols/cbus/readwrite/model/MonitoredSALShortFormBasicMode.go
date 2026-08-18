@@ -297,8 +297,8 @@ func (m *_MonitoredSALShortFormBasicMode) GetPlx4xTypeName() string {
 	return "MonitoredSALShortFormBasicMode"
 }
 
-func (m *_MonitoredSALShortFormBasicMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MonitoredSALContract.(*_MonitoredSAL).getLengthInBits(ctx))
+func (m *_MonitoredSALShortFormBasicMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.MonitoredSALContract.(*_MonitoredSAL).getLengthInBits(ctx))
 
 	// Optional Field (bridgeCount)
 	if m.BridgeCount != nil {
@@ -326,7 +326,7 @@ func (m *_MonitoredSALShortFormBasicMode) GetLengthInBits(ctx context.Context) u
 	return lengthInBits
 }
 
-func (m *_MonitoredSALShortFormBasicMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_MonitoredSALShortFormBasicMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

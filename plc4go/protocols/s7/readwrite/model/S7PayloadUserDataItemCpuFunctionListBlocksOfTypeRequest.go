@@ -219,8 +219,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest) GetPlx4xTypeN
 	return "S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest"
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+func (m *_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
 
 	// Simple field (blockType)
 	lengthInBits += 16
@@ -228,7 +228,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest) GetLengthInBi
 	return lengthInBits
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_S7PayloadUserDataItemCpuFunctionListBlocksOfTypeRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

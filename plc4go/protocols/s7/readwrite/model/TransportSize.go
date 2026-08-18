@@ -1892,11 +1892,11 @@ func CastTransportSize(structType any) TransportSize {
 	return castFunc(structType)
 }
 
-func (m TransportSize) GetLengthInBits(ctx context.Context) uint16 {
+func (m TransportSize) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m TransportSize) GetLengthInBytes(ctx context.Context) uint16 {
+func (m TransportSize) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

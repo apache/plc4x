@@ -324,8 +324,8 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) GetPlx4xTypeName() string {
 	return "BACnetEventParameterChangeOfStatusFlags"
 }
 
-func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
+func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetEventParameterContract.(*_BACnetEventParameter).getLengthInBits(ctx))
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
@@ -342,7 +342,7 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBits(ctx context.C
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetEventParameterChangeOfStatusFlags) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -160,11 +160,11 @@ func CastSyntaxIdType(structType any) SyntaxIdType {
 	return castFunc(structType)
 }
 
-func (m SyntaxIdType) GetLengthInBits(ctx context.Context) uint16 {
+func (m SyntaxIdType) GetLengthInBits(ctx context.Context) uint64 {
 	return 8
 }
 
-func (m SyntaxIdType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m SyntaxIdType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

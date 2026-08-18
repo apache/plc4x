@@ -250,8 +250,8 @@ func (m *_CipRRData) GetPlx4xTypeName() string {
 	return "CipRRData"
 }
 
-func (m *_CipRRData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+func (m *_CipRRData) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
 
 	// Simple field (interfaceHandle)
 	lengthInBits += 32
@@ -273,7 +273,7 @@ func (m *_CipRRData) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_CipRRData) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CipRRData) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

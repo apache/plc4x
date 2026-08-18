@@ -340,8 +340,8 @@ func (m *_PublishResponse) GetPlx4xTypeName() string {
 	return "PublishResponse"
 }
 
-func (m *_PublishResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_PublishResponse) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
@@ -354,7 +354,7 @@ func (m *_PublishResponse) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Array field
 	if len(m.AvailableSequenceNumbers) > 0 {
-		lengthInBits += 32 * uint16(len(m.AvailableSequenceNumbers))
+		lengthInBits += 32 * uint64(len(m.AvailableSequenceNumbers))
 	}
 
 	// Reserved Field (reserved)
@@ -391,7 +391,7 @@ func (m *_PublishResponse) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_PublishResponse) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_PublishResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

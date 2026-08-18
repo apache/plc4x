@@ -32,7 +32,7 @@
 // COTP
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType COTPPacket (uint 16 cotpLen)
+[discriminatedType COTPPacket (uint 32 cotpLen)
     [implicit      uint 8 headerLength 'lengthInBytes - (((payload != null) ? payload.lengthInBytes : 0) + 1)']
     [discriminator uint 8 tpduCode]
     [typeSwitch tpduCode

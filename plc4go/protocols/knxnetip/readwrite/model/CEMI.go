@@ -63,8 +63,8 @@ type CEMIContract interface {
 
 // CEMIRequirements provides a set of functions which need to be implemented by a sub struct
 type CEMIRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetMessageCode returns MessageCode (discriminator field)
 	GetMessageCode() uint8
 }
@@ -478,19 +478,19 @@ func (m *_CEMI) GetPlx4xTypeName() string {
 	return "CEMI"
 }
 
-func (m *_CEMI) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_CEMI) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 	// Discriminator Field (messageCode)
 	lengthInBits += 8
 
 	return lengthInBits
 }
 
-func (m *_CEMI) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_CEMI) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_CEMI) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_CEMI) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

@@ -63,8 +63,8 @@ type AdsExtendedInfoEntryContract interface {
 
 // AdsExtendedInfoEntryRequirements provides a set of functions which need to be implemented by a sub struct
 type AdsExtendedInfoEntryRequirements interface {
-	GetLengthInBits(ctx context.Context) uint16
-	GetLengthInBytes(ctx context.Context) uint16
+	GetLengthInBits(ctx context.Context) uint64
+	GetLengthInBytes(ctx context.Context) uint64
 	// GetDataType returns DataType (discriminator field)
 	GetDataType() AdsDatatypeId
 }
@@ -441,14 +441,14 @@ func (m *_AdsExtendedInfoEntry) GetPlx4xTypeName() string {
 	return "AdsExtendedInfoEntry"
 }
 
-func (m *_AdsExtendedInfoEntry) getLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(0)
+func (m *_AdsExtendedInfoEntry) getLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(0)
 
 	// Implicit Field (nameLength)
 	lengthInBits += 8
 
 	// Simple field (name)
-	lengthInBits += uint16(int32(uint8(len(m.GetName()))) * int32(int32(8)))
+	lengthInBits += uint64(int32(uint8(len(m.GetName()))) * int32(int32(8)))
 
 	// Const Field (nameTerminator)
 	lengthInBits += 8
@@ -456,11 +456,11 @@ func (m *_AdsExtendedInfoEntry) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_AdsExtendedInfoEntry) GetLengthInBits(ctx context.Context) uint16 {
+func (m *_AdsExtendedInfoEntry) GetLengthInBits(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx)
 }
 
-func (m *_AdsExtendedInfoEntry) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_AdsExtendedInfoEntry) GetLengthInBytes(ctx context.Context) uint64 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 

@@ -105,7 +105,7 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 	case "AssociatedQueryValueType":
 		return AssociatedQueryValueTypeParseWithBuffer(context.Background(), io)
 	case "COTPPacket":
-		cotpLen, err := utils.StrToUint16(arguments[0])
+		cotpLen, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}

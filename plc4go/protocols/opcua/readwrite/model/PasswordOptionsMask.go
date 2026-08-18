@@ -142,11 +142,11 @@ func CastPasswordOptionsMask(structType any) PasswordOptionsMask {
 	return castFunc(structType)
 }
 
-func (m PasswordOptionsMask) GetLengthInBits(ctx context.Context) uint16 {
+func (m PasswordOptionsMask) GetLengthInBits(ctx context.Context) uint64 {
 	return 32
 }
 
-func (m PasswordOptionsMask) GetLengthInBytes(ctx context.Context) uint16 {
+func (m PasswordOptionsMask) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

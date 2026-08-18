@@ -283,8 +283,8 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPlx4xTypeN
 	return "BACnetConfirmedServiceRequestDeviceCommunicationControl"
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
 
 	// Optional Field (timeDuration)
 	if m.TimeDuration != nil {
@@ -302,7 +302,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBi
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

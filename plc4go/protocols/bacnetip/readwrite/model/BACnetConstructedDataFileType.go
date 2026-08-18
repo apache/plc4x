@@ -250,8 +250,8 @@ func (m *_BACnetConstructedDataFileType) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataFileType"
 }
 
-func (m *_BACnetConstructedDataFileType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+func (m *_BACnetConstructedDataFileType) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
 
 	// Simple field (fileType)
 	lengthInBits += m.FileType.GetLengthInBits(ctx)
@@ -261,7 +261,7 @@ func (m *_BACnetConstructedDataFileType) GetLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFileType) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_BACnetConstructedDataFileType) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

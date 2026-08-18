@@ -184,13 +184,13 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetPlx4xTypeName() strin
 	return "ConnectionRequestInformationDeviceManagement"
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).getLengthInBits(ctx))
+func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

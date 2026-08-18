@@ -180,13 +180,13 @@ func (m *_SecurityDataStatus2Request) GetPlx4xTypeName() string {
 	return "SecurityDataStatus2Request"
 }
 
-func (m *_SecurityDataStatus2Request) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+func (m *_SecurityDataStatus2Request) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SecurityDataStatus2Request) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_SecurityDataStatus2Request) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

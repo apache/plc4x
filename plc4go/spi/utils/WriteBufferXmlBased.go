@@ -124,8 +124,8 @@ func (x *xmlWriteBuffer) PushContext(logicalName string, writerArgs ...WithWrite
 	return x.EncodeToken(xml.StartElement{Name: xml.Name{Local: x.SanitizeLogicalName(logicalName)}, Attr: attrs})
 }
 
-func (x *xmlWriteBuffer) GetPos() uint16 {
-	return uint16(x.pos * 8)
+func (x *xmlWriteBuffer) GetPos() uint32 {
+	return uint32(x.pos * 8)
 }
 
 func (x *xmlWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error {

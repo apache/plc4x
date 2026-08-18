@@ -211,18 +211,18 @@ func (m *_NLMRouterBusyToNetwork) GetPlx4xTypeName() string {
 	return "NLMRouterBusyToNetwork"
 }
 
-func (m *_NLMRouterBusyToNetwork) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMRouterBusyToNetwork) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.DestinationNetworkAddresses) > 0 {
-		lengthInBits += 16 * uint16(len(m.DestinationNetworkAddresses))
+		lengthInBits += 16 * uint64(len(m.DestinationNetworkAddresses))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMRouterBusyToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMRouterBusyToNetwork) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

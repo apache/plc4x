@@ -226,8 +226,8 @@ func (m *_FirmataCommandSetPinMode) GetPlx4xTypeName() string {
 	return "FirmataCommandSetPinMode"
 }
 
-func (m *_FirmataCommandSetPinMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
+func (m *_FirmataCommandSetPinMode) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.FirmataCommandContract.(*_FirmataCommand).getLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -238,7 +238,7 @@ func (m *_FirmataCommandSetPinMode) GetLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
-func (m *_FirmataCommandSetPinMode) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_FirmataCommandSetPinMode) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

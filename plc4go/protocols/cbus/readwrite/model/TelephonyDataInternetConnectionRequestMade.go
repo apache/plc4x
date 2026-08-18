@@ -180,13 +180,13 @@ func (m *_TelephonyDataInternetConnectionRequestMade) GetPlx4xTypeName() string 
 	return "TelephonyDataInternetConnectionRequestMade"
 }
 
-func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
+func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.TelephonyDataContract.(*_TelephonyData).getLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

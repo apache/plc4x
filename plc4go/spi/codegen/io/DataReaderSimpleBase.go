@@ -48,11 +48,11 @@ func NewDataReaderSimpleBase[T any](readBuffer utils.ReadBuffer, bitLength uint)
 	}
 }
 
-func (d *DataReaderSimpleBase[T]) GetPos() uint16 {
+func (d *DataReaderSimpleBase[T]) GetPos() uint32 {
 	return d.readBuffer.GetPos()
 }
 
-func (d *DataReaderSimpleBase[T]) SetPos(pos uint16) {
+func (d *DataReaderSimpleBase[T]) SetPos(pos uint32) {
 	d.readBuffer.Reset(pos)
 }
 

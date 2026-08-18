@@ -320,8 +320,8 @@ func (m *_ModifySubscriptionRequest) GetPlx4xTypeName() string {
 	return "ModifySubscriptionRequest"
 }
 
-func (m *_ModifySubscriptionRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+func (m *_ModifySubscriptionRequest) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
@@ -347,7 +347,7 @@ func (m *_ModifySubscriptionRequest) GetLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
-func (m *_ModifySubscriptionRequest) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ModifySubscriptionRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

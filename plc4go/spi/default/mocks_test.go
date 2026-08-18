@@ -3500,18 +3500,18 @@ func (_m *MockMessage) EXPECT() *MockMessage_Expecter {
 }
 
 // GetLengthInBits provides a mock function for the type MockMessage
-func (_mock *MockMessage) GetLengthInBits(ctx context.Context) uint16 {
+func (_mock *MockMessage) GetLengthInBits(ctx context.Context) uint64 {
 	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetLengthInBits")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func(context.Context) uint16); ok {
+	var r0 uint64
+	if returnFunc, ok := ret.Get(0).(func(context.Context) uint64); ok {
 		r0 = returnFunc(ctx)
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint64)
 	}
 	return r0
 }
@@ -3540,29 +3540,29 @@ func (_c *MockMessage_GetLengthInBits_Call) Run(run func(ctx context.Context)) *
 	return _c
 }
 
-func (_c *MockMessage_GetLengthInBits_Call) Return(v uint16) *MockMessage_GetLengthInBits_Call {
+func (_c *MockMessage_GetLengthInBits_Call) Return(v uint64) *MockMessage_GetLengthInBits_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockMessage_GetLengthInBits_Call) RunAndReturn(run func(ctx context.Context) uint16) *MockMessage_GetLengthInBits_Call {
+func (_c *MockMessage_GetLengthInBits_Call) RunAndReturn(run func(ctx context.Context) uint64) *MockMessage_GetLengthInBits_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetLengthInBytes provides a mock function for the type MockMessage
-func (_mock *MockMessage) GetLengthInBytes(ctx context.Context) uint16 {
+func (_mock *MockMessage) GetLengthInBytes(ctx context.Context) uint64 {
 	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetLengthInBytes")
 	}
 
-	var r0 uint16
-	if returnFunc, ok := ret.Get(0).(func(context.Context) uint16); ok {
+	var r0 uint64
+	if returnFunc, ok := ret.Get(0).(func(context.Context) uint64); ok {
 		r0 = returnFunc(ctx)
 	} else {
-		r0 = ret.Get(0).(uint16)
+		r0 = ret.Get(0).(uint64)
 	}
 	return r0
 }
@@ -3591,12 +3591,12 @@ func (_c *MockMessage_GetLengthInBytes_Call) Run(run func(ctx context.Context)) 
 	return _c
 }
 
-func (_c *MockMessage_GetLengthInBytes_Call) Return(v uint16) *MockMessage_GetLengthInBytes_Call {
+func (_c *MockMessage_GetLengthInBytes_Call) Return(v uint64) *MockMessage_GetLengthInBytes_Call {
 	_c.Call.Return(v)
 	return _c
 }
 
-func (_c *MockMessage_GetLengthInBytes_Call) RunAndReturn(run func(ctx context.Context) uint16) *MockMessage_GetLengthInBytes_Call {
+func (_c *MockMessage_GetLengthInBytes_Call) RunAndReturn(run func(ctx context.Context) uint64) *MockMessage_GetLengthInBytes_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -228,8 +228,8 @@ func (m *_ParameterChangeReply) GetPlx4xTypeName() string {
 	return "ParameterChangeReply"
 }
 
-func (m *_ParameterChangeReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
+func (m *_ParameterChangeReply) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
 
 	// Simple field (parameterChange)
 	lengthInBits += m.ParameterChange.GetLengthInBits(ctx)
@@ -237,7 +237,7 @@ func (m *_ParameterChangeReply) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_ParameterChangeReply) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_ParameterChangeReply) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

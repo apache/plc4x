@@ -226,21 +226,21 @@ func (m *_NLMRequestMasterKey) GetPlx4xTypeName() string {
 	return "NLMRequestMasterKey"
 }
 
-func (m *_NLMRequestMasterKey) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+func (m *_NLMRequestMasterKey) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NLMContract.(*_NLM).getLengthInBits(ctx))
 
 	// Simple field (numberOfSupportedKeyAlgorithms)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.EncryptionAndSignatureAlgorithms) > 0 {
-		lengthInBits += 8 * uint16(len(m.EncryptionAndSignatureAlgorithms))
+		lengthInBits += 8 * uint64(len(m.EncryptionAndSignatureAlgorithms))
 	}
 
 	return lengthInBits
 }
 
-func (m *_NLMRequestMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NLMRequestMasterKey) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

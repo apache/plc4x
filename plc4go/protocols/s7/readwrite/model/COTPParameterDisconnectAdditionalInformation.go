@@ -211,18 +211,18 @@ func (m *_COTPParameterDisconnectAdditionalInformation) GetPlx4xTypeName() strin
 	return "COTPParameterDisconnectAdditionalInformation"
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
+func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.COTPParameterContract.(*_COTPParameter).getLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 8 * uint64(len(m.Data))
 	}
 
 	return lengthInBits
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

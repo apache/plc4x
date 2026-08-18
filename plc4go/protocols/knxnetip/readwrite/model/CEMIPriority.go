@@ -106,11 +106,11 @@ func CastCEMIPriority(structType any) CEMIPriority {
 	return castFunc(structType)
 }
 
-func (m CEMIPriority) GetLengthInBits(ctx context.Context) uint16 {
+func (m CEMIPriority) GetLengthInBits(ctx context.Context) uint64 {
 	return 2
 }
 
-func (m CEMIPriority) GetLengthInBytes(ctx context.Context) uint16 {
+func (m CEMIPriority) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 

@@ -251,15 +251,15 @@ func (m *_NodeIdGuid) GetPlx4xTypeName() string {
 	return "NodeIdGuid"
 }
 
-func (m *_NodeIdGuid) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).getLengthInBits(ctx))
+func (m *_NodeIdGuid) GetLengthInBits(ctx context.Context) uint64 {
+	lengthInBits := uint64(m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).getLengthInBits(ctx))
 
 	// Simple field (namespaceIndex)
 	lengthInBits += 16
 
 	// Array field
 	if len(m.Id) > 0 {
-		lengthInBits += 8 * uint16(len(m.Id))
+		lengthInBits += 8 * uint64(len(m.Id))
 	}
 
 	// A virtual field doesn't have any in- or output.
@@ -269,7 +269,7 @@ func (m *_NodeIdGuid) GetLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
-func (m *_NodeIdGuid) GetLengthInBytes(ctx context.Context) uint16 {
+func (m *_NodeIdGuid) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
