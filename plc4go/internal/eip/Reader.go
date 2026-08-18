@@ -292,12 +292,12 @@ func sliceService(servicesData []byte, offsets []uint16, i, nb int) (readWriteMo
 	if len(offsets) < nb {
 		return nil, false
 	}
-	offset := int(offsets[i] - offsets[0])
+	offset := int(offsets[i]) - int(offsets[0])
 	var length int
 	if i == nb-1 {
 		length = len(servicesData) - offset
 	} else {
-		length = int(offsets[i+1]-offsets[0]) - offset
+		length = int(offsets[i+1]) - int(offsets[0]) - offset
 	}
 	if offset < 0 || length <= 0 || offset+length > len(servicesData) {
 		return nil, false
