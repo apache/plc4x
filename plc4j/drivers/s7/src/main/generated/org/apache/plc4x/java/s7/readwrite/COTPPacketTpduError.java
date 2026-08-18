@@ -65,7 +65,7 @@ public class COTPPacketTpduError extends COTPPacket implements Message {
     return rejectCause;
   }
 
-  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, int cotpLen)
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, long cotpLen)
       throws BufferException {
     readBuffer.pushContext(WithOption.WithName("COTPPacketTpduError"));
     int startPos = readBuffer.getPositionInBits();

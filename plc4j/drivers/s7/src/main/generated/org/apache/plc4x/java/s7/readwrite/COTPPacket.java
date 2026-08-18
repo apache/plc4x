@@ -63,7 +63,7 @@ public abstract class COTPPacket implements Message {
     return payload;
   }
 
-  public static COTPPacket staticParse(ReadBuffer readBuffer, int cotpLen) throws BufferException {
+  public static COTPPacket staticParse(ReadBuffer readBuffer, long cotpLen) throws BufferException {
     readBuffer.pushContext(WithOption.WithName("COTPPacket"));
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

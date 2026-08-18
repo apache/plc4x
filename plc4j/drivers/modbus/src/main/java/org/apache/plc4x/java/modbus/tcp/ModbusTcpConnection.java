@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.modbus.base.ModbusRegisterCodec;
 import org.apache.plc4x.java.modbus.base.optimizer.ModbusReadOptimizer;
 import org.apache.plc4x.java.modbus.base.tag.*;
 import org.apache.plc4x.java.modbus.readwrite.*;
@@ -501,7 +502,7 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
 
         boolean bigEndian = (byteOrder == ModbusByteOrder.BIG_ENDIAN || byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP);
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(responseData);
-        return DataItem.staticParse(readBuffer, dataType, numberOfElements, bigEndian, stringLength);
+        return ModbusRegisterCodec.parse(readBuffer, dataType, numberOfElements, bigEndian, stringLength);
     }
 
     private byte[] extractResponseData(ModbusPDU request, ModbusPDU response) {
@@ -528,9 +529,9 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
                 return fromPlcValueCoil(plcValue, byteOrder);
             }
             boolean bigEndian = (byteOrder == ModbusByteOrder.BIG_ENDIAN || byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP);
-            int size = DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength(), bigEndian, tagStringLength);
+            int size = ModbusRegisterCodec.lengthInBytes(plcValue, tagDataType, plcValue.getLength(), tagStringLength);
             WriteBufferByteBased writeBuffer = createWriteBuffer(size, byteOrder);
-            DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), bigEndian, tagStringLength);
+            ModbusRegisterCodec.serialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), bigEndian, tagStringLength);
             byte[] data = writeBuffer.getBytes();
             if (byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP || byteOrder == ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP) {
                 data = byteSwap(data);

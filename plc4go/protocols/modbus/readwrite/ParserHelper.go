@@ -38,19 +38,11 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 		return ModbusPDUWriteFileRecordRequestItemParseWithBuffer(context.Background(), io)
 	case "DataItem":
 		dataType, _ := ModbusDataTypeByName(arguments[0])
-		numberOfValues, err := utils.StrToUint16(arguments[1])
+		stringLength, err := utils.StrToUint16(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		bigEndian, err := utils.StrToBool(arguments[2])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		stringLength, err := utils.StrToUint16(arguments[3])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return DataItemParseWithBuffer(context.Background(), io, dataType, numberOfValues, bigEndian, stringLength)
+		return DataItemParseWithBuffer(context.Background(), io, dataType, stringLength)
 	case "ModbusPDUReadFileRecordResponseItem":
 		return ModbusPDUReadFileRecordResponseItemParseWithBuffer(context.Background(), io)
 	case "ModbusDeviceInformationObject":

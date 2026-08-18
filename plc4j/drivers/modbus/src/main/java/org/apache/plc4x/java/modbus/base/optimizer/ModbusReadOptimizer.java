@@ -21,6 +21,7 @@ package org.apache.plc4x.java.modbus.base.optimizer;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.base.tag.*;
+import org.apache.plc4x.java.modbus.base.ModbusRegisterCodec;
 import org.apache.plc4x.java.modbus.readwrite.DataItem;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
@@ -182,7 +183,7 @@ public class ModbusReadOptimizer {
                             WithOption.WithFloatEncoding("IEEE754"),
                             WithOption.WithStringEncoding("UTF8"));
                     }
-                    PlcValue plcValue = DataItem.staticParse(readBuffer, originalTag.getDataType(),
+                    PlcValue plcValue = ModbusRegisterCodec.parse(readBuffer, originalTag.getDataType(),
                         originalTag.getNumberOfElements(), bigEndian, originalTag.getStringLength());
                     result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue));
                 }

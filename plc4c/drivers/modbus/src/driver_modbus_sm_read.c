@@ -23,6 +23,85 @@
 #include "modbus_adu.h"
 #include "data_item.h"
 
+
+/*
+ * A Modbus register is 16 bits wide. data_item_parse encodes one value at its natural width and
+ * knows nothing about that, so a value narrower than a register is padded here when it stands
+ * alone and packed when several of them follow one another. Which half of the register a padded
+ * value sits in depends on the byte order.
+ */
+static uint8_t plc4c_driver_modbus_padding_bits(
+    plc4c_modbus_read_write_modbus_data_type data_type) {
+  switch (data_type) {
+    case plc4c_modbus_read_write_modbus_data_type_BOOL:
+      return 15;
+    case plc4c_modbus_read_write_modbus_data_type_BYTE:
+    case plc4c_modbus_read_write_modbus_data_type_SINT:
+    case plc4c_modbus_read_write_modbus_data_type_USINT:
+      return 8;
+    default:
+      return 0;
+  }
+}
+
+/* A lone BOOL sits between seven bits and eight when the byte order is little endian. */
+static uint8_t plc4c_driver_modbus_leading_padding_bits(
+    plc4c_modbus_read_write_modbus_data_type data_type) {
+  return (data_type == plc4c_modbus_read_write_modbus_data_type_BOOL) ? 7 : 0;
+}
+
+static plc4c_return_code plc4c_driver_modbus_parse_registers(
+    plc4c_spi_read_buffer* read_buffer,
+    plc4c_modbus_read_write_modbus_data_type data_type,
+    uint16_t num_elements, bool big_endian, uint16_t string_length,
+    plc4c_data** data_item) {
+  plc4c_return_code result;
+  uint16_t _ignored = 0;
+  if (num_elements == 1) {
+    uint8_t padding = plc4c_driver_modbus_padding_bits(data_type);
+    if (padding == 0) {
+      return plc4c_modbus_read_write_data_item_parse(
+          plc4x_spi_context_background(), read_buffer, data_type, string_length, data_item);
+    }
+    if (big_endian) {
+      result = plc4c_spi_read_unsigned_short(read_buffer, padding, &_ignored);
+      if (result != OK) {
+        return result;
+      }
+      return plc4c_modbus_read_write_data_item_parse(
+          plc4x_spi_context_background(), read_buffer, data_type, string_length, data_item);
+    }
+    uint8_t leading = plc4c_driver_modbus_leading_padding_bits(data_type);
+    if (leading > 0) {
+      result = plc4c_spi_read_unsigned_short(read_buffer, leading, &_ignored);
+      if (result != OK) {
+        return result;
+      }
+    }
+    result = plc4c_modbus_read_write_data_item_parse(
+        plc4x_spi_context_background(), read_buffer, data_type, string_length, data_item);
+    if (result != OK) {
+      return result;
+    }
+    return plc4c_spi_read_unsigned_short(read_buffer, padding - leading, &_ignored);
+  }
+
+  /* Several values are packed without padding between them. */
+  plc4c_list* list;
+  plc4c_utils_list_create(&list);
+  for (uint16_t i = 0; i < num_elements; i++) {
+    plc4c_data* element;
+    result = plc4c_modbus_read_write_data_item_parse(
+        plc4x_spi_context_background(), read_buffer, data_type, string_length, &element);
+    if (result != OK) {
+      return result;
+    }
+    plc4c_utils_list_insert_tail_value(list, element);
+  }
+  *data_item = plc4c_data_create_list_data(list);
+  return OK;
+}
+
 enum plc4c_driver_modbus_read_states {
   PLC4C_DRIVER_MODBUS_READ_INIT,
   PLC4C_DRIVER_MODBUS_READ_SEND_ITEM_REQUEST,
@@ -158,21 +237,16 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
         return result;
       }
 
-      // In case of a register request and a single bit datatype, consume the first byte.
-      if((modbus_item->type != PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_COIL) &&
-          (plc4c_modbus_read_write_modbus_data_type_get_data_type_size(modbus_item->datatype) == 1)) {
-        uint8_t _ignored = 0;
-        result = plc4c_spi_read_unsigned_byte(read_buffer, 8, &_ignored);
-        if(result != OK) {
-          return result;
-        }
-      }
-
       // Decode the items in the response ...
       plc4c_data* data_item;
       // The C tag has no notion of a string length yet, so 1 is passed - the value it has for every
       // data type that is not a string, which leaves the behaviour of all other types unchanged.
-      plc4c_modbus_read_write_data_item_parse(plc4x_spi_context_background(), read_buffer, modbus_item->datatype, modbus_item->num_elements, true, 1, &data_item);
+      // Padding and packing of sub-register values is handled by the helper above.
+      result = plc4c_driver_modbus_parse_registers(read_buffer, modbus_item->datatype,
+          modbus_item->num_elements, true, 1, &data_item);
+      if(result != OK) {
+        return result;
+      }
 
       // Create a new response value-item
       plc4c_response_value_item* response_value_item = malloc(sizeof(plc4c_response_value_item));

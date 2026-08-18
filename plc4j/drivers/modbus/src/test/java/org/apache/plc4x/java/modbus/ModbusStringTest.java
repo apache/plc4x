@@ -21,7 +21,7 @@ package org.apache.plc4x.java.modbus;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHoldingRegister;
-import org.apache.plc4x.java.modbus.readwrite.DataItem;
+import org.apache.plc4x.java.modbus.base.ModbusRegisterCodec;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
@@ -66,7 +66,7 @@ class ModbusStringTest {
     @Test
     void readsAWideString() throws Exception {
         byte[] utf16 = "Hi".getBytes(StandardCharsets.UTF_16BE);
-        PlcValue value = DataItem.staticParse(buffer(utf16), ModbusDataType.WSTRING, 1, true, 2);
+        PlcValue value = ModbusRegisterCodec.parse(buffer(utf16), ModbusDataType.WSTRING, 1, true, 2);
 
         assertEquals("Hi", value.getString());
     }
@@ -120,7 +120,7 @@ class ModbusStringTest {
 
     private static PlcValue parse(String text, ModbusDataType dataType, int numberOfValues, int stringLength)
         throws Exception {
-        return DataItem.staticParse(buffer(text.getBytes(StandardCharsets.UTF_8)),
+        return ModbusRegisterCodec.parse(buffer(text.getBytes(StandardCharsets.UTF_8)),
             dataType, numberOfValues, true, stringLength);
     }
 

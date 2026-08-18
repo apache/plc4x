@@ -56,7 +56,10 @@ class ReadBuffer(ByteOrderAware, PositionAware, ABC):
         raise NotImplementedError
 
     def read_byte(self, logical_name: str = "", **kwargs) -> int:
-        self.read_signed_byte(8, logical_name, **kwargs)
+        # A 'byte' in an mspec is an unsigned octet: it is written unsigned, so it has to be read
+        # that way too. Reading it signed made anything above 0x7F come back negative and then fail
+        # to serialize back through the unsigned write path.
+        return self.read_unsigned_byte(8, logical_name, **kwargs)
 
     @abstractmethod
     def read_byte_array(
@@ -189,7 +192,8 @@ class ReadBufferByteBased(ReadBuffer):
         return result
 
     def read_byte(self, logical_name: str = "", **kwargs) -> int:
-        value = self.read_signed_byte(8, logical_name, **kwargs)
+        # See ReadBuffer.read_byte: a 'byte' is unsigned.
+        value = self.read_unsigned_byte(8, logical_name, **kwargs)
         return value
 
     def read_byte_array(
@@ -197,7 +201,7 @@ class ReadBufferByteBased(ReadBuffer):
     ) -> List[int]:
         result: List[int] = [] * number_of_bytes
         for index in range(0, number_of_bytes):
-            result[index] = self.read_signed_byte(8, logical_name, **kwargs)
+            result[index] = self.read_unsigned_byte(8, logical_name, **kwargs)
         return result
 
     def read_unsigned_byte(
@@ -335,7 +339,7 @@ class ReadBufferByteBased(ReadBuffer):
         else:
             result: int = ba2int(
                 self.bb[self.position : self.position + bit_length],
-                signed=False,
+                signed=True,
             )
             self.position += bit_length
             return result

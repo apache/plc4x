@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.modbus.base.ModbusRegisterCodec;
 import org.apache.plc4x.java.modbus.base.optimizer.ModbusReadOptimizer;
 import org.apache.plc4x.java.modbus.base.tag.*;
 import org.apache.plc4x.java.modbus.readwrite.*;
@@ -579,9 +580,9 @@ public class ModbusAsciiConnection extends PollingSubscriptionConnectionBase<Mod
                 return fromPlcValueCoil(plcValue, byteOrder);
             }
             boolean bigEndian = (byteOrder == ModbusByteOrder.BIG_ENDIAN || byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP);
-            int size = DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength(), bigEndian, tagStringLength);
+            int size = ModbusRegisterCodec.lengthInBytes(plcValue, tagDataType, plcValue.getLength(), tagStringLength);
             WriteBufferByteBased writeBuffer = createWriteBuffer(size, byteOrder);
-            DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), bigEndian, tagStringLength);
+            ModbusRegisterCodec.serialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), bigEndian, tagStringLength);
             byte[] data = writeBuffer.getBytes();
             if (byteOrder == ModbusByteOrder.BIG_ENDIAN_BYTE_SWAP || byteOrder == ModbusByteOrder.LITTLE_ENDIAN_BYTE_SWAP) {
                 data = byteSwap(data);

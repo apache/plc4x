@@ -211,7 +211,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	// The Go tag has no notion of a string length yet, so 1 is passed - the value it has for
 	// every data type that is not a string, which leaves all other types unchanged.
-	value, err := readWriteModel.DataItemParse(ctxForModel, data, tag.Datatype, tag.Quantity, true, 1)
+	value, err := ParseRegisters(ctxForModel, utils.NewReadBufferByteBased(data), tag.Datatype, tag.Quantity, true, 1)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}

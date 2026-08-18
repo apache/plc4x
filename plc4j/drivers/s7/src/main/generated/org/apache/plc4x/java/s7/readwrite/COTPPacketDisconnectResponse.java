@@ -65,7 +65,7 @@ public class COTPPacketDisconnectResponse extends COTPPacket implements Message 
     return sourceReference;
   }
 
-  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, int cotpLen)
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(ReadBuffer readBuffer, long cotpLen)
       throws BufferException {
     readBuffer.pushContext(WithOption.WithName("COTPPacketDisconnectResponse"));
     int startPos = readBuffer.getPositionInBits();
