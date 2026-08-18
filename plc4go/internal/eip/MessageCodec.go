@@ -90,8 +90,11 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		//Second byte for the size and then add the header size 24
-		packetSize := uint32(((uint16(data[3]) << 8) + uint16(data[2])) + 24)
+		// Second byte pair is the payload size; add the 24 byte header size.
+		// The addition must happen in uint32: doing it in uint16 lets a wire
+		// length like 0xFFE8 wrap the total to 0, making Read consume nothing
+		// and the receive worker spin forever on the same unconsumed bytes.
+		packetSize := (uint32(data[3]) << 8) + uint32(data[2]) + 24
 		if num < packetSize {
 			m.log.Debug().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil

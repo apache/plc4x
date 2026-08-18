@@ -97,6 +97,13 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 		}
 		// Get the size of the entire packet
 		packetSize := (uint32(data[4]) << 8) + uint32(data[5])
+		// A total length below the 6 byte KNXnet/IP header can never become
+		// parseable and would make the receive worker spin forever on the same
+		// unconsumed bytes, so treat it as a fatal framing error.
+		if packetSize < 6 {
+			return nil, transports.NewTransportError(transports.TransportErrorFatal,
+				errors.Errorf("invalid KNXnet/IP frame length %d (minimum 6)", packetSize))
+		}
 		if num < packetSize {
 			m.log.Trace().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil

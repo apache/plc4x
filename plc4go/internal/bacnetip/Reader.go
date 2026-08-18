@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"context"
+	"runtime/debug"
 	"sync"
 	"time"
 
@@ -204,6 +205,14 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				if complexAck, ok := apdu.(readWriteModel.APDUComplexAck); ok && complexAck.GetSegmentedMessage() {
 					m.log.Trace().Uint8("invokeId", complexAck.GetOriginalInvokeId()).Msg("segmented read response — starting reassembly")
 					m.wg.Go(func() {
+						// Reassembly works on wire-controlled sizes; a panic in this
+						// goroutine would otherwise kill the whole process, so recover
+						// and fail the read instead.
+						defer func() {
+							if r := recover(); r != nil {
+								utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", r, debug.Stack())))
+							}
+						}()
 						m.reassembleSegmentedRead(readCtx, readRequest, complexAck, result)
 					})
 					return transaction.EndRequest()
