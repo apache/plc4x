@@ -438,15 +438,35 @@ func Test_defaultCodec_Connect(t *testing.T) {
 	}
 }
 
+// probeWorkersAlive verifies both codec workers are alive. The notify channels are
+// buffered by one, so the probe sends twice: the first send at worst parks in the
+// buffer, the second blocking send can only proceed once a live worker drained one.
+func probeWorkersAlive(t *testing.T, codec *defaultCodec, iteration int) {
+	t.Helper()
+	for _, probe := range []struct {
+		worker string
+		notify chan struct{}
+	}{
+		{"expire", codec.notifyExpireWorker},
+		{"receive", codec.notifyReceiveWorker},
+	} {
+		for send := 0; send < 2; send++ {
+			select {
+			case probe.notify <- struct{}{}:
+			case <-time.After(5 * time.Second):
+				t.Fatalf("iteration %d: %s worker is dead", iteration, probe.worker)
+			}
+		}
+	}
+}
+
 // Test_defaultCodec_Connect_workersAliveAfterConnect is a falsification test
 // for the worker-startup race: Connect used to start the workers BEFORE
 // running.Store(true), so a worker observing running==false in both its loop
 // condition and its restart defer terminated permanently — leaving a
 // successfully "connected" codec whose expectations never expire and whose
 // messages are never received (observed as an infinite hang in the cbus
-// Reader tests). An idle worker blocks in its select receiving from its
-// (unbuffered) notify channel, so a blocking send succeeds iff the worker is
-// alive.
+// Reader tests).
 func Test_defaultCodec_Connect_workersAliveAfterConnect(t *testing.T) {
 	for i := 0; i < 1000; i++ {
 		requirements := NewMockDefaultCodecRequirements(t)
@@ -464,21 +484,55 @@ func Test_defaultCodec_Connect_workersAliveAfterConnect(t *testing.T) {
 				_ = codec.Disconnect()
 			}
 		})
-		for _, probe := range []struct {
-			worker string
-			notify chan struct{}
-		}{
-			{"expire", codec.notifyExpireWorker},
-			{"receive", codec.notifyReceiveWorker},
-		} {
-			select {
-			case probe.notify <- struct{}{}:
-			case <-time.After(5 * time.Second):
-				t.Fatalf("iteration %d: %s worker died during Connect", i, probe.worker)
-			}
-		}
+		probeWorkersAlive(t, codec, i)
 		require.NoError(t, codec.Disconnect())
 	}
+}
+
+// Test_defaultCodec_Reconnect_workersAliveAfterReconnect covers codec reuse: the
+// codec context is cancelled on Disconnect and used to stay cancelled forever, so a
+// reconnected codec's workers exited immediately through their ctx.Done() paths.
+func Test_defaultCodec_Reconnect_workersAliveAfterReconnect(t *testing.T) {
+	for i := 0; i < 100; i++ {
+		requirements := NewMockDefaultCodecRequirements(t)
+		requirements.EXPECT().Receive(mock.Anything).Return(nil, nil).Maybe()
+		instance := NewMockTransportInstance(t)
+		instance.EXPECT().IsConnected().Return(true)
+		instance.EXPECT().Close().Return(nil)
+		instance.EXPECT().ClassifyError(mock.Anything).Return(transports.TransportErrorTransient).Maybe()
+		codec := buildDefaultCodec(requirements, instance, options.WithCustomLogger(testutils.ProduceTestingLogger(t))).(*defaultCodec)
+		require.NoError(t, codec.Connect(testutils.TestContext(t)))
+		t.Cleanup(func() {
+			if codec.IsRunning() {
+				_ = codec.Disconnect()
+			}
+		})
+		require.NoError(t, codec.Disconnect())
+		require.NoError(t, codec.Connect(testutils.TestContext(t)))
+		probeWorkersAlive(t, codec, i)
+		require.NoError(t, codec.Disconnect())
+	}
+}
+
+// Test_defaultCodec_Expect_afterDisconnect_doesNotPanic: Disconnect used to close the
+// notify channels, so a late Expect (e.g. a request racing a connection close) panicked
+// with a send on a closed channel.
+func Test_defaultCodec_Expect_afterDisconnect_doesNotPanic(t *testing.T) {
+	requirements := NewMockDefaultCodecRequirements(t)
+	requirements.EXPECT().Receive(mock.Anything).Return(nil, nil).Maybe()
+	instance := NewMockTransportInstance(t)
+	instance.EXPECT().IsConnected().Return(true)
+	instance.EXPECT().Close().Return(nil)
+	instance.EXPECT().ClassifyError(mock.Anything).Return(transports.TransportErrorTransient).Maybe()
+	codec := buildDefaultCodec(requirements, instance, options.WithCustomLogger(testutils.ProduceTestingLogger(t))).(*defaultCodec)
+	require.NoError(t, codec.Connect(testutils.TestContext(t)))
+	require.NoError(t, codec.Disconnect())
+	assert.NotPanics(t, func() {
+		codec.Expect(testutils.TestContext(t), "late expect",
+			func(message spi.Message) bool { return false },
+			func(message spi.Message) error { return nil },
+			func(err error) error { return nil })
+	})
 }
 
 func Test_defaultCodec_Disconnect(t *testing.T) {
