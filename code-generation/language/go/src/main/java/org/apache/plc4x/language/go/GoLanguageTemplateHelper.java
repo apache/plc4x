@@ -381,6 +381,35 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return isNotAnComplexTypeReference && arrayTypeIsNotAnComplexTypeReference;
     }
 
+    /**
+     * Renders the trailing {@code , utils.WithEncoding("...")} argument for a numeric field that
+     * declares an {@code encoding} in the mspec, or the empty string when it declares none.
+     * <p>
+     * The migrated (non deprecated) read/write templates pass the encoding through as
+     * {@code codegen.WithEncoding(...)}, but the deprecated data-io path below used to drop it
+     * silently. That made the S7 {@code DATE_AND_TIME} data item emit a half BCD, half raw binary
+     * frame once the Go byte buffers started honouring {@code encoding='"BCD"'}: the manual
+     * {@code year} field went through {@code serializeSiemensYear} (which passes the option
+     * explicitly) while {@code month}/{@code day}/... did not.
+     *
+     * @param field the field being rendered, may be {@code null}
+     * @return the writer/reader argument to append, or {@code ""}
+     */
+    private String getEncodingOption(TypedField field) {
+        if (field == null) {
+            return "";
+        }
+        final Optional<Term> encodingTerm = field.getEncoding();
+        if (encodingTerm.isEmpty()) {
+            return "";
+        }
+        String encoding = encodingTerm.get().asLiteral()
+            .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+            .asStringLiteral()
+            .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
+        return ", utils.WithEncoding(\"" + encoding + "\")";
+    }
+
     @Deprecated
     public String getSpecialReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, TypedField field) {
         return "/*TODO: migrate me*/" + getReadBufferReadMethodCall(logicalName, simpleTypeReference, null, field);
@@ -407,33 +436,33 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
-                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
                 }
-                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + getEncodingOption(field) + ")";
             case FLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
@@ -689,33 +718,33 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint8(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint8(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint16(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint16(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint32(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint32(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint64(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", uint64(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
-                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + getEncodingOption(field) + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int8(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int8(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int16(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int16(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int32(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int32(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int64(" + fieldName + ")" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", int64(" + fieldName + ")" + writerArgsString + getEncodingOption(field) + ")";
                 }
-                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + getEncodingOption(field) + ")";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
