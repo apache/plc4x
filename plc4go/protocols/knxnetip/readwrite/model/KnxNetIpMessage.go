@@ -538,11 +538,11 @@ func (m *_KnxNetIpMessage) parse(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(err, "Error parsing sub-type DisconnectResponse for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x020B: // UnknownMessage
-		if _child, err = new(_UnknownMessage).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_UnknownMessage).parse(ctx, readBuffer, m, uint16(totalLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UnknownMessage for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0310: // DeviceConfigurationRequest
-		if _child, err = new(_DeviceConfigurationRequest).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_DeviceConfigurationRequest).parse(ctx, readBuffer, m, uint16(totalLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DeviceConfigurationRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0311: // DeviceConfigurationAck
@@ -550,7 +550,7 @@ func (m *_KnxNetIpMessage) parse(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(err, "Error parsing sub-type DeviceConfigurationAck for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0420: // TunnelingRequest
-		if _child, err = new(_TunnelingRequest).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_TunnelingRequest).parse(ctx, readBuffer, m, uint16(totalLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TunnelingRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0421: // TunnelingResponse

@@ -409,11 +409,11 @@ func (m *_MessagePDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, re
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaAcknowledgeResponse for type-switch of MessagePDU")
 		}
 	case messageType == "OPN" && response == bool(false): // OpcuaOpenRequest
-		if _child, err = new(_OpcuaOpenRequest).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
+		if _child, err = new(_OpcuaOpenRequest).parse(ctx, readBuffer, m, uint32(totalLength), response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaOpenRequest for type-switch of MessagePDU")
 		}
 	case messageType == "OPN" && response == bool(true): // OpcuaOpenResponse
-		if _child, err = new(_OpcuaOpenResponse).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
+		if _child, err = new(_OpcuaOpenResponse).parse(ctx, readBuffer, m, uint32(totalLength), response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaOpenResponse for type-switch of MessagePDU")
 		}
 	case messageType == "CLO" && response == bool(false): // OpcuaCloseRequest
@@ -421,11 +421,11 @@ func (m *_MessagePDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, re
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaCloseRequest for type-switch of MessagePDU")
 		}
 	case messageType == "MSG" && response == bool(false): // OpcuaMessageRequest
-		if _child, err = new(_OpcuaMessageRequest).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
+		if _child, err = new(_OpcuaMessageRequest).parse(ctx, readBuffer, m, uint32(totalLength), response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageRequest for type-switch of MessagePDU")
 		}
 	case messageType == "MSG" && response == bool(true): // OpcuaMessageResponse
-		if _child, err = new(_OpcuaMessageResponse).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
+		if _child, err = new(_OpcuaMessageResponse).parse(ctx, readBuffer, m, uint32(totalLength), response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageResponse for type-switch of MessagePDU")
 		}
 	case messageType == "ERR" && response == bool(true): // OpcuaMessageError

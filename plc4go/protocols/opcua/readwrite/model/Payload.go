@@ -328,11 +328,11 @@ func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, binar
 	var _child Payload
 	switch {
 	case binary == bool(false): // ExtensiblePayload
-		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, binary, byteCount); err != nil {
+		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, binary, uint32(byteCount)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ExtensiblePayload for type-switch of Payload")
 		}
 	case binary == bool(true): // BinaryPayload
-		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, binary, byteCount); err != nil {
+		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, binary, uint32(byteCount)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BinaryPayload for type-switch of Payload")
 		}
 	default:

@@ -389,15 +389,15 @@ func (m *_ExtensionObjectWithMask) parse(ctx context.Context, readBuffer utils.R
 	var _child ExtensionObjectWithMask
 	switch {
 	case bodyKind == int8(1): // BinaryExtensionObjectWithMask
-		if _child, err = new(_BinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, standardEncoding, includeEncodingMask); err != nil {
+		if _child, err = new(_BinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BinaryExtensionObjectWithMask for type-switch of ExtensionObjectWithMask")
 		}
 	case bodyKind == int8(2): // RawBinaryExtensionObjectWithMask
-		if _child, err = new(_RawBinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, standardEncoding, includeEncodingMask); err != nil {
+		if _child, err = new(_RawBinaryExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RawBinaryExtensionObjectWithMask for type-switch of ExtensionObjectWithMask")
 		}
 	case bodyKind == int8(0): // NullExtensionObjectWithMask
-		if _child, err = new(_NullExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, standardEncoding, includeEncodingMask); err != nil {
+		if _child, err = new(_NullExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullExtensionObjectWithMask for type-switch of ExtensionObjectWithMask")
 		}
 	default:

@@ -168,8 +168,11 @@ type ${type.name}Requirements interface {
 	GetLengthInBits(ctx context.Context) uint64
 	GetLengthInBytes(ctx context.Context) uint64
 	<#list helper.discriminatorTypes as discriminatorName, discriminatorType>
-	<#-- If the discriminator name matches that of another field, suppress the methods generation -->
-		<#if type.isDiscriminatorField(discriminatorName)>
+	<#-- If the discriminator name matches that of another field, suppress the methods generation.
+	     isDiscriminatorField only sees the parent's discriminators, so a type carrying a nested
+	     typeSwitch of its own also has to be asked directly - otherwise this interface lacks the
+	     accessor that this type's own serializer calls. -->
+		<#if type.isDiscriminatorField(discriminatorName) || helper.declaresDiscriminatorField(type, discriminatorName)>
 	// Get${discriminatorName?cap_first} returns ${discriminatorName?cap_first} (discriminator field)
 	Get${discriminatorName?cap_first}() <#if discriminatorType.isNonSimpleTypeReference() && !discriminatorType.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
 		</#if>
@@ -1308,7 +1311,11 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 						</#if>: // ${case.name}
                     </@compress>
 
-		if _child, err = new(_${case.name}).parse(ctx, readBuffer, m<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>); err != nil {
+		if _child, err = new(_${case.name}).parse(ctx, readBuffer, m<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*${parserArgument.name}<#elseif parserArgument.type.isIntegerTypeReference()><#--
+    Go has no implicit numeric conversion, so an argument whose declared width differs from the
+    value being passed (e.g. a uint8 field bound to a uint16 parser argument) will not compile.
+    Converting to the declared type is a no-op when the widths already agree.
+-->${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(${parserArgument.name})<#else>${parserArgument.name}</#if><#sep>, </#sep></#list></#if>); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ${case.name} for type-switch of ${type.name}")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 		}
 				</#list>

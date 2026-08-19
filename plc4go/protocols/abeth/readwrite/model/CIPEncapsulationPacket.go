@@ -446,7 +446,7 @@ func (m *_CIPEncapsulationPacket) parse(ctx context.Context, readBuffer utils.Re
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadRequest for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		if _child, err = new(_CIPEncapsulationReadResponse).parse(ctx, readBuffer, m, packetLen); err != nil {
+		if _child, err = new(_CIPEncapsulationReadResponse).parse(ctx, readBuffer, m, uint16(packetLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadResponse for type-switch of CIPEncapsulationPacket")
 		}
 	default:

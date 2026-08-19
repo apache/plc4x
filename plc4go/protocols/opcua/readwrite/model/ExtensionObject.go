@@ -392,11 +392,11 @@ func (m *_ExtensionObject) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child ExtensionObject
 	switch {
 	case includeEncodingMask == bool(false): // RootExtensionObject
-		if _child, err = new(_RootExtensionObject).parse(ctx, readBuffer, m, extensionId, includeEncodingMask); err != nil {
+		if _child, err = new(_RootExtensionObject).parse(ctx, readBuffer, m, int32(extensionId), includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RootExtensionObject for type-switch of ExtensionObject")
 		}
 	case includeEncodingMask == bool(true): // ExtensionObjectWithMask
-		if _child, err = new(_ExtensionObjectWithMask).parse(ctx, readBuffer, m, extensionId, standardEncoding, includeEncodingMask); err != nil {
+		if _child, err = new(_ExtensionObjectWithMask).parse(ctx, readBuffer, m, int32(extensionId), standardEncoding, includeEncodingMask); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ExtensionObjectWithMask for type-switch of ExtensionObject")
 		}
 	default:

@@ -483,7 +483,7 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCResult for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x01: // BVLCWriteBroadcastDistributionTable
-		if _child, err = new(_BVLCWriteBroadcastDistributionTable).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCWriteBroadcastDistributionTable).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCWriteBroadcastDistributionTable for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x02: // BVLCReadBroadcastDistributionTable
@@ -491,11 +491,11 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCReadBroadcastDistributionTable for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x03: // BVLCReadBroadcastDistributionTableAck
-		if _child, err = new(_BVLCReadBroadcastDistributionTableAck).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCReadBroadcastDistributionTableAck).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCReadBroadcastDistributionTableAck for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x04: // BVLCForwardedNPDU
-		if _child, err = new(_BVLCForwardedNPDU).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCForwardedNPDU).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCForwardedNPDU for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x05: // BVLCRegisterForeignDevice
@@ -507,7 +507,7 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCReadForeignDeviceTable for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x07: // BVLCReadForeignDeviceTableAck
-		if _child, err = new(_BVLCReadForeignDeviceTableAck).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCReadForeignDeviceTableAck).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCReadForeignDeviceTableAck for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x08: // BVLCDeleteForeignDeviceTableEntry
@@ -515,19 +515,19 @@ func (m *_BVLC) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLC 
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCDeleteForeignDeviceTableEntry for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x09: // BVLCDistributeBroadcastToNetwork
-		if _child, err = new(_BVLCDistributeBroadcastToNetwork).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCDistributeBroadcastToNetwork).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCDistributeBroadcastToNetwork for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x0A: // BVLCOriginalUnicastNPDU
-		if _child, err = new(_BVLCOriginalUnicastNPDU).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCOriginalUnicastNPDU).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCOriginalUnicastNPDU for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x0B: // BVLCOriginalBroadcastNPDU
-		if _child, err = new(_BVLCOriginalBroadcastNPDU).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCOriginalBroadcastNPDU).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCOriginalBroadcastNPDU for type-switch of BVLC")
 		}
 	case bvlcFunction == 0x0C: // BVLCSecureBVLL
-		if _child, err = new(_BVLCSecureBVLL).parse(ctx, readBuffer, m, bvlcPayloadLength); err != nil {
+		if _child, err = new(_BVLCSecureBVLL).parse(ctx, readBuffer, m, uint16(bvlcPayloadLength)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BVLCSecureBVLL for type-switch of BVLC")
 		}
 	default:
