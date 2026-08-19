@@ -40,7 +40,7 @@ type CipWriteRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceRequest
 	// GetTag returns Tag (property field)
 	GetTag() []byte
 	// GetDataType returns DataType (property field)
@@ -57,7 +57,7 @@ type CipWriteRequest interface {
 
 // _CipWriteRequest is the data-structure of this message
 type _CipWriteRequest struct {
-	CipServiceContract
+	CipServiceRequestContract
 	Tag       []byte
 	DataType  CIPDataTypeCode
 	ElementNb uint16
@@ -65,18 +65,18 @@ type _CipWriteRequest struct {
 }
 
 var _ CipWriteRequest = (*_CipWriteRequest)(nil)
-var _ CipServiceRequirements = (*_CipWriteRequest)(nil)
+var _ CipServiceRequestRequirements = (*_CipWriteRequest)(nil)
 
 // NewCipWriteRequest factory function for _CipWriteRequest
 func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) *_CipWriteRequest {
 	_result := &_CipWriteRequest{
-		CipServiceContract: NewCipService(),
-		Tag:                tag,
-		DataType:           dataType,
-		ElementNb:          elementNb,
-		Data:               data,
+		CipServiceRequestContract: NewCipServiceRequest(),
+		Tag:                       tag,
+		DataType:                  dataType,
+		ElementNb:                 elementNb,
+		Data:                      data,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceRequestContract.(*_CipServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -99,7 +99,7 @@ type CipWriteRequestBuilder interface {
 	// WithData adds Data (property field)
 	WithData(...byte) CipWriteRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceRequestBuilder
 	// Build builds the CipWriteRequest or returns an error if something is wrong
 	Build() (CipWriteRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,16 +114,16 @@ func NewCipWriteRequestBuilder() CipWriteRequestBuilder {
 type _CipWriteRequestBuilder struct {
 	*_CipWriteRequest
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceRequestBuilder
 
 	collectedErr []error
 }
 
 var _ (CipWriteRequestBuilder) = (*_CipWriteRequestBuilder)(nil)
 
-func (b *_CipWriteRequestBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._CipWriteRequest
+func (b *_CipWriteRequestBuilder) setParent(contract CipServiceRequestContract) {
+	b.CipServiceRequestContract = contract
+	contract.(*_CipServiceRequest)._SubType = b._CipWriteRequest
 }
 
 func (b *_CipWriteRequestBuilder) WithMandatoryFields(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) CipWriteRequestBuilder {
@@ -165,14 +165,14 @@ func (b *_CipWriteRequestBuilder) MustBuild() CipWriteRequest {
 	return build
 }
 
-func (b *_CipWriteRequestBuilder) Done() CipServiceBuilder {
+func (b *_CipWriteRequestBuilder) Done() CipServiceRequestBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceRequestBuilder().(*_CipServiceRequestBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_CipWriteRequestBuilder) buildForCipService() (CipService, error) {
+func (b *_CipWriteRequestBuilder) buildForCipServiceRequest() (CipServiceRequest, error) {
 	return b.Build()
 }
 
@@ -206,10 +206,6 @@ func (m *_CipWriteRequest) GetService() uint8 {
 	return 0x4D
 }
 
-func (m *_CipWriteRequest) GetResponse() bool {
-	return bool(false)
-}
-
 func (m *_CipWriteRequest) GetConnected() bool {
 	return false
 }
@@ -219,8 +215,8 @@ func (m *_CipWriteRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipWriteRequest) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_CipWriteRequest) GetParent() CipServiceRequestContract {
+	return m.CipServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -265,7 +261,7 @@ func (m *_CipWriteRequest) GetPlx4xTypeName() string {
 }
 
 func (m *_CipWriteRequest) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceRequestContract.(*_CipServiceRequest).getLengthInBits(ctx))
 
 	// Implicit Field (requestPathSize)
 	lengthInBits += 8
@@ -293,8 +289,8 @@ func (m *_CipWriteRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CipWriteRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipWriteRequest CipWriteRequest, err error) {
-	m.CipServiceContract = parent
+func (m *_CipWriteRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceRequest, connected bool, serviceLen uint16) (__cipWriteRequest CipWriteRequest, err error) {
+	m.CipServiceRequestContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -384,7 +380,7 @@ func (m *_CipWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceRequestContract.(*_CipServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CipWriteRequest) IsCipWriteRequest() {}
@@ -398,13 +394,13 @@ func (m *_CipWriteRequest) deepCopy() *_CipWriteRequest {
 		return nil
 	}
 	_CipWriteRequestCopy := &_CipWriteRequest{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceRequestContract.(*_CipServiceRequest).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Tag),
 		m.DataType,
 		m.ElementNb,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	_CipWriteRequestCopy.CipServiceContract.(*_CipService)._SubType = m
+	_CipWriteRequestCopy.CipServiceRequestContract.(*_CipServiceRequest)._SubType = m
 	return _CipWriteRequestCopy
 }
 

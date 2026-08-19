@@ -44,7 +44,7 @@ type MultipleServiceRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceRequest
 	// GetData returns Data (property field)
 	//Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
 	GetData() Services
@@ -56,12 +56,12 @@ type MultipleServiceRequest interface {
 
 // _MultipleServiceRequest is the data-structure of this message
 type _MultipleServiceRequest struct {
-	CipServiceContract
+	CipServiceRequestContract
 	Data Services
 }
 
 var _ MultipleServiceRequest = (*_MultipleServiceRequest)(nil)
-var _ CipServiceRequirements = (*_MultipleServiceRequest)(nil)
+var _ CipServiceRequestRequirements = (*_MultipleServiceRequest)(nil)
 
 // NewMultipleServiceRequest factory function for _MultipleServiceRequest
 func NewMultipleServiceRequest(data Services) *_MultipleServiceRequest {
@@ -69,10 +69,10 @@ func NewMultipleServiceRequest(data Services) *_MultipleServiceRequest {
 		panic("data of type Services for MultipleServiceRequest must not be nil")
 	}
 	_result := &_MultipleServiceRequest{
-		CipServiceContract: NewCipService(),
-		Data:               data,
+		CipServiceRequestContract: NewCipServiceRequest(),
+		Data:                      data,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceRequestContract.(*_CipServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -91,7 +91,7 @@ type MultipleServiceRequestBuilder interface {
 	// WithDataBuilder adds Data (property field) which is build by the builder
 	WithDataBuilder(func(ServicesBuilder) ServicesBuilder) MultipleServiceRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceRequestBuilder
 	// Build builds the MultipleServiceRequest or returns an error if something is wrong
 	Build() (MultipleServiceRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,16 +106,16 @@ func NewMultipleServiceRequestBuilder() MultipleServiceRequestBuilder {
 type _MultipleServiceRequestBuilder struct {
 	*_MultipleServiceRequest
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceRequestBuilder
 
 	collectedErr []error
 }
 
 var _ (MultipleServiceRequestBuilder) = (*_MultipleServiceRequestBuilder)(nil)
 
-func (b *_MultipleServiceRequestBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._MultipleServiceRequest
+func (b *_MultipleServiceRequestBuilder) setParent(contract CipServiceRequestContract) {
+	b.CipServiceRequestContract = contract
+	contract.(*_CipServiceRequest)._SubType = b._MultipleServiceRequest
 }
 
 func (b *_MultipleServiceRequestBuilder) WithMandatoryFields(data Services) MultipleServiceRequestBuilder {
@@ -155,14 +155,14 @@ func (b *_MultipleServiceRequestBuilder) MustBuild() MultipleServiceRequest {
 	return build
 }
 
-func (b *_MultipleServiceRequestBuilder) Done() CipServiceBuilder {
+func (b *_MultipleServiceRequestBuilder) Done() CipServiceRequestBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceRequestBuilder().(*_CipServiceRequestBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_MultipleServiceRequestBuilder) buildForCipService() (CipService, error) {
+func (b *_MultipleServiceRequestBuilder) buildForCipServiceRequest() (CipServiceRequest, error) {
 	return b.Build()
 }
 
@@ -196,10 +196,6 @@ func (m *_MultipleServiceRequest) GetService() uint8 {
 	return 0x0A
 }
 
-func (m *_MultipleServiceRequest) GetResponse() bool {
-	return bool(false)
-}
-
 func (m *_MultipleServiceRequest) GetConnected() bool {
 	return false
 }
@@ -209,8 +205,8 @@ func (m *_MultipleServiceRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MultipleServiceRequest) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_MultipleServiceRequest) GetParent() CipServiceRequestContract {
+	return m.CipServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -260,7 +256,7 @@ func (m *_MultipleServiceRequest) GetPlx4xTypeName() string {
 }
 
 func (m *_MultipleServiceRequest) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceRequestContract.(*_CipServiceRequest).getLengthInBits(ctx))
 
 	// Const Field (requestPathSize)
 	lengthInBits += 8
@@ -278,8 +274,8 @@ func (m *_MultipleServiceRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_MultipleServiceRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__multipleServiceRequest MultipleServiceRequest, err error) {
-	m.CipServiceContract = parent
+func (m *_MultipleServiceRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceRequest, connected bool, serviceLen uint16) (__multipleServiceRequest MultipleServiceRequest, err error) {
+	m.CipServiceRequestContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -349,7 +345,7 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceRequestContract.(*_CipServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MultipleServiceRequest) IsMultipleServiceRequest() {}
@@ -363,10 +359,10 @@ func (m *_MultipleServiceRequest) deepCopy() *_MultipleServiceRequest {
 		return nil
 	}
 	_MultipleServiceRequestCopy := &_MultipleServiceRequest{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceRequestContract.(*_CipServiceRequest).deepCopy(),
 		utils.DeepCopy[Services](m.Data),
 	}
-	_MultipleServiceRequestCopy.CipServiceContract.(*_CipService)._SubType = m
+	_MultipleServiceRequestCopy.CipServiceRequestContract.(*_CipServiceRequest)._SubType = m
 	return _MultipleServiceRequestCopy
 }
 

@@ -26,6 +26,8 @@ import (
 
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -38,7 +40,9 @@ type GetAttributeSingleResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceResponse
+	// GetServicesData returns ServicesData (property field)
+	GetServicesData() []byte
 	// IsGetAttributeSingleResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeSingleResponse()
 	// CreateBuilder creates a GetAttributeSingleResponseBuilder
@@ -47,18 +51,20 @@ type GetAttributeSingleResponse interface {
 
 // _GetAttributeSingleResponse is the data-structure of this message
 type _GetAttributeSingleResponse struct {
-	CipServiceContract
+	CipServiceResponseContract
+	ServicesData []byte
 }
 
 var _ GetAttributeSingleResponse = (*_GetAttributeSingleResponse)(nil)
-var _ CipServiceRequirements = (*_GetAttributeSingleResponse)(nil)
+var _ CipServiceResponseRequirements = (*_GetAttributeSingleResponse)(nil)
 
 // NewGetAttributeSingleResponse factory function for _GetAttributeSingleResponse
-func NewGetAttributeSingleResponse() *_GetAttributeSingleResponse {
+func NewGetAttributeSingleResponse(status uint8, extStatus []uint16, servicesData []byte) *_GetAttributeSingleResponse {
 	_result := &_GetAttributeSingleResponse{
-		CipServiceContract: NewCipService(),
+		CipServiceResponseContract: NewCipServiceResponse(status, extStatus),
+		ServicesData:               servicesData,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceResponseContract.(*_CipServiceResponse)._SubType = _result
 	return _result
 }
 
@@ -71,9 +77,11 @@ func NewGetAttributeSingleResponse() *_GetAttributeSingleResponse {
 type GetAttributeSingleResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields() GetAttributeSingleResponseBuilder
+	WithMandatoryFields(servicesData []byte) GetAttributeSingleResponseBuilder
+	// WithServicesData adds ServicesData (property field)
+	WithServicesData(...byte) GetAttributeSingleResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceResponseBuilder
 	// Build builds the GetAttributeSingleResponse or returns an error if something is wrong
 	Build() (GetAttributeSingleResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -88,19 +96,24 @@ func NewGetAttributeSingleResponseBuilder() GetAttributeSingleResponseBuilder {
 type _GetAttributeSingleResponseBuilder struct {
 	*_GetAttributeSingleResponse
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceResponseBuilder
 
 	collectedErr []error
 }
 
 var _ (GetAttributeSingleResponseBuilder) = (*_GetAttributeSingleResponseBuilder)(nil)
 
-func (b *_GetAttributeSingleResponseBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._GetAttributeSingleResponse
+func (b *_GetAttributeSingleResponseBuilder) setParent(contract CipServiceResponseContract) {
+	b.CipServiceResponseContract = contract
+	contract.(*_CipServiceResponse)._SubType = b._GetAttributeSingleResponse
 }
 
-func (b *_GetAttributeSingleResponseBuilder) WithMandatoryFields() GetAttributeSingleResponseBuilder {
+func (b *_GetAttributeSingleResponseBuilder) WithMandatoryFields(servicesData []byte) GetAttributeSingleResponseBuilder {
+	return b.WithServicesData(servicesData...)
+}
+
+func (b *_GetAttributeSingleResponseBuilder) WithServicesData(servicesData ...byte) GetAttributeSingleResponseBuilder {
+	b.ServicesData = servicesData
 	return b
 }
 
@@ -119,14 +132,14 @@ func (b *_GetAttributeSingleResponseBuilder) MustBuild() GetAttributeSingleRespo
 	return build
 }
 
-func (b *_GetAttributeSingleResponseBuilder) Done() CipServiceBuilder {
+func (b *_GetAttributeSingleResponseBuilder) Done() CipServiceResponseBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceResponseBuilder().(*_CipServiceResponseBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_GetAttributeSingleResponseBuilder) buildForCipService() (CipService, error) {
+func (b *_GetAttributeSingleResponseBuilder) buildForCipServiceResponse() (CipServiceResponse, error) {
 	return b.Build()
 }
 
@@ -160,22 +173,28 @@ func (m *_GetAttributeSingleResponse) GetService() uint8 {
 	return 0x0E
 }
 
-func (m *_GetAttributeSingleResponse) GetResponse() bool {
-	return bool(true)
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *_GetAttributeSingleResponse) GetParent() CipServiceResponseContract {
+	return m.CipServiceResponseContract
 }
 
-func (m *_GetAttributeSingleResponse) GetConnected() bool {
-	return false
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_GetAttributeSingleResponse) GetServicesData() []byte {
+	return m.ServicesData
 }
 
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-func (m *_GetAttributeSingleResponse) GetParent() CipServiceContract {
-	return m.CipServiceContract
-}
 
 // Deprecated: use the interface for direct cast
 func CastGetAttributeSingleResponse(structType any) GetAttributeSingleResponse {
@@ -193,7 +212,12 @@ func (m *_GetAttributeSingleResponse) GetPlx4xTypeName() string {
 }
 
 func (m *_GetAttributeSingleResponse) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceResponseContract.(*_CipServiceResponse).getLengthInBits(ctx))
+
+	// Array field
+	if len(m.ServicesData) > 0 {
+		lengthInBits += 8 * uint64(len(m.ServicesData))
+	}
 
 	return lengthInBits
 }
@@ -202,8 +226,8 @@ func (m *_GetAttributeSingleResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_GetAttributeSingleResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__getAttributeSingleResponse GetAttributeSingleResponse, err error) {
-	m.CipServiceContract = parent
+func (m *_GetAttributeSingleResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceResponse, extStatusSize uint8, connected bool, serviceLen uint16) (__getAttributeSingleResponse GetAttributeSingleResponse, err error) {
+	m.CipServiceResponseContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -212,6 +236,12 @@ func (m *_GetAttributeSingleResponse) parse(ctx context.Context, readBuffer util
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+
+	servicesData, err := readBuffer.ReadByteArray("servicesData", int(int32(int32(serviceLen)-int32(int32(4)))-int32((int32(int32(2))*int32(extStatusSize)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'servicesData' field"))
+	}
+	m.ServicesData = servicesData
 
 	if closeErr := readBuffer.CloseContext("GetAttributeSingleResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for GetAttributeSingleResponse")
@@ -238,12 +268,16 @@ func (m *_GetAttributeSingleResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for GetAttributeSingleResponse")
 		}
 
+		if err := WriteByteArrayField(ctx, "servicesData", m.GetServicesData(), WriteByteArray(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'servicesData' field")
+		}
+
 		if popErr := writeBuffer.PopContext("GetAttributeSingleResponse"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for GetAttributeSingleResponse")
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceResponseContract.(*_CipServiceResponse).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_GetAttributeSingleResponse) IsGetAttributeSingleResponse() {}
@@ -257,9 +291,10 @@ func (m *_GetAttributeSingleResponse) deepCopy() *_GetAttributeSingleResponse {
 		return nil
 	}
 	_GetAttributeSingleResponseCopy := &_GetAttributeSingleResponse{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceResponseContract.(*_CipServiceResponse).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.ServicesData),
 	}
-	_GetAttributeSingleResponseCopy.CipServiceContract.(*_CipService)._SubType = m
+	_GetAttributeSingleResponseCopy.CipServiceResponseContract.(*_CipServiceResponse)._SubType = m
 	return _GetAttributeSingleResponseCopy
 }
 

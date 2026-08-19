@@ -38,7 +38,7 @@ type GetAttributeListRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceRequest
 	// IsGetAttributeListRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeListRequest()
 	// CreateBuilder creates a GetAttributeListRequestBuilder
@@ -47,18 +47,18 @@ type GetAttributeListRequest interface {
 
 // _GetAttributeListRequest is the data-structure of this message
 type _GetAttributeListRequest struct {
-	CipServiceContract
+	CipServiceRequestContract
 }
 
 var _ GetAttributeListRequest = (*_GetAttributeListRequest)(nil)
-var _ CipServiceRequirements = (*_GetAttributeListRequest)(nil)
+var _ CipServiceRequestRequirements = (*_GetAttributeListRequest)(nil)
 
 // NewGetAttributeListRequest factory function for _GetAttributeListRequest
 func NewGetAttributeListRequest() *_GetAttributeListRequest {
 	_result := &_GetAttributeListRequest{
-		CipServiceContract: NewCipService(),
+		CipServiceRequestContract: NewCipServiceRequest(),
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceRequestContract.(*_CipServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -73,7 +73,7 @@ type GetAttributeListRequestBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() GetAttributeListRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceRequestBuilder
 	// Build builds the GetAttributeListRequest or returns an error if something is wrong
 	Build() (GetAttributeListRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -88,16 +88,16 @@ func NewGetAttributeListRequestBuilder() GetAttributeListRequestBuilder {
 type _GetAttributeListRequestBuilder struct {
 	*_GetAttributeListRequest
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceRequestBuilder
 
 	collectedErr []error
 }
 
 var _ (GetAttributeListRequestBuilder) = (*_GetAttributeListRequestBuilder)(nil)
 
-func (b *_GetAttributeListRequestBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._GetAttributeListRequest
+func (b *_GetAttributeListRequestBuilder) setParent(contract CipServiceRequestContract) {
+	b.CipServiceRequestContract = contract
+	contract.(*_CipServiceRequest)._SubType = b._GetAttributeListRequest
 }
 
 func (b *_GetAttributeListRequestBuilder) WithMandatoryFields() GetAttributeListRequestBuilder {
@@ -119,14 +119,14 @@ func (b *_GetAttributeListRequestBuilder) MustBuild() GetAttributeListRequest {
 	return build
 }
 
-func (b *_GetAttributeListRequestBuilder) Done() CipServiceBuilder {
+func (b *_GetAttributeListRequestBuilder) Done() CipServiceRequestBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceRequestBuilder().(*_CipServiceRequestBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_GetAttributeListRequestBuilder) buildForCipService() (CipService, error) {
+func (b *_GetAttributeListRequestBuilder) buildForCipServiceRequest() (CipServiceRequest, error) {
 	return b.Build()
 }
 
@@ -160,10 +160,6 @@ func (m *_GetAttributeListRequest) GetService() uint8 {
 	return 0x03
 }
 
-func (m *_GetAttributeListRequest) GetResponse() bool {
-	return bool(false)
-}
-
 func (m *_GetAttributeListRequest) GetConnected() bool {
 	return false
 }
@@ -173,8 +169,8 @@ func (m *_GetAttributeListRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_GetAttributeListRequest) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_GetAttributeListRequest) GetParent() CipServiceRequestContract {
+	return m.CipServiceRequestContract
 }
 
 // Deprecated: use the interface for direct cast
@@ -193,7 +189,7 @@ func (m *_GetAttributeListRequest) GetPlx4xTypeName() string {
 }
 
 func (m *_GetAttributeListRequest) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceRequestContract.(*_CipServiceRequest).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -202,8 +198,8 @@ func (m *_GetAttributeListRequest) GetLengthInBytes(ctx context.Context) uint64 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_GetAttributeListRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__getAttributeListRequest GetAttributeListRequest, err error) {
-	m.CipServiceContract = parent
+func (m *_GetAttributeListRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceRequest, connected bool, serviceLen uint16) (__getAttributeListRequest GetAttributeListRequest, err error) {
+	m.CipServiceRequestContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -243,7 +239,7 @@ func (m *_GetAttributeListRequest) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceRequestContract.(*_CipServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_GetAttributeListRequest) IsGetAttributeListRequest() {}
@@ -257,9 +253,9 @@ func (m *_GetAttributeListRequest) deepCopy() *_GetAttributeListRequest {
 		return nil
 	}
 	_GetAttributeListRequestCopy := &_GetAttributeListRequest{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceRequestContract.(*_CipServiceRequest).deepCopy(),
 	}
-	_GetAttributeListRequestCopy.CipServiceContract.(*_CipService)._SubType = m
+	_GetAttributeListRequestCopy.CipServiceRequestContract.(*_CipServiceRequest)._SubType = m
 	return _GetAttributeListRequestCopy
 }
 

@@ -40,11 +40,7 @@ type CipConnectedResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
-	// GetStatus returns Status (property field)
-	GetStatus() uint8
-	// GetAdditionalStatusWords returns AdditionalStatusWords (property field)
-	GetAdditionalStatusWords() uint8
+	CipServiceResponse
 	// GetData returns Data (property field)
 	GetData() CIPDataConnected
 	// IsCipConnectedResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -55,26 +51,20 @@ type CipConnectedResponse interface {
 
 // _CipConnectedResponse is the data-structure of this message
 type _CipConnectedResponse struct {
-	CipServiceContract
-	Status                uint8
-	AdditionalStatusWords uint8
-	Data                  CIPDataConnected
-	// Reserved Fields
-	reservedField0 *uint8
+	CipServiceResponseContract
+	Data CIPDataConnected
 }
 
 var _ CipConnectedResponse = (*_CipConnectedResponse)(nil)
-var _ CipServiceRequirements = (*_CipConnectedResponse)(nil)
+var _ CipServiceResponseRequirements = (*_CipConnectedResponse)(nil)
 
 // NewCipConnectedResponse factory function for _CipConnectedResponse
-func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected) *_CipConnectedResponse {
+func NewCipConnectedResponse(status uint8, extStatus []uint16, data CIPDataConnected) *_CipConnectedResponse {
 	_result := &_CipConnectedResponse{
-		CipServiceContract:    NewCipService(),
-		Status:                status,
-		AdditionalStatusWords: additionalStatusWords,
-		Data:                  data,
+		CipServiceResponseContract: NewCipServiceResponse(status, extStatus),
+		Data:                       data,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceResponseContract.(*_CipServiceResponse)._SubType = _result
 	return _result
 }
 
@@ -87,17 +77,13 @@ func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIP
 type CipConnectedResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(status uint8, additionalStatusWords uint8) CipConnectedResponseBuilder
-	// WithStatus adds Status (property field)
-	WithStatus(uint8) CipConnectedResponseBuilder
-	// WithAdditionalStatusWords adds AdditionalStatusWords (property field)
-	WithAdditionalStatusWords(uint8) CipConnectedResponseBuilder
+	WithMandatoryFields() CipConnectedResponseBuilder
 	// WithData adds Data (property field)
 	WithOptionalData(CIPDataConnected) CipConnectedResponseBuilder
 	// WithOptionalDataBuilder adds Data (property field) which is build by the builder
 	WithOptionalDataBuilder(func(CIPDataConnectedBuilder) CIPDataConnectedBuilder) CipConnectedResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceResponseBuilder
 	// Build builds the CipConnectedResponse or returns an error if something is wrong
 	Build() (CipConnectedResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,29 +98,19 @@ func NewCipConnectedResponseBuilder() CipConnectedResponseBuilder {
 type _CipConnectedResponseBuilder struct {
 	*_CipConnectedResponse
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceResponseBuilder
 
 	collectedErr []error
 }
 
 var _ (CipConnectedResponseBuilder) = (*_CipConnectedResponseBuilder)(nil)
 
-func (b *_CipConnectedResponseBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._CipConnectedResponse
+func (b *_CipConnectedResponseBuilder) setParent(contract CipServiceResponseContract) {
+	b.CipServiceResponseContract = contract
+	contract.(*_CipServiceResponse)._SubType = b._CipConnectedResponse
 }
 
-func (b *_CipConnectedResponseBuilder) WithMandatoryFields(status uint8, additionalStatusWords uint8) CipConnectedResponseBuilder {
-	return b.WithStatus(status).WithAdditionalStatusWords(additionalStatusWords)
-}
-
-func (b *_CipConnectedResponseBuilder) WithStatus(status uint8) CipConnectedResponseBuilder {
-	b.Status = status
-	return b
-}
-
-func (b *_CipConnectedResponseBuilder) WithAdditionalStatusWords(additionalStatusWords uint8) CipConnectedResponseBuilder {
-	b.AdditionalStatusWords = additionalStatusWords
+func (b *_CipConnectedResponseBuilder) WithMandatoryFields() CipConnectedResponseBuilder {
 	return b
 }
 
@@ -168,14 +144,14 @@ func (b *_CipConnectedResponseBuilder) MustBuild() CipConnectedResponse {
 	return build
 }
 
-func (b *_CipConnectedResponseBuilder) Done() CipServiceBuilder {
+func (b *_CipConnectedResponseBuilder) Done() CipServiceResponseBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceResponseBuilder().(*_CipServiceResponseBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_CipConnectedResponseBuilder) buildForCipService() (CipService, error) {
+func (b *_CipConnectedResponseBuilder) buildForCipServiceResponse() (CipServiceResponse, error) {
 	return b.Build()
 }
 
@@ -209,35 +185,19 @@ func (m *_CipConnectedResponse) GetService() uint8 {
 	return 0x52
 }
 
-func (m *_CipConnectedResponse) GetResponse() bool {
-	return bool(true)
-}
-
-func (m *_CipConnectedResponse) GetConnected() bool {
-	return false
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipConnectedResponse) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_CipConnectedResponse) GetParent() CipServiceResponseContract {
+	return m.CipServiceResponseContract
 }
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *_CipConnectedResponse) GetStatus() uint8 {
-	return m.Status
-}
-
-func (m *_CipConnectedResponse) GetAdditionalStatusWords() uint8 {
-	return m.AdditionalStatusWords
-}
 
 func (m *_CipConnectedResponse) GetData() CIPDataConnected {
 	return m.Data
@@ -264,16 +224,7 @@ func (m *_CipConnectedResponse) GetPlx4xTypeName() string {
 }
 
 func (m *_CipConnectedResponse) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
-
-	// Reserved Field (reserved)
-	lengthInBits += 8
-
-	// Simple field (status)
-	lengthInBits += 8
-
-	// Simple field (additionalStatusWords)
-	lengthInBits += 8
+	lengthInBits := uint64(m.CipServiceResponseContract.(*_CipServiceResponse).getLengthInBits(ctx))
 
 	// Optional Field (data)
 	if m.Data != nil {
@@ -287,8 +238,8 @@ func (m *_CipConnectedResponse) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CipConnectedResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipConnectedResponse CipConnectedResponse, err error) {
-	m.CipServiceContract = parent
+func (m *_CipConnectedResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceResponse, extStatusSize uint8, connected bool, serviceLen uint16) (__cipConnectedResponse CipConnectedResponse, err error) {
+	m.CipServiceResponseContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -298,26 +249,8 @@ func (m *_CipConnectedResponse) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
-	}
-	m.reservedField0 = reservedField0
-
-	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
-	}
-	m.Status = status
-
-	additionalStatusWords, err := ReadSimpleField(ctx, "additionalStatusWords", ReadUnsignedByte(readBuffer, uint8(8)))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalStatusWords' field"))
-	}
-	m.AdditionalStatusWords = additionalStatusWords
-
 	var data CIPDataConnected
-	_data, err := ReadOptionalField[CIPDataConnected](ctx, "data", ReadComplex[CIPDataConnected](CIPDataConnectedParseWithBuffer, readBuffer), bool(((serviceLen)-(4)) > (0)))
+	_data, err := ReadOptionalField[CIPDataConnected](ctx, "data", ReadComplex[CIPDataConnected](CIPDataConnectedParseWithBuffer, readBuffer), bool((((serviceLen)-(4))-((2)*(extStatusSize))) > (0)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
@@ -351,18 +284,6 @@ func (m *_CipConnectedResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for CipConnectedResponse")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
-		}
-
-		if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'status' field")
-		}
-
-		if err := WriteSimpleField[uint8](ctx, "additionalStatusWords", m.GetAdditionalStatusWords(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'additionalStatusWords' field")
-		}
-
 		if err := WriteOptionalField[CIPDataConnected](ctx, "data", new(m.GetData()), WriteComplex[CIPDataConnected](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
@@ -372,7 +293,7 @@ func (m *_CipConnectedResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceResponseContract.(*_CipServiceResponse).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CipConnectedResponse) IsCipConnectedResponse() {}
@@ -386,13 +307,10 @@ func (m *_CipConnectedResponse) deepCopy() *_CipConnectedResponse {
 		return nil
 	}
 	_CipConnectedResponseCopy := &_CipConnectedResponse{
-		m.CipServiceContract.(*_CipService).deepCopy(),
-		m.Status,
-		m.AdditionalStatusWords,
+		m.CipServiceResponseContract.(*_CipServiceResponse).deepCopy(),
 		utils.DeepCopy[CIPDataConnected](m.Data),
-		m.reservedField0,
 	}
-	_CipConnectedResponseCopy.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectedResponseCopy.CipServiceResponseContract.(*_CipServiceResponse)._SubType = m
 	return _CipConnectedResponseCopy
 }
 

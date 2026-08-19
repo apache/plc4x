@@ -26,6 +26,8 @@ import (
 
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -38,7 +40,13 @@ type GetAttributeSingleRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceRequest
+	// GetClassSegment returns ClassSegment (property field)
+	GetClassSegment() PathSegment
+	// GetInstanceSegment returns InstanceSegment (property field)
+	GetInstanceSegment() PathSegment
+	// GetAttributeSegment returns AttributeSegment (property field)
+	GetAttributeSegment() PathSegment
 	// IsGetAttributeSingleRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeSingleRequest()
 	// CreateBuilder creates a GetAttributeSingleRequestBuilder
@@ -47,18 +55,33 @@ type GetAttributeSingleRequest interface {
 
 // _GetAttributeSingleRequest is the data-structure of this message
 type _GetAttributeSingleRequest struct {
-	CipServiceContract
+	CipServiceRequestContract
+	ClassSegment     PathSegment
+	InstanceSegment  PathSegment
+	AttributeSegment PathSegment
 }
 
 var _ GetAttributeSingleRequest = (*_GetAttributeSingleRequest)(nil)
-var _ CipServiceRequirements = (*_GetAttributeSingleRequest)(nil)
+var _ CipServiceRequestRequirements = (*_GetAttributeSingleRequest)(nil)
 
 // NewGetAttributeSingleRequest factory function for _GetAttributeSingleRequest
-func NewGetAttributeSingleRequest() *_GetAttributeSingleRequest {
-	_result := &_GetAttributeSingleRequest{
-		CipServiceContract: NewCipService(),
+func NewGetAttributeSingleRequest(classSegment PathSegment, instanceSegment PathSegment, attributeSegment PathSegment) *_GetAttributeSingleRequest {
+	if classSegment == nil {
+		panic("classSegment of type PathSegment for GetAttributeSingleRequest must not be nil")
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	if instanceSegment == nil {
+		panic("instanceSegment of type PathSegment for GetAttributeSingleRequest must not be nil")
+	}
+	if attributeSegment == nil {
+		panic("attributeSegment of type PathSegment for GetAttributeSingleRequest must not be nil")
+	}
+	_result := &_GetAttributeSingleRequest{
+		CipServiceRequestContract: NewCipServiceRequest(),
+		ClassSegment:              classSegment,
+		InstanceSegment:           instanceSegment,
+		AttributeSegment:          attributeSegment,
+	}
+	_result.CipServiceRequestContract.(*_CipServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -71,9 +94,21 @@ func NewGetAttributeSingleRequest() *_GetAttributeSingleRequest {
 type GetAttributeSingleRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields() GetAttributeSingleRequestBuilder
+	WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, attributeSegment PathSegment) GetAttributeSingleRequestBuilder
+	// WithClassSegment adds ClassSegment (property field)
+	WithClassSegment(PathSegment) GetAttributeSingleRequestBuilder
+	// WithClassSegmentBuilder adds ClassSegment (property field) which is build by the builder
+	WithClassSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeSingleRequestBuilder
+	// WithInstanceSegment adds InstanceSegment (property field)
+	WithInstanceSegment(PathSegment) GetAttributeSingleRequestBuilder
+	// WithInstanceSegmentBuilder adds InstanceSegment (property field) which is build by the builder
+	WithInstanceSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeSingleRequestBuilder
+	// WithAttributeSegment adds AttributeSegment (property field)
+	WithAttributeSegment(PathSegment) GetAttributeSingleRequestBuilder
+	// WithAttributeSegmentBuilder adds AttributeSegment (property field) which is build by the builder
+	WithAttributeSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeSingleRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceRequestBuilder
 	// Build builds the GetAttributeSingleRequest or returns an error if something is wrong
 	Build() (GetAttributeSingleRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -88,23 +123,77 @@ func NewGetAttributeSingleRequestBuilder() GetAttributeSingleRequestBuilder {
 type _GetAttributeSingleRequestBuilder struct {
 	*_GetAttributeSingleRequest
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceRequestBuilder
 
 	collectedErr []error
 }
 
 var _ (GetAttributeSingleRequestBuilder) = (*_GetAttributeSingleRequestBuilder)(nil)
 
-func (b *_GetAttributeSingleRequestBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._GetAttributeSingleRequest
+func (b *_GetAttributeSingleRequestBuilder) setParent(contract CipServiceRequestContract) {
+	b.CipServiceRequestContract = contract
+	contract.(*_CipServiceRequest)._SubType = b._GetAttributeSingleRequest
 }
 
-func (b *_GetAttributeSingleRequestBuilder) WithMandatoryFields() GetAttributeSingleRequestBuilder {
+func (b *_GetAttributeSingleRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, attributeSegment PathSegment) GetAttributeSingleRequestBuilder {
+	return b.WithClassSegment(classSegment).WithInstanceSegment(instanceSegment).WithAttributeSegment(attributeSegment)
+}
+
+func (b *_GetAttributeSingleRequestBuilder) WithClassSegment(classSegment PathSegment) GetAttributeSingleRequestBuilder {
+	b.ClassSegment = classSegment
+	return b
+}
+
+func (b *_GetAttributeSingleRequestBuilder) WithClassSegmentBuilder(builderSupplier func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeSingleRequestBuilder {
+	builder := builderSupplier(b.ClassSegment.CreatePathSegmentBuilder())
+	var err error
+	b.ClassSegment, err = builder.Build()
+	if err != nil {
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PathSegmentBuilder failed"))
+	}
+	return b
+}
+
+func (b *_GetAttributeSingleRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) GetAttributeSingleRequestBuilder {
+	b.InstanceSegment = instanceSegment
+	return b
+}
+
+func (b *_GetAttributeSingleRequestBuilder) WithInstanceSegmentBuilder(builderSupplier func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeSingleRequestBuilder {
+	builder := builderSupplier(b.InstanceSegment.CreatePathSegmentBuilder())
+	var err error
+	b.InstanceSegment, err = builder.Build()
+	if err != nil {
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PathSegmentBuilder failed"))
+	}
+	return b
+}
+
+func (b *_GetAttributeSingleRequestBuilder) WithAttributeSegment(attributeSegment PathSegment) GetAttributeSingleRequestBuilder {
+	b.AttributeSegment = attributeSegment
+	return b
+}
+
+func (b *_GetAttributeSingleRequestBuilder) WithAttributeSegmentBuilder(builderSupplier func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeSingleRequestBuilder {
+	builder := builderSupplier(b.AttributeSegment.CreatePathSegmentBuilder())
+	var err error
+	b.AttributeSegment, err = builder.Build()
+	if err != nil {
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "PathSegmentBuilder failed"))
+	}
 	return b
 }
 
 func (b *_GetAttributeSingleRequestBuilder) Build() (GetAttributeSingleRequest, error) {
+	if b.ClassSegment == nil {
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'classSegment' not set"))
+	}
+	if b.InstanceSegment == nil {
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'instanceSegment' not set"))
+	}
+	if b.AttributeSegment == nil {
+		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'attributeSegment' not set"))
+	}
 	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
@@ -119,14 +208,14 @@ func (b *_GetAttributeSingleRequestBuilder) MustBuild() GetAttributeSingleReques
 	return build
 }
 
-func (b *_GetAttributeSingleRequestBuilder) Done() CipServiceBuilder {
+func (b *_GetAttributeSingleRequestBuilder) Done() CipServiceRequestBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceRequestBuilder().(*_CipServiceRequestBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_GetAttributeSingleRequestBuilder) buildForCipService() (CipService, error) {
+func (b *_GetAttributeSingleRequestBuilder) buildForCipServiceRequest() (CipServiceRequest, error) {
 	return b.Build()
 }
 
@@ -160,10 +249,6 @@ func (m *_GetAttributeSingleRequest) GetService() uint8 {
 	return 0x0E
 }
 
-func (m *_GetAttributeSingleRequest) GetResponse() bool {
-	return bool(false)
-}
-
 func (m *_GetAttributeSingleRequest) GetConnected() bool {
 	return false
 }
@@ -173,9 +258,31 @@ func (m *_GetAttributeSingleRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_GetAttributeSingleRequest) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_GetAttributeSingleRequest) GetParent() CipServiceRequestContract {
+	return m.CipServiceRequestContract
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_GetAttributeSingleRequest) GetClassSegment() PathSegment {
+	return m.ClassSegment
+}
+
+func (m *_GetAttributeSingleRequest) GetInstanceSegment() PathSegment {
+	return m.InstanceSegment
+}
+
+func (m *_GetAttributeSingleRequest) GetAttributeSegment() PathSegment {
+	return m.AttributeSegment
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastGetAttributeSingleRequest(structType any) GetAttributeSingleRequest {
@@ -193,7 +300,19 @@ func (m *_GetAttributeSingleRequest) GetPlx4xTypeName() string {
 }
 
 func (m *_GetAttributeSingleRequest) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceRequestContract.(*_CipServiceRequest).getLengthInBits(ctx))
+
+	// Implicit Field (requestPathSize)
+	lengthInBits += 8
+
+	// Simple field (classSegment)
+	lengthInBits += m.ClassSegment.GetLengthInBits(ctx)
+
+	// Simple field (instanceSegment)
+	lengthInBits += m.InstanceSegment.GetLengthInBits(ctx)
+
+	// Simple field (attributeSegment)
+	lengthInBits += m.AttributeSegment.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
@@ -202,8 +321,8 @@ func (m *_GetAttributeSingleRequest) GetLengthInBytes(ctx context.Context) uint6
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_GetAttributeSingleRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__getAttributeSingleRequest GetAttributeSingleRequest, err error) {
-	m.CipServiceContract = parent
+func (m *_GetAttributeSingleRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceRequest, connected bool, serviceLen uint16) (__getAttributeSingleRequest GetAttributeSingleRequest, err error) {
+	m.CipServiceRequestContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -212,6 +331,30 @@ func (m *_GetAttributeSingleRequest) parse(ctx context.Context, readBuffer utils
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+
+	requestPathSize, err := ReadImplicitField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPathSize' field"))
+	}
+	_ = requestPathSize
+
+	classSegment, err := ReadSimpleField[PathSegment](ctx, "classSegment", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'classSegment' field"))
+	}
+	m.ClassSegment = classSegment
+
+	instanceSegment, err := ReadSimpleField[PathSegment](ctx, "instanceSegment", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instanceSegment' field"))
+	}
+	m.InstanceSegment = instanceSegment
+
+	attributeSegment, err := ReadSimpleField[PathSegment](ctx, "attributeSegment", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeSegment' field"))
+	}
+	m.AttributeSegment = attributeSegment
 
 	if closeErr := readBuffer.CloseContext("GetAttributeSingleRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for GetAttributeSingleRequest")
@@ -237,13 +380,29 @@ func (m *_GetAttributeSingleRequest) SerializeWithWriteBuffer(ctx context.Contex
 		if pushErr := writeBuffer.PushContext("GetAttributeSingleRequest"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for GetAttributeSingleRequest")
 		}
+		requestPathSize := uint8(uint8((uint8(uint8(m.GetClassSegment().GetLengthInBytes(ctx))+uint8(m.GetInstanceSegment().GetLengthInBytes(ctx))) + uint8(m.GetAttributeSegment().GetLengthInBytes(ctx)))) / uint8(uint8(2)))
+		if err := WriteImplicitField(ctx, "requestPathSize", requestPathSize, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestPathSize' field")
+		}
+
+		if err := WriteSimpleField[PathSegment](ctx, "classSegment", m.GetClassSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'classSegment' field")
+		}
+
+		if err := WriteSimpleField[PathSegment](ctx, "instanceSegment", m.GetInstanceSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'instanceSegment' field")
+		}
+
+		if err := WriteSimpleField[PathSegment](ctx, "attributeSegment", m.GetAttributeSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attributeSegment' field")
+		}
 
 		if popErr := writeBuffer.PopContext("GetAttributeSingleRequest"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for GetAttributeSingleRequest")
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceRequestContract.(*_CipServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_GetAttributeSingleRequest) IsGetAttributeSingleRequest() {}
@@ -257,9 +416,12 @@ func (m *_GetAttributeSingleRequest) deepCopy() *_GetAttributeSingleRequest {
 		return nil
 	}
 	_GetAttributeSingleRequestCopy := &_GetAttributeSingleRequest{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceRequestContract.(*_CipServiceRequest).deepCopy(),
+		utils.DeepCopy[PathSegment](m.ClassSegment),
+		utils.DeepCopy[PathSegment](m.InstanceSegment),
+		utils.DeepCopy[PathSegment](m.AttributeSegment),
 	}
-	_GetAttributeSingleRequestCopy.CipServiceContract.(*_CipService)._SubType = m
+	_GetAttributeSingleRequestCopy.CipServiceRequestContract.(*_CipServiceRequest)._SubType = m
 	return _GetAttributeSingleRequestCopy
 }
 

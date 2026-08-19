@@ -38,7 +38,7 @@ type SetAttributeAllResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceResponse
 	// IsSetAttributeAllResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeAllResponse()
 	// CreateBuilder creates a SetAttributeAllResponseBuilder
@@ -47,18 +47,18 @@ type SetAttributeAllResponse interface {
 
 // _SetAttributeAllResponse is the data-structure of this message
 type _SetAttributeAllResponse struct {
-	CipServiceContract
+	CipServiceResponseContract
 }
 
 var _ SetAttributeAllResponse = (*_SetAttributeAllResponse)(nil)
-var _ CipServiceRequirements = (*_SetAttributeAllResponse)(nil)
+var _ CipServiceResponseRequirements = (*_SetAttributeAllResponse)(nil)
 
 // NewSetAttributeAllResponse factory function for _SetAttributeAllResponse
-func NewSetAttributeAllResponse() *_SetAttributeAllResponse {
+func NewSetAttributeAllResponse(status uint8, extStatus []uint16) *_SetAttributeAllResponse {
 	_result := &_SetAttributeAllResponse{
-		CipServiceContract: NewCipService(),
+		CipServiceResponseContract: NewCipServiceResponse(status, extStatus),
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceResponseContract.(*_CipServiceResponse)._SubType = _result
 	return _result
 }
 
@@ -73,7 +73,7 @@ type SetAttributeAllResponseBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SetAttributeAllResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceResponseBuilder
 	// Build builds the SetAttributeAllResponse or returns an error if something is wrong
 	Build() (SetAttributeAllResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -88,16 +88,16 @@ func NewSetAttributeAllResponseBuilder() SetAttributeAllResponseBuilder {
 type _SetAttributeAllResponseBuilder struct {
 	*_SetAttributeAllResponse
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceResponseBuilder
 
 	collectedErr []error
 }
 
 var _ (SetAttributeAllResponseBuilder) = (*_SetAttributeAllResponseBuilder)(nil)
 
-func (b *_SetAttributeAllResponseBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._SetAttributeAllResponse
+func (b *_SetAttributeAllResponseBuilder) setParent(contract CipServiceResponseContract) {
+	b.CipServiceResponseContract = contract
+	contract.(*_CipServiceResponse)._SubType = b._SetAttributeAllResponse
 }
 
 func (b *_SetAttributeAllResponseBuilder) WithMandatoryFields() SetAttributeAllResponseBuilder {
@@ -119,14 +119,14 @@ func (b *_SetAttributeAllResponseBuilder) MustBuild() SetAttributeAllResponse {
 	return build
 }
 
-func (b *_SetAttributeAllResponseBuilder) Done() CipServiceBuilder {
+func (b *_SetAttributeAllResponseBuilder) Done() CipServiceResponseBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceResponseBuilder().(*_CipServiceResponseBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_SetAttributeAllResponseBuilder) buildForCipService() (CipService, error) {
+func (b *_SetAttributeAllResponseBuilder) buildForCipServiceResponse() (CipServiceResponse, error) {
 	return b.Build()
 }
 
@@ -160,21 +160,13 @@ func (m *_SetAttributeAllResponse) GetService() uint8 {
 	return 0x02
 }
 
-func (m *_SetAttributeAllResponse) GetResponse() bool {
-	return bool(true)
-}
-
-func (m *_SetAttributeAllResponse) GetConnected() bool {
-	return false
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SetAttributeAllResponse) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_SetAttributeAllResponse) GetParent() CipServiceResponseContract {
+	return m.CipServiceResponseContract
 }
 
 // Deprecated: use the interface for direct cast
@@ -193,7 +185,7 @@ func (m *_SetAttributeAllResponse) GetPlx4xTypeName() string {
 }
 
 func (m *_SetAttributeAllResponse) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceResponseContract.(*_CipServiceResponse).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -202,8 +194,8 @@ func (m *_SetAttributeAllResponse) GetLengthInBytes(ctx context.Context) uint64 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SetAttributeAllResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__setAttributeAllResponse SetAttributeAllResponse, err error) {
-	m.CipServiceContract = parent
+func (m *_SetAttributeAllResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceResponse, connected bool, serviceLen uint16) (__setAttributeAllResponse SetAttributeAllResponse, err error) {
+	m.CipServiceResponseContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -243,7 +235,7 @@ func (m *_SetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceResponseContract.(*_CipServiceResponse).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SetAttributeAllResponse) IsSetAttributeAllResponse() {}
@@ -257,9 +249,9 @@ func (m *_SetAttributeAllResponse) deepCopy() *_SetAttributeAllResponse {
 		return nil
 	}
 	_SetAttributeAllResponseCopy := &_SetAttributeAllResponse{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceResponseContract.(*_CipServiceResponse).deepCopy(),
 	}
-	_SetAttributeAllResponseCopy.CipServiceContract.(*_CipService)._SubType = m
+	_SetAttributeAllResponseCopy.CipServiceResponseContract.(*_CipServiceResponse)._SubType = m
 	return _SetAttributeAllResponseCopy
 }
 

@@ -40,11 +40,7 @@ type CipConnectionManagerCloseResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
-	// GetStatus returns Status (property field)
-	GetStatus() uint8
-	// GetAdditionalStatusWords returns AdditionalStatusWords (property field)
-	GetAdditionalStatusWords() uint8
+	CipServiceResponse
 	// GetConnectionSerialNumber returns ConnectionSerialNumber (property field)
 	GetConnectionSerialNumber() uint16
 	// GetOriginatorVendorId returns OriginatorVendorId (property field)
@@ -61,33 +57,28 @@ type CipConnectionManagerCloseResponse interface {
 
 // _CipConnectionManagerCloseResponse is the data-structure of this message
 type _CipConnectionManagerCloseResponse struct {
-	CipServiceContract
-	Status                 uint8
-	AdditionalStatusWords  uint8
+	CipServiceResponseContract
 	ConnectionSerialNumber uint16
 	OriginatorVendorId     uint16
 	OriginatorSerialNumber uint32
 	ApplicationReplySize   uint8
 	// Reserved Fields
 	reservedField0 *uint8
-	reservedField1 *uint8
 }
 
 var _ CipConnectionManagerCloseResponse = (*_CipConnectionManagerCloseResponse)(nil)
-var _ CipServiceRequirements = (*_CipConnectionManagerCloseResponse)(nil)
+var _ CipServiceResponseRequirements = (*_CipConnectionManagerCloseResponse)(nil)
 
 // NewCipConnectionManagerCloseResponse factory function for _CipConnectionManagerCloseResponse
-func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8) *_CipConnectionManagerCloseResponse {
+func NewCipConnectionManagerCloseResponse(status uint8, extStatus []uint16, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8) *_CipConnectionManagerCloseResponse {
 	_result := &_CipConnectionManagerCloseResponse{
-		CipServiceContract:     NewCipService(),
-		Status:                 status,
-		AdditionalStatusWords:  additionalStatusWords,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		ApplicationReplySize:   applicationReplySize,
+		CipServiceResponseContract: NewCipServiceResponse(status, extStatus),
+		ConnectionSerialNumber:     connectionSerialNumber,
+		OriginatorVendorId:         originatorVendorId,
+		OriginatorSerialNumber:     originatorSerialNumber,
+		ApplicationReplySize:       applicationReplySize,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceResponseContract.(*_CipServiceResponse)._SubType = _result
 	return _result
 }
 
@@ -100,11 +91,7 @@ func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords ui
 type CipConnectionManagerCloseResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8) CipConnectionManagerCloseResponseBuilder
-	// WithStatus adds Status (property field)
-	WithStatus(uint8) CipConnectionManagerCloseResponseBuilder
-	// WithAdditionalStatusWords adds AdditionalStatusWords (property field)
-	WithAdditionalStatusWords(uint8) CipConnectionManagerCloseResponseBuilder
+	WithMandatoryFields(connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8) CipConnectionManagerCloseResponseBuilder
 	// WithConnectionSerialNumber adds ConnectionSerialNumber (property field)
 	WithConnectionSerialNumber(uint16) CipConnectionManagerCloseResponseBuilder
 	// WithOriginatorVendorId adds OriginatorVendorId (property field)
@@ -114,7 +101,7 @@ type CipConnectionManagerCloseResponseBuilder interface {
 	// WithApplicationReplySize adds ApplicationReplySize (property field)
 	WithApplicationReplySize(uint8) CipConnectionManagerCloseResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceResponseBuilder
 	// Build builds the CipConnectionManagerCloseResponse or returns an error if something is wrong
 	Build() (CipConnectionManagerCloseResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,30 +116,20 @@ func NewCipConnectionManagerCloseResponseBuilder() CipConnectionManagerCloseResp
 type _CipConnectionManagerCloseResponseBuilder struct {
 	*_CipConnectionManagerCloseResponse
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceResponseBuilder
 
 	collectedErr []error
 }
 
 var _ (CipConnectionManagerCloseResponseBuilder) = (*_CipConnectionManagerCloseResponseBuilder)(nil)
 
-func (b *_CipConnectionManagerCloseResponseBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._CipConnectionManagerCloseResponse
+func (b *_CipConnectionManagerCloseResponseBuilder) setParent(contract CipServiceResponseContract) {
+	b.CipServiceResponseContract = contract
+	contract.(*_CipServiceResponse)._SubType = b._CipConnectionManagerCloseResponse
 }
 
-func (b *_CipConnectionManagerCloseResponseBuilder) WithMandatoryFields(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8) CipConnectionManagerCloseResponseBuilder {
-	return b.WithStatus(status).WithAdditionalStatusWords(additionalStatusWords).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithApplicationReplySize(applicationReplySize)
-}
-
-func (b *_CipConnectionManagerCloseResponseBuilder) WithStatus(status uint8) CipConnectionManagerCloseResponseBuilder {
-	b.Status = status
-	return b
-}
-
-func (b *_CipConnectionManagerCloseResponseBuilder) WithAdditionalStatusWords(additionalStatusWords uint8) CipConnectionManagerCloseResponseBuilder {
-	b.AdditionalStatusWords = additionalStatusWords
-	return b
+func (b *_CipConnectionManagerCloseResponseBuilder) WithMandatoryFields(connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8) CipConnectionManagerCloseResponseBuilder {
+	return b.WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithApplicationReplySize(applicationReplySize)
 }
 
 func (b *_CipConnectionManagerCloseResponseBuilder) WithConnectionSerialNumber(connectionSerialNumber uint16) CipConnectionManagerCloseResponseBuilder {
@@ -190,14 +167,14 @@ func (b *_CipConnectionManagerCloseResponseBuilder) MustBuild() CipConnectionMan
 	return build
 }
 
-func (b *_CipConnectionManagerCloseResponseBuilder) Done() CipServiceBuilder {
+func (b *_CipConnectionManagerCloseResponseBuilder) Done() CipServiceResponseBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceResponseBuilder().(*_CipServiceResponseBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_CipConnectionManagerCloseResponseBuilder) buildForCipService() (CipService, error) {
+func (b *_CipConnectionManagerCloseResponseBuilder) buildForCipServiceResponse() (CipServiceResponse, error) {
 	return b.Build()
 }
 
@@ -231,35 +208,19 @@ func (m *_CipConnectionManagerCloseResponse) GetService() uint8 {
 	return 0x4E
 }
 
-func (m *_CipConnectionManagerCloseResponse) GetResponse() bool {
-	return bool(true)
-}
-
-func (m *_CipConnectionManagerCloseResponse) GetConnected() bool {
-	return false
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipConnectionManagerCloseResponse) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_CipConnectionManagerCloseResponse) GetParent() CipServiceResponseContract {
+	return m.CipServiceResponseContract
 }
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *_CipConnectionManagerCloseResponse) GetStatus() uint8 {
-	return m.Status
-}
-
-func (m *_CipConnectionManagerCloseResponse) GetAdditionalStatusWords() uint8 {
-	return m.AdditionalStatusWords
-}
 
 func (m *_CipConnectionManagerCloseResponse) GetConnectionSerialNumber() uint16 {
 	return m.ConnectionSerialNumber
@@ -298,16 +259,7 @@ func (m *_CipConnectionManagerCloseResponse) GetPlx4xTypeName() string {
 }
 
 func (m *_CipConnectionManagerCloseResponse) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
-
-	// Reserved Field (reserved)
-	lengthInBits += 8
-
-	// Simple field (status)
-	lengthInBits += 8
-
-	// Simple field (additionalStatusWords)
-	lengthInBits += 8
+	lengthInBits := uint64(m.CipServiceResponseContract.(*_CipServiceResponse).getLengthInBits(ctx))
 
 	// Simple field (connectionSerialNumber)
 	lengthInBits += 16
@@ -331,8 +283,8 @@ func (m *_CipConnectionManagerCloseResponse) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CipConnectionManagerCloseResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipConnectionManagerCloseResponse CipConnectionManagerCloseResponse, err error) {
-	m.CipServiceContract = parent
+func (m *_CipConnectionManagerCloseResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceResponse, connected bool, serviceLen uint16) (__cipConnectionManagerCloseResponse CipConnectionManagerCloseResponse, err error) {
+	m.CipServiceResponseContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -341,24 +293,6 @@ func (m *_CipConnectionManagerCloseResponse) parse(ctx context.Context, readBuff
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
-	}
-	m.reservedField0 = reservedField0
-
-	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
-	}
-	m.Status = status
-
-	additionalStatusWords, err := ReadSimpleField(ctx, "additionalStatusWords", ReadUnsignedByte(readBuffer, uint8(8)))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalStatusWords' field"))
-	}
-	m.AdditionalStatusWords = additionalStatusWords
 
 	connectionSerialNumber, err := ReadSimpleField(ctx, "connectionSerialNumber", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
@@ -384,11 +318,11 @@ func (m *_CipConnectionManagerCloseResponse) parse(ctx context.Context, readBuff
 	}
 	m.ApplicationReplySize = applicationReplySize
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
-	m.reservedField1 = reservedField1
+	m.reservedField0 = reservedField0
 
 	if closeErr := readBuffer.CloseContext("CipConnectionManagerCloseResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CipConnectionManagerCloseResponse")
@@ -415,18 +349,6 @@ func (m *_CipConnectionManagerCloseResponse) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for CipConnectionManagerCloseResponse")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
-		}
-
-		if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'status' field")
-		}
-
-		if err := WriteSimpleField[uint8](ctx, "additionalStatusWords", m.GetAdditionalStatusWords(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'additionalStatusWords' field")
-		}
-
 		if err := WriteSimpleField[uint16](ctx, "connectionSerialNumber", m.GetConnectionSerialNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
 			return errors.Wrap(err, "Error serializing 'connectionSerialNumber' field")
 		}
@@ -444,7 +366,7 @@ func (m *_CipConnectionManagerCloseResponse) SerializeWithWriteBuffer(ctx contex
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
 		if popErr := writeBuffer.PopContext("CipConnectionManagerCloseResponse"); popErr != nil {
@@ -452,7 +374,7 @@ func (m *_CipConnectionManagerCloseResponse) SerializeWithWriteBuffer(ctx contex
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceResponseContract.(*_CipServiceResponse).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CipConnectionManagerCloseResponse) IsCipConnectionManagerCloseResponse() {}
@@ -466,17 +388,14 @@ func (m *_CipConnectionManagerCloseResponse) deepCopy() *_CipConnectionManagerCl
 		return nil
 	}
 	_CipConnectionManagerCloseResponseCopy := &_CipConnectionManagerCloseResponse{
-		m.CipServiceContract.(*_CipService).deepCopy(),
-		m.Status,
-		m.AdditionalStatusWords,
+		m.CipServiceResponseContract.(*_CipServiceResponse).deepCopy(),
 		m.ConnectionSerialNumber,
 		m.OriginatorVendorId,
 		m.OriginatorSerialNumber,
 		m.ApplicationReplySize,
 		m.reservedField0,
-		m.reservedField1,
 	}
-	_CipConnectionManagerCloseResponseCopy.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectionManagerCloseResponseCopy.CipServiceResponseContract.(*_CipServiceResponse)._SubType = m
 	return _CipConnectionManagerCloseResponseCopy
 }
 

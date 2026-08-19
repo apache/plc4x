@@ -166,58 +166,62 @@
                   <service>
                     <CipService>
                       <response dataType="bit" bitLength="1">false</response>
-                      <service dataType="uint" bitLength="7">82</service>
-                      <CipUnconnectedRequest>
-                        <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
-                        <classSegment>
-                          <PathSegment>
-                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
-                            <LogicalSegment>
-                              <segmentType>
-                                <LogicalSegmentType>
-                                  <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
-                                  <ClassID>
-                                    <format dataType="uint" bitLength="2">0</format>
-                                    <segmentClass dataType="uint" bitLength="8">6</segmentClass>
-                                  </ClassID>
-                                </LogicalSegmentType>
-                              </segmentType>
-                            </LogicalSegment>
-                          </PathSegment>
-                        </classSegment>
-                        <instanceSegment>
-                          <PathSegment>
-                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
-                            <LogicalSegment>
-                              <segmentType>
-                                <LogicalSegmentType>
-                                  <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
-                                  <InstanceID>
-                                    <format dataType="uint" bitLength="2">0</format>
-                                    <instance dataType="uint" bitLength="8">1</instance>
-                                  </InstanceID>
-                                </LogicalSegmentType>
-                              </segmentType>
-                            </LogicalSegment>
-                          </PathSegment>
-                        </instanceSegment>
-                        <reserved dataType="uint" bitLength="16">40197</reserved>
-                        <messageSize dataType="uint" bitLength="16">10</messageSize>
-                        <unconnectedService>
-                          <CipService>
-                            <response dataType="bit" bitLength="1">false</response>
-                            <service dataType="uint" bitLength="7">76</service>
-                            <CipReadRequest>
-                              <requestPathSize dataType="uint" bitLength="8">3</requestPathSize>
-                              <tag dataType="byte" bitLength="48">0x910472617465</tag>
-                              <elementNb dataType="uint" bitLength="16">1</elementNb>
-                            </CipReadRequest>
-                          </CipService>
-                        </unconnectedService>
-                        <route dataType="uint" bitLength="16">1</route>
-                        <backPlane dataType="int" bitLength="8">1</backPlane>
-                        <slot dataType="int" bitLength="8">0</slot>
-                      </CipUnconnectedRequest>
+                      <CipServiceRequest>
+                        <service dataType="uint" bitLength="7">82</service>
+                        <CipUnconnectedRequest>
+                          <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
+                          <classSegment>
+                            <PathSegment>
+                              <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                              <LogicalSegment>
+                                <segmentType>
+                                  <LogicalSegmentType>
+                                    <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                    <ClassID>
+                                      <format dataType="uint" bitLength="2">0</format>
+                                      <segmentClass dataType="uint" bitLength="8">6</segmentClass>
+                                    </ClassID>
+                                  </LogicalSegmentType>
+                                </segmentType>
+                              </LogicalSegment>
+                            </PathSegment>
+                          </classSegment>
+                          <instanceSegment>
+                            <PathSegment>
+                              <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                              <LogicalSegment>
+                                <segmentType>
+                                  <LogicalSegmentType>
+                                    <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                    <InstanceID>
+                                      <format dataType="uint" bitLength="2">0</format>
+                                      <instance dataType="uint" bitLength="8">1</instance>
+                                    </InstanceID>
+                                  </LogicalSegmentType>
+                                </segmentType>
+                              </LogicalSegment>
+                            </PathSegment>
+                          </instanceSegment>
+                          <reserved dataType="uint" bitLength="16">40197</reserved>
+                          <messageSize dataType="uint" bitLength="16">10</messageSize>
+                          <unconnectedService>
+                            <CipService>
+                              <response dataType="bit" bitLength="1">false</response>
+                              <CipServiceRequest>
+                                <service dataType="uint" bitLength="7">76</service>
+                                <CipReadRequest>
+                                  <requestPathSize dataType="uint" bitLength="8">3</requestPathSize>
+                                  <tag dataType="byte" bitLength="48">0x910472617465</tag>
+                                  <elementNb dataType="uint" bitLength="16">1</elementNb>
+                                </CipReadRequest>
+                              </CipServiceRequest>
+                            </CipService>
+                          </unconnectedService>
+                          <route dataType="uint" bitLength="16">1</route>
+                          <backPlane dataType="int" bitLength="8">1</backPlane>
+                          <slot dataType="int" bitLength="8">0</slot>
+                        </CipUnconnectedRequest>
+                      </CipServiceRequest>
                     </CipService>
                   </service>
                 </UnConnectedDataItem>
@@ -255,21 +259,24 @@
                   <service>
                     <CipService>
                       <response dataType="bit" bitLength="1">true</response>
-                      <service dataType="uint" bitLength="7">76</service>
-                      <CipReadResponse>
+                      <CipServiceResponse>
+                        <service dataType="uint" bitLength="7">76</service>
                         <reserved dataType="uint" bitLength="8">0</reserved>
                         <status dataType="uint" bitLength="8">0</status>
-                        <extStatus dataType="uint" bitLength="8">0</extStatus>
-                        <data>
-                          <CIPData>
-                            <dataType>
-                              <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196
-                              </CIPDataTypeCode>
-                            </dataType>
-                            <data dataType="byte" bitLength="32">0x00000216</data>
-                          </CIPData>
-                        </data>
-                      </CipReadResponse>
+                        <extStatusSize dataType="uint" bitLength="8">0</extStatusSize>
+                        <extStatus isList="true"/>
+                        <CipReadResponse>
+                          <data>
+                            <CIPData>
+                              <dataType>
+                                <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196
+                                </CIPDataTypeCode>
+                              </dataType>
+                              <data dataType="byte" bitLength="32">0x00000216</data>
+                            </CIPData>
+                          </data>
+                        </CipReadResponse>
+                      </CipServiceResponse>
                     </CipService>
                   </service>
                 </UnConnectedDataItem>

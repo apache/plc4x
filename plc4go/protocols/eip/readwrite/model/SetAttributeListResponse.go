@@ -38,7 +38,7 @@ type SetAttributeListResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceResponse
 	// IsSetAttributeListResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeListResponse()
 	// CreateBuilder creates a SetAttributeListResponseBuilder
@@ -47,18 +47,18 @@ type SetAttributeListResponse interface {
 
 // _SetAttributeListResponse is the data-structure of this message
 type _SetAttributeListResponse struct {
-	CipServiceContract
+	CipServiceResponseContract
 }
 
 var _ SetAttributeListResponse = (*_SetAttributeListResponse)(nil)
-var _ CipServiceRequirements = (*_SetAttributeListResponse)(nil)
+var _ CipServiceResponseRequirements = (*_SetAttributeListResponse)(nil)
 
 // NewSetAttributeListResponse factory function for _SetAttributeListResponse
-func NewSetAttributeListResponse() *_SetAttributeListResponse {
+func NewSetAttributeListResponse(status uint8, extStatus []uint16) *_SetAttributeListResponse {
 	_result := &_SetAttributeListResponse{
-		CipServiceContract: NewCipService(),
+		CipServiceResponseContract: NewCipServiceResponse(status, extStatus),
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceResponseContract.(*_CipServiceResponse)._SubType = _result
 	return _result
 }
 
@@ -73,7 +73,7 @@ type SetAttributeListResponseBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SetAttributeListResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceResponseBuilder
 	// Build builds the SetAttributeListResponse or returns an error if something is wrong
 	Build() (SetAttributeListResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -88,16 +88,16 @@ func NewSetAttributeListResponseBuilder() SetAttributeListResponseBuilder {
 type _SetAttributeListResponseBuilder struct {
 	*_SetAttributeListResponse
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceResponseBuilder
 
 	collectedErr []error
 }
 
 var _ (SetAttributeListResponseBuilder) = (*_SetAttributeListResponseBuilder)(nil)
 
-func (b *_SetAttributeListResponseBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._SetAttributeListResponse
+func (b *_SetAttributeListResponseBuilder) setParent(contract CipServiceResponseContract) {
+	b.CipServiceResponseContract = contract
+	contract.(*_CipServiceResponse)._SubType = b._SetAttributeListResponse
 }
 
 func (b *_SetAttributeListResponseBuilder) WithMandatoryFields() SetAttributeListResponseBuilder {
@@ -119,14 +119,14 @@ func (b *_SetAttributeListResponseBuilder) MustBuild() SetAttributeListResponse 
 	return build
 }
 
-func (b *_SetAttributeListResponseBuilder) Done() CipServiceBuilder {
+func (b *_SetAttributeListResponseBuilder) Done() CipServiceResponseBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceResponseBuilder().(*_CipServiceResponseBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_SetAttributeListResponseBuilder) buildForCipService() (CipService, error) {
+func (b *_SetAttributeListResponseBuilder) buildForCipServiceResponse() (CipServiceResponse, error) {
 	return b.Build()
 }
 
@@ -160,21 +160,13 @@ func (m *_SetAttributeListResponse) GetService() uint8 {
 	return 0x04
 }
 
-func (m *_SetAttributeListResponse) GetResponse() bool {
-	return bool(true)
-}
-
-func (m *_SetAttributeListResponse) GetConnected() bool {
-	return false
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SetAttributeListResponse) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_SetAttributeListResponse) GetParent() CipServiceResponseContract {
+	return m.CipServiceResponseContract
 }
 
 // Deprecated: use the interface for direct cast
@@ -193,7 +185,7 @@ func (m *_SetAttributeListResponse) GetPlx4xTypeName() string {
 }
 
 func (m *_SetAttributeListResponse) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceResponseContract.(*_CipServiceResponse).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -202,8 +194,8 @@ func (m *_SetAttributeListResponse) GetLengthInBytes(ctx context.Context) uint64
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SetAttributeListResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__setAttributeListResponse SetAttributeListResponse, err error) {
-	m.CipServiceContract = parent
+func (m *_SetAttributeListResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceResponse, connected bool, serviceLen uint16) (__setAttributeListResponse SetAttributeListResponse, err error) {
+	m.CipServiceResponseContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -243,7 +235,7 @@ func (m *_SetAttributeListResponse) SerializeWithWriteBuffer(ctx context.Context
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceResponseContract.(*_CipServiceResponse).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SetAttributeListResponse) IsSetAttributeListResponse() {}
@@ -257,9 +249,9 @@ func (m *_SetAttributeListResponse) deepCopy() *_SetAttributeListResponse {
 		return nil
 	}
 	_SetAttributeListResponseCopy := &_SetAttributeListResponse{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceResponseContract.(*_CipServiceResponse).deepCopy(),
 	}
-	_SetAttributeListResponseCopy.CipServiceContract.(*_CipService)._SubType = m
+	_SetAttributeListResponseCopy.CipServiceResponseContract.(*_CipServiceResponse)._SubType = m
 	return _SetAttributeListResponseCopy
 }
 

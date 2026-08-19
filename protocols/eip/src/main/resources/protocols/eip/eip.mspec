@@ -110,184 +110,185 @@
     ]
 ]
 
+// Every CIP service response starts with the same 4-byte header: the service code
+// (with the response bit set), a reserved byte, a 1-byte general status, and a 1-byte
+// 'additional status size'. That last byte is a COUNT OF 16-BIT WORDS that follow it,
+// not a status value of its own. It is 0 for every successful response, which is why
+// modelling it as a plain 'extStatus uint 8' went unnoticed for years -- but as soon
+// as a device reports extended error detail, that byte is a length and everything
+// after it shifts. Hence extStatusSize + extStatus, and hence every trailing payload
+// length below subtracts '2 * extStatusSize'.
 [discriminatedType  CipService(bit connected, uint 16 serviceLen)
     [discriminator  bit     response                                                                                   ]
-    [discriminator  uint    7   service                                                                                ]
-    [typeSwitch service,response,connected
-        ['0x01','false' GetAttributeAllRequest
-            [implicit   uint   8            requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2']
-            [simple     PathSegment         classSegment                                                               ]
-            [simple     PathSegment         instanceSegment                                                            ]
+    [typeSwitch response
+        ['false' *Request
+            [discriminator  uint    7   service                                                                    ]
+            [typeSwitch service,connected
+                ['0x01' GetAttributeAllRequest
+                    [implicit   uint   8            requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2' ]
+                    [simple     PathSegment         classSegment                                                   ]
+                    [simple     PathSegment         instanceSegment                                                ]
+                ]
+                ['0x02' SetAttributeAllRequest
+                    // TODO: Implement
+                ]
+                ['0x03' GetAttributeListRequest
+                    // TODO: Implement
+                ]
+                ['0x04' SetAttributeListRequest
+                    // TODO: Implement
+                ]
+                ['0x0A' MultipleServiceRequest
+                    [const      uint    8           requestPathSize   0x02                                         ]
+                    [const      uint    32          requestPath       0x01240220                                               ]   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
+                    [simple Services('serviceLen-6') data                                                          ]
+                ]
+                ['0x0E' GetAttributeSingleRequest
+                    [implicit   uint    8           requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes + attributeSegment.lengthInBytes)/2' ]
+                    [simple     PathSegment         classSegment                                                   ]
+                    [simple     PathSegment         instanceSegment                                                ]
+                    [simple     PathSegment         attributeSegment                                               ]
+                ]
+                ['0x10' SetAttributeSingleRequest
+                    // TODO: Implement
+                ]
+                ['0x4C' CipReadRequest
+                    [implicit   uint    8           requestPathSize 'COUNT(tag) / 2'                               ]
+                    [array      byte                tag             count               '(requestPathSize * 2)'    ]
+                    [simple     uint    16          elementNb                                                      ]
+                ]
+                ['0x4D' CipWriteRequest
+                    [implicit   uint    8           requestPathSize 'COUNT(tag) / 2'                               ]
+                    [array      byte                tag             count               'requestPathSize * 2'      ]
+                    [simple     CIPDataTypeCode     dataType                                                       ]
+                    [simple     uint    16          elementNb                                                      ]
+                    [array      byte                data            count               'dataType.size * elementNb' ]
+                ]
+                ['0x4E' CipConnectionManagerCloseRequest
+                    [simple     uint     8          requestPathSize                                                ]
+                    [simple     PathSegment         classSegment                                                   ]
+                    [simple     PathSegment         instanceSegment                                                ]
+                    [simple     uint    4           priority                                                       ]
+                    [simple     uint    4           tickTime                                                       ]
+                    [simple     uint    8           timeoutTicks                                                   ]
+                    [simple     uint    16          connectionSerialNumber                                         ]
+                    [simple     uint    16          originatorVendorId                                             ]
+                    [simple     uint    32          originatorSerialNumber                                         ]
+                    [simple     uint    8           connectionPathSize                                             ]
+                    [reserved   byte                '0x00'                                                         ]
+                    [array      PathSegment         connectionPaths     terminated   'STATIC_CALL("noMorePathSegments", readBuffer)' ]
+                ]
+                ['0x52','false' CipUnconnectedRequest
+                    [implicit   uint    8           requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2' ]
+                    [simple     PathSegment         classSegment                                                   ]
+                    [simple     PathSegment         instanceSegment                                                ]
+                    [reserved   uint    16          '0x9D05'                                                                   ]   //Timeout 5s
+                    [implicit   uint    16          messageSize     'lengthInBytes - 10 - 4'                                   ]   //subtract above and routing
+                    [simple     CipService('false','messageSize')   unconnectedService                             ]
+                    [const      uint    16          route           0x0001                                         ]
+                    [simple     int     8           backPlane                                                      ]
+                    [simple     int     8           slot                                                           ]
+                ]
+                ['0x52','true' CipConnectedRequest
+                    [implicit   uint    8           requestPathSize 'COUNT(pathSegments) / 2'                      ]
+                    [array      byte                pathSegments    count                       'requestPathSize * 2' ]
+                    [reserved   uint    16          '0x0001'                                                       ]
+                    [reserved   uint    32          '0x00000000'                                                   ]
+                ]
+                ['0x5B' CipConnectionManagerRequest
+                    [implicit   uint    8          requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2' ]
+                    [simple     PathSegment        classSegment                                                    ]
+                    [simple     PathSegment        instanceSegment                                                 ]
+                    [simple     uint    4          priority                                                        ]
+                    [simple     uint    4          tickTime                                                        ]
+                    [simple     uint    8          timeoutTicks                                                    ]
+                    // ot = Originator (Client) Target (Server)
+                    [simple     uint    32         otConnectionId                                                  ]
+                    // to = Target (Server) Originator (Client)
+                    [simple     uint    32         toConnectionId                                                  ]
+                    [simple     uint    16         connectionSerialNumber                                          ]
+                    [simple     uint    16         originatorVendorId                                              ]
+                    [simple     uint    32         originatorSerialNumber                                          ]
+                    [simple     uint    8          timeoutMultiplier                                               ]
+                    [reserved   uint    24         '0x000000'                                                      ]
+                    // ot = Originator (Client) Target (Server)
+                    [simple     uint    32         otRpi                                                           ]
+                    [simple     NetworkConnectionParameters otConnectionParameters                                 ]
+                    // to = Target (Server) Originator (Client)
+                    [simple     uint    32         toRpi                                                           ]
+                    [simple     NetworkConnectionParameters toConnectionParameters                                 ]
+                    [simple     TransportType      transportType                                                   ]
+                    [simple     uint    8          connectionPathSize                                              ]
+                    [array      PathSegment        connectionPaths terminated  'STATIC_CALL("noMorePathSegments", readBuffer)' ]
+                ]
+            ]
         ]
-        ['0x01','true'  GetAttributeAllResponse
-            [reserved   uint   8            '0x00'                                                                     ]
-            [simple     uint   8            status                                                                     ]
-            [simple     uint   8            extStatus                                                                  ]
-            [optional   CIPAttributes('serviceLen - 4')          attributes '(serviceLen - 4) > 0'                     ]
-        ]
-        ['0x02','false' SetAttributeAllRequest
-            // TODO: Implement
-        ]
-        ['0x02','true'  SetAttributeAllResponse
-            // TODO: Implement
-        ]
-        ['0x03','false' GetAttributeListRequest
-            // TODO: Implement
-        ]
-        ['0x03','true'  GetAttributeListResponse
-            // TODO: Implement
-        ]
-        ['0x04','false' SetAttributeListRequest
-            // TODO: Implement
-        ]
-        ['0x04','true'  SetAttributeListResponse
-            // TODO: Implement
-        ]
-        ['0x0A','false' MultipleServiceRequest
-            [const      uint    8           requestPathSize   0x02                                                     ]
-            [const      uint    32          requestPath       0x01240220                                               ]   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
-            [simple Services('serviceLen-6') data                                                                      ]
-        ]
-        ['0x0A','true'  MultipleServiceResponse
-            [reserved   uint    8           '0x0'                                                                      ]
-            [simple     uint    8           status                                                                     ]
-            [simple     uint    8           extStatus                                                                  ]
-            [simple     uint    16          serviceNb                                                                  ]
-            [array      uint    16          offsets       count  'serviceNb'                                           ]
-            [array      byte   servicesData count 'serviceLen - 6 - (2 * serviceNb)'                                   ]
-        ]
-        ['0x0E','false' GetAttributeSingleRequest
-            [implicit   uint    8           requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes + attributeSegment.lengthInBytes)/2']
-            [simple     PathSegment         classSegment                                                               ]
-            [simple     PathSegment         instanceSegment                                                            ]
-            [simple     PathSegment         attributeSegment                                                           ]
-        ]
-        ['0x0E','true'  GetAttributeSingleResponse
-            [reserved   uint    8           '0x00'                                                                     ]
-            [simple     uint    8           status                                                                     ]
-            [simple     uint    8           extStatusSize                                                              ]
-            [array      uint    16          extStatus count 'extStatusSize'                                            ]
-            [array      byte   servicesData count 'serviceLen - 4 - 2 * extStatusSize'                                 ]
-        ]
-        ['0x10','false' SetAttributeSingleRequest
-            // TODO: Implement
-        ]
-        ['0x10','true'  SetAttributeSingleResponse
-            // TODO: Implement
-        ]
-        ['0x4C','false' CipReadRequest
-            [implicit   uint    8           requestPathSize 'COUNT(tag) / 2'                                           ]
-            [array      byte                tag           count  '(requestPathSize * 2)'                               ]
-            [simple     uint    16          elementNb                                                                  ]
-        ]
-        ['0x4C','true'  CipReadResponse
-            [reserved   uint    8           '0x00'                                                                     ]
-            [simple     uint    8           status                                                                     ]
-            [simple     uint    8           extStatus                                                                  ]
-            [optional   CIPData('serviceLen - 4')   data    '(serviceLen - 4) > 0'                                      ]
-        ]
-        ['0x4D','false' CipWriteRequest
-            [implicit   uint    8           requestPathSize 'COUNT(tag) / 2'                                           ]
-            [array      byte                tag   count   'requestPathSize * 2'                                        ]
-            [simple     CIPDataTypeCode     dataType                                                                   ]
-            [simple     uint    16          elementNb                                                                  ]
-            [array      byte                data  count   'dataType.size * elementNb'                                  ]
-        ]
-        ['0x4D','true'  CipWriteResponse
-            [reserved   uint        8       '0x00'                                                                     ]
-            [simple     uint        8       status                                                                     ]
-            [simple     uint        8       extStatus                                                                  ]
-        ]
-        ['0x4E','false' CipConnectionManagerCloseRequest
-            [simple     uint     8          requestPathSize                                                            ]
-            [simple     PathSegment         classSegment                                                               ]
-            [simple     PathSegment         instanceSegment                                                            ]
-            [simple     uint    4           priority                                                                   ]
-            [simple     uint    4           tickTime                                                                   ]
-            [simple     uint    8           timeoutTicks                                                               ]
-            [simple     uint    16          connectionSerialNumber                                                     ]
-            [simple     uint    16          originatorVendorId                                                         ]
-            [simple     uint    32          originatorSerialNumber                                                     ]
-            [simple     uint    8           connectionPathSize                                                         ]
-            [reserved   byte                '0x00'                                                                     ]
-            [array      PathSegment         connectionPaths     terminated   'STATIC_CALL("noMorePathSegments", readBuffer)']
-        ]
-        ['0x4E','true'  CipConnectionManagerCloseResponse
-            [reserved   uint    8           '0x00'                                                                     ]
-            [simple     uint    8           status                                                                     ]
-            [simple     uint    8           additionalStatusWords                                                      ]
-            [simple     uint    16          connectionSerialNumber                                                     ]
-            [simple     uint    16          originatorVendorId                                                         ]
-            [simple     uint    32          originatorSerialNumber                                                     ]
-            [simple     uint    8           applicationReplySize                                                       ]
-            [reserved   uint    8           '0x00'                                                                     ]
-        ]
-        ['0x52','false','false'  CipUnconnectedRequest
-            [implicit   uint    8           requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2']
-            [simple     PathSegment         classSegment                                                               ]
-            [simple     PathSegment         instanceSegment                                                            ]
-            [reserved   uint    16          '0x9D05'                                                                   ]   //Timeout 5s
-            [implicit   uint    16          messageSize   'lengthInBytes - 10 - 4'                                     ]   //subtract above and routing
-            [simple     CipService('false','messageSize')  unconnectedService                                          ]
-            [const      uint    16          route 0x0001                                                               ]
-            [simple     int     8           backPlane                                                                  ]
-            [simple     int     8           slot                                                                       ]
-        ]
-        ['0x52','false','true'   CipConnectedRequest
-            [implicit   uint    8           requestPathSize 'COUNT(pathSegments) / 2'                                  ]
-            [array      byte                pathSegments    count 'requestPathSize * 2'                                ]
-            [reserved   uint    16          '0x0001'                                                                   ]
-            [reserved   uint    32          '0x00000000'                                                               ]
-        ]
-        ['0x52','true'  CipConnectedResponse
-            [reserved   uint    8           '0x00'                                                                     ]
-            [simple     uint    8           status                                                                     ]
-            [simple     uint    8           additionalStatusWords                                                      ]
-            [optional   CIPDataConnected    data    '(serviceLen - 4) > 0'                                             ]
-        ]
-        ['0x5B','false' CipConnectionManagerRequest
-            [implicit   uint    8          requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2']
-            [simple     PathSegment        classSegment                                                                ]
-            [simple     PathSegment        instanceSegment                                                             ]
-            [simple     uint    4          priority                                                                    ]
-            [simple     uint    4          tickTime                                                                    ]
-            [simple     uint    8          timeoutTicks                                                                ]
-            // ot = Originator (Client) Target (Server)
-            [simple     uint    32         otConnectionId                                                              ]
-            // to = Target (Server) Originator (Client)
-            [simple     uint    32         toConnectionId                                                              ]
-            [simple     uint    16         connectionSerialNumber                                                      ]
-            [simple     uint    16         originatorVendorId                                                          ]
-            [simple     uint    32         originatorSerialNumber                                                      ]
-            [simple     uint    8          timeoutMultiplier                                                           ]
-            [reserved   uint    24         '0x000000'                                                                  ]
-            // ot = Originator (Client) Target (Server)
-            [simple     uint    32         otRpi                                                                       ]
-            [simple     NetworkConnectionParameters otConnectionParameters                                             ]
-            // to = Target (Server) Originator (Client)
-            [simple     uint    32         toRpi                                                                       ]
-            [simple     NetworkConnectionParameters toConnectionParameters                                             ]
-            [simple     TransportType      transportType                                                               ]
-            [simple     uint    8          connectionPathSize                                                          ]
-            [array      PathSegment        connectionPaths terminated  'STATIC_CALL("noMorePathSegments", readBuffer)' ]
-        ]
-        ['0x5B','true'  CipConnectionManagerResponse
-            [reserved   uint    24         '0x000000'                                                                  ]
-            // ot = Originator (Client) Target (Server)
-            [simple     uint    32         otConnectionId                                                              ]
-            // to = Target (Server) Originator (Client)
-            [simple     uint    32         toConnectionId                                                              ]
-            [simple     uint    16         connectionSerialNumber                                                      ]
-            [simple     uint    16         originatorVendorId                                                          ]
-            [simple     uint    32         originatorSerialNumber                                                      ]
-            // ot = Originator (Client) Target (Server)
-            [simple     uint    32         otApi                                                                       ]
-            // to = Target (Server) Originator (Client)
-            [simple     uint    32         toApi                                                                       ]
-            [implicit   uint    8          replySize   'lengthInBytes - 30'                                            ]
-            [reserved   uint    8          '0x00'                                                                      ]
+        ['true' *Response
+            [discriminator  uint    7   service                                                                    ]
+            // The CIP response header, stated once rather than once per service.
+            [reserved       uint    8   '0x00'                                                                     ]
+            [simple         uint    8   status                                                                     ]
+            [implicit       uint    8   extStatusSize   'COUNT(extStatus)'                                         ]
+            [array          uint    16  extStatus       count 'extStatusSize'                                      ]
+            [typeSwitch service
+                ['0x01' GetAttributeAllResponse (uint 8 extStatusSize)
+                    [optional   CIPAttributes('serviceLen - 4 - (2 * extStatusSize)') attributes '(serviceLen - 4 - (2 * extStatusSize)) > 0' ]
+                ]
+                ['0x02' SetAttributeAllResponse
+                    // TODO: Implement
+                ]
+                ['0x03' GetAttributeListResponse
+                    // TODO: Implement
+                ]
+                ['0x04' SetAttributeListResponse
+                    // TODO: Implement
+                ]
+                ['0x0A' MultipleServiceResponse (uint 8 extStatusSize)
+                    [simple     uint    16          serviceNb                                                      ]
+                    [array      uint    16          offsets         count               'serviceNb'                ]
+                    [array      byte                servicesData    count               'serviceLen - 6 - (2 * serviceNb) - (2 * extStatusSize)' ]
+                ]
+                ['0x0E' GetAttributeSingleResponse (uint 8 extStatusSize)
+                    [array      byte                servicesData    count               'serviceLen - 4 - (2 * extStatusSize)' ]
+                ]
+                ['0x10' SetAttributeSingleResponse
+                    // TODO: Implement
+                ]
+                ['0x4C' CipReadResponse (uint 8 extStatusSize)
+                    [optional   CIPData('serviceLen - 4 - (2 * extStatusSize)') data '(serviceLen - 4 - (2 * extStatusSize)) > 0' ]
+                ]
+                ['0x4D' CipWriteResponse
+                ]
+                ['0x4E' CipConnectionManagerCloseResponse
+                    [simple     uint    16          connectionSerialNumber                                         ]
+                    [simple     uint    16          originatorVendorId                                             ]
+                    [simple     uint    32          originatorSerialNumber                                         ]
+                    [simple     uint    8           applicationReplySize                                           ]
+                    [reserved   uint    8           '0x00'                                                         ]
+                ]
+                ['0x52' CipConnectedResponse (uint 8 extStatusSize)
+                    [optional   CIPDataConnected    data            '(serviceLen - 4 - (2 * extStatusSize)) > 0'   ]
+                ]
+                ['0x5B' CipConnectionManagerResponse
+                    // ot = Originator (Client) Target (Server)
+                    [simple     uint    32         otConnectionId                                                  ]
+                    // to = Target (Server) Originator (Client)
+                    [simple     uint    32         toConnectionId                                                  ]
+                    [simple     uint    16         connectionSerialNumber                                          ]
+                    [simple     uint    16         originatorVendorId                                              ]
+                    [simple     uint    32         originatorSerialNumber                                          ]
+                    // ot = Originator (Client) Target (Server)
+                    [simple     uint    32         otApi                                                           ]
+                    // to = Target (Server) Originator (Client)
+                    [simple     uint    32         toApi                                                           ]
+                    [implicit   uint    8          replySize   'COUNT(reply) / 2'                                  ]
+                    [array      byte               reply       count 'replySize * 2'                               ]
+                    [reserved   uint    8          '0x00'                                                          ]
+                ]
+            ]
         ]
     ]
+]
 ]
 
 [discriminatedType CommandSpecificDataItem

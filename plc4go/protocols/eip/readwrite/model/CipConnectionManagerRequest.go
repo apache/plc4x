@@ -40,7 +40,7 @@ type CipConnectionManagerRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceRequest
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
 	// GetInstanceSegment returns InstanceSegment (property field)
@@ -89,7 +89,7 @@ type CipConnectionManagerRequest interface {
 
 // _CipConnectionManagerRequest is the data-structure of this message
 type _CipConnectionManagerRequest struct {
-	CipServiceContract
+	CipServiceRequestContract
 	ClassSegment           PathSegment
 	InstanceSegment        PathSegment
 	Priority               uint8
@@ -113,7 +113,7 @@ type _CipConnectionManagerRequest struct {
 }
 
 var _ CipConnectionManagerRequest = (*_CipConnectionManagerRequest)(nil)
-var _ CipServiceRequirements = (*_CipConnectionManagerRequest)(nil)
+var _ CipServiceRequestRequirements = (*_CipConnectionManagerRequest)(nil)
 
 // NewCipConnectionManagerRequest factory function for _CipConnectionManagerRequest
 func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment) *_CipConnectionManagerRequest {
@@ -133,27 +133,27 @@ func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment Pa
 		panic("transportType of type TransportType for CipConnectionManagerRequest must not be nil")
 	}
 	_result := &_CipConnectionManagerRequest{
-		CipServiceContract:     NewCipService(),
-		ClassSegment:           classSegment,
-		InstanceSegment:        instanceSegment,
-		Priority:               priority,
-		TickTime:               tickTime,
-		TimeoutTicks:           timeoutTicks,
-		OtConnectionId:         otConnectionId,
-		ToConnectionId:         toConnectionId,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		TimeoutMultiplier:      timeoutMultiplier,
-		OtRpi:                  otRpi,
-		OtConnectionParameters: otConnectionParameters,
-		ToRpi:                  toRpi,
-		ToConnectionParameters: toConnectionParameters,
-		TransportType:          transportType,
-		ConnectionPathSize:     connectionPathSize,
-		ConnectionPaths:        connectionPaths,
+		CipServiceRequestContract: NewCipServiceRequest(),
+		ClassSegment:              classSegment,
+		InstanceSegment:           instanceSegment,
+		Priority:                  priority,
+		TickTime:                  tickTime,
+		TimeoutTicks:              timeoutTicks,
+		OtConnectionId:            otConnectionId,
+		ToConnectionId:            toConnectionId,
+		ConnectionSerialNumber:    connectionSerialNumber,
+		OriginatorVendorId:        originatorVendorId,
+		OriginatorSerialNumber:    originatorSerialNumber,
+		TimeoutMultiplier:         timeoutMultiplier,
+		OtRpi:                     otRpi,
+		OtConnectionParameters:    otConnectionParameters,
+		ToRpi:                     toRpi,
+		ToConnectionParameters:    toConnectionParameters,
+		TransportType:             transportType,
+		ConnectionPathSize:        connectionPathSize,
+		ConnectionPaths:           connectionPaths,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceRequestContract.(*_CipServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -214,7 +214,7 @@ type CipConnectionManagerRequestBuilder interface {
 	// WithConnectionPaths adds ConnectionPaths (property field)
 	WithConnectionPaths(...PathSegment) CipConnectionManagerRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceRequestBuilder
 	// Build builds the CipConnectionManagerRequest or returns an error if something is wrong
 	Build() (CipConnectionManagerRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -229,16 +229,16 @@ func NewCipConnectionManagerRequestBuilder() CipConnectionManagerRequestBuilder 
 type _CipConnectionManagerRequestBuilder struct {
 	*_CipConnectionManagerRequest
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceRequestBuilder
 
 	collectedErr []error
 }
 
 var _ (CipConnectionManagerRequestBuilder) = (*_CipConnectionManagerRequestBuilder)(nil)
 
-func (b *_CipConnectionManagerRequestBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._CipConnectionManagerRequest
+func (b *_CipConnectionManagerRequestBuilder) setParent(contract CipServiceRequestContract) {
+	b.CipServiceRequestContract = contract
+	contract.(*_CipServiceRequest)._SubType = b._CipConnectionManagerRequest
 }
 
 func (b *_CipConnectionManagerRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment) CipConnectionManagerRequestBuilder {
@@ -415,14 +415,14 @@ func (b *_CipConnectionManagerRequestBuilder) MustBuild() CipConnectionManagerRe
 	return build
 }
 
-func (b *_CipConnectionManagerRequestBuilder) Done() CipServiceBuilder {
+func (b *_CipConnectionManagerRequestBuilder) Done() CipServiceRequestBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceRequestBuilder().(*_CipServiceRequestBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_CipConnectionManagerRequestBuilder) buildForCipService() (CipService, error) {
+func (b *_CipConnectionManagerRequestBuilder) buildForCipServiceRequest() (CipServiceRequest, error) {
 	return b.Build()
 }
 
@@ -456,10 +456,6 @@ func (m *_CipConnectionManagerRequest) GetService() uint8 {
 	return 0x5B
 }
 
-func (m *_CipConnectionManagerRequest) GetResponse() bool {
-	return bool(false)
-}
-
 func (m *_CipConnectionManagerRequest) GetConnected() bool {
 	return false
 }
@@ -469,8 +465,8 @@ func (m *_CipConnectionManagerRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipConnectionManagerRequest) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_CipConnectionManagerRequest) GetParent() CipServiceRequestContract {
+	return m.CipServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -571,7 +567,7 @@ func (m *_CipConnectionManagerRequest) GetPlx4xTypeName() string {
 }
 
 func (m *_CipConnectionManagerRequest) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceRequestContract.(*_CipServiceRequest).getLengthInBits(ctx))
 
 	// Implicit Field (requestPathSize)
 	lengthInBits += 8
@@ -644,8 +640,8 @@ func (m *_CipConnectionManagerRequest) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CipConnectionManagerRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipConnectionManagerRequest CipConnectionManagerRequest, err error) {
-	m.CipServiceContract = parent
+func (m *_CipConnectionManagerRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceRequest, connected bool, serviceLen uint16) (__cipConnectionManagerRequest CipConnectionManagerRequest, err error) {
+	m.CipServiceRequestContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -885,7 +881,7 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceRequestContract.(*_CipServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CipConnectionManagerRequest) IsCipConnectionManagerRequest() {}
@@ -899,7 +895,7 @@ func (m *_CipConnectionManagerRequest) deepCopy() *_CipConnectionManagerRequest 
 		return nil
 	}
 	_CipConnectionManagerRequestCopy := &_CipConnectionManagerRequest{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceRequestContract.(*_CipServiceRequest).deepCopy(),
 		utils.DeepCopy[PathSegment](m.ClassSegment),
 		utils.DeepCopy[PathSegment](m.InstanceSegment),
 		m.Priority,
@@ -920,7 +916,7 @@ func (m *_CipConnectionManagerRequest) deepCopy() *_CipConnectionManagerRequest 
 		utils.DeepCopySlice[PathSegment, PathSegment](m.ConnectionPaths),
 		m.reservedField0,
 	}
-	_CipConnectionManagerRequestCopy.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectionManagerRequestCopy.CipServiceRequestContract.(*_CipServiceRequest)._SubType = m
 	return _CipConnectionManagerRequestCopy
 }
 

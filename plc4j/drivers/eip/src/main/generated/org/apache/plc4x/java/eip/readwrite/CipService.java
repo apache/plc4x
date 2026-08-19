@@ -36,19 +36,9 @@ public abstract class CipService implements Message {
   }
 
   /**
-   * Discriminator field connected
-   */
-  public abstract boolean getConnected();
-
-  /**
    * Discriminator field response
    */
   public abstract boolean getResponse();
-
-  /**
-   * Discriminator field service
-   */
-  public abstract byte getService();
 
   protected abstract void serializeCipServiceChild(WriteBuffer writeBuffer) throws BufferException;
 
@@ -60,64 +50,15 @@ public abstract class CipService implements Message {
     // Discriminator Field: response
     boolean response = FieldReaderFactory.readDiscriminatorField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("response"));
 
-    // Discriminator Field: service
-    byte service = FieldReaderFactory.readDiscriminatorField(DataReaderFactory.readUnsignedByte(readBuffer, 7), WithOption.WithName("service"));
-
     // Switch Field
     CipServiceBuilder builder = null;
-    if (EvaluationHelper.equals(service, (byte) (0x01)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = GetAttributeAllRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x01)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = GetAttributeAllResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x02)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = SetAttributeAllRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x02)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = SetAttributeAllResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x03)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = GetAttributeListRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x03)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = GetAttributeListResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x04)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = SetAttributeListRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x04)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = SetAttributeListResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x0A)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = MultipleServiceRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x0A)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = MultipleServiceResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x0E)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = GetAttributeSingleRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x0E)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = GetAttributeSingleResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x10)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = SetAttributeSingleRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x10)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = SetAttributeSingleResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x4C)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = CipReadRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x4C)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = CipReadResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x4D)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = CipWriteRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x4D)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = CipWriteResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x4E)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = CipConnectionManagerCloseRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x4E)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = CipConnectionManagerCloseResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x52)) && EvaluationHelper.equals(response, (boolean) (false)) && EvaluationHelper.equals(connected, (boolean) (false))) {
-      builder = CipUnconnectedRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x52)) && EvaluationHelper.equals(response, (boolean) (false)) && EvaluationHelper.equals(connected, (boolean) (true))) {
-      builder = CipConnectedRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x52)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = CipConnectedResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x5B)) && EvaluationHelper.equals(response, (boolean) (false))) {
-      builder = CipConnectionManagerRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (byte) (0x5B)) && EvaluationHelper.equals(response, (boolean) (true))) {
-      builder = CipConnectionManagerResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    if (EvaluationHelper.equals(response, (boolean) (false))) {
+      builder = CipServiceRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(response, (boolean) (true))) {
+      builder = CipServiceResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
     }
     if (builder == null) {
-      throw new BufferException("Unsupported case for discriminated type parameters parameters [service, response, connected]");
+      throw new BufferException("Unsupported case for discriminated type parameters parameters [response]");
     }
 
     readBuffer.popContext();
@@ -132,10 +73,6 @@ public abstract class CipService implements Message {
     boolean response = (boolean) getResponse();
     // Discriminator Field: response
     FieldWriterFactory.writeDiscriminatorField((boolean) response, DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("response"));
-
-    byte service = (byte) getService();
-    // Discriminator Field: service
-    FieldWriterFactory.writeDiscriminatorField((byte) service, DataWriterFactory.writeUnsignedByte(writeBuffer, 7), WithOption.WithName("service"));
 
     // Switch Field
     serializeCipServiceChild(writeBuffer);
@@ -155,9 +92,6 @@ public abstract class CipService implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Discriminator Field: response
     lengthInBits += 1;
-
-    // Discriminator Field: service
-    lengthInBits += 7;
 
     // Switch Field
     // (the subtype will instead add the actual length of subtype elements)

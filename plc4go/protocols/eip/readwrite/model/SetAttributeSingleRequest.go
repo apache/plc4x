@@ -38,7 +38,7 @@ type SetAttributeSingleRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceRequest
 	// IsSetAttributeSingleRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeSingleRequest()
 	// CreateBuilder creates a SetAttributeSingleRequestBuilder
@@ -47,18 +47,18 @@ type SetAttributeSingleRequest interface {
 
 // _SetAttributeSingleRequest is the data-structure of this message
 type _SetAttributeSingleRequest struct {
-	CipServiceContract
+	CipServiceRequestContract
 }
 
 var _ SetAttributeSingleRequest = (*_SetAttributeSingleRequest)(nil)
-var _ CipServiceRequirements = (*_SetAttributeSingleRequest)(nil)
+var _ CipServiceRequestRequirements = (*_SetAttributeSingleRequest)(nil)
 
 // NewSetAttributeSingleRequest factory function for _SetAttributeSingleRequest
 func NewSetAttributeSingleRequest() *_SetAttributeSingleRequest {
 	_result := &_SetAttributeSingleRequest{
-		CipServiceContract: NewCipService(),
+		CipServiceRequestContract: NewCipServiceRequest(),
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceRequestContract.(*_CipServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -73,7 +73,7 @@ type SetAttributeSingleRequestBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SetAttributeSingleRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceRequestBuilder
 	// Build builds the SetAttributeSingleRequest or returns an error if something is wrong
 	Build() (SetAttributeSingleRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -88,16 +88,16 @@ func NewSetAttributeSingleRequestBuilder() SetAttributeSingleRequestBuilder {
 type _SetAttributeSingleRequestBuilder struct {
 	*_SetAttributeSingleRequest
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceRequestBuilder
 
 	collectedErr []error
 }
 
 var _ (SetAttributeSingleRequestBuilder) = (*_SetAttributeSingleRequestBuilder)(nil)
 
-func (b *_SetAttributeSingleRequestBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._SetAttributeSingleRequest
+func (b *_SetAttributeSingleRequestBuilder) setParent(contract CipServiceRequestContract) {
+	b.CipServiceRequestContract = contract
+	contract.(*_CipServiceRequest)._SubType = b._SetAttributeSingleRequest
 }
 
 func (b *_SetAttributeSingleRequestBuilder) WithMandatoryFields() SetAttributeSingleRequestBuilder {
@@ -119,14 +119,14 @@ func (b *_SetAttributeSingleRequestBuilder) MustBuild() SetAttributeSingleReques
 	return build
 }
 
-func (b *_SetAttributeSingleRequestBuilder) Done() CipServiceBuilder {
+func (b *_SetAttributeSingleRequestBuilder) Done() CipServiceRequestBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceRequestBuilder().(*_CipServiceRequestBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_SetAttributeSingleRequestBuilder) buildForCipService() (CipService, error) {
+func (b *_SetAttributeSingleRequestBuilder) buildForCipServiceRequest() (CipServiceRequest, error) {
 	return b.Build()
 }
 
@@ -160,10 +160,6 @@ func (m *_SetAttributeSingleRequest) GetService() uint8 {
 	return 0x10
 }
 
-func (m *_SetAttributeSingleRequest) GetResponse() bool {
-	return bool(false)
-}
-
 func (m *_SetAttributeSingleRequest) GetConnected() bool {
 	return false
 }
@@ -173,8 +169,8 @@ func (m *_SetAttributeSingleRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SetAttributeSingleRequest) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_SetAttributeSingleRequest) GetParent() CipServiceRequestContract {
+	return m.CipServiceRequestContract
 }
 
 // Deprecated: use the interface for direct cast
@@ -193,7 +189,7 @@ func (m *_SetAttributeSingleRequest) GetPlx4xTypeName() string {
 }
 
 func (m *_SetAttributeSingleRequest) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceRequestContract.(*_CipServiceRequest).getLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -202,8 +198,8 @@ func (m *_SetAttributeSingleRequest) GetLengthInBytes(ctx context.Context) uint6
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SetAttributeSingleRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__setAttributeSingleRequest SetAttributeSingleRequest, err error) {
-	m.CipServiceContract = parent
+func (m *_SetAttributeSingleRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceRequest, connected bool, serviceLen uint16) (__setAttributeSingleRequest SetAttributeSingleRequest, err error) {
+	m.CipServiceRequestContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -243,7 +239,7 @@ func (m *_SetAttributeSingleRequest) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceRequestContract.(*_CipServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SetAttributeSingleRequest) IsSetAttributeSingleRequest() {}
@@ -257,9 +253,9 @@ func (m *_SetAttributeSingleRequest) deepCopy() *_SetAttributeSingleRequest {
 		return nil
 	}
 	_SetAttributeSingleRequestCopy := &_SetAttributeSingleRequest{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceRequestContract.(*_CipServiceRequest).deepCopy(),
 	}
-	_SetAttributeSingleRequestCopy.CipServiceContract.(*_CipService)._SubType = m
+	_SetAttributeSingleRequestCopy.CipServiceRequestContract.(*_CipServiceRequest)._SubType = m
 	return _SetAttributeSingleRequestCopy
 }
 

@@ -40,7 +40,7 @@ type GetAttributeAllRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceRequest
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
 	// GetInstanceSegment returns InstanceSegment (property field)
@@ -53,13 +53,13 @@ type GetAttributeAllRequest interface {
 
 // _GetAttributeAllRequest is the data-structure of this message
 type _GetAttributeAllRequest struct {
-	CipServiceContract
+	CipServiceRequestContract
 	ClassSegment    PathSegment
 	InstanceSegment PathSegment
 }
 
 var _ GetAttributeAllRequest = (*_GetAttributeAllRequest)(nil)
-var _ CipServiceRequirements = (*_GetAttributeAllRequest)(nil)
+var _ CipServiceRequestRequirements = (*_GetAttributeAllRequest)(nil)
 
 // NewGetAttributeAllRequest factory function for _GetAttributeAllRequest
 func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSegment) *_GetAttributeAllRequest {
@@ -70,11 +70,11 @@ func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSeg
 		panic("instanceSegment of type PathSegment for GetAttributeAllRequest must not be nil")
 	}
 	_result := &_GetAttributeAllRequest{
-		CipServiceContract: NewCipService(),
-		ClassSegment:       classSegment,
-		InstanceSegment:    instanceSegment,
+		CipServiceRequestContract: NewCipServiceRequest(),
+		ClassSegment:              classSegment,
+		InstanceSegment:           instanceSegment,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceRequestContract.(*_CipServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -97,7 +97,7 @@ type GetAttributeAllRequestBuilder interface {
 	// WithInstanceSegmentBuilder adds InstanceSegment (property field) which is build by the builder
 	WithInstanceSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeAllRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceRequestBuilder
 	// Build builds the GetAttributeAllRequest or returns an error if something is wrong
 	Build() (GetAttributeAllRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,16 +112,16 @@ func NewGetAttributeAllRequestBuilder() GetAttributeAllRequestBuilder {
 type _GetAttributeAllRequestBuilder struct {
 	*_GetAttributeAllRequest
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceRequestBuilder
 
 	collectedErr []error
 }
 
 var _ (GetAttributeAllRequestBuilder) = (*_GetAttributeAllRequestBuilder)(nil)
 
-func (b *_GetAttributeAllRequestBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._GetAttributeAllRequest
+func (b *_GetAttributeAllRequestBuilder) setParent(contract CipServiceRequestContract) {
+	b.CipServiceRequestContract = contract
+	contract.(*_CipServiceRequest)._SubType = b._GetAttributeAllRequest
 }
 
 func (b *_GetAttributeAllRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment) GetAttributeAllRequestBuilder {
@@ -179,14 +179,14 @@ func (b *_GetAttributeAllRequestBuilder) MustBuild() GetAttributeAllRequest {
 	return build
 }
 
-func (b *_GetAttributeAllRequestBuilder) Done() CipServiceBuilder {
+func (b *_GetAttributeAllRequestBuilder) Done() CipServiceRequestBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceRequestBuilder().(*_CipServiceRequestBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_GetAttributeAllRequestBuilder) buildForCipService() (CipService, error) {
+func (b *_GetAttributeAllRequestBuilder) buildForCipServiceRequest() (CipServiceRequest, error) {
 	return b.Build()
 }
 
@@ -220,10 +220,6 @@ func (m *_GetAttributeAllRequest) GetService() uint8 {
 	return 0x01
 }
 
-func (m *_GetAttributeAllRequest) GetResponse() bool {
-	return bool(false)
-}
-
 func (m *_GetAttributeAllRequest) GetConnected() bool {
 	return false
 }
@@ -233,8 +229,8 @@ func (m *_GetAttributeAllRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_GetAttributeAllRequest) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_GetAttributeAllRequest) GetParent() CipServiceRequestContract {
+	return m.CipServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -271,7 +267,7 @@ func (m *_GetAttributeAllRequest) GetPlx4xTypeName() string {
 }
 
 func (m *_GetAttributeAllRequest) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceRequestContract.(*_CipServiceRequest).getLengthInBits(ctx))
 
 	// Implicit Field (requestPathSize)
 	lengthInBits += 8
@@ -289,8 +285,8 @@ func (m *_GetAttributeAllRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_GetAttributeAllRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__getAttributeAllRequest GetAttributeAllRequest, err error) {
-	m.CipServiceContract = parent
+func (m *_GetAttributeAllRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceRequest, connected bool, serviceLen uint16) (__getAttributeAllRequest GetAttributeAllRequest, err error) {
+	m.CipServiceRequestContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -360,7 +356,7 @@ func (m *_GetAttributeAllRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceRequestContract.(*_CipServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_GetAttributeAllRequest) IsGetAttributeAllRequest() {}
@@ -374,11 +370,11 @@ func (m *_GetAttributeAllRequest) deepCopy() *_GetAttributeAllRequest {
 		return nil
 	}
 	_GetAttributeAllRequestCopy := &_GetAttributeAllRequest{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceRequestContract.(*_CipServiceRequest).deepCopy(),
 		utils.DeepCopy[PathSegment](m.ClassSegment),
 		utils.DeepCopy[PathSegment](m.InstanceSegment),
 	}
-	_GetAttributeAllRequestCopy.CipServiceContract.(*_CipService)._SubType = m
+	_GetAttributeAllRequestCopy.CipServiceRequestContract.(*_CipServiceRequest)._SubType = m
 	return _GetAttributeAllRequestCopy
 }
 

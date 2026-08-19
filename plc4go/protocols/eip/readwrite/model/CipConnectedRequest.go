@@ -40,7 +40,7 @@ type CipConnectedRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceRequest
 	// GetPathSegments returns PathSegments (property field)
 	GetPathSegments() []byte
 	// IsCipConnectedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -51,7 +51,7 @@ type CipConnectedRequest interface {
 
 // _CipConnectedRequest is the data-structure of this message
 type _CipConnectedRequest struct {
-	CipServiceContract
+	CipServiceRequestContract
 	PathSegments []byte
 	// Reserved Fields
 	reservedField0 *uint16
@@ -59,15 +59,15 @@ type _CipConnectedRequest struct {
 }
 
 var _ CipConnectedRequest = (*_CipConnectedRequest)(nil)
-var _ CipServiceRequirements = (*_CipConnectedRequest)(nil)
+var _ CipServiceRequestRequirements = (*_CipConnectedRequest)(nil)
 
 // NewCipConnectedRequest factory function for _CipConnectedRequest
 func NewCipConnectedRequest(pathSegments []byte) *_CipConnectedRequest {
 	_result := &_CipConnectedRequest{
-		CipServiceContract: NewCipService(),
-		PathSegments:       pathSegments,
+		CipServiceRequestContract: NewCipServiceRequest(),
+		PathSegments:              pathSegments,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceRequestContract.(*_CipServiceRequest)._SubType = _result
 	return _result
 }
 
@@ -84,7 +84,7 @@ type CipConnectedRequestBuilder interface {
 	// WithPathSegments adds PathSegments (property field)
 	WithPathSegments(...byte) CipConnectedRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceRequestBuilder
 	// Build builds the CipConnectedRequest or returns an error if something is wrong
 	Build() (CipConnectedRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -99,16 +99,16 @@ func NewCipConnectedRequestBuilder() CipConnectedRequestBuilder {
 type _CipConnectedRequestBuilder struct {
 	*_CipConnectedRequest
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceRequestBuilder
 
 	collectedErr []error
 }
 
 var _ (CipConnectedRequestBuilder) = (*_CipConnectedRequestBuilder)(nil)
 
-func (b *_CipConnectedRequestBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._CipConnectedRequest
+func (b *_CipConnectedRequestBuilder) setParent(contract CipServiceRequestContract) {
+	b.CipServiceRequestContract = contract
+	contract.(*_CipServiceRequest)._SubType = b._CipConnectedRequest
 }
 
 func (b *_CipConnectedRequestBuilder) WithMandatoryFields(pathSegments []byte) CipConnectedRequestBuilder {
@@ -135,14 +135,14 @@ func (b *_CipConnectedRequestBuilder) MustBuild() CipConnectedRequest {
 	return build
 }
 
-func (b *_CipConnectedRequestBuilder) Done() CipServiceBuilder {
+func (b *_CipConnectedRequestBuilder) Done() CipServiceRequestBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceRequestBuilder().(*_CipServiceRequestBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_CipConnectedRequestBuilder) buildForCipService() (CipService, error) {
+func (b *_CipConnectedRequestBuilder) buildForCipServiceRequest() (CipServiceRequest, error) {
 	return b.Build()
 }
 
@@ -176,10 +176,6 @@ func (m *_CipConnectedRequest) GetService() uint8 {
 	return 0x52
 }
 
-func (m *_CipConnectedRequest) GetResponse() bool {
-	return bool(false)
-}
-
 func (m *_CipConnectedRequest) GetConnected() bool {
 	return bool(true)
 }
@@ -189,8 +185,8 @@ func (m *_CipConnectedRequest) GetConnected() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipConnectedRequest) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_CipConnectedRequest) GetParent() CipServiceRequestContract {
+	return m.CipServiceRequestContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -223,7 +219,7 @@ func (m *_CipConnectedRequest) GetPlx4xTypeName() string {
 }
 
 func (m *_CipConnectedRequest) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
+	lengthInBits := uint64(m.CipServiceRequestContract.(*_CipServiceRequest).getLengthInBits(ctx))
 
 	// Implicit Field (requestPathSize)
 	lengthInBits += 8
@@ -246,8 +242,8 @@ func (m *_CipConnectedRequest) GetLengthInBytes(ctx context.Context) uint64 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CipConnectedRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipConnectedRequest CipConnectedRequest, err error) {
-	m.CipServiceContract = parent
+func (m *_CipConnectedRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceRequest, connected bool, serviceLen uint16) (__cipConnectedRequest CipConnectedRequest, err error) {
+	m.CipServiceRequestContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -327,7 +323,7 @@ func (m *_CipConnectedRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceRequestContract.(*_CipServiceRequest).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CipConnectedRequest) IsCipConnectedRequest() {}
@@ -341,12 +337,12 @@ func (m *_CipConnectedRequest) deepCopy() *_CipConnectedRequest {
 		return nil
 	}
 	_CipConnectedRequestCopy := &_CipConnectedRequest{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceRequestContract.(*_CipServiceRequest).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.PathSegments),
 		m.reservedField0,
 		m.reservedField1,
 	}
-	_CipConnectedRequestCopy.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectedRequestCopy.CipServiceRequestContract.(*_CipServiceRequest)._SubType = m
 	return _CipConnectedRequestCopy
 }
 

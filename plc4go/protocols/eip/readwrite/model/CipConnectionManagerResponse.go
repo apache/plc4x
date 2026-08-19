@@ -40,7 +40,7 @@ type CipConnectionManagerResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
+	CipServiceResponse
 	// GetOtConnectionId returns OtConnectionId (property field)
 	// ot = Originator (Client) Target (Server)
 	GetOtConnectionId() uint32
@@ -59,6 +59,8 @@ type CipConnectionManagerResponse interface {
 	// GetToApi returns ToApi (property field)
 	// to = Target (Server) Originator (Client)
 	GetToApi() uint32
+	// GetReply returns Reply (property field)
+	GetReply() []byte
 	// IsCipConnectionManagerResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipConnectionManagerResponse()
 	// CreateBuilder creates a CipConnectionManagerResponseBuilder
@@ -67,7 +69,7 @@ type CipConnectionManagerResponse interface {
 
 // _CipConnectionManagerResponse is the data-structure of this message
 type _CipConnectionManagerResponse struct {
-	CipServiceContract
+	CipServiceResponseContract
 	OtConnectionId         uint32
 	ToConnectionId         uint32
 	ConnectionSerialNumber uint16
@@ -75,27 +77,28 @@ type _CipConnectionManagerResponse struct {
 	OriginatorSerialNumber uint32
 	OtApi                  uint32
 	ToApi                  uint32
+	Reply                  []byte
 	// Reserved Fields
-	reservedField0 *uint32
-	reservedField1 *uint8
+	reservedField0 *uint8
 }
 
 var _ CipConnectionManagerResponse = (*_CipConnectionManagerResponse)(nil)
-var _ CipServiceRequirements = (*_CipConnectionManagerResponse)(nil)
+var _ CipServiceResponseRequirements = (*_CipConnectionManagerResponse)(nil)
 
 // NewCipConnectionManagerResponse factory function for _CipConnectionManagerResponse
-func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) *_CipConnectionManagerResponse {
+func NewCipConnectionManagerResponse(status uint8, extStatus []uint16, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, reply []byte) *_CipConnectionManagerResponse {
 	_result := &_CipConnectionManagerResponse{
-		CipServiceContract:     NewCipService(),
-		OtConnectionId:         otConnectionId,
-		ToConnectionId:         toConnectionId,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		OtApi:                  otApi,
-		ToApi:                  toApi,
+		CipServiceResponseContract: NewCipServiceResponse(status, extStatus),
+		OtConnectionId:             otConnectionId,
+		ToConnectionId:             toConnectionId,
+		ConnectionSerialNumber:     connectionSerialNumber,
+		OriginatorVendorId:         originatorVendorId,
+		OriginatorSerialNumber:     originatorSerialNumber,
+		OtApi:                      otApi,
+		ToApi:                      toApi,
+		Reply:                      reply,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceResponseContract.(*_CipServiceResponse)._SubType = _result
 	return _result
 }
 
@@ -108,7 +111,7 @@ func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint3
 type CipConnectionManagerResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) CipConnectionManagerResponseBuilder
+	WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, reply []byte) CipConnectionManagerResponseBuilder
 	// WithOtConnectionId adds OtConnectionId (property field)
 	WithOtConnectionId(uint32) CipConnectionManagerResponseBuilder
 	// WithToConnectionId adds ToConnectionId (property field)
@@ -123,8 +126,10 @@ type CipConnectionManagerResponseBuilder interface {
 	WithOtApi(uint32) CipConnectionManagerResponseBuilder
 	// WithToApi adds ToApi (property field)
 	WithToApi(uint32) CipConnectionManagerResponseBuilder
+	// WithReply adds Reply (property field)
+	WithReply(...byte) CipConnectionManagerResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceResponseBuilder
 	// Build builds the CipConnectionManagerResponse or returns an error if something is wrong
 	Build() (CipConnectionManagerResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -139,20 +144,20 @@ func NewCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilde
 type _CipConnectionManagerResponseBuilder struct {
 	*_CipConnectionManagerResponse
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceResponseBuilder
 
 	collectedErr []error
 }
 
 var _ (CipConnectionManagerResponseBuilder) = (*_CipConnectionManagerResponseBuilder)(nil)
 
-func (b *_CipConnectionManagerResponseBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._CipConnectionManagerResponse
+func (b *_CipConnectionManagerResponseBuilder) setParent(contract CipServiceResponseContract) {
+	b.CipServiceResponseContract = contract
+	contract.(*_CipServiceResponse)._SubType = b._CipConnectionManagerResponse
 }
 
-func (b *_CipConnectionManagerResponseBuilder) WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) CipConnectionManagerResponseBuilder {
-	return b.WithOtConnectionId(otConnectionId).WithToConnectionId(toConnectionId).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithOtApi(otApi).WithToApi(toApi)
+func (b *_CipConnectionManagerResponseBuilder) WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, reply []byte) CipConnectionManagerResponseBuilder {
+	return b.WithOtConnectionId(otConnectionId).WithToConnectionId(toConnectionId).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithOtApi(otApi).WithToApi(toApi).WithReply(reply...)
 }
 
 func (b *_CipConnectionManagerResponseBuilder) WithOtConnectionId(otConnectionId uint32) CipConnectionManagerResponseBuilder {
@@ -190,6 +195,11 @@ func (b *_CipConnectionManagerResponseBuilder) WithToApi(toApi uint32) CipConnec
 	return b
 }
 
+func (b *_CipConnectionManagerResponseBuilder) WithReply(reply ...byte) CipConnectionManagerResponseBuilder {
+	b.Reply = reply
+	return b
+}
+
 func (b *_CipConnectionManagerResponseBuilder) Build() (CipConnectionManagerResponse, error) {
 	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
@@ -205,14 +215,14 @@ func (b *_CipConnectionManagerResponseBuilder) MustBuild() CipConnectionManagerR
 	return build
 }
 
-func (b *_CipConnectionManagerResponseBuilder) Done() CipServiceBuilder {
+func (b *_CipConnectionManagerResponseBuilder) Done() CipServiceResponseBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceResponseBuilder().(*_CipServiceResponseBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_CipConnectionManagerResponseBuilder) buildForCipService() (CipService, error) {
+func (b *_CipConnectionManagerResponseBuilder) buildForCipServiceResponse() (CipServiceResponse, error) {
 	return b.Build()
 }
 
@@ -246,21 +256,13 @@ func (m *_CipConnectionManagerResponse) GetService() uint8 {
 	return 0x5B
 }
 
-func (m *_CipConnectionManagerResponse) GetResponse() bool {
-	return bool(true)
-}
-
-func (m *_CipConnectionManagerResponse) GetConnected() bool {
-	return false
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipConnectionManagerResponse) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_CipConnectionManagerResponse) GetParent() CipServiceResponseContract {
+	return m.CipServiceResponseContract
 }
 
 ///////////////////////////////////////////////////////////
@@ -296,6 +298,10 @@ func (m *_CipConnectionManagerResponse) GetToApi() uint32 {
 	return m.ToApi
 }
 
+func (m *_CipConnectionManagerResponse) GetReply() []byte {
+	return m.Reply
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -317,10 +323,7 @@ func (m *_CipConnectionManagerResponse) GetPlx4xTypeName() string {
 }
 
 func (m *_CipConnectionManagerResponse) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
-
-	// Reserved Field (reserved)
-	lengthInBits += 24
+	lengthInBits := uint64(m.CipServiceResponseContract.(*_CipServiceResponse).getLengthInBits(ctx))
 
 	// Simple field (otConnectionId)
 	lengthInBits += 32
@@ -346,6 +349,11 @@ func (m *_CipConnectionManagerResponse) GetLengthInBits(ctx context.Context) uin
 	// Implicit Field (replySize)
 	lengthInBits += 8
 
+	// Array field
+	if len(m.Reply) > 0 {
+		lengthInBits += 8 * uint64(len(m.Reply))
+	}
+
 	// Reserved Field (reserved)
 	lengthInBits += 8
 
@@ -356,8 +364,8 @@ func (m *_CipConnectionManagerResponse) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CipConnectionManagerResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipConnectionManagerResponse CipConnectionManagerResponse, err error) {
-	m.CipServiceContract = parent
+func (m *_CipConnectionManagerResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceResponse, connected bool, serviceLen uint16) (__cipConnectionManagerResponse CipConnectionManagerResponse, err error) {
+	m.CipServiceResponseContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -366,12 +374,6 @@ func (m *_CipConnectionManagerResponse) parse(ctx context.Context, readBuffer ut
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedInt(readBuffer, uint8(24)), uint32(0x000000))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
-	}
-	m.reservedField0 = reservedField0
 
 	otConnectionId, err := ReadSimpleField(ctx, "otConnectionId", ReadUnsignedInt(readBuffer, uint8(32)))
 	if err != nil {
@@ -421,11 +423,17 @@ func (m *_CipConnectionManagerResponse) parse(ctx context.Context, readBuffer ut
 	}
 	_ = replySize
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
+	reply, err := readBuffer.ReadByteArray("reply", int(int32(replySize)*int32(int32(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reply' field"))
+	}
+	m.Reply = reply
+
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
-	m.reservedField1 = reservedField1
+	m.reservedField0 = reservedField0
 
 	if closeErr := readBuffer.CloseContext("CipConnectionManagerResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CipConnectionManagerResponse")
@@ -450,10 +458,6 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CipConnectionManagerResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for CipConnectionManagerResponse")
-		}
-
-		if err := WriteReservedField[uint32](ctx, "reserved", uint32(0x000000), WriteUnsignedInt(writeBuffer, 24)); err != nil {
-			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
 		if err := WriteSimpleField[uint32](ctx, "otConnectionId", m.GetOtConnectionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
@@ -483,13 +487,17 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 		if err := WriteSimpleField[uint32](ctx, "toApi", m.GetToApi(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'toApi' field")
 		}
-		replySize := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(30)))
+		replySize := uint8(uint8(uint8(len(m.GetReply()))) / uint8(uint8(2)))
 		if err := WriteImplicitField(ctx, "replySize", replySize, WriteUnsignedByte(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'replySize' field")
 		}
 
+		if err := WriteByteArrayField(ctx, "reply", m.GetReply(), WriteByteArray(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reply' field")
+		}
+
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
 		if popErr := writeBuffer.PopContext("CipConnectionManagerResponse"); popErr != nil {
@@ -497,7 +505,7 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceResponseContract.(*_CipServiceResponse).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CipConnectionManagerResponse) IsCipConnectionManagerResponse() {}
@@ -511,7 +519,7 @@ func (m *_CipConnectionManagerResponse) deepCopy() *_CipConnectionManagerRespons
 		return nil
 	}
 	_CipConnectionManagerResponseCopy := &_CipConnectionManagerResponse{
-		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.CipServiceResponseContract.(*_CipServiceResponse).deepCopy(),
 		m.OtConnectionId,
 		m.ToConnectionId,
 		m.ConnectionSerialNumber,
@@ -519,10 +527,10 @@ func (m *_CipConnectionManagerResponse) deepCopy() *_CipConnectionManagerRespons
 		m.OriginatorSerialNumber,
 		m.OtApi,
 		m.ToApi,
+		utils.DeepCopySlice[byte, byte](m.Reply),
 		m.reservedField0,
-		m.reservedField1,
 	}
-	_CipConnectionManagerResponseCopy.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectionManagerResponseCopy.CipServiceResponseContract.(*_CipServiceResponse)._SubType = m
 	return _CipConnectionManagerResponseCopy
 }
 

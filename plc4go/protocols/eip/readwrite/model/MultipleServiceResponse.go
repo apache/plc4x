@@ -40,11 +40,7 @@ type MultipleServiceResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	utils.Copyable
-	CipService
-	// GetStatus returns Status (property field)
-	GetStatus() uint8
-	// GetExtStatus returns ExtStatus (property field)
-	GetExtStatus() uint8
+	CipServiceResponse
 	// GetServiceNb returns ServiceNb (property field)
 	GetServiceNb() uint16
 	// GetOffsets returns Offsets (property field)
@@ -59,30 +55,24 @@ type MultipleServiceResponse interface {
 
 // _MultipleServiceResponse is the data-structure of this message
 type _MultipleServiceResponse struct {
-	CipServiceContract
-	Status       uint8
-	ExtStatus    uint8
+	CipServiceResponseContract
 	ServiceNb    uint16
 	Offsets      []uint16
 	ServicesData []byte
-	// Reserved Fields
-	reservedField0 *uint8
 }
 
 var _ MultipleServiceResponse = (*_MultipleServiceResponse)(nil)
-var _ CipServiceRequirements = (*_MultipleServiceResponse)(nil)
+var _ CipServiceResponseRequirements = (*_MultipleServiceResponse)(nil)
 
 // NewMultipleServiceResponse factory function for _MultipleServiceResponse
-func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) *_MultipleServiceResponse {
+func NewMultipleServiceResponse(status uint8, extStatus []uint16, serviceNb uint16, offsets []uint16, servicesData []byte) *_MultipleServiceResponse {
 	_result := &_MultipleServiceResponse{
-		CipServiceContract: NewCipService(),
-		Status:             status,
-		ExtStatus:          extStatus,
-		ServiceNb:          serviceNb,
-		Offsets:            offsets,
-		ServicesData:       servicesData,
+		CipServiceResponseContract: NewCipServiceResponse(status, extStatus),
+		ServiceNb:                  serviceNb,
+		Offsets:                    offsets,
+		ServicesData:               servicesData,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
+	_result.CipServiceResponseContract.(*_CipServiceResponse)._SubType = _result
 	return _result
 }
 
@@ -95,11 +85,7 @@ func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16,
 type MultipleServiceResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) MultipleServiceResponseBuilder
-	// WithStatus adds Status (property field)
-	WithStatus(uint8) MultipleServiceResponseBuilder
-	// WithExtStatus adds ExtStatus (property field)
-	WithExtStatus(uint8) MultipleServiceResponseBuilder
+	WithMandatoryFields(serviceNb uint16, offsets []uint16, servicesData []byte) MultipleServiceResponseBuilder
 	// WithServiceNb adds ServiceNb (property field)
 	WithServiceNb(uint16) MultipleServiceResponseBuilder
 	// WithOffsets adds Offsets (property field)
@@ -107,7 +93,7 @@ type MultipleServiceResponseBuilder interface {
 	// WithServicesData adds ServicesData (property field)
 	WithServicesData(...byte) MultipleServiceResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
-	Done() CipServiceBuilder
+	Done() CipServiceResponseBuilder
 	// Build builds the MultipleServiceResponse or returns an error if something is wrong
 	Build() (MultipleServiceResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -122,30 +108,20 @@ func NewMultipleServiceResponseBuilder() MultipleServiceResponseBuilder {
 type _MultipleServiceResponseBuilder struct {
 	*_MultipleServiceResponse
 
-	parentBuilder *_CipServiceBuilder
+	parentBuilder *_CipServiceResponseBuilder
 
 	collectedErr []error
 }
 
 var _ (MultipleServiceResponseBuilder) = (*_MultipleServiceResponseBuilder)(nil)
 
-func (b *_MultipleServiceResponseBuilder) setParent(contract CipServiceContract) {
-	b.CipServiceContract = contract
-	contract.(*_CipService)._SubType = b._MultipleServiceResponse
+func (b *_MultipleServiceResponseBuilder) setParent(contract CipServiceResponseContract) {
+	b.CipServiceResponseContract = contract
+	contract.(*_CipServiceResponse)._SubType = b._MultipleServiceResponse
 }
 
-func (b *_MultipleServiceResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) MultipleServiceResponseBuilder {
-	return b.WithStatus(status).WithExtStatus(extStatus).WithServiceNb(serviceNb).WithOffsets(offsets...).WithServicesData(servicesData...)
-}
-
-func (b *_MultipleServiceResponseBuilder) WithStatus(status uint8) MultipleServiceResponseBuilder {
-	b.Status = status
-	return b
-}
-
-func (b *_MultipleServiceResponseBuilder) WithExtStatus(extStatus uint8) MultipleServiceResponseBuilder {
-	b.ExtStatus = extStatus
-	return b
+func (b *_MultipleServiceResponseBuilder) WithMandatoryFields(serviceNb uint16, offsets []uint16, servicesData []byte) MultipleServiceResponseBuilder {
+	return b.WithServiceNb(serviceNb).WithOffsets(offsets...).WithServicesData(servicesData...)
 }
 
 func (b *_MultipleServiceResponseBuilder) WithServiceNb(serviceNb uint16) MultipleServiceResponseBuilder {
@@ -178,14 +154,14 @@ func (b *_MultipleServiceResponseBuilder) MustBuild() MultipleServiceResponse {
 	return build
 }
 
-func (b *_MultipleServiceResponseBuilder) Done() CipServiceBuilder {
+func (b *_MultipleServiceResponseBuilder) Done() CipServiceResponseBuilder {
 	if b.parentBuilder == nil {
-		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+		b.parentBuilder = NewCipServiceResponseBuilder().(*_CipServiceResponseBuilder)
 	}
 	return b.parentBuilder
 }
 
-func (b *_MultipleServiceResponseBuilder) buildForCipService() (CipService, error) {
+func (b *_MultipleServiceResponseBuilder) buildForCipServiceResponse() (CipServiceResponse, error) {
 	return b.Build()
 }
 
@@ -219,35 +195,19 @@ func (m *_MultipleServiceResponse) GetService() uint8 {
 	return 0x0A
 }
 
-func (m *_MultipleServiceResponse) GetResponse() bool {
-	return bool(true)
-}
-
-func (m *_MultipleServiceResponse) GetConnected() bool {
-	return false
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MultipleServiceResponse) GetParent() CipServiceContract {
-	return m.CipServiceContract
+func (m *_MultipleServiceResponse) GetParent() CipServiceResponseContract {
+	return m.CipServiceResponseContract
 }
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *_MultipleServiceResponse) GetStatus() uint8 {
-	return m.Status
-}
-
-func (m *_MultipleServiceResponse) GetExtStatus() uint8 {
-	return m.ExtStatus
-}
 
 func (m *_MultipleServiceResponse) GetServiceNb() uint16 {
 	return m.ServiceNb
@@ -282,16 +242,7 @@ func (m *_MultipleServiceResponse) GetPlx4xTypeName() string {
 }
 
 func (m *_MultipleServiceResponse) GetLengthInBits(ctx context.Context) uint64 {
-	lengthInBits := uint64(m.CipServiceContract.(*_CipService).getLengthInBits(ctx))
-
-	// Reserved Field (reserved)
-	lengthInBits += 8
-
-	// Simple field (status)
-	lengthInBits += 8
-
-	// Simple field (extStatus)
-	lengthInBits += 8
+	lengthInBits := uint64(m.CipServiceResponseContract.(*_CipServiceResponse).getLengthInBits(ctx))
 
 	// Simple field (serviceNb)
 	lengthInBits += 16
@@ -313,8 +264,8 @@ func (m *_MultipleServiceResponse) GetLengthInBytes(ctx context.Context) uint64 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_MultipleServiceResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__multipleServiceResponse MultipleServiceResponse, err error) {
-	m.CipServiceContract = parent
+func (m *_MultipleServiceResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceResponse, extStatusSize uint8, connected bool, serviceLen uint16) (__multipleServiceResponse MultipleServiceResponse, err error) {
+	m.CipServiceResponseContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -323,24 +274,6 @@ func (m *_MultipleServiceResponse) parse(ctx context.Context, readBuffer utils.R
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x0))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
-	}
-	m.reservedField0 = reservedField0
-
-	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
-	}
-	m.Status = status
-
-	extStatus, err := ReadSimpleField(ctx, "extStatus", ReadUnsignedByte(readBuffer, uint8(8)))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extStatus' field"))
-	}
-	m.ExtStatus = extStatus
 
 	serviceNb, err := ReadSimpleField(ctx, "serviceNb", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
@@ -354,7 +287,7 @@ func (m *_MultipleServiceResponse) parse(ctx context.Context, readBuffer utils.R
 	}
 	m.Offsets = offsets
 
-	servicesData, err := readBuffer.ReadByteArray("servicesData", int(int32(int32(serviceLen)-int32(int32(6)))-int32((int32(int32(2))*int32(serviceNb)))))
+	servicesData, err := readBuffer.ReadByteArray("servicesData", int(int32(int32(int32(serviceLen)-int32(int32(6)))-int32((int32(int32(2))*int32(serviceNb))))-int32((int32(int32(2))*int32(extStatusSize)))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'servicesData' field"))
 	}
@@ -385,18 +318,6 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for MultipleServiceResponse")
 		}
 
-		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
-		}
-
-		if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'status' field")
-		}
-
-		if err := WriteSimpleField[uint8](ctx, "extStatus", m.GetExtStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
-			return errors.Wrap(err, "Error serializing 'extStatus' field")
-		}
-
 		if err := WriteSimpleField[uint16](ctx, "serviceNb", m.GetServiceNb(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
 			return errors.Wrap(err, "Error serializing 'serviceNb' field")
 		}
@@ -414,7 +335,7 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		return nil
 	}
-	return m.CipServiceContract.(*_CipService).serializeParent(ctx, writeBuffer, m, ser)
+	return m.CipServiceResponseContract.(*_CipServiceResponse).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MultipleServiceResponse) IsMultipleServiceResponse() {}
@@ -428,15 +349,12 @@ func (m *_MultipleServiceResponse) deepCopy() *_MultipleServiceResponse {
 		return nil
 	}
 	_MultipleServiceResponseCopy := &_MultipleServiceResponse{
-		m.CipServiceContract.(*_CipService).deepCopy(),
-		m.Status,
-		m.ExtStatus,
+		m.CipServiceResponseContract.(*_CipServiceResponse).deepCopy(),
 		m.ServiceNb,
 		utils.DeepCopySlice[uint16, uint16](m.Offsets),
 		utils.DeepCopySlice[byte, byte](m.ServicesData),
-		m.reservedField0,
 	}
-	_MultipleServiceResponseCopy.CipServiceContract.(*_CipService)._SubType = m
+	_MultipleServiceResponseCopy.CipServiceResponseContract.(*_CipServiceResponse)._SubType = m
 	return _MultipleServiceResponseCopy
 }
 
