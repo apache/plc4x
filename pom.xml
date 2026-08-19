@@ -623,7 +623,6 @@
           </execution>
         </executions>
         <configuration>
-          <useMavenDefaultExcludes>true</useMavenDefaultExcludes>
           <inputExcludes>
             <!-- Git related files -->
             <inputExclude>**/.git/**</inputExclude>
