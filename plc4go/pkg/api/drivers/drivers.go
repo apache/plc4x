@@ -20,10 +20,12 @@
 package drivers
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/abeth"
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/internal/eip"
+	"github.com/apache/plc4x/plc4go/internal/firmata"
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	modbus2 "github.com/apache/plc4x/plc4go/internal/modbus"
 	"github.com/apache/plc4x/plc4go/internal/opcua"
@@ -33,6 +35,14 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 )
+
+func RegisterAbEthDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := abeth.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// Despite the protocol's name, AB-ETH is CIP encapsulation over plain TCP.
+	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
 
 func RegisterAdsDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
 	driver := ads.NewDriver(converter.WithOptionToInternal(_options...)...)
@@ -65,6 +75,16 @@ func RegisterEipDriver(driverManager plc4go.PlcDriverManager, _options ...config
 func RegisterLogixDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
 	driver := eip.NewLogixDriver(converter.WithOptionToInternal(_options...)...)
 	driverManager.RegisterDriver(driver)
+	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
+
+func RegisterFirmataDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := firmata.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// Firmata's home is a UART, but the same byte stream is served over TCP by the
+	// Firmata-over-WiFi/Ethernet sketches, so both transports are registered.
+	transports.RegisterSerialTransport(driverManager)
 	transports.RegisterTcpTransport(driverManager)
 	return driver
 }
