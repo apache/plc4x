@@ -75,8 +75,25 @@ func (m PlcDATE_AND_LTIME) GetDay() uint8 {
 	return uint8(m.value.Day())
 }
 
+// GetDayOfWeek returns the ISO-8601 day of week: 1 == Monday .. 7 == Sunday.
+//
+// This mirrors plc4j's PlcDATE_AND_TIME#getDayOfWeek, which returns
+// LocalDateTime#getDayOfWeek#getValue, i.e. the same 1..7 ISO numbering. It is
+// deliberately NOT time.Weekday (0 == Sunday .. 6 == Saturday): every wire
+// format that carries this field numbers the days from 1, so a 0 either means
+// "no day given" (KNX DPT 19.001, knxnetip.mspec dayOfWeek) or is outright
+// invalid (S7 DATE_AND_TIME, s7.mspec: "one 4-bit value representing 1 - 7").
+//
+// Note that the S7 dow field uses a DIFFERENT 1..7 numbering (1 == Sunday ..
+// 7 == Saturday). Rotating into it is a protocol level concern that this generic
+// value cannot do for KNX and S7 at the same time, and the S7 data-io serializer
+// does not do it yet.
 func (m PlcDATE_AND_LTIME) GetDayOfWeek() uint8 {
-	return uint8(m.value.Weekday())
+	// time.Weekday numbers Sunday 0, ISO-8601 numbers it last as 7.
+	if weekday := m.value.Weekday(); weekday != time.Sunday {
+		return uint8(weekday)
+	}
+	return 7
 }
 
 func (m PlcDATE_AND_LTIME) GetHour() uint8 {
