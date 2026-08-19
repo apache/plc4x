@@ -120,29 +120,16 @@ func writerArgsSelectBCD(args []WithWriterArgs) bool {
 // bitLength-wide window. So the nibble stream is simply walked from the top of
 // that window downwards.
 //
-// NOTE ON A DIVERGENCE FROM plc4j (plc4j is the buggy side here; verified by
-// running it, see internal/s7/DateAndTimeBcd_test.go for the wire vector):
-// plc4j routes the bytes through ReadBufferByteBased.readBits, which RIGHT
-// aligns a partial (non byte multiple) read inside the result array
-// (`int resultBitIndex = (8 - (numBits % 8)) % 8;`), while
-// EncodingBCD.decodeInt/decodeLong/decodeShort/decodeByte/decodeBigInteger then
-// read nibbles LEFT aligned from bytes[0] (digit i comes from bytes[i/2], high
-// or low nibble). The two disagree for every field whose bit length is not a
-// multiple of 8: a 12 bit read of 0x123 lands as {0x01, 0x23} and decodes to 12
-// instead of 123, and a 4 bit read of nibble 0x4 lands as {0x04} but is read
-// from the HIGH nibble and decodes to 0 instead of 4.
-//
-// The plc4j write path is broken symmetrically: EncodingBCD.encodeInt packs the
-// digits LEFT aligned into ceil(numDigits/2) bytes (123 over 12 bits becomes
-// {0x12, 0x30}) while WriteBufferByteBased.writeBits takes the value bits RIGHT
-// aligned with the same offset, so it emits the LAST 12 bits, i.e. 0x230.
-//
-// This implementation uses plain nibble stream semantics, which is what the
-// Siemens DATE_AND_TIME wire format actually is and what plc4j also produces
-// for every bitLength%8 == 0 case (hence nobody noticed: the S7 "msec" uint 12
-// and "dow" uint 4 fields are the only non byte multiple BCD fields in the whole
-// repository, at s7.mspec lines 307-316 for the DateAndTime type and again at
-// lines 851/853 for the DATE_AND_TIME data item).
+// The two languages agree here now. plc4j used to disagree for every field whose
+// bit length is not a multiple of 8: its buffers right align a partial read
+// inside the byte array while EncodingBCD walked nibbles from the high nibble of
+// byte 0, so a 12 bit 0x123 decoded to 12 and a 4 bit nibble decoded to 0, with
+// the write path broken symmetrically. That was fixed in EncodingBCD by indexing
+// nibbles from the padding offset instead, which is bit identical for the byte
+// multiple widths that were always correct. Only the S7 "msec" uint 12 and "dow"
+// uint 4 fields are non byte multiple BCD fields in this repository (s7.mspec
+// lines 307-316 for the DateAndTime type, again at 851/853 for the DATE_AND_TIME
+// data item), which is why the bug stayed invisible for so long.
 func decodeBCD(raw uint64, bitLength uint8) (uint64, error) {
 	if bitLength%4 != 0 {
 		return 0, errors.Errorf("bit length %d must be a multiple of 4 for BCD encoding", bitLength)
