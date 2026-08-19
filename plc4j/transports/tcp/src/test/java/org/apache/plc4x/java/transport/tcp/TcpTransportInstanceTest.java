@@ -29,6 +29,8 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -353,19 +355,21 @@ class TcpTransportInstanceTest {
 
     @Test
     void testOnDataAvailable_listenerTriggeredRegisterData() throws Exception {
-        final boolean[] listenerCalled = {false};
+        // The notification is delivered by the read loop's virtual thread, so waiting a fixed
+        // 100ms was a guess about how quickly that thread gets scheduled - on a loaded machine it
+        // is not enough, and a plain field written there and read here has no happens-before edge
+        // either. Waiting for the event itself fixes both: a generous bound, and the edge.
+        CountDownLatch listenerCalled = new CountDownLatch(1);
 
         // Register listener
-        transportInstance.registerDataListener(() -> listenerCalled[0] = true);
+        transportInstance.registerDataListener(listenerCalled::countDown);
 
         // Send data from server
         ByteBuffer buffer = ByteBuffer.wrap("Test".getBytes());
         serverSideChannel.write(buffer);
 
-        // Wait for selector to process
-        Thread.sleep(100);
-
-        assertTrue(listenerCalled[0], "Listener should be called when data arrives");
+        assertTrue(listenerCalled.await(5, TimeUnit.SECONDS),
+            "Listener should be called when data arrives");
     }
 
     @Test
