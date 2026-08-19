@@ -312,6 +312,14 @@ public class StaticHelper {
         }
     }
 
+    /**
+     * The single BCD byte of a DATE_AND_TIME encodes 00-89 as 2000-2089 and 90-99 as 1990-1999, so
+     * only years in [1990, 2089] are representable at all.
+     */
+    private static final int MIN_SIEMENS_YEAR = 1990;
+
+    private static final int MAX_SIEMENS_YEAR = 2089;
+
     public static short parseSiemensYear(ReadBuffer readBuffer) {
         try {
             short year = readBuffer.readUnsignedShort(8, WithOption.WithName("year"), WithOption.WithUnsignedIntegerEncoding("BCD"));
@@ -325,10 +333,22 @@ public class StaticHelper {
         }
     }
 
+    /**
+     * The exact inverse of {@link #parseSiemensYear(ReadBuffer)}: 1990-1999 go out as 90-99 and
+     * 2000-2089 as 00-89. Anything outside that window is rejected instead of silently wrapping -
+     * 2090 used to be written as BCD 90 and read back as 1990, and 2000 took the 1900 branch and
+     * asked {@code EncodingBCD} for a two digit encoding of 100, which threw an
+     * {@link IllegalArgumentException} straight past the {@code BufferException} handler below.
+     */
     public static void serializeSiemensYear(WriteBuffer writeBuffer, PlcValue dateTime) {
         try {
             int year = dateTime.getDateTime().getYear();
-            if (year > 2000) {
+            if ((year < MIN_SIEMENS_YEAR) || (year > MAX_SIEMENS_YEAR)) {
+                throw new RuntimeException("year " + year + " is outside the range ["
+                    + MIN_SIEMENS_YEAR + ", " + MAX_SIEMENS_YEAR
+                    + "] the Siemens DATE_AND_TIME year byte can represent");
+            }
+            if (year >= 2000) {
                 writeBuffer.writeUnsignedShort(8, (short) (year - 2000), WithOption.WithName("year"), WithOption.WithUnsignedIntegerEncoding("BCD"));
             } else {
                 writeBuffer.writeUnsignedShort(8, (short) (year - 1900), WithOption.WithName("year"), WithOption.WithUnsignedIntegerEncoding("BCD"));
