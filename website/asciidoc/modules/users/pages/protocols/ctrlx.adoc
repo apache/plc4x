@@ -19,10 +19,10 @@
 
 = CtrlX
 
-WARNING: This driver is unfinished and not usable yet. Discovery and pinging are the only things
-that work; there is no tag address syntax, so reading and writing are not available, and the browse
-implementation does not work yet either. This page describes the current state for anyone
-continuing the work - it is not linked from the navigation.
+WARNING: This driver is unfinished and not usable yet. Pinging is the only thing that works;
+discovery is an unimplemented stub, there is no tag address syntax, so reading and writing are not
+available, and the browse implementation does not work yet either. This page describes the current
+state for anyone continuing the work - it is not linked from the navigation.
 
 The CtrlX driver talks to Bosch Rexroth ctrlX CORE devices through their REST/Data-Layer API over
 HTTPS, rather than over an industrial fieldbus protocol.
@@ -37,7 +37,9 @@ HTTPS, rather than over an industrial fieldbus protocol.
 |Checks that the device is reachable and the credentials are accepted.
 
 |`discover`
-|Locates ctrlX CORE devices on the local network.
+|*Not implemented.* The driver hands out a discovery request builder, but
+`CtrlXPlcDiscoverer.discoverWithHandler` is a TODO that returns `null` instead of a future, so
+executing a discovery request fails instead of finding devices.
 
 |`browse`
 |*Does not work yet.* The connection carries an implementation that is meant to enumerate the
@@ -48,9 +50,9 @@ not produce usable results.
 |*Not implemented.* The corresponding request builders return `null`, so attempting one fails.
 |===
 
-The connection reports all four of these as unsupported in its metadata, so a caller that checks
-`getMetadata()` before deciding what to do gets an honest answer rather than being sent into a
-request that cannot succeed.
+The connection reports read, write, subscribe and browse as unsupported in its metadata, so a
+caller that checks `getMetadata()` before deciding what to do gets an honest answer rather than
+being sent into a request that cannot succeed.
 
 == Connection String
 
@@ -96,7 +98,9 @@ reason read and write are unavailable.
 
 == Discovery
 
-The driver supports discovery, which locates ctrlX CORE devices on the local network.
+NOTE: Discovery does not work yet. `CtrlXDriver.discoveryRequestBuilder()` returns a builder backed
+by `CtrlXPlcDiscoverer`, whose `discoverWithHandler` is still an empty TODO returning `null`, so no
+ctrlX CORE device is ever located.
 
 == Maven Dependency
 

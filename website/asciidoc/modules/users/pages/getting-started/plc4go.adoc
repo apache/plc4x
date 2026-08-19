@@ -95,8 +95,12 @@ First we need to initialize the `PlcDriverManager` by registering the transports
 
     // Register the Drivers
 	drivers.RegisterKnxDriver(driverManager)
-	drivers.RegisterModbusDriver(driverManager)
+	drivers.RegisterModbusTcpDriver(driverManager)
 ----
+
+Each Modbus flavor is registered separately: `RegisterModbusTcpDriver`, `RegisterModbusRtuDriver`
+and `RegisterModbusAsciiDriver`. The two serial flavors speak their own framing and register the
+serial transport themselves, so use the one that matches the device you are talking to.
 
 Now that the `PlcDriverManager` is configured, we can use it to get a new connection.
 

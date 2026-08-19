@@ -44,7 +44,15 @@ include::partial$profinet.adoc[]
 
 3+|Supported Operations
 
-|| `subscribe` |Only the subscription service is currently supported.
+|| `discover` |Locates PROFINET devices on the network segment via DCP.
+
+|| `browse` |Lists the submodules of a connected device as tags.
+
+|| `subscribe` |*Does not deliver data.* The connect handshake is performed, but the subscription
+response future is never completed and `ProfinetConnection.onRegisterConsumer` throws
+`UnsupportedOperationException`, so no cyclic IO ever reaches an application.
+
+|| `read` / `write` |*Not implemented.*
 
 |===
 

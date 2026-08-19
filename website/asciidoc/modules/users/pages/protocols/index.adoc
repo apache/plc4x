@@ -196,11 +196,20 @@ Notes on the partially implemented drivers:
 * *BACnet/IP* passively receives broadcast traffic and exposes it as subscriptions. It does not read or write properties.
 * *CAN (raw)* (Java) writes and subscribes; there is no read support.
 * *CBus* (Java) is a skeleton that connects but implements no operations. The Go driver is the complete one.
-* *ctrlX* (Java) discovers devices and answers pings. Its read, write and subscribe builders are not implemented, and although the connection carries browse code, browsing does not work yet.
+* *ctrlX* (Java) answers pings; that is the only operation it completes. Discovery is offered by
+the driver, but `CtrlXPlcDiscoverer.discoverWithHandler` is an unimplemented TODO that returns
+`null` instead of a future, so a discovery request fails rather than finding anything. Its read,
+write and subscribe builders are not implemented either, and although the connection carries
+browse code, browsing does not work yet.
 * *Firmata* (Java) writes and subscribes; there is no read support.
 * *KNXnet/IP* (C#) is the only driver in plc4net and has not kept pace with the other implementations.
 * *Open-Protocol* (Java) is a skeleton that connects but implements no operations.
-* *Profinet* (Java) browses, discovers and subscribes to cyclic data; it has no read or write support. Both the `profinet` and the newer `profinet-ng` driver behave this way.
+* *Profinet* (Java) discovers devices and browses the submodules of a connected device; it has no
+read or write support. It accepts a subscription request and completes the PROFINET connect
+handshake, but the subscription response future is never completed and registering a consumer
+throws `UnsupportedOperationException`, so no cyclic data ever reaches an application. Only the
+newer `profinet-ng` driver is part of `plc4j-driver-all`; the older `profinet` driver is still in
+the code base but is not bundled.
 
 *DF1* has a protocol specification in the repository, and plc4go additionally ships the generated
 message model for it, but no language implementation has a driver: there is nothing that can open a
@@ -266,7 +275,7 @@ metadata inconsistently, so this table follows the code rather than the metadata
 |icon:times[role="red"]
 
 |ctrlX
-|icon:check[role="green"]
+|icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
 |icon:times[role="red"]
@@ -350,7 +359,7 @@ metadata inconsistently, so this table follows the code rather than the metadata
 |icon:check[role="green"]
 |icon:times[role="red"]
 |icon:times[role="red"]
-|icon:check[role="green"]
+|icon:times[role="red"]
 |icon:times[role="red"]
 
 |S7
