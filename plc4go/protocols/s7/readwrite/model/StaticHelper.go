@@ -340,11 +340,22 @@ func ParseSiemensYear(_ context.Context, readBuffer utils.ReadBuffer) (uint16, e
 	}
 }
 
-func SerializeSiemensYear(ctx context.Context, writeBuffer utils.WriteBuffer, dateTime values.PlcValue) error {
+// SerializeSiemensYear is the exact inverse of ParseSiemensYear: the single BCD
+// byte encodes 00-89 as 2000-2089 and 90-99 as 1990-1999, so only years in
+// [1990, 2089] are representable at all.
+//
+// NOTE: plc4j's StaticHelper.serializeSiemensYear tests `year > 2000` here,
+// which sends the year 2000 down the 1900 branch and asks for a BCD encoding of
+// 100 - two digits cannot hold that, so EncodingBCD.encodeInt throws and a date
+// that parseSiemensYear happily produces cannot be serialized. This uses
+// `year >= 2000` instead; the divergence is deliberate.
+func SerializeSiemensYear(_ context.Context, writeBuffer utils.WriteBuffer, dateTime values.PlcValue) error {
 	year := dateTime.GetDateTime().Year()
-	if year > 2000 {
-		return writeBuffer.WriteUint16("year", 8, uint16(year-2000), utils.WithEncoding("BCD"))
-	} else {
-		return writeBuffer.WriteUint16("year", 8, uint16(year-1900), utils.WithEncoding("BCD"))
+	if year < 1990 || year > 2089 {
+		return errors.Errorf("year %d is out of the range [1990, 2089] the Siemens DATE_AND_TIME year byte can represent", year)
 	}
+	if year >= 2000 {
+		return writeBuffer.WriteUint16("year", 8, uint16(year-2000), utils.WithEncoding("BCD"))
+	}
+	return writeBuffer.WriteUint16("year", 8, uint16(year-1900), utils.WithEncoding("BCD"))
 }
