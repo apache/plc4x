@@ -38,12 +38,16 @@ import (
 func TestTransportInstance_WriteMustNotArmReadDeadline(t *testing.T) {
 	ti, serverConn := connectedTestInstance(t)
 
-	writeCtx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	// Generous timeout: the deadline only needs to expire BEFORE the late
+	// reply below, not bound the write tightly - with 50ms, loaded CI runners
+	// occasionally burned the whole budget before the write syscall ran and
+	// the write itself failed with i/o timeout.
+	writeCtx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	require.NoError(t, ti.Write(writeCtx, []byte{0x00, 0x01}))
 
 	// Let the request deadline expire, then deliver the (late) reply.
-	time.Sleep(150 * time.Millisecond)
+	<-writeCtx.Done()
 	frame := []byte{0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x01, 0x03, 0x02, 0x2a}
 	_, err := serverConn.Write(frame)
 	require.NoError(t, err)
