@@ -25,6 +25,13 @@ project(PLC4C)
 # Set the C language level to C11
 set(CMAKE_C_STANDARD 11)
 
+# Calling a function C has never seen a declaration for is an error on Apple clang
+# and a link failure with MSVC, but older GCCs let it pass as a warning. Promote it
+# so the Linux build fails on it too, rather than the mac and windows builds first.
+if (NOT MSVC)
+    add_compile_options(-Werror=implicit-function-declaration)
+endif ()
+
 # Save the root directory
 set(PLC4C_ROOT_DIR ${CMAKE_SOURCE_DIR})
 

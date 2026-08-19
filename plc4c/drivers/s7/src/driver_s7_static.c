@@ -154,3 +154,17 @@ uint8_t plc4c_s7_read_write_parse_siemens_year(plc4c_spi_read_buffer* io) {
   return 0;
 }
 
+uint8_t plc4c_s7_read_write_parse_siemens_day_of_week(plc4c_spi_read_buffer* io) {
+  uint8_t dayOfWeek = 0;
+  // The nibble is BCD encoded, but a single BCD digit is its own value.
+  plc4c_return_code res = plc4c_spi_read_unsigned_byte(io, 4, &dayOfWeek);
+  if (res != OK) {
+    return 0;
+  }
+  if ((dayOfWeek < 1) || (dayOfWeek > 7)) {
+    return 0;
+  }
+  // An S7 counts from Sunday, the ISO week ends with it.
+  return (dayOfWeek == 1) ? 7 : (uint8_t) (dayOfWeek - 1);
+}
+
