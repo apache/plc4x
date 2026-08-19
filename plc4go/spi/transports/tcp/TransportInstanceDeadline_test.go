@@ -66,18 +66,33 @@ func TestTransportInstance_WriteHonorsContextDeadline(t *testing.T) {
 	ti, serverConn := connectedTestInstance(t)
 
 	// Shrink both kernel buffers as far as the OS allows and never read on the
-	// server side, so a large enough write must block in the kernel.
+	// server side, so writes must eventually block in the kernel.
 	require.NoError(t, ti.tcpConn.(*net.TCPConn).SetWriteBuffer(1))
 	require.NoError(t, serverConn.(*net.TCPConn).SetReadBuffer(1))
 
-	payload := make([]byte, 64*1024*1024)
+	// A single large write is not guaranteed to block everywhere: Windows'
+	// loopback fast path ignores post-connect buffer sizes and absorbs even a
+	// 64MB payload before a 200ms deadline. Write in a loop instead (like Go's
+	// own net write-timeout tests): on Linux/macOS the first write blocks and
+	// is interrupted mid-flight, on Windows either an in-flight send is
+	// cancelled at the deadline or the next write fails instantly - both must
+	// surface a timeout error.
+	payload := make([]byte, 16*1024*1024)
 	writeCtx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
 	defer cancel()
 
 	errCh := make(chan error, 1)
 	start := time.Now()
 	go func() {
-		errCh <- ti.Write(writeCtx, payload)
+		for i := 0; i < 16; i++ {
+			if err := ti.Write(writeCtx, payload); err != nil {
+				errCh <- err
+				return
+			}
+		}
+		// Bail out instead of shoving unbounded data into the kernel if the
+		// deadline never bites; the nil fails the require.Error below.
+		errCh <- nil
 	}()
 
 	select {
