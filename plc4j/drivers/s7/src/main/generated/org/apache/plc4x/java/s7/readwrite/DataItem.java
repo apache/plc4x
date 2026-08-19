@@ -321,8 +321,8 @@ public class DataItem {
         // Simple Field: millisecondsOfSecond
         short millisecondsOfSecond = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedShort(readBuffer, 12), WithOption.WithName("millisecondsOfSecond"), WithOption.WithFloatEncoding("BCD"), WithOption.WithSignedIntegerEncoding("BCD"), WithOption.WithUnsignedIntegerEncoding("BCD"), WithOption.WithEncoding("BCD"), WithOption.WithStringEncoding("BCD"));
 
-        // Simple Field: dayOfWeek
-        byte dayOfWeek = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedByte(readBuffer, 4), WithOption.WithName("dayOfWeek"), WithOption.WithFloatEncoding("BCD"), WithOption.WithSignedIntegerEncoding("BCD"), WithOption.WithUnsignedIntegerEncoding("BCD"), WithOption.WithEncoding("BCD"), WithOption.WithStringEncoding("BCD"));
+        // Manual Field: dayOfWeek
+        byte dayOfWeek = FieldReaderFactory.readManualField(readBuffer, () -> (byte) (StaticHelper.parseSiemensDayOfWeek(readBuffer)), WithOption.WithName("dayOfWeek"), WithOption.WithFloatEncoding("BCD"), WithOption.WithSignedIntegerEncoding("BCD"), WithOption.WithUnsignedIntegerEncoding("BCD"), WithOption.WithEncoding("BCD"), WithOption.WithStringEncoding("BCD"));
 
         return PlcDATE_AND_TIME.ofSegments(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, millisecondsOfSecond * 1000000);
       } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_LTIME")) {
@@ -553,8 +553,8 @@ public class DataItem {
       // Simple Field: millisecondsOfSecond
       FieldWriterFactory.writeSimpleField((short) (_value.getDateTime().getNano() / 1000000), DataWriterFactory.writeUnsignedShort(writeBuffer, 12), WithOption.WithName("millisecondsOfSecond"), WithOption.WithFloatEncoding("BCD"), WithOption.WithSignedIntegerEncoding("BCD"), WithOption.WithUnsignedIntegerEncoding("BCD"), WithOption.WithEncoding("BCD"), WithOption.WithStringEncoding("BCD"));
 
-      // Simple Field: dayOfWeek
-      FieldWriterFactory.writeSimpleField((byte) _value.getDateTime().getDayOfWeek().getValue(), DataWriterFactory.writeUnsignedByte(writeBuffer, 4), WithOption.WithName("dayOfWeek"), WithOption.WithFloatEncoding("BCD"), WithOption.WithSignedIntegerEncoding("BCD"), WithOption.WithUnsignedIntegerEncoding("BCD"), WithOption.WithEncoding("BCD"), WithOption.WithStringEncoding("BCD"));
+      // Manual Field: dayOfWeek
+      FieldWriterFactory.writeManualField(() -> StaticHelper.serializeSiemensDayOfWeek(writeBuffer, _value), writeBuffer, WithOption.WithName("dayOfWeek"), WithOption.WithFloatEncoding("BCD"), WithOption.WithSignedIntegerEncoding("BCD"), WithOption.WithUnsignedIntegerEncoding("BCD"), WithOption.WithEncoding("BCD"), WithOption.WithStringEncoding("BCD"));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_LTIME")) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // DATE_AND_LTIME
@@ -779,7 +779,7 @@ public class DataItem {
       // Simple Field: millisecondsOfSecond
       lengthInBits += 12;
 
-      // Simple Field: dayOfWeek
+      // Manual Field: dayOfWeek
       lengthInBits += 4;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_LTIME")) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

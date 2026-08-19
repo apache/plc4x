@@ -37,6 +37,62 @@ import (
 // the second alarm type that embeds a BCD DateAndTime, the encode side range
 // checks, and the downstream formatter that renders the decoded timestamp.
 
+// TestSiemensDayOfWeek_RoundTripsEveryDay pins the one-day rotation between the
+// S7 wire numbering (1 == Sunday .. 7 == Saturday, as the mspec states for the
+// DTL variant of the same field) and the ISO-8601 numbering that
+// PlcDATE_AND_TIME.GetDayOfWeek returns and that plc4j and KNX DPT 19.001 share.
+//
+// Getting this wrong is silent: every value stays inside [1, 7], so a PLC simply
+// reads the wrong day rather than rejecting the frame.
+func TestSiemensDayOfWeek_RoundTripsEveryDay(t *testing.T) {
+	// 2024-08-18 is a Sunday, so this walks a whole week in order.
+	tests := []struct {
+		date       time.Time
+		wireNibble byte
+		iso        uint8
+	}{
+		{date: time.Date(2024, time.August, 18, 0, 0, 0, 0, time.UTC), wireNibble: 0x01, iso: 7},
+		{date: time.Date(2024, time.August, 19, 0, 0, 0, 0, time.UTC), wireNibble: 0x02, iso: 1},
+		{date: time.Date(2024, time.August, 20, 0, 0, 0, 0, time.UTC), wireNibble: 0x03, iso: 2},
+		{date: time.Date(2024, time.August, 21, 0, 0, 0, 0, time.UTC), wireNibble: 0x04, iso: 3},
+		{date: time.Date(2024, time.August, 22, 0, 0, 0, 0, time.UTC), wireNibble: 0x05, iso: 4},
+		{date: time.Date(2024, time.August, 23, 0, 0, 0, 0, time.UTC), wireNibble: 0x06, iso: 5},
+		{date: time.Date(2024, time.August, 24, 0, 0, 0, 0, time.UTC), wireNibble: 0x07, iso: 6},
+	}
+	for _, test := range tests {
+		day := test.date.Weekday().String()
+
+		// The ISO value the shared getter reports, which is what plc4j reports too.
+		assert.Equal(t, test.iso, spiValues.NewPlcDATE_AND_TIME(test.date).GetDayOfWeek(), day)
+
+		// The nibble that actually belongs on an S7 wire. Written into 4 bits, so
+		// the buffer holds the value in the high nibble of a single byte.
+		writeBuffer := utils.NewWriteBufferByteBased()
+		require.NoError(t,
+			readWriteModel.SerializeSiemensDayOfWeek(context.Background(), writeBuffer, spiValues.NewPlcDATE_AND_TIME(test.date)), day)
+		assert.Equal(t, []byte{test.wireNibble << 4}, writeBuffer.GetBytes(), day)
+
+		// And back again: parsing returns the ISO numbering, not the wire value.
+		parsed, err := readWriteModel.ParseSiemensDayOfWeek(context.Background(),
+			utils.NewReadBufferByteBased([]byte{test.wireNibble << 4}))
+		require.NoError(t, err, day)
+		assert.Equal(t, test.iso, parsed, day)
+	}
+}
+
+// TestParseSiemensDayOfWeek_RejectsOutOfRange guards the nibble range: 0 and
+// 8-15 are not days, and 0xA-0xF are not even BCD digits.
+func TestParseSiemensDayOfWeek_RejectsOutOfRange(t *testing.T) {
+	for _, nibble := range []byte{0x00, 0x08, 0x09} {
+		_, err := readWriteModel.ParseSiemensDayOfWeek(context.Background(),
+			utils.NewReadBufferByteBased([]byte{nibble << 4}))
+		assert.Error(t, err, "nibble 0x%X", nibble)
+	}
+	_, err := readWriteModel.ParseSiemensDayOfWeek(context.Background(),
+		utils.NewReadBufferByteBased([]byte{0xA0}))
+	assert.Error(t, err, "0xA is not a valid BCD digit")
+}
+
 // TestParseSiemensYear_BCD exercises
 // protocols/s7/readwrite/model/StaticHelper.go, the only place outside the
 // generated DateAndTime model that passes utils.WithEncoding("BCD") to a
@@ -236,13 +292,11 @@ func TestDataItem_DateAndTimeSerializesAsBCD(t *testing.T) {
 	// as the decimal digits it denotes. Before the regeneration only year was BCD
 	// and the rest was raw binary (day 19 -> 0x13, hour 14 -> 0x0E, msec 123 -> 0x07B).
 	//
-	// CAUTION on the trailing nibble: it is the dow, and it still carries the
-	// ISO-8601 numbering (1 == Monday .. 7 == Sunday) that PlcDATE_AND_TIME shares
-	// with plc4j and KNX DPT 19.001. S7 numbers the same field 1 == Sunday ..
-	// 7 == Saturday, so a real PLC expects 2 for this Monday, not the 1 below.
-	// Rotating into the Siemens numbering is a separate S7 layer fix; see
-	// TestDataItem_DateAndTimeDayOfWeekIsSiemensNumbered once that lands.
-	want := []byte{0x24, 0x08, 0x19, 0x14, 0x35, 0x07, 0x12, 0x31}
+	// The trailing nibble is the day of week, numbered the way an S7 expects it:
+	// 2024-08-19 is a Monday, which is 2 in the Siemens week that starts on Sunday,
+	// not the 1 that the ISO-8601 numbering of PlcDATE_AND_TIME.GetDayOfWeek reports.
+	// See TestSiemensDayOfWeek_RoundTripsEveryDay.
+	want := []byte{0x24, 0x08, 0x19, 0x14, 0x35, 0x07, 0x12, 0x32}
 	assert.Equal(t, want, serialized)
 
 	// Independent of the encoding, the read side of this data item is dead: the

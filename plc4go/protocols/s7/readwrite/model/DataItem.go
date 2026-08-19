@@ -321,8 +321,8 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		}
 		_ = millisecondsOfSecond // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
-		// Simple Field (dayOfWeek)
-		dayOfWeek, _dayOfWeekErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfWeek", 4, utils.WithEncoding("BCD"))
+		// Manual Field (dayOfWeek)
+		dayOfWeek, _dayOfWeekErr := ParseSiemensDayOfWeek(ctx, readBuffer)
 		if _dayOfWeekErr != nil {
 			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 		}
@@ -607,9 +607,10 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 			return errors.Wrap(_err, "Error serializing 'millisecondsOfSecond' field")
 		}
 
-		// Simple Field (dayOfWeek)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfWeek", 4, uint8(value.(values.PlcDATE_AND_TIME).GetDayOfWeek()), utils.WithEncoding("BCD")); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
+		// Manual Field (dayOfWeek)
+		_dayOfWeekErr := SerializeSiemensDayOfWeek(ctx, writeBuffer, value)
+		if _dayOfWeekErr != nil {
+			return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 		}
 	case dataProtocolId == "IEC61131_DATE_AND_LTIME": // DATE_AND_LTIME
 		// Simple Field (nanosecondsSinceEpoch)

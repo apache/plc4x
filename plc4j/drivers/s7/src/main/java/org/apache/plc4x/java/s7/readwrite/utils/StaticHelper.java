@@ -277,6 +277,41 @@ public class StaticHelper {
         }
     }
 
+    /**
+     * Siemens numbers the DATE_AND_TIME day-of-week nibble 1 == Sunday .. 7 == Saturday; the mspec
+     * spells that out for the DTL variant of the same field. {@code java.time.DayOfWeek} numbers the
+     * same days 1 == Monday .. 7 == Sunday, which is what {@code PlcDATE_AND_TIME#getDayOfWeek}
+     * returns and what plc4j shares with KNX DPT 19.001. Only the S7 wire format counts from Sunday,
+     * so the rotation belongs here rather than in the shared value.
+     */
+    public static short parseSiemensDayOfWeek(ReadBuffer readBuffer) {
+        try {
+            short dayOfWeek = readBuffer.readUnsignedShort(4, WithOption.WithName("dayOfWeek"),
+                WithOption.WithUnsignedIntegerEncoding("BCD"));
+            if (dayOfWeek < 1 || dayOfWeek > 7) {
+                throw new RuntimeException("day of week " + dayOfWeek
+                    + " is outside the range [1, 7] the Siemens DATE_AND_TIME nibble can represent");
+            }
+            // Siemens Sunday is the ISO week's last day.
+            return dayOfWeek == 1 ? (short) 7 : (short) (dayOfWeek - 1);
+        } catch (BufferException e) {
+            throw new RuntimeException("Error parsing dayOfWeek", e);
+        }
+    }
+
+    /** Writes the day of week implied by the timestamp, numbered the way an S7 expects it. */
+    public static void serializeSiemensDayOfWeek(WriteBuffer writeBuffer, PlcValue dateTime) {
+        try {
+            // DayOfWeek.getValue() is 1 == Monday .. 7 == Sunday; Siemens wants Sunday first.
+            int iso = dateTime.getDateTime().getDayOfWeek().getValue();
+            short siemens = (short) (iso == 7 ? 1 : iso + 1);
+            writeBuffer.writeUnsignedShort(4, siemens, WithOption.WithName("dayOfWeek"),
+                WithOption.WithUnsignedIntegerEncoding("BCD"));
+        } catch (BufferException e) {
+            throw new RuntimeException("Error serializing dayOfWeek", e);
+        }
+    }
+
     public static short parseSiemensYear(ReadBuffer readBuffer) {
         try {
             short year = readBuffer.readUnsignedShort(8, WithOption.WithName("year"), WithOption.WithUnsignedIntegerEncoding("BCD"));

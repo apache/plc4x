@@ -328,6 +328,42 @@ func IntToS7msec(ctx context.Context, writeBuffer utils.WriteBuffer, value uint1
 	return nil
 }
 
+// Siemens numbers the DATE_AND_TIME day-of-week nibble 1 == Sunday .. 7 ==
+// Saturday; the mspec spells that out for the DTL variant of the same field.
+// Go's time.Weekday numbers the same days 0 == Sunday .. 6 == Saturday, so the
+// wire value is simply one more than the weekday.
+//
+// This deliberately does NOT go through PlcDATE_AND_TIME.GetDayOfWeek, which
+// returns the ISO-8601 numbering (1 == Monday .. 7 == Sunday) that plc4j and KNX
+// DPT 19.001 use. That getter is shared with those protocols and is correct for
+// them; only the S7 wire format counts from Sunday, so the rotation belongs here.
+func siemensDayOfWeek(weekday time.Weekday) uint8 {
+	return uint8(weekday) + 1
+}
+
+// ParseSiemensDayOfWeek reads the day-of-week nibble and returns it in the
+// ISO-8601 numbering the rest of PLC4X uses, so it round trips with
+// PlcDATE_AND_TIME.GetDayOfWeek rather than with the raw wire value.
+func ParseSiemensDayOfWeek(_ context.Context, readBuffer utils.ReadBuffer) (uint8, error) {
+	dayOfWeek, err := readBuffer.ReadUint8("dayOfWeek", 4, utils.WithEncoding("BCD"))
+	if err != nil {
+		return 0, errors.Wrap(err, "Error parsing dayOfWeek")
+	}
+	if dayOfWeek < 1 || dayOfWeek > 7 {
+		return 0, errors.Errorf("day of week %d is outside the range [1, 7] the Siemens DATE_AND_TIME nibble can represent", dayOfWeek)
+	}
+	if dayOfWeek == 1 { // Siemens Sunday is the ISO week's last day
+		return 7, nil
+	}
+	return dayOfWeek - 1, nil
+}
+
+// SerializeSiemensDayOfWeek writes the day of week implied by the timestamp,
+// numbered the way an S7 expects it.
+func SerializeSiemensDayOfWeek(_ context.Context, writeBuffer utils.WriteBuffer, dateTime values.PlcValue) error {
+	return writeBuffer.WriteUint8("dayOfWeek", 4, siemensDayOfWeek(dateTime.GetDateTime().Weekday()), utils.WithEncoding("BCD"))
+}
+
 func ParseSiemensYear(_ context.Context, readBuffer utils.ReadBuffer) (uint16, error) {
 	year, err := readBuffer.ReadUint16("year", 8, utils.WithEncoding("BCD"))
 	if err != nil {
