@@ -518,16 +518,18 @@
                       <extStatusSize dataType="uint" bitLength="8">0</extStatusSize>
                       <extStatus isList="true"/>
                       <CipConnectionManagerResponse>
-                        <otConnectionId dataType="uint" bitLength="32">4287709185</otConnectionId>
-                        <toConnectionId dataType="uint" bitLength="32">33944</toConnectionId>
-                        <connectionSerialNumber dataType="uint" bitLength="16">3907</connectionSerialNumber>
-                        <originatorVendorId dataType="uint" bitLength="16">4919</originatorVendorId>
-                        <originatorSerialNumber dataType="uint" bitLength="32">42</originatorSerialNumber>
-                        <otApi dataType="uint" bitLength="32">2101812</otApi>
-                        <toApi dataType="uint" bitLength="32">2113537</toApi>
-                        <replySize dataType="uint" bitLength="8">0</replySize>
-                        <reply dataType="byte" bitLength="0">0x</reply>
-                        <reserved dataType="uint" bitLength="8">0</reserved>
+                        <CipConnectionManagerResponseSuccess>
+                          <otConnectionId dataType="uint" bitLength="32">4287709185</otConnectionId>
+                          <toConnectionId dataType="uint" bitLength="32">33944</toConnectionId>
+                          <connectionSerialNumber dataType="uint" bitLength="16">3907</connectionSerialNumber>
+                          <originatorVendorId dataType="uint" bitLength="16">4919</originatorVendorId>
+                          <originatorSerialNumber dataType="uint" bitLength="32">42</originatorSerialNumber>
+                          <otApi dataType="uint" bitLength="32">2101812</otApi>
+                          <toApi dataType="uint" bitLength="32">2113537</toApi>
+                          <replySize dataType="uint" bitLength="8">0</replySize>
+                          <reply dataType="byte" bitLength="0">0x</reply>
+                          <reserved dataType="uint" bitLength="8">0</reserved>
+                        </CipConnectionManagerResponseSuccess>
                       </CipConnectionManagerResponse>
                     </CipServiceResponse>
                   </CipService>

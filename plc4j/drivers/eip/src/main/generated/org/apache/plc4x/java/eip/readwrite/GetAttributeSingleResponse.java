@@ -53,7 +53,7 @@ public class GetAttributeSingleResponse extends CipServiceResponse implements Me
   }
 
   public static CipServiceResponseBuilder staticParseCipServiceResponseBuilder(
-      ReadBuffer readBuffer, short extStatusSize, boolean connected, int serviceLen) throws
+      ReadBuffer readBuffer, int extStatusSize, boolean connected, int serviceLen) throws
       BufferException {
     readBuffer.pushContext(WithOption.WithName("GetAttributeSingleResponse"));
     int startPos = readBuffer.getPositionInBits();

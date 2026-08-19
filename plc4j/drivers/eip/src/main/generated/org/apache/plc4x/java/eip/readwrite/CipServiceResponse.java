@@ -118,7 +118,7 @@ public abstract class CipServiceResponse extends CipService implements Message {
     } else if (EvaluationHelper.equals(service, (byte) (0x52))) {
       builder = CipConnectedResponse.staticParseCipServiceResponseBuilder(readBuffer, extStatusSize, connected, serviceLen);
     } else if (EvaluationHelper.equals(service, (byte) (0x5B))) {
-      builder = CipConnectionManagerResponse.staticParseCipServiceResponseBuilder(readBuffer, connected, serviceLen);
+      builder = CipConnectionManagerResponse.staticParseCipServiceResponseBuilder(readBuffer, status, connected, serviceLen);
     }
     if (builder == null) {
       throw new BufferException("Unsupported case for discriminated type parameters parameters [service]");

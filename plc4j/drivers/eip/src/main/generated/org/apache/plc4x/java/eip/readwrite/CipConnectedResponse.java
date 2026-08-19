@@ -55,7 +55,7 @@ public class CipConnectedResponse extends CipServiceResponse implements Message 
   }
 
   public static CipServiceResponseBuilder staticParseCipServiceResponseBuilder(
-      ReadBuffer readBuffer, short extStatusSize, boolean connected, int serviceLen) throws
+      ReadBuffer readBuffer, int extStatusSize, boolean connected, int serviceLen) throws
       BufferException {
     readBuffer.pushContext(WithOption.WithName("CipConnectedResponse"));
     int startPos = readBuffer.getPositionInBits();

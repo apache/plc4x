@@ -19,7 +19,6 @@
 
 package org.apache.plc4x.java.eip.base.tag;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
@@ -70,7 +69,16 @@ public class EipTag implements PlcTag, Serializable {
 
     @Override
     public String getAddressString() {
-        throw new NotImplementedException("Need to implement this");
+        // Mirrors the format ADDRESS_PATTERN accepts, so of(getAddressString()) round-trips:
+        //   tag[:dataType[:elementNb]]
+        StringBuilder sb = new StringBuilder(tag);
+        if (type != null) {
+            sb.append(':').append(type.name());
+            if (elementNb > 1) {
+                sb.append(':').append(elementNb);
+            }
+        }
+        return sb.toString();
     }
 
     @Override

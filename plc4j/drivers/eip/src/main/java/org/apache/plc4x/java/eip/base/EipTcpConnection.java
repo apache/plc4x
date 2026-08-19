@@ -91,7 +91,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     private final NullAddressItem nullAddressItem = new NullAddressItem();
     private final List<PathSegment> routingAddress = new ArrayList<>();
     private short connectionPathSize = 0;
-    private final int connectionSerialNumber = ThreadLocalRandom.current().nextInt(1, 0x10000);
+    private final int connectionSerialNumber;
 
     public EipTcpConnection(EIPConfiguration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
         this(configuration, transportInstance, auditLog, configuration.isBigEndian());
@@ -100,6 +100,11 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     public EipTcpConnection(EIPConfiguration configuration, TransportInstance<?> transportInstance, AuditLog auditLog, boolean bigEndian) {
         super(configuration, transportInstance, auditLog);
         this.bigEndian = bigEndian;
+        // CIP wants the Forward_Open serial number unique per connection, so it is random unless
+        // the user pins it (which recorded driver tests need in order to stay reproducible).
+        this.connectionSerialNumber = configuration.getConnectionSerialNumber() > 0
+            ? configuration.getConnectionSerialNumber()
+            : ThreadLocalRandom.current().nextInt(1, 0x10000);
         initRoutingAddress();
     }
 
@@ -286,7 +291,6 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     }
 
     private CompletableFuture<Boolean> checkClassObjectSupport(CIPClassID classId) {
-
         UnConnectedDataItem exchange = new UnConnectedDataItem(new GetAttributeSingleRequest(
             new LogicalSegment(new ClassID((byte) 0, (short) classId.getValue())),
             new LogicalSegment(new InstanceID((byte) 0, (short) 0)), // Class level discovery
@@ -298,9 +302,13 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
 
         return sendRequest(eipWrapper).thenCompose(response -> {
 
-            if (extractCipService(response) instanceof GetAttributeSingleResponse gsr) {
-                boolean hasSupport = gsr.getStatus() == CIPStatus.Success.getValue();
-                LOGGER.debug("ClassId: {} status: {} hasSupport: {}", classId, gsr.getStatus(), hasSupport);
+            // Every CIP response carries the general status in the header shared by all of them,
+            // so the concrete response type is irrelevant here: a device that answers a
+            // class-level Get_Attribute_Single with some other response still tells us whether
+            // the class exists.
+            if (extractCipService(response) instanceof CipServiceResponse resp) {
+                boolean hasSupport = resp.getStatus() == CIPStatus.Success.getValue();
+                LOGGER.debug("ClassId: {} status: {} hasSupport: {}", classId, resp.getStatus(), hasSupport);
                 return CompletableFuture.completedFuture(hasSupport);
             }
             return CompletableFuture.completedFuture(false);
@@ -328,9 +336,16 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
                 throw new PlcRuntimeException("Got status code while opening Connection Manager [" + response.getStatus() + "]");
             }
             UnConnectedDataItem dataItem = (UnConnectedDataItem) rr.getTypeIds().get(1);
-            if (dataItem.getService() instanceof CipConnectionManagerResponse cmr) {
+            // A rejected Forward_Open replies in CIP's shorter "unsuccessful" format, which the
+            // model now describes as its own type, so the reply's type tells us the outcome and
+            // only the successful one actually carries a connection id.
+            if (dataItem.getService() instanceof CipConnectionManagerResponseSuccess cmr) {
                 this.connectionId = cmr.getOtConnectionId();
                 LOGGER.debug("Got assigned with Connection Id {}", this.connectionId);
+            } else if (dataItem.getService() instanceof CipConnectionManagerResponseFailure failure) {
+                throw new PlcRuntimeException("Device rejected the Forward_Open [status "
+                    + failure.getStatus() + ", extended status " + failure.getExtStatus()
+                    + ", remaining connection path " + failure.getRemainingPathSize() + " words]");
             }
         });
     }
@@ -669,11 +684,10 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
-        Map<String, PlcResponseCode> values = new ConcurrentHashMap<>();
 
         List<CompletableFuture<Void>> tagFutures = new ArrayList<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
-        values.putAll(rejectedWriteTags(request));
+        Map<String, PlcResponseCode> values = new ConcurrentHashMap<>(rejectedWriteTags(request));
         for (String fieldName : sendableTagNames(request)) {
             EipTag field = (EipTag) request.getTag(fieldName);
             PlcValue value = request.getPlcValue(fieldName);

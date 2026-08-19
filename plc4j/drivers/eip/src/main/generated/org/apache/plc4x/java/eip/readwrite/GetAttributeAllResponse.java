@@ -55,7 +55,7 @@ public class GetAttributeAllResponse extends CipServiceResponse implements Messa
   }
 
   public static CipServiceResponseBuilder staticParseCipServiceResponseBuilder(
-      ReadBuffer readBuffer, short extStatusSize, boolean connected, int serviceLen) throws
+      ReadBuffer readBuffer, int extStatusSize, boolean connected, int serviceLen) throws
       BufferException {
     readBuffer.pushContext(WithOption.WithName("GetAttributeAllResponse"));
     int startPos = readBuffer.getPositionInBits();

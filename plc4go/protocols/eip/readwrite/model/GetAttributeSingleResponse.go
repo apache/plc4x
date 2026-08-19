@@ -226,7 +226,7 @@ func (m *_GetAttributeSingleResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_GetAttributeSingleResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceResponse, extStatusSize uint8, connected bool, serviceLen uint16) (__getAttributeSingleResponse GetAttributeSingleResponse, err error) {
+func (m *_GetAttributeSingleResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipServiceResponse, extStatusSize uint16, connected bool, serviceLen uint16) (__getAttributeSingleResponse GetAttributeSingleResponse, err error) {
 	m.CipServiceResponseContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

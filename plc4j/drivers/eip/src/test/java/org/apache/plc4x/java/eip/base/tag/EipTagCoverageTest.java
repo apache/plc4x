@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.eip.base.tag;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
@@ -27,7 +26,6 @@ import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EipTagCoverageTest {
 
@@ -107,9 +105,19 @@ class EipTagCoverageTest {
     }
 
     @Test
-    void getAddressStringIsNotImplemented() {
-        assertThatThrownBy(() -> new EipTag("%A0").getAddressString())
-            .isInstanceOf(NotImplementedException.class);
+    void getAddressStringRoundTrips() {
+        // A tag with no explicit type carries the DINT default only when built via `of`,
+        // so the bare constructor renders just the tag name.
+        assertThat(new EipTag("%A0").getAddressString()).isEqualTo("%A0");
+        assertThat(new EipTag("%A0", CIPDataTypeCode.DINT).getAddressString()).isEqualTo("%A0:DINT");
+        assertThat(new EipTag("%A0", CIPDataTypeCode.DINT, 8).getAddressString()).isEqualTo("%A0:DINT:8");
+
+        // Whatever it renders has to parse back into an equivalent tag.
+        EipTag original = EipTag.of("%A0:DINT:8");
+        EipTag reparsed = EipTag.of(original.getAddressString());
+        assertThat(reparsed.getTag()).isEqualTo(original.getTag());
+        assertThat(reparsed.getType()).isEqualTo(original.getType());
+        assertThat(reparsed.getElementNb()).isEqualTo(original.getElementNb());
     }
 
     @Test

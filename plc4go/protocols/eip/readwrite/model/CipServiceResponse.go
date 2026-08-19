@@ -68,6 +68,8 @@ type CipServiceResponseRequirements interface {
 	CipServiceRequirements
 	GetLengthInBits(ctx context.Context) uint64
 	GetLengthInBytes(ctx context.Context) uint64
+	// GetService returns Service (discriminator field)
+	GetService() uint8
 }
 
 // _CipServiceResponse is the data-structure of this message
@@ -496,51 +498,51 @@ func (m *_CipServiceResponse) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child CipServiceResponse
 	switch {
 	case service == 0x01: // GetAttributeAllResponse
-		if _child, err = new(_GetAttributeAllResponse).parse(ctx, readBuffer, m, extStatusSize, connected, serviceLen); err != nil {
+		if _child, err = new(_GetAttributeAllResponse).parse(ctx, readBuffer, m, uint16(extStatusSize), connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type GetAttributeAllResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x02: // SetAttributeAllResponse
-		if _child, err = new(_SetAttributeAllResponse).parse(ctx, readBuffer, m, connected, serviceLen); err != nil {
+		if _child, err = new(_SetAttributeAllResponse).parse(ctx, readBuffer, m, connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SetAttributeAllResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x03: // GetAttributeListResponse
-		if _child, err = new(_GetAttributeListResponse).parse(ctx, readBuffer, m, connected, serviceLen); err != nil {
+		if _child, err = new(_GetAttributeListResponse).parse(ctx, readBuffer, m, connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type GetAttributeListResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x04: // SetAttributeListResponse
-		if _child, err = new(_SetAttributeListResponse).parse(ctx, readBuffer, m, connected, serviceLen); err != nil {
+		if _child, err = new(_SetAttributeListResponse).parse(ctx, readBuffer, m, connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SetAttributeListResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x0A: // MultipleServiceResponse
-		if _child, err = new(_MultipleServiceResponse).parse(ctx, readBuffer, m, extStatusSize, connected, serviceLen); err != nil {
+		if _child, err = new(_MultipleServiceResponse).parse(ctx, readBuffer, m, uint16(extStatusSize), connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MultipleServiceResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x0E: // GetAttributeSingleResponse
-		if _child, err = new(_GetAttributeSingleResponse).parse(ctx, readBuffer, m, extStatusSize, connected, serviceLen); err != nil {
+		if _child, err = new(_GetAttributeSingleResponse).parse(ctx, readBuffer, m, uint16(extStatusSize), connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type GetAttributeSingleResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x10: // SetAttributeSingleResponse
-		if _child, err = new(_SetAttributeSingleResponse).parse(ctx, readBuffer, m, connected, serviceLen); err != nil {
+		if _child, err = new(_SetAttributeSingleResponse).parse(ctx, readBuffer, m, connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SetAttributeSingleResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x4C: // CipReadResponse
-		if _child, err = new(_CipReadResponse).parse(ctx, readBuffer, m, extStatusSize, connected, serviceLen); err != nil {
+		if _child, err = new(_CipReadResponse).parse(ctx, readBuffer, m, uint16(extStatusSize), connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipReadResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x4D: // CipWriteResponse
-		if _child, err = new(_CipWriteResponse).parse(ctx, readBuffer, m, connected, serviceLen); err != nil {
+		if _child, err = new(_CipWriteResponse).parse(ctx, readBuffer, m, connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipWriteResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x4E: // CipConnectionManagerCloseResponse
-		if _child, err = new(_CipConnectionManagerCloseResponse).parse(ctx, readBuffer, m, connected, serviceLen); err != nil {
+		if _child, err = new(_CipConnectionManagerCloseResponse).parse(ctx, readBuffer, m, connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipConnectionManagerCloseResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x52: // CipConnectedResponse
-		if _child, err = new(_CipConnectedResponse).parse(ctx, readBuffer, m, extStatusSize, connected, serviceLen); err != nil {
+		if _child, err = new(_CipConnectedResponse).parse(ctx, readBuffer, m, uint16(extStatusSize), connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipConnectedResponse for type-switch of CipServiceResponse")
 		}
 	case service == 0x5B: // CipConnectionManagerResponse
-		if _child, err = new(_CipConnectionManagerResponse).parse(ctx, readBuffer, m, connected, serviceLen); err != nil {
+		if _child, err = new(_CipConnectionManagerResponse).parse(ctx, readBuffer, m, uint8(status), connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipConnectionManagerResponse for type-switch of CipServiceResponse")
 		}
 	default:

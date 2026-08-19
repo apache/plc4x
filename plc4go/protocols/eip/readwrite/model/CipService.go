@@ -292,11 +292,11 @@ func (m *_CipService) parse(ctx context.Context, readBuffer utils.ReadBuffer, co
 	var _child CipService
 	switch {
 	case response == bool(false): // CipServiceRequest
-		if _child, err = new(_CipServiceRequest).parse(ctx, readBuffer, m, connected, serviceLen); err != nil {
+		if _child, err = new(_CipServiceRequest).parse(ctx, readBuffer, m, connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipServiceRequest for type-switch of CipService")
 		}
 	case response == bool(true): // CipServiceResponse
-		if _child, err = new(_CipServiceResponse).parse(ctx, readBuffer, m, connected, serviceLen); err != nil {
+		if _child, err = new(_CipServiceResponse).parse(ctx, readBuffer, m, connected, uint16(serviceLen)); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipServiceResponse for type-switch of CipService")
 		}
 	default:

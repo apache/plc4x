@@ -227,13 +227,11 @@ func (c *Connection) setupConnection(ctx context.Context) error {
 		c.SetConnected(true)
 		return nil
 	}
-	if err := c.probeAttributes(ctx); err != nil {
-		// Any probe failure (timeout, error status, malformed reply) means "device has
-		// no message router / connection manager": fall back to unconnected operation
-		// like plc4j instead of failing the connect.
-		c.log.Debug().Err(err).Msg("GetAttributeAll probe failed, falling back to unconnected mode")
-		c.sessionState.useMessageRouter = false
-		c.sessionState.useConnectionManager = false
+	if err := c.probeClassObjectSupport(ctx); err != nil {
+		// A probe failure (timeout, error status, malformed reply) is not fatal: keep whatever
+		// the probe managed to establish and fall through to unconnected operation for the
+		// rest, like plc4j does, instead of failing the connect.
+		c.log.Debug().Err(err).Msg("Capability probe failed, keeping the state achieved")
 	}
 	if c.sessionState.useConnectionManager {
 		if err := c.openConnectionManager(ctx); err != nil {
@@ -312,63 +310,112 @@ func (c *Connection) registerSession(ctx context.Context) error {
 	return nil
 }
 
-func (c *Connection) probeAttributes(ctx context.Context) error {
-	c.log.Debug().Msg("Sending GetAttributeAll probe")
+// probeClassObjectSupport works out which CIP classes the device implements.
+//
+// Get_Attribute_All on the message router used to serve as the probe, but its attribute list does
+// not actually enumerate the supported classes, so every class of interest is asked about directly
+// with Get_Attribute_Single. Mirrors EipTcpConnection.probeClassObjectSupport in plc4j.
+func (c *Connection) probeClassObjectSupport(ctx context.Context) error {
+	hasConnectionManager, err := c.checkClassObjectSupport(ctx, readWriteModel.CIPClassID_ConnectionManager)
+	if err != nil {
+		return err
+	}
+	c.sessionState.useConnectionManager = hasConnectionManager
+	hasMessageRouter, err := c.checkClassObjectSupport(ctx, readWriteModel.CIPClassID_MessageRouter)
+	if err != nil {
+		return err
+	}
+	c.sessionState.useMessageRouter = hasMessageRouter
+	c.log.Debug().
+		Bool("useMessageRouter", c.sessionState.useMessageRouter).
+		Bool("useConnectionManager", c.sessionState.useConnectionManager).
+		Msg("Probed device capabilities")
+	// Keeps the Get_Attribute_All path in use; the reply is only logged.
+	return c.checkClassObjectAttributes(ctx, readWriteModel.CIPClassID_Identity)
+}
+
+// checkClassObjectSupport asks a single CIP class for attribute 1 (Revision) at instance 0, which
+// is the class level. Every CIP class has to answer that, so a success status means the device
+// implements the class and an error status means it does not.
+func (c *Connection) checkClassObjectSupport(ctx context.Context, classId readWriteModel.CIPClassID) (bool, error) {
 	probe := readWriteModel.NewCipRRData(
 		c.sessionState.sessionHandle, uint32(readWriteModel.CIPStatus_Success), c.sessionState.senderContext, 0,
 		EmptyInterfaceHandle, 0,
 		[]readWriteModel.TypeId{
 			readWriteModel.NewNullAddressItem(),
+			readWriteModel.NewUnConnectedDataItem(readWriteModel.NewGetAttributeSingleRequest(
+				readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, uint8(classId))),
+				readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(0, 0)),
+				readWriteModel.NewLogicalSegment(readWriteModel.NewAttributeID(0, 1)),
+			)),
+		},
+	)
+	service, err := c.exchangeCipService(ctx, "get_attribute_single", probe)
+	if err != nil {
+		return false, err
+	}
+	// Every CIP response carries the general status in the header they all share, so the concrete
+	// response type does not matter here.
+	response, ok := service.(readWriteModel.CipServiceResponse)
+	if !ok {
+		return false, nil
+	}
+	hasSupport := response.GetStatus() == uint8(readWriteModel.CIPStatus_Success)
+	c.log.Debug().
+		Stringer("classId", classId).
+		Uint8("status", response.GetStatus()).
+		Bool("hasSupport", hasSupport).
+		Msg("Probed CIP class")
+	return hasSupport, nil
+}
+
+// checkClassObjectAttributes reads a class' whole attribute list. Nothing depends on the result,
+// it is kept so the Get_Attribute_All path stays covered and can be built on later.
+func (c *Connection) checkClassObjectAttributes(ctx context.Context, classId readWriteModel.CIPClassID) error {
+	request := readWriteModel.NewCipRRData(
+		c.sessionState.sessionHandle, uint32(readWriteModel.CIPStatus_Success), c.sessionState.senderContext, 0,
+		EmptyInterfaceHandle, 0,
+		[]readWriteModel.TypeId{
+			readWriteModel.NewNullAddressItem(),
 			readWriteModel.NewUnConnectedDataItem(readWriteModel.NewGetAttributeAllRequest(
-				readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 2)),
+				readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, uint8(classId))),
 				readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(0, 1)),
 			)),
 		},
 	)
-	message, err := sendRequestAndWait(ctx, c.log, c.messageCodec, "get_attribute_all", probe,
+	service, err := c.exchangeCipService(ctx, "get_attribute_all", request)
+	if err != nil {
+		return err
+	}
+	if response, ok := service.(readWriteModel.GetAttributeAllResponse); ok &&
+		response.GetStatus() == uint8(readWriteModel.CIPStatus_Success) && response.GetAttributes() != nil {
+		c.log.Debug().Interface("numberActive", response.GetAttributes().GetNumberActive()).Msg("Read class attributes")
+	}
+	return nil
+}
+
+// exchangeCipService sends an unconnected CIP request and digs the CIP service out of the reply.
+func (c *Connection) exchangeCipService(ctx context.Context, name string, request readWriteModel.EipPacket) (readWriteModel.CipService, error) {
+	message, err := sendRequestAndWait(ctx, c.log, c.messageCodec, name, request,
 		func(message spi.Message) bool {
 			_, ok := message.(readWriteModel.CipRRData)
 			return ok
 		})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	cipRRData := message.(readWriteModel.CipRRData)
 	if cipRRData.GetStatus() != uint32(readWriteModel.CIPStatus_Success) {
-		return errors.Errorf("got status code on GetAttributeAll probe [%d]", cipRRData.GetStatus())
+		return nil, errors.Errorf("got status code on %s [%d]", name, cipRRData.GetStatus())
 	}
 	if len(cipRRData.GetTypeIds()) < 2 {
-		return errors.New("GetAttributeAll probe response contains no data item")
+		return nil, errors.Errorf("%s response contains no data item", name)
 	}
 	dataItem, ok := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
 	if !ok {
-		return errors.Errorf("unexpected type id in GetAttributeAll probe response: %T", cipRRData.GetTypeIds()[1])
+		return nil, errors.Errorf("unexpected type id in %s response: %T", name, cipRRData.GetTypeIds()[1])
 	}
-	response, ok := dataItem.GetService().(readWriteModel.GetAttributeAllResponse)
-	if !ok {
-		return errors.Errorf("unexpected service in GetAttributeAll probe response: %T", dataItem.GetService())
-	}
-	if response.GetStatus() != uint8(readWriteModel.CIPStatus_Success) {
-		return errors.Errorf("got status code on GetAttributeAll response [%d]", response.GetStatus())
-	}
-	if attributes := response.GetAttributes(); attributes != nil {
-		for _, classId := range attributes.GetClassId() {
-			if cipClassId, ok := readWriteModel.CIPClassIDByValue(classId); ok {
-				switch cipClassId {
-				case readWriteModel.CIPClassID_MessageRouter:
-					c.sessionState.useMessageRouter = true
-				case readWriteModel.CIPClassID_ConnectionManager:
-					c.sessionState.useConnectionManager = true
-				default:
-				}
-			}
-		}
-	}
-	c.log.Debug().
-		Bool("useMessageRouter", c.sessionState.useMessageRouter).
-		Bool("useConnectionManager", c.sessionState.useConnectionManager).
-		Msg("Probed device capabilities")
-	return nil
+	return dataItem.GetService(), nil
 }
 
 func (c *Connection) openConnectionManager(ctx context.Context) error {
@@ -410,13 +457,21 @@ func (c *Connection) openConnectionManager(ctx context.Context) error {
 	if !ok {
 		return errors.Errorf("unexpected type id in ForwardOpen response: %T", cipRRData.GetTypeIds()[1])
 	}
-	connectionManagerResponse, ok := dataItem.GetService().(readWriteModel.CipConnectionManagerResponse)
-	if !ok {
+	// A rejected Forward_Open replies in CIP's shorter "unsuccessful" format, which is modelled
+	// as its own type, so the reply's type says whether the connection was opened and only the
+	// successful one carries a connection id.
+	switch connectionManagerResponse := dataItem.GetService().(type) {
+	case readWriteModel.CipConnectionManagerResponseSuccess:
+		c.sessionState.connectionId = connectionManagerResponse.GetOtConnectionId()
+		c.log.Debug().Uint32("connectionId", c.sessionState.connectionId).Msg("Got assigned with connection id")
+		return nil
+	case readWriteModel.CipConnectionManagerResponseFailure:
+		return errors.Errorf("device rejected the ForwardOpen: status %d, extended status %v, remaining connection path %d words",
+			connectionManagerResponse.GetStatus(), connectionManagerResponse.GetExtStatus(),
+			connectionManagerResponse.GetRemainingPathSize())
+	default:
 		return errors.Errorf("unexpected service in ForwardOpen response: %T", dataItem.GetService())
 	}
-	c.sessionState.connectionId = connectionManagerResponse.GetOtConnectionId()
-	c.log.Debug().Uint32("connectionId", c.sessionState.connectionId).Msg("Got assigned with connection id")
-	return nil
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {

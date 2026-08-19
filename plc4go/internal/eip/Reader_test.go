@@ -31,10 +31,10 @@ import (
 // TestSliceServiceHappyPath exercises a valid 2-entry MultipleServiceResponse
 // offset table, so the reversed-table test below isn't the only case covered.
 func TestSliceServiceHappyPath(t *testing.T) {
-	service1, err := readWriteModel.NewCipReadResponse(0, 0,
+	service1, err := readWriteModel.NewCipReadResponse(0, nil,
 		readWriteModel.NewCIPData(readWriteModel.CIPDataTypeCode_DINT, []byte{0x01, 0x00, 0x00, 0x00})).Serialize()
 	require.NoError(t, err)
-	service2, err := readWriteModel.NewCipReadResponse(0, 0,
+	service2, err := readWriteModel.NewCipReadResponse(0, nil,
 		readWriteModel.NewCIPData(readWriteModel.CIPDataTypeCode_DINT, []byte{0x02, 0x00, 0x00, 0x00})).Serialize()
 	require.NoError(t, err)
 

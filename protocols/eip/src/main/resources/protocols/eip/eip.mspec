@@ -231,7 +231,7 @@
             [implicit       uint    8   extStatusSize   'COUNT(extStatus)'                                         ]
             [array          uint    16  extStatus       count 'extStatusSize'                                      ]
             [typeSwitch service
-                ['0x01' GetAttributeAllResponse (uint 8 extStatusSize)
+                ['0x01' GetAttributeAllResponse (uint 16 extStatusSize)
                     [optional   CIPAttributes('serviceLen - 4 - (2 * extStatusSize)') attributes '(serviceLen - 4 - (2 * extStatusSize)) > 0' ]
                 ]
                 ['0x02' SetAttributeAllResponse
@@ -243,18 +243,18 @@
                 ['0x04' SetAttributeListResponse
                     // TODO: Implement
                 ]
-                ['0x0A' MultipleServiceResponse (uint 8 extStatusSize)
+                ['0x0A' MultipleServiceResponse (uint 16 extStatusSize)
                     [simple     uint    16          serviceNb                                                      ]
                     [array      uint    16          offsets         count               'serviceNb'                ]
                     [array      byte                servicesData    count               'serviceLen - 6 - (2 * serviceNb) - (2 * extStatusSize)' ]
                 ]
-                ['0x0E' GetAttributeSingleResponse (uint 8 extStatusSize)
+                ['0x0E' GetAttributeSingleResponse (uint 16 extStatusSize)
                     [array      byte                servicesData    count               'serviceLen - 4 - (2 * extStatusSize)' ]
                 ]
                 ['0x10' SetAttributeSingleResponse
                     // TODO: Implement
                 ]
-                ['0x4C' CipReadResponse (uint 8 extStatusSize)
+                ['0x4C' CipReadResponse (uint 16 extStatusSize)
                     [optional   CIPData('serviceLen - 4 - (2 * extStatusSize)') data '(serviceLen - 4 - (2 * extStatusSize)) > 0' ]
                 ]
                 ['0x4D' CipWriteResponse
@@ -266,24 +266,42 @@
                     [simple     uint    8           applicationReplySize                                           ]
                     [reserved   uint    8           '0x00'                                                         ]
                 ]
-                ['0x52' CipConnectedResponse (uint 8 extStatusSize)
+                ['0x52' CipConnectedResponse (uint 16 extStatusSize)
                     [optional   CIPDataConnected    data            '(serviceLen - 4 - (2 * extStatusSize)) > 0'   ]
                 ]
-                ['0x5B' CipConnectionManagerResponse
-                    // ot = Originator (Client) Target (Server)
-                    [simple     uint    32         otConnectionId                                                  ]
-                    // to = Target (Server) Originator (Client)
-                    [simple     uint    32         toConnectionId                                                  ]
-                    [simple     uint    16         connectionSerialNumber                                          ]
-                    [simple     uint    16         originatorVendorId                                              ]
-                    [simple     uint    32         originatorSerialNumber                                          ]
-                    // ot = Originator (Client) Target (Server)
-                    [simple     uint    32         otApi                                                           ]
-                    // to = Target (Server) Originator (Client)
-                    [simple     uint    32         toApi                                                           ]
-                    [implicit   uint    8          replySize   'COUNT(reply) / 2'                                  ]
-                    [array      byte               reply       count 'replySize * 2'                               ]
-                    [reserved   uint    8          '0x00'                                                          ]
+                // CIP Vol 1, Section 3-5.5.2: Forward_Open. A rejected Forward_Open does not
+                // simply carry a status in the successful layout -- it replies in a shorter
+                // "unsuccessful" format, so the body has to be discriminated on the general
+                // status from the shared response header.
+                ['0x5B' CipConnectionManagerResponse (uint 8 status)
+                    [typeSwitch status
+                        ['0x00' *Success
+                            // ot = Originator (Client) Target (Server)
+                            [simple     uint    32         otConnectionId                                          ]
+                            // to = Target (Server) Originator (Client)
+                            [simple     uint    32         toConnectionId                                          ]
+                            [simple     uint    16         connectionSerialNumber                                  ]
+                            [simple     uint    16         originatorVendorId                                      ]
+                            [simple     uint    32         originatorSerialNumber                                  ]
+                            // ot = Originator (Client) Target (Server)
+                            [simple     uint    32         otApi                                                   ]
+                            // to = Target (Server) Originator (Client)
+                            [simple     uint    32         toApi                                                   ]
+                            [implicit   uint    8          replySize   'COUNT(reply) / 2'                          ]
+                            [array      byte               reply       count 'replySize * 2'                       ]
+                            [reserved   uint    8          '0x00'                                                  ]
+                        ]
+                        // Unsuccessful Forward_Open Response format: no connection ids or APIs,
+                        // and remainingPathSize tells the originator how much of the connection
+                        // path was left unprocessed when the request was refused.
+                        [CipConnectionManagerResponseFailure
+                            [simple     uint    16         connectionSerialNumber                                  ]
+                            [simple     uint    16         originatorVendorId                                      ]
+                            [simple     uint    32         originatorSerialNumber                                  ]
+                            [simple     uint    8          remainingPathSize                                       ]
+                            [reserved   uint    8          '0x00'                                                  ]
+                        ]
+                    ]
                 ]
             ]
         ]
