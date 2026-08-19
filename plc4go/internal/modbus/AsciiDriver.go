@@ -22,7 +22,6 @@ package modbus
 import (
 	"context"
 	"net/url"
-	"strconv"
 	"sync"
 
 	"github.com/rs/zerolog"
@@ -55,15 +54,11 @@ func NewModbusAsciiDriver(_options ...options.WithOption) *AsciiDriver {
 
 func (d *AsciiDriver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
 	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
-	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
-	unitIdentifier := uint8(1)
-	if value, ok := driverOptions["unit-identifier"]; ok {
-		if intValue, err := strconv.ParseUint(value[0], 10, 8); err == nil {
-			unitIdentifier = uint8(intValue)
-		}
-		connectionLog.Debug().Uint8("unitIdentifier", unitIdentifier).Msg("using unit identifier")
+	configuration, err := ParseFromOptions(connectionLog, driverOptions)
+	if err != nil {
+		return nil, errors.Wrap(err, "can't parse config")
 	}
-	connectionLog = connectionLog.With().Uint8("unitIdentifier", unitIdentifier).Logger()
+	connectionLog = connectionLog.With().Uint8("unitIdentifier", configuration.unitIdentifier).Logger()
 	connectionLog.Debug().
 		Int("nTransports", len(transports)).
 		Int("nDriverOptions", len(driverOptions)).
@@ -93,8 +88,10 @@ func (d *AsciiDriver) GetConnection(ctx context.Context, transportUrl url.URL, t
 		return nil, errors.New("couldn't initialize transport configuration for given transport url " + transportUrl.String())
 	}
 
-	// Create a new codec for taking care of encoding/decoding of messages
-	codec := NewMessageCodec(
+	// Create a new codec for taking care of encoding/decoding of messages. ASCII spells its
+	// frames out in hex characters between a colon and a CR/LF rather than framing them with an
+	// MBAP header, so it needs a codec (and, further down, an ADU flavor) of its own.
+	codec := NewMessageCodecAscii(
 		transportInstance,
 		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
@@ -102,7 +99,7 @@ func (d *AsciiDriver) GetConnection(ctx context.Context, transportUrl url.URL, t
 
 	// Create the new connection
 	connection := NewConnection(
-		unitIdentifier,
+		configuration.withFlavor(flavorAscii),
 		codec,
 		driverOptions,
 		d.GetPlcTagHandler(),
