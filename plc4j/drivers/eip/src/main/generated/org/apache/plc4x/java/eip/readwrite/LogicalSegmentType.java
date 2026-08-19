@@ -58,6 +58,8 @@ public abstract class LogicalSegmentType implements Message {
       builder = InstanceID.staticParseLogicalSegmentTypeBuilder(readBuffer);
     } else if (EvaluationHelper.equals(logicalSegmentType, (byte) (0x02))) {
       builder = MemberID.staticParseLogicalSegmentTypeBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(logicalSegmentType, (byte) (0x04))) {
+      builder = AttributeID.staticParseLogicalSegmentTypeBuilder(readBuffer);
     }
     if (builder == null) {
       throw new BufferException("Unsupported case for discriminated type parameters parameters [logicalSegmentType]");

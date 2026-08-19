@@ -157,10 +157,17 @@
             [array      byte   servicesData count 'serviceLen - 6 - (2 * serviceNb)'                                   ]
         ]
         ['0x0E','false' GetAttributeSingleRequest
-            // TODO: Implement
+            [implicit   uint    8           requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes + attributeSegment.lengthInBytes)/2']
+            [simple     PathSegment         classSegment                                                               ]
+            [simple     PathSegment         instanceSegment                                                            ]
+            [simple     PathSegment         attributeSegment                                                           ]
         ]
         ['0x0E','true'  GetAttributeSingleResponse
-            // TODO: Implement
+            [reserved   uint    8           '0x00'                                                                     ]
+            [simple     uint    8           status                                                                     ]
+            [simple     uint    8           extStatusSize                                                              ]
+            [array      uint    16          extStatus count 'extStatusSize'                                            ]
+            [array      byte   servicesData count 'serviceLen - 4 - 2 * extStatusSize'                                 ]
         ]
         ['0x10','false' SetAttributeSingleRequest
             // TODO: Implement
@@ -357,6 +364,10 @@
         ['0x02' MemberID
             [simple uint    2   format]
             [simple uint    8   instance]
+        ]
+        ['0x04' AttributeID
+            [simple uint 2 format]
+            [simple uint 8 attribute]
         ]
     ]
 ]
