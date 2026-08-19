@@ -34,8 +34,10 @@ import (
 // packed when several of them follow one another. Which half of the register a padded value sits
 // in depends on the byte order.
 
-// widthBits is the width of one value of the given type, in bits.
-func widthBits(dataType readWriteModel.ModbusDataType, stringLength uint16) uint16 {
+// widthBits is the width of one value of the given type, in bits. A string of the largest
+// declarable length is wider than 16 bits can express, and a run of such strings wider than 32,
+// so the arithmetic around this is done in 64 bits throughout.
+func widthBits(dataType readWriteModel.ModbusDataType, stringLength uint16) uint64 {
 	switch dataType {
 	case readWriteModel.ModbusDataType_BOOL:
 		return 1
@@ -60,9 +62,9 @@ func widthBits(dataType readWriteModel.ModbusDataType, stringLength uint16) uint
 		readWriteModel.ModbusDataType_LREAL:
 		return 64
 	case readWriteModel.ModbusDataType_STRING:
-		return stringLength * 8
+		return uint64(stringLength) * 8
 	case readWriteModel.ModbusDataType_WSTRING:
-		return stringLength * 16
+		return uint64(stringLength) * 16
 	default:
 		return 0
 	}
@@ -93,22 +95,33 @@ func leadingPaddingBitsLittleEndian(dataType readWriteModel.ModbusDataType) uint
 	return 0
 }
 
-// trailingPaddingBits rounds a packed run of values up to a whole register.
-func trailingPaddingBits(dataType readWriteModel.ModbusDataType, numberOfValues uint16) uint16 {
-	width := widthBits(dataType, 1)
+// trailingPaddingBits rounds a packed run of values up to a whole register. The width of one
+// element has to be the declared one - a STRING(20) is 160 bits wide, not the 8 bits a single
+// character takes - or a run of them gets a pad byte that nothing on the read side accounts for.
+func trailingPaddingBits(dataType readWriteModel.ModbusDataType, numberOfValues uint16, stringLength uint16) uint16 {
+	width := widthBits(dataType, stringLength)
 	if width >= 16 {
 		return 0
 	}
-	remainder := (width * numberOfValues) % 16
+	remainder := uint16(width) * numberOfValues % 16
 	if remainder == 0 {
 		return 0
 	}
 	return 16 - remainder
 }
 
-// ParseRegisters reads numberOfValues values of the given type, returning the value itself for a
-// single one and a list for several.
-func ParseRegisters(ctx context.Context, readBuffer utils.ReadBuffer, dataType readWriteModel.ModbusDataType, numberOfValues uint16, bigEndian bool, stringLength uint16) (apiValues.PlcValue, error) {
+// ParseRegisters reads numberOfValues values of the given type out of the register bytes as the
+// given byte order lays them out, returning the value itself for a single one and a list for
+// several.
+func ParseRegisters(ctx context.Context, data []byte, dataType readWriteModel.ModbusDataType, numberOfValues uint16, byteOrder ByteOrder, stringLength uint16) (apiValues.PlcValue, error) {
+	// The two byte-swap modes differ from their plain counterparts only in that the two bytes of
+	// every register are exchanged, so undo that first and read what is left as usual (plc4j
+	// ModbusTcpConnection.toPlcValue).
+	if byteOrder.swapsBytes() {
+		data = byteSwap(data)
+	}
+	readBuffer := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(byteOrder.bufferByteOrder()))
+	bigEndian := byteOrder.isBigEndian()
 	if numberOfValues == 1 {
 		padding := paddingBits(dataType)
 		if padding == 0 {
@@ -149,9 +162,24 @@ func ParseRegisters(ctx context.Context, readBuffer utils.ReadBuffer, dataType r
 }
 
 // SerializeRegisters writes a value, or every element of a list, with the layout ParseRegisters
-// expects.
-func SerializeRegisters(ctx context.Context, value apiValues.PlcValue, dataType readWriteModel.ModbusDataType, numberOfValues uint16, bigEndian bool, stringLength uint16) ([]byte, error) {
-	writeBuffer := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(lengthInBytes(dataType, numberOfValues, stringLength))))
+// expects for the same byte order.
+func SerializeRegisters(ctx context.Context, value apiValues.PlcValue, dataType readWriteModel.ModbusDataType, numberOfValues uint16, byteOrder ByteOrder, stringLength uint16) ([]byte, error) {
+	data, err := serializeRegisters(ctx, value, dataType, numberOfValues, byteOrder, stringLength)
+	if err != nil {
+		return nil, err
+	}
+	if byteOrder.swapsBytes() {
+		data = byteSwap(data)
+	}
+	return data, nil
+}
+
+func serializeRegisters(ctx context.Context, value apiValues.PlcValue, dataType readWriteModel.ModbusDataType, numberOfValues uint16, byteOrder ByteOrder, stringLength uint16) ([]byte, error) {
+	writeBuffer := utils.NewWriteBufferByteBased(
+		utils.WithInitialSizeForByteBasedBuffer(int(lengthInBytes(dataType, numberOfValues, stringLength))),
+		utils.WithByteOrderForByteBasedBuffer(byteOrder.bufferByteOrder()),
+	)
+	bigEndian := byteOrder.isBigEndian()
 	if numberOfValues == 1 {
 		padding := paddingBits(dataType)
 		if padding == 0 {
@@ -193,7 +221,7 @@ func SerializeRegisters(ctx context.Context, value apiValues.PlcValue, dataType 
 			return nil, errors.Wrap(err, "error serializing data item")
 		}
 	}
-	if trailing := trailingPaddingBits(dataType, numberOfValues); trailing > 0 {
+	if trailing := trailingPaddingBits(dataType, numberOfValues, stringLength); trailing > 0 {
 		if err := writeBuffer.WriteUint16("", uint8(trailing), 0); err != nil {
 			return nil, errors.Wrap(err, "error writing trailing padding")
 		}
@@ -201,11 +229,12 @@ func SerializeRegisters(ctx context.Context, value apiValues.PlcValue, dataType 
 	return writeBuffer.GetBytes(), nil
 }
 
-// lengthInBytes is how many bytes SerializeRegisters will write.
-func lengthInBytes(dataType readWriteModel.ModbusDataType, numberOfValues uint16, stringLength uint16) uint16 {
+// lengthInBytes is how many bytes SerializeRegisters will write, and equally how many
+// ParseRegisters will consume.
+func lengthInBytes(dataType readWriteModel.ModbusDataType, numberOfValues uint16, stringLength uint16) uint64 {
 	if numberOfValues == 1 {
-		return (widthBits(dataType, stringLength) + paddingBits(dataType) + 7) / 8
+		return (widthBits(dataType, stringLength) + uint64(paddingBits(dataType)) + 7) / 8
 	}
-	bits := (widthBits(dataType, stringLength) * numberOfValues) + trailingPaddingBits(dataType, numberOfValues)
+	bits := (widthBits(dataType, stringLength) * uint64(numberOfValues)) + uint64(trailingPaddingBits(dataType, numberOfValues, stringLength))
 	return (bits + 7) / 8
 }
