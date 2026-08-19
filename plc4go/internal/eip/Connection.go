@@ -423,6 +423,11 @@ func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return &_default.DefaultConnectionMetadata{
 		ProvidesReading: true,
 		ProvidesWriting: true,
+		// Stated explicitly rather than left to the zero value: the eip driver implements
+		// neither subscribing nor browsing, so both builders fall through to
+		// _default.DefaultConnection and panic. Flip these the moment that changes.
+		ProvidesSubscribing: false,
+		ProvidesBrowsing:    false,
 	}
 }
 
