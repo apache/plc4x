@@ -71,8 +71,8 @@ func (m *ConnectionMetadata) GetConnectionAttributes() map[string]string {
 		"ProjectNumber":          strconv.Itoa(int(m.ProjectNumber)),
 		"InstallationNumber":     strconv.Itoa(int(m.InstallationNumber)),
 		"DeviceSerialNumber":     ByteArrayToString(m.DeviceSerialNumber, " "),
-		"DeviceMulticastAddress": ByteArrayToString(m.DeviceSerialNumber, "."),
-		"DeviceMacAddress":       ByteArrayToString(m.DeviceSerialNumber, ":"),
+		"DeviceMulticastAddress": ByteArrayToString(m.DeviceMulticastAddress, "."),
+		"DeviceMacAddress":       ByteArrayToString(m.DeviceMacAddress, ":"),
 		"SupportedServices":      strings.Join(m.SupportedServices, ", "),
 	}
 }
@@ -104,14 +104,36 @@ type KnxMemoryReadFragment struct {
 	startingAddress uint16
 }
 
+// connectionStateInterval is how often a ConnectionStateRequest is sent to the
+// gateway in order to keep the tunneling connection alive. Gateways typically
+// drop a tunnel after 120s of silence, the KNX spec recommends 60s.
+// (Java: KnxNetIpConnection#HEARTBEAT_INTERVAL_MS)
+const connectionStateInterval = 60 * time.Second
+
+// defaultRequestTimeout mirrors the "request-timeout" default of the java driver
+// (KnxNetIpConfiguration#requestTimeout = 10_000ms).
+const defaultRequestTimeout = 10 * time.Second
+
 type Connection struct {
-	messageCodec             spi.MessageCodec
-	options                  map[string][]string
-	tagHandler               spi.PlcTagHandler
-	valueHandler             spi.PlcValueHandler
+	messageCodec spi.MessageCodec
+	options      map[string][]string
+	tagHandler   spi.PlcTagHandler
+	valueHandler spi.PlcValueHandler
+	// connectionStateLock guards connectionStateTimer and quitConnectionStateTimer,
+	// which are touched both by the codec worker (on every incoming message) and by
+	// the connect/close paths.
+	connectionStateLock      sync.Mutex
 	connectionStateTimer     *time.Ticker
 	quitConnectionStateTimer chan struct{}
-	subscribers              []*Subscriber
+	// keepaliveInterval is the interval of the keepalive-ticker. A zero value means
+	// connectionStateInterval; it is only ever set to something else by the tests, which
+	// can't wait a minute for a heartbeat.
+	keepaliveInterval time.Duration
+	// subscribersMutex guards subscribers, which is appended to / removed from by the
+	// (un)subscription paths while the codec worker iterates it on every incoming
+	// group-value write.
+	subscribersMutex sync.RWMutex
+	subscribers      []*Subscriber
 
 	valueCache      map[uint16][]byte
 	valueCacheMutex sync.RWMutex
@@ -158,6 +180,12 @@ type KnxReadResult struct {
 	value    values.PlcValue
 	numItems uint8
 	err      error
+}
+
+// KnxWriteResult is the outcome of a single group-address write. A nil err means the
+// gateway acknowledged and confirmed the frame.
+type KnxWriteResult struct {
+	err error
 }
 
 type KnxDeviceConnectResult struct {
@@ -359,6 +387,10 @@ func (m *Connection) Connect(ctx context.Context) error {
 				m.log.Warn().Msg("Tunneling handler shat down")
 			})
 
+			// Start sending periodic ConnectionStateRequests, otherwise the
+			// gateway will drop the tunneling connection after a while.
+			m.startConnectionStateTimer()
+
 			// Fire the "connected" event
 		case driverModel.Status_NO_MORE_CONNECTIONS:
 			return m.doSomethingAndClose(func() error { return errors.New("no more connections") })
@@ -380,15 +412,86 @@ func (m *Connection) doSomethingAndClose(something func() error) error {
 	return errors.Join(err, m.messageCodec.Disconnect())
 }
 
+// startConnectionStateTimer starts the keepalive-ticker which periodically sends
+// a ConnectionStateRequest to the gateway. Calling it more than once is a no-op.
+func (m *Connection) startConnectionStateTimer() {
+	m.connectionStateLock.Lock()
+	if m.connectionStateTimer != nil {
+		m.connectionStateLock.Unlock()
+		return
+	}
+	ticker := time.NewTicker(m.getKeepaliveInterval())
+	quit := make(chan struct{})
+	m.connectionStateTimer = ticker
+	m.quitConnectionStateTimer = quit
+	m.connectionStateLock.Unlock()
+
+	m.wg.Go(func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
+		for {
+			select {
+			case <-quit:
+				m.log.Debug().Msg("Stopping connection-state timer")
+				return
+			case <-ticker.C:
+				m.sendKeepalive()
+			}
+		}
+	})
+}
+
+// getKeepaliveInterval returns the interval the keepalive-ticker runs at.
+func (m *Connection) getKeepaliveInterval() time.Duration {
+	if m.keepaliveInterval > 0 {
+		return m.keepaliveInterval
+	}
+	return connectionStateInterval
+}
+
+// sendKeepalive sends a single ConnectionStateRequest and logs the outcome.
+func (m *Connection) sendKeepalive() {
+	ctx, cancelFunc := utils.WithNamedTimeout(context.Background(), "connection state request timeout", m.getRequestTimeout())
+	defer cancelFunc()
+	connectionStateResponse, err := m.sendConnectionStateRequest(ctx)
+	if err != nil {
+		m.log.Warn().Err(err).Msg("Error sending connection state request")
+		return
+	}
+	if connectionStateResponse.GetStatus() != driverModel.Status_NO_ERROR {
+		m.log.Warn().
+			Stringer("status", connectionStateResponse.GetStatus()).
+			Msg("Got a non-OK status for the connection state request")
+	}
+}
+
+// stopConnectionStateTimer stops the keepalive-ticker. Calling it more than once
+// (or without a prior start) is a no-op.
+func (m *Connection) stopConnectionStateTimer() {
+	m.connectionStateLock.Lock()
+	defer m.connectionStateLock.Unlock()
+	if m.connectionStateTimer == nil {
+		return
+	}
+	m.connectionStateTimer.Stop()
+	m.connectionStateTimer = nil
+	close(m.quitConnectionStateTimer)
+	m.quitConnectionStateTimer = nil
+}
+
 func (m *Connection) Close() error {
 	ctx := context.TODO()
-	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection close timeout", 5*time.Second)
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection close timeout", m.getRequestTimeout())
 	defer cancelFunc()
 
 	// Stop the connection-state checker.
-	if m.connectionStateTimer != nil {
-		m.connectionStateTimer.Stop()
-	}
+	m.stopConnectionStateTimer()
 
 	// Disconnect from all knx devices we are still connected to.
 	for targetAddress := range m.DeviceConnections {
@@ -411,19 +514,21 @@ func (m *Connection) Close() error {
 }
 
 func (m *Connection) IsConnected() bool {
+	if m.messageCodec == nil {
+		return false
+	}
+
 	ctx := context.TODO()
-	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection status check timeout", 5*time.Second)
+	ctx, cancelFunc := utils.WithNamedTimeout(ctx, "connection status check timeout", m.getRequestTimeout())
 	defer cancelFunc()
 
-	if m.messageCodec != nil {
-		if err := m.Ping(ctx); err != nil {
-			if errors.Is(err, context.DeadlineExceeded) {
-				m.handleTimeout()
-			}
-			return false
+	if err := m.Ping(ctx); err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			m.handleTimeout()
 		}
+		return false
 	}
-	return false
+	return true
 }
 
 func (m *Connection) Ping(ctx context.Context) error {
@@ -462,7 +567,7 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return spiModel.NewDefaultPlcWriteRequestBuilder(
-		m.tagHandler, m.valueHandler, NewWriter(m.messageCodec, options.WithCustomLogger(m.log)))
+		m.tagHandler, m.valueHandler, NewWriter(m, options.WithCustomLogger(m.log)))
 }
 
 func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
@@ -481,8 +586,9 @@ func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 }
 
 func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
-	return nil /*spiModel.NewDefaultPlcUnsubscriptionRequestBuilder(
-	  m.tagHandler, m.valueHandler, NewSubscriber(m.messageCodec))*/
+	// KNX has no wire-level subscribe, the handles carry the subscriber they belong to,
+	// so the default builder is all we need here.
+	return spiModel.NewDefaultPlcUnsubscriptionRequestBuilder()
 }
 
 func (m *Connection) GetTransportInstance() transports.TransportInstance {
