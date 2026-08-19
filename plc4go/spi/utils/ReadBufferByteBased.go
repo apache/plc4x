@@ -176,90 +176,151 @@ func (rb *byteReadBuffer) ReadByteArray(_ string, numberOfBytes int, _ ...WithRe
 	return byteArray, nil
 }
 
-func (rb *byteReadBuffer) ReadUint8(_ string, bitLength uint8, _ ...WithReaderArgs) (uint8, error) {
+// decodeBCDIfSelected applies BCD decoding to a freshly read raw bit value when
+// (and only when) the reader args explicitly select the BCD encoding.
+//
+// The BCD path deliberately bypasses the binary.LittleEndian byte swapping
+// branches below: BCD operates on the raw MSB-first nibble stream as it appears
+// on the wire, and no BCD field in the tree is little endian.
+//
+// A bitLength of 0 is left alone so the existing "read nothing, return 0"
+// behaviour is preserved verbatim.
+//
+// Every caller invokes this BEFORE advancing rb.pos, so a decode error names the
+// first bit of the offending field, like every other read error in this file and
+// like the write side in WriteBufferByteBased.
+//
+// maxValue is the widest value the target type can carry as an UNSIGNED
+// quantity: plc4j's EncodingBCD.decodeByte/decodeShort bound at 255/65535 and
+// then narrow with a (byte)/(short) cast, so a 12 bit signed-byte field holding
+// 0x200 yields 200 -> int8(-56) here just as it yields (byte) 200 == -56 there.
+func (rb *byteReadBuffer) decodeBCDIfSelected(res uint64, bitLength uint8, maxValue uint64, readerArgs []WithReaderArgs) (uint64, bool, error) {
+	if bitLength == 0 || !readerArgsSelectBCD(readerArgs) {
+		return res, false, nil
+	}
+	decoded, err := decodeBCDBounded(res, bitLength, maxValue)
+	if err != nil {
+		return 0, true, errors.Wrapf(err, "error decoding BCD value of %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
+	}
+	return decoded, true, nil
+}
+
+func (rb *byteReadBuffer) ReadUint8(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (uint8, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint8, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return uint8(decoded), decodeErr
+	}
 	return uint8(res), nil
 }
 
-func (rb *byteReadBuffer) ReadUint16(_ string, bitLength uint8, _ ...WithReaderArgs) (uint16, error) {
+func (rb *byteReadBuffer) ReadUint16(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (uint16, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint16, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return uint16(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return uint16(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
 	return uint16(res), nil
 }
 
-func (rb *byteReadBuffer) ReadUint32(_ string, bitLength uint8, _ ...WithReaderArgs) (uint32, error) {
+func (rb *byteReadBuffer) ReadUint32(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (uint32, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint32, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return uint32(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return uint32(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
 	return uint32(res), nil
 }
 
-func (rb *byteReadBuffer) ReadUint64(_ string, bitLength uint8, _ ...WithReaderArgs) (uint64, error) {
+func (rb *byteReadBuffer) ReadUint64(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (uint64, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint64, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return decoded, decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return bits.ReverseBytes64(res) >> (64 - bitLength), nil
 	}
 	return res, nil
 }
 
-func (rb *byteReadBuffer) ReadInt8(_ string, bitLength uint8, _ ...WithReaderArgs) (int8, error) {
+func (rb *byteReadBuffer) ReadInt8(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int8, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint8, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return int8(decoded), decodeErr
+	}
 	return int8(res), nil
 }
 
-func (rb *byteReadBuffer) ReadInt16(_ string, bitLength uint8, _ ...WithReaderArgs) (int16, error) {
+func (rb *byteReadBuffer) ReadInt16(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int16, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint16, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return int16(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return int16(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
 	return int16(res), nil
 }
 
-func (rb *byteReadBuffer) ReadInt32(_ string, bitLength uint8, _ ...WithReaderArgs) (int32, error) {
+func (rb *byteReadBuffer) ReadInt32(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int32, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint32, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return int32(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return int32(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
 	return int32(res), nil
 }
 
-func (rb *byteReadBuffer) ReadInt64(_ string, bitLength uint8, _ ...WithReaderArgs) (int64, error) {
+func (rb *byteReadBuffer) ReadInt64(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int64, error) {
 	res, err := rb.bits.ReadBits(bitLength)
 	if err != nil {
 		return 0, errors.Wrapf(err, "error reading %d bits at pos [%d]bit ([%d]byte)", bitLength, rb.pos, rb.pos/8)
 	}
+	decoded, handled, decodeErr := rb.decodeBCDIfSelected(res, bitLength, math.MaxUint64, readerArgs)
 	rb.pos += uint64(bitLength)
+	if handled {
+		return int64(decoded), decodeErr
+	}
 	if rb.byteOrder == binary.LittleEndian {
 		return int64(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
 	}
