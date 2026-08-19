@@ -113,7 +113,7 @@ public class ModbusRegisterCodec {
             DataItem.staticSerialize(writeBuffer, elementAt(value, i), dataType, stringLength);
         }
         // Pad the last register when an odd number of sub-register values leaves it half filled.
-        int trailing = trailingPaddingBits(dataType, numberOfValues);
+        int trailing = trailingPaddingBits(dataType, numberOfValues, stringLength);
         if (trailing > 0) {
             writeBuffer.writeUnsignedInt(trailing, 0, UNSIGNED_BINARY);
         }
@@ -128,7 +128,7 @@ public class ModbusRegisterCodec {
             return (widthBits(dataType, stringLength) + paddingBits(dataType) + 7) / 8;
         }
         int bits = (widthBits(dataType, stringLength) * numberOfValues)
-            + trailingPaddingBits(dataType, numberOfValues);
+            + trailingPaddingBits(dataType, numberOfValues, stringLength);
         return (bits + 7) / 8;
     }
 
@@ -194,8 +194,8 @@ public class ModbusRegisterCodec {
     }
 
     /** The bits needed to round a packed run of values up to a whole register. */
-    private static int trailingPaddingBits(ModbusDataType dataType, int numberOfValues) {
-        int width = widthBits(dataType, 1);
+    private static int trailingPaddingBits(ModbusDataType dataType, int numberOfValues, int stringLength) {
+        int width = widthBits(dataType, stringLength);
         if (width >= 16) {
             return 0;
         }

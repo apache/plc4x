@@ -27,6 +27,7 @@ import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.spi.values.PlcSINT;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.spi.values.PlcUSINT;
 import org.junit.jupiter.api.Test;
 
@@ -175,6 +176,19 @@ class ModbusRegisterCodecTest {
         assertEquals(-3, read.getList().get(2).getInt());
     }
 
+    /**
+     * A string is as wide as its declared length, so three twenty-character strings already fill
+     * thirty whole registers and need no padding. Sizing the run from a one-character string
+     * instead made an odd count look half a register short and appended a spurious pad byte.
+     */
+    @Test
+    void addsNoTrailingPadForStringsThatFillWholeRegisters() throws Exception {
+        PlcValue three = new PlcList(List.of(new PlcSTRING("a"), new PlcSTRING("b"), new PlcSTRING("c")));
+
+        assertEquals(60, ModbusRegisterCodec.lengthInBytes(three, ModbusDataType.STRING, 3, 20));
+        assertEquals(60, serialize(three, ModbusDataType.STRING, 3, true, 20).length);
+    }
+
     private static PlcValue parse(byte[] data, ModbusDataType dataType, int numberOfValues, boolean bigEndian)
         throws Exception {
         return ModbusRegisterCodec.parse(readBuffer(data), dataType, numberOfValues, bigEndian, 1);
@@ -182,14 +196,19 @@ class ModbusRegisterCodecTest {
 
     private static byte[] serialize(PlcValue value, ModbusDataType dataType, int numberOfValues, boolean bigEndian)
         throws Exception {
-        int size = ModbusRegisterCodec.lengthInBytes(value, dataType, numberOfValues, 1);
+        return serialize(value, dataType, numberOfValues, bigEndian, 1);
+    }
+
+    private static byte[] serialize(PlcValue value, ModbusDataType dataType, int numberOfValues, boolean bigEndian,
+                                    int stringLength) throws Exception {
+        int size = ModbusRegisterCodec.lengthInBytes(value, dataType, numberOfValues, stringLength);
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased(new byte[size],
             WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
             WithOption.WithSignedIntegerEncoding("twos-complement"),
             WithOption.WithFloatEncoding("IEEE754"),
             WithOption.WithStringEncoding("UTF8"),
             WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
-        ModbusRegisterCodec.serialize(writeBuffer, value, dataType, numberOfValues, bigEndian, 1);
+        ModbusRegisterCodec.serialize(writeBuffer, value, dataType, numberOfValues, bigEndian, stringLength);
         return writeBuffer.getBytes();
     }
 
