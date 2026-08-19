@@ -213,21 +213,25 @@ func (m *Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (api
 					returnCodes[stringAddress] = apiModel.PlcResponseCode_NOT_FOUND
 					values[stringAddress] = nil
 				}
-				// TODO: Do we need a "default" case here?
+			case <-ctx.Done():
+				// Without this the read would block forever if the device never answers.
+				m.log.Debug().Err(ctx.Err()).Str("address", stringAddress).Msg("context done while reading group address")
+				return apiModel.PlcResponseCode_REQUEST_TIMEOUT, nil
 			}
 		} else {
+			returnCodes[stringAddress] = apiModel.PlcResponseCode_OK
 			// If we don't have any tag-type information, add the raw data
 			if tag.GetTagType() == nil {
 				values[stringAddress] = spiValues.NewPlcRawByteArray(int8s)
 			} else {
-				// Decode the data according to the tags type
+				// Decode the data according to the tags type. The cached value is the raw
+				// group-value payload (the byte carrying the 6 embedded data bits followed
+				// by the data bytes) and the generated datapoint parser reads the reserved
+				// bits/byte itself, so it gets the payload as-is.
+				// (Java: KnxNetIpConnection hands the payload to KnxDatapoint.staticParse unchanged)
 				rb := utils.NewReadBufferByteBased(int8s)
 				if tag.GetTagType() == nil {
 					return apiModel.PlcResponseCode_INVALID_DATATYPE, nil
-				}
-				// If the size of the tag is greater than 6, we have to skip the first byte
-				if tag.GetTagType().GetLengthInBits(ctx) > 6 {
-					_, _ = rb.ReadUint8("tagType", 8)
 				}
 				plcValue, err := driverModel.KnxDatapointParseWithBuffer(ctx, rb, *tag.GetTagType())
 				// If any of the values doesn't decode correctly, we can't return any
@@ -247,7 +251,12 @@ func (m *Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (api
 			m.log.Debug().Err(err).Msg("error mapping addresses")
 			return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 		}
-		return apiModel.PlcResponseCode_OK, values[stringAddress]
+		// Report what actually happened, a failed read must not be reported as OK.
+		responseCode, ok := returnCodes[stringAddress]
+		if !ok {
+			responseCode = apiModel.PlcResponseCode_NOT_FOUND
+		}
+		return responseCode, values[stringAddress]
 	} else if len(rawAddresses) > 1 {
 		// Add it to the result
 		return apiModel.PlcResponseCode_OK, spiValues.NewPlcStruct(values)

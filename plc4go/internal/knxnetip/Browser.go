@@ -37,6 +37,7 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type Browser struct {
@@ -106,19 +107,25 @@ func (m Browser) executeDeviceQuery(ctx context.Context, query DeviceQuery, inte
 			// If the request returned a connection, process it,
 			// otherwise just ignore it.
 			if deviceConnection.connection != nil {
+				deviceQuery := NewDeviceQuery(
+					strconv.Itoa(int(knxAddress.GetMainGroup())),
+					strconv.Itoa(int(knxAddress.GetMiddleGroup())),
+					strconv.Itoa(int(knxAddress.GetSubGroup())),
+				)
 				queryResult := spiModel.NewDefaultPlcBrowseItem(
-					NewDeviceQuery(
-						strconv.Itoa(int(knxAddress.GetMainGroup())),
-						strconv.Itoa(int(knxAddress.GetMiddleGroup())),
-						strconv.Itoa(int(knxAddress.GetSubGroup())),
-					),
-					"",
-					"",
+					deviceQuery,
+					// Java uses the address as name if the ETS project doesn't provide a better one
+					// (KnxNetIpConnection#createBrowseItem).
+					deviceQuery.GetAddressString(),
+					deviceQuery.GetValueType().String(),
 					false,
 					false,
 					false,
 					nil,
-					nil,
+					map[string]values.PlcValue{
+						"deviceDescriptor": spiValues.NewPlcUINT(deviceConnection.connection.deviceDescriptor),
+						"maxApdu":          spiValues.NewPlcUINT(deviceConnection.connection.maxApdu),
+					},
 				)
 
 				// Pass it to the callback

@@ -21,55 +21,119 @@ package knxnetip
 
 import (
 	"context"
+	"runtime/debug"
 
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+// Writer implements group-address writes. Everything else (device properties and device
+// memory) is read-only in this driver, so only GroupAddressTag is supported here.
 type Writer struct {
-	messageCodec spi.MessageCodec
+	connection *Connection
 
 	log zerolog.Logger
 }
 
-func NewWriter(messageCodec spi.MessageCodec, _options ...options.WithOption) Writer {
+func NewWriter(connection *Connection, _options ...options.WithOption) Writer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return Writer{
-		messageCodec: messageCodec,
-		log:          customLogger,
+		connection: connection,
+		log:        customLogger,
 	}
 }
 
+// Write sends a GroupValueWrite for every tag of the request. The returned channel is
+// always completed exactly once, no matter how many tags the request contains and no
+// matter if the individual writes succeed, fail or time out.
 func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
-	// TODO: handle context
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
-	// If we are requesting only one tag, use a
-	if len(writeRequest.GetTagNames()) == 1 {
-		tagName := writeRequest.GetTagNames()[0]
+	m.connection.wg.Go(func() {
+		defer func() {
+			if err := recover(); err != nil {
+				// Without this the caller would wait for a response which never comes.
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil,
+					errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
+			}
+		}()
 
-		// Get the KnxNetIp tag instance from the request
-		tag := writeRequest.GetTag(tagName)
-		groupAddressTag, err := CastToGroupAddressTagFromPlcTag(tag)
-		if err != nil {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("invalid tag item type")))
-			return result
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		for _, tagName := range writeRequest.GetTagNames() {
+			responseCodes[tagName] = m.writeTag(ctx, writeRequest, tagName)
 		}
 
-		// Get the value from the request and serialize it to a byte array
-		value := writeRequest.GetValue(tagName)
-		tagType := groupAddressTag.GetTagType()
-		// TODO: why do we ignore the bytes here?
-		if _, err := readWriteModel.KnxDatapointSerialize(value, *tagType); err != nil {
-			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("error serializing value: "+err.Error())))
-			return result
-		}
-	}
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(
+			writeRequest,
+			spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes),
+			nil,
+		))
+	})
 	return result
+}
+
+// writeTag writes a single tag of the request and maps whatever happened to a response code.
+func (m Writer) writeTag(ctx context.Context, writeRequest apiModel.PlcWriteRequest, tagName string) apiModel.PlcResponseCode {
+	groupAddressTag, err := CastToGroupAddressTagFromPlcTag(writeRequest.GetTag(tagName))
+	if err != nil {
+		m.log.Debug().Err(err).Str("tagName", tagName).Msg("only group-addresses can be written")
+		return apiModel.PlcResponseCode_INVALID_ADDRESS
+	}
+
+	// Writing to a pattern would mean writing to an unknown number of devices, so unlike a
+	// read a write only accepts tags which resolve to exactly one group address.
+	rawAddresses, err := m.resolveGroupAddresses(groupAddressTag)
+	if err != nil {
+		m.log.Debug().Err(err).Str("tagName", tagName).Msg("error resolving addresses")
+		return apiModel.PlcResponseCode_INVALID_ADDRESS
+	}
+	if len(rawAddresses) != 1 {
+		m.log.Debug().Str("tagName", tagName).Int("numAddresses", len(rawAddresses)).
+			Msg("a write tag has to address exactly one group address")
+		return apiModel.PlcResponseCode_INVALID_ADDRESS
+	}
+	numericAddress := rawAddresses[0]
+	groupAddress := []byte{byte(numericAddress >> 8), byte(numericAddress & 0xFF)}
+
+	value := writeRequest.GetValue(tagName)
+	if value == nil {
+		m.log.Debug().Str("tagName", tagName).Msg("no value to write")
+		return apiModel.PlcResponseCode_INVALID_DATA
+	}
+
+	writeResults := m.connection.WriteGroupAddress(ctx, groupAddress, groupAddressTag.GetTagType(), value)
+	select {
+	case writeResult := <-writeResults:
+		if writeResult.err != nil {
+			m.log.Debug().Err(writeResult.err).Str("tagName", tagName).Msg("error writing group address")
+			return errorToResponseCode(writeResult.err)
+		}
+		return apiModel.PlcResponseCode_OK
+	case <-ctx.Done():
+		// Without this a write would block forever if the gateway never answers.
+		m.log.Debug().Err(ctx.Err()).Str("tagName", tagName).Msg("context done while writing group address")
+		return apiModel.PlcResponseCode_REQUEST_TIMEOUT
+	}
+}
+
+// resolveGroupAddresses maps a (possibly pattern-based) group-address tag to the numeric
+// group addresses it refers to, reusing the resolution the Reader implements.
+func (m Writer) resolveGroupAddresses(tag GroupAddressTag) ([]uint16, error) {
+	return NewReader(m.connection, options.WithCustomLogger(m.log)).resolveAddresses(tag)
+}
+
+// errorToResponseCode tells a timeout apart from any other failure, as the api has a
+// dedicated response code for it.
+func errorToResponseCode(err error) apiModel.PlcResponseCode {
+	var timeoutError utils.TimeoutError
+	if errors.As(err, &timeoutError) ||
+		errors.Is(err, context.DeadlineExceeded) ||
+		errors.Is(err, context.Canceled) {
+		return apiModel.PlcResponseCode_REQUEST_TIMEOUT
+	}
+	return apiModel.PlcResponseCode_INTERNAL_ERROR
 }

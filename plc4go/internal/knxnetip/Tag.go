@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -77,6 +78,18 @@ func (k GroupAddress3LevelPlcTag) GetValueType() values.PlcValueType {
 
 func (k GroupAddress3LevelPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
 	return []apiModel.ArrayInfo{}
+}
+
+// GetPlcSubscriptionType makes the tag usable in subscription requests. KNX is event
+// driven on the bus, so a group address is always delivered as a push subscription.
+// (Java: KnxNetIpConnection only advertises PlcSubscriptionType.EVENT)
+func (k GroupAddress3LevelPlcTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionEvent
+}
+
+// GetDuration is not applicable as knx doesn't support cyclic subscriptions.
+func (k GroupAddress3LevelPlcTag) GetDuration() time.Duration {
+	return 0
 }
 
 func (k GroupAddress3LevelPlcTag) GetTagType() *driverModel.KnxDatapointType {
@@ -151,6 +164,18 @@ func (k GroupAddress2LevelPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
 	return []apiModel.ArrayInfo{}
 }
 
+// GetPlcSubscriptionType makes the tag usable in subscription requests. KNX is event
+// driven on the bus, so a group address is always delivered as a push subscription.
+// (Java: KnxNetIpConnection only advertises PlcSubscriptionType.EVENT)
+func (k GroupAddress2LevelPlcTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionEvent
+}
+
+// GetDuration is not applicable as knx doesn't support cyclic subscriptions.
+func (k GroupAddress2LevelPlcTag) GetDuration() time.Duration {
+	return 0
+}
+
 func (k GroupAddress2LevelPlcTag) GetTagType() *driverModel.KnxDatapointType {
 	return k.TagType
 }
@@ -211,6 +236,18 @@ func (k GroupAddress1LevelPlcTag) GetValueType() values.PlcValueType {
 
 func (k GroupAddress1LevelPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
 	return []apiModel.ArrayInfo{}
+}
+
+// GetPlcSubscriptionType makes the tag usable in subscription requests. KNX is event
+// driven on the bus, so a group address is always delivered as a push subscription.
+// (Java: KnxNetIpConnection only advertises PlcSubscriptionType.EVENT)
+func (k GroupAddress1LevelPlcTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionEvent
+}
+
+// GetDuration is not applicable as knx doesn't support cyclic subscriptions.
+func (k GroupAddress1LevelPlcTag) GetDuration() time.Duration {
+	return 0
 }
 
 func (k GroupAddress1LevelPlcTag) GetTagType() *driverModel.KnxDatapointType {
