@@ -22,6 +22,7 @@ import org.apache.plc4x.java.spi.buffers.api.Message;
 import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.buffers.xmlbased.ReadBufferXmlBased;
 import org.apache.plc4x.java.spi.transports.api.TransportInstance;
@@ -136,7 +137,8 @@ public class IncomingPlcMessageHandler {
                 WriteBufferByteBased writeBuffer = new WriteBufferByteBased(new byte[message.getLengthInBytes()],
                     WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
                     WithOption.WithSignedIntegerEncoding("twos-complement"),
-                    WithOption.WithFloatEncoding("IEEE754"));
+                    WithOption.WithFloatEncoding("IEEE754"),
+                    WithByteBasedOption.WithByteOrder(byteOrder));
                 writeBuffer.writeMessage(message);
                 byte[] bytes = writeBuffer.getBytes();
                 LOGGER.info("Sending serialized message: {}", StaticHelper.ENCODE_HEX(bytes));

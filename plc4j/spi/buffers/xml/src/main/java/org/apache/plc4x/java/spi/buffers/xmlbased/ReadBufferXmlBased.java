@@ -108,35 +108,35 @@ public class ReadBufferXmlBased extends AbstractBuffer implements ReadBuffer, Xm
 
     @Override
     public byte readUnsignedByte(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Byte.parseByte(decode(name, rwUintKey, numBits));
     }
 
     @Override
     public short readUnsignedShort(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Short.parseShort(decode(name, rwUintKey, numBits));
     }
 
     @Override
     public int readUnsignedInt(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Integer.parseInt(decode(name, rwUintKey, numBits));
     }
 
     @Override
     public long readUnsignedLong(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Long.parseLong(decode(name, rwUintKey, numBits));
     }
 
     @Override
     public BigInteger readUnsignedBigInteger(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         String bigIntString = decode(name, rwUintKey, numBits);
         return new BigInteger(bigIntString);
@@ -144,63 +144,63 @@ public class ReadBufferXmlBased extends AbstractBuffer implements ReadBuffer, Xm
 
     @Override
     public byte readSignedByte(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Byte.parseByte(decode(name, rwIntKey, numBits));
     }
 
     @Override
     public short readSignedShort(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Short.parseShort(decode(name, rwIntKey, numBits));
     }
 
     @Override
     public int readSignedInt(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Integer.parseInt(decode(name, rwIntKey, numBits));
     }
 
     @Override
     public long readSignedLong(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Long.parseLong(decode(name, rwIntKey, numBits));
     }
 
     @Override
     public BigInteger readSignedBigInteger(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return new BigInteger(decode(name, rwIntKey, numBits));
     }
 
     @Override
     public float readFloat(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Float.parseFloat(decode(name, rwFloatKey, numBits));
     }
 
     @Override
     public double readDouble(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return Double.parseDouble(decode(name, rwFloatKey, numBits));
     }
 
     @Override
     public BigDecimal readBigDecimal(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return new BigDecimal(decode(name, rwFloatKey, numBits));
     }
 
     @Override
     public String readString(int numBits, WithOption... options) throws BufferException {
-        String name = getName(options);
+        String name = getScalarName(options);
         move(numBits);
         return decode(name, rwStringKey, numBits);
     }
@@ -326,6 +326,24 @@ public class ReadBufferXmlBased extends AbstractBuffer implements ReadBuffer, Xm
         if (!numBitsValidate) {
             throw new BufferException(String.format("%s: required attribute '%s' missing", name, rwBitLengthKey));
         }
+    }
+
+    /**
+     * Resolves the element name for a scalar read.
+     *
+     * <p>Mirrors {@code FieldWriterArray.writeSimpleTypeArrayField}, which serializes every simple
+     * list item as {@code <value>} and discards the field's own name. Reads carrying the
+     * render-as-list marker are exactly those items, so without this a list serialized as
+     * {@code <classId isList="true"><value/>...} fails to read back with
+     * "unexpected element 'value'. Expected 'classId'". Only scalar reads go through here:
+     * byte arrays are written as a single element, and complex list items push their own type
+     * name as context.
+     */
+    private String getScalarName(WithOption... options) throws BufferException {
+        if (WithOption.extractRenderAsList(options).orElse(false)) {
+            return "value";
+        }
+        return getName(options);
     }
 
     protected String getName(WithOption... options) throws BufferException {
