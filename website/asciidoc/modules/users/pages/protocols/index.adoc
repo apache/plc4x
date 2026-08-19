@@ -204,12 +204,15 @@ browse code, browsing does not work yet.
 * *Firmata* (Java) writes and subscribes; there is no read support.
 * *KNXnet/IP* (C#) is the only driver in plc4net and has not kept pace with the other implementations.
 * *Open-Protocol* (Java) is a skeleton that connects but implements no operations.
-* *Profinet* (Java) discovers devices and browses the submodules of a connected device; it has no
-read or write support. It accepts a subscription request and completes the PROFINET connect
-handshake, but the subscription response future is never completed and registering a consumer
-throws `UnsupportedOperationException`, so no cyclic data ever reaches an application. Only the
-newer `profinet-ng` driver is part of `plc4j-driver-all`; the older `profinet` driver is still in
-the code base but is not bundled.
+* *Profinet* (Java) discovers devices and browses the submodules of a connected device; neither of
+the two Java drivers has read or write support. Only the newer `profinet-ng` driver is part of
+`plc4j-driver-all`; the older `profinet` driver is still in the code base but is not bundled. In
+`profinet-ng` a subscription request completes the PROFINET connect handshake, but the subscription
+response future is deliberately left incomplete and `onRegisterConsumer` throws
+`UnsupportedOperationException`, so no cyclic data ever reaches an application. The unbundled
+`profinet` driver does implement that path - it completes the subscription response, registers
+consumers per subscription handle and dispatches a `PlcSubscriptionEvent` for every incoming cyclic
+frame - so the subscribe entry below, which describes what ships, does not apply to it.
 
 *DF1* has a protocol specification in the repository, and plc4go additionally ships the generated
 message model for it, but no language implementation has a driver: there is nothing that can open a
@@ -322,8 +325,16 @@ metadata inconsistently, so this table follows the code rather than the metadata
 |icon:check[role="green"]
 |icon:check[role="green"]
 
-|Modbus (TCP/RTU/ASCII)
+|Modbus TCP
 |icon:check[role="green"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
+
+|Modbus RTU / ASCII
+|icon:times[role="red"]
 |icon:times[role="red"]
 |icon:check[role="green"]
 |icon:check[role="green"]
@@ -354,7 +365,7 @@ metadata inconsistently, so this table follows the code rather than the metadata
 |icon:times[role="red"]
 |icon:times[role="red"]
 
-|Profinet
+|Profinet (`profinet-ng`)
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:times[role="red"]
@@ -413,8 +424,10 @@ still a sequence of reads. AB-Ethernet, EtherNet/IP (including Logix), Modbus, S
 this way.
 
 The Logix driver reuses the EtherNet/IP connection, so it supports the same operations, but it does
-not expose device discovery. S7 discovery uses PROFINET DCP and needs the optional pcap4j runtime
-(and libpcap on the host) to be installed.
+not expose device discovery. Modbus discovery is likewise a TCP-only feature: only `ModbusTcpDriver`
+offers a discovery request builder, so the serial RTU and ASCII flavors cannot discover devices.
+S7 discovery uses PROFINET DCP and needs the optional pcap4j runtime (and libpcap on the host) to be
+installed.
 
 A read or write request always carries a set of tags, so there is no separate "single value" and
 "multiple values" support: a driver that can read can read any number of tags in one request. How
